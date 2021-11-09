@@ -82,7 +82,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     if ((input)['isDisposedInternal']) {
       throw new Error('input tensor is disposed');
     } else if (!(input as Tensor).shape || (input as Tensor).shape.length !== 4 || (input as Tensor).shape[0] !== 1 || (input as Tensor).shape[3] !== 3) {
-      throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input['shape']}`);
+      throw new Error('input tensor shape must be [1, height, width, 3] and instead was' + (input['shape'] ? input['shape'].toString() : 'unknown'));
     } else {
       return { tensor: tf.clone(input), canvas: (config.filter.return ? outCanvas : null) };
     }

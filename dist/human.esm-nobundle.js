@@ -1003,7 +1003,7 @@ async function process2(input, config3, getTensor = true) {
     if (input["isDisposedInternal"]) {
       throw new Error("input tensor is disposed");
     } else if (!input.shape || input.shape.length !== 4 || input.shape[0] !== 1 || input.shape[3] !== 3) {
-      throw new Error(`input tensor shape must be [1, height, width, 3] and instead was ${input["shape"]}`);
+      throw new Error("input tensor shape must be [1, height, width, 3] and instead was" + (input["shape"] ? input["shape"].toString() : "unknown"));
     } else {
       return { tensor: tfjs_esm_exports.clone(input), canvas: config3.filter.return ? outCanvas : null };
     }
@@ -5654,7 +5654,6 @@ async function predict6(input, config3) {
     if (!((_e = config3.face.mesh) == null ? void 0 : _e.enabled)) {
       face5.box = getClampedBox(box4, input);
       face5.boxRaw = getRawBox(box4, input);
-      face5.boxScore = Math.round(100 * box4.confidence || 0) / 100;
       face5.score = face5.boxScore;
       face5.mesh = box4.landmarks.map((pt) => [
         (box4.startPoint[0] + box4.endPoint[0]) / 2 + (box4.endPoint[0] + box4.startPoint[0]) * pt[0] / size(),
@@ -5682,7 +5681,7 @@ async function predict6(input, config3) {
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
-        box4 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox(face5.mesh), enlargeFact));
+        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), enlargeFact), confidence: box4.confidence });
         face5.box = getClampedBox(box4, input);
         face5.boxRaw = getRawBox(box4, input);
         face5.score = face5.faceScore;

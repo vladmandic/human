@@ -11,9 +11,8 @@
   
 ### **HEAD -> main** 2021/11/08 mandic00@live.com
 
-
-### **origin/main** 2021/11/08 mandic00@live.com
-
+- add type defs when working with relative path imports
+- disable humangl backend if webgl 1.0 is detected
 
 ### **release: 2.5.1** 2021/11/08 mandic00@live.com
 

@@ -78,7 +78,6 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     if (!config.face.mesh?.enabled) { // mesh not enabled, return resuts from detector only
       face.box = util.getClampedBox(box, input);
       face.boxRaw = util.getRawBox(box, input);
-      face.boxScore = Math.round(100 * box.confidence || 0) / 100;
       face.score = face.boxScore;
       face.mesh = box.landmarks.map((pt) => [
         ((box.startPoint[0] + box.endPoint[0])) / 2 + ((box.endPoint[0] + box.startPoint[0]) * pt[0] / blazeface.size()),
@@ -102,7 +101,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
         for (const key of Object.keys(coords.meshAnnotations)) face.annotations[key] = coords.meshAnnotations[key].map((index) => face.mesh[index]); // add annotations
-        box = util.squarifyBox(util.enlargeBox(util.calculateLandmarksBoundingBox(face.mesh), enlargeFact)); // redefine box with mesh calculated one
+        box = util.squarifyBox({ ...util.enlargeBox(util.calculateLandmarksBoundingBox(face.mesh), enlargeFact), confidence: box.confidence }); // redefine box with mesh calculated one
         face.box = util.getClampedBox(box, input); // update detected box with box around the face mesh
         face.boxRaw = util.getRawBox(box, input);
         face.score = face.faceScore;

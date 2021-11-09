@@ -143,13 +143,21 @@
         "typedoc": "typedoc"
       },
       {
-        "name": "demo/browser",
+        "name": "demo/typescript",
         "platform": "browser",
         "format": "esm",
         "input": "demo/typescript/index.ts",
         "output": "demo/typescript/index.js",
         "sourcemap": true,
-        "minify": false,
+        "external": ["*/human.esm.js"]
+      },
+      {
+        "name": "demo/facerecognition",
+        "platform": "browser",
+        "format": "esm",
+        "input": "demo/facerecognition/index.ts",
+        "output": "demo/facerecognition/index.js",
+        "sourcemap": true,
         "external": ["*/human.esm.js"]
       }
     ]

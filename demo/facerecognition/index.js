@@ -15,7 +15,8 @@ var humanConfig = {
     description: { enabled: true },
     iris: { enabled: true },
     emotion: { enabled: false },
-    antispoof: { enabled: true }
+    antispoof: { enabled: true },
+    liveness: { enabled: true }
   },
   body: { enabled: false },
   hand: { enabled: false },
@@ -23,10 +24,30 @@ var humanConfig = {
   gesture: { enabled: true }
 };
 var options = {
+  faceDB: "../facematch/faces.json",
   minConfidence: 0.6,
   minSize: 224,
-  maxTime: 1e4
+  maxTime: 1e4,
+  blinkMin: 10,
+  blinkMax: 800
 };
+var ok = {
+  faceCount: false,
+  faceConfidence: false,
+  facingCenter: false,
+  blinkDetected: false,
+  faceSize: false,
+  antispoofCheck: false,
+  livenessCheck: false,
+  elapsedMs: 0
+};
+var allOk = () => ok.faceCount && ok.faceSize && ok.blinkDetected && ok.facingCenter && ok.faceConfidence && ok.antispoofCheck && ok.livenessCheck;
+var blink = {
+  start: 0,
+  end: 0,
+  time: 0
+};
+var db = [];
 var human = new Human(humanConfig);
 human.env["perfadd"] = false;
 human.draw.options.font = 'small-caps 18px "Lato"';
@@ -59,11 +80,7 @@ async function webCam() {
   await ready;
   dom.canvas.width = dom.video.videoWidth;
   dom.canvas.height = dom.video.videoHeight;
-  const track = stream.getVideoTracks()[0];
-  const capabilities = track.getCapabilities ? track.getCapabilities() : "";
-  const settings = track.getSettings ? track.getSettings() : "";
-  const constraints = track.getConstraints ? track.getConstraints() : "";
-  log("video:", dom.video.videoWidth, dom.video.videoHeight, track.label, { stream, track, settings, constraints, capabilities });
+  log("video:", dom.video.videoWidth, dom.video.videoHeight, stream.getVideoTracks()[0].label);
   dom.canvas.onclick = () => {
     if (dom.video.paused)
       dom.video.play();
@@ -80,18 +97,6 @@ async function detectionLoop() {
     requestAnimationFrame(detectionLoop);
   }
 }
-var ok = {
-  faceCount: false,
-  faceConfidence: false,
-  facingCenter: false,
-  eyesOpen: false,
-  blinkDetected: false,
-  faceSize: false,
-  antispoofCheck: false,
-  livenessCheck: false,
-  elapsedMs: 0
-};
-var allOk = () => ok.faceCount && ok.faceSize && ok.blinkDetected && ok.facingCenter && ok.faceConfidence && ok.antispoofCheck;
 async function validationLoop() {
   const interpolated = await human.next(human.result);
   await human.draw.canvas(dom.video, dom.canvas);
@@ -100,14 +105,22 @@ async function validationLoop() {
   fps.draw = 1e3 / (now - timestamp.draw);
   timestamp.draw = now;
   printFPS(`fps: ${fps.detect.toFixed(1).padStart(5, " ")} detect | ${fps.draw.toFixed(1).padStart(5, " ")} draw`);
-  const gestures = Object.values(human.result.gesture).map((gesture) => gesture.gesture);
   ok.faceCount = human.result.face.length === 1;
-  ok.eyesOpen = ok.eyesOpen || !(gestures.includes("blink left eye") || gestures.includes("blink right eye"));
-  ok.blinkDetected = ok.eyesOpen && ok.blinkDetected || gestures.includes("blink left eye") || gestures.includes("blink right eye");
-  ok.facingCenter = gestures.includes("facing center") && gestures.includes("looking center");
-  ok.faceConfidence = (human.result.face[0].boxScore || 0) > options.minConfidence && (human.result.face[0].faceScore || 0) > options.minConfidence && (human.result.face[0].genderScore || 0) > options.minConfidence;
-  ok.antispoofCheck = (human.result.face[0].real || 0) > options.minConfidence;
-  ok.faceSize = human.result.face[0].box[2] >= options.minSize && human.result.face[0].box[3] >= options.minSize;
+  if (ok.faceCount) {
+    const gestures = Object.values(human.result.gesture).map((gesture) => gesture.gesture);
+    if (gestures.includes("blink left eye") || gestures.includes("blink right eye"))
+      blink.start = human.now();
+    if (blink.start > 0 && !gestures.includes("blink left eye") && !gestures.includes("blink right eye"))
+      blink.end = human.now();
+    ok.blinkDetected = ok.blinkDetected || blink.end - blink.start > options.blinkMin && blink.end - blink.start < options.blinkMax;
+    if (ok.blinkDetected && blink.time === 0)
+      blink.time = Math.trunc(blink.end - blink.start);
+    ok.facingCenter = gestures.includes("facing center") && gestures.includes("looking center");
+    ok.faceConfidence = (human.result.face[0].boxScore || 0) > options.minConfidence && (human.result.face[0].faceScore || 0) > options.minConfidence && (human.result.face[0].genderScore || 0) > options.minConfidence;
+    ok.antispoofCheck = (human.result.face[0].real || 0) > options.minConfidence;
+    ok.livenessCheck = (human.result.face[0].live || 0) > options.minConfidence;
+    ok.faceSize = human.result.face[0].box[2] >= options.minSize && human.result.face[0].box[3] >= options.minSize;
+  }
   printStatus(ok);
   if (allOk()) {
     dom.video.pause();
@@ -135,10 +148,19 @@ async function detectFace(face) {
   dom.canvas.style.width = "";
   human.tf.browser.toPixels(face.tensor, dom.canvas);
   human.tf.dispose(face.tensor);
+  const arr = db.map((rec) => rec.embedding);
+  const res = await human.match(face.embedding, arr);
+  log(`found best match: ${db[res.index].name} similarity: ${Math.round(1e3 * res.similarity) / 10}% source: ${db[res.index].source}`);
+}
+async function loadFaceDB() {
+  const res = await fetch(options.faceDB);
+  db = res && res.ok ? await res.json() : [];
+  log("loaded face db:", options.faceDB, "records:", db.length);
 }
 async function main() {
   log("human version:", human.version, "| tfjs version:", human.tf.version_core);
   printFPS("loading...");
+  await loadFaceDB();
   await human.load();
   printFPS("initializing...");
   await human.warmup();

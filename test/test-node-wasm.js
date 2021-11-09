@@ -25,6 +25,8 @@ const config = {
     iris: { enabled: true },
     description: { enabled: true },
     emotion: { enabled: true },
+    antispoof: { enabled: true },
+    liveness: { enabled: true },
   },
   hand: { enabled: true, rotation: false },
   body: { enabled: true },

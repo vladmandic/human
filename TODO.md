@@ -38,3 +38,12 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 broad
   <https://github.com/tensorflow/tfjs/issues/5516>  
 
 <br><hr><br>
+
+## Pending release notes:
+
+New:
+- new demo `demos/facerecognition` that utilizes multiple algorithm  
+  to validte input before triggering face recognition - similar to **FaceID**
+- new optional model `liveness`  
+  checks if input appears to be a real-world live image or a recording  
+  best used together with `antispoofing` that checks if input appears to have a realistic face

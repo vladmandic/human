@@ -43,6 +43,9 @@ export interface FaceEmotionConfig extends GenericConfig {
 /** Anti-spoofing part of face configuration */
 export interface FaceAntiSpoofConfig extends GenericConfig {
 }
+/** Liveness part of face configuration */
+export interface FaceLivenessConfig extends GenericConfig {
+}
 /** Configures all face-specific options: face detection, mesh analysis, age, gender, emotion detection and face description */
 export interface FaceConfig extends GenericConfig {
     detector: Partial<FaceDetectorConfig>;
@@ -51,6 +54,7 @@ export interface FaceConfig extends GenericConfig {
     description: Partial<FaceDescriptionConfig>;
     emotion: Partial<FaceEmotionConfig>;
     antispoof: Partial<FaceAntiSpoofConfig>;
+    liveness: Partial<FaceLivenessConfig>;
 }
 /** Configures all body detection specific options */
 export interface BodyConfig extends GenericConfig {

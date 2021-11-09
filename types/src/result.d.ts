@@ -47,6 +47,8 @@ export interface FaceResult {
     iris?: number;
     /** face anti-spoofing result confidence */
     real?: number;
+    /** face liveness result confidence */
+    live?: number;
     /** face rotation details */
     rotation?: {
         angle: {

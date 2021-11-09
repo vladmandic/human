@@ -213,6 +213,7 @@ export async function face(inCanvas: AnyCanvas, result: Array<FaceResult>, drawO
       if (f.age) labels.push(`age: ${f.age || ''}`);
       if (f.iris) labels.push(`distance: ${f.iris}`);
       if (f.real) labels.push(`real: ${Math.trunc(100 * f.real)}%`);
+      if (f.live) labels.push(`live: ${Math.trunc(100 * f.live)}%`);
       if (f.emotion && f.emotion.length > 0) {
         const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
         if (emotion.length > 3) emotion.length = 3;

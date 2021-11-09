@@ -1,26 +1,339 @@
-2021-11-09 10:37:39 [36mINFO: [39m @vladmandic/human version 2.5.1 
-2021-11-09 10:37:39 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v17.0.1 
-2021-11-09 10:37:39 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.5.1"} 
-2021-11-09 10:37:39 [36mINFO: [39m Environment: {"profile":"production","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
-2021-11-09 10:37:39 [36mINFO: [39m Toolchain: {"build":"0.6.3","esbuild":"0.13.12","typescript":"4.4.4","typedoc":"0.22.8","eslint":"8.2.0"} 
-2021-11-09 10:37:39 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
-2021-11-09 10:37:39 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":56,"inputBytes":523132,"outputBytes":441945} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":56,"inputBytes":523140,"outputBytes":441949} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":56,"inputBytes":523207,"outputBytes":442021} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
-2021-11-09 10:37:39 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":56,"inputBytes":522769,"outputBytes":443935} 
-2021-11-09 10:37:40 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
-2021-11-09 10:37:40 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":56,"inputBytes":3019509,"outputBytes":1612938} 
-2021-11-09 10:37:41 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":56,"inputBytes":3019509,"outputBytes":2947355} 
-2021-11-09 10:38:03 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":49} 
-2021-11-09 10:38:10 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":48,"generated":true} 
-2021-11-09 10:38:10 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
-2021-11-09 10:38:10 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8148,"outputBytes":5851} 
-2021-11-09 10:38:48 [35mSTATE:[39m Lint: {"locations":["*.json","src/**/*.ts","test/**/*.js","demo/**/*.js"],"files":90,"errors":0,"warnings":0} 
-2021-11-09 10:38:49 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
-2021-11-09 10:38:49 [36mINFO: [39m Done... 
+2021-11-09 13:52:39 [36mINFO: [39m @vladmandic/human version 2.5.1 
+2021-11-09 13:52:39 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v17.0.1 
+2021-11-09 13:52:39 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.5.1"} 
+2021-11-09 13:52:39 [36mINFO: [39m Environment: {"profile":"production","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-11-09 13:52:39 [36mINFO: [39m Toolchain: {"build":"0.6.3","esbuild":"0.13.12","typescript":"4.4.4","typedoc":"0.22.8","eslint":"8.2.0"} 
+2021-11-09 13:52:39 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2021-11-09 13:52:39 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 13:52:39 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 13:52:40 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 13:52:40 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 13:52:41 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 13:53:01 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types","files":50} 
+2021-11-09 13:53:08 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":49,"generated":true} 
+2021-11-09 13:53:08 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 13:53:08 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8437,"outputBytes":6035} 
+2021-11-09 13:53:51 [35mSTATE:[39m Lint: {"locations":["*.json","src/**/*.ts","test/**/*.js","demo/**/*.js"],"files":91,"errors":0,"warnings":0} 
+2021-11-09 13:53:51 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2021-11-09 13:53:51 [36mINFO: [39m Done... 
+2021-11-09 13:55:28 [36mINFO: [39m @vladmandic/human version 2.5.1 
+2021-11-09 13:55:28 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v17.0.1 
+2021-11-09 13:55:28 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"2.5.1"} 
+2021-11-09 13:55:28 [36mINFO: [39m Environment: {"profile":"development","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
+2021-11-09 13:55:28 [36mINFO: [39m Toolchain: {"build":"0.6.3","esbuild":"0.13.12","typescript":"4.4.4","typedoc":"0.22.8","eslint":"8.2.0"} 
+2021-11-09 13:55:28 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2021-11-09 13:55:28 [35mSTATE:[39m WebServer: {"ssl":false,"port":10030,"root":"."} 
+2021-11-09 13:55:28 [35mSTATE:[39m WebServer: {"ssl":true,"port":10031,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2021-11-09 13:55:28 [35mSTATE:[39m Watch: {"locations":["src/**","README.md","src/**/*","tfjs/**/*","demo/**/*.ts"]} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 13:55:28 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 13:55:29 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 13:55:29 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 13:55:29 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 13:55:29 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 13:55:29 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8656,"outputBytes":6035} 
+2021-11-09 13:55:29 [36mINFO: [39m Listening... 
+2021-11-09 13:55:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":1963,"url":"/demo/facerecognition/index.html","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":6035,"url":"/demo/facerecognition/index.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2950190,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":12855,"url":"/demo/facerecognition/index.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4784254,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":8713,"url":"/models/antispoof.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17070,"url":"/models/liveness.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":853098,"url":"/models/antispoof.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":592976,"url":"/models/liveness.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:55:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:08 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 13:57:08 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 13:57:09 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 13:57:09 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 13:57:09 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 13:57:10 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 13:57:10 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 13:57:10 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8769,"outputBytes":6323} 
+2021-11-09 13:57:13 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":1963,"url":"/demo/facerecognition/index.html","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:13 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":6323,"url":"/demo/facerecognition/index.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:13 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:13 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2950190,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":13165,"url":"/demo/facerecognition/index.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4784254,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":317188,"url":"/demo/facematch/faces.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":8713,"url":"/models/antispoof.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17070,"url":"/models/liveness.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":853098,"url":"/models/antispoof.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":592976,"url":"/models/liveness.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:14 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 13:57:43 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 13:57:43 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 13:57:44 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 13:57:44 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 13:57:45 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 13:57:45 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 13:57:45 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8739,"outputBytes":6293} 
+2021-11-09 13:59:34 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 13:59:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 13:59:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 13:59:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 13:59:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 13:59:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 13:59:35 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 13:59:35 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 13:59:35 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 13:59:35 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 13:59:35 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 13:59:35 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 13:59:36 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 13:59:36 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 13:59:36 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8939,"outputBytes":6430} 
+2021-11-09 14:00:26 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 14:00:26 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 14:00:26 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 14:00:26 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 14:00:26 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 14:00:26 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 14:00:26 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 14:00:26 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 14:00:27 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 14:00:27 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 14:00:27 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 14:00:27 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 14:00:28 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 14:00:28 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 14:00:28 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8981,"outputBytes":6472} 
+2021-11-09 14:00:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":1963,"url":"/demo/facerecognition/index.html","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":6472,"url":"/demo/facerecognition/index.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:30 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2950190,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":13486,"url":"/demo/facerecognition/index.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4784254,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":317188,"url":"/demo/facematch/faces.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":8713,"url":"/models/antispoof.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17070,"url":"/models/liveness.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":853098,"url":"/models/antispoof.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":592976,"url":"/models/liveness.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:00:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:28 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 14:01:28 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 14:01:29 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 14:01:29 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 14:01:29 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 14:01:30 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 14:01:30 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 14:01:30 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":9007,"outputBytes":6497} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":1963,"url":"/demo/facerecognition/index.html","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":6497,"url":"/demo/facerecognition/index.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2950190,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":13529,"url":"/demo/facerecognition/index.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4784254,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":317188,"url":"/demo/facematch/faces.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":8713,"url":"/models/antispoof.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17070,"url":"/models/liveness.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:31 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":853098,"url":"/models/antispoof.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":592976,"url":"/models/liveness.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:32 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:58 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":1963,"url":"/demo/facerecognition/index.html","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:58 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":6497,"url":"/demo/facerecognition/index.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:58 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:58 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2950190,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":13529,"url":"/demo/facerecognition/index.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4784254,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":317188,"url":"/demo/facematch/faces.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":8713,"url":"/models/antispoof.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17070,"url":"/models/liveness.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":853098,"url":"/models/antispoof.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":592976,"url":"/models/liveness.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:01:59 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:50 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 14:02:50 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 14:02:51 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 14:02:51 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 14:02:51 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 14:02:51 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":9039,"outputBytes":6529} 
+2021-11-09 14:02:54 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 14:02:54 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 14:02:55 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 14:02:55 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 14:02:56 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 14:02:56 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 14:02:56 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8949,"outputBytes":6529} 
+2021-11-09 14:02:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":1963,"url":"/demo/facerecognition/index.html","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":6529,"url":"/demo/facerecognition/index.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:56 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2950190,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":13488,"url":"/demo/facerecognition/index.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4784254,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":317188,"url":"/demo/facematch/faces.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":8713,"url":"/models/antispoof.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17070,"url":"/models/liveness.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":853098,"url":"/models/antispoof.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":592976,"url":"/models/liveness.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:02:57 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:03:44 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 14:03:44 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 14:03:45 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 14:03:45 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 14:03:46 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 14:03:46 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 14:03:46 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8949,"outputBytes":6529} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/html","size":1963,"url":"/demo/facerecognition/index.html","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":6529,"url":"/demo/facerecognition/index.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"text/javascript","size":2950190,"url":"/dist/human.esm.js","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":13488,"url":"/demo/facerecognition/index.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":4784254,"url":"/dist/human.esm.js.map","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":317188,"url":"/demo/facematch/faces.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:00 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":79038,"url":"/models/blazeface.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":8713,"url":"/models/antispoof.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":17070,"url":"/models/liveness.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":71432,"url":"/models/faceres.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":122025,"url":"/models/iris.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/json","size":89289,"url":"/models/facemesh.json","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":853098,"url":"/models/antispoof.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":592976,"url":"/models/liveness.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":538928,"url":"/models/blazeface.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":6978814,"url":"/models/faceres.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2599092,"url":"/models/iris.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:01 [32mDATA: [39m HTTP: {"method":"GET","ver":"1.1","status":200,"mime":"application/octet-stream","size":2955780,"url":"/models/facemesh.bin","remote":"::ffff:192.168.0.200"} 
+2021-11-09 14:08:35 [36mINFO: [39m Watch: {"event":"modify","input":"demo/facerecognition/index.ts"} 
+2021-11-09 14:08:35 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 14:08:36 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 14:08:37 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 14:08:37 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 14:08:37 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 14:08:37 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8949,"outputBytes":6529} 
+2021-11-09 14:10:36 [36mINFO: [39m Watch: {"event":"modify","input":"README.md"} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":102,"outputBytes":1275} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":57,"inputBytes":526375,"outputBytes":444848} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":110,"outputBytes":1283} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":57,"inputBytes":526383,"outputBytes":444852} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":1,"inputBytes":149,"outputBytes":1350} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":57,"inputBytes":526450,"outputBytes":444924} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1063,"outputBytes":1652} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2326,"outputBytes":912} 
+2021-11-09 14:10:36 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":57,"inputBytes":526012,"outputBytes":446855} 
+2021-11-09 14:10:37 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/custom","format":"esm","platform":"browser","input":"tfjs/tf-custom.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2562703,"outputBytes":2497652} 
+2021-11-09 14:10:37 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":57,"inputBytes":3022752,"outputBytes":1614521} 
+2021-11-09 14:10:38 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":57,"inputBytes":3022752,"outputBytes":2950190} 
+2021-11-09 14:10:38 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5801,"outputBytes":3822} 
+2021-11-09 14:10:38 [35mSTATE:[39m Compile: {"name":"demo/facerecognition","format":"esm","platform":"browser","input":"demo/facerecognition/index.ts","output":"demo/facerecognition/index.js","files":1,"inputBytes":8949,"outputBytes":6529} 

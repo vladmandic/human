@@ -26,6 +26,7 @@ export declare class Models {
     handpose: null | GraphModel | Promise<GraphModel>;
     handskeleton: null | GraphModel | Promise<GraphModel>;
     handtrack: null | GraphModel | Promise<GraphModel>;
+    liveness: null | GraphModel | Promise<GraphModel>;
     movenet: null | GraphModel | Promise<GraphModel>;
     nanodet: null | GraphModel | Promise<GraphModel>;
     posenet: null | GraphModel | Promise<GraphModel>;

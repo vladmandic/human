@@ -156,6 +156,8 @@ async function verifyDetails(human) {
     verify(face.age > 23 && face.age < 24 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 80, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
     verify(face.box.length === 4 && face.boxRaw.length === 4 && face.mesh.length === 478 && face.meshRaw.length === 478 && face.embedding.length === 1024, 'details face arrays', face.box.length, face.mesh.length, face.embedding.length);
     verify(face.emotion.length === 3 && face.emotion[0].score > 0.45 && face.emotion[0].emotion === 'neutral', 'details face emotion', face.emotion.length, face.emotion[0]);
+    verify(face.real > 0.8, 'details face anti-spoofing', face.real);
+    verify(face.live > 0.8, 'details face liveness', face.live);
   }
   verify(res.body.length === 1, 'details body length', res.body.length);
   for (const body of res.body) {
@@ -220,7 +222,7 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   const loaded = models.filter((model) => model.loaded);
-  if (models.length === 21 && loaded.length === 10) log('state', 'passed: models loaded', models.length, loaded.length, models);
+  if (models.length === 22 && loaded.length === 12) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
 
   // increase defaults

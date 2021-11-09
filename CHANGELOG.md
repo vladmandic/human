@@ -11,6 +11,8 @@
   
 ### **HEAD -> main** 2021/11/09 mandic00@live.com
 
+- add liveness module and facerecognition demo
+- initial version of facerecognition demo
 - rebuild
 - add type defs when working with relative path imports
 - disable humangl backend if webgl 1.0 is detected

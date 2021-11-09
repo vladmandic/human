@@ -11332,7 +11332,7 @@ async function face(inCanvas2, result, drawOptions) {
             ctx.fill();
           }
         }
-        if (localOptions.drawGaze && ((_a = f.rotation) == null ? void 0 : _a.angle)) {
+        if (localOptions.drawGaze && ((_a = f.rotation) == null ? void 0 : _a.angle) && typeof Path2D !== "undefined") {
           ctx.strokeStyle = "pink";
           const valX = f.box[0] + f.box[2] / 2 - f.box[3] * rad2deg(f.rotation.angle.yaw) / 90;
           const valY = f.box[1] + f.box[3] / 2 + f.box[2] * rad2deg(f.rotation.angle.pitch) / 90;

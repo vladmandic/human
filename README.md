@@ -45,6 +45,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - [*Live:* **Main Application**](https://vladmandic.github.io/human/demo/index.html)
 - [*Live:* **Simple Application**](https://vladmandic.github.io/human/demo/typescript/index.html)
 - [*Live:* **Face Extraction, Description, Identification and Matching**](https://vladmandic.github.io/human/demo/facematch/index.html)
+- [*Live:* **Face Validation and Matching: FaceID**](https://vladmandic.github.io/human/demo/facerecognition/index.html)
 - [*Live:* **Face Extraction and 3D Rendering**](https://vladmandic.github.io/human/demo/face3d/index.html)
 - [*Live:* **Multithreaded Detection Showcasing Maximum Performance**](https://vladmandic.github.io/human/demo/multithread/index.html)
 - [*Live:* **VR Model with Head, Face, Eye, Body and Hand tracking**](https://vladmandic.github.io/human-vrm/src/human-vrm.html)

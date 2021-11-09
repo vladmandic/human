@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/08 mandic00@live.com
+### **HEAD -> main** 2021/11/09 mandic00@live.com
 
+- rebuild
 - add type defs when working with relative path imports
 - disable humangl backend if webgl 1.0 is detected
 

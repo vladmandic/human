@@ -10,6 +10,7 @@ import * as facemesh from './facemesh';
 import * as emotion from '../gear/emotion';
 import * as faceres from './faceres';
 import * as antispoof from './antispoof';
+import * as liveness from './liveness';
 import type { FaceResult } from '../result';
 import type { Tensor } from '../tfjs/types';
 import { calculateFaceAngle } from './angles';
@@ -24,6 +25,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
   let emotionRes;
   let embeddingRes;
   let antispoofRes;
+  let livenessRes;
   let descRes;
   const faceRes: Array<FaceResult> = [];
   parent.state = 'run:face';
@@ -70,6 +72,18 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     }
     parent.analyze('End AntiSpoof:');
 
+    // run liveness, inherits face from blazeface
+    parent.analyze('Start Liveness:');
+    if (parent.config.async) {
+      livenessRes = parent.config.face.liveness.enabled ? liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+    } else {
+      parent.state = 'run:liveness';
+      timeStamp = now();
+      livenessRes = parent.config.face.liveness.enabled ? await liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+    }
+    parent.analyze('End Liveness:');
+
     // run gear, inherits face from blazeface
     /*
     parent.analyze('Start GEAR:');
@@ -98,7 +112,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
 
     // if async wait for results
     if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes]);
+      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
 
     parent.analyze('Finish Face:');
@@ -131,6 +145,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       embedding: descRes?.descriptor,
       emotion: emotionRes,
       real: antispoofRes,
+      live: livenessRes,
       iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
       rotation,
       tensor,

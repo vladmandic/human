@@ -71331,13 +71331,34 @@ async function process2(input2, config3, getTensor2 = true) {
     throw new Error("input type is not recognized");
   }
   if (input2 instanceof Tensor) {
-    if (input2["isDisposedInternal"]) {
+    let tensor2 = null;
+    if (input2["isDisposedInternal"])
       throw new Error("input tensor is disposed");
-    } else if (!input2.shape || input2.shape.length !== 4 || input2.shape[0] !== 1 || input2.shape[3] !== 3) {
-      throw new Error("input tensor shape must be [1, height, width, 3] and instead was" + (input2["shape"] ? input2["shape"].toString() : "unknown"));
-    } else {
-      return { tensor: clone(input2), canvas: config3.filter.return ? outCanvas : null };
+    if (!input2["shape"])
+      throw new Error("input tensor has no shape");
+    if (input2.shape.length === 3) {
+      if (input2.shape[2] === 3) {
+        tensor2 = expandDims(input2, 0);
+      } else if (input2.shape[2] === 4) {
+        const rgb2 = slice3d(input2, [0, 0, 0], [-1, -1, 3]);
+        tensor2 = expandDims(rgb2, 0);
+        dispose(rgb2);
+      }
+    } else if (input2.shape.length === 4) {
+      if (input2.shape[3] === 3) {
+        tensor2 = clone(input2);
+      } else if (input2.shape[3] === 4) {
+        tensor2 = slice4d(input2, [0, 0, 0, 0], [-1, -1, -1, 3]);
+      }
     }
+    if (tensor2 == null || tensor2.shape.length !== 4 || tensor2.shape[0] !== 1 || tensor2.shape[3] !== 3)
+      throw new Error(`could not process input tensor with shape: ${input2["shape"]}`);
+    if (tensor2.dtype === "int32") {
+      const cast7 = cast(tensor2, "float32");
+      dispose(tensor2);
+      tensor2 = cast7;
+    }
+    return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
   } else {
     if (typeof input2["readyState"] !== "undefined" && input2["readyState"] <= 2) {
       if (config3.debug)

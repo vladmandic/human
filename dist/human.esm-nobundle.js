@@ -1006,13 +1006,34 @@ async function process2(input, config3, getTensor = true) {
     throw new Error("input type is not recognized");
   }
   if (input instanceof Tensor) {
-    if (input["isDisposedInternal"]) {
+    let tensor3 = null;
+    if (input["isDisposedInternal"])
       throw new Error("input tensor is disposed");
-    } else if (!input.shape || input.shape.length !== 4 || input.shape[0] !== 1 || input.shape[3] !== 3) {
-      throw new Error("input tensor shape must be [1, height, width, 3] and instead was" + (input["shape"] ? input["shape"].toString() : "unknown"));
-    } else {
-      return { tensor: tfjs_esm_exports.clone(input), canvas: config3.filter.return ? outCanvas : null };
+    if (!input["shape"])
+      throw new Error("input tensor has no shape");
+    if (input.shape.length === 3) {
+      if (input.shape[2] === 3) {
+        tensor3 = tfjs_esm_exports.expandDims(input, 0);
+      } else if (input.shape[2] === 4) {
+        const rgb2 = tfjs_esm_exports.slice3d(input, [0, 0, 0], [-1, -1, 3]);
+        tensor3 = tfjs_esm_exports.expandDims(rgb2, 0);
+        tfjs_esm_exports.dispose(rgb2);
+      }
+    } else if (input.shape.length === 4) {
+      if (input.shape[3] === 3) {
+        tensor3 = tfjs_esm_exports.clone(input);
+      } else if (input.shape[3] === 4) {
+        tensor3 = tfjs_esm_exports.slice4d(input, [0, 0, 0, 0], [-1, -1, -1, 3]);
+      }
     }
+    if (tensor3 == null || tensor3.shape.length !== 4 || tensor3.shape[0] !== 1 || tensor3.shape[3] !== 3)
+      throw new Error(`could not process input tensor with shape: ${input["shape"]}`);
+    if (tensor3.dtype === "int32") {
+      const cast5 = tfjs_esm_exports.cast(tensor3, "float32");
+      tfjs_esm_exports.dispose(tensor3);
+      tensor3 = cast5;
+    }
+    return { tensor: tensor3, canvas: config3.filter.return ? outCanvas : null };
   } else {
     if (typeof input["readyState"] !== "undefined" && input["readyState"] <= 2) {
       if (config3.debug)

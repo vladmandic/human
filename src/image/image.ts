@@ -77,15 +77,33 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   ) {
     throw new Error('input type is not recognized');
   }
-  if (input instanceof tf.Tensor) {
-    // if input is tensor, use as-is
-    if ((input)['isDisposedInternal']) {
-      throw new Error('input tensor is disposed');
-    } else if (!(input as Tensor).shape || (input as Tensor).shape.length !== 4 || (input as Tensor).shape[0] !== 1 || (input as Tensor).shape[3] !== 3) {
-      throw new Error('input tensor shape must be [1, height, width, 3] and instead was' + (input['shape'] ? input['shape'].toString() : 'unknown'));
-    } else {
-      return { tensor: tf.clone(input), canvas: (config.filter.return ? outCanvas : null) };
+  if (input instanceof tf.Tensor) { // if input is tensor use as-is without filters but correct shape as needed
+    let tensor: Tensor | null = null;
+    if ((input as Tensor)['isDisposedInternal']) throw new Error('input tensor is disposed');
+    if (!(input as Tensor)['shape']) throw new Error('input tensor has no shape');
+    if ((input as Tensor).shape.length === 3) { // [height, width, 3 || 4]
+      if ((input as Tensor).shape[2] === 3) { // [height, width, 3] so add batch
+        tensor = tf.expandDims(input, 0);
+      } else if ((input as Tensor).shape[2] === 4) { // [height, width, 4] so strip alpha and add batch
+        const rgb = tf.slice3d(input, [0, 0, 0], [-1, -1, 3]);
+        tensor = tf.expandDims(rgb, 0);
+        tf.dispose(rgb);
+      }
+    } else if ((input as Tensor).shape.length === 4) { // [1, width, height, 3 || 4]
+      if ((input as Tensor).shape[3] === 3) { // [1, width, height, 3] just clone
+        tensor = tf.clone(input);
+      } else if ((input as Tensor).shape[3] === 4) { // [1, width, height, 4] so strip alpha
+        tensor = tf.slice4d(input, [0, 0, 0, 0], [-1, -1, -1, 3]);
+      }
     }
+    // at the end shape must be [1, height, width, 3]
+    if (tensor == null || tensor.shape.length !== 4 || tensor.shape[0] !== 1 || tensor.shape[3] !== 3) throw new Error(`could not process input tensor with shape: ${input['shape']}`);
+    if ((tensor as Tensor).dtype === 'int32') {
+      const cast = tf.cast(tensor, 'float32');
+      tf.dispose(tensor);
+      tensor = cast;
+    }
+    return { tensor, canvas: (config.filter.return ? outCanvas : null) };
   } else {
     // check if resizing will be needed
     if (typeof input['readyState'] !== 'undefined' && input['readyState'] <= 2) {

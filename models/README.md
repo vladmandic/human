@@ -284,4 +284,27 @@ DATA:  kernel ops: {
   reduction: [ 'Mean' ],
   matrices: [ '_FusedMatMul' ]
 }
+INFO:  graph model: /home/vlado/dev/human/models/liveness.json
+INFO:  created on: 2021-11-09T12:39:11.760Z
+INFO:  metadata: { generatedBy: 'https://github.com/leokwu/livenessnet', convertedBy: 'https://github.com/vladmandic', version: '808.undefined' }
+INFO:  model inputs based on signature
+ { name: 'conv2d_1_input', dtype: 'DT_FLOAT', shape: [ -1, 32, 32, 3 ] }
+INFO:  model outputs based on signature
+ { id: 0, name: 'activation_6', dytpe: 'DT_FLOAT', shape: [ -1, 2 ] }
+INFO:  tensors: 23
+DATA:  weights: {
+  files: [ 'liveness.bin' ],
+  size: { disk: 592976, memory: 592976 },
+  count: { total: 23, float32: 22, int32: 1 },
+  quantized: { none: 23 },
+  values: { total: 148244, float32: 148242, int32: 2 }
+}
+DATA:  kernel ops: {
+  graph: [ 'Const', 'Placeholder', 'Identity' ],
+  convolution: [ '_FusedConv2D', 'MaxPool' ],
+  arithmetic: [ 'Mul', 'Add', 'AddV2' ],
+  transformation: [ 'Reshape' ],
+  matrices: [ '_FusedMatMul' ],
+  normalization: [ 'Softmax' ]
+}
 ```

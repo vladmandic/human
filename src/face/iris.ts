@@ -65,7 +65,7 @@ export const getLeftToRightEyeDepthDifference = (rawCoords) => {
 };
 
 // Returns a box describing a cropped region around the eye fit for passing to the iris model.
-export const getEyeBox = (rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false, meshSize) => {
+export const getEyeBox = (rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, meshSize, flip = false) => {
   const box = util.squarifyBox(util.enlargeBox(util.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), irisEnlarge));
   const boxSize = util.getBoxSize(box);
   let crop = tf.image.cropAndResize(face, [[
@@ -119,8 +119,8 @@ export async function augmentIris(rawCoords, face, config, meshSize) {
     if (config.debug) log('face mesh iris detection requested, but model is not loaded');
     return rawCoords;
   }
-  const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true, meshSize);
-  const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], true, meshSize);
+  const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], meshSize, true);
+  const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], meshSize, true);
   const combined = tf.concat([leftEyeCrop, rightEyeCrop]);
   tf.dispose(leftEyeCrop);
   tf.dispose(rightEyeCrop);

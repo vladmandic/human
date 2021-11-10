@@ -1,8 +1,31 @@
-# NodeJS Multi-Threading Match Solution
+# Human Face Recognition & Matching
 
-See `node-match.js` and `node-match-worker.js`
+- **Browser** demo: `index.html` & `facematch.js`:  
+  Loads sample images, extracts faces and runs match and similarity analysis  
+- **NodeJS** demo `node-match.js` and `node-match-worker.js`  
+  Advanced multithreading demo that runs number of worker threads to process high number of matches
+- Sample face database: `faces.json`
 
-## Methods and Properties in `node-match`
+<br>
+
+## Browser Face Recognition Demo
+
+- `demo/facematch`: Demo for Browsers that uses all face description and embedding features to  
+detect, extract and identify all faces plus calculate simmilarity between them
+
+It highlights functionality such as:
+
+- Loading images
+- Extracting faces from images
+- Calculating face embedding descriptors
+- Finding face similarity and sorting them by similarity
+- Finding best face match based on a known list of faces and printing matches
+
+<br>
+
+## NodeJS Multi-Threading Match Solution
+
+### Methods and Properties in `node-match`
 
 - `createBuffer`: create shared buffer array  
   single copy of data regardless of number of workers  
@@ -30,7 +53,7 @@ See `node-match.js` and `node-match-worker.js`
 
 `node-match` runs in a listens for messages from workers until `maxJobs` have been reached
 
-## Performance
+### Performance
 
 Linear performance decrease that depends on number of records in database  
 Non-linear performance that increases with number of worker threads due to communication overhead
@@ -45,7 +68,7 @@ Non-linear performance that increases with number of worker threads due to commu
   > threadPoolSize: 1 => ~600 ms / match job  
   > threadPoolSize: 6 => ~200 ms / match job
 
-## Example
+### Example
 
 > node node-match
 

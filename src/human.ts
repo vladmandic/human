@@ -549,4 +549,5 @@ export class Human {
 }
 
 /** Class Human as default export */
+/* eslint no-restricted-exports: ["off", { "restrictedNamedExports": ["default"] }] */
 export { Human as default };

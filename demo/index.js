@@ -148,7 +148,7 @@ let lastDetectedResult = {};
 
 // helper function: async pause
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
 // helper function: translates json to human readable string
 function str(...msg) {
@@ -421,7 +421,7 @@ async function setupCamera() {
 
   if (!stream) return 'camera stream empty';
 
-  const ready = new Promise((resolve) => (video.onloadeddata = () => resolve(true)));
+  const ready = new Promise((resolve) => { (video.onloadeddata = () => resolve(true)); });
   video.srcObject = stream;
   await ready;
   if (settings.width > settings.height) canvas.style.width = '100vw';

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Human</title>
+    <meta name="viewport" content="width=device-width" id="viewport">
+    <meta name="keywords" content="Human">
+    <meta name="application-name" content="Human">
+    <meta name="description" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="msapplication-tooltip" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="../../assets/icon.png">
+    <style>
+      @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
+      html { font-family: 'Lato', 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
+      body { margin: 0; background: black; color: white; overflow-x: hidden; width: 100vw; height: 100vh; }
+      body::-webkit-scrollbar { display: none; }
+      .status { position: absolute; width: 100vw; bottom: 10%; text-align: center; font-size: 3rem; font-weight: 100; text-shadow: 2px 2px #303030; }
+      .log { position: absolute; bottom: 0; margin: 0.4rem 0.4rem 0 0.4rem; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <div id="status" class="status"></div>
+    <img id="image" src="../../samples/in/group-1.jpg" alt="test image" style="display: none">
+    <div id="log" class="log"></div>
+    <script type="module">
+      import Human from '../../dist/human.esm.js';
+
+      const loop = 20;
+      const backends = ['wasm', 'webgl', 'humangl', 'webgpu'];
+
+      // eslint-disable-next-line no-console
+      const log = (...msg) => console.log(...msg);
+
+      const myConfig = {
+        modelBasePath: 'https://vladmandic.github.io/human/models',
+        debug: true,
+        async: true,
+        cacheSensitivity: 0,
+        filter: { enabled: false },
+        face: {
+          enabled: true,
+          detector: { enabled: true, rotation: false },
+          mesh: { enabled: true },
+          iris: { enabled: true },
+          description: { enabled: true },
+          emotion: { enabled: false },
+          antispoof: { enabled: true },
+          liveness: { enabled: true },
+        },
+        hand: { enabled: true },
+        body: { enabled: true },
+        object: { enabled: true },
+      };
+
+      async function benchmark(backend) {
+        myConfig.backend = backend;
+        const human = new Human(myConfig);
+        await human.tf.ready();
+        log('Human:', human.version);
+        await human.load();
+        const loaded = Object.keys(human.models).filter((a) => human.models[a]);
+        log('Loaded:', loaded);
+        log('Memory state:', human.tf.engine().memory());
+        const element = document.getElementById('image');
+        const processed = await human.image(element);
+        const t0 = human.now();
+        await human.detect(processed.tensor, myConfig);
+        const t1 = human.now();
+        log('Backend:', human.tf.getBackend());
+        log('Warmup:', Math.round(t1 - t0));
+        for (let i = 0; i < loop; i++) await human.detect(processed.tensor, myConfig);
+        const t2 = human.now();
+        log('Average:', Math.round((t2 - t1) / loop));
+      }
+
+      async function main() {
+        for (const backend of backends) await benchmark(backend);
+      }
+
+      window.onload = main;
+    </script> 
+  </body>
+</html>

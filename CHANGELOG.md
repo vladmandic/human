@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/11/09 mandic00@live.com
 
+- disable use of path2d in node
 - add liveness module and facerecognition demo
 - initial version of facerecognition demo
 - rebuild

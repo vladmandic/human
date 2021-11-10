@@ -37,12 +37,10 @@ async function detect(input) {
     process.exit(1);
   }
   const buffer = fs.readFileSync(input);
-  const decode = human.tf.node.decodeImage(buffer, 3);
-  const expand = human.tf.expandDims(decode, 0);
-  const tensor = human.tf.cast(expand, 'float32');
+  const tensor = human.tf.node.decodeImage(buffer, 3);
   log.state('Loaded image:', input, tensor['shape']);
   const result = await human.detect(tensor, myConfig);
-  human.tf.dispose([tensor, decode, expand]);
+  human.tf.dispose(tensor);
   log.state('Detected faces:', result.face.length);
   return result;
 }

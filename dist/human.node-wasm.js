@@ -5586,7 +5586,7 @@ var getLeftToRightEyeDepthDifference = (rawCoords) => {
   const rightEyeZ = rawCoords[eyeLandmarks.rightBounds[0]][2];
   return leftEyeZ - rightEyeZ;
 };
-var getEyeBox = (rawCoords, face5, eyeInnerCornerIndex, eyeOuterCornerIndex, flip = false, meshSize) => {
+var getEyeBox = (rawCoords, face5, eyeInnerCornerIndex, eyeOuterCornerIndex, meshSize, flip = false) => {
   const box4 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), irisEnlarge));
   const boxSize = getBoxSize(box4);
   let crop2 = tf12.image.cropAndResize(face5, [[
@@ -5636,8 +5636,8 @@ async function augmentIris(rawCoords, face5, config3, meshSize) {
       log("face mesh iris detection requested, but model is not loaded");
     return rawCoords;
   }
-  const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face5, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], true, meshSize);
-  const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face5, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], true, meshSize);
+  const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face5, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], meshSize, true);
+  const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face5, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], meshSize, true);
   const combined = tf12.concat([leftEyeCrop, rightEyeCrop]);
   tf12.dispose(leftEyeCrop);
   tf12.dispose(rightEyeCrop);
@@ -11146,7 +11146,8 @@ var getCanvasContext = (input) => {
   throw new Error("invalid canvas");
 };
 var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
-function point(ctx, x, y, z = 0, localOptions) {
+function point(ctx, x, y, z, localOptions) {
+  z = z || 0;
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
   ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);

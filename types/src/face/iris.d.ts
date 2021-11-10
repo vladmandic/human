@@ -3,7 +3,7 @@ import type { Config } from '../config';
 import type { Point } from '../result';
 export declare function load(config: Config): Promise<GraphModel>;
 export declare const getLeftToRightEyeDepthDifference: (rawCoords: any) => number;
-export declare const getEyeBox: (rawCoords: any, face: any, eyeInnerCornerIndex: any, eyeOuterCornerIndex: any, flip: boolean | undefined, meshSize: any) => {
+export declare const getEyeBox: (rawCoords: any, face: any, eyeInnerCornerIndex: any, eyeOuterCornerIndex: any, meshSize: any, flip?: boolean) => {
     box: {
         startPoint: Point;
         endPoint: Point;

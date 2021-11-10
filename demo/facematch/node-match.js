@@ -68,7 +68,7 @@ const fuzDescriptor = (descriptor) => {
   return descriptor;
 };
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
 async function workersClose() {
   const current = data.workers.filter((worker) => !!worker).length;
@@ -154,7 +154,7 @@ async function createBuffer() {
   data.buffer = new SharedArrayBuffer(4 * options.dbMax * options.descLength); // preallocate max number of records as sharedarraybuffers cannot grow
   data.view = new Float32Array(data.buffer); // create view into buffer
   data.labels.length = 0;
-  log.data('created shared buffer:', { maxDescriptors: data.view?.length / options.descLength, totalBytes: data.buffer.byteLength, totalElements: data.view?.length });
+  log.data('created shared buffer:', { maxDescriptors: (data.view?.length || 0) / options.descLength, totalBytes: data.buffer.byteLength, totalElements: data.view?.length });
 }
 
 async function main() {

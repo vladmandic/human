@@ -77,7 +77,8 @@ const getCanvasContext = (input) => {
 
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
 
-function point(ctx: CanvasRenderingContext2D, x, y, z = 0, localOptions) {
+function point(ctx: CanvasRenderingContext2D, x, y, z, localOptions) {
+  z = z || 0;
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
   ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);

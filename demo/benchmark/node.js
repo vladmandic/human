@@ -4,7 +4,7 @@ const log = require('@vladmandic/pilogger');
 const canvasJS = require('canvas');
 const Human = require('../../dist/human.node-gpu.js').default;
 
-const input = 'samples/groups/group1.jpg';
+const input = './samples/in/group-1.jpg';
 const loop = 20;
 
 const myConfig = {
@@ -22,12 +22,12 @@ const myConfig = {
     iris: { enabled: true },
     description: { enabled: true },
     emotion: { enabled: true },
+    antispoof: { enabled: true },
+    liveness: { enabled: true },
   },
-  hand: {
-    enabled: true,
-  },
+  hand: { enabled: true },
   body: { enabled: true },
-  object: { enabled: false },
+  object: { enabled: true },
 };
 
 async function getImage(human) {
@@ -36,15 +36,9 @@ async function getImage(human) {
   const ctx = canvas.getContext('2d');
   ctx.drawImage(img, 0, 0, img.width, img.height);
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const res = human.tf.tidy(() => {
-    const tensor = human.tf.tensor(Array.from(imageData.data), [canvas.height, canvas.width, 4], 'int32'); // create rgba image tensor from flat array
-    const channels = human.tf.split(tensor, 4, 2); // split rgba to channels
-    const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb
-    const reshape = human.tf.reshape(rgb, [1, canvas.height, canvas.width, 3]); // move extra dim from the end of tensor and use it as batch number instead
-    return reshape;
-  });
-  log.info('Image:', input, res.shape);
-  return res;
+  const tensor = human.tf.tensor(Array.from(imageData.data), [canvas.height, canvas.width, 4], 'int32'); // create rgba image tensor from flat array
+  log.info('Image:', input, tensor.shape);
+  return tensor;
 }
 
 async function main() {

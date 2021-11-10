@@ -51,19 +51,7 @@ async function detect(input) {
 
   // decode image using tfjs-node so we don't need external depenencies
   if (!buffer) return;
-  const tensor = human.tf.tidy(() => {
-    const decode = human.tf.node.decodeImage(buffer, 3);
-    let expand;
-    if (decode.shape[2] === 4) { // input is in rgba format, need to convert to rgb
-      const channels = human.tf.split(decode, 4, 2); // split rgba to channels
-      const rgb = human.tf.stack([channels[0], channels[1], channels[2]], 2); // stack channels back to rgb and ignore alpha
-      expand = human.tf.reshape(rgb, [1, decode.shape[0], decode.shape[1], 3]); // move extra dim from the end of tensor and use it as batch number instead
-    } else {
-      expand = human.tf.expandDims(decode, 0);
-    }
-    const cast = human.tf.cast(expand, 'float32');
-    return cast;
-  });
+  const tensor = human.tf.node.decodeImage(buffer, 3);
 
   // run detection
   await human.detect(tensor, myConfig);

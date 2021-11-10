@@ -29,14 +29,13 @@
       import Human from '../../dist/human.esm.js';
 
       const loop = 20;
+      const backends = ['wasm', 'webgl', 'humangl', 'webgpu'];
 
       // eslint-disable-next-line no-console
       const log = (...msg) => console.log(...msg);
 
       const myConfig = {
-        backend: 'humangl',
         modelBasePath: 'https://vladmandic.github.io/human/models',
-        wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
         debug: true,
         async: true,
         cacheSensitivity: 0,
@@ -48,13 +47,16 @@
           iris: { enabled: true },
           description: { enabled: true },
           emotion: { enabled: false },
+          antispoof: { enabled: true },
+          liveness: { enabled: true },
         },
-        hand: { enabled: true, rotation: false },
+        hand: { enabled: true },
         body: { enabled: true },
-        object: { enabled: false },
+        object: { enabled: true },
       };
 
-      async function main() {
+      async function benchmark(backend) {
+        myConfig.backend = backend;
         const human = new Human(myConfig);
         await human.tf.ready();
         log('Human:', human.version);
@@ -72,6 +74,10 @@
         for (let i = 0; i < loop; i++) await human.detect(processed.tensor, myConfig);
         const t2 = human.now();
         log('Average:', Math.round((t2 - t1) / loop));
+      }
+
+      async function main() {
+        for (const backend of backends) await benchmark(backend);
       }
 
       window.onload = main;

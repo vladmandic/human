@@ -179,18 +179,11 @@ async function deleteRecord() {
 }
 
 async function detectFace() {
-  // draw face and dispose face tensor immediatey afterwards
+  dom.canvas.getContext('2d')?.clearRect(0, 0, options.minSize, options.minSize);
   if (!face || !face.tensor || !face.embedding) return 0;
-  dom.canvas.width = face.tensor.shape[1] || 0;
-  dom.canvas.height = face.tensor.shape[0] || 0;
-  dom.source.width = dom.canvas.width;
-  dom.source.height = dom.canvas.height;
-  dom.canvas.style.width = '';
   human.tf.browser.toPixels(face.tensor as unknown as TensorLike, dom.canvas);
   const descriptors = db.map((rec) => rec.descriptor);
   const res = await human.match(face.embedding, descriptors);
-  dom.match.style.display = 'flex';
-  dom.retry.style.display = 'block';
   if (res.index === -1) {
     log('no matches');
     dom.delete.style.display = 'none';
@@ -223,9 +216,16 @@ async function main() { // main entry point
   startTime = human.now();
   face = await validationLoop(); // start validation loop
   dom.fps.style.display = 'none';
+  dom.canvas.width = face?.tensor?.shape[1] || options.minSize;
+  dom.canvas.height = face?.tensor?.shape[0] || options.minSize;
+  dom.source.width = dom.canvas.width;
+  dom.source.height = dom.canvas.height;
+  dom.canvas.style.width = '';
+  dom.match.style.display = 'flex';
+  dom.retry.style.display = 'block';
   if (!allOk()) {
-    log('did not find valid input', face);
-    return 0;
+    log('did not find valid face');
+    return false;
   } else {
     // log('found valid face');
     const res = await detectFace();

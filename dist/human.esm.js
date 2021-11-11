@@ -82298,7 +82298,7 @@ function calc2(newResult, config3) {
 }
 
 // src/face/match.ts
-function distance(descriptor1, descriptor2, options3 = { order: 2, multiplier: 20 }) {
+function distance(descriptor1, descriptor2, options3 = { order: 2, multiplier: 25 }) {
   let sum7 = 0;
   for (let i = 0; i < descriptor1.length; i++) {
     const diff = !options3.order || options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
@@ -82306,29 +82306,35 @@ function distance(descriptor1, descriptor2, options3 = { order: 2, multiplier: 2
   }
   return (options3.multiplier || 20) * sum7;
 }
-function similarity(descriptor1, descriptor2, options3 = { order: 2, multiplier: 20 }) {
+var normalizeDistance = (dist, order, min7, max7) => {
+  if (dist === 0)
+    return 1;
+  const root = order === 2 ? Math.sqrt(dist) : dist ** (1 / order);
+  const norm2 = (1 - root / 100 - min7) / (max7 - min7);
+  const clamp3 = Math.max(Math.min(norm2, 1), 0);
+  return clamp3;
+};
+function similarity(descriptor1, descriptor2, options3 = { order: 2, multiplier: 25, min: 0.2, max: 0.8 }) {
   const dist = distance(descriptor1, descriptor2, options3);
-  const root = !options3.order || options3.order === 2 ? Math.sqrt(dist) : dist ** (1 / options3.order);
-  const invert = Math.max(0, 100 - root) / 100;
-  return invert;
+  return normalizeDistance(dist, options3.order || 2, options3.min || 0, options3.max || 1);
 }
-function match2(descriptor, descriptors, options3 = { order: 2, multiplier: 20, threshold: 0 }) {
+function match2(descriptor, descriptors, options3 = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) {
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
-  let best = Number.MAX_SAFE_INTEGER;
+  let lowestDistance = Number.MAX_SAFE_INTEGER;
   let index2 = -1;
   for (let i = 0; i < descriptors.length; i++) {
     const res = distance(descriptor, descriptors[i], options3);
-    if (res < best) {
-      best = res;
+    if (res < lowestDistance) {
+      lowestDistance = res;
       index2 = i;
     }
-    if (best < (options3.threshold || 0))
+    if (lowestDistance < (options3.threshold || 0))
       break;
   }
-  best = !options3.order || options3.order === 2 ? Math.sqrt(best) : best ** (1 / options3.order);
-  return { index: index2, distance: best, similarity: Math.max(0, 100 - best) / 100 };
+  const normalizedSimilarity = normalizeDistance(lowestDistance, options3.order || 2, options3.min || 0, options3.max || 1);
+  return { index: index2, distance: lowestDistance, similarity: normalizedSimilarity };
 }
 
 // src/util/persons.ts

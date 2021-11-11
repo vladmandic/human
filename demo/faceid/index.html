@@ -16,15 +16,24 @@
     <style>
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
-      body { margin: 0; background: black; color: white; overflow-x: hidden; width: 100vw; height: 100vh; }
+      body { margin: 0; padding: 16px; background: black; color: white; overflow-x: hidden; width: 100vw; height: 100vh; }
       body::-webkit-scrollbar { display: none; }
+      .button { padding: 2px; cursor: pointer; box-shadow: 2px 2px black; width: 64px; text-align: center; margin-left: 16px; height: 16px }
     </style>
   </head>
   <body>
-    <canvas id="canvas" style="margin: 0 auto; width: 100%"></canvas>
+    <canvas id="canvas" style="padding: 8px"></canvas>
+    <canvas id="source" style="padding: 8px"></canvas>
     <video id="video" playsinline style="display: none"></video>
     <pre id="fps" style="position: absolute; top: 12px; right: 20px; background-color: grey; padding: 8px; box-shadow: 2px 2px black"></pre>
     <pre id="log" style="padding: 8px"></pre>
+    <div id="match" style="display: none; padding: 8px">
+      <label for="name">name:</label>
+      <input id="name" type="text" value="" style="height: 16px; border: none; padding: 2px; margin-left: 8px">
+      <span id="save" class="button" style="background-color: royalblue">save</span>
+      <span id="delete" class="button" style="background-color: lightcoral">delete</span>
+    </div>
+    <div id="retry" class="button" style="background-color: darkslategray; width: 350px">retry</div>
     <div id="status" style="position: absolute; bottom: 0; width: 100%; padding: 8px; font-size: 0.8rem;"></div>
   </body>
 </html>

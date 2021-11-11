@@ -4,8 +4,67 @@
   author: <https://github.com/vladmandic>'
 */
 
-// demo/facerecognition/index.ts
+// demo/faceid/index.ts
 import { Human } from "../../dist/human.esm.js";
+
+// demo/faceid/indexdb.ts
+var db;
+var database = "human";
+var table = "person";
+var log = (...msg) => console.log("indexdb", ...msg);
+async function open() {
+  if (db)
+    return true;
+  return new Promise((resolve) => {
+    const request = indexedDB.open(database, 1);
+    request.onerror = (evt) => log("error:", evt);
+    request.onupgradeneeded = (evt) => {
+      log("create:", evt.target);
+      db = evt.target.result;
+      db.createObjectStore(table, { keyPath: "id", autoIncrement: true });
+    };
+    request.onsuccess = (evt) => {
+      db = evt.target.result;
+      log("open:", db);
+      resolve(true);
+    };
+  });
+}
+async function load() {
+  const faceDB = [];
+  if (!db)
+    await open();
+  return new Promise((resolve) => {
+    const cursor = db.transaction([table], "readwrite").objectStore(table).openCursor(null, "next");
+    cursor.onerror = (evt) => log("load error:", evt);
+    cursor.onsuccess = (evt) => {
+      if (evt.target.result) {
+        faceDB.push(evt.target.result.value);
+        evt.target.result.continue();
+      } else {
+        resolve(faceDB);
+      }
+    };
+  });
+}
+async function save(faceRecord) {
+  if (!db)
+    await open();
+  const newRecord = { name: faceRecord.name, descriptor: faceRecord.descriptor, image: faceRecord.image };
+  db.transaction([table], "readwrite").objectStore(table).put(newRecord);
+  log("save:", newRecord);
+}
+async function remove(faceRecord) {
+  if (!db)
+    await open();
+  db.transaction([table], "readwrite").objectStore(table).delete(faceRecord.id);
+  log("delete:", faceRecord);
+}
+
+// demo/faceid/index.ts
+var db2 = [];
+var face;
+var current;
 var humanConfig = {
   modelBasePath: "../../models",
   filter: { equalization: true },
@@ -24,12 +83,12 @@ var humanConfig = {
   gesture: { enabled: true }
 };
 var options = {
-  faceDB: "../facematch/faces.json",
   minConfidence: 0.6,
   minSize: 224,
   maxTime: 1e4,
   blinkMin: 10,
-  blinkMax: 800
+  blinkMax: 800,
+  threshold: 0.5
 };
 var ok = {
   faceCount: false,
@@ -47,7 +106,6 @@ var blink = {
   end: 0,
   time: 0
 };
-var db = [];
 var human = new Human(humanConfig);
 human.env["perfadd"] = false;
 human.draw.options.font = 'small-caps 18px "Lato"';
@@ -57,12 +115,18 @@ var dom = {
   canvas: document.getElementById("canvas"),
   log: document.getElementById("log"),
   fps: document.getElementById("fps"),
-  status: document.getElementById("status")
+  status: document.getElementById("status"),
+  match: document.getElementById("match"),
+  name: document.getElementById("name"),
+  save: document.getElementById("save"),
+  delete: document.getElementById("delete"),
+  retry: document.getElementById("retry"),
+  source: document.getElementById("source")
 };
 var timestamp = { detect: 0, draw: 0 };
 var fps = { detect: 0, draw: 0 };
 var startTime = 0;
-var log = (...msg) => {
+var log2 = (...msg) => {
   dom.log.innerText += msg.join(" ") + "\n";
   console.log(...msg);
 };
@@ -80,7 +144,8 @@ async function webCam() {
   await ready;
   dom.canvas.width = dom.video.videoWidth;
   dom.canvas.height = dom.video.videoHeight;
-  log("video:", dom.video.videoWidth, dom.video.videoHeight, stream.getVideoTracks()[0].label);
+  if (human.env.initial)
+    log2("video:", dom.video.videoWidth, dom.video.videoHeight, "|", stream.getVideoTracks()[0].label);
   dom.canvas.onclick = () => {
     if (dom.video.paused)
       dom.video.play();
@@ -90,6 +155,8 @@ async function webCam() {
 }
 async function detectionLoop() {
   if (!dom.video.paused) {
+    if (face && face.tensor)
+      human.tf.dispose(face.tensor);
     await human.detect(dom.video);
     const now = human.now();
     fps.detect = 1e3 / (now - timestamp.detect);
@@ -124,59 +191,109 @@ async function validationLoop() {
   printStatus(ok);
   if (allOk()) {
     dom.video.pause();
-    return human.result.face;
-  } else {
-    human.tf.dispose(human.result.face[0].tensor);
+    return human.result.face[0];
   }
   if (ok.elapsedMs > options.maxTime) {
     dom.video.pause();
-    return human.result.face;
+    return human.result.face[0];
   } else {
     ok.elapsedMs = Math.trunc(human.now() - startTime);
     return new Promise((resolve) => {
       setTimeout(async () => {
         const res = await validationLoop();
         if (res)
-          resolve(human.result.face);
+          resolve(human.result.face[0]);
       }, 30);
     });
   }
 }
-async function detectFace(face) {
-  dom.canvas.width = face.tensor.shape[2];
-  dom.canvas.height = face.tensor.shape[1];
+async function saveRecords() {
+  var _a;
+  if (dom.name.value.length > 0) {
+    const image = (_a = dom.canvas.getContext("2d")) == null ? void 0 : _a.getImageData(0, 0, dom.canvas.width, dom.canvas.height);
+    const rec = { id: 0, name: dom.name.value, descriptor: face.embedding, image };
+    await save(rec);
+    log2("saved face record:", rec.name);
+    db2.push(rec);
+  } else {
+    log2("invalid name");
+  }
+}
+async function deleteRecord() {
+  if (current.id > 0) {
+    await remove(current);
+  }
+}
+async function detectFace() {
+  var _a;
+  if (!face || !face.tensor || !face.embedding)
+    return 0;
+  dom.canvas.width = face.tensor.shape[1] || 0;
+  dom.canvas.height = face.tensor.shape[0] || 0;
+  dom.source.width = dom.canvas.width;
+  dom.source.height = dom.canvas.height;
   dom.canvas.style.width = "";
   human.tf.browser.toPixels(face.tensor, dom.canvas);
-  human.tf.dispose(face.tensor);
-  const arr = db.map((rec) => rec.embedding);
-  const res = await human.match(face.embedding, arr);
-  log(`found best match: ${db[res.index].name} similarity: ${Math.round(1e3 * res.similarity) / 10}% source: ${db[res.index].source}`);
-}
-async function loadFaceDB() {
-  const res = await fetch(options.faceDB);
-  db = res && res.ok ? await res.json() : [];
-  log("loaded face db:", options.faceDB, "records:", db.length);
+  const descriptors = db2.map((rec) => rec.descriptor);
+  const res = await human.match(face.embedding, descriptors);
+  dom.match.style.display = "flex";
+  dom.retry.style.display = "block";
+  if (res.index === -1) {
+    log2("no matches");
+    dom.delete.style.display = "none";
+    dom.source.style.display = "none";
+  } else {
+    current = db2[res.index];
+    log2(`best match: ${current.name} | id: ${current.id} | similarity: ${Math.round(1e3 * res.similarity) / 10}%`);
+    dom.delete.style.display = "";
+    dom.name.value = current.name;
+    dom.source.style.display = "";
+    (_a = dom.source.getContext("2d")) == null ? void 0 : _a.putImageData(current.image, 0, 0);
+  }
+  return res.similarity > options.threshold;
 }
 async function main() {
-  log("human version:", human.version, "| tfjs version:", human.tf.version_core);
-  printFPS("loading...");
-  await loadFaceDB();
-  await human.load();
-  printFPS("initializing...");
-  await human.warmup();
+  ok.faceCount = false;
+  ok.faceConfidence = false;
+  ok.facingCenter = false;
+  ok.blinkDetected = false;
+  ok.faceSize = false;
+  ok.antispoofCheck = false;
+  ok.livenessCheck = false;
+  ok.elapsedMs = 0;
+  dom.match.style.display = "none";
+  dom.retry.style.display = "none";
+  document.body.style.background = "black";
   await webCam();
   await detectionLoop();
   startTime = human.now();
-  const face = await validationLoop();
-  if (!allOk())
-    log("did not find valid input", face);
-  else {
-    log("found valid face", face);
-    await detectFace(face[0]);
-  }
+  face = await validationLoop();
   dom.fps.style.display = "none";
+  if (!allOk()) {
+    log2("did not find valid input", face);
+    return 0;
+  } else {
+    const res = await detectFace();
+    document.body.style.background = res ? "darkgreen" : "maroon";
+    return res;
+  }
 }
-window.onload = main;
+async function init() {
+  log2("human version:", human.version, "| tfjs version:", human.tf.version_core);
+  log2("options:", JSON.stringify(options).replace(/{|}|"|\[|\]/g, "").replace(/,/g, " "));
+  printFPS("loading...");
+  db2 = await load();
+  log2("loaded face records:", db2.length);
+  await webCam();
+  await human.load();
+  printFPS("initializing...");
+  dom.retry.addEventListener("click", main);
+  dom.save.addEventListener("click", saveRecords);
+  dom.delete.addEventListener("click", deleteRecord);
+  await human.warmup();
+  await main();
+}
+window.onload = init;
 /**
  * Human demo for browsers
  * @default Human Library

@@ -152,11 +152,11 @@
         "external": ["*/human.esm.js"]
       },
       {
-        "name": "demo/facerecognition",
+        "name": "demo/faceid",
         "platform": "browser",
         "format": "esm",
-        "input": "demo/facerecognition/index.ts",
-        "output": "demo/facerecognition/index.js",
+        "input": "demo/faceid/index.ts",
+        "output": "demo/faceid/index.js",
         "sourcemap": true,
         "external": ["*/human.esm.js"]
       }

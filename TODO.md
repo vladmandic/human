@@ -42,12 +42,12 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 broad
 ## Pending release notes:
 
 New:
-- new demo `demos/facerecognition` that utilizes multiple algorithm  
-  to validte input before triggering face recognition - similar to **FaceID**
+- new demo `demos/faceid` that utilizes multiple algorithm  to validate input before triggering face recognition
 - new optional model `liveness`  
   checks if input appears to be a real-world live image or a recording  
   best used together with `antispoofing` that checks if input appears to have a realistic face
 
 Other:
 - Improved **Safari** compatibility
+- Improved `similarity` and `match` score range normalization
 - Documentation overhaul

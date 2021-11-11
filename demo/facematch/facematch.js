@@ -184,9 +184,8 @@ async function AddImageElement(index, image, length) {
   return new Promise((resolve) => {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
-      human.detect(img, userConfig).then(async (res) => {
+      human.detect(img, userConfig).then((res) => {
         const ok = AddFaceCanvas(index, res, image); // then wait until image is analyzed
-        // log('Add image:', index + 1, image, 'faces:', res.face.length);
         if (ok) document.getElementById('images').appendChild(img); // and finally we can add it
         resolve(true);
       });
@@ -250,11 +249,13 @@ async function main() {
   // const promises = [];
   // for (let i = 0; i < images.length; i++) promises.push(AddImageElement(i, images[i], images.length));
   // await Promise.all(promises);
+  const t0 = human.now();
   for (let i = 0; i < images.length; i++) await AddImageElement(i, images[i], images.length);
+  const t1 = human.now();
 
   // print stats
   const num = all.reduce((prev, cur) => prev += cur.length, 0);
-  log('Extracted faces:', num, 'from images:', all.length);
+  log('Extracted faces:', num, 'from images:', all.length, 'time:', Math.round(t1 - t0));
   log(human.tf.engine().memory());
 
   // if we didn't download db, generate it from current faces

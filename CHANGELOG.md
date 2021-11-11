@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/10 mandic00@live.com
+### **HEAD -> main** 2021/11/11 mandic00@live.com
 
+- documentation overhaul
 - auto tensor shape and channels handling
 - disable use of path2d in node
 - add liveness module and facerecognition demo

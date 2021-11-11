@@ -225,19 +225,13 @@ async function deleteRecord() {
   }
 }
 async function detectFace() {
-  var _a;
+  var _a, _b;
+  (_a = dom.canvas.getContext("2d")) == null ? void 0 : _a.clearRect(0, 0, options.minSize, options.minSize);
   if (!face || !face.tensor || !face.embedding)
     return 0;
-  dom.canvas.width = face.tensor.shape[1] || 0;
-  dom.canvas.height = face.tensor.shape[0] || 0;
-  dom.source.width = dom.canvas.width;
-  dom.source.height = dom.canvas.height;
-  dom.canvas.style.width = "";
   human.tf.browser.toPixels(face.tensor, dom.canvas);
   const descriptors = db2.map((rec) => rec.descriptor);
   const res = await human.match(face.embedding, descriptors);
-  dom.match.style.display = "flex";
-  dom.retry.style.display = "block";
   if (res.index === -1) {
     log2("no matches");
     dom.delete.style.display = "none";
@@ -248,11 +242,12 @@ async function detectFace() {
     dom.delete.style.display = "";
     dom.name.value = current.name;
     dom.source.style.display = "";
-    (_a = dom.source.getContext("2d")) == null ? void 0 : _a.putImageData(current.image, 0, 0);
+    (_b = dom.source.getContext("2d")) == null ? void 0 : _b.putImageData(current.image, 0, 0);
   }
   return res.similarity > options.threshold;
 }
 async function main() {
+  var _a, _b;
   ok.faceCount = false;
   ok.faceConfidence = false;
   ok.facingCenter = false;
@@ -269,9 +264,16 @@ async function main() {
   startTime = human.now();
   face = await validationLoop();
   dom.fps.style.display = "none";
+  dom.canvas.width = ((_a = face == null ? void 0 : face.tensor) == null ? void 0 : _a.shape[1]) || options.minSize;
+  dom.canvas.height = ((_b = face == null ? void 0 : face.tensor) == null ? void 0 : _b.shape[0]) || options.minSize;
+  dom.source.width = dom.canvas.width;
+  dom.source.height = dom.canvas.height;
+  dom.canvas.style.width = "";
+  dom.match.style.display = "flex";
+  dom.retry.style.display = "block";
   if (!allOk()) {
-    log2("did not find valid input", face);
-    return 0;
+    log2("did not find valid face");
+    return false;
   } else {
     const res = await detectFace();
     document.body.style.background = res ? "darkgreen" : "maroon";

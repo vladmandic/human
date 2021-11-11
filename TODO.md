@@ -47,3 +47,7 @@ New:
 - new optional model `liveness`  
   checks if input appears to be a real-world live image or a recording  
   best used together with `antispoofing` that checks if input appears to have a realistic face
+
+Other:
+- Improved **Safari** compatibility
+- Documentation overhaul

@@ -4,7 +4,7 @@ import type { env } from './util/env';
 export * from './config';
 export * from './result';
 
-export type { Tensor } from './tfjs/types';
+export type { Tensor, TensorLike } from './tfjs/types';
 export type { DrawOptions } from './util/draw';
 export type { Descriptor } from './face/match';
 export type { Box, Point } from './result';

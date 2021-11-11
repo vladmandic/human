@@ -1,6 +1,7 @@
-# Human Face Recognition
+# Human Face Recognition: FaceID
 
-`facerecognition` runs multiple checks to validate webcam input before performing face match, similar to *FaceID*
+`faceid` runs multiple checks to validate webcam input before performing face match  
+Detected face image and descriptor are stored in client-side IndexDB  
 
 ## Workflow
 - Starts webcam  
@@ -10,8 +11,8 @@
   - Face and gaze direction
   - Detection scores
   - Blink detection (including temporal check for blink speed) to verify live input
-  - Runs antispoofing optional module
-  - Runs liveness optional module
+  - Runs `antispoofing` optional module
+  - Runs `liveness` optional module
 - Runs match against database of registered faces and presents best match with scores
 
 ## Notes

@@ -66,7 +66,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       annotations: {},
     };
 
-    [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(false && config.face.detector?.rotation, box, input, config.face.mesh?.enabled ? inputSize : blazeface.size()); // optional rotate based on detector data
+    // optional rotation correction based on detector data only if mesh is disabled otherwise perform it later when we have more accurate mesh data. if no rotation correction this function performs crop
+    [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(!config.face.mesh?.enabled && config.face.detector?.rotation, box, input, config.face.mesh?.enabled ? inputSize : blazeface.size());
     if (config?.filter?.equalization) {
       const equilized = await histogramEqualization(face.tensor as Tensor);
       tf.dispose(face.tensor);

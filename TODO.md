@@ -46,6 +46,7 @@ New:
 - new optional model `liveness`  
   checks if input appears to be a real-world live image or a recording  
   best used together with `antispoofing` that checks if input appears to have a realistic face
+- new face masking option in `face.config.detector.mask`
 
 Other:
 - Improved **Safari** compatibility

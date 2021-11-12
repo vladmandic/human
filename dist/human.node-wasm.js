@@ -5673,7 +5673,7 @@ var inputSize5 = 0;
 var skipped7 = Number.MAX_SAFE_INTEGER;
 var lastTime6 = 0;
 async function predict6(input, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
   const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime6;
   const skipFrame = skipped7 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -5711,14 +5711,14 @@ async function predict6(input, config3) {
       faceScore: 0,
       annotations: {}
     };
-    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(false, box4, input, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? inputSize5 : size());
-    if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
+    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(!((_d = config3.face.mesh) == null ? void 0 : _d.enabled) && ((_e = config3.face.detector) == null ? void 0 : _e.rotation), box4, input, ((_f = config3.face.mesh) == null ? void 0 : _f.enabled) ? inputSize5 : size());
+    if ((_g = config3 == null ? void 0 : config3.filter) == null ? void 0 : _g.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
       tf13.dispose(face5.tensor);
       face5.tensor = equilized;
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
+    if (!((_h = config3.face.mesh) == null ? void 0 : _h.enabled)) {
       face5.box = getClampedBox(box4, input);
       face5.boxRaw = getRawBox(box4, input);
       face5.score = face5.boxScore;
@@ -5739,22 +5739,22 @@ async function predict6(input, config3) {
       const coordsReshaped = tf13.reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       tf13.dispose([contourCoords, coordsReshaped, confidence, contours]);
-      if (face5.faceScore < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
+      if (face5.faceScore < (((_i = config3.face.detector) == null ? void 0 : _i.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
-        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
+        if ((_j = config3.face.iris) == null ? void 0 : _j.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
-        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_j = config3.face.detector) == null ? void 0 : _j.cropFactor) || 1.6), confidence: box4.confidence });
+        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_k = config3.face.detector) == null ? void 0 : _k.cropFactor) || 1.6), confidence: box4.confidence });
         face5.box = getClampedBox(box4, input);
         face5.boxRaw = getRawBox(box4, input);
         face5.score = face5.faceScore;
         newCache.push(box4);
         tf13.dispose(face5.tensor);
-        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_k = config3.face.detector) == null ? void 0 : _k.rotation, box4, input, inputSize5);
+        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_l = config3.face.detector) == null ? void 0 : _l.rotation, box4, input, inputSize5);
       }
     }
     faces.push(face5);

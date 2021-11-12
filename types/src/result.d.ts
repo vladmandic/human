@@ -61,7 +61,7 @@ export interface FaceResult {
             bearing: number;
             strength: number;
         };
-    };
+    } | null;
     /** detected face as tensor that can be used in further pipelines */
     tensor?: Tensor;
 }

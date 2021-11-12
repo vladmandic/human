@@ -9,7 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/11 mandic00@live.com
+### **HEAD -> main** 2021/11/12 mandic00@live.com
+
+
+### **origin/main** 2021/11/11 mandic00@live.com
 
 - add similarity score range normalization
 - add faceid demo

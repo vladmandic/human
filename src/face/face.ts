@@ -9,13 +9,15 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as facemesh from './facemesh';
 import * as emotion from '../gear/emotion';
 import * as faceres from './faceres';
+import * as mask from './mask';
 import * as antispoof from './antispoof';
 import * as liveness from './liveness';
 import type { FaceResult } from '../result';
 import type { Tensor } from '../tfjs/types';
+import type { Human } from '../human';
 import { calculateFaceAngle } from './angles';
 
-export const detectFace = async (parent /* instance of human */, input: Tensor): Promise<FaceResult[]> => {
+export const detectFace = async (parent: Human /* instance of human */, input: Tensor): Promise<FaceResult[]> => {
   // run facemesh, includes blazeface and iris
   // eslint-disable-next-line no-async-promise-executor
   let timeStamp;
@@ -46,16 +48,24 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       continue;
     }
 
-    const rotation = calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]);
+    // optional face mask
+    if (parent.config.face.detector?.mask) {
+      const masked = await mask.mask(faces[i]);
+      tf.dispose(faces[i].tensor);
+      faces[i].tensor = masked as Tensor;
+    }
+
+    // calculate face angles
+    const rotation = faces[i].mesh && (faces[i].mesh.length > 200) ? calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]) : null;
 
     // run emotion, inherits face from blazeface
     parent.analyze('Start Emotion:');
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = parent.config.face.emotion?.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = 'run:emotion';
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = parent.config.face.emotion?.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.emotion = env.perfadd ? (parent.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Emotion:');
@@ -63,11 +73,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run antispoof, inherits face from blazeface
     parent.analyze('Start AntiSpoof:');
     if (parent.config.async) {
-      antispoofRes = parent.config.face.antispoof.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = parent.config.face.antispoof?.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = 'run:antispoof';
       timeStamp = now();
-      antispoofRes = parent.config.face.antispoof.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = parent.config.face.antispoof?.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End AntiSpoof:');
@@ -75,11 +85,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run liveness, inherits face from blazeface
     parent.analyze('Start Liveness:');
     if (parent.config.async) {
-      livenessRes = parent.config.face.liveness.enabled ? liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      livenessRes = parent.config.face.liveness?.enabled ? liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = 'run:liveness';
       timeStamp = now();
-      livenessRes = parent.config.face.liveness.enabled ? await liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      livenessRes = parent.config.face.liveness?.enabled ? await liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Liveness:');
@@ -101,11 +111,11 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      descRes = parent.config.face.description?.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = 'run:description';
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+      descRes = parent.config.face.description?.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.description = env.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Description:');
@@ -119,7 +129,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
 
     // calculate iris distance
     // iris: array[ center, left, top, right, bottom]
-    if (!parent.config.face.iris.enabled && faces[i]?.annotations?.leftEyeIris && faces[i]?.annotations?.rightEyeIris) {
+    if (!parent.config.face.iris?.enabled && faces[i]?.annotations?.leftEyeIris && faces[i]?.annotations?.rightEyeIris) {
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
@@ -130,7 +140,7 @@ export const detectFace = async (parent /* instance of human */, input: Tensor):
       : 0; // note: average human iris size is 11.7mm
 
     // optionally return tensor
-    const tensor = parent.config.face.detector.return ? tf.squeeze(faces[i].tensor) : null;
+    const tensor = parent.config.face.detector?.return ? tf.squeeze(faces[i].tensor) : null;
     // dispose original face tensor
     tf.dispose(faces[i].tensor);
     // delete temp face image

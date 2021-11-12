@@ -12,7 +12,7 @@ import * as image from '../image/image';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
-import type { Input } from '../exports';
+import type { Input, AnyCanvas } from '../exports';
 
 let model: GraphModel;
 let busy = false;
@@ -27,13 +27,13 @@ export async function load(config: Config): Promise<GraphModel> {
 }
 
 export async function process(input: Input, background: Input | undefined, config: Config)
-: Promise<{ data: Array<number>, canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
+: Promise<{ data: Array<number> | Tensor, canvas: AnyCanvas | null, alpha: AnyCanvas | null }> {
   if (busy) return { data: [], canvas: null, alpha: null };
   busy = true;
   if (!model) await load(config);
   const inputImage = await image.process(input, config);
-  const width = inputImage.canvas?.width || 0;
-  const height = inputImage.canvas?.height || 0;
+  const width = inputImage.tensor?.shape[2] || 0;
+  const height = inputImage.tensor?.shape[1] || 0;
   if (!inputImage.tensor) return { data: [], canvas: null, alpha: null };
   const t: Record<string, Tensor> = {};
 
@@ -94,6 +94,6 @@ export async function process(input: Input, background: Input | undefined, confi
 
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   busy = false;
-
-  return { data, canvas: mergedCanvas || compositeCanvas, alpha: alphaCanvas };
+  // return { data, canvas: mergedCanvas || compositeCanvas, alpha: alphaCanvas };
+  return { data, canvas: compositeCanvas, alpha: alphaCanvas };
 }

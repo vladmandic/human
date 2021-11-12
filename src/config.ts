@@ -23,6 +23,14 @@ export interface FaceDetectorConfig extends GenericConfig {
   minConfidence: number,
   /** @property minimum overlap between two detected faces before one is discarded */
   iouThreshold: number,
+  /** @property factor used to expand detected face before further analysis
+   * - default: 1.6
+   * - for high-quality inputs can be reduced to increase precision
+   * - for video inputs or low-quality inputs can be increased to allow for more flexible tracking
+   */
+  cropFactor: number,
+  /** @property should child models perform on masked image of a face */
+  mask: boolean,
   /** @property should face detection return face tensor to be used in some other extenrnal model? */
   return: boolean,
 }
@@ -314,6 +322,8 @@ const config: Config = {
       skipTime: 2500,
       minConfidence: 0.2,
       iouThreshold: 0.1,
+      cropFactor: 1.6,
+      mask: false,
       return: false,
     },
     mesh: {

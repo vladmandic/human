@@ -1,5 +1,6 @@
 /** TFJS backend initialization and customization */
 
+import type { Human } from '../human';
 import { log, now } from '../util/util';
 import { env } from '../util/env';
 import * as humangl from './humangl';
@@ -26,7 +27,7 @@ function registerCustomOps() {
   }
 }
 
-export async function check(instance, force = false) {
+export async function check(instance: Human, force = false) {
   instance.state = 'backend';
   if (force || env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
     const timeStamp = now();

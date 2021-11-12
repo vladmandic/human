@@ -253,7 +253,7 @@ export class Human {
    *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
    *  - `alpha` as grayscale canvas that represents segmentation alpha values
    */
-  async segmentation(input: Input, background?: Input): Promise<{ data: number[], canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
+  async segmentation(input: Input, background?: Input): Promise<{ data: number[] | Tensor, canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
     return segmentation.process(input, background, this.config);
   }
 

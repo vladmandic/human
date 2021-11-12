@@ -1,5 +1,6 @@
 /** TFJS custom backend registration */
 
+import type { Human } from '../human';
 import { log } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
@@ -40,7 +41,7 @@ function extensions(): void {
  *
  * @returns void
  */
-export async function register(instance): Promise<void> {
+export async function register(instance: Human): Promise<void> {
   // force backend reload if gl context is not valid
   if (instance.config.backend !== 'humangl') return;
   if ((config.name in tf.engine().registry) && (!config.gl || !config.gl.getParameter(config.gl.VERSION))) {

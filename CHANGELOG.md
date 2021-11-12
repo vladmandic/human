@@ -11,6 +11,8 @@
   
 ### **HEAD -> main** 2021/11/11 mandic00@live.com
 
+- add similarity score range normalization
+- add faceid demo
 - documentation overhaul
 - auto tensor shape and channels handling
 - disable use of path2d in node

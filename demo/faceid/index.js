@@ -47,6 +47,15 @@ async function load() {
     };
   });
 }
+async function count() {
+  if (!db)
+    await open();
+  return new Promise((resolve) => {
+    const store = db.transaction([table], "readwrite").objectStore(table).count();
+    store.onerror = (evt) => log("count error:", evt);
+    store.onsuccess = () => resolve(store.result);
+  });
+}
 async function save(faceRecord) {
   if (!db)
     await open();
@@ -62,15 +71,12 @@ async function remove(faceRecord) {
 }
 
 // demo/faceid/index.ts
-var db2 = [];
-var face;
-var current;
 var humanConfig = {
   modelBasePath: "../../models",
   filter: { equalization: true },
   face: {
     enabled: true,
-    detector: { rotation: true, return: true },
+    detector: { rotation: true, return: true, cropFactor: 1.6, mask: false },
     description: { enabled: true },
     iris: { enabled: true },
     emotion: { enabled: false },
@@ -88,19 +94,24 @@ var options = {
   maxTime: 1e4,
   blinkMin: 10,
   blinkMax: 800,
-  threshold: 0.5
+  threshold: 0.5,
+  mask: humanConfig.face.detector.mask,
+  rotation: humanConfig.face.detector.rotation,
+  cropFactor: humanConfig.face.detector.cropFactor
 };
 var ok = {
   faceCount: false,
   faceConfidence: false,
   facingCenter: false,
+  lookingCenter: false,
   blinkDetected: false,
   faceSize: false,
   antispoofCheck: false,
   livenessCheck: false,
   elapsedMs: 0
 };
-var allOk = () => ok.faceCount && ok.faceSize && ok.blinkDetected && ok.facingCenter && ok.faceConfidence && ok.antispoofCheck && ok.livenessCheck;
+var allOk = () => ok.faceCount && ok.faceSize && ok.blinkDetected && ok.facingCenter && ok.lookingCenter && ok.faceConfidence && ok.antispoofCheck && ok.livenessCheck;
+var current = { face: null, record: null };
 var blink = {
   start: 0,
   end: 0,
@@ -115,13 +126,13 @@ var dom = {
   canvas: document.getElementById("canvas"),
   log: document.getElementById("log"),
   fps: document.getElementById("fps"),
-  status: document.getElementById("status"),
   match: document.getElementById("match"),
   name: document.getElementById("name"),
   save: document.getElementById("save"),
   delete: document.getElementById("delete"),
   retry: document.getElementById("retry"),
-  source: document.getElementById("source")
+  source: document.getElementById("source"),
+  ok: document.getElementById("ok")
 };
 var timestamp = { detect: 0, draw: 0 };
 var fps = { detect: 0, draw: 0 };
@@ -131,7 +142,6 @@ var log2 = (...msg) => {
   console.log(...msg);
 };
 var printFPS = (msg) => dom.fps.innerText = msg;
-var printStatus = (msg) => dom.status.innerText = "status: " + JSON.stringify(msg).replace(/"|{|}/g, "").replace(/,/g, " | ");
 async function webCam() {
   printFPS("starting webcam...");
   const cameraOptions = { audio: false, video: { facingMode: "user", resizeMode: "none", width: { ideal: document.body.clientWidth } } };
@@ -155,8 +165,8 @@ async function webCam() {
 }
 async function detectionLoop() {
   if (!dom.video.paused) {
-    if (face && face.tensor)
-      human.tf.dispose(face.tensor);
+    if (current.face && current.face.tensor)
+      human.tf.dispose(current.face.tensor);
     await human.detect(dom.video);
     const now = human.now();
     fps.detect = 1e3 / (now - timestamp.detect);
@@ -179,16 +189,32 @@ async function validationLoop() {
       blink.start = human.now();
     if (blink.start > 0 && !gestures.includes("blink left eye") && !gestures.includes("blink right eye"))
       blink.end = human.now();
-    ok.blinkDetected = ok.blinkDetected || blink.end - blink.start > options.blinkMin && blink.end - blink.start < options.blinkMax;
+    ok.blinkDetected = ok.blinkDetected || Math.abs(blink.end - blink.start) > options.blinkMin && Math.abs(blink.end - blink.start) < options.blinkMax;
     if (ok.blinkDetected && blink.time === 0)
       blink.time = Math.trunc(blink.end - blink.start);
-    ok.facingCenter = gestures.includes("facing center") && gestures.includes("looking center");
+    ok.facingCenter = gestures.includes("facing center");
+    ok.lookingCenter = gestures.includes("looking center");
     ok.faceConfidence = (human.result.face[0].boxScore || 0) > options.minConfidence && (human.result.face[0].faceScore || 0) > options.minConfidence && (human.result.face[0].genderScore || 0) > options.minConfidence;
     ok.antispoofCheck = (human.result.face[0].real || 0) > options.minConfidence;
     ok.livenessCheck = (human.result.face[0].live || 0) > options.minConfidence;
     ok.faceSize = human.result.face[0].box[2] >= options.minSize && human.result.face[0].box[3] >= options.minSize;
   }
-  printStatus(ok);
+  let y = 32;
+  for (const [key, val] of Object.entries(ok)) {
+    let el = document.getElementById(`ok-${key}`);
+    if (!el) {
+      el = document.createElement("div");
+      el.innerText = key;
+      el.className = "ok";
+      el.style.top = `${y}px`;
+      dom.ok.appendChild(el);
+    }
+    if (typeof val === "boolean")
+      el.style.backgroundColor = val ? "lightgreen" : "lightcoral";
+    else
+      el.innerText = `${key}:${val}`;
+    y += 28;
+  }
   if (allOk()) {
     dom.video.pause();
     return human.result.face[0];
@@ -208,46 +234,48 @@ async function validationLoop() {
   }
 }
 async function saveRecords() {
-  var _a;
+  var _a, _b;
   if (dom.name.value.length > 0) {
     const image = (_a = dom.canvas.getContext("2d")) == null ? void 0 : _a.getImageData(0, 0, dom.canvas.width, dom.canvas.height);
-    const rec = { id: 0, name: dom.name.value, descriptor: face.embedding, image };
+    const rec = { id: 0, name: dom.name.value, descriptor: (_b = current.face) == null ? void 0 : _b.embedding, image };
     await save(rec);
     log2("saved face record:", rec.name);
-    db2.push(rec);
   } else {
     log2("invalid name");
   }
 }
 async function deleteRecord() {
-  if (current.id > 0) {
-    await remove(current);
+  if (current.record && current.record.id > 0) {
+    await remove(current.record);
   }
 }
 async function detectFace() {
   var _a, _b;
   (_a = dom.canvas.getContext("2d")) == null ? void 0 : _a.clearRect(0, 0, options.minSize, options.minSize);
-  if (!face || !face.tensor || !face.embedding)
-    return 0;
-  human.tf.browser.toPixels(face.tensor, dom.canvas);
-  const descriptors = db2.map((rec) => rec.descriptor);
-  const res = await human.match(face.embedding, descriptors);
-  if (res.index === -1) {
-    log2("no matches");
+  if (!current.face || !current.face.tensor || !current.face.embedding)
+    return false;
+  human.tf.browser.toPixels(current.face.tensor, dom.canvas);
+  if (await count() === 0) {
+    log2("face database is empty");
+    document.body.style.background = "black";
     dom.delete.style.display = "none";
-    dom.source.style.display = "none";
-  } else {
-    current = db2[res.index];
-    log2(`best match: ${current.name} | id: ${current.id} | similarity: ${Math.round(1e3 * res.similarity) / 10}%`);
-    dom.delete.style.display = "";
-    dom.name.value = current.name;
-    dom.source.style.display = "";
-    (_b = dom.source.getContext("2d")) == null ? void 0 : _b.putImageData(current.image, 0, 0);
+    return false;
   }
+  const db2 = await load();
+  const descriptors = db2.map((rec) => rec.descriptor);
+  const res = await human.match(current.face.embedding, descriptors);
+  current.record = db2[res.index] || null;
+  if (current.record) {
+    log2(`best match: ${current.record.name} | id: ${current.record.id} | similarity: ${Math.round(1e3 * res.similarity) / 10}%`);
+    dom.name.value = current.record.name;
+    dom.source.style.display = "";
+    (_b = dom.source.getContext("2d")) == null ? void 0 : _b.putImageData(current.record.image, 0, 0);
+  }
+  document.body.style.background = res.similarity > options.threshold ? "darkgreen" : "maroon";
   return res.similarity > options.threshold;
 }
 async function main() {
-  var _a, _b;
+  var _a, _b, _c, _d;
   ok.faceCount = false;
   ok.faceConfidence = false;
   ok.facingCenter = false;
@@ -258,34 +286,33 @@ async function main() {
   ok.elapsedMs = 0;
   dom.match.style.display = "none";
   dom.retry.style.display = "none";
+  dom.source.style.display = "none";
   document.body.style.background = "black";
   await webCam();
   await detectionLoop();
   startTime = human.now();
-  face = await validationLoop();
-  dom.fps.style.display = "none";
-  dom.canvas.width = ((_a = face == null ? void 0 : face.tensor) == null ? void 0 : _a.shape[1]) || options.minSize;
-  dom.canvas.height = ((_b = face == null ? void 0 : face.tensor) == null ? void 0 : _b.shape[0]) || options.minSize;
+  current.face = await validationLoop();
+  dom.canvas.width = ((_b = (_a = current.face) == null ? void 0 : _a.tensor) == null ? void 0 : _b.shape[1]) || options.minSize;
+  dom.canvas.height = ((_d = (_c = current.face) == null ? void 0 : _c.tensor) == null ? void 0 : _d.shape[0]) || options.minSize;
   dom.source.width = dom.canvas.width;
   dom.source.height = dom.canvas.height;
   dom.canvas.style.width = "";
   dom.match.style.display = "flex";
+  dom.save.style.display = "flex";
+  dom.delete.style.display = "flex";
   dom.retry.style.display = "block";
   if (!allOk()) {
     log2("did not find valid face");
     return false;
   } else {
-    const res = await detectFace();
-    document.body.style.background = res ? "darkgreen" : "maroon";
-    return res;
+    return detectFace();
   }
 }
 async function init() {
   log2("human version:", human.version, "| tfjs version:", human.tf.version_core);
   log2("options:", JSON.stringify(options).replace(/{|}|"|\[|\]/g, "").replace(/,/g, " "));
   printFPS("loading...");
-  db2 = await load();
-  log2("loaded face records:", db2.length);
+  log2("known face records:", await count());
   await webCam();
   await human.load();
   printFPS("initializing...");

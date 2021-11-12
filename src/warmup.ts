@@ -8,9 +8,11 @@ import * as tf from '../dist/tfjs.esm.js';
 import * as image from './image/image';
 import type { Config } from './config';
 import type { Result } from './result';
+import type { Human } from './human';
+import type { Tensor } from './tfjs/types';
 import { env } from './util/env';
 
-async function warmupBitmap(instance) {
+async function warmupBitmap(instance: Human) {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
   let blob;
   let res;
@@ -28,7 +30,7 @@ async function warmupBitmap(instance) {
   return res;
 }
 
-async function warmupCanvas(instance) {
+async function warmupCanvas(instance: Human) {
   return new Promise((resolve) => {
     let src;
     // let size = 0;
@@ -60,7 +62,7 @@ async function warmupCanvas(instance) {
         if (ctx) ctx.drawImage(img, 0, 0);
         // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
         const tensor = await instance.image(canvas);
-        const res = await instance.detect(tensor.tensor, instance.config);
+        const res = await instance.detect(tensor.tensor as Tensor, instance.config);
         resolve(res);
       }
     };
@@ -69,7 +71,7 @@ async function warmupCanvas(instance) {
   });
 }
 
-async function warmupNode(instance) {
+async function warmupNode(instance: Human) {
   const atob = (str: string) => Buffer.from(str, 'base64');
   let img;
   if (instance.config.warmup === 'face') img = atob(sample.face);
@@ -101,7 +103,7 @@ async function warmupNode(instance) {
  * - only used for `webgl` and `humangl` backends
  * @param userConfig?: Config
 */
-export async function warmup(instance, userConfig?: Partial<Config>): Promise<Result | { error }> {
+export async function warmup(instance: Human, userConfig?: Partial<Config>): Promise<Result | { error }> {
   const t0 = now();
   instance.state = 'warmup';
   if (userConfig) instance.config = mergeDeep(instance.config, userConfig) as Config;

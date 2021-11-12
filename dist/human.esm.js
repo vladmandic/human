@@ -141,6 +141,8 @@ var config = {
       skipTime: 2500,
       minConfidence: 0.2,
       iouThreshold: 0.1,
+      cropFactor: 1.6,
+      mask: false,
       return: false
     },
     mesh: {
@@ -2084,7 +2086,7 @@ var require_crypto = __commonJS({
 var require_seedrandom = __commonJS({
   "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/seedrandom.js"(exports, module) {
     (function(global2, pool3, math) {
-      var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask = width - 1, nodecrypto;
+      var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask3 = width - 1, nodecrypto;
       function seedrandom5(seed, options3, callback) {
         var key = [];
         options3 = options3 == true ? { entropy: true } : options3 || {};
@@ -2137,14 +2139,14 @@ var require_seedrandom = __commonJS({
           s[i] = i++;
         }
         for (i = 0; i < width; i++) {
-          s[i] = s[j = mask & j + key[i % keylen] + (t = s[i])];
+          s[i] = s[j = mask3 & j + key[i % keylen] + (t = s[i])];
           s[j] = t;
         }
         (me.g = function(count22) {
           var t2, r = 0, i2 = me.i, j2 = me.j, s2 = me.S;
           while (count22--) {
-            t2 = s2[i2 = mask & i2 + 1];
-            r = r * width + s2[mask & (s2[i2] = s2[j2 = mask & j2 + t2]) + (s2[j2] = t2)];
+            t2 = s2[i2 = mask3 & i2 + 1];
+            r = r * width + s2[mask3 & (s2[i2] = s2[j2 = mask3 & j2 + t2]) + (s2[j2] = t2)];
           }
           me.i = i2;
           me.j = j2;
@@ -2173,7 +2175,7 @@ var require_seedrandom = __commonJS({
       function mixkey(seed, key) {
         var stringseed = seed + "", smear, j = 0;
         while (j < stringseed.length) {
-          key[mask & j] = mask & (smear ^= key[mask & j] * 19) + stringseed.charCodeAt(j++);
+          key[mask3 & j] = mask3 & (smear ^= key[mask3 & j] * 19) + stringseed.charCodeAt(j++);
         }
         return tostring(key);
       }
@@ -10104,14 +10106,14 @@ function assertParamsValid(input2, begin, size2) {
     assert(begin[i] + size2[i] <= input2.shape[i], () => `Error in slice${inputRank}D: begin[${i}] + size[${i}] (${begin[i] + size2[i]}) would overflow input.shape[${i}] (${input2.shape[i]})`);
   }
 }
-function maskToAxes(mask) {
+function maskToAxes(mask3) {
   const axes = [];
   let axis = 0;
-  while (mask > 0) {
-    if (mask & 1) {
+  while (mask3 > 0) {
+    if (mask3 & 1) {
       axes.push(axis);
     }
-    mask /= 2;
+    mask3 /= 2;
     axis++;
   }
   return axes;
@@ -11951,10 +11953,10 @@ function isNaN_(x) {
   return ENGINE.runKernel(IsNan, inputs);
 }
 var isNaN2 = op({ isNaN_ });
-function leakyRelu_(x, alpha = 0.2) {
+function leakyRelu_(x, alpha2 = 0.2) {
   const $x = convertToTensor(x, "x", "leakyRelu");
   const inputs = { x: $x };
-  const attrs = { alpha };
+  const attrs = { alpha: alpha2 };
   return ENGINE.runKernel(LeakyRelu, inputs, attrs);
 }
 var leakyRelu = op({ leakyRelu_ });
@@ -11983,7 +11985,7 @@ function linspace(start, stop, num) {
   const attrs = { start, stop, num };
   return ENGINE.runKernel(LinSpace, {}, attrs);
 }
-function localResponseNormalization_(x, depthRadius = 5, bias = 1, alpha = 1, beta = 0.5) {
+function localResponseNormalization_(x, depthRadius = 5, bias = 1, alpha2 = 1, beta = 0.5) {
   const $x = convertToTensor(x, "x", "localResponseNormalization");
   assert($x.rank === 4 || $x.rank === 3, () => `Error in localResponseNormalization: x must be rank 3 or 4 but got
                rank ${$x.rank}.`);
@@ -11995,7 +11997,7 @@ function localResponseNormalization_(x, depthRadius = 5, bias = 1, alpha = 1, be
     x4D = reshape($x, [1, $x.shape[0], $x.shape[1], $x.shape[2]]);
   }
   const inputs = { x: x4D };
-  const attrs = { depthRadius, bias, alpha, beta };
+  const attrs = { depthRadius, bias, alpha: alpha2, beta };
   const res = ENGINE.runKernel(LRN, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -12652,9 +12654,9 @@ function pow_(base2, exp5) {
   return ENGINE.runKernel(Pow, inputs);
 }
 var pow = op({ pow_ });
-function prelu_(x, alpha) {
+function prelu_(x, alpha2) {
   const $x = convertToTensor(x, "x", "prelu");
-  const $alpha = convertToTensor(alpha, "alpha", "prelu");
+  const $alpha = convertToTensor(alpha2, "alpha", "prelu");
   const inputs = { x: $x, alpha: $alpha };
   return ENGINE.runKernel(Prelu, inputs);
 }
@@ -12740,17 +12742,17 @@ var MPRandGauss = class {
   }
 };
 var RandGamma = class {
-  constructor(alpha, beta, dtype, seed) {
-    this.alpha = alpha;
+  constructor(alpha2, beta, dtype, seed) {
+    this.alpha = alpha2;
     this.beta = 1 / beta;
     this.dtype = dtype;
     const seedValue = seed ? seed : Math.random();
     this.randu = seedrandom.alea(seedValue.toString());
     this.randn = new MPRandGauss(0, 1, dtype, false, this.randu());
-    if (alpha < 1) {
-      this.d = alpha + 2 / 3;
+    if (alpha2 < 1) {
+      this.d = alpha2 + 2 / 3;
     } else {
-      this.d = alpha - 1 / 3;
+      this.d = alpha2 - 1 / 3;
     }
     this.c = 1 / Math.sqrt(9 * this.d);
   }
@@ -12810,7 +12812,7 @@ var UniformRandom = class {
     return this.convertValue(this.min + this.range * this.random());
   }
 };
-function randomGamma_(shape, alpha, beta = 1, dtype = "float32", seed) {
+function randomGamma_(shape, alpha2, beta = 1, dtype = "float32", seed) {
   if (beta == null) {
     beta = 1;
   }
@@ -12820,7 +12822,7 @@ function randomGamma_(shape, alpha, beta = 1, dtype = "float32", seed) {
   if (dtype !== "float32" && dtype !== "int32") {
     throw new Error(`Unsupported data type ${dtype}`);
   }
-  const rgamma = new RandGamma(alpha, beta, dtype, seed);
+  const rgamma = new RandGamma(alpha2, beta, dtype, seed);
   const res = buffer(shape, dtype);
   for (let i = 0; i < res.values.length; i++) {
     res.values[i] = rgamma.nextValue();
@@ -13163,10 +13165,10 @@ function stack_(tensors, axis = 0) {
   return ENGINE.runKernel(Pack, inputs, attrs);
 }
 var stack = op({ stack_ });
-function step_(x, alpha = 0) {
+function step_(x, alpha2 = 0) {
   const $x = convertToTensor(x, "x", "step");
   const inputs = { x: $x };
-  const attrs = { alpha };
+  const attrs = { alpha: alpha2 };
   return ENGINE.runKernel(Step, inputs, attrs);
 }
 var step = op({ step_ });
@@ -13343,9 +13345,9 @@ async function whereAsync_(condition) {
   return res;
 }
 var whereAsync = whereAsync_;
-async function booleanMaskAsync_(tensor2, mask, axis) {
+async function booleanMaskAsync_(tensor2, mask3, axis) {
   const $tensor = convertToTensor(tensor2, "tensor", "boolMask");
-  const $mask = convertToTensor(mask, "mask", "boolMask", "bool");
+  const $mask = convertToTensor(mask3, "mask", "boolMask", "bool");
   const axisFrom = axis == null ? 0 : axis;
   const maskDim = $mask.rank;
   const tensorShape = $tensor.shape;
@@ -13364,7 +13366,7 @@ async function booleanMaskAsync_(tensor2, mask, axis) {
   if (tensor2 !== $tensor) {
     $tensor.dispose();
   }
-  if (mask !== $mask) {
+  if (mask3 !== $mask) {
     $mask.dispose();
   }
   indices.dispose();
@@ -16791,9 +16793,9 @@ var leakyReluGradConfig = {
   inputsToSave: ["x"],
   gradFunc: (dy, saved, attrs) => {
     const [x] = saved;
-    const { alpha } = attrs;
-    const mask = greater(x, 0);
-    return { x: () => where(mask, dy, mul(dy, alpha)) };
+    const { alpha: alpha2 } = attrs;
+    const mask3 = greater(x, 0);
+    return { x: () => where(mask3, dy, mul(dy, alpha2)) };
   }
 };
 var log1pGradConfig = {
@@ -16828,9 +16830,9 @@ var logSoftmaxGradConfig = {
     };
   }
 };
-function localResponseNormalizationBackprop_(x, y, dy, depthRadius = 5, bias = 1, alpha = 1, beta = 0.5) {
+function localResponseNormalizationBackprop_(x, y, dy, depthRadius = 5, bias = 1, alpha2 = 1, beta = 0.5) {
   const inputs = { x, y, dy };
-  const attrs = { depthRadius, bias, alpha, beta };
+  const attrs = { depthRadius, bias, alpha: alpha2, beta };
   return ENGINE.runKernel(LRNGrad, inputs, attrs);
 }
 var localResponseNormalizationBackprop = op({ localResponseNormalizationBackprop_ });
@@ -16840,9 +16842,9 @@ var lrnGradConfig = {
   outputsToSave: [true],
   gradFunc: (dy, saved, attrs) => {
     const [x, y] = saved;
-    const { depthRadius, bias, alpha, beta } = attrs;
+    const { depthRadius, bias, alpha: alpha2, beta } = attrs;
     return {
-      x: () => localResponseNormalizationBackprop(x, y, dy, depthRadius, bias, alpha, beta)
+      x: () => localResponseNormalizationBackprop(x, y, dy, depthRadius, bias, alpha2, beta)
     };
   }
 };
@@ -17150,17 +17152,17 @@ var preluGradConfig = {
   kernelName: Prelu,
   inputsToSave: ["x", "alpha"],
   gradFunc: (dy, saved) => {
-    const [x, alpha] = saved;
-    const mask = greater(x, 0);
+    const [x, alpha2] = saved;
+    const mask3 = greater(x, 0);
     return {
-      x: () => where(mask, dy, mul(dy, alpha)),
+      x: () => where(mask3, dy, mul(dy, alpha2)),
       alpha: () => {
-        let res = where(mask, zerosLike(dy), mul(dy, x));
-        const reduceAxes = getReductionAxes(alpha.shape, dy.shape);
+        let res = where(mask3, zerosLike(dy), mul(dy, x));
+        const reduceAxes = getReductionAxes(alpha2.shape, dy.shape);
         if (reduceAxes.length > 0) {
           res = sum2(res, reduceAxes);
         }
-        return reshape(res, alpha.shape);
+        return reshape(res, alpha2.shape);
       }
     };
   }
@@ -17204,8 +17206,8 @@ var relu6GradConfig = {
   inputsToSave: ["x"],
   gradFunc: (dy, saved) => {
     const [x] = saved;
-    const mask = mul(lessEqual(x, 6), step(x));
-    return { x: () => mul(dy, cast(mask, "float32")) };
+    const mask3 = mul(lessEqual(x, 6), step(x));
+    return { x: () => mul(dy, cast(mask3, "float32")) };
   }
 };
 var reluGradConfig = {
@@ -17285,12 +17287,12 @@ var seluGradConfig = {
     const [x] = saved;
     return {
       x: () => {
-        const mask = greater(x, scalar(0));
+        const mask3 = greater(x, scalar(0));
         const scaleAlpha2 = scalar(SELU_SCALEALPHA);
         const scale22 = scalar(SELU_SCALE);
         const greaterThanZeroDer = mul(dy, scale22);
         const lessEqualZeroDer = mul(mul(dy, scaleAlpha2), exp(cast(x, "float32")));
-        return where(mask, greaterThanZeroDer, lessEqualZeroDer);
+        return where(mask3, greaterThanZeroDer, lessEqualZeroDer);
       }
     };
   }
@@ -18501,9 +18503,9 @@ function biasAdd(x, bias, dataFormat) {
     return add2(x, reshapeBias(x.rank, bias, dataFormat));
   });
 }
-function elu2(x, alpha = 1) {
-  if (alpha !== 1) {
-    throw new NotImplementedError(`Support for alpha values other than 1 (${alpha}) is not implemented yet.`);
+function elu2(x, alpha2 = 1) {
+  if (alpha2 !== 1) {
+    throw new NotImplementedError(`Support for alpha values other than 1 (${alpha2}) is not implemented yet.`);
   }
   return elu(x);
 }
@@ -19619,11 +19621,11 @@ var Layer = class extends serialization_exports.Serializable {
   computeOutputShape(inputShape) {
     return inputShape;
   }
-  computeMask(inputs, mask) {
+  computeMask(inputs, mask3) {
     if (!this.supportsMasking) {
-      if (mask != null) {
-        if (Array.isArray(mask)) {
-          mask.forEach((maskElement) => {
+      if (mask3 != null) {
+        if (Array.isArray(mask3)) {
+          mask3.forEach((maskElement) => {
             if (maskElement != null) {
               throw new TypeError(`Layer ${this.name} does not support masking, but was passed an inputMask.`);
             }
@@ -19634,7 +19636,7 @@ var Layer = class extends serialization_exports.Serializable {
       }
       return null;
     }
-    return mask;
+    return mask3;
   }
   addInboundNode(inputTensors, outputTensors, inputMasks, outputMasks, inputShapes, outputShapes, kwargs = null) {
     const inputTensorList = toList(inputTensors);
@@ -20791,12 +20793,12 @@ var FeedDict = class {
       }
     }
   }
-  add(key, value, mask) {
+  add(key, value, mask3) {
     if (this.id2Value[key.id] == null) {
       this.id2Value[key.id] = assertFeedCompatibility(key, value);
       this.name2Id[key.name] = key.id;
-      if (mask != null) {
-        this.id2Mask[key.id] = mask;
+      if (mask3 != null) {
+        this.id2Mask[key.id] = mask3;
       }
     } else {
       throw new ValueError(`Duplicate key: name=${key.name}, id=${key.id}`);
@@ -20905,10 +20907,10 @@ function execute(fetches, feedDict, kwargs, probe) {
     let maskExists = false;
     for (const input2 of symbolic.inputs) {
       const value = internalFeedDict.getValue(input2);
-      const mask = internalFeedDict.getMask(input2);
+      const mask3 = internalFeedDict.getMask(input2);
       inputValues.push(value);
-      inputMasks.push(mask);
-      if (mask != null) {
+      inputMasks.push(mask3);
+      if (mask3 != null) {
         maskExists = true;
       }
       if (!training) {
@@ -21381,14 +21383,14 @@ var Container = class extends Layer {
       return execute(this.outputs, feedDict, kwargs);
     });
   }
-  computeMask(inputs, mask) {
+  computeMask(inputs, mask3) {
     return tidy(() => {
       inputs = toList(inputs);
       let masks;
-      if (mask == null) {
+      if (mask3 == null) {
         masks = pyListRepeat(null, inputs.length);
       } else {
-        masks = toList(mask);
+        masks = toList(mask3);
       }
       return this.runInternalGraph(inputs, masks)[1];
     });
@@ -21457,8 +21459,8 @@ var Container = class extends Layer {
     for (let i = 0; i < this.inputs.length; ++i) {
       const x = this.inputs[i];
       const y = inputs[i];
-      const mask = masks[i];
-      tensorMap[x.id] = [y, mask];
+      const mask3 = masks[i];
+      tensorMap[x.id] = [y, mask3];
     }
     const depthKeys = Object.keys(this.nodesByDepth).map((x) => parseInt(x, 10)).sort(reverseNumberCompare);
     for (const depth of depthKeys) {
@@ -21506,8 +21508,8 @@ var Container = class extends Layer {
           for (let i = 0; i < referenceOutputTensors.length; ++i) {
             const x = referenceOutputTensors[i];
             const y = outputTensors2[i];
-            const mask = outputMasks2[i];
-            tensorMap[x.id] = [y, mask];
+            const mask3 = outputMasks2[i];
+            tensorMap[x.id] = [y, mask3];
           }
         }
       }
@@ -21517,10 +21519,10 @@ var Container = class extends Layer {
     const outputShapes = [];
     for (const x of this.outputs) {
       assert2(x.id in tensorMap, `Could not compute output ${x.name} : ${x.id}`);
-      const [tensor2, mask] = tensorMap[x.id];
+      const [tensor2, mask3] = tensorMap[x.id];
       outputShapes.push(tensor2.shape);
       outputTensors.push(tensor2);
-      outputMasks.push(mask);
+      outputMasks.push(mask3);
     }
     return [outputTensors, outputMasks, outputShapes];
   }
@@ -23556,8 +23558,8 @@ var Activation2 = class extends serialization_exports.Serializable {
   }
 };
 var Elu2 = class extends Activation2 {
-  apply(x, alpha = 1) {
-    return elu2(x, alpha);
+  apply(x, alpha2 = 1) {
+    return elu2(x, alpha2);
   }
 };
 Elu2.className = "elu";
@@ -23640,8 +23642,8 @@ var LogSoftmax2 = class extends Activation2 {
 LogSoftmax2.className = "logSoftmax";
 serialization_exports.registerClass(LogSoftmax2);
 var Swish = class extends Activation2 {
-  apply(x, alpha = 1) {
-    return tidy(() => mul(sigmoid(mul(x, alpha)), x));
+  apply(x, alpha2 = 1) {
+    return tidy(() => mul(sigmoid(mul(x, alpha2)), x));
   }
 };
 Swish.className = "swish";
@@ -24826,7 +24828,7 @@ function standardizeArgs(inputs, initialState, constants, numConstants) {
   constants = toListOrNull(constants);
   return { inputs, initialState, constants };
 }
-function rnn(stepFunction, inputs, initialStates, goBackwards = false, mask, constants, unroll = false, needPerStepOutputs = false) {
+function rnn(stepFunction, inputs, initialStates, goBackwards = false, mask3, constants, unroll = false, needPerStepOutputs = false) {
   return tidy(() => {
     const ndim = inputs.shape.length;
     if (ndim < 3) {
@@ -24840,17 +24842,17 @@ function rnn(stepFunction, inputs, initialStates, goBackwards = false, mask, con
     if (unroll) {
       console.warn("Backend rnn(): the unroll = true option is not applicable to the imperative deeplearn.js backend.");
     }
-    if (mask != null) {
-      mask = cast(cast(mask, "bool"), "float32");
-      if (mask.rank === ndim - 1) {
-        mask = expandDims(mask, -1);
+    if (mask3 != null) {
+      mask3 = cast(cast(mask3, "bool"), "float32");
+      if (mask3.rank === ndim - 1) {
+        mask3 = expandDims(mask3, -1);
       }
-      mask = transpose(mask, axes);
+      mask3 = transpose(mask3, axes);
     }
     if (goBackwards) {
       inputs = reverse(inputs, 0);
-      if (mask != null) {
-        mask = reverse(mask, 0);
+      if (mask3 != null) {
+        mask3 = reverse(mask3, 0);
       }
     }
     const perStepOutputs = [];
@@ -24859,13 +24861,13 @@ function rnn(stepFunction, inputs, initialStates, goBackwards = false, mask, con
     const timeSteps = inputs.shape[0];
     const perStepInputs = unstack(inputs);
     let perStepMasks;
-    if (mask != null) {
-      perStepMasks = unstack(mask);
+    if (mask3 != null) {
+      perStepMasks = unstack(mask3);
     }
     for (let t = 0; t < timeSteps; ++t) {
       const currentInput = perStepInputs[t];
       const stepOutputs = tidy(() => stepFunction(currentInput, states));
-      if (mask == null) {
+      if (mask3 == null) {
         lastOutput = stepOutputs[0];
         states = stepOutputs[1];
       } else {
@@ -24957,12 +24959,12 @@ var _RNN = class extends Layer {
       return outputShape;
     }
   }
-  computeMask(inputs, mask) {
+  computeMask(inputs, mask3) {
     return tidy(() => {
-      if (Array.isArray(mask)) {
-        mask = mask[0];
+      if (Array.isArray(mask3)) {
+        mask3 = mask3[0];
       }
-      const outputMask = this.returnSequences ? mask : null;
+      const outputMask = this.returnSequences ? mask3 : null;
       if (this.returnState) {
         const stateMask = this.states.map((s) => null);
         return [outputMask].concat(stateMask);
@@ -25113,7 +25115,7 @@ var _RNN = class extends Layer {
   }
   call(inputs, kwargs) {
     return tidy(() => {
-      const mask = kwargs == null ? null : kwargs["mask"];
+      const mask3 = kwargs == null ? null : kwargs["mask"];
       const training = kwargs == null ? null : kwargs["training"];
       let initialState = kwargs == null ? null : kwargs["initialState"];
       inputs = getExactlyOneTensor(inputs);
@@ -25136,7 +25138,7 @@ var _RNN = class extends Layer {
         const outputs2 = this.cell.call([inputs2].concat(states2), cellCallKwargs);
         return [outputs2[0], outputs2.slice(1)];
       };
-      const rnnOutputs = rnn(step5, inputs, initialState, this.goBackwards, mask, null, this.unroll, this.returnSequences);
+      const rnnOutputs = rnn(step5, inputs, initialState, this.goBackwards, mask3, null, this.unroll, this.returnSequences);
       const lastOutput = rnnOutputs[0];
       const outputs = rnnOutputs[1];
       const states = rnnOutputs[2];
@@ -25339,10 +25341,10 @@ var SimpleRNN = class extends RNN {
         dispose(this.cell.recurrentDropoutMask);
         this.cell.recurrentDropoutMask = null;
       }
-      const mask = kwargs == null ? null : kwargs["mask"];
+      const mask3 = kwargs == null ? null : kwargs["mask"];
       const training = kwargs == null ? null : kwargs["training"];
       const initialState = kwargs == null ? null : kwargs["initialState"];
-      return super.call(inputs, { mask, training, initialState });
+      return super.call(inputs, { mask: mask3, training, initialState });
     });
   }
   static fromConfig(cls, config3) {
@@ -25499,10 +25501,10 @@ var GRU = class extends RNN {
         dispose(this.cell.recurrentDropoutMask);
         this.cell.recurrentDropoutMask = null;
       }
-      const mask = kwargs == null ? null : kwargs["mask"];
+      const mask3 = kwargs == null ? null : kwargs["mask"];
       const training = kwargs == null ? null : kwargs["training"];
       const initialState = kwargs == null ? null : kwargs["initialState"];
-      return super.call(inputs, { mask, training, initialState });
+      return super.call(inputs, { mask: mask3, training, initialState });
     });
   }
   static fromConfig(cls, config3) {
@@ -25675,10 +25677,10 @@ var LSTM = class extends RNN {
         dispose(this.cell.recurrentDropoutMask);
         this.cell.recurrentDropoutMask = null;
       }
-      const mask = kwargs == null ? null : kwargs["mask"];
+      const mask3 = kwargs == null ? null : kwargs["mask"];
       const training = kwargs == null ? null : kwargs["training"];
       const initialState = kwargs == null ? null : kwargs["initialState"];
-      return super.call(inputs, { mask, training, initialState });
+      return super.call(inputs, { mask: mask3, training, initialState });
     });
   }
   static fromConfig(cls, config3) {
@@ -25856,10 +25858,10 @@ var ConvRNN2D = class extends RNN {
       if (kwargs && kwargs["constants"]) {
         throw new ValueError("ConvRNN2D cell does not support constants");
       }
-      const mask = kwargs == null ? null : kwargs["mask"];
+      const mask3 = kwargs == null ? null : kwargs["mask"];
       const training = kwargs == null ? null : kwargs["training"];
       const initialState = kwargs == null ? null : kwargs["initialState"];
-      return super.call(inputs, { mask, training, initialState });
+      return super.call(inputs, { mask: mask3, training, initialState });
     });
   }
   computeOutputShape(inputShape) {
@@ -26030,11 +26032,11 @@ var ConvLSTM2DCell = class extends LSTMCell {
         });
       }
       const dropoutMask = this.dropoutMask;
-      const applyDropout = (x2, mask, index2) => {
-        if (!mask || !mask[index2]) {
+      const applyDropout = (x2, mask3, index2) => {
+        if (!mask3 || !mask3[index2]) {
           return x2;
         }
-        return mul(mask[index2], x2);
+        return mul(mask3[index2], x2);
       };
       let xI = applyDropout(x, dropoutMask, 0);
       let xF = applyDropout(x, dropoutMask, 1);
@@ -26484,7 +26486,7 @@ var Masking = class extends Layer {
     Object.assign(config3, baseConfig);
     return config3;
   }
-  computeMask(inputs, mask) {
+  computeMask(inputs, mask3) {
     const input2 = getExactlyOneTensor(inputs);
     const axis = -1;
     return any(notEqual(input2, this.maskValue), axis);
@@ -26537,7 +26539,7 @@ var Embedding = class extends Layer {
   }
   warnOnIncompatibleInputShape(inputShape) {
   }
-  computeMask(inputs, mask) {
+  computeMask(inputs, mask3) {
     return tidy(() => {
       if (!this.maskZero) {
         return null;
@@ -26748,27 +26750,27 @@ var Merge = class extends Layer {
     }
     return outputShape;
   }
-  computeMask(inputs, mask) {
+  computeMask(inputs, mask3) {
     return tidy(() => {
-      if (mask == null) {
+      if (mask3 == null) {
         return null;
       }
-      if (!Array.isArray(mask)) {
+      if (!Array.isArray(mask3)) {
         throw new ValueError("`mask` should be an Array");
       }
       if (!Array.isArray(inputs)) {
         throw new ValueError("`inputs` should be an Array");
       }
-      if (mask.length !== inputs.length) {
-        throw new ValueError(`The Array 'inputs' and 'mask' are expected to have the same length, but have different lengths (${inputs.length} vs ${mask.length})`);
+      if (mask3.length !== inputs.length) {
+        throw new ValueError(`The Array 'inputs' and 'mask' are expected to have the same length, but have different lengths (${inputs.length} vs ${mask3.length})`);
       }
-      if (mask.every((m) => m == null)) {
+      if (mask3.every((m) => m == null)) {
         return null;
       }
-      mask = mask.map((m) => m == null ? m : expandDims(m, 0));
-      let output = mask[0];
-      for (let i = 1; i < mask.length - 1; ++i) {
-        output = logicalAnd(output, mask[i]);
+      mask3 = mask3.map((m) => m == null ? m : expandDims(m, 0));
+      let output = mask3[0];
+      for (let i = 1; i < mask3.length - 1; ++i) {
+        output = logicalAnd(output, mask3[i]);
       }
       return output;
     });
@@ -26920,22 +26922,22 @@ var Concatenate = class extends Merge {
     }
     return outputShape;
   }
-  computeMask(inputs, mask) {
-    if (mask == null) {
+  computeMask(inputs, mask3) {
+    if (mask3 == null) {
       return null;
     }
-    if (!Array.isArray(mask)) {
+    if (!Array.isArray(mask3)) {
       throw new ValueError("`mask` should be an array for Concatenate");
     }
     if (!Array.isArray(inputs)) {
       throw new ValueError("`inputs` should be an array for Concatenate");
     }
-    if (mask.length !== inputs.length) {
-      throw new ValueError(`Mismatch in the length of mask (${mask.length}) and the legnth of inputs (${inputs.length})`);
+    if (mask3.length !== inputs.length) {
+      throw new ValueError(`Mismatch in the length of mask (${mask3.length}) and the legnth of inputs (${inputs.length})`);
     }
     return tidy(() => {
       let allNullMasks = true;
-      mask.forEach((m) => {
+      mask3.forEach((m) => {
         if (m != null) {
           allNullMasks = false;
           return;
@@ -26946,12 +26948,12 @@ var Concatenate = class extends Merge {
       }
       const outputMasks = [];
       for (let i = 0; i < inputs.length; ++i) {
-        if (mask[i] == null) {
+        if (mask3[i] == null) {
           outputMasks.push(cast(onesLike(inputs[i]), "bool"));
-        } else if (mask[i].rank < inputs[i].rank) {
-          outputMasks.push(expandDims(mask[i], -1));
+        } else if (mask3[i].rank < inputs[i].rank) {
+          outputMasks.push(expandDims(mask3[i], -1));
         } else {
-          outputMasks.push(mask[i]);
+          outputMasks.push(mask3[i]);
         }
       }
       const concatenatedMasks = concat(outputMasks, this.axis);
@@ -27113,7 +27115,7 @@ var Dot = class extends Merge {
     }
     return outputShape;
   }
-  computeMask(inputs, mask) {
+  computeMask(inputs, mask3) {
     return null;
   }
   getConfig() {
@@ -27212,9 +27214,9 @@ var AlphaDropout = class extends Layer {
         const noiseShape = this._getNoiseShape(inputs);
         const droppedInputs = () => {
           const input2 = getExactlyOneTensor(inputs);
-          const alpha = 1.6732632423543772;
+          const alpha2 = 1.6732632423543772;
           const scale22 = 1.0507009873554805;
-          const alphaP = -alpha * scale22;
+          const alphaP = -alpha2 * scale22;
           let keptIdx = greaterEqual(randomUniform(noiseShape), this.rate);
           keptIdx = cast2(keptIdx, "float32");
           const a = ((1 - this.rate) * (1 + this.rate * alphaP ** 2)) ** -0.5;
@@ -28305,16 +28307,16 @@ var Bidirectional = class extends Wrapper {
     });
     this.built = true;
   }
-  computeMask(inputs, mask) {
-    if (Array.isArray(mask)) {
-      mask = mask[0];
+  computeMask(inputs, mask3) {
+    if (Array.isArray(mask3)) {
+      mask3 = mask3[0];
     }
     let outputMask;
     if (this.returnSequences) {
       if (this.mergeMode == null) {
-        outputMask = [mask, mask];
+        outputMask = [mask3, mask3];
       } else {
-        outputMask = mask;
+        outputMask = mask3;
       }
     } else {
       if (this.mergeMode == null) {
@@ -41017,13 +41019,13 @@ var eluConfig = {
 function leakyRelu2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { alpha } = attrs;
+  const { alpha: alpha2 } = attrs;
   assertNotComplex([x], "leakyRelu");
   const xSize = util_exports.sizeFromShape(x.shape);
   const xVals = backend22.data.get(x.dataId).values;
   const outVals = util_exports.getTypedArrayFromDType("float32", xSize);
   for (let i = 0; i < xVals.length; i++) {
-    outVals[i] = xVals[i] < 0 ? alpha * xVals[i] : xVals[i];
+    outVals[i] = xVals[i] < 0 ? alpha2 * xVals[i] : xVals[i];
   }
   return backend22.makeTensorInfo(x.shape, "float32", outVals);
 }
@@ -41035,11 +41037,11 @@ var leakyReluConfig = {
 var preluImpl = createSimpleBinaryKernelImpl((xValue, aValue) => xValue < 0 ? aValue * xValue : xValue);
 function prelu3(args) {
   const { inputs, backend: backend22 } = args;
-  const { x, alpha } = inputs;
-  assertNotComplex([x, alpha], "prelu");
+  const { x, alpha: alpha2 } = inputs;
+  assertNotComplex([x, alpha2], "prelu");
   const aVals = backend22.data.get(x.dataId).values;
-  const bVals = backend22.data.get(alpha.dataId).values;
-  const [resultData, resultShape] = preluImpl(x.shape, alpha.shape, aVals, bVals, "float32");
+  const bVals = backend22.data.get(alpha2.dataId).values;
+  const [resultData, resultShape] = preluImpl(x.shape, alpha2.shape, aVals, bVals, "float32");
   return backend22.makeTensorInfo(resultShape, "float32", resultData);
 }
 var preluConfig = {
@@ -43736,7 +43738,7 @@ var logicalOrConfig = {
 function lRN(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { depthRadius, bias, alpha, beta } = attrs;
+  const { depthRadius, bias, alpha: alpha2, beta } = attrs;
   assertNotComplex(x, "LRN");
   const channels = x.shape[3];
   const maxD = channels - 1;
@@ -43756,7 +43758,7 @@ function lRN(args) {
   }
   for (let offset = 0; offset < size2; offset++) {
     const sum7 = sumAcrossChannels(offset);
-    const val = xValues[offset] * Math.pow(bias + alpha * sum7, -beta);
+    const val = xValues[offset] * Math.pow(bias + alpha2 * sum7, -beta);
     result[offset] = val;
   }
   return backend22.makeTensorInfo(x.shape, x.dtype, result);
@@ -43769,7 +43771,7 @@ var lRNConfig = {
 function lRNGrad(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, y, dy } = inputs;
-  const { depthRadius, bias, alpha, beta } = attrs;
+  const { depthRadius, bias, alpha: alpha2, beta } = attrs;
   assertNotComplex(dy, "LRNGrad");
   const dySize = util_exports.sizeFromShape(dy.shape);
   const channels = dy.shape[3];
@@ -43786,9 +43788,9 @@ function lRNGrad(args) {
     for (let k = depthBegin; k < depthEnd; k++) {
       norm2 += Math.pow(xValues[k], 2);
     }
-    norm2 = alpha * norm2 + bias;
+    norm2 = alpha2 * norm2 + bias;
     for (let k = depthBegin; k < depthEnd; k++) {
-      let dyi = -2 * alpha * beta * xValues[k] * yValues[offset] / norm2;
+      let dyi = -2 * alpha2 * beta * xValues[k] * yValues[offset] / norm2;
       if (offset === k) {
         dyi += Math.pow(norm2, -beta);
       }
@@ -43928,12 +43930,12 @@ function maxPool3DGrad(args) {
                   }
                   const maxPos = effectiveFilterDepth * effectiveFilterHeight * effectiveFilterWidth - 1 - maxPosBuf.get(batch, dyDepth, dyRow, dyCol, channel);
                   const curPos = wDepth * effectiveFilterHeight * effectiveFilterWidth + wRow * effectiveFilterWidth + wCol;
-                  const mask = maxPos === curPos ? 1 : 0;
-                  if (mask === 0) {
+                  const mask3 = maxPos === curPos ? 1 : 0;
+                  if (mask3 === 0) {
                     continue;
                   }
                   const pixel = dyBuf.get(batch, dyDepth, dyRow, dyCol, channel);
-                  dotProd += pixel * mask;
+                  dotProd += pixel * mask3;
                 }
               }
             }
@@ -43989,12 +43991,12 @@ function maxPoolGrad2(args) {
               }
               const maxPos = effectiveFilterHeight * effectiveFilterWidth - 1 - maxPosBuf.get(b, dyR, dyC, d);
               const curPos = wR * effectiveFilterWidth + wC;
-              const mask = maxPos === curPos ? 1 : 0;
-              if (mask === 0) {
+              const mask3 = maxPos === curPos ? 1 : 0;
+              if (mask3 === 0) {
                 continue;
               }
               const pixel = dyBuf.get(b, dyR, dyC, d);
-              dotProd += pixel * mask;
+              dotProd += pixel * mask3;
             }
           }
           dx.set(dotProd, b, dxR, dxC, d);
@@ -45524,13 +45526,13 @@ function unsortedSegmentSum2(args) {
   for (let i = 0; i < numSegments; ++i) {
     const scalarValue = util_exports.createScalarValue(i, "int32");
     const segmentId = backend22.makeTensorInfo([], "int32", scalarValue);
-    const mask = equal2({ inputs: { a: segmentId, b: $segmentIds }, backend: backend22 });
-    const maskCasted = cast3({ inputs: { x: mask }, backend: backend22, attrs: { dtype: "float32" } });
+    const mask3 = equal2({ inputs: { a: segmentId, b: $segmentIds }, backend: backend22 });
+    const maskCasted = cast3({ inputs: { x: mask3 }, backend: backend22, attrs: { dtype: "float32" } });
     const mul2 = multiply2({ inputs: { a: maskCasted, b: x }, backend: backend22 });
     const sumTensorInfo = sum3({ inputs: { x: mul2 }, backend: backend22, attrs: { axis: 0, keepDims: false } });
     res.push(sumTensorInfo);
     intermediates.push(segmentId);
-    intermediates.push(mask);
+    intermediates.push(mask3);
     intermediates.push(maskCasted);
     intermediates.push(mul2);
     intermediates.push(sumTensorInfo);
@@ -50586,8 +50588,8 @@ var LEAKYRELU_PACKED = `
 function leakyRelu3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { alpha } = attrs;
-  const $alpha = backend22.makeTensorInfo([], "float32", util_exports.createScalarValue(alpha, "float32"));
+  const { alpha: alpha2 } = attrs;
+  const $alpha = backend22.makeTensorInfo([], "float32", util_exports.createScalarValue(alpha2, "float32"));
   const program = env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(LEAKYRELU_PACKED, x.shape, $alpha.shape) : new BinaryOpProgram(LEAKYRELU, x.shape, $alpha.shape);
   const result = backend22.runWebGLProgram(program, [x, $alpha], "float32");
   backend22.disposeIntermediateTensorInfo($alpha);
@@ -50605,9 +50607,9 @@ var PRELU_PACKED = `
 `;
 function prelu4(args) {
   const { inputs, backend: backend22 } = args;
-  const { x, alpha } = inputs;
-  const program = env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(PRELU_PACKED, x.shape, alpha.shape) : new BinaryOpProgram(PRELU, x.shape, alpha.shape);
-  return backend22.runWebGLProgram(program, [x, alpha], "float32");
+  const { x, alpha: alpha2 } = inputs;
+  const program = env().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new BinaryOpPackedProgram(PRELU_PACKED, x.shape, alpha2.shape) : new BinaryOpProgram(PRELU, x.shape, alpha2.shape);
+  return backend22.runWebGLProgram(program, [x, alpha2], "float32");
 }
 var preluConfig2 = {
   kernelName: Prelu,
@@ -55995,14 +55997,14 @@ var logicalOrConfig2 = {
   kernelFunc: logicalOr3
 };
 var LRNProgram = class {
-  constructor(xShape, radius, bias, alpha, beta) {
+  constructor(xShape, radius, bias, alpha2, beta) {
     this.variableNames = ["x"];
     this.outputShape = [];
     const rad = radius;
     const maxD = xShape[3] - 1;
     this.outputShape = xShape;
     let powOperator;
-    const basis = `float(${bias}) + float(${alpha}) * sum`;
+    const basis = `float(${bias}) + float(${alpha2}) * sum`;
     if (beta === 0.5) {
       powOperator = `inversesqrt(${basis})`;
     } else if (beta === 1) {
@@ -56033,7 +56035,7 @@ var LRNProgram = class {
   }
 };
 var LRNPackedProgram = class {
-  constructor(xShape, radius, bias, alpha, beta) {
+  constructor(xShape, radius, bias, alpha2, beta) {
     this.variableNames = ["x"];
     this.outputShape = [];
     this.packedInputs = true;
@@ -56042,7 +56044,7 @@ var LRNPackedProgram = class {
     const maxD = xShape[3] - 1;
     this.outputShape = xShape;
     let powOperator;
-    const basis = `float(${bias}) + float(${alpha}) * sum`;
+    const basis = `float(${bias}) + float(${alpha2}) * sum`;
     if (beta === 0.5) {
       powOperator = `inversesqrt(${basis})`;
     } else if (beta === 1) {
@@ -56118,8 +56120,8 @@ var LRNPackedProgram = class {
 var lrn = (args) => {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { depthRadius, bias, alpha, beta } = attrs;
-  const program = env().getBool("WEBGL_PACK_NORMALIZATION") ? new LRNPackedProgram(x.shape, depthRadius, bias, alpha, beta) : new LRNProgram(x.shape, depthRadius, bias, alpha, beta);
+  const { depthRadius, bias, alpha: alpha2, beta } = attrs;
+  const program = env().getBool("WEBGL_PACK_NORMALIZATION") ? new LRNPackedProgram(x.shape, depthRadius, bias, alpha2, beta) : new LRNProgram(x.shape, depthRadius, bias, alpha2, beta);
   return backend22.runWebGLProgram(program, [x], x.dtype);
 };
 var LRNConfig = {
@@ -56128,14 +56130,14 @@ var LRNConfig = {
   kernelFunc: lrn
 };
 var LRNGradProgram = class {
-  constructor(inputShape, depthRadius, bias, alpha, beta) {
+  constructor(inputShape, depthRadius, bias, alpha2, beta) {
     this.variableNames = ["inputImage", "outputImage", "dy"];
     this.outputShape = [];
     this.outputShape = inputShape;
     this.depth = inputShape[3];
     this.depthRadius = depthRadius;
     this.bias = bias;
-    this.alpha = alpha;
+    this.alpha = alpha2;
     this.beta = beta;
     this.userCode = `
       void main() {
@@ -56166,14 +56168,14 @@ var LRNGradProgram = class {
             }
           }
 
-          norm = float(${alpha}) * norm + float(${bias});
+          norm = float(${alpha2}) * norm + float(${bias});
 
           for(int k = MIN_DEPTH_BEGIN; k < MAX_DEPTH_END; ++k){
             if (k < depthBegin){
               continue;
             }
             else if (k >= depthBegin && k < depthEnd){
-              float dyi = -2.0 * float(${alpha})
+              float dyi = -2.0 * float(${alpha2})
                 * float(${beta})
                 * getInputImage(b ,r ,c, k) * getOutputImage(b, r, c, d)
                 / norm;
@@ -56198,8 +56200,8 @@ var LRNGradProgram = class {
 var lrnGrad = (args) => {
   const { inputs, backend: backend22, attrs } = args;
   const { x, y, dy } = inputs;
-  const { depthRadius, bias, alpha, beta } = attrs;
-  const program = new LRNGradProgram(x.shape, depthRadius, bias, alpha, beta);
+  const { depthRadius, bias, alpha: alpha2, beta } = attrs;
+  const program = new LRNGradProgram(x.shape, depthRadius, bias, alpha2, beta);
   return backend22.runWebGLProgram(program, [x, y, dy], x.dtype);
 };
 var LRNGradConfig = {
@@ -65126,9 +65128,9 @@ var powConfig3 = {
 };
 function prelu5(args) {
   const { inputs, backend: backend22 } = args;
-  const { x, alpha } = inputs;
-  const program = new BinaryOpProgram2(BinaryOpType.PRELU, x.shape, alpha.shape);
-  return backend22.runWebGPUProgram(program, [x, alpha], "float32");
+  const { x, alpha: alpha2 } = inputs;
+  const program = new BinaryOpProgram2(BinaryOpType.PRELU, x.shape, alpha2.shape);
+  return backend22.runWebGPUProgram(program, [x, alpha2], "float32");
 }
 var preluConfig3 = {
   kernelName: Prelu,
@@ -68915,12 +68917,12 @@ function setupFunc2(backend22) {
   ]);
 }
 function leakyRelu4(args) {
-  const { inputs: { x }, attrs: { alpha }, backend: backend22 } = args;
+  const { inputs: { x }, attrs: { alpha: alpha2 }, backend: backend22 } = args;
   const xId = backend22.dataIdMap.get(x.dataId).id;
   const out = backend22.makeOutput(x.shape, "float32");
   if (util_exports.sizeFromShape(x.shape) !== 0) {
     const outId = backend22.dataIdMap.get(out.dataId).id;
-    wasmFunc3(xId, CppDType[x.dtype], alpha, outId);
+    wasmFunc3(xId, CppDType[x.dtype], alpha2, outId);
   }
   return out;
 }
@@ -69401,9 +69403,9 @@ function setup31(backend22) {
 }
 function prelu6(args) {
   const { inputs, backend: backend22 } = args;
-  const { x, alpha } = inputs;
+  const { x, alpha: alpha2 } = inputs;
   const xId = backend22.dataIdMap.get(x.dataId).id;
-  const weightsId = backend22.dataIdMap.get(alpha.dataId).id;
+  const weightsId = backend22.dataIdMap.get(alpha2.dataId).id;
   let inputId = xId;
   const input2 = x;
   let castedInput = input2;
@@ -69804,12 +69806,12 @@ function setup40(backend22) {
 }
 function step4(args) {
   const { backend: backend22, inputs, attrs } = args;
-  const { alpha } = attrs;
+  const { alpha: alpha2 } = attrs;
   const { x } = inputs;
   const xId = backend22.dataIdMap.get(x.dataId).id;
   const out = backend22.makeOutput(x.shape, x.dtype);
   const outId = backend22.dataIdMap.get(out.dataId).id;
-  wasmStep(xId, alpha, CppDType[x.dtype], outId);
+  wasmStep(xId, alpha2, CppDType[x.dtype], outId);
   return out;
 }
 var stepConfig3 = {
@@ -75956,9 +75958,8 @@ var model9 = null;
 var inputSize5 = 0;
 var skipped7 = Number.MAX_SAFE_INTEGER;
 var lastTime6 = 0;
-var enlargeFact = 1.6;
 async function predict6(input2, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime6;
   const skipFrame = skipped7 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -75972,7 +75973,7 @@ async function predict6(input2, config3) {
         landmarks: possible.landmarks,
         confidence: possible.confidence
       };
-      boxCache.push(squarifyBox(enlargeBox(scaleBoxCoordinates(box4, possibleBoxes.scaleFactor), Math.sqrt(enlargeFact))));
+      boxCache.push(squarifyBox(enlargeBox(scaleBoxCoordinates(box4, possibleBoxes.scaleFactor), Math.sqrt(((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6))));
     }
     skipped7 = 0;
   } else {
@@ -75996,14 +75997,14 @@ async function predict6(input2, config3) {
       faceScore: 0,
       annotations: {}
     };
-    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(false, box4, input2, inputSize5);
-    if ((_d = config3 == null ? void 0 : config3.filter) == null ? void 0 : _d.equalization) {
+    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(false, box4, input2, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? inputSize5 : size());
+    if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
       dispose(face5.tensor);
       face5.tensor = equilized;
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_e = config3.face.mesh) == null ? void 0 : _e.enabled)) {
+    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
       face5.box = getClampedBox(box4, input2);
       face5.boxRaw = getRawBox(box4, input2);
       face5.score = face5.boxScore;
@@ -76024,22 +76025,22 @@ async function predict6(input2, config3) {
       const coordsReshaped = reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       dispose([contourCoords, coordsReshaped, confidence, contours]);
-      if (face5.faceScore < (((_f = config3.face.detector) == null ? void 0 : _f.minConfidence) || 1)) {
+      if (face5.faceScore < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
-        if ((_g = config3.face.iris) == null ? void 0 : _g.enabled)
+        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
-        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), enlargeFact), confidence: box4.confidence });
+        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_j = config3.face.detector) == null ? void 0 : _j.cropFactor) || 1.6), confidence: box4.confidence });
         face5.box = getClampedBox(box4, input2);
         face5.boxRaw = getRawBox(box4, input2);
         face5.score = face5.faceScore;
         newCache.push(box4);
         dispose(face5.tensor);
-        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_h = config3.face.detector) == null ? void 0 : _h.rotation, box4, input2, inputSize5);
+        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_k = config3.face.detector) == null ? void 0 : _k.rotation, box4, input2, inputSize5);
       }
     }
     faces.push(face5);
@@ -80966,8 +80967,8 @@ async function process5(input2, background, config3) {
   if (!model15)
     await load15(config3);
   const inputImage = await process2(input2, config3);
-  const width = ((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0;
-  const height = ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0;
+  const width = ((_a = inputImage.tensor) == null ? void 0 : _a.shape[2]) || 0;
+  const height = ((_b = inputImage.tensor) == null ? void 0 : _b.shape[1]) || 0;
   if (!inputImage.tensor)
     return { data: [], canvas: null, alpha: null };
   const t = {};
@@ -81024,7 +81025,7 @@ async function process5(input2, background, config3) {
   }
   Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   busy = false;
-  return { data, canvas: mergedCanvas || compositeCanvas, alpha: alphaCanvas };
+  return { data, canvas: compositeCanvas, alpha: alphaCanvas };
 }
 
 // src/models.ts
@@ -81841,6 +81842,44 @@ async function all5(inCanvas2, result, drawOptions) {
   return promise;
 }
 
+// src/face/mask.ts
+var expandFact = 0.1;
+var alpha = 0.5;
+function insidePoly(x, y, polygon) {
+  let inside = false;
+  let j = polygon.length - 1;
+  for (let i = 0; i < polygon.length; j = i++) {
+    if (polygon[i].y > y !== polygon[j].y > y && x < (polygon[j].x - polygon[i].x) * (y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)
+      inside = !inside;
+  }
+  return inside;
+}
+async function mask(face5) {
+  if (!face5.tensor)
+    return face5.tensor;
+  const width = face5.tensor.shape[2] || 0;
+  const height = face5.tensor.shape[1] || 0;
+  const buffer2 = await face5.tensor.buffer();
+  let silhouette = [];
+  for (const pt of meshAnnotations.silhouette)
+    silhouette.push({ x: (face5.mesh[pt][0] - face5.box[0]) / face5.box[2], y: (face5.mesh[pt][1] - face5.box[1]) / face5.box[3] });
+  if (expandFact && expandFact > 0)
+    silhouette = silhouette.map((pt) => ({ x: pt.x > 0.5 ? pt.x + expandFact : pt.x - expandFact, y: pt.y > 0.5 ? pt.y + expandFact : pt.y - expandFact }));
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      const inside = insidePoly(x / width, y / width, silhouette);
+      if (!inside) {
+        buffer2.set(alpha * buffer2.get(0, y, x, 0), 0, y, x, 0);
+        buffer2.set(alpha * buffer2.get(0, y, x, 1), 0, y, x, 1);
+        buffer2.set(alpha * buffer2.get(0, y, x, 2), 0, y, x, 2);
+      }
+    }
+  }
+  const output = buffer2.toTensor();
+  dispose(buffer2);
+  return output;
+}
+
 // src/face/angles.ts
 var calculateGaze = (face5) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
@@ -81949,7 +81988,7 @@ var calculateFaceAngle = (face5, imageSize) => {
 
 // src/face/face.ts
 var detectFace = async (parent, input2) => {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
   let timeStamp;
   let ageRes;
   let gearRes;
@@ -81974,44 +82013,49 @@ var detectFace = async (parent, input2) => {
       log("Face object is disposed:", faces[i].tensor);
       continue;
     }
-    const rotation = calculateFaceAngle(faces[i], [input2.shape[2], input2.shape[1]]);
+    if ((_a = parent.config.face.detector) == null ? void 0 : _a.mask) {
+      const masked = await mask(faces[i]);
+      dispose(faces[i].tensor);
+      faces[i].tensor = masked;
+    }
+    const rotation = faces[i].mesh && faces[i].mesh.length > 200 ? calculateFaceAngle(faces[i], [input2.shape[2], input2.shape[1]]) : null;
     parent.analyze("Start Emotion:");
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? predict5(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = ((_b = parent.config.face.emotion) == null ? void 0 : _b.enabled) ? predict5(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:emotion";
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await predict5(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = ((_c = parent.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict5(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
       parent.performance.emotion = env2.perfadd ? (parent.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Emotion:");
     parent.analyze("Start AntiSpoof:");
     if (parent.config.async) {
-      antispoofRes = parent.config.face.antispoof.enabled ? predict(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = ((_d = parent.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:antispoof";
       timeStamp = now();
-      antispoofRes = parent.config.face.antispoof.enabled ? await predict(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = ((_e = parent.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = env2.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End AntiSpoof:");
     parent.analyze("Start Liveness:");
     if (parent.config.async) {
-      livenessRes = parent.config.face.liveness.enabled ? predict10(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      livenessRes = ((_f = parent.config.face.liveness) == null ? void 0 : _f.enabled) ? predict10(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:liveness";
       timeStamp = now();
-      livenessRes = parent.config.face.liveness.enabled ? await predict10(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      livenessRes = ((_g = parent.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict10(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = env2.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Liveness:");
     parent.analyze("Start Description:");
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? predict7(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      descRes = ((_h = parent.config.face.description) == null ? void 0 : _h.enabled) ? predict7(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:description";
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await predict7(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
+      descRes = ((_i = parent.config.face.description) == null ? void 0 : _i.enabled) ? await predict7(faces[i].tensor || tensor([]), parent.config, i, faces.length) : null;
       parent.performance.description = env2.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Description:");
@@ -82019,12 +82063,12 @@ var detectFace = async (parent, input2) => {
       [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
     parent.analyze("Finish Face:");
-    if (!parent.config.face.iris.enabled && ((_b = (_a = faces[i]) == null ? void 0 : _a.annotations) == null ? void 0 : _b.leftEyeIris) && ((_d = (_c = faces[i]) == null ? void 0 : _c.annotations) == null ? void 0 : _d.rightEyeIris)) {
+    if (!((_j = parent.config.face.iris) == null ? void 0 : _j.enabled) && ((_l = (_k = faces[i]) == null ? void 0 : _k.annotations) == null ? void 0 : _l.leftEyeIris) && ((_n = (_m = faces[i]) == null ? void 0 : _m.annotations) == null ? void 0 : _n.rightEyeIris)) {
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0] && faces[i].annotations.leftEyeIris.length > 0 && faces[i].annotations.rightEyeIris.length > 0 && faces[i].annotations.leftEyeIris[0] !== null && faces[i].annotations.rightEyeIris[0] !== null ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input2.shape[2] : 0;
-    const tensor2 = parent.config.face.detector.return ? squeeze(faces[i].tensor) : null;
+    const tensor2 = ((_o = parent.config.face.detector) == null ? void 0 : _o.return) ? squeeze(faces[i].tensor) : null;
     dispose(faces[i].tensor);
     if (faces[i].tensor)
       delete faces[i].tensor;
@@ -82087,11 +82131,12 @@ var face2 = (res) => {
   const gestures = [];
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 450) {
-      const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
-      if (Math.abs(eyeFacing) < 10)
+      const zDiff = res[i].mesh[33][2] - res[i].mesh[263][2];
+      const xDiff = res[i].mesh[33][0] - res[i].mesh[263][0];
+      if (Math.abs(zDiff / xDiff) <= 0.15)
         gestures.push({ face: i, gesture: "facing center" });
       else
-        gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? "left" : "right"}` });
+        gestures.push({ face: i, gesture: `facing ${zDiff < 0 ? "left" : "right"}` });
       const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]);
       if (openLeft < 0.2)
         gestures.push({ face: i, gesture: "blink left eye" });
@@ -82255,18 +82300,21 @@ function calc2(newResult, config3) {
     for (let i = 0; i < newResult.face.length; i++) {
       const box4 = newResult.face[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor);
       const boxRaw = newResult.face[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor);
-      const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
-      rotation.matrix = (_g = newResult.face[i].rotation) == null ? void 0 : _g.matrix;
-      rotation.angle = {
-        roll: ((bufferedFactor - 1) * (((_i = (_h = bufferedResult.face[i].rotation) == null ? void 0 : _h.angle) == null ? void 0 : _i.roll) || 0) + (((_k = (_j = newResult.face[i].rotation) == null ? void 0 : _j.angle) == null ? void 0 : _k.roll) || 0)) / bufferedFactor,
-        yaw: ((bufferedFactor - 1) * (((_m = (_l = bufferedResult.face[i].rotation) == null ? void 0 : _l.angle) == null ? void 0 : _m.yaw) || 0) + (((_o = (_n = newResult.face[i].rotation) == null ? void 0 : _n.angle) == null ? void 0 : _o.yaw) || 0)) / bufferedFactor,
-        pitch: ((bufferedFactor - 1) * (((_q = (_p = bufferedResult.face[i].rotation) == null ? void 0 : _p.angle) == null ? void 0 : _q.pitch) || 0) + (((_s = (_r = newResult.face[i].rotation) == null ? void 0 : _r.angle) == null ? void 0 : _s.pitch) || 0)) / bufferedFactor
-      };
-      rotation.gaze = {
-        bearing: ((bufferedFactor - 1) * (((_u = (_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze) == null ? void 0 : _u.bearing) || 0) + (((_w = (_v = newResult.face[i].rotation) == null ? void 0 : _v.gaze) == null ? void 0 : _w.bearing) || 0)) / bufferedFactor,
-        strength: ((bufferedFactor - 1) * (((_y = (_x = bufferedResult.face[i].rotation) == null ? void 0 : _x.gaze) == null ? void 0 : _y.strength) || 0) + (((_A = (_z = newResult.face[i].rotation) == null ? void 0 : _z.gaze) == null ? void 0 : _A.strength) || 0)) / bufferedFactor
-      };
-      bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box4, boxRaw };
+      if (newResult.face[i].rotation) {
+        const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
+        rotation.matrix = (_g = newResult.face[i].rotation) == null ? void 0 : _g.matrix;
+        rotation.angle = {
+          roll: ((bufferedFactor - 1) * (((_i = (_h = bufferedResult.face[i].rotation) == null ? void 0 : _h.angle) == null ? void 0 : _i.roll) || 0) + (((_k = (_j = newResult.face[i].rotation) == null ? void 0 : _j.angle) == null ? void 0 : _k.roll) || 0)) / bufferedFactor,
+          yaw: ((bufferedFactor - 1) * (((_m = (_l = bufferedResult.face[i].rotation) == null ? void 0 : _l.angle) == null ? void 0 : _m.yaw) || 0) + (((_o = (_n = newResult.face[i].rotation) == null ? void 0 : _n.angle) == null ? void 0 : _o.yaw) || 0)) / bufferedFactor,
+          pitch: ((bufferedFactor - 1) * (((_q = (_p = bufferedResult.face[i].rotation) == null ? void 0 : _p.angle) == null ? void 0 : _q.pitch) || 0) + (((_s = (_r = newResult.face[i].rotation) == null ? void 0 : _r.angle) == null ? void 0 : _s.pitch) || 0)) / bufferedFactor
+        };
+        rotation.gaze = {
+          bearing: ((bufferedFactor - 1) * (((_u = (_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze) == null ? void 0 : _u.bearing) || 0) + (((_w = (_v = newResult.face[i].rotation) == null ? void 0 : _v.gaze) == null ? void 0 : _w.bearing) || 0)) / bufferedFactor,
+          strength: ((bufferedFactor - 1) * (((_y = (_x = bufferedResult.face[i].rotation) == null ? void 0 : _x.gaze) == null ? void 0 : _y.strength) || 0) + (((_A = (_z = newResult.face[i].rotation) == null ? void 0 : _z.gaze) == null ? void 0 : _A.strength) || 0)) / bufferedFactor
+        };
+        bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box4, boxRaw };
+      }
+      bufferedResult.face[i] = { ...newResult.face[i], box: box4, boxRaw };
     }
   }
   if (!bufferedResult.object || newResult.object.length !== bufferedResult.object.length) {

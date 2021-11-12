@@ -150,7 +150,7 @@ export declare class Human {
      *  - `alpha` as grayscale canvas that represents segmentation alpha values
      */
     segmentation(input: Input, background?: Input): Promise<{
-        data: number[];
+        data: number[] | Tensor;
         canvas: HTMLCanvasElement | OffscreenCanvas | null;
         alpha: HTMLCanvasElement | OffscreenCanvas | null;
     }>;

@@ -114,23 +114,26 @@ export function calc(newResult: Result, config: Config): Result {
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor)) as Box;
       const boxRaw = (newResult.face[i].boxRaw // update boxRaw
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor)) as Box;
-      const rotation: {
-        matrix: [number, number, number, number, number, number, number, number, number],
-        angle: { roll: number, yaw: number, pitch: number },
-        gaze: { bearing: number, strength: number }
-      } = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
-      rotation.matrix = newResult.face[i].rotation?.matrix as [number, number, number, number, number, number, number, number, number];
-      rotation.angle = {
-        roll: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.roll || 0) + (newResult.face[i].rotation?.angle?.roll || 0)) / bufferedFactor,
-        yaw: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.yaw || 0) + (newResult.face[i].rotation?.angle?.yaw || 0)) / bufferedFactor,
-        pitch: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.pitch || 0) + (newResult.face[i].rotation?.angle?.pitch || 0)) / bufferedFactor,
-      };
-      rotation.gaze = {
-        // not fully correct due projection on circle, also causes wrap-around draw on jump from negative to positive
-        bearing: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze?.bearing || 0) + (newResult.face[i].rotation?.gaze?.bearing || 0)) / bufferedFactor,
-        strength: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze?.strength || 0) + (newResult.face[i].rotation?.gaze?.strength || 0)) / bufferedFactor,
-      };
-      bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw }; // shallow clone plus updated values
+      if (newResult.face[i].rotation) {
+        const rotation: {
+          matrix: [number, number, number, number, number, number, number, number, number],
+          angle: { roll: number, yaw: number, pitch: number },
+          gaze: { bearing: number, strength: number }
+        } = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
+        rotation.matrix = newResult.face[i].rotation?.matrix as [number, number, number, number, number, number, number, number, number];
+        rotation.angle = {
+          roll: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.roll || 0) + (newResult.face[i].rotation?.angle?.roll || 0)) / bufferedFactor,
+          yaw: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.yaw || 0) + (newResult.face[i].rotation?.angle?.yaw || 0)) / bufferedFactor,
+          pitch: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.pitch || 0) + (newResult.face[i].rotation?.angle?.pitch || 0)) / bufferedFactor,
+        };
+        rotation.gaze = {
+          // not fully correct due projection on circle, also causes wrap-around draw on jump from negative to positive
+          bearing: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze?.bearing || 0) + (newResult.face[i].rotation?.gaze?.bearing || 0)) / bufferedFactor,
+          strength: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze?.strength || 0) + (newResult.face[i].rotation?.gaze?.strength || 0)) / bufferedFactor,
+        };
+        bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw }; // shallow clone plus updated values
+      }
+      bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw }; // shallow clone plus updated values
     }
   }
 

@@ -43,6 +43,15 @@ export async function load(): Promise<FaceRecord[]> {
   });
 }
 
+export async function count(): Promise<number> {
+  if (!db) await open(); // open or create if not already done
+  return new Promise((resolve) => {
+    const store: IDBRequest = db.transaction([table], 'readwrite').objectStore(table).count();
+    store.onerror = (evt) => log('count error:', evt);
+    store.onsuccess = () => resolve(store.result);
+  });
+}
+
 export async function save(faceRecord: FaceRecord) {
   if (!db) await open(); // open or create if not already done
   const newRecord = { name: faceRecord.name, descriptor: faceRecord.descriptor, image: faceRecord.image }; // omit id as its autoincrement

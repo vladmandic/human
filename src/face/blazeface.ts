@@ -17,7 +17,6 @@ let anchorsData: [number, number][] = [];
 let anchors: Tensor | null = null;
 let inputSize = 0;
 
-// export const size = () => (model && model.inputs[0].shape ? model.inputs[0].shape[2] : 0);
 export const size = () => inputSize;
 
 export async function load(config: Config): Promise<GraphModel> {

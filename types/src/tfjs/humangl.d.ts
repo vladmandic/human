@@ -1,4 +1,5 @@
 /** TFJS custom backend registration */
+import type { Human } from '../human';
 export declare const config: {
     name: string;
     priority: number;
@@ -21,4 +22,4 @@ export declare const config: {
  *
  * @returns void
  */
-export declare function register(instance: any): Promise<void>;
+export declare function register(instance: Human): Promise<void>;

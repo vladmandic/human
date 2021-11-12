@@ -152,6 +152,8 @@ var config = {
       skipTime: 2500,
       minConfidence: 0.2,
       iouThreshold: 0.1,
+      cropFactor: 1.6,
+      mask: false,
       return: false
     },
     mesh: {
@@ -5631,9 +5633,8 @@ var model8 = null;
 var inputSize5 = 0;
 var skipped7 = Number.MAX_SAFE_INTEGER;
 var lastTime6 = 0;
-var enlargeFact = 1.6;
 async function predict6(input, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime6;
   const skipFrame = skipped7 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -5647,7 +5648,7 @@ async function predict6(input, config3) {
         landmarks: possible.landmarks,
         confidence: possible.confidence
       };
-      boxCache.push(squarifyBox(enlargeBox(scaleBoxCoordinates(box4, possibleBoxes.scaleFactor), Math.sqrt(enlargeFact))));
+      boxCache.push(squarifyBox(enlargeBox(scaleBoxCoordinates(box4, possibleBoxes.scaleFactor), Math.sqrt(((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6))));
     }
     skipped7 = 0;
   } else {
@@ -5671,14 +5672,14 @@ async function predict6(input, config3) {
       faceScore: 0,
       annotations: {}
     };
-    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(false, box4, input, inputSize5);
-    if ((_d = config3 == null ? void 0 : config3.filter) == null ? void 0 : _d.equalization) {
+    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(false, box4, input, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? inputSize5 : size());
+    if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
       tfjs_esm_exports.dispose(face5.tensor);
       face5.tensor = equilized;
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_e = config3.face.mesh) == null ? void 0 : _e.enabled)) {
+    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
       face5.box = getClampedBox(box4, input);
       face5.boxRaw = getRawBox(box4, input);
       face5.score = face5.boxScore;
@@ -5699,22 +5700,22 @@ async function predict6(input, config3) {
       const coordsReshaped = tfjs_esm_exports.reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       tfjs_esm_exports.dispose([contourCoords, coordsReshaped, confidence, contours]);
-      if (face5.faceScore < (((_f = config3.face.detector) == null ? void 0 : _f.minConfidence) || 1)) {
+      if (face5.faceScore < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
-        if ((_g = config3.face.iris) == null ? void 0 : _g.enabled)
+        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
-        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), enlargeFact), confidence: box4.confidence });
+        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_j = config3.face.detector) == null ? void 0 : _j.cropFactor) || 1.6), confidence: box4.confidence });
         face5.box = getClampedBox(box4, input);
         face5.boxRaw = getRawBox(box4, input);
         face5.score = face5.faceScore;
         newCache.push(box4);
         tfjs_esm_exports.dispose(face5.tensor);
-        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_h = config3.face.detector) == null ? void 0 : _h.rotation, box4, input, inputSize5);
+        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_k = config3.face.detector) == null ? void 0 : _k.rotation, box4, input, inputSize5);
       }
     }
     faces.push(face5);
@@ -10641,8 +10642,8 @@ async function process5(input, background, config3) {
   if (!model14)
     await load15(config3);
   const inputImage = await process2(input, config3);
-  const width = ((_a = inputImage.canvas) == null ? void 0 : _a.width) || 0;
-  const height = ((_b = inputImage.canvas) == null ? void 0 : _b.height) || 0;
+  const width = ((_a = inputImage.tensor) == null ? void 0 : _a.shape[2]) || 0;
+  const height = ((_b = inputImage.tensor) == null ? void 0 : _b.shape[1]) || 0;
   if (!inputImage.tensor)
     return { data: [], canvas: null, alpha: null };
   const t = {};
@@ -10699,7 +10700,7 @@ async function process5(input, background, config3) {
   }
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   busy = false;
-  return { data, canvas: mergedCanvas || compositeCanvas, alpha: alphaCanvas };
+  return { data, canvas: compositeCanvas, alpha: alphaCanvas };
 }
 
 // src/models.ts
@@ -11516,6 +11517,44 @@ async function all(inCanvas2, result, drawOptions) {
   return promise;
 }
 
+// src/face/mask.ts
+var expandFact = 0.1;
+var alpha = 0.5;
+function insidePoly(x, y, polygon) {
+  let inside = false;
+  let j = polygon.length - 1;
+  for (let i = 0; i < polygon.length; j = i++) {
+    if (polygon[i].y > y !== polygon[j].y > y && x < (polygon[j].x - polygon[i].x) * (y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)
+      inside = !inside;
+  }
+  return inside;
+}
+async function mask(face5) {
+  if (!face5.tensor)
+    return face5.tensor;
+  const width = face5.tensor.shape[2] || 0;
+  const height = face5.tensor.shape[1] || 0;
+  const buffer = await face5.tensor.buffer();
+  let silhouette = [];
+  for (const pt of meshAnnotations.silhouette)
+    silhouette.push({ x: (face5.mesh[pt][0] - face5.box[0]) / face5.box[2], y: (face5.mesh[pt][1] - face5.box[1]) / face5.box[3] });
+  if (expandFact && expandFact > 0)
+    silhouette = silhouette.map((pt) => ({ x: pt.x > 0.5 ? pt.x + expandFact : pt.x - expandFact, y: pt.y > 0.5 ? pt.y + expandFact : pt.y - expandFact }));
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      const inside = insidePoly(x / width, y / width, silhouette);
+      if (!inside) {
+        buffer.set(alpha * buffer.get(0, y, x, 0), 0, y, x, 0);
+        buffer.set(alpha * buffer.get(0, y, x, 1), 0, y, x, 1);
+        buffer.set(alpha * buffer.get(0, y, x, 2), 0, y, x, 2);
+      }
+    }
+  }
+  const output = buffer.toTensor();
+  tfjs_esm_exports.dispose(buffer);
+  return output;
+}
+
 // src/face/angles.ts
 var calculateGaze = (face5) => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
@@ -11624,7 +11663,7 @@ var calculateFaceAngle = (face5, imageSize) => {
 
 // src/face/face.ts
 var detectFace = async (parent, input) => {
-  var _a, _b, _c, _d;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
   let timeStamp;
   let ageRes;
   let gearRes;
@@ -11649,44 +11688,49 @@ var detectFace = async (parent, input) => {
       log("Face object is disposed:", faces[i].tensor);
       continue;
     }
-    const rotation = calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]);
+    if ((_a = parent.config.face.detector) == null ? void 0 : _a.mask) {
+      const masked = await mask(faces[i]);
+      tfjs_esm_exports.dispose(faces[i].tensor);
+      faces[i].tensor = masked;
+    }
+    const rotation = faces[i].mesh && faces[i].mesh.length > 200 ? calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]) : null;
     parent.analyze("Start Emotion:");
     if (parent.config.async) {
-      emotionRes = parent.config.face.emotion.enabled ? predict5(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = ((_b = parent.config.face.emotion) == null ? void 0 : _b.enabled) ? predict5(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:emotion";
       timeStamp = now();
-      emotionRes = parent.config.face.emotion.enabled ? await predict5(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = ((_c = parent.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict5(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.emotion = env.perfadd ? (parent.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Emotion:");
     parent.analyze("Start AntiSpoof:");
     if (parent.config.async) {
-      antispoofRes = parent.config.face.antispoof.enabled ? predict(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = ((_d = parent.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:antispoof";
       timeStamp = now();
-      antispoofRes = parent.config.face.antispoof.enabled ? await predict(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = ((_e = parent.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End AntiSpoof:");
     parent.analyze("Start Liveness:");
     if (parent.config.async) {
-      livenessRes = parent.config.face.liveness.enabled ? predict10(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      livenessRes = ((_f = parent.config.face.liveness) == null ? void 0 : _f.enabled) ? predict10(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:liveness";
       timeStamp = now();
-      livenessRes = parent.config.face.liveness.enabled ? await predict10(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      livenessRes = ((_g = parent.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict10(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Liveness:");
     parent.analyze("Start Description:");
     if (parent.config.async) {
-      descRes = parent.config.face.description.enabled ? predict7(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      descRes = ((_h = parent.config.face.description) == null ? void 0 : _h.enabled) ? predict7(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:description";
       timeStamp = now();
-      descRes = parent.config.face.description.enabled ? await predict7(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
+      descRes = ((_i = parent.config.face.description) == null ? void 0 : _i.enabled) ? await predict7(faces[i].tensor || tfjs_esm_exports.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.description = env.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Description:");
@@ -11694,12 +11738,12 @@ var detectFace = async (parent, input) => {
       [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
     parent.analyze("Finish Face:");
-    if (!parent.config.face.iris.enabled && ((_b = (_a = faces[i]) == null ? void 0 : _a.annotations) == null ? void 0 : _b.leftEyeIris) && ((_d = (_c = faces[i]) == null ? void 0 : _c.annotations) == null ? void 0 : _d.rightEyeIris)) {
+    if (!((_j = parent.config.face.iris) == null ? void 0 : _j.enabled) && ((_l = (_k = faces[i]) == null ? void 0 : _k.annotations) == null ? void 0 : _l.leftEyeIris) && ((_n = (_m = faces[i]) == null ? void 0 : _m.annotations) == null ? void 0 : _n.rightEyeIris)) {
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0] && faces[i].annotations.leftEyeIris.length > 0 && faces[i].annotations.rightEyeIris.length > 0 && faces[i].annotations.leftEyeIris[0] !== null && faces[i].annotations.rightEyeIris[0] !== null ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
-    const tensor3 = parent.config.face.detector.return ? tfjs_esm_exports.squeeze(faces[i].tensor) : null;
+    const tensor3 = ((_o = parent.config.face.detector) == null ? void 0 : _o.return) ? tfjs_esm_exports.squeeze(faces[i].tensor) : null;
     tfjs_esm_exports.dispose(faces[i].tensor);
     if (faces[i].tensor)
       delete faces[i].tensor;
@@ -11762,11 +11806,12 @@ var face2 = (res) => {
   const gestures = [];
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 450) {
-      const eyeFacing = res[i].mesh[33][2] - res[i].mesh[263][2];
-      if (Math.abs(eyeFacing) < 10)
+      const zDiff = res[i].mesh[33][2] - res[i].mesh[263][2];
+      const xDiff = res[i].mesh[33][0] - res[i].mesh[263][0];
+      if (Math.abs(zDiff / xDiff) <= 0.15)
         gestures.push({ face: i, gesture: "facing center" });
       else
-        gestures.push({ face: i, gesture: `facing ${eyeFacing < 0 ? "left" : "right"}` });
+        gestures.push({ face: i, gesture: `facing ${zDiff < 0 ? "left" : "right"}` });
       const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]);
       if (openLeft < 0.2)
         gestures.push({ face: i, gesture: "blink left eye" });
@@ -11930,18 +11975,21 @@ function calc2(newResult, config3) {
     for (let i = 0; i < newResult.face.length; i++) {
       const box4 = newResult.face[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor);
       const boxRaw = newResult.face[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor);
-      const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
-      rotation.matrix = (_g = newResult.face[i].rotation) == null ? void 0 : _g.matrix;
-      rotation.angle = {
-        roll: ((bufferedFactor - 1) * (((_i = (_h = bufferedResult.face[i].rotation) == null ? void 0 : _h.angle) == null ? void 0 : _i.roll) || 0) + (((_k = (_j = newResult.face[i].rotation) == null ? void 0 : _j.angle) == null ? void 0 : _k.roll) || 0)) / bufferedFactor,
-        yaw: ((bufferedFactor - 1) * (((_m = (_l = bufferedResult.face[i].rotation) == null ? void 0 : _l.angle) == null ? void 0 : _m.yaw) || 0) + (((_o = (_n = newResult.face[i].rotation) == null ? void 0 : _n.angle) == null ? void 0 : _o.yaw) || 0)) / bufferedFactor,
-        pitch: ((bufferedFactor - 1) * (((_q = (_p = bufferedResult.face[i].rotation) == null ? void 0 : _p.angle) == null ? void 0 : _q.pitch) || 0) + (((_s = (_r = newResult.face[i].rotation) == null ? void 0 : _r.angle) == null ? void 0 : _s.pitch) || 0)) / bufferedFactor
-      };
-      rotation.gaze = {
-        bearing: ((bufferedFactor - 1) * (((_u = (_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze) == null ? void 0 : _u.bearing) || 0) + (((_w = (_v = newResult.face[i].rotation) == null ? void 0 : _v.gaze) == null ? void 0 : _w.bearing) || 0)) / bufferedFactor,
-        strength: ((bufferedFactor - 1) * (((_y = (_x = bufferedResult.face[i].rotation) == null ? void 0 : _x.gaze) == null ? void 0 : _y.strength) || 0) + (((_A = (_z = newResult.face[i].rotation) == null ? void 0 : _z.gaze) == null ? void 0 : _A.strength) || 0)) / bufferedFactor
-      };
-      bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box4, boxRaw };
+      if (newResult.face[i].rotation) {
+        const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
+        rotation.matrix = (_g = newResult.face[i].rotation) == null ? void 0 : _g.matrix;
+        rotation.angle = {
+          roll: ((bufferedFactor - 1) * (((_i = (_h = bufferedResult.face[i].rotation) == null ? void 0 : _h.angle) == null ? void 0 : _i.roll) || 0) + (((_k = (_j = newResult.face[i].rotation) == null ? void 0 : _j.angle) == null ? void 0 : _k.roll) || 0)) / bufferedFactor,
+          yaw: ((bufferedFactor - 1) * (((_m = (_l = bufferedResult.face[i].rotation) == null ? void 0 : _l.angle) == null ? void 0 : _m.yaw) || 0) + (((_o = (_n = newResult.face[i].rotation) == null ? void 0 : _n.angle) == null ? void 0 : _o.yaw) || 0)) / bufferedFactor,
+          pitch: ((bufferedFactor - 1) * (((_q = (_p = bufferedResult.face[i].rotation) == null ? void 0 : _p.angle) == null ? void 0 : _q.pitch) || 0) + (((_s = (_r = newResult.face[i].rotation) == null ? void 0 : _r.angle) == null ? void 0 : _s.pitch) || 0)) / bufferedFactor
+        };
+        rotation.gaze = {
+          bearing: ((bufferedFactor - 1) * (((_u = (_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze) == null ? void 0 : _u.bearing) || 0) + (((_w = (_v = newResult.face[i].rotation) == null ? void 0 : _v.gaze) == null ? void 0 : _w.bearing) || 0)) / bufferedFactor,
+          strength: ((bufferedFactor - 1) * (((_y = (_x = bufferedResult.face[i].rotation) == null ? void 0 : _x.gaze) == null ? void 0 : _y.strength) || 0) + (((_A = (_z = newResult.face[i].rotation) == null ? void 0 : _z.gaze) == null ? void 0 : _A.strength) || 0)) / bufferedFactor
+        };
+        bufferedResult.face[i] = { ...newResult.face[i], rotation, box: box4, boxRaw };
+      }
+      bufferedResult.face[i] = { ...newResult.face[i], box: box4, boxRaw };
     }
   }
   if (!bufferedResult.object || newResult.object.length !== bufferedResult.object.length) {

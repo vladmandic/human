@@ -54,7 +54,7 @@ export interface FaceResult {
     angle: { roll: number, yaw: number, pitch: number },
     matrix: [number, number, number, number, number, number, number, number, number],
     gaze: { bearing: number, strength: number },
-  }
+  } | null,
   /** detected face as tensor that can be used in further pipelines */
   tensor?: Tensor,
 }

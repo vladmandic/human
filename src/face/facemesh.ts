@@ -25,11 +25,9 @@ let model: GraphModel | null = null;
 let inputSize = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 let lastTime = 0;
-const enlargeFact = 1.6;
 
 export async function predict(input: Tensor, config: Config): Promise<FaceResult[]> {
   // reset cached boxes
-
   const skipTime = (config.face.detector?.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.face.detector?.skipFrames || 0);
   if (!config.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -43,7 +41,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         landmarks: possible.landmarks,
         confidence: possible.confidence,
       };
-      boxCache.push(util.squarifyBox(util.enlargeBox(util.scaleBoxCoordinates(box, possibleBoxes.scaleFactor), Math.sqrt(enlargeFact))));
+      boxCache.push(util.squarifyBox(util.enlargeBox(util.scaleBoxCoordinates(box, possibleBoxes.scaleFactor), Math.sqrt(config.face.detector?.cropFactor || 1.6))));
     }
     skipped = 0;
   } else {
@@ -68,7 +66,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       annotations: {},
     };
 
-    [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(false && config.face.detector?.rotation, box, input, inputSize); // optional rotate based on detector data // disabled
+    [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(false && config.face.detector?.rotation, box, input, config.face.mesh?.enabled ? inputSize : blazeface.size()); // optional rotate based on detector data
     if (config?.filter?.equalization) {
       const equilized = await histogramEqualization(face.tensor as Tensor);
       tf.dispose(face.tensor);
@@ -101,7 +99,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
         for (const key of Object.keys(coords.meshAnnotations)) face.annotations[key] = coords.meshAnnotations[key].map((index) => face.mesh[index]); // add annotations
-        box = util.squarifyBox({ ...util.enlargeBox(util.calculateLandmarksBoundingBox(face.mesh), enlargeFact), confidence: box.confidence }); // redefine box with mesh calculated one
+        box = util.squarifyBox({ ...util.enlargeBox(util.calculateLandmarksBoundingBox(face.mesh), (config.face.detector?.cropFactor || 1.6)), confidence: box.confidence }); // redefine box with mesh calculated one
         face.box = util.getClampedBox(box, input); // update detected box with box around the face mesh
         face.boxRaw = util.getRawBox(box, input);
         face.score = face.faceScore;

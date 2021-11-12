@@ -135,12 +135,10 @@ async function SelectFaceCanvas(face) {
   title('Selected Face');
 }
 
-function AddFaceCanvas(index, res, fileName) {
+async function AddFaceCanvas(index, res, fileName) {
   all[index] = res.face;
-  let ok = false;
   for (const i in res.face) {
-    if (res.face[i].mesh.length === 0) continue;
-    ok = true;
+    if (res.face[i].mesh.length === 0 || !res.face[i].tensor) continue; // did not get valid results
     all[index][i].fileName = fileName;
     const canvas = document.createElement('canvas');
     canvas.tag = { sample: index, face: i, source: fileName };
@@ -155,27 +153,22 @@ function AddFaceCanvas(index, res, fileName) {
       gender: ${Math.round(100 * res.face[i].genderScore)}% ${res.face[i].gender}
       emotion: ${emotion}
     `.replace(/  /g, ' ');
-    // mouse click on any face canvas triggers analysis
+    await human.tf.browser.toPixels(res.face[i].tensor, canvas);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return false;
+    ctx.font = 'small-caps 0.8rem "Lato"';
+    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+    ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
+    const arr = db.map((rec) => rec.embedding);
+    const result = human.match(res.face[i].embedding, arr);
+    ctx.font = 'small-caps 1rem "Lato"';
+    if (result.similarity && res.similarity > minScore) ctx.fillText(`${(100 * result.similarity).toFixed(1)}% ${db[result.index].name}`, 4, canvas.height - 30);
+    document.getElementById('faces').appendChild(canvas);
     canvas.addEventListener('click', (evt) => {
       log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face, 'Source:', evt.target.tag.source, all[evt.target.tag.sample][evt.target.tag.face]);
       SelectFaceCanvas(all[evt.target.tag.sample][evt.target.tag.face]);
     });
-    // if we actually got face image tensor, draw canvas with that face
-    if (res.face[i].tensor) {
-      human.tf.browser.toPixels(res.face[i].tensor, canvas);
-      document.getElementById('faces').appendChild(canvas);
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return false;
-      ctx.font = 'small-caps 0.8rem "Lato"';
-      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-      ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
-      const arr = db.map((rec) => rec.embedding);
-      const result = human.match(res.face[i].embedding, arr);
-      ctx.font = 'small-caps 1rem "Lato"';
-      if (result.similarity && res.similarity > minScore) ctx.fillText(`${(100 * result.similarity).toFixed(1)}% ${db[result.index].name}`, 4, canvas.height - 30);
-    }
   }
-  return ok;
 }
 
 async function AddImageElement(index, image, length) {
@@ -185,8 +178,8 @@ async function AddImageElement(index, image, length) {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
       human.detect(img, userConfig).then((res) => {
-        const ok = AddFaceCanvas(index, res, image); // then wait until image is analyzed
-        if (ok) document.getElementById('images').appendChild(img); // and finally we can add it
+        AddFaceCanvas(index, res, image); // then wait until image is analyzed
+        document.getElementById('images').appendChild(img); // and finally we can add it
         resolve(true);
       });
     };

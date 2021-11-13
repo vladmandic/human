@@ -11,9 +11,7 @@
   
 ### **HEAD -> main** 2021/11/12 mandic00@live.com
 
-
-### **origin/main** 2021/11/11 mandic00@live.com
-
+- implement optional face masking
 - add similarity score range normalization
 - add faceid demo
 - documentation overhaul

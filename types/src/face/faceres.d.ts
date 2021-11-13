@@ -10,4 +10,9 @@ import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
 export declare function load(config: Config): Promise<GraphModel>;
 export declare function enhance(input: any): Tensor;
-export declare function predict(image: Tensor, config: Config, idx: any, count: any): Promise<unknown>;
+export declare function predict(image: Tensor, config: Config, idx: any, count: any): Promise<{
+    age: number;
+    gender: string;
+    genderScore: number;
+    descriptor: number[];
+}>;

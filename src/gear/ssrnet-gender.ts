@@ -2,8 +2,6 @@
  * Gender model implementation
  *
  * Based on: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
- *
- * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
 import { log, join, now } from '../util/util';
@@ -13,10 +11,10 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
-let last = { gender: '' };
+const last: Array<{ gender: string, genderScore: number }> = [];
+let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
-let alternative = false;
 
 // tuning values
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
@@ -25,85 +23,45 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 export async function load(config: Config | any) {
   if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.gender.modelPath)) as unknown as GraphModel;
-    alternative = model.inputs[0].shape ? model.inputs[0]?.shape[3] === 1 : false;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face.gender.modelPath);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.face['ssrnet'].modelPathGender)) as unknown as GraphModel;
+    if (!model || !model['modelUrl']) log('load model failed:', config.face['ssrnet'].modelPathGender);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function predict(image: Tensor, config: Config | any) {
-  if (!model) return null;
-  const skipTime = (config.face.gender?.skipTime || 0) > (now() - lastTime);
-  const skipFrame = skipped < (config.face.gender?.skipFrames || 0);
-  if (config.skipAllowed && skipTime && skipFrame && last.gender !== '') {
+export async function predict(image: Tensor, config: Config, idx, count): Promise<{ gender: string, genderScore: number }> {
+  if (!model) return { gender: 'unknown', genderScore: 0 };
+  const skipFrame = skipped < (config.face['ssrnet']?.skipFrames || 0);
+  const skipTime = (config.face['ssrnet']?.skipTime || 0) > (now() - lastTime);
+  if (config.skipAllowed && skipFrame && skipTime && (lastCount === count) && last[idx]?.gender && (last[idx]?.genderScore > 0)) {
     skipped++;
-    return last;
+    return last[idx];
   }
   skipped = 0;
   return new Promise(async (resolve) => {
     if (!model?.inputs[0].shape) return;
-    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-    let enhance;
-    if (alternative) {
-      enhance = tf.tidy(() => {
-        const [red, green, blue] = tf.split(resize, 3, 3);
-        const redNorm = tf.mul(red, rgb[0]);
-        const greenNorm = tf.mul(green, rgb[1]);
-        const blueNorm = tf.mul(blue, rgb[2]);
-        const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
-        const normalize = tf.mul(tf.sub(grayscale, 0.5), 2); // range grayscale:-1..1
-        return normalize;
-      });
-    } else {
-      enhance = tf.mul(resize, [255.0]); // range RGB:0..255
-    }
-    tf.dispose(resize);
-
-    let genderT;
-    const obj = { gender: '', confidence: 0 };
-
-    if (config.face.gender.enabled) genderT = model.execute(enhance);
+    const t: Record<string, Tensor> = {};
+    t.resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    t.enhance = tf.tidy(() => {
+      const [red, green, blue] = tf.split(t.resize, 3, 3);
+      const redNorm = tf.mul(red, rgb[0]);
+      const greenNorm = tf.mul(green, rgb[1]);
+      const blueNorm = tf.mul(blue, rgb[2]);
+      const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
+      const normalize = tf.mul(tf.sub(grayscale, 0.5), 2); // range grayscale:-1..1
+      return normalize;
+    });
+    const obj = { gender: '', genderScore: 0 };
+    if (config.face['ssrnet'].enabled) t.gender = model.execute(t.enhance) as Tensor;
+    const data = await t.gender.data();
+    obj.gender = data[0] > data[1] ? 'female' : 'male'; // returns two values 0..1, bigger one is prediction
+    obj.genderScore = data[0] > data[1] ? (Math.trunc(100 * data[0]) / 100) : (Math.trunc(100 * data[1]) / 100);
+    Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+    last[idx] = obj;
+    lastCount = count;
     lastTime = now();
-    tf.dispose(enhance);
-
-    if (genderT) {
-      if (!Array.isArray(genderT)) {
-        const data = await genderT.data();
-        if (alternative) {
-          // returns two values 0..1, bigger one is prediction
-          if (data[0] > config.face.gender.minConfidence || data[1] > config.face.gender.minConfidence) {
-            obj.gender = data[0] > data[1] ? 'female' : 'male';
-            obj.confidence = data[0] > data[1] ? (Math.trunc(100 * data[0]) / 100) : (Math.trunc(100 * data[1]) / 100);
-          }
-        } else {
-          // returns one value 0..1, .5 is prediction threshold
-          const confidence = Math.trunc(200 * Math.abs((data[0] - 0.5))) / 100;
-          if (confidence > config.face.gender.minConfidence) {
-            obj.gender = data[0] <= 0.5 ? 'female' : 'male';
-            obj.confidence = Math.min(0.99, confidence);
-          }
-        }
-        tf.dispose(genderT);
-      } else {
-        const gender = await genderT[0].data();
-        const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
-        if (confidence > config.face.gender.minConfidence) {
-          obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
-          obj.confidence = Math.min(0.99, confidence);
-        }
-        /*
-        let age = (await genderT[1].argMax(1).data())[0];
-        const all = await genderT[1].data();
-        age = Math.round(all[age - 1] > all[age + 1] ? 10 * age - 100 * all[age - 1] : 10 * age + 100 * all[age + 1]) / 10;
-        const descriptor = await genderT[1].data();
-        */
-        genderT.forEach((t) => tf.dispose(t));
-      }
-    }
-    last = obj;
     resolve(obj);
   });
 }

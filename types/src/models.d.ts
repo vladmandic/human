@@ -10,8 +10,8 @@ import type { Human } from './human';
  * - each model can be `null` if not loaded, instance of `GraphModel` if loaded or `Promise` if loading
  */
 export declare class Models {
-    age: null | GraphModel | Promise<GraphModel>;
-    agegenderrace: null | GraphModel | Promise<GraphModel>;
+    ssrnetage: null | GraphModel | Promise<GraphModel>;
+    gear: null | GraphModel | Promise<GraphModel>;
     blazeposedetect: null | GraphModel | Promise<GraphModel>;
     blazepose: null | GraphModel | Promise<GraphModel>;
     centernet: null | GraphModel | Promise<GraphModel>;
@@ -22,7 +22,7 @@ export declare class Models {
     faceiris: null | GraphModel | Promise<GraphModel>;
     facemesh: null | GraphModel | Promise<GraphModel>;
     faceres: null | GraphModel | Promise<GraphModel>;
-    gender: null | GraphModel | Promise<GraphModel>;
+    ssrnetgender: null | GraphModel | Promise<GraphModel>;
     handpose: null | GraphModel | Promise<GraphModel>;
     handskeleton: null | GraphModel | Promise<GraphModel>;
     handtrack: null | GraphModel | Promise<GraphModel>;

@@ -62,8 +62,8 @@ export function enhance(input): Tensor {
   */
 }
 
-export async function predict(image: Tensor, config: Config, idx, count) {
-  if (!model) return null;
+export async function predict(image: Tensor, config: Config, idx, count): Promise<{ age: number, gender: string, genderScore: number, descriptor: number[] }> {
+  if (!model) return { age: 0, gender: 'unknown', genderScore: 0, descriptor: [] };
   const skipFrame = skipped < (config.face.description?.skipFrames || 0);
   const skipTime = (config.face.description?.skipTime || 0) > (now() - lastTime);
   if (config.skipAllowed && skipFrame && skipTime && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {

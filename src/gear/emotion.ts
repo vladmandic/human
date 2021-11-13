@@ -12,7 +12,6 @@ import { env } from '../util/env';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model: GraphModel | null;
-// let last: Array<{ score: number, emotion: string }> = [];
 const last: Array<Array<{ score: number, emotion: string }>> = [];
 let lastCount = 0;
 let lastTime = 0;
@@ -31,8 +30,8 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(image: Tensor, config: Config, idx, count) {
-  if (!model) return null;
+export async function predict(image: Tensor, config: Config, idx, count): Promise<Array<{ score: number, emotion: string }>> {
+  if (!model) return [];
   const skipFrame = skipped < (config.face.emotion?.skipFrames || 0);
   const skipTime = (config.face.emotion?.skipTime || 0) > (now() - lastTime);
   if (config.skipAllowed && skipTime && skipFrame && (lastCount === count) && last[idx] && (last[idx].length > 0)) {

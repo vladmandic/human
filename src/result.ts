@@ -41,6 +41,8 @@ export interface FaceResult {
   genderScore?: number,
   /** detected emotions */
   emotion?: Array<{ score: number, emotion: string }>,
+  /** detected race */
+  race?: Array<{ score: number, race: string }>,
   /** face descriptor */
   embedding?: Array<number>,
   /** face iris distance from camera */

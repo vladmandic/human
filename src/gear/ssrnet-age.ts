@@ -2,8 +2,6 @@
  * Age model implementation
  *
  * Based on: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
- *
- * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
 import { log, join, now } from '../util/util';
@@ -13,16 +11,17 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
-let last = { age: 0 };
+const last: Array<{ age: number }> = [];
+let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function load(config: Config | any) {
+export async function load(config: Config) {
   if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.age.modelPath)) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face.age.modelPath);
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.face['ssrnet'].modelPathAge)) as unknown as GraphModel;
+    if (!model || !model['modelUrl']) log('load model failed:', config.face['ssrnet'].modelPathAge);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else {
     if (config.debug) log('cached model:', model['modelUrl']);
@@ -31,35 +30,30 @@ export async function load(config: Config | any) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function predict(image: Tensor, config: Config | any) {
-  if (!model) return null;
-  const skipTime = (config.face.age?.skipTime || 0) > (now() - lastTime);
-  const skipFrame = skipped < (config.face.age?.skipFrames || 0);
-  if (config.skipAllowed && skipTime && skipFrame && last.age && (last.age > 0)) {
+export async function predict(image: Tensor, config: Config, idx, count): Promise<{ age: number }> {
+  if (!model) return { age: 0 };
+  const skipFrame = skipped < (config.face['ssrnet']?.skipFrames || 0);
+  const skipTime = (config.face['ssrnet']?.skipTime || 0) > (now() - lastTime);
+  if (config.skipAllowed && skipFrame && skipTime && (lastCount === count) && last[idx]?.age && (last[idx]?.age > 0)) {
     skipped++;
-    return last;
+    return last[idx];
   }
   skipped = 0;
   return new Promise(async (resolve) => {
     if (!model?.inputs || !model.inputs[0] || !model.inputs[0].shape) return;
-    const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-    const enhance = tf.mul(resize, [255.0]);
-    tf.dispose(resize);
-
-    let ageT;
+    const t: Record<string, Tensor> = {};
+    t.resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    t.enhance = tf.mul(t.resize, 255);
     const obj = { age: 0 };
-
-    if (config.face.age.enabled) ageT = model.execute(enhance);
-    lastTime = now();
-    tf.dispose(enhance);
-
-    if (ageT) {
-      const data = await ageT.data();
+    if (config.face['ssrnet'].enabled) t.age = model.execute(t.enhance) as Tensor;
+    if (t.age) {
+      const data = await t.age.data();
       obj.age = Math.trunc(10 * data[0]) / 10;
     }
-    tf.dispose(ageT);
-
-    last = obj;
+    Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+    last[idx] = obj;
+    lastCount = count;
+    lastTime = now();
     resolve(obj);
   });
 }

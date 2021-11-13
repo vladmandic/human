@@ -78,6 +78,7 @@ var humanConfig = {
     enabled: true,
     detector: { rotation: true, return: true, cropFactor: 1.6, mask: false },
     description: { enabled: true },
+    mobilefacenet: { enabled: false, modelPath: "https://vladmandic.github.io/human-models/models/mobilefacenet.json" },
     iris: { enabled: true },
     emotion: { enabled: false },
     antispoof: { enabled: true },
@@ -88,6 +89,7 @@ var humanConfig = {
   object: { enabled: false },
   gesture: { enabled: true }
 };
+var matchOptions = { order: 2, multiplier: 25, min: 0.2, max: 0.8 };
 var options = {
   minConfidence: 0.6,
   minSize: 224,
@@ -97,7 +99,8 @@ var options = {
   threshold: 0.5,
   mask: humanConfig.face.detector.mask,
   rotation: humanConfig.face.detector.rotation,
-  cropFactor: humanConfig.face.detector.cropFactor
+  cropFactor: humanConfig.face.detector.cropFactor,
+  ...matchOptions
 };
 var ok = {
   faceCount: false,
@@ -254,6 +257,7 @@ async function detectFace() {
   (_a = dom.canvas.getContext("2d")) == null ? void 0 : _a.clearRect(0, 0, options.minSize, options.minSize);
   if (!current.face || !current.face.tensor || !current.face.embedding)
     return false;
+  console.log("face record:", current.face);
   human.tf.browser.toPixels(current.face.tensor, dom.canvas);
   if (await count() === 0) {
     log2("face database is empty");
@@ -263,7 +267,7 @@ async function detectFace() {
   }
   const db2 = await load();
   const descriptors = db2.map((rec) => rec.descriptor);
-  const res = await human.match(current.face.embedding, descriptors);
+  const res = await human.match(current.face.embedding, descriptors, matchOptions);
   current.record = db2[res.index] || null;
   if (current.record) {
     log2(`best match: ${current.record.name} | id: ${current.record.id} | similarity: ${Math.round(1e3 * res.similarity) / 10}%`);

@@ -4,7 +4,9 @@
 
 import { env } from './util/env';
 import { log } from './util/util';
-import * as agegenderrace from './gear/gear-agegenderrace';
+import * as gear from './gear/gear';
+import * as ssrnetAge from './gear/ssrnet-age';
+import * as ssrnetGender from './gear/ssrnet-gender';
 import * as antispoof from './face/antispoof';
 import * as blazeface from './face/blazeface';
 import * as blazepose from './body/blazepose';
@@ -31,8 +33,8 @@ import type { Human } from './human';
  * - each model can be `null` if not loaded, instance of `GraphModel` if loaded or `Promise` if loading
  */
 export class Models {
-  age: null | GraphModel | Promise<GraphModel> = null;
-  agegenderrace: null | GraphModel | Promise<GraphModel> = null;
+  ssrnetage: null | GraphModel | Promise<GraphModel> = null;
+  gear: null | GraphModel | Promise<GraphModel> = null;
   blazeposedetect: null | GraphModel | Promise<GraphModel> = null;
   blazepose: null | GraphModel | Promise<GraphModel> = null;
   centernet: null | GraphModel | Promise<GraphModel> = null;
@@ -43,7 +45,7 @@ export class Models {
   faceiris: null | GraphModel | Promise<GraphModel> = null;
   facemesh: null | GraphModel | Promise<GraphModel> = null;
   faceres: null | GraphModel | Promise<GraphModel> = null;
-  gender: null | GraphModel | Promise<GraphModel> = null;
+  ssrnetgender: null | GraphModel | Promise<GraphModel> = null;
   handpose: null | GraphModel | Promise<GraphModel> = null;
   handskeleton: null | GraphModel | Promise<GraphModel> = null;
   handtrack: null | GraphModel | Promise<GraphModel> = null;
@@ -70,7 +72,6 @@ export async function load(instance: Human): Promise<void> {
   if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
   if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body.detector?.modelPath && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
   if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
-  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
   if (instance.config.body.enabled && !instance.models.movenet && instance.config.body?.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
   if (instance.config.body.enabled && !instance.models.posenet && instance.config.body?.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);
   if (instance.config.face.enabled && !instance.models.facedetect) instance.models.facedetect = blazeface.load(instance.config);
@@ -80,7 +81,9 @@ export async function load(instance: Human): Promise<void> {
   if (instance.config.face.enabled && instance.config.face.emotion?.enabled && !instance.models.emotion) instance.models.emotion = emotion.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.mesh?.enabled && !instance.models.facemesh) instance.models.facemesh = facemesh.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face['agegenderrace']?.enabled && !instance.models.agegenderrace) instance.models.agegenderrace = agegenderrace.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face['gear']?.enabled && !instance.models.gear) instance.models.gear = gear.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetage) instance.models.ssrnetage = ssrnetAge.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetgender) instance.models.ssrnetgender = ssrnetGender.load(instance.config);
   if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
   if (instance.config.object.enabled && !instance.models.centernet && instance.config.object?.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);

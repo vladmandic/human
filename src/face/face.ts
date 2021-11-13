@@ -12,6 +12,9 @@ import * as faceres from './faceres';
 import * as mask from './mask';
 import * as antispoof from './antispoof';
 import * as liveness from './liveness';
+import * as gear from '../gear/gear';
+import * as ssrnetAge from '../gear/ssrnet-age';
+import * as ssrnetGender from '../gear/ssrnet-gender';
 import type { FaceResult } from '../result';
 import type { Tensor } from '../tfjs/types';
 import type { Human } from '../human';
@@ -95,18 +98,30 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
     parent.analyze('End Liveness:');
 
     // run gear, inherits face from blazeface
-    /*
     parent.analyze('Start GEAR:');
     if (parent.config.async) {
-      gearRes = parent.config.face.agegenderrace.enabled ? agegenderrace.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      gearRes = parent.config.face['gear']?.enabled ? gear.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
     } else {
       parent.state = 'run:gear';
       timeStamp = now();
-      gearRes = parent.config.face.agegenderrace.enabled ? await agegenderrace.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      gearRes = parent.config.face['gear']?.enabled ? await gear.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
       parent.performance.emotion = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End GEAR:');
-    */
+
+    // run gear, inherits face from blazeface
+    parent.analyze('Start SSRNet:');
+    if (parent.config.async) {
+      ageRes = parent.config.face['ssrnet']?.enabled ? ssrnetAge.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      genderRes = parent.config.face['ssrnet']?.enabled ? ssrnetGender.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+    } else {
+      parent.state = 'run:ssrnet';
+      timeStamp = now();
+      ageRes = parent.config.face['ssrnet']?.enabled ? await ssrnetAge.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      genderRes = parent.config.face['ssrnet']?.enabled ? await ssrnetGender.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      parent.performance.emotion = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze('End SSRNet:');
 
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
@@ -124,8 +139,11 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
     if (parent.config.async) {
       [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
-
     parent.analyze('Finish Face:');
+
+    // override age/gender if alternative models are used
+    if (parent.config.face['ssrnet']?.enabled && ageRes && genderRes) descRes = { age: ageRes.age, gender: genderRes.gender, genderScore: genderRes.genderScore };
+    if (parent.config.face['gear']?.enabled && gearRes) descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
 
     // calculate iris distance
     // iris: array[ center, left, top, right, bottom]
@@ -146,20 +164,22 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
     // delete temp face image
     if (faces[i].tensor) delete faces[i].tensor;
     // combine results
-    faceRes.push({
+    const res: FaceResult = {
       ...faces[i],
       id: i,
-      age: descRes?.age,
-      gender: descRes?.gender,
-      genderScore: descRes?.genderScore,
-      embedding: descRes?.descriptor,
-      emotion: emotionRes,
-      real: antispoofRes,
-      live: livenessRes,
-      iris: irisSize !== 0 ? Math.trunc(500 / irisSize / 11.7) / 100 : 0,
-      rotation,
-      tensor,
-    });
+    };
+    if (descRes?.age) res.age = descRes.age;
+    if (descRes?.gender) res.gender = descRes.gender;
+    if (descRes?.genderScore) res.genderScore = descRes?.genderScore;
+    if (descRes?.descriptor) res.embedding = descRes?.descriptor;
+    if (descRes?.race) res.race = descRes?.race;
+    if (emotionRes) res.emotion = emotionRes;
+    if (antispoofRes) res.real = antispoofRes;
+    if (livenessRes) res.live = livenessRes;
+    if (irisSize && irisSize !== 0) res.iris = Math.trunc(500 / irisSize / 11.7) / 100;
+    if (rotation) res.rotation = rotation;
+    if (tensor) res.tensor = tensor;
+    faceRes.push(res);
     parent.analyze('End Face');
   }
   parent.analyze('End FaceMesh:');

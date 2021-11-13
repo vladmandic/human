@@ -15,6 +15,7 @@ import * as liveness from './liveness';
 import * as gear from '../gear/gear';
 import * as ssrnetAge from '../gear/ssrnet-age';
 import * as ssrnetGender from '../gear/ssrnet-gender';
+import * as mobilefacenet from './mobilefacenet';
 import type { FaceResult } from '../result';
 import type { Tensor } from '../tfjs/types';
 import type { Human } from '../human';
@@ -28,7 +29,7 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
   let gearRes;
   let genderRes;
   let emotionRes;
-  let embeddingRes;
+  let mobilefacenetRes;
   let antispoofRes;
   let livenessRes;
   let descRes;
@@ -93,7 +94,7 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
       parent.state = 'run:liveness';
       timeStamp = now();
       livenessRes = parent.config.face.liveness?.enabled ? await liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      parent.performance.liveness = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze('End Liveness:');
 
@@ -105,7 +106,7 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
       parent.state = 'run:gear';
       timeStamp = now();
       gearRes = parent.config.face['gear']?.enabled ? await gear.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.emotion = Math.trunc(now() - timeStamp);
+      parent.performance.gear = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End GEAR:');
 
@@ -119,9 +120,21 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
       timeStamp = now();
       ageRes = parent.config.face['ssrnet']?.enabled ? await ssrnetAge.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
       genderRes = parent.config.face['ssrnet']?.enabled ? await ssrnetGender.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.emotion = Math.trunc(now() - timeStamp);
+      parent.performance.ssrnet = Math.trunc(now() - timeStamp);
     }
     parent.analyze('End SSRNet:');
+
+    // run gear, inherits face from blazeface
+    parent.analyze('Start MobileFaceNet:');
+    if (parent.config.async) {
+      mobilefacenetRes = parent.config.face['mobilefacenet']?.enabled ? mobilefacenet.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+    } else {
+      parent.state = 'run:mobilefacenet';
+      timeStamp = now();
+      mobilefacenetRes = parent.config.face['mobilefacenet']?.enabled ? await mobilefacenet.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+      parent.performance.mobilefacenet = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze('End MobileFaceNet:');
 
     // run emotion, inherits face from blazeface
     parent.analyze('Start Description:');
@@ -137,13 +150,15 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
 
     // if async wait for results
     if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes]);
+      [ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
     parent.analyze('Finish Face:');
 
     // override age/gender if alternative models are used
     if (parent.config.face['ssrnet']?.enabled && ageRes && genderRes) descRes = { age: ageRes.age, gender: genderRes.gender, genderScore: genderRes.genderScore };
     if (parent.config.face['gear']?.enabled && gearRes) descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
+    // override descriptor if embedding model is used
+    if (parent.config.face['mobilefacenet']?.enabled && mobilefacenetRes) descRes.descriptor = mobilefacenetRes;
 
     // calculate iris distance
     // iris: array[ center, left, top, right, bottom]

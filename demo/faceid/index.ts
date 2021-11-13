@@ -16,7 +16,8 @@ const humanConfig = { // user configuration for human, used to fine-tune behavio
   face: {
     enabled: true,
     detector: { rotation: true, return: true, cropFactor: 1.6, mask: false }, // return tensor is used to get detected face image
-    description: { enabled: true },
+    description: { enabled: true }, // default model for face descriptor extraction is faceres
+    mobilefacenet: { enabled: false, modelPath: 'https://vladmandic.github.io/human-models/models/mobilefacenet.json' }, // alternative model
     iris: { enabled: true }, // needed to determine gaze direction
     emotion: { enabled: false }, // not needed
     antispoof: { enabled: true }, // enable optional antispoof module
@@ -28,6 +29,9 @@ const humanConfig = { // user configuration for human, used to fine-tune behavio
   gesture: { enabled: true }, // parses face and iris gestures
 };
 
+// const matchOptions = { order: 2, multiplier: 1000, min: 0.0, max: 1.0 }; // for embedding model
+const matchOptions = { order: 2, multiplier: 25, min: 0.2, max: 0.8 }; // for faceres model
+
 const options = {
   minConfidence: 0.6, // overal face confidence for box, face, gender, real, live
   minSize: 224, // min input to face descriptor model before degradation
@@ -38,6 +42,7 @@ const options = {
   mask: humanConfig.face.detector.mask,
   rotation: humanConfig.face.detector.rotation,
   cropFactor: humanConfig.face.detector.cropFactor,
+  ...matchOptions,
 };
 
 const ok = { // must meet all rules
@@ -194,6 +199,8 @@ async function deleteRecord() {
 async function detectFace() {
   dom.canvas.getContext('2d')?.clearRect(0, 0, options.minSize, options.minSize);
   if (!current.face || !current.face.tensor || !current.face.embedding) return false;
+  // eslint-disable-next-line no-console
+  console.log('face record:', current.face);
   human.tf.browser.toPixels(current.face.tensor as unknown as TensorLike, dom.canvas);
   if (await indexDb.count() === 0) {
     log('face database is empty');
@@ -203,7 +210,7 @@ async function detectFace() {
   }
   const db = await indexDb.load();
   const descriptors = db.map((rec) => rec.descriptor);
-  const res = await human.match(current.face.embedding, descriptors);
+  const res = await human.match(current.face.embedding, descriptors, matchOptions);
   current.record = db[res.index] || null;
   if (current.record) {
     log(`best match: ${current.record.name} | id: ${current.record.id} | similarity: ${Math.round(1000 * res.similarity) / 10}%`);

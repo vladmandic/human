@@ -62,6 +62,7 @@ export async function predict(image: Tensor, config: Config, idx, count): Promis
     let age = ageSorted[0][0]; // pick best starting point
     for (let i = 1; i < ageSorted.length; i++) age += ageSorted[i][1] * (ageSorted[i][0] - age); // adjust with each other choice by weight
     obj.age = Math.round(10 * age) / 10;
+    Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
     last[idx] = obj;
     lastCount = count;
     lastTime = now();

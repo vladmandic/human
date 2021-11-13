@@ -46,9 +46,13 @@ New:
 - new optional model `liveness`  
   checks if input appears to be a real-world live image or a recording  
   best used together with `antispoofing` that checks if input appears to have a realistic face
-- new face masking option in `face.config.detector.mask`
+- new face masking option in `face.config.detector.mask`  
+  result is shading of face image outside of face area which is useful for increased sensitivity of other modules that rely on detected face as input 
+- new face crop option in `face.config.detector.cropFactor`
+  result is user-definable fine-tuning for other modules that rely on detected face as input 
 
 Other:
 - Improved **Safari** compatibility
 - Improved `similarity` and `match` score range normalization
 - Documentation overhaul
+- Fixed optional `gear`, `ssrnet`, `mobilefacenet` modules

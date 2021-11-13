@@ -927,8 +927,8 @@ function GLImageFilter() {
   this.get = function() {
     return filterChain;
   };
-  this.apply = function(image28) {
-    resize(image28.width, image28.height);
+  this.apply = function(image29) {
+    resize(image29.width, image29.height);
     drawCount = 0;
     if (!sourceTexture)
       sourceTexture = gl.createTexture();
@@ -937,7 +937,7 @@ function GLImageFilter() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image28);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image29);
     for (let i = 0; i < filterChain.length; i++) {
       lastInChain = i === filterChain.length - 1;
       const f = filterChain[i];
@@ -945,9 +945,9 @@ function GLImageFilter() {
     }
     return fxcanvas;
   };
-  this.draw = function(image28) {
+  this.draw = function(image29) {
     this.add("brightness", 0);
-    return this.apply(image28);
+    return this.apply(image29);
   };
 }
 
@@ -1343,13 +1343,13 @@ var Env = class {
 var env = new Env();
 
 // src/human.ts
-var tf33 = __toModule(require_tfjs_esm());
+var tf34 = __toModule(require_tfjs_esm());
 
 // package.json
 var version = "2.5.1";
 
 // src/tfjs/humangl.ts
-var tf28 = __toModule(require_tfjs_esm());
+var tf29 = __toModule(require_tfjs_esm());
 
 // src/gear/gear.ts
 var tf4 = __toModule(require_tfjs_esm());
@@ -1373,7 +1373,7 @@ async function load(config3) {
     log("cached model:", model["modelUrl"]);
   return model;
 }
-async function predict(image28, config3, idx, count2) {
+async function predict(image29, config3, idx, count2) {
   var _a, _b;
   if (!model)
     return { age: 0, gender: "unknown", genderScore: 0, race: [] };
@@ -1390,7 +1390,7 @@ async function predict(image28, config3, idx, count2) {
       return;
     const t = {};
     const box4 = [[0, 0.1, 0.9, 0.9]];
-    t.resize = tf4.image.cropAndResize(image28, box4, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+    t.resize = tf4.image.cropAndResize(image29, box4, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
     const obj = { age: 0, gender: "unknown", genderScore: 0, race: [] };
     if ((_a2 = config3.face["gear"]) == null ? void 0 : _a2.enabled)
       [t.age, t.gender, t.race] = model.execute(t.resize, ["age_output", "gender_output", "race_output"]);
@@ -1409,6 +1409,7 @@ async function predict(image28, config3, idx, count2) {
     for (let i = 1; i < ageSorted.length; i++)
       age += ageSorted[i][1] * (ageSorted[i][0] - age);
     obj.age = Math.round(10 * age) / 10;
+    Object.keys(t).forEach((tensor3) => tf4.dispose(t[tensor3]));
     last2[idx] = obj;
     lastCount = count2;
     lastTime = now();
@@ -1438,7 +1439,7 @@ async function load2(config3) {
   }
   return model2;
 }
-async function predict2(image28, config3, idx, count2) {
+async function predict2(image29, config3, idx, count2) {
   var _a, _b, _c, _d;
   if (!model2)
     return { age: 0 };
@@ -1453,7 +1454,7 @@ async function predict2(image28, config3, idx, count2) {
     if (!(model2 == null ? void 0 : model2.inputs) || !model2.inputs[0] || !model2.inputs[0].shape)
       return;
     const t = {};
-    t.resize = tf5.image.resizeBilinear(image28, [model2.inputs[0].shape[2], model2.inputs[0].shape[1]], false);
+    t.resize = tf5.image.resizeBilinear(image29, [model2.inputs[0].shape[2], model2.inputs[0].shape[1]], false);
     t.enhance = tf5.mul(t.resize, 255);
     const obj = { age: 0 };
     if (config3.face["ssrnet"].enabled)
@@ -1491,7 +1492,7 @@ async function load3(config3) {
     log("cached model:", model3["modelUrl"]);
   return model3;
 }
-async function predict3(image28, config3, idx, count2) {
+async function predict3(image29, config3, idx, count2) {
   var _a, _b, _c, _d;
   if (!model3)
     return { gender: "unknown", genderScore: 0 };
@@ -1506,7 +1507,7 @@ async function predict3(image28, config3, idx, count2) {
     if (!(model3 == null ? void 0 : model3.inputs[0].shape))
       return;
     const t = {};
-    t.resize = tf6.image.resizeBilinear(image28, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
+    t.resize = tf6.image.resizeBilinear(image29, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
     t.enhance = tf6.tidy(() => {
       const [red, green, blue] = tf6.split(t.resize, 3, 3);
       const redNorm = tf6.mul(red, rgb[0]);
@@ -1551,7 +1552,7 @@ async function load4(config3) {
     log("cached model:", model4["modelUrl"]);
   return model4;
 }
-async function predict4(image28, config3, idx, count2) {
+async function predict4(image29, config3, idx, count2) {
   var _a, _b;
   if (!model4)
     return 0;
@@ -1563,7 +1564,7 @@ async function predict4(image28, config3, idx, count2) {
   }
   skipped4 = 0;
   return new Promise(async (resolve) => {
-    const resize = tf7.image.resizeBilinear(image28, [(model4 == null ? void 0 : model4.inputs[0].shape) ? model4.inputs[0].shape[2] : 0, (model4 == null ? void 0 : model4.inputs[0].shape) ? model4.inputs[0].shape[1] : 0], false);
+    const resize = tf7.image.resizeBilinear(image29, [(model4 == null ? void 0 : model4.inputs[0].shape) ? model4.inputs[0].shape[2] : 0, (model4 == null ? void 0 : model4.inputs[0].shape) ? model4.inputs[0].shape[1] : 0], false);
     const res = model4 == null ? void 0 : model4.execute(resize);
     const num = (await res.data())[0];
     cached[idx] = Math.round(100 * num) / 100;
@@ -4883,10 +4884,10 @@ var scaleBoxCoordinates = (box4, factor) => {
   const endPoint = [box4.endPoint[0] * factor[0], box4.endPoint[1] * factor[1]];
   return { startPoint, endPoint, landmarks: box4.landmarks, confidence: box4.confidence };
 };
-var cutBoxFromImageAndResize = (box4, image28, cropSize) => {
-  const h = image28.shape[1];
-  const w = image28.shape[2];
-  const crop2 = tf8.image.cropAndResize(image28, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
+var cutBoxFromImageAndResize = (box4, image29, cropSize) => {
+  const h = image29.shape[1];
+  const w = image29.shape[2];
+  const crop2 = tf8.image.cropAndResize(image29, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
   const norm = tf8.div(crop2, 255);
   tf8.dispose(crop2);
   return norm;
@@ -5547,7 +5548,7 @@ function max2d(inputs, minScore) {
     return [0, 0, newScore];
   });
 }
-async function predict7(image28, config3) {
+async function predict7(image29, config3) {
   const skipTime = (config3.body.skipTime || 0) > now() - lastTime7;
   const skipFrame = skipped7 < (config3.body.skipFrames || 0);
   if (config3.skipAllowed && skipTime && skipFrame && Object.keys(cache2.keypoints).length > 0) {
@@ -5560,7 +5561,7 @@ async function predict7(image28, config3) {
     const tensor3 = tf12.tidy(() => {
       if (!(model7 == null ? void 0 : model7.inputs[0].shape))
         return null;
-      const resize = tf12.image.resizeBilinear(image28, [model7.inputs[0].shape[2], model7.inputs[0].shape[1]], false);
+      const resize = tf12.image.resizeBilinear(image29, [model7.inputs[0].shape[2], model7.inputs[0].shape[1]], false);
       const enhance3 = tf12.mul(resize, 2);
       const norm = enhance3.sub(1);
       return norm;
@@ -5587,8 +5588,8 @@ async function predict7(image28, config3) {
               y2 / model7.inputs[0].shape[1]
             ],
             position: [
-              Math.round(image28.shape[2] * x2 / model7.inputs[0].shape[2]),
-              Math.round(image28.shape[1] * y2 / model7.inputs[0].shape[1])
+              Math.round(image29.shape[2] * x2 / model7.inputs[0].shape[2]),
+              Math.round(image29.shape[1] * y2 / model7.inputs[0].shape[1])
             ]
           });
         }
@@ -5649,7 +5650,7 @@ async function load8(config3) {
     log("cached model:", model8["modelUrl"]);
   return model8;
 }
-async function predict8(image28, config3, idx, count2) {
+async function predict8(image29, config3, idx, count2) {
   var _a, _b;
   if (!model8)
     return [];
@@ -5666,7 +5667,7 @@ async function predict8(image28, config3, idx, count2) {
     if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
       const t = {};
       const inputSize8 = (model8 == null ? void 0 : model8.inputs[0].shape) ? model8.inputs[0].shape[2] : 0;
-      t.resize = tf13.image.resizeBilinear(image28, [inputSize8, inputSize8], false);
+      t.resize = tf13.image.resizeBilinear(image29, [inputSize8, inputSize8], false);
       [t.red, t.green, t.blue] = tf13.split(t.resize, 3, 3);
       t.redNorm = tf13.mul(t.red, rgb2[0]);
       t.greenNorm = tf13.mul(t.green, rgb2[1]);
@@ -5690,12 +5691,60 @@ async function predict8(image28, config3, idx, count2) {
   });
 }
 
-// src/face/facemesh.ts
-var tf15 = __toModule(require_tfjs_esm());
-
-// src/face/iris.ts
+// src/face/mobilefacenet.ts
 var tf14 = __toModule(require_tfjs_esm());
 var model9;
+var last7 = [];
+var lastCount6 = 0;
+var lastTime9 = 0;
+var skipped9 = Number.MAX_SAFE_INTEGER;
+async function load9(config3) {
+  const modelUrl = join(config3.modelBasePath, config3.face["mobilefacenet"].modelPath);
+  if (env.initial)
+    model9 = null;
+  if (!model9) {
+    model9 = await tf14.loadGraphModel(modelUrl);
+    if (!model9)
+      log("load model failed:", config3.face["mobilefacenet"].modelPath);
+    else if (config3.debug)
+      log("load model:", modelUrl);
+  } else if (config3.debug)
+    log("cached model:", modelUrl);
+  return model9;
+}
+async function predict9(input, config3, idx, count2) {
+  var _a, _b;
+  if (!model9)
+    return [];
+  const skipFrame = skipped9 < (((_a = config3.face["embedding"]) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face["embedding"]) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime9;
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount6 === count2 && last7[idx]) {
+    skipped9++;
+    return last7[idx];
+  }
+  return new Promise(async (resolve) => {
+    var _a2;
+    let data = [];
+    if (((_a2 = config3.face["embedding"]) == null ? void 0 : _a2.enabled) && (model9 == null ? void 0 : model9.inputs[0].shape)) {
+      const t = {};
+      t.crop = tf14.image.resizeBilinear(input, [model9.inputs[0].shape[2], model9.inputs[0].shape[1]], false);
+      t.data = model9 == null ? void 0 : model9.execute(t.crop);
+      const output = await t.data.data();
+      data = Array.from(output);
+    }
+    last7[idx] = data;
+    lastCount6 = count2;
+    lastTime9 = now();
+    resolve(data);
+  });
+}
+
+// src/face/facemesh.ts
+var tf16 = __toModule(require_tfjs_esm());
+
+// src/face/iris.ts
+var tf15 = __toModule(require_tfjs_esm());
+var model10;
 var inputSize4 = 0;
 var irisEnlarge = 2.3;
 var leftOutline = meshAnnotations["leftEyeLower0"];
@@ -5710,22 +5759,22 @@ var irisLandmarks = {
   index: 71,
   numCoordinates: 76
 };
-async function load9(config3) {
+async function load10(config3) {
   var _a, _b;
   if (env.initial)
-    model9 = null;
-  if (!model9) {
-    model9 = await tf14.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.iris) == null ? void 0 : _a.modelPath) || ""));
-    if (!model9 || !model9["modelUrl"])
+    model10 = null;
+  if (!model10) {
+    model10 = await tf15.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.iris) == null ? void 0 : _a.modelPath) || ""));
+    if (!model10 || !model10["modelUrl"])
       log("load model failed:", (_b = config3.face.iris) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
-      log("load model:", model9["modelUrl"]);
+      log("load model:", model10["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model9["modelUrl"]);
-  inputSize4 = model9.inputs[0].shape ? model9.inputs[0].shape[2] : 0;
+    log("cached model:", model10["modelUrl"]);
+  inputSize4 = model10.inputs[0].shape ? model10.inputs[0].shape[2] : 0;
   if (inputSize4 === -1)
     inputSize4 = 64;
-  return model9;
+  return model10;
 }
 function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
   for (let i = 0; i < MESH_TO_IRIS_INDICES_MAP.length; i++) {
@@ -5751,15 +5800,15 @@ var getLeftToRightEyeDepthDifference = (rawCoords) => {
 var getEyeBox = (rawCoords, face5, eyeInnerCornerIndex, eyeOuterCornerIndex, meshSize, flip = false) => {
   const box4 = squarifyBox(enlargeBox(calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), irisEnlarge));
   const boxSize = getBoxSize(box4);
-  let crop2 = tf14.image.cropAndResize(face5, [[
+  let crop2 = tf15.image.cropAndResize(face5, [[
     box4.startPoint[1] / meshSize,
     box4.startPoint[0] / meshSize,
     box4.endPoint[1] / meshSize,
     box4.endPoint[0] / meshSize
   ]], [0], [inputSize4, inputSize4]);
   if (flip && env.kernels.includes("flipleftright")) {
-    const flipped = tf14.image.flipLeftRight(crop2);
-    tf14.dispose(crop2);
+    const flipped = tf15.image.flipLeftRight(crop2);
+    tf15.dispose(crop2);
     crop2 = flipped;
   }
   return { box: box4, boxSize, crop: crop2 };
@@ -5793,20 +5842,20 @@ var getAdjustedIrisCoords = (rawCoords, irisCoords, direction) => {
   });
 };
 async function augmentIris(rawCoords, face5, config3, meshSize) {
-  if (!model9) {
+  if (!model10) {
     if (config3.debug)
       log("face mesh iris detection requested, but model is not loaded");
     return rawCoords;
   }
   const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face5, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], meshSize, true);
   const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face5, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], meshSize, true);
-  const combined = tf14.concat([leftEyeCrop, rightEyeCrop]);
-  tf14.dispose(leftEyeCrop);
-  tf14.dispose(rightEyeCrop);
-  const eyePredictions = model9.execute(combined);
-  tf14.dispose(combined);
+  const combined = tf15.concat([leftEyeCrop, rightEyeCrop]);
+  tf15.dispose(leftEyeCrop);
+  tf15.dispose(rightEyeCrop);
+  const eyePredictions = model10.execute(combined);
+  tf15.dispose(combined);
   const eyePredictionsData = await eyePredictions.data();
-  tf14.dispose(eyePredictions);
+  tf15.dispose(eyePredictions);
   const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
   const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
   const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
@@ -5828,17 +5877,17 @@ async function augmentIris(rawCoords, face5, config3, meshSize) {
 
 // src/face/facemesh.ts
 var boxCache = [];
-var model10 = null;
+var model11 = null;
 var inputSize5 = 0;
-var skipped9 = Number.MAX_SAFE_INTEGER;
-var lastTime9 = 0;
-async function predict9(input, config3) {
+var skipped10 = Number.MAX_SAFE_INTEGER;
+var lastTime10 = 0;
+async function predict10(input, config3) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
-  const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime9;
-  const skipFrame = skipped9 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
+  const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime10;
+  const skipFrame = skipped10 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
     const possibleBoxes = await getBoxes(input, config3);
-    lastTime9 = now();
+    lastTime10 = now();
     boxCache = [];
     for (const possible of possibleBoxes.boxes) {
       const box4 = {
@@ -5849,9 +5898,9 @@ async function predict9(input, config3) {
       };
       boxCache.push(squarifyBox(enlargeBox(scaleBoxCoordinates(box4, possibleBoxes.scaleFactor), Math.sqrt(((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6))));
     }
-    skipped9 = 0;
+    skipped10 = 0;
   } else {
-    skipped9++;
+    skipped10++;
   }
   const faces = [];
   const newCache = [];
@@ -5874,7 +5923,7 @@ async function predict9(input, config3) {
     [angle, rotationMatrix, face5.tensor] = correctFaceRotation(!((_d = config3.face.mesh) == null ? void 0 : _d.enabled) && ((_e = config3.face.detector) == null ? void 0 : _e.rotation), box4, input, ((_f = config3.face.mesh) == null ? void 0 : _f.enabled) ? inputSize5 : size());
     if ((_g = config3 == null ? void 0 : config3.filter) == null ? void 0 : _g.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
-      tf15.dispose(face5.tensor);
+      tf16.dispose(face5.tensor);
       face5.tensor = equilized;
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
@@ -5889,16 +5938,16 @@ async function predict9(input, config3) {
       face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize5]);
       for (const key of Object.keys(blazeFaceLandmarks))
         face5.annotations[key] = [face5.mesh[blazeFaceLandmarks[key]]];
-    } else if (!model10) {
+    } else if (!model11) {
       if (config3.debug)
         log("face mesh detection requested, but model is not loaded");
     } else {
-      const [contours, confidence, contourCoords] = model10.execute(face5.tensor);
+      const [contours, confidence, contourCoords] = model11.execute(face5.tensor);
       const faceConfidence = await confidence.data();
       face5.faceScore = Math.round(100 * faceConfidence[0]) / 100;
-      const coordsReshaped = tf15.reshape(contourCoords, [-1, 3]);
+      const coordsReshaped = tf16.reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
-      tf15.dispose([contourCoords, coordsReshaped, confidence, contours]);
+      tf16.dispose([contourCoords, coordsReshaped, confidence, contours]);
       if (face5.faceScore < (((_i = config3.face.detector) == null ? void 0 : _i.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
@@ -5913,7 +5962,7 @@ async function predict9(input, config3) {
         face5.boxRaw = getRawBox(box4, input);
         face5.score = face5.faceScore;
         newCache.push(box4);
-        tf15.dispose(face5.tensor);
+        tf16.dispose(face5.tensor);
         [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_l = config3.face.detector) == null ? void 0 : _l.rotation, box4, input, inputSize5);
       }
     }
@@ -5922,68 +5971,68 @@ async function predict9(input, config3) {
   boxCache = [...newCache];
   return faces;
 }
-async function load10(config3) {
+async function load11(config3) {
   var _a, _b;
   if (env.initial)
-    model10 = null;
-  if (!model10) {
-    model10 = await tf15.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.mesh) == null ? void 0 : _a.modelPath) || ""));
-    if (!model10 || !model10["modelUrl"])
+    model11 = null;
+  if (!model11) {
+    model11 = await tf16.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.mesh) == null ? void 0 : _a.modelPath) || ""));
+    if (!model11 || !model11["modelUrl"])
       log("load model failed:", (_b = config3.face.mesh) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
-      log("load model:", model10["modelUrl"]);
+      log("load model:", model11["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model10["modelUrl"]);
-  inputSize5 = model10.inputs[0].shape ? model10.inputs[0].shape[2] : 0;
+    log("cached model:", model11["modelUrl"]);
+  inputSize5 = model11.inputs[0].shape ? model11.inputs[0].shape[2] : 0;
   if (inputSize5 === -1)
     inputSize5 = 64;
-  return model10;
+  return model11;
 }
 var triangulation = TRI468;
 var uvmap = UV468;
 
 // src/face/faceres.ts
-var tf16 = __toModule(require_tfjs_esm());
-var model11;
-var last7 = [];
-var lastTime10 = 0;
-var lastCount6 = 0;
-var skipped10 = Number.MAX_SAFE_INTEGER;
-async function load11(config3) {
+var tf17 = __toModule(require_tfjs_esm());
+var model12;
+var last8 = [];
+var lastTime11 = 0;
+var lastCount7 = 0;
+var skipped11 = Number.MAX_SAFE_INTEGER;
+async function load12(config3) {
   var _a, _b;
   const modelUrl = join(config3.modelBasePath, ((_a = config3.face.description) == null ? void 0 : _a.modelPath) || "");
   if (env.initial)
-    model11 = null;
-  if (!model11) {
-    model11 = await tf16.loadGraphModel(modelUrl);
-    if (!model11)
+    model12 = null;
+  if (!model12) {
+    model12 = await tf17.loadGraphModel(modelUrl);
+    if (!model12)
       log("load model failed:", ((_b = config3.face.description) == null ? void 0 : _b.modelPath) || "");
     else if (config3.debug)
       log("load model:", modelUrl);
   } else if (config3.debug)
     log("cached model:", modelUrl);
-  return model11;
+  return model12;
 }
 function enhance2(input) {
   const tensor3 = input.image || input.tensor || input;
-  if (!(model11 == null ? void 0 : model11.inputs[0].shape))
+  if (!(model12 == null ? void 0 : model12.inputs[0].shape))
     return tensor3;
-  const crop2 = tf16.image.resizeBilinear(tensor3, [model11.inputs[0].shape[2], model11.inputs[0].shape[1]], false);
-  const norm = tf16.mul(crop2, 255);
-  tf16.dispose(crop2);
+  const crop2 = tf17.image.resizeBilinear(tensor3, [model12.inputs[0].shape[2], model12.inputs[0].shape[1]], false);
+  const norm = tf17.mul(crop2, 255);
+  tf17.dispose(crop2);
   return norm;
 }
-async function predict10(image28, config3, idx, count2) {
+async function predict11(image29, config3, idx, count2) {
   var _a, _b, _c, _d;
-  if (!model11)
+  if (!model12)
     return { age: 0, gender: "unknown", genderScore: 0, descriptor: [] };
-  const skipFrame = skipped10 < (((_a = config3.face.description) == null ? void 0 : _a.skipFrames) || 0);
-  const skipTime = (((_b = config3.face.description) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime10;
-  if (config3.skipAllowed && skipFrame && skipTime && lastCount6 === count2 && ((_c = last7[idx]) == null ? void 0 : _c.age) && ((_d = last7[idx]) == null ? void 0 : _d.age) > 0) {
-    skipped10++;
-    return last7[idx];
+  const skipFrame = skipped11 < (((_a = config3.face.description) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face.description) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime11;
+  if (config3.skipAllowed && skipFrame && skipTime && lastCount7 === count2 && ((_c = last8[idx]) == null ? void 0 : _c.age) && ((_d = last8[idx]) == null ? void 0 : _d.age) > 0) {
+    skipped11++;
+    return last8[idx];
   }
-  skipped10 = 0;
+  skipped11 = 0;
   return new Promise(async (resolve) => {
     var _a2, _b2;
     const obj = {
@@ -5993,10 +6042,10 @@ async function predict10(image28, config3, idx, count2) {
       descriptor: []
     };
     if ((_a2 = config3.face.description) == null ? void 0 : _a2.enabled) {
-      const enhanced = enhance2(image28);
-      const resT = model11 == null ? void 0 : model11.execute(enhanced);
-      lastTime10 = now();
-      tf16.dispose(enhanced);
+      const enhanced = enhance2(image29);
+      const resT = model12 == null ? void 0 : model12.execute(enhanced);
+      lastTime11 = now();
+      tf17.dispose(enhanced);
       const genderT = await resT.find((t) => t.shape[1] === 1);
       const gender = await genderT.data();
       const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
@@ -6004,31 +6053,31 @@ async function predict10(image28, config3, idx, count2) {
         obj.gender = gender[0] <= 0.5 ? "female" : "male";
         obj.genderScore = Math.min(0.99, confidence);
       }
-      const argmax = tf16.argMax(resT.find((t) => t.shape[1] === 100), 1);
+      const argmax = tf17.argMax(resT.find((t) => t.shape[1] === 100), 1);
       const age = (await argmax.data())[0];
-      tf16.dispose(argmax);
+      tf17.dispose(argmax);
       const ageT = resT.find((t) => t.shape[1] === 100);
       const all2 = await ageT.data();
       obj.age = Math.round(all2[age - 1] > all2[age + 1] ? 10 * age - 100 * all2[age - 1] : 10 * age + 100 * all2[age + 1]) / 10;
       const desc = resT.find((t) => t.shape[1] === 1024);
       const descriptor = desc ? await desc.data() : [];
       obj.descriptor = Array.from(descriptor);
-      resT.forEach((t) => tf16.dispose(t));
+      resT.forEach((t) => tf17.dispose(t));
     }
-    last7[idx] = obj;
-    lastCount6 = count2;
+    last8[idx] = obj;
+    lastCount7 = count2;
     resolve(obj);
   });
 }
 
 // src/hand/handpose.ts
-var tf20 = __toModule(require_tfjs_esm());
+var tf21 = __toModule(require_tfjs_esm());
 
 // src/hand/handposedetector.ts
-var tf18 = __toModule(require_tfjs_esm());
+var tf19 = __toModule(require_tfjs_esm());
 
 // src/hand/handposeutil.ts
-var tf17 = __toModule(require_tfjs_esm());
+var tf18 = __toModule(require_tfjs_esm());
 function getBoxSize2(box4) {
   return [
     Math.abs(box4.endPoint[0] - box4.startPoint[0]),
@@ -6041,16 +6090,16 @@ function getBoxCenter2(box4) {
     box4.startPoint[1] + (box4.endPoint[1] - box4.startPoint[1]) / 2
   ];
 }
-function cutBoxFromImageAndResize2(box4, image28, cropSize) {
-  const h = image28.shape[1];
-  const w = image28.shape[2];
+function cutBoxFromImageAndResize2(box4, image29, cropSize) {
+  const h = image29.shape[1];
+  const w = image29.shape[2];
   const boxes = [[
     box4.startPoint[1] / h,
     box4.startPoint[0] / w,
     box4.endPoint[1] / h,
     box4.endPoint[0] / w
   ]];
-  return tf17.image.cropAndResize(image28, boxes, [0], cropSize);
+  return tf18.image.cropAndResize(image29, boxes, [0], cropSize);
 }
 function scaleBoxCoordinates2(box4, factor) {
   const startPoint = [box4.startPoint[0] * factor[0], box4.startPoint[1] * factor[1]];
@@ -9090,66 +9139,66 @@ var anchors2 = [
 
 // src/hand/handposedetector.ts
 var HandDetector = class {
-  constructor(model17) {
+  constructor(model18) {
     __publicField(this, "model");
     __publicField(this, "anchors");
     __publicField(this, "anchorsTensor");
     __publicField(this, "inputSize");
     __publicField(this, "inputSizeTensor");
     __publicField(this, "doubleInputSizeTensor");
-    this.model = model17;
+    this.model = model18;
     this.anchors = anchors2.map((anchor) => [anchor.x, anchor.y]);
-    this.anchorsTensor = tf18.tensor2d(this.anchors);
+    this.anchorsTensor = tf19.tensor2d(this.anchors);
     this.inputSize = this.model && this.model.inputs && this.model.inputs[0].shape ? this.model.inputs[0].shape[2] : 0;
-    this.inputSizeTensor = tf18.tensor1d([this.inputSize, this.inputSize]);
-    this.doubleInputSizeTensor = tf18.tensor1d([this.inputSize * 2, this.inputSize * 2]);
+    this.inputSizeTensor = tf19.tensor1d([this.inputSize, this.inputSize]);
+    this.doubleInputSizeTensor = tf19.tensor1d([this.inputSize * 2, this.inputSize * 2]);
   }
   normalizeBoxes(boxes) {
     const t = {};
-    t.boxOffsets = tf18.slice(boxes, [0, 0], [-1, 2]);
-    t.boxSizes = tf18.slice(boxes, [0, 2], [-1, 2]);
-    t.div = tf18.div(t.boxOffsets, this.inputSizeTensor);
-    t.boxCenterPoints = tf18.add(t.div, this.anchorsTensor);
-    t.halfBoxSizes = tf18.div(t.boxSizes, this.doubleInputSizeTensor);
-    t.sub = tf18.sub(t.boxCenterPoints, t.halfBoxSizes);
-    t.startPoints = tf18.mul(t.sub, this.inputSizeTensor);
-    t.add = tf18.add(t.boxCenterPoints, t.halfBoxSizes);
-    t.endPoints = tf18.mul(t.add, this.inputSizeTensor);
-    const res = tf18.concat2d([t.startPoints, t.endPoints], 1);
-    Object.keys(t).forEach((tensor3) => tf18.dispose(t[tensor3]));
+    t.boxOffsets = tf19.slice(boxes, [0, 0], [-1, 2]);
+    t.boxSizes = tf19.slice(boxes, [0, 2], [-1, 2]);
+    t.div = tf19.div(t.boxOffsets, this.inputSizeTensor);
+    t.boxCenterPoints = tf19.add(t.div, this.anchorsTensor);
+    t.halfBoxSizes = tf19.div(t.boxSizes, this.doubleInputSizeTensor);
+    t.sub = tf19.sub(t.boxCenterPoints, t.halfBoxSizes);
+    t.startPoints = tf19.mul(t.sub, this.inputSizeTensor);
+    t.add = tf19.add(t.boxCenterPoints, t.halfBoxSizes);
+    t.endPoints = tf19.mul(t.add, this.inputSizeTensor);
+    const res = tf19.concat2d([t.startPoints, t.endPoints], 1);
+    Object.keys(t).forEach((tensor3) => tf19.dispose(t[tensor3]));
     return res;
   }
   normalizeLandmarks(rawPalmLandmarks, index2) {
     const t = {};
-    t.reshape = tf18.reshape(rawPalmLandmarks, [-1, 7, 2]);
-    t.div = tf18.div(t.reshape, this.inputSizeTensor);
-    t.landmarks = tf18.add(t.div, this.anchors[index2]);
-    const res = tf18.mul(t.landmarks, this.inputSizeTensor);
-    Object.keys(t).forEach((tensor3) => tf18.dispose(t[tensor3]));
+    t.reshape = tf19.reshape(rawPalmLandmarks, [-1, 7, 2]);
+    t.div = tf19.div(t.reshape, this.inputSizeTensor);
+    t.landmarks = tf19.add(t.div, this.anchors[index2]);
+    const res = tf19.mul(t.landmarks, this.inputSizeTensor);
+    Object.keys(t).forEach((tensor3) => tf19.dispose(t[tensor3]));
     return res;
   }
   async predict(input, config3) {
     const t = {};
-    t.resize = tf18.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
-    t.div = tf18.div(t.resize, 127.5);
-    t.image = tf18.sub(t.div, 1);
+    t.resize = tf19.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
+    t.div = tf19.div(t.resize, 127.5);
+    t.image = tf19.sub(t.div, 1);
     t.batched = this.model.execute(t.image);
-    t.predictions = tf18.squeeze(t.batched);
-    t.slice = tf18.slice(t.predictions, [0, 0], [-1, 1]);
-    t.sigmoid = tf18.sigmoid(t.slice);
-    t.scores = tf18.squeeze(t.sigmoid);
+    t.predictions = tf19.squeeze(t.batched);
+    t.slice = tf19.slice(t.predictions, [0, 0], [-1, 1]);
+    t.sigmoid = tf19.sigmoid(t.slice);
+    t.scores = tf19.squeeze(t.sigmoid);
     const scores = await t.scores.data();
-    t.boxes = tf18.slice(t.predictions, [0, 1], [-1, 4]);
+    t.boxes = tf19.slice(t.predictions, [0, 1], [-1, 4]);
     t.norm = this.normalizeBoxes(t.boxes);
-    t.nms = await tf18.image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
+    t.nms = await tf19.image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
     const nms = await t.nms.array();
     const hands = [];
     for (const index2 of nms) {
       const p = {};
-      p.box = tf18.slice(t.norm, [index2, 0], [1, -1]);
-      p.slice = tf18.slice(t.predictions, [index2, 5], [1, 14]);
+      p.box = tf19.slice(t.norm, [index2, 0], [1, -1]);
+      p.slice = tf19.slice(t.predictions, [index2, 5], [1, 14]);
       p.norm = this.normalizeLandmarks(p.slice, index2);
-      p.palmLandmarks = tf18.reshape(p.norm, [-1, 2]);
+      p.palmLandmarks = tf19.reshape(p.norm, [-1, 2]);
       const box4 = await p.box.data();
       const startPoint = box4.slice(0, 2);
       const endPoint = box4.slice(2, 4);
@@ -9157,21 +9206,21 @@ var HandDetector = class {
       const hand3 = { startPoint, endPoint, palmLandmarks, confidence: scores[index2] };
       const scaled = scaleBoxCoordinates2(hand3, [input.shape[2] / this.inputSize, input.shape[1] / this.inputSize]);
       hands.push(scaled);
-      Object.keys(p).forEach((tensor3) => tf18.dispose(p[tensor3]));
+      Object.keys(p).forEach((tensor3) => tf19.dispose(p[tensor3]));
     }
-    Object.keys(t).forEach((tensor3) => tf18.dispose(t[tensor3]));
+    Object.keys(t).forEach((tensor3) => tf19.dispose(t[tensor3]));
     return hands;
   }
 };
 
 // src/hand/handposepipeline.ts
-var tf19 = __toModule(require_tfjs_esm());
+var tf20 = __toModule(require_tfjs_esm());
 var palmBoxEnlargeFactor = 5;
 var handBoxEnlargeFactor = 1.65;
 var palmLandmarkIds = [0, 5, 9, 13, 17, 1, 2];
 var palmLandmarksPalmBase = 0;
 var palmLandmarksMiddleFingerBase = 2;
-var lastTime11 = 0;
+var lastTime12 = 0;
 var HandPipeline = class {
   constructor(handDetector, handPoseModel2) {
     __publicField(this, "handDetector");
@@ -9233,13 +9282,13 @@ var HandPipeline = class {
       Math.trunc(coord[2])
     ]);
   }
-  async estimateHands(image28, config3) {
+  async estimateHands(image29, config3) {
     let useFreshBox = false;
     let boxes;
-    const skipTime = (config3.hand.skipTime || 0) > now() - lastTime11;
+    const skipTime = (config3.hand.skipTime || 0) > now() - lastTime12;
     const skipFrame = this.skipped < (config3.hand.skipFrames || 0);
     if (config3.skipAllowed && skipTime && skipFrame) {
-      boxes = await this.handDetector.predict(image28, config3);
+      boxes = await this.handDetector.predict(image29, config3);
       this.skipped = 0;
     }
     if (config3.skipAllowed)
@@ -9258,24 +9307,24 @@ var HandPipeline = class {
       if (config3.hand.landmarks) {
         const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = getBoxCenter2(currentBox);
-        const palmCenterNormalized = [palmCenter[0] / image28.shape[2], palmCenter[1] / image28.shape[1]];
-        const rotatedImage = config3.hand.rotation && env.kernels.includes("rotatewithoffset") ? tf19.image.rotateWithOffset(image28, angle, 0, palmCenterNormalized) : image28.clone();
+        const palmCenterNormalized = [palmCenter[0] / image29.shape[2], palmCenter[1] / image29.shape[1]];
+        const rotatedImage = config3.hand.rotation && env.kernels.includes("rotatewithoffset") ? tf20.image.rotateWithOffset(image29, angle, 0, palmCenterNormalized) : image29.clone();
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
-        const handImage = tf19.div(croppedInput, 255);
-        tf19.dispose(croppedInput);
-        tf19.dispose(rotatedImage);
+        const handImage = tf20.div(croppedInput, 255);
+        tf20.dispose(croppedInput);
+        tf20.dispose(rotatedImage);
         const [confidenceT, keypoints] = this.handPoseModel.execute(handImage);
-        lastTime11 = now();
-        tf19.dispose(handImage);
+        lastTime12 = now();
+        tf20.dispose(handImage);
         const confidence = (await confidenceT.data())[0];
-        tf19.dispose(confidenceT);
+        tf20.dispose(confidenceT);
         if (confidence >= config3.hand.minConfidence / 4) {
-          const keypointsReshaped = tf19.reshape(keypoints, [-1, 3]);
+          const keypointsReshaped = tf20.reshape(keypoints, [-1, 3]);
           const rawCoords = await keypointsReshaped.array();
-          tf19.dispose(keypoints);
-          tf19.dispose(keypointsReshaped);
+          tf20.dispose(keypoints);
+          tf20.dispose(keypointsReshaped);
           const coords8 = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
           const nextBoundingBox = this.getBoxForHandLandmarks(coords8);
           this.storedBoxes[i] = { ...nextBoundingBox, confidence };
@@ -9290,7 +9339,7 @@ var HandPipeline = class {
         } else {
           this.storedBoxes[i] = null;
         }
-        tf19.dispose(keypoints);
+        tf20.dispose(keypoints);
       } else {
         const enlarged = enlargeBox2(squarifyBox2(currentBox), handBoxEnlargeFactor);
         const result = {
@@ -9726,7 +9775,7 @@ var meshAnnotations2 = {
 var handDetectorModel;
 var handPoseModel;
 var handPipeline;
-async function predict11(input, config3) {
+async function predict12(input, config3) {
   const predictions = await handPipeline.estimateHands(input, config3);
   if (!predictions)
     return [];
@@ -9785,7 +9834,7 @@ async function predict11(input, config3) {
   }
   return hands;
 }
-async function load12(config3) {
+async function load13(config3) {
   var _a, _b, _c, _d, _e, _f;
   if (env.initial) {
     handDetectorModel = null;
@@ -9793,8 +9842,8 @@ async function load12(config3) {
   }
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
-      config3.hand.enabled ? tf20.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.hand.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") }) : null,
-      config3.hand.landmarks ? tf20.loadGraphModel(join(config3.modelBasePath, ((_c = config3.hand.skeleton) == null ? void 0 : _c.modelPath) || ""), { fromTFHub: (((_d = config3.hand.skeleton) == null ? void 0 : _d.modelPath) || "").includes("tfhub.dev") }) : null
+      config3.hand.enabled ? tf21.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.hand.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") }) : null,
+      config3.hand.landmarks ? tf21.loadGraphModel(join(config3.modelBasePath, ((_c = config3.hand.skeleton) == null ? void 0 : _c.modelPath) || ""), { fromTFHub: (((_d = config3.hand.skeleton) == null ? void 0 : _d.modelPath) || "").includes("tfhub.dev") }) : null
     ]);
     if (config3.hand.enabled) {
       if (!handDetectorModel || !handDetectorModel["modelUrl"])
@@ -9852,7 +9901,7 @@ function crop(box4) {
 }
 
 // src/hand/handtrack.ts
-var tf21 = __toModule(require_tfjs_esm());
+var tf22 = __toModule(require_tfjs_esm());
 var models2 = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
 var inputSize6 = [[0, 0], [0, 0]];
@@ -9861,8 +9910,8 @@ var faceIndex = 4;
 var boxExpandFact = 1.6;
 var maxDetectorResolution = 512;
 var detectorExpandFact = 1.4;
-var skipped11 = Number.MAX_SAFE_INTEGER;
-var lastTime12 = 0;
+var skipped12 = Number.MAX_SAFE_INTEGER;
+var lastTime13 = 0;
 var outputSize = [0, 0];
 var cache3 = {
   boxes: [],
@@ -9882,7 +9931,7 @@ async function loadDetect2(config3) {
     models2[0] = null;
   if (!models2[0]) {
     fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
-    models2[0] = await tf21.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
+    models2[0] = await tf22.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
     const inputs = Object.values(models2[0].modelSignature["inputs"]);
     inputSize6[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize6[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -9899,7 +9948,7 @@ async function loadSkeleton(config3) {
   if (env.initial)
     models2[1] = null;
   if (!models2[1]) {
-    models2[1] = await tf21.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
+    models2[1] = await tf22.loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
     const inputs = Object.values(models2[1].modelSignature["inputs"]);
     inputSize6[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize6[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -9919,27 +9968,27 @@ async function detectHands(input, config3) {
   const ratio = (input.shape[2] || 1) / (input.shape[1] || 1);
   const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, maxDetectorResolution);
   const width = Math.round(height * ratio / 8) * 8;
-  t.resize = tf21.image.resizeBilinear(input, [height, width]);
-  t.cast = tf21.cast(t.resize, "int32");
+  t.resize = tf22.image.resizeBilinear(input, [height, width]);
+  t.cast = tf22.cast(t.resize, "int32");
   [t.rawScores, t.rawBoxes] = await models2[0].executeAsync(t.cast, modelOutputNodes);
-  t.boxes = tf21.squeeze(t.rawBoxes, [0, 2]);
-  t.scores = tf21.squeeze(t.rawScores, [0]);
-  const classScores = tf21.unstack(t.scores, 1);
-  tf21.dispose(classScores[faceIndex]);
+  t.boxes = tf22.squeeze(t.rawBoxes, [0, 2]);
+  t.scores = tf22.squeeze(t.rawScores, [0]);
+  const classScores = tf22.unstack(t.scores, 1);
+  tf22.dispose(classScores[faceIndex]);
   classScores.splice(faceIndex, 1);
-  t.filtered = tf21.stack(classScores, 1);
-  tf21.dispose(classScores);
-  t.max = tf21.max(t.filtered, 1);
-  t.argmax = tf21.argMax(t.filtered, 1);
+  t.filtered = tf22.stack(classScores, 1);
+  tf22.dispose(classScores);
+  t.max = tf22.max(t.filtered, 1);
+  t.argmax = tf22.argMax(t.filtered, 1);
   let id = 0;
-  t.nms = await tf21.image.nonMaxSuppressionAsync(t.boxes, t.max, config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
+  t.nms = await tf22.image.nonMaxSuppressionAsync(t.boxes, t.max, config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
   const nms = await t.nms.data();
   const scores = await t.max.data();
   const classNum = await t.argmax.data();
   for (const nmsIndex of Array.from(nms)) {
-    const boxSlice = tf21.slice(t.boxes, nmsIndex, 1);
+    const boxSlice = tf22.slice(t.boxes, nmsIndex, 1);
     const boxYX = await boxSlice.data();
-    tf21.dispose(boxSlice);
+    tf22.dispose(boxSlice);
     const boxData = [boxYX[1], boxYX[0], boxYX[3] - boxYX[1], boxYX[2] - boxYX[0]];
     const boxRaw = scale(boxData, detectorExpandFact);
     const boxCrop = crop(boxRaw);
@@ -9949,7 +9998,7 @@ async function detectHands(input, config3) {
     const hand3 = { id: id++, score, box: boxFull, boxRaw, boxCrop, label };
     hands.push(hand3);
   }
-  Object.keys(t).forEach((tensor3) => tf21.dispose(t[tensor3]));
+  Object.keys(t).forEach((tensor3) => tf22.dispose(t[tensor3]));
   hands.sort((a, b) => b.score - a.score);
   if (hands.length > (config3.hand.maxDetected || 1))
     hands.length = config3.hand.maxDetected || 1;
@@ -9970,15 +10019,15 @@ async function detectFingers(input, h, config3) {
   };
   if (input && models2[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
     const t = {};
-    t.crop = tf21.image.cropAndResize(input, [h.boxCrop], [0], [inputSize6[1][0], inputSize6[1][1]], "bilinear");
-    t.cast = tf21.cast(t.crop, "float32");
-    t.div = tf21.div(t.cast, 255);
+    t.crop = tf22.image.cropAndResize(input, [h.boxCrop], [0], [inputSize6[1][0], inputSize6[1][1]], "bilinear");
+    t.cast = tf22.cast(t.crop, "float32");
+    t.div = tf22.div(t.cast, 255);
     [t.score, t.keypoints] = models2[1].execute(t.div, ["Identity_1", "Identity"]);
     const rawScore = (await t.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
     if (score >= (config3.hand.minConfidence || 0)) {
       hand3.fingerScore = score;
-      t.reshaped = tf21.reshape(t.keypoints, [-1, 3]);
+      t.reshaped = tf22.reshape(t.keypoints, [-1, 3]);
       const coordsData = await t.reshaped.array();
       const coordsRaw = coordsData.map((kpt4) => [kpt4[0] / inputSize6[1][1], kpt4[1] / inputSize6[1][0], kpt4[2] || 0]);
       const coordsNorm = coordsRaw.map((kpt4) => [kpt4[0] * h.boxRaw[2], kpt4[1] * h.boxRaw[3], kpt4[2] || 0]);
@@ -9992,33 +10041,33 @@ async function detectFingers(input, h, config3) {
         hand3.annotations[key] = fingerMap[key].map((index2) => hand3.landmarks && hand3.keypoints[index2] ? hand3.keypoints[index2] : null);
       }
     }
-    Object.keys(t).forEach((tensor3) => tf21.dispose(t[tensor3]));
+    Object.keys(t).forEach((tensor3) => tf22.dispose(t[tensor3]));
   }
   return hand3;
 }
-async function predict12(input, config3) {
+async function predict13(input, config3) {
   var _a, _b;
   if (!models2[0] || !models2[1] || !((_a = models2[0]) == null ? void 0 : _a.inputs[0].shape) || !((_b = models2[1]) == null ? void 0 : _b.inputs[0].shape))
     return [];
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
-  skipped11++;
-  const skipTime = (config3.hand.skipTime || 0) > now() - lastTime12;
-  const skipFrame = skipped11 < (config3.hand.skipFrames || 0);
+  skipped12++;
+  const skipTime = (config3.hand.skipTime || 0) > now() - lastTime13;
+  const skipFrame = skipped12 < (config3.hand.skipFrames || 0);
   if (config3.skipAllowed && skipTime && skipFrame) {
     return cache3.hands;
   }
   return new Promise(async (resolve) => {
-    const skipTimeExtended = 3 * (config3.hand.skipTime || 0) > now() - lastTime12;
-    const skipFrameExtended = skipped11 < 3 * (config3.hand.skipFrames || 0);
+    const skipTimeExtended = 3 * (config3.hand.skipTime || 0) > now() - lastTime13;
+    const skipFrameExtended = skipped12 < 3 * (config3.hand.skipFrames || 0);
     if (config3.skipAllowed && cache3.hands.length === config3.hand.maxDetected) {
       cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
     } else if (config3.skipAllowed && skipTimeExtended && skipFrameExtended && cache3.hands.length > 0) {
       cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
     } else {
       cache3.boxes = await detectHands(input, config3);
-      lastTime12 = now();
+      lastTime13 = now();
       cache3.hands = await Promise.all(cache3.boxes.map((handBox) => detectFingers(input, handBox, config3)));
-      skipped11 = 0;
+      skipped12 = 0;
     }
     const oldCache = [...cache3.boxes];
     cache3.boxes.length = 0;
@@ -10043,51 +10092,51 @@ async function predict12(input, config3) {
 }
 
 // src/face/liveness.ts
-var tf22 = __toModule(require_tfjs_esm());
-var model12;
+var tf23 = __toModule(require_tfjs_esm());
+var model13;
 var cached2 = [];
-var skipped12 = Number.MAX_SAFE_INTEGER;
-var lastCount7 = 0;
-var lastTime13 = 0;
-async function load13(config3) {
+var skipped13 = Number.MAX_SAFE_INTEGER;
+var lastCount8 = 0;
+var lastTime14 = 0;
+async function load14(config3) {
   var _a, _b;
   if (env.initial)
-    model12 = null;
-  if (!model12) {
-    model12 = await tf22.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.liveness) == null ? void 0 : _a.modelPath) || ""));
-    if (!model12 || !model12["modelUrl"])
+    model13 = null;
+  if (!model13) {
+    model13 = await tf23.loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.liveness) == null ? void 0 : _a.modelPath) || ""));
+    if (!model13 || !model13["modelUrl"])
       log("load model failed:", (_b = config3.face.liveness) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
-      log("load model:", model12["modelUrl"]);
+      log("load model:", model13["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model12["modelUrl"]);
-  return model12;
+    log("cached model:", model13["modelUrl"]);
+  return model13;
 }
-async function predict13(image28, config3, idx, count2) {
+async function predict14(image29, config3, idx, count2) {
   var _a, _b;
-  if (!model12)
+  if (!model13)
     return 0;
-  const skipTime = (((_a = config3.face.liveness) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime13;
-  const skipFrame = skipped12 < (((_b = config3.face.liveness) == null ? void 0 : _b.skipFrames) || 0);
-  if (config3.skipAllowed && skipTime && skipFrame && lastCount7 === count2 && cached2[idx]) {
-    skipped12++;
+  const skipTime = (((_a = config3.face.liveness) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime14;
+  const skipFrame = skipped13 < (((_b = config3.face.liveness) == null ? void 0 : _b.skipFrames) || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount8 === count2 && cached2[idx]) {
+    skipped13++;
     return cached2[idx];
   }
-  skipped12 = 0;
+  skipped13 = 0;
   return new Promise(async (resolve) => {
-    const resize = tf22.image.resizeBilinear(image28, [(model12 == null ? void 0 : model12.inputs[0].shape) ? model12.inputs[0].shape[2] : 0, (model12 == null ? void 0 : model12.inputs[0].shape) ? model12.inputs[0].shape[1] : 0], false);
-    const res = model12 == null ? void 0 : model12.execute(resize);
+    const resize = tf23.image.resizeBilinear(image29, [(model13 == null ? void 0 : model13.inputs[0].shape) ? model13.inputs[0].shape[2] : 0, (model13 == null ? void 0 : model13.inputs[0].shape) ? model13.inputs[0].shape[1] : 0], false);
+    const res = model13 == null ? void 0 : model13.execute(resize);
     const num = (await res.data())[0];
     cached2[idx] = Math.round(100 * num) / 100;
-    lastCount7 = count2;
-    lastTime13 = now();
-    tf22.dispose([resize, res]);
+    lastCount8 = count2;
+    lastTime14 = now();
+    tf23.dispose([resize, res]);
     resolve(cached2[idx]);
   });
 }
 
 // src/body/movenet.ts
-var tf24 = __toModule(require_tfjs_esm());
+var tf25 = __toModule(require_tfjs_esm());
 
 // src/body/movenetcoords.ts
 var movenetcoords_exports = {};
@@ -10147,7 +10196,7 @@ var connected3 = {
 };
 
 // src/body/movenetfix.ts
-var tf23 = __toModule(require_tfjs_esm());
+var tf24 = __toModule(require_tfjs_esm());
 var maxJitter = 5e-3;
 var cache4 = {
   keypoints: [],
@@ -10221,10 +10270,10 @@ function padInput(input, inputSize8) {
     [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0],
     [0, 0]
   ];
-  t.pad = tf23.pad(input, cache4.padding);
-  t.resize = tf23.image.resizeBilinear(t.pad, [inputSize8, inputSize8]);
-  const final = tf23.cast(t.resize, "int32");
-  Object.keys(t).forEach((tensor3) => tf23.dispose(t[tensor3]));
+  t.pad = tf24.pad(input, cache4.padding);
+  t.resize = tf24.image.resizeBilinear(t.pad, [inputSize8, inputSize8]);
+  const final = tf24.cast(t.resize, "int32");
+  Object.keys(t).forEach((tensor3) => tf24.dispose(t[tensor3]));
   return final;
 }
 function rescaleBody(body4, outputSize2) {
@@ -10246,32 +10295,32 @@ function rescaleBody(body4, outputSize2) {
 }
 
 // src/body/movenet.ts
-var model13;
+var model14;
 var inputSize7 = 0;
-var skipped13 = Number.MAX_SAFE_INTEGER;
+var skipped14 = Number.MAX_SAFE_INTEGER;
 var cache5 = {
   boxes: [],
   bodies: [],
   last: 0
 };
-async function load14(config3) {
+async function load15(config3) {
   if (env.initial)
-    model13 = null;
-  if (!model13) {
+    model14 = null;
+  if (!model14) {
     fakeOps(["size"], config3);
-    model13 = await tf24.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model13 || !model13["modelUrl"])
+    model14 = await tf25.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    if (!model14 || !model14["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", model13["modelUrl"]);
+      log("load model:", model14["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model13["modelUrl"]);
-  inputSize7 = model13.inputs[0].shape ? model13.inputs[0].shape[2] : 0;
+    log("cached model:", model14["modelUrl"]);
+  inputSize7 = model14.inputs[0].shape ? model14.inputs[0].shape[2] : 0;
   if (inputSize7 === -1)
     inputSize7 = 256;
-  return model13;
+  return model14;
 }
-async function parseSinglePose(res, config3, image28, inputBox) {
+async function parseSinglePose(res, config3, image29, inputBox) {
   const kpt4 = res[0][0];
   const keypoints = [];
   let score = 0;
@@ -10287,15 +10336,15 @@ async function parseSinglePose(res, config3, image28, inputBox) {
         part: kpt3[id],
         positionRaw,
         position: [
-          Math.round((image28.shape[2] || 0) * positionRaw[0]),
-          Math.round((image28.shape[1] || 0) * positionRaw[1])
+          Math.round((image29.shape[2] || 0) * positionRaw[0]),
+          Math.round((image29.shape[1] || 0) * positionRaw[1])
         ]
       });
     }
   }
   score = keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
   const bodies = [];
-  const newBox = calc(keypoints.map((pt) => pt.position), [image28.shape[2], image28.shape[1]]);
+  const newBox = calc(keypoints.map((pt) => pt.position), [image29.shape[2], image29.shape[1]]);
   const annotations2 = {};
   for (const [name, indexes] of Object.entries(connected3)) {
     const pt = [];
@@ -10312,7 +10361,7 @@ async function parseSinglePose(res, config3, image28, inputBox) {
   bodies.push(body4);
   return bodies;
 }
-async function parseMultiPose(res, config3, image28, inputBox) {
+async function parseMultiPose(res, config3, image29, inputBox) {
   const bodies = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt4 = res[0][id];
@@ -10330,11 +10379,11 @@ async function parseMultiPose(res, config3, image28, inputBox) {
             part: kpt3[i],
             score: Math.round(100 * score) / 100,
             positionRaw,
-            position: [Math.round((image28.shape[2] || 0) * positionRaw[0]), Math.round((image28.shape[1] || 0) * positionRaw[1])]
+            position: [Math.round((image29.shape[2] || 0) * positionRaw[0]), Math.round((image29.shape[1] || 0) * positionRaw[1])]
           });
         }
       }
-      const newBox = calc(keypoints.map((pt) => pt.position), [image28.shape[2], image28.shape[1]]);
+      const newBox = calc(keypoints.map((pt) => pt.position), [image29.shape[2], image29.shape[1]]);
       const annotations2 = {};
       for (const [name, indexes] of Object.entries(connected3)) {
         const pt = [];
@@ -10356,22 +10405,22 @@ async function parseMultiPose(res, config3, image28, inputBox) {
     bodies.length = config3.body.maxDetected;
   return bodies;
 }
-async function predict14(input, config3) {
-  if (!model13 || !(model13 == null ? void 0 : model13.inputs[0].shape))
+async function predict15(input, config3) {
+  if (!model14 || !(model14 == null ? void 0 : model14.inputs[0].shape))
     return [];
   if (!config3.skipAllowed)
     cache5.boxes.length = 0;
-  skipped13++;
+  skipped14++;
   const skipTime = (config3.body.skipTime || 0) > now() - cache5.last;
-  const skipFrame = skipped13 < (config3.body.skipFrames || 0);
+  const skipFrame = skipped14 < (config3.body.skipFrames || 0);
   if (config3.skipAllowed && skipTime && skipFrame) {
     return cache5.bodies;
   }
   return new Promise(async (resolve) => {
     const t = {};
-    skipped13 = 0;
+    skipped14 = 0;
     t.input = padInput(input, inputSize7);
-    t.res = model13 == null ? void 0 : model13.execute(t.input);
+    t.res = model14 == null ? void 0 : model14.execute(t.input);
     cache5.last = now();
     const res = await t.res.array();
     cache5.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
@@ -10379,38 +10428,38 @@ async function predict14(input, config3) {
       rescaleBody(body4, [input.shape[2] || 1, input.shape[1] || 1]);
       jitter(body4.keypoints);
     }
-    Object.keys(t).forEach((tensor3) => tf24.dispose(t[tensor3]));
+    Object.keys(t).forEach((tensor3) => tf25.dispose(t[tensor3]));
     resolve(cache5.bodies);
   });
 }
 
 // src/object/nanodet.ts
-var tf25 = __toModule(require_tfjs_esm());
-var model14;
-var last8 = [];
-var lastTime14 = 0;
-var skipped14 = Number.MAX_SAFE_INTEGER;
+var tf26 = __toModule(require_tfjs_esm());
+var model15;
+var last9 = [];
+var lastTime15 = 0;
+var skipped15 = Number.MAX_SAFE_INTEGER;
 var scaleBox = 2.5;
-async function load15(config3) {
-  if (!model14 || env.initial) {
-    model14 = await tf25.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
-    const inputs = Object.values(model14.modelSignature["inputs"]);
-    model14.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model14.inputSize)
+async function load16(config3) {
+  if (!model15 || env.initial) {
+    model15 = await tf26.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
+    const inputs = Object.values(model15.modelSignature["inputs"]);
+    model15.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
+    if (!model15.inputSize)
       throw new Error(`cannot determine model inputSize: ${config3.object.modelPath}`);
-    if (!model14 || !model14.modelUrl)
+    if (!model15 || !model15.modelUrl)
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model14.modelUrl);
+      log("load model:", model15.modelUrl);
   } else if (config3.debug)
-    log("cached model:", model14.modelUrl);
-  return model14;
+    log("cached model:", model15.modelUrl);
+  return model15;
 }
 async function process4(res, inputSize8, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
-    tf25.tidy(async () => {
+    tf26.tidy(async () => {
       var _a, _b;
       const baseSize = strideSize * 13;
       const scoresT = (_a = res.find((a) => a.shape[1] === baseSize ** 2 && a.shape[2] === labels.length)) == null ? void 0 : _a.squeeze();
@@ -10455,48 +10504,48 @@ async function process4(res, inputSize8, outputShape, config3) {
       }
     });
   }
-  res.forEach((t) => tf25.dispose(t));
+  res.forEach((t) => tf26.dispose(t));
   const nmsBoxes = results.map((a) => [a.boxRaw[1], a.boxRaw[0], a.boxRaw[3], a.boxRaw[2]]);
   const nmsScores = results.map((a) => a.score);
   let nmsIdx = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
-    const nms = await tf25.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
+    const nms = await tf26.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
     nmsIdx = await nms.data();
-    tf25.dispose(nms);
+    tf26.dispose(nms);
   }
   results = results.filter((_val, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
   return results;
 }
-async function predict15(image28, config3) {
-  const skipTime = (config3.object.skipTime || 0) > now() - lastTime14;
-  const skipFrame = skipped14 < (config3.object.skipFrames || 0);
-  if (config3.skipAllowed && skipTime && skipFrame && last8.length > 0) {
-    skipped14++;
-    return last8;
+async function predict16(image29, config3) {
+  const skipTime = (config3.object.skipTime || 0) > now() - lastTime15;
+  const skipFrame = skipped15 < (config3.object.skipFrames || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && last9.length > 0) {
+    skipped15++;
+    return last9;
   }
-  skipped14 = 0;
+  skipped15 = 0;
   if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
-    return last8;
+    return last9;
   return new Promise(async (resolve) => {
-    const outputSize2 = [image28.shape[2], image28.shape[1]];
-    const resize = tf25.image.resizeBilinear(image28, [model14.inputSize, model14.inputSize], false);
-    const norm = tf25.div(resize, 255);
+    const outputSize2 = [image29.shape[2], image29.shape[1]];
+    const resize = tf26.image.resizeBilinear(image29, [model15.inputSize, model15.inputSize], false);
+    const norm = tf26.div(resize, 255);
     const transpose = norm.transpose([0, 3, 1, 2]);
-    tf25.dispose(norm);
-    tf25.dispose(resize);
+    tf26.dispose(norm);
+    tf26.dispose(resize);
     let objectT;
     if (config3.object.enabled)
-      objectT = model14.execute(transpose);
-    lastTime14 = now();
-    tf25.dispose(transpose);
-    const obj = await process4(objectT, model14.inputSize, outputSize2, config3);
-    last8 = obj;
+      objectT = model15.execute(transpose);
+    lastTime15 = now();
+    tf26.dispose(transpose);
+    const obj = await process4(objectT, model15.inputSize, outputSize2, config3);
+    last9 = obj;
     resolve(obj);
   });
 }
 
 // src/body/posenet.ts
-var tf26 = __toModule(require_tfjs_esm());
+var tf27 = __toModule(require_tfjs_esm());
 
 // src/body/posenetutils.ts
 var partNames = [
@@ -10680,7 +10729,7 @@ function addVectors(a, b) {
 }
 
 // src/body/posenet.ts
-var model15;
+var model16;
 var poseNetOutputs = ["MobilenetV1/offset_2/BiasAdd", "MobilenetV1/heatmap_2/BiasAdd", "MobilenetV1/displacement_fwd_2/BiasAdd", "MobilenetV1/displacement_bwd_2/BiasAdd"];
 var localMaximumRadius = 1;
 var outputStride = 16;
@@ -10806,90 +10855,90 @@ function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected
   }
   return poses;
 }
-async function predict16(input, config3) {
-  const res = tf26.tidy(() => {
-    if (!model15.inputs[0].shape)
+async function predict17(input, config3) {
+  const res = tf27.tidy(() => {
+    if (!model16.inputs[0].shape)
       return [];
-    const resized = tf26.image.resizeBilinear(input, [model15.inputs[0].shape[2], model15.inputs[0].shape[1]]);
-    const normalized = tf26.sub(tf26.div(tf26.cast(resized, "float32"), 127.5), 1);
-    const results = model15.execute(normalized, poseNetOutputs);
-    const results3d = results.map((y) => tf26.squeeze(y, [0]));
+    const resized = tf27.image.resizeBilinear(input, [model16.inputs[0].shape[2], model16.inputs[0].shape[1]]);
+    const normalized = tf27.sub(tf27.div(tf27.cast(resized, "float32"), 127.5), 1);
+    const results = model16.execute(normalized, poseNetOutputs);
+    const results3d = results.map((y) => tf27.squeeze(y, [0]));
     results3d[1] = results3d[1].sigmoid();
     return results3d;
   });
   const buffers = await Promise.all(res.map((tensor3) => tensor3.buffer()));
   for (const t of res)
-    tf26.dispose(t);
+    tf27.dispose(t);
   const decoded = await decode(buffers[0], buffers[1], buffers[2], buffers[3], config3.body.maxDetected, config3.body.minConfidence);
-  if (!model15.inputs[0].shape)
+  if (!model16.inputs[0].shape)
     return [];
-  const scaled = scalePoses(decoded, [input.shape[1], input.shape[2]], [model15.inputs[0].shape[2], model15.inputs[0].shape[1]]);
+  const scaled = scalePoses(decoded, [input.shape[1], input.shape[2]], [model16.inputs[0].shape[2], model16.inputs[0].shape[1]]);
   return scaled;
 }
-async function load16(config3) {
-  if (!model15 || env.initial) {
-    model15 = await tf26.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model15 || !model15["modelUrl"])
-      log("load model failed:", config3.body.modelPath);
-    else if (config3.debug)
-      log("load model:", model15["modelUrl"]);
-  } else if (config3.debug)
-    log("cached model:", model15["modelUrl"]);
-  return model15;
-}
-
-// src/segmentation/segmentation.ts
-var tf27 = __toModule(require_tfjs_esm());
-var model16;
-var busy = false;
 async function load17(config3) {
   if (!model16 || env.initial) {
-    model16 = await tf27.loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
+    model16 = await tf27.loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model16 || !model16["modelUrl"])
-      log("load model failed:", config3.segmentation.modelPath);
+      log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
       log("load model:", model16["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", model16["modelUrl"]);
   return model16;
 }
+
+// src/segmentation/segmentation.ts
+var tf28 = __toModule(require_tfjs_esm());
+var model17;
+var busy = false;
+async function load18(config3) {
+  if (!model17 || env.initial) {
+    model17 = await tf28.loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
+    if (!model17 || !model17["modelUrl"])
+      log("load model failed:", config3.segmentation.modelPath);
+    else if (config3.debug)
+      log("load model:", model17["modelUrl"]);
+  } else if (config3.debug)
+    log("cached model:", model17["modelUrl"]);
+  return model17;
+}
 async function process5(input, background, config3) {
   var _a, _b;
   if (busy)
     return { data: [], canvas: null, alpha: null };
   busy = true;
-  if (!model16)
-    await load17(config3);
+  if (!model17)
+    await load18(config3);
   const inputImage = await process2(input, config3);
   const width = ((_a = inputImage.tensor) == null ? void 0 : _a.shape[2]) || 0;
   const height = ((_b = inputImage.tensor) == null ? void 0 : _b.shape[1]) || 0;
   if (!inputImage.tensor)
     return { data: [], canvas: null, alpha: null };
   const t = {};
-  t.resize = tf27.image.resizeBilinear(inputImage.tensor, [model16.inputs[0].shape ? model16.inputs[0].shape[1] : 0, model16.inputs[0].shape ? model16.inputs[0].shape[2] : 0], false);
-  tf27.dispose(inputImage.tensor);
-  t.norm = tf27.div(t.resize, 255);
-  t.res = model16.execute(t.norm);
-  t.squeeze = tf27.squeeze(t.res, 0);
+  t.resize = tf28.image.resizeBilinear(inputImage.tensor, [model17.inputs[0].shape ? model17.inputs[0].shape[1] : 0, model17.inputs[0].shape ? model17.inputs[0].shape[2] : 0], false);
+  tf28.dispose(inputImage.tensor);
+  t.norm = tf28.div(t.resize, 255);
+  t.res = model17.execute(t.norm);
+  t.squeeze = tf28.squeeze(t.res, 0);
   if (t.squeeze.shape[2] === 2) {
-    t.softmax = tf27.softmax(t.squeeze);
-    [t.bg, t.fg] = tf27.unstack(t.softmax, 2);
-    t.expand = tf27.expandDims(t.fg, 2);
-    t.pad = tf27.expandDims(t.expand, 0);
-    t.crop = tf27.image.cropAndResize(t.pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
-    t.data = tf27.squeeze(t.crop, 0);
+    t.softmax = tf28.softmax(t.squeeze);
+    [t.bg, t.fg] = tf28.unstack(t.softmax, 2);
+    t.expand = tf28.expandDims(t.fg, 2);
+    t.pad = tf28.expandDims(t.expand, 0);
+    t.crop = tf28.image.cropAndResize(t.pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
+    t.data = tf28.squeeze(t.crop, 0);
   } else {
-    t.data = tf27.image.resizeBilinear(t.squeeze, [height, width]);
+    t.data = tf28.image.resizeBilinear(t.squeeze, [height, width]);
   }
   const data = Array.from(await t.data.data());
   if (env.node && !env.Canvas && typeof ImageData === "undefined") {
     if (config3.debug)
       log("canvas support missing");
-    Object.keys(t).forEach((tensor3) => tf27.dispose(t[tensor3]));
+    Object.keys(t).forEach((tensor3) => tf28.dispose(t[tensor3]));
     return { data, canvas: null, alpha: null };
   }
   const alphaCanvas = canvas(width, height);
-  await tf27.browser.toPixels(t.data, alphaCanvas);
+  await tf28.browser.toPixels(t.data, alphaCanvas);
   const alphaCtx = alphaCanvas.getContext("2d");
   if (config3.segmentation.blur && config3.segmentation.blur > 0)
     alphaCtx.filter = `blur(${config3.segmentation.blur}px)`;
@@ -10912,12 +10961,12 @@ async function process5(input, background, config3) {
   if (background && compositeCanvas) {
     mergedCanvas = canvas(width, height);
     const bgImage = await process2(background, config3);
-    tf27.dispose(bgImage.tensor);
+    tf28.dispose(bgImage.tensor);
     const ctxMerge = mergedCanvas.getContext("2d");
     ctxMerge.drawImage(bgImage.canvas, 0, 0, mergedCanvas.width, mergedCanvas.height);
     ctxMerge.drawImage(compositeCanvas, 0, 0);
   }
-  Object.keys(t).forEach((tensor3) => tf27.dispose(t[tensor3]));
+  Object.keys(t).forEach((tensor3) => tf28.dispose(t[tensor3]));
   busy = false;
   return { data, canvas: compositeCanvas, alpha: alphaCanvas };
 }
@@ -10931,7 +10980,7 @@ var Models = class {
     __publicField(this, "blazepose", null);
     __publicField(this, "centernet", null);
     __publicField(this, "efficientpose", null);
-    __publicField(this, "embedding", null);
+    __publicField(this, "mobilefacenet", null);
     __publicField(this, "emotion", null);
     __publicField(this, "facedetect", null);
     __publicField(this, "faceiris", null);
@@ -10950,18 +10999,18 @@ var Models = class {
   }
 };
 function reset(instance) {
-  for (const model17 of Object.keys(instance.models))
-    instance.models[model17] = null;
+  for (const model18 of Object.keys(instance.models))
+    instance.models[model18] = null;
 }
-async function load18(instance) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F;
+async function load19(instance) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G;
   if (env.initial)
     reset(instance);
   if (instance.config.hand.enabled) {
     if (!instance.models.handpose && ((_b = (_a = instance.config.hand.detector) == null ? void 0 : _a.modelPath) == null ? void 0 : _b.includes("handdetect")))
-      [instance.models.handpose, instance.models.handskeleton] = await load12(instance.config);
+      [instance.models.handpose, instance.models.handskeleton] = await load13(instance.config);
     if (!instance.models.handskeleton && instance.config.hand.landmarks && ((_d = (_c = instance.config.hand.detector) == null ? void 0 : _c.modelPath) == null ? void 0 : _d.includes("handdetect")))
-      [instance.models.handpose, instance.models.handskeleton] = await load12(instance.config);
+      [instance.models.handpose, instance.models.handskeleton] = await load13(instance.config);
   }
   if (instance.config.body.enabled && !instance.models.blazepose && ((_f = (_e = instance.config.body) == null ? void 0 : _e.modelPath) == null ? void 0 : _f.includes("blazepose")))
     instance.models.blazepose = loadPose(instance.config);
@@ -10970,42 +11019,44 @@ async function load18(instance) {
   if (instance.config.body.enabled && !instance.models.efficientpose && ((_k = (_j = instance.config.body) == null ? void 0 : _j.modelPath) == null ? void 0 : _k.includes("efficientpose")))
     instance.models.efficientpose = load7(instance.config);
   if (instance.config.body.enabled && !instance.models.movenet && ((_m = (_l = instance.config.body) == null ? void 0 : _l.modelPath) == null ? void 0 : _m.includes("movenet")))
-    instance.models.movenet = load14(instance.config);
+    instance.models.movenet = load15(instance.config);
   if (instance.config.body.enabled && !instance.models.posenet && ((_o = (_n = instance.config.body) == null ? void 0 : _n.modelPath) == null ? void 0 : _o.includes("posenet")))
-    instance.models.posenet = load16(instance.config);
+    instance.models.posenet = load17(instance.config);
   if (instance.config.face.enabled && !instance.models.facedetect)
     instance.models.facedetect = load5(instance.config);
   if (instance.config.face.enabled && ((_p = instance.config.face.antispoof) == null ? void 0 : _p.enabled) && !instance.models.antispoof)
     instance.models.antispoof = load4(instance.config);
   if (instance.config.face.enabled && ((_q = instance.config.face.liveness) == null ? void 0 : _q.enabled) && !instance.models.liveness)
-    instance.models.liveness = load13(instance.config);
+    instance.models.liveness = load14(instance.config);
   if (instance.config.face.enabled && ((_r = instance.config.face.description) == null ? void 0 : _r.enabled) && !instance.models.faceres)
-    instance.models.faceres = load11(instance.config);
+    instance.models.faceres = load12(instance.config);
   if (instance.config.face.enabled && ((_s = instance.config.face.emotion) == null ? void 0 : _s.enabled) && !instance.models.emotion)
     instance.models.emotion = load8(instance.config);
   if (instance.config.face.enabled && ((_t = instance.config.face.iris) == null ? void 0 : _t.enabled) && !instance.models.faceiris)
-    instance.models.faceiris = load9(instance.config);
+    instance.models.faceiris = load10(instance.config);
   if (instance.config.face.enabled && ((_u = instance.config.face.mesh) == null ? void 0 : _u.enabled) && !instance.models.facemesh)
-    instance.models.facemesh = load10(instance.config);
+    instance.models.facemesh = load11(instance.config);
   if (instance.config.face.enabled && ((_v = instance.config.face["gear"]) == null ? void 0 : _v.enabled) && !instance.models.gear)
     instance.models.gear = load(instance.config);
   if (instance.config.face.enabled && ((_w = instance.config.face["ssrnet"]) == null ? void 0 : _w.enabled) && !instance.models.ssrnetage)
     instance.models.ssrnetage = load2(instance.config);
   if (instance.config.face.enabled && ((_x = instance.config.face["ssrnet"]) == null ? void 0 : _x.enabled) && !instance.models.ssrnetgender)
     instance.models.ssrnetgender = load3(instance.config);
-  if (instance.config.hand.enabled && !instance.models.handtrack && ((_z = (_y = instance.config.hand.detector) == null ? void 0 : _y.modelPath) == null ? void 0 : _z.includes("handtrack")))
+  if (instance.config.face.enabled && ((_y = instance.config.face["mobilefacenet"]) == null ? void 0 : _y.enabled) && !instance.models.mobilefacenet)
+    instance.models.mobilefacenet = load9(instance.config);
+  if (instance.config.hand.enabled && !instance.models.handtrack && ((_A = (_z = instance.config.hand.detector) == null ? void 0 : _z.modelPath) == null ? void 0 : _A.includes("handtrack")))
     instance.models.handtrack = loadDetect2(instance.config);
-  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_B = (_A = instance.config.hand.detector) == null ? void 0 : _A.modelPath) == null ? void 0 : _B.includes("handtrack")))
+  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_C = (_B = instance.config.hand.detector) == null ? void 0 : _B.modelPath) == null ? void 0 : _C.includes("handtrack")))
     instance.models.handskeleton = loadSkeleton(instance.config);
-  if (instance.config.object.enabled && !instance.models.centernet && ((_D = (_C = instance.config.object) == null ? void 0 : _C.modelPath) == null ? void 0 : _D.includes("centernet")))
+  if (instance.config.object.enabled && !instance.models.centernet && ((_E = (_D = instance.config.object) == null ? void 0 : _D.modelPath) == null ? void 0 : _E.includes("centernet")))
     instance.models.centernet = load6(instance.config);
-  if (instance.config.object.enabled && !instance.models.nanodet && ((_F = (_E = instance.config.object) == null ? void 0 : _E.modelPath) == null ? void 0 : _F.includes("nanodet")))
-    instance.models.nanodet = load15(instance.config);
+  if (instance.config.object.enabled && !instance.models.nanodet && ((_G = (_F = instance.config.object) == null ? void 0 : _F.modelPath) == null ? void 0 : _G.includes("nanodet")))
+    instance.models.nanodet = load16(instance.config);
   if (instance.config.segmentation.enabled && !instance.models.segmentation)
-    instance.models.segmentation = load17(instance.config);
-  for await (const model17 of Object.keys(instance.models)) {
-    if (instance.models[model17] && typeof instance.models[model17] !== "undefined")
-      instance.models[model17] = await instance.models[model17];
+    instance.models.segmentation = load18(instance.config);
+  for await (const model18 of Object.keys(instance.models)) {
+    if (instance.models[model18] && typeof instance.models[model18] !== "undefined")
+      instance.models[model18] = await instance.models[model18];
   }
 }
 async function validate2(instance) {
@@ -11014,18 +11065,18 @@ async function validate2(instance) {
     if (instance.models[defined]) {
       let models5 = [];
       if (Array.isArray(instance.models[defined])) {
-        models5 = instance.models[defined].filter((model17) => model17 !== null).map((model17) => model17 && model17.executor ? model17 : model17.model);
+        models5 = instance.models[defined].filter((model18) => model18 !== null).map((model18) => model18 && model18.executor ? model18 : model18.model);
       } else {
         models5 = [instance.models[defined]];
       }
-      for (const model17 of models5) {
-        if (!model17) {
+      for (const model18 of models5) {
+        if (!model18) {
           if (instance.config.debug)
             log("model marked as loaded but not defined:", defined);
           continue;
         }
         const ops = [];
-        const executor = model17 == null ? void 0 : model17.executor;
+        const executor = model18 == null ? void 0 : model18.executor;
         if (executor && executor.graph.nodes) {
           for (const kernel of Object.values(executor.graph.nodes)) {
             const op = kernel.op.toLowerCase();
@@ -11077,11 +11128,11 @@ async function register(instance) {
   var _a;
   if (instance.config.backend !== "humangl")
     return;
-  if (config2.name in tf28.engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
+  if (config2.name in tf29.engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
     log("error: humangl backend invalid context");
     reset(instance);
   }
-  if (!tf28.findBackend(config2.name)) {
+  if (!tf29.findBackend(config2.name)) {
     try {
       config2.canvas = await canvas(100, 100);
     } catch (err) {
@@ -11115,29 +11166,29 @@ async function register(instance) {
       return;
     }
     try {
-      tf28.setWebGLContext(2, config2.gl);
+      tf29.setWebGLContext(2, config2.gl);
     } catch (err) {
       log("error: cannot set WebGL context:", err);
       return;
     }
     try {
-      const ctx = new tf28.GPGPUContext(config2.gl);
-      tf28.registerBackend(config2.name, () => new tf28.MathBackendWebGL(ctx), config2.priority);
+      const ctx = new tf29.GPGPUContext(config2.gl);
+      tf29.registerBackend(config2.name, () => new tf29.MathBackendWebGL(ctx), config2.priority);
     } catch (err) {
       log("error: cannot register WebGL backend:", err);
       return;
     }
     try {
-      const kernels = tf28.getKernelsForBackend("webgl");
+      const kernels = tf29.getKernelsForBackend("webgl");
       kernels.forEach((kernelConfig) => {
         const newKernelConfig = { ...kernelConfig, backendName: config2.name };
-        tf28.registerKernel(newKernelConfig);
+        tf29.registerKernel(newKernelConfig);
       });
     } catch (err) {
       log("error: cannot update WebGL backend registration:", err);
       return;
     }
-    const current = tf28.backend().getGPGPUContext ? tf28.backend().getGPGPUContext().gl : null;
+    const current = tf29.backend().getGPGPUContext ? tf29.backend().getGPGPUContext().gl : null;
     if (current) {
       log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
     } else {
@@ -11145,7 +11196,7 @@ async function register(instance) {
       return;
     }
     try {
-      tf28.ENV.set("WEBGL_VERSION", 2);
+      tf29.ENV.set("WEBGL_VERSION", 2);
     } catch (err) {
       log("error: cannot set WebGL backend flags:", err);
       return;
@@ -11156,30 +11207,30 @@ async function register(instance) {
 }
 
 // src/tfjs/backend.ts
-var tf29 = __toModule(require_tfjs_esm());
+var tf30 = __toModule(require_tfjs_esm());
 function registerCustomOps() {
   if (!env.kernels.includes("mod")) {
     const kernelMod = {
       kernelName: "Mod",
-      backendName: tf29.getBackend(),
-      kernelFunc: (op) => tf29.tidy(() => tf29.sub(op.inputs.a, tf29.mul(tf29.div(op.inputs.a, op.inputs.b), op.inputs.b)))
+      backendName: tf30.getBackend(),
+      kernelFunc: (op) => tf30.tidy(() => tf30.sub(op.inputs.a, tf30.mul(tf30.div(op.inputs.a, op.inputs.b), op.inputs.b)))
     };
-    tf29.registerKernel(kernelMod);
+    tf30.registerKernel(kernelMod);
     env.kernels.push("mod");
   }
   if (!env.kernels.includes("floormod")) {
     const kernelMod = {
       kernelName: "FloorMod",
-      backendName: tf29.getBackend(),
-      kernelFunc: (op) => tf29.tidy(() => tf29.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tf29.mod(op.inputs.a, op.inputs.b))
+      backendName: tf30.getBackend(),
+      kernelFunc: (op) => tf30.tidy(() => tf30.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tf30.mod(op.inputs.a, op.inputs.b))
     };
-    tf29.registerKernel(kernelMod);
+    tf30.registerKernel(kernelMod);
     env.kernels.push("floormod");
   }
 }
 async function check(instance, force = false) {
   instance.state = "backend";
-  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && tf29.getBackend() !== instance.config.backend) {
+  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && tf30.getBackend() !== instance.config.backend) {
     const timeStamp = now();
     if (instance.config.backend && instance.config.backend.length > 0) {
       if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
@@ -11208,7 +11259,7 @@ async function check(instance, force = false) {
       }
       if (instance.config.backend === "humangl")
         await register(instance);
-      const available = Object.keys(tf29.engine().registryFactory);
+      const available = Object.keys(tf30.engine().registryFactory);
       if (instance.config.debug)
         log("available backends:", available);
       if (!available.includes(instance.config.backend)) {
@@ -11222,46 +11273,46 @@ async function check(instance, force = false) {
       if (instance.config.backend === "wasm") {
         if (instance.config.debug)
           log("wasm path:", instance.config.wasmPath);
-        if (typeof (tf29 == null ? void 0 : tf29.setWasmPaths) !== "undefined")
-          await tf29.setWasmPaths(instance.config.wasmPath);
+        if (typeof (tf30 == null ? void 0 : tf30.setWasmPaths) !== "undefined")
+          await tf30.setWasmPaths(instance.config.wasmPath);
         else
           throw new Error("wasm backend is not loaded");
-        const simd = await tf29.env().getAsync("WASM_HAS_SIMD_SUPPORT");
-        const mt = await tf29.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+        const simd = await tf30.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+        const mt = await tf30.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
         if (instance.config.debug)
           log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
         if (instance.config.debug && !simd)
           log("warning: wasm simd support is not enabled");
       }
       try {
-        await tf29.setBackend(instance.config.backend);
-        await tf29.ready();
+        await tf30.setBackend(instance.config.backend);
+        await tf30.ready();
       } catch (err) {
         log("error: cannot set backend:", instance.config.backend, err);
         return false;
       }
     }
-    if (tf29.getBackend() === "humangl") {
-      tf29.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
-      tf29.ENV.set("WEBGL_CPU_FORWARD", true);
-      tf29.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
-      tf29.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
+    if (tf30.getBackend() === "humangl") {
+      tf30.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
+      tf30.ENV.set("WEBGL_CPU_FORWARD", true);
+      tf30.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
+      tf30.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
       if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
-        tf29.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
+        tf30.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
       }
-      if (tf29.backend().getGPGPUContext) {
-        const gl = await tf29.backend().getGPGPUContext().gl;
+      if (tf30.backend().getGPGPUContext) {
+        const gl = await tf30.backend().getGPGPUContext().gl;
         if (instance.config.debug)
           log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
     }
-    if (tf29.getBackend() === "webgpu") {
+    if (tf30.getBackend() === "webgpu") {
     }
-    tf29.enableProdMode();
-    await tf29.ready();
+    tf30.enableProdMode();
+    await tf30.ready();
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
-    instance.config.backend = tf29.getBackend();
+    instance.config.backend = tf30.getBackend();
     await env.updateBackend();
     registerCustomOps();
   }
@@ -11277,9 +11328,9 @@ function fakeOps(kernelNames, config3) {
           log("kernelFunc", kernelName, config3.backend);
       }
     };
-    tf29.registerKernel(kernelConfig);
+    tf30.registerKernel(kernelConfig);
   }
-  env.kernels = tf29.getKernelsForBackend(tf29.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+  env.kernels = tf30.getKernelsForBackend(tf30.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
 }
 
 // src/util/draw.ts
@@ -11740,10 +11791,10 @@ async function all(inCanvas2, result, drawOptions) {
 }
 
 // src/face/face.ts
-var tf31 = __toModule(require_tfjs_esm());
+var tf32 = __toModule(require_tfjs_esm());
 
 // src/face/mask.ts
-var tf30 = __toModule(require_tfjs_esm());
+var tf31 = __toModule(require_tfjs_esm());
 var expandFact = 0.1;
 var alpha = 0.5;
 function insidePoly(x, y, polygon) {
@@ -11777,7 +11828,7 @@ async function mask(face5) {
     }
   }
   const output = buffer.toTensor();
-  tf30.dispose(buffer);
+  tf31.dispose(buffer);
   return output;
 }
 
@@ -11889,20 +11940,20 @@ var calculateFaceAngle = (face5, imageSize) => {
 
 // src/face/face.ts
 var detectFace = async (parent, input) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
   let timeStamp;
   let ageRes;
   let gearRes;
   let genderRes;
   let emotionRes;
-  let embeddingRes;
+  let mobilefacenetRes;
   let antispoofRes;
   let livenessRes;
   let descRes;
   const faceRes = [];
   parent.state = "run:face";
   timeStamp = now();
-  const faces = await predict9(input, parent.config);
+  const faces = await predict10(input, parent.config);
   parent.performance.face = env.perfadd ? (parent.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   if (!input.shape || input.shape.length !== 4)
     return [];
@@ -11916,87 +11967,99 @@ var detectFace = async (parent, input) => {
     }
     if ((_a = parent.config.face.detector) == null ? void 0 : _a.mask) {
       const masked = await mask(faces[i]);
-      tf31.dispose(faces[i].tensor);
+      tf32.dispose(faces[i].tensor);
       faces[i].tensor = masked;
     }
     const rotation = faces[i].mesh && faces[i].mesh.length > 200 ? calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]) : null;
     parent.analyze("Start Emotion:");
     if (parent.config.async) {
-      emotionRes = ((_b = parent.config.face.emotion) == null ? void 0 : _b.enabled) ? predict8(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = ((_b = parent.config.face.emotion) == null ? void 0 : _b.enabled) ? predict8(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:emotion";
       timeStamp = now();
-      emotionRes = ((_c = parent.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict8(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
+      emotionRes = ((_c = parent.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict8(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.emotion = env.perfadd ? (parent.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Emotion:");
     parent.analyze("Start AntiSpoof:");
     if (parent.config.async) {
-      antispoofRes = ((_d = parent.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict4(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = ((_d = parent.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict4(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:antispoof";
       timeStamp = now();
-      antispoofRes = ((_e = parent.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict4(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
+      antispoofRes = ((_e = parent.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict4(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End AntiSpoof:");
     parent.analyze("Start Liveness:");
     if (parent.config.async) {
-      livenessRes = ((_f = parent.config.face.liveness) == null ? void 0 : _f.enabled) ? predict13(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
+      livenessRes = ((_f = parent.config.face.liveness) == null ? void 0 : _f.enabled) ? predict14(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:liveness";
       timeStamp = now();
-      livenessRes = ((_g = parent.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict13(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      livenessRes = ((_g = parent.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict14(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
+      parent.performance.liveness = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Liveness:");
     parent.analyze("Start GEAR:");
     if (parent.config.async) {
-      gearRes = ((_h = parent.config.face["gear"]) == null ? void 0 : _h.enabled) ? predict(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : {};
+      gearRes = ((_h = parent.config.face["gear"]) == null ? void 0 : _h.enabled) ? predict(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
     } else {
       parent.state = "run:gear";
       timeStamp = now();
-      gearRes = ((_i = parent.config.face["gear"]) == null ? void 0 : _i.enabled) ? await predict(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.emotion = Math.trunc(now() - timeStamp);
+      gearRes = ((_i = parent.config.face["gear"]) == null ? void 0 : _i.enabled) ? await predict(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+      parent.performance.gear = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End GEAR:");
     parent.analyze("Start SSRNet:");
     if (parent.config.async) {
-      ageRes = ((_j = parent.config.face["ssrnet"]) == null ? void 0 : _j.enabled) ? predict2(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : {};
-      genderRes = ((_k = parent.config.face["ssrnet"]) == null ? void 0 : _k.enabled) ? predict3(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : {};
+      ageRes = ((_j = parent.config.face["ssrnet"]) == null ? void 0 : _j.enabled) ? predict2(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+      genderRes = ((_k = parent.config.face["ssrnet"]) == null ? void 0 : _k.enabled) ? predict3(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
     } else {
       parent.state = "run:ssrnet";
       timeStamp = now();
-      ageRes = ((_l = parent.config.face["ssrnet"]) == null ? void 0 : _l.enabled) ? await predict2(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : {};
-      genderRes = ((_m = parent.config.face["ssrnet"]) == null ? void 0 : _m.enabled) ? await predict3(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.emotion = Math.trunc(now() - timeStamp);
+      ageRes = ((_l = parent.config.face["ssrnet"]) == null ? void 0 : _l.enabled) ? await predict2(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+      genderRes = ((_m = parent.config.face["ssrnet"]) == null ? void 0 : _m.enabled) ? await predict3(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+      parent.performance.ssrnet = Math.trunc(now() - timeStamp);
     }
     parent.analyze("End SSRNet:");
+    parent.analyze("Start MobileFaceNet:");
+    if (parent.config.async) {
+      mobilefacenetRes = ((_n = parent.config.face["mobilefacenet"]) == null ? void 0 : _n.enabled) ? predict9(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+    } else {
+      parent.state = "run:mobilefacenet";
+      timeStamp = now();
+      mobilefacenetRes = ((_o = parent.config.face["mobilefacenet"]) == null ? void 0 : _o.enabled) ? await predict9(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+      parent.performance.mobilefacenet = Math.trunc(now() - timeStamp);
+    }
+    parent.analyze("End MobileFaceNet:");
     parent.analyze("Start Description:");
     if (parent.config.async) {
-      descRes = ((_n = parent.config.face.description) == null ? void 0 : _n.enabled) ? predict10(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
+      descRes = ((_p = parent.config.face.description) == null ? void 0 : _p.enabled) ? predict11(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
     } else {
       parent.state = "run:description";
       timeStamp = now();
-      descRes = ((_o = parent.config.face.description) == null ? void 0 : _o.enabled) ? await predict10(faces[i].tensor || tf31.tensor([]), parent.config, i, faces.length) : null;
+      descRes = ((_q = parent.config.face.description) == null ? void 0 : _q.enabled) ? await predict11(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
       parent.performance.description = env.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     parent.analyze("End Description:");
     if (parent.config.async) {
-      [ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, embeddingRes, descRes, gearRes, antispoofRes, livenessRes]);
+      [ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
     parent.analyze("Finish Face:");
-    if (((_p = parent.config.face["ssrnet"]) == null ? void 0 : _p.enabled) && ageRes && genderRes)
+    if (((_r = parent.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && ageRes && genderRes)
       descRes = { age: ageRes.age, gender: genderRes.gender, genderScore: genderRes.genderScore };
-    if (((_q = parent.config.face["gear"]) == null ? void 0 : _q.enabled) && gearRes)
+    if (((_s = parent.config.face["gear"]) == null ? void 0 : _s.enabled) && gearRes)
       descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
-    if (!((_r = parent.config.face.iris) == null ? void 0 : _r.enabled) && ((_t = (_s = faces[i]) == null ? void 0 : _s.annotations) == null ? void 0 : _t.leftEyeIris) && ((_v = (_u = faces[i]) == null ? void 0 : _u.annotations) == null ? void 0 : _v.rightEyeIris)) {
+    if (((_t = parent.config.face["mobilefacenet"]) == null ? void 0 : _t.enabled) && mobilefacenetRes)
+      descRes.descriptor = mobilefacenetRes;
+    if (!((_u = parent.config.face.iris) == null ? void 0 : _u.enabled) && ((_w = (_v = faces[i]) == null ? void 0 : _v.annotations) == null ? void 0 : _w.leftEyeIris) && ((_y = (_x = faces[i]) == null ? void 0 : _x.annotations) == null ? void 0 : _y.rightEyeIris)) {
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0] && faces[i].annotations.leftEyeIris.length > 0 && faces[i].annotations.rightEyeIris.length > 0 && faces[i].annotations.leftEyeIris[0] !== null && faces[i].annotations.rightEyeIris[0] !== null ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
-    const tensor3 = ((_w = parent.config.face.detector) == null ? void 0 : _w.return) ? tf31.squeeze(faces[i].tensor) : null;
-    tf31.dispose(faces[i].tensor);
+    const tensor3 = ((_z = parent.config.face.detector) == null ? void 0 : _z.return) ? tf32.squeeze(faces[i].tensor) : null;
+    tf32.dispose(faces[i].tensor);
     if (faces[i].tensor)
       delete faces[i].tensor;
     const res = {
@@ -13107,7 +13170,7 @@ lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
 2Q==`;
 
 // src/warmup.ts
-var tf32 = __toModule(require_tfjs_esm());
+var tf33 = __toModule(require_tfjs_esm());
 async function warmupBitmap(instance) {
   const b64toBlob = (base64, type = "application/octet-stream") => fetch(`data:${type};base64,${base64}`).then((res2) => res2.blob());
   let blob;
@@ -13179,8 +13242,8 @@ async function warmupNode(instance) {
   if (!img)
     return null;
   let res;
-  if (typeof tf32["node"] !== "undefined") {
-    const data = tf32["node"].decodeJpeg(img);
+  if (typeof tf33["node"] !== "undefined") {
+    const data = tf33["node"].decodeJpeg(img);
     const expanded = data.expandDims(0);
     instance.tf.dispose(data);
     res = await instance.detect(expanded, instance.config);
@@ -13250,7 +13313,7 @@ var Human = class {
         return null;
       if (!input)
         return "input is not defined";
-      if (this.env.node && !(input instanceof tf33.Tensor))
+      if (this.env.node && !(input instanceof tf34.Tensor))
         return "input must be a tensor";
       try {
         this.tf.getBackend();
@@ -13268,7 +13331,7 @@ var Human = class {
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     this.env = env;
-    config.wasmPath = tf33.version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf33.version_core}/dist/`;
+    config.wasmPath = tf34.version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf34.version_core}/dist/`;
     config.modelBasePath = env.browser ? "../models/" : "file://models/";
     config.backend = env.browser ? "humangl" : "tensorflow";
     this.version = version;
@@ -13277,7 +13340,7 @@ var Human = class {
     Object.seal(this.config);
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
-    this.tf = tf33;
+    this.tf = tf34;
     this.state = "idle";
     __privateSet(this, _numTensors, 0);
     __privateSet(this, _analyzeMemoryLeaks, false);
@@ -13333,7 +13396,7 @@ var Human = class {
   async load(userConfig) {
     this.state = "load";
     const timeStamp = now();
-    const count2 = Object.values(this.models).filter((model17) => model17).length;
+    const count2 = Object.values(this.models).filter((model18) => model18).length;
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
     if (this.env.initial) {
@@ -13343,7 +13406,7 @@ var Human = class {
         log(`tfjs version: ${this.tf.version_core}`);
       if (!await check(this))
         log("error: backend check failed");
-      await tf33.ready();
+      await tf34.ready();
       if (this.env.browser) {
         if (this.config.debug)
           log("configuration:", this.config);
@@ -13353,11 +13416,11 @@ var Human = class {
           log("tf flags:", this.tf.ENV["flags"]);
       }
     }
-    await load18(this);
+    await load19(this);
     if (this.env.initial && this.config.debug)
       log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
     this.env.initial = false;
-    const loaded = Object.values(this.models).filter((model17) => model17).length;
+    const loaded = Object.values(this.models).filter((model18) => model18).length;
     if (loaded !== count2) {
       await validate2(this);
       this.emit("load");
@@ -13455,25 +13518,25 @@ var Human = class {
       const bodyConfig = this.config.body.maxDetected === -1 ? mergeDeep(this.config, { body: { maxDetected: this.config.face.enabled ? 1 * faceRes.length : 1 } }) : this.config;
       if (this.config.async) {
         if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
-          bodyRes = this.config.body.enabled ? predict16(img.tensor, bodyConfig) : [];
+          bodyRes = this.config.body.enabled ? predict17(img.tensor, bodyConfig) : [];
         else if ((_b = this.config.body.modelPath) == null ? void 0 : _b.includes("blazepose"))
           bodyRes = this.config.body.enabled ? predict5(img.tensor, bodyConfig) : [];
         else if ((_c = this.config.body.modelPath) == null ? void 0 : _c.includes("efficientpose"))
           bodyRes = this.config.body.enabled ? predict7(img.tensor, bodyConfig) : [];
         else if ((_d = this.config.body.modelPath) == null ? void 0 : _d.includes("movenet"))
-          bodyRes = this.config.body.enabled ? predict14(img.tensor, bodyConfig) : [];
+          bodyRes = this.config.body.enabled ? predict15(img.tensor, bodyConfig) : [];
         if (this.performance.body)
           delete this.performance.body;
       } else {
         timeStamp = now();
         if ((_e = this.config.body.modelPath) == null ? void 0 : _e.includes("posenet"))
-          bodyRes = this.config.body.enabled ? await predict16(img.tensor, bodyConfig) : [];
+          bodyRes = this.config.body.enabled ? await predict17(img.tensor, bodyConfig) : [];
         else if ((_f = this.config.body.modelPath) == null ? void 0 : _f.includes("blazepose"))
           bodyRes = this.config.body.enabled ? await predict5(img.tensor, bodyConfig) : [];
         else if ((_g = this.config.body.modelPath) == null ? void 0 : _g.includes("efficientpose"))
           bodyRes = this.config.body.enabled ? await predict7(img.tensor, bodyConfig) : [];
         else if ((_h = this.config.body.modelPath) == null ? void 0 : _h.includes("movenet"))
-          bodyRes = this.config.body.enabled ? await predict14(img.tensor, bodyConfig) : [];
+          bodyRes = this.config.body.enabled ? await predict15(img.tensor, bodyConfig) : [];
         this.performance.body = this.env.perfadd ? (this.performance.body || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       }
       this.analyze("End Body:");
@@ -13482,17 +13545,17 @@ var Human = class {
       const handConfig = this.config.hand.maxDetected === -1 ? mergeDeep(this.config, { hand: { maxDetected: this.config.face.enabled ? 2 * faceRes.length : 1 } }) : this.config;
       if (this.config.async) {
         if ((_j = (_i = this.config.hand.detector) == null ? void 0 : _i.modelPath) == null ? void 0 : _j.includes("handdetect"))
-          handRes = this.config.hand.enabled ? predict11(img.tensor, handConfig) : [];
-        else if ((_l = (_k = this.config.hand.detector) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("handtrack"))
           handRes = this.config.hand.enabled ? predict12(img.tensor, handConfig) : [];
+        else if ((_l = (_k = this.config.hand.detector) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("handtrack"))
+          handRes = this.config.hand.enabled ? predict13(img.tensor, handConfig) : [];
         if (this.performance.hand)
           delete this.performance.hand;
       } else {
         timeStamp = now();
         if ((_n = (_m = this.config.hand.detector) == null ? void 0 : _m.modelPath) == null ? void 0 : _n.includes("handdetect"))
-          handRes = this.config.hand.enabled ? await predict11(img.tensor, handConfig) : [];
-        else if ((_p = (_o = this.config.hand.detector) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("handtrack"))
           handRes = this.config.hand.enabled ? await predict12(img.tensor, handConfig) : [];
+        else if ((_p = (_o = this.config.hand.detector) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("handtrack"))
+          handRes = this.config.hand.enabled ? await predict13(img.tensor, handConfig) : [];
         this.performance.hand = this.env.perfadd ? (this.performance.hand || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       }
       this.analyze("End Hand:");
@@ -13500,7 +13563,7 @@ var Human = class {
       this.state = "detect:object";
       if (this.config.async) {
         if ((_q = this.config.object.modelPath) == null ? void 0 : _q.includes("nanodet"))
-          objectRes = this.config.object.enabled ? predict15(img.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? predict16(img.tensor, this.config) : [];
         else if ((_r = this.config.object.modelPath) == null ? void 0 : _r.includes("centernet"))
           objectRes = this.config.object.enabled ? predict6(img.tensor, this.config) : [];
         if (this.performance.object)
@@ -13508,7 +13571,7 @@ var Human = class {
       } else {
         timeStamp = now();
         if ((_s = this.config.object.modelPath) == null ? void 0 : _s.includes("nanodet"))
-          objectRes = this.config.object.enabled ? await predict15(img.tensor, this.config) : [];
+          objectRes = this.config.object.enabled ? await predict16(img.tensor, this.config) : [];
         else if ((_t = this.config.object.modelPath) == null ? void 0 : _t.includes("centernet"))
           objectRes = this.config.object.enabled ? await predict6(img.tensor, this.config) : [];
         this.performance.object = this.env.perfadd ? (this.performance.object || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
@@ -13542,7 +13605,7 @@ var Human = class {
           return join2(faceRes, bodyRes, handRes, gestureRes, shape);
         }
       };
-      tf33.dispose(img.tensor);
+      tf34.dispose(img.tensor);
       this.emit("detect");
       this.state = "idle";
       resolve(this.result);

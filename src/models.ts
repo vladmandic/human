@@ -13,6 +13,7 @@ import * as blazepose from './body/blazepose';
 import * as centernet from './object/centernet';
 import * as efficientpose from './body/efficientpose';
 import * as emotion from './gear/emotion';
+import * as mobilefacenet from './face/mobilefacenet';
 import * as facemesh from './face/facemesh';
 import * as faceres from './face/faceres';
 import * as handpose from './hand/handpose';
@@ -39,7 +40,7 @@ export class Models {
   blazepose: null | GraphModel | Promise<GraphModel> = null;
   centernet: null | GraphModel | Promise<GraphModel> = null;
   efficientpose: null | GraphModel | Promise<GraphModel> = null;
-  embedding: null | GraphModel | Promise<GraphModel> = null;
+  mobilefacenet: null | GraphModel | Promise<GraphModel> = null;
   emotion: null | GraphModel | Promise<GraphModel> = null;
   facedetect: null | GraphModel | Promise<GraphModel> = null;
   faceiris: null | GraphModel | Promise<GraphModel> = null;
@@ -84,6 +85,7 @@ export async function load(instance: Human): Promise<void> {
   if (instance.config.face.enabled && instance.config.face['gear']?.enabled && !instance.models.gear) instance.models.gear = gear.load(instance.config);
   if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetage) instance.models.ssrnetage = ssrnetAge.load(instance.config);
   if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetgender) instance.models.ssrnetgender = ssrnetGender.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face['mobilefacenet']?.enabled && !instance.models.mobilefacenet) instance.models.mobilefacenet = mobilefacenet.load(instance.config);
   if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
   if (instance.config.object.enabled && !instance.models.centernet && instance.config.object?.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);

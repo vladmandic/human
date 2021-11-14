@@ -176,6 +176,8 @@ export interface GestureConfig {
     /** @property is gesture detection enabled? */
     enabled: boolean;
 }
+export declare type BackendType = ['cpu', 'wasm', 'webgl', 'humangl', 'tensorflow', 'webgpu'];
+export declare type WarmupType = ['' | 'none' | 'face' | 'full' | 'body'];
 /**
  * Configuration interface definition for **Human** library
  *
@@ -213,7 +215,7 @@ export interface Config {
      *
      * default: `full`
     */
-    warmup: 'none' | 'face' | 'full' | 'body';
+    warmup: '' | 'none' | 'face' | 'full' | 'body';
     /** Base model path (typically starting with file://, http:// or https://) for all models
      * - individual modelPath values are relative to this path
      *

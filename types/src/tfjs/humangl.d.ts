@@ -1,9 +1,10 @@
 /** TFJS custom backend registration */
 import type { Human } from '../human';
+import type { AnyCanvas } from '../exports';
 export declare const config: {
     name: string;
     priority: number;
-    canvas: HTMLCanvasElement | OffscreenCanvas | null;
+    canvas: AnyCanvas | null;
     gl: WebGL2RenderingContext | null;
     extensions: string[];
     webGLattr: {

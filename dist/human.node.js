@@ -89,19 +89,19 @@ __export(exports, {
 });
 
 // src/util/util.ts
-function join(folder, file) {
-  const separator = folder.endsWith("/") ? "" : "/";
-  const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
-  const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
-  if (!path.toLocaleLowerCase().includes(".json"))
-    throw new Error(`modelpath error: ${path} expecting json file`);
-  return path;
-}
 function log(...msg) {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, "0")}:${dt.getMinutes().toString().padStart(2, "0")}:${dt.getSeconds().toString().padStart(2, "0")}.${dt.getMilliseconds().toString().padStart(3, "0")}`;
   if (msg)
     console.log(ts, "Human:", ...msg);
+}
+function join(folder, file) {
+  const separator = folder.endsWith("/") ? "" : "/";
+  const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
+  const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
+  if (!path.toLocaleLowerCase().includes(".json"))
+    throw new Error(`modelpath error: expecting json file: ${path}`);
+  return path;
 }
 var now = () => {
   if (typeof performance !== "undefined")
@@ -391,21 +391,35 @@ var GLProgram = class {
     __publicField(this, "id");
     __publicField(this, "compile", (source, type) => {
       const shader = this.gl.createShader(type);
+      if (!shader) {
+        log("filter: could not create shader");
+        return null;
+      }
       this.gl.shaderSource(shader, source);
       this.gl.compileShader(shader);
-      if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS))
-        throw new Error(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
+      if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+        log(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
+        return null;
+      }
       return shader;
     });
     this.gl = gl;
     const vertexShader = this.compile(vertexSource, this.gl.VERTEX_SHADER);
     const fragmentShader = this.compile(fragmentSource, this.gl.FRAGMENT_SHADER);
     this.id = this.gl.createProgram();
+    if (!vertexShader || !fragmentShader)
+      return;
+    if (!this.id) {
+      log("filter: could not create webgl program");
+      return;
+    }
     this.gl.attachShader(this.id, vertexShader);
     this.gl.attachShader(this.id, fragmentShader);
     this.gl.linkProgram(this.id);
-    if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS))
-      throw new Error(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
+    if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS)) {
+      log(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
+      return;
+    }
     this.gl.useProgram(this.id);
     collect(vertexSource, "attribute", this.attribute);
     for (const a in this.attribute)
@@ -429,8 +443,11 @@ function GLImageFilter() {
   const shaderProgramCache = {};
   const DRAW = { INTERMEDIATE: 1 };
   const gl = fxcanvas.getContext("webgl");
-  if (!gl)
-    throw new Error("filter: cannot get webgl context");
+  this.gl = gl;
+  if (!gl) {
+    log("filter: cannot get webgl context");
+    return;
+  }
   function resize(width, height) {
     if (width === fxcanvas.width && height === fxcanvas.height)
       return;
@@ -497,6 +514,10 @@ function GLImageFilter() {
       return currentProgram;
     }
     currentProgram = new GLProgram(gl, vertexIdentity, fragmentSource);
+    if (!currentProgram) {
+      log("filter: could not get webgl program");
+      return null;
+    }
     const floatSize = Float32Array.BYTES_PER_ELEMENT;
     const vertSize = 4 * floatSize;
     gl.enableVertexAttribArray(currentProgram.attribute["pos"]);
@@ -515,6 +536,8 @@ function GLImageFilter() {
       m[19] /= 255;
       const shader = m[18] === 1 && m[3] === 0 && m[8] === 0 && m[13] === 0 && m[15] === 0 && m[16] === 0 && m[17] === 0 && m[19] === 0 ? colorMatrixWithoutAlpha : colorMatrixWithAlpha;
       const program = compileShader(shader);
+      if (!program)
+        return;
       gl.uniform1fv(program.uniform["m"], m);
       draw2();
     },
@@ -828,6 +851,8 @@ function GLImageFilter() {
       const pixelSizeX = 1 / fxcanvas.width;
       const pixelSizeY = 1 / fxcanvas.height;
       const program = compileShader(convolution);
+      if (!program)
+        return;
       gl.uniform1fv(program.uniform["m"], m);
       gl.uniform2f(program.uniform["px"], pixelSizeX, pixelSizeY);
       draw2();
@@ -903,6 +928,8 @@ function GLImageFilter() {
       const blurSizeX = size2 / 7 / fxcanvas.width;
       const blurSizeY = size2 / 7 / fxcanvas.height;
       const program = compileShader(blur);
+      if (!program)
+        return;
       gl.uniform2f(program.uniform["px"], 0, blurSizeY);
       draw2(DRAW.INTERMEDIATE);
       gl.uniform2f(program.uniform["px"], blurSizeX, 0);
@@ -912,6 +939,8 @@ function GLImageFilter() {
       const blurSizeX = size2 / fxcanvas.width;
       const blurSizeY = size2 / fxcanvas.height;
       const program = compileShader(pixelate);
+      if (!program)
+        return;
       gl.uniform2f(program.uniform["size"], blurSizeX, blurSizeY);
       draw2();
     }
@@ -986,10 +1015,12 @@ function canvas(width, height) {
   let c;
   if (env.browser) {
     if (env.worker) {
+      if (typeof OffscreenCanvas === "undefined")
+        throw new Error("canvas error: attempted to run in web worker but OffscreenCanvas is not supported");
       c = new OffscreenCanvas(width, height);
     } else {
       if (typeof document === "undefined")
-        throw new Error("attempted to run in web worker but offscreenCanvas is not supported");
+        throw new Error("canvas error: attempted to run in browser but DOM is not defined");
       c = document.createElement("canvas");
       c.width = width;
       c.height = height;
@@ -1011,18 +1042,18 @@ function copy(input, output) {
 async function process2(input, config3, getTensor = true) {
   if (!input) {
     if (config3.debug)
-      log("input is missing");
+      log("input error: input is missing");
     return { tensor: null, canvas: null };
   }
   if (!(input instanceof tf2.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
-    throw new Error("input type is not recognized");
+    throw new Error("input error: type is not recognized");
   }
   if (input instanceof tf2.Tensor) {
     let tensor3 = null;
     if (input["isDisposedInternal"])
-      throw new Error("input tensor is disposed");
+      throw new Error("input error: attempted to use tensor but it is disposed");
     if (!input["shape"])
-      throw new Error("input tensor has no shape");
+      throw new Error("input error: attempted to use tensor without a shape");
     if (input.shape.length === 3) {
       if (input.shape[2] === 3) {
         tensor3 = tf2.expandDims(input, 0);
@@ -1039,7 +1070,7 @@ async function process2(input, config3, getTensor = true) {
       }
     }
     if (tensor3 == null || tensor3.shape.length !== 4 || tensor3.shape[0] !== 1 || tensor3.shape[3] !== 3)
-      throw new Error(`could not process input tensor with shape: ${input["shape"]}`);
+      throw new Error(`input error: attempted to use tensor with unrecognized shape: ${input["shape"]}`);
     if (tensor3.dtype === "int32") {
       const cast5 = tf2.cast(tensor3, "float32");
       tf2.dispose(tensor3);
@@ -1078,7 +1109,7 @@ async function process2(input, config3, getTensor = true) {
     else if ((config3.filter.width || 0) > 0)
       targetHeight = originalHeight * ((config3.filter.width || 0) / originalWidth);
     if (!targetWidth || !targetHeight)
-      throw new Error("input cannot determine dimension");
+      throw new Error("input error: cannot determine dimension");
     if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
       inCanvas = canvas(targetWidth, targetHeight);
     const inCtx = inCanvas.getContext("2d");
@@ -1100,8 +1131,11 @@ async function process2(input, config3, getTensor = true) {
       if (!fx)
         fx = env.browser ? new GLImageFilter() : null;
       env.filter = !!fx;
-      if (!fx)
+      if (!fx || !fx.add) {
+        if (config3.debug)
+          log("input process error: cannot initialize filters");
         return { tensor: null, canvas: inCanvas };
+      }
       fx.reset();
       if (config3.filter.brightness !== 0)
         fx.add("brightness", config3.filter.brightness);
@@ -1144,7 +1178,7 @@ async function process2(input, config3, getTensor = true) {
     if (!getTensor)
       return { tensor: null, canvas: outCanvas };
     if (!outCanvas)
-      throw new Error("cannot create output canvas");
+      throw new Error("canvas error: cannot create output");
     let pixels;
     let depth = 3;
     if (typeof ImageData !== "undefined" && input instanceof ImageData || input["data"] && input["width"] && input["height"]) {
@@ -1180,7 +1214,7 @@ async function process2(input, config3, getTensor = true) {
       pixels = rgb3;
     }
     if (!pixels)
-      throw new Error("cannot create tensor from input");
+      throw new Error("input error: cannot create tensor");
     const casted = tf2.cast(pixels, "float32");
     const tensor3 = config3.filter.equalization ? await histogramEqualization(casted) : tf2.expandDims(casted, 0);
     tf2.dispose([pixels, casted]);
@@ -1313,9 +1347,13 @@ var Env = class {
     }
     this.webgpu.supported = this.browser && typeof navigator["gpu"] !== "undefined";
     this.webgpu.backend = this.backends.includes("webgpu");
-    if (this.webgpu.supported)
-      this.webgpu.adapter = (await navigator["gpu"].requestAdapter()).name;
-    this.kernels = tf3.getKernelsForBackend(tf3.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+    try {
+      if (this.webgpu.supported)
+        this.webgpu.adapter = (await navigator["gpu"].requestAdapter()).name;
+      this.kernels = tf3.getKernelsForBackend(tf3.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+    } catch (e) {
+      this.webgpu.supported = false;
+    }
   }
   async updateCPU() {
     const cpu = { model: "", flags: [] };
@@ -1346,7 +1384,7 @@ var env = new Env();
 var tf34 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.5.1";
+var version = "2.5.2";
 
 // src/tfjs/humangl.ts
 var tf29 = __toModule(require_tfjs_esm());
@@ -10445,8 +10483,6 @@ async function load16(config3) {
     model15 = await tf26.loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model15.modelSignature["inputs"]);
     model15.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model15.inputSize)
-      throw new Error(`cannot determine model inputSize: ${config3.object.modelPath}`);
     if (!model15 || !model15.modelUrl)
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -11152,7 +11188,7 @@ async function register(instance) {
           log("error: humangl:", e.type);
           log("possible browser memory leak using webgl or conflict with multiple backend registrations");
           instance.emit("error");
-          throw new Error("browser webgl error");
+          throw new Error("backend error: webgl context lost");
         });
         config2.canvas.addEventListener("webglcontextrestored", (e) => {
           log("error: humangl context restored:", e);
@@ -11276,7 +11312,7 @@ async function check(instance, force = false) {
         if (typeof (tf30 == null ? void 0 : tf30.setWasmPaths) !== "undefined")
           await tf30.setWasmPaths(instance.config.wasmPath);
         else
-          throw new Error("wasm backend is not loaded");
+          throw new Error("backend error: attempting to use wasm backend but wasm path is not set");
         const simd = await tf30.env().getAsync("WASM_HAS_SIMD_SUPPORT");
         const mt = await tf30.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
         if (instance.config.debug)
@@ -11355,9 +11391,18 @@ var options2 = {
 };
 var drawTime = 0;
 var getCanvasContext = (input) => {
-  if (input && input.getContext)
-    return input.getContext("2d");
-  throw new Error("invalid canvas");
+  if (!input)
+    log("draw error: invalid canvas");
+  else if (!input.getContext)
+    log("draw error: canvas context not defined");
+  else {
+    const ctx = input.getContext("2d");
+    if (!ctx)
+      log("draw error: cannot get canvas context");
+    else
+      return ctx;
+  }
+  return null;
 };
 var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
 function point(ctx, x, y, z, localOptions) {
@@ -11454,6 +11499,8 @@ async function gesture(inCanvas2, result, drawOptions) {
     return;
   if (localOptions.drawGestures) {
     const ctx = getCanvasContext(inCanvas2);
+    if (!ctx)
+      return;
     ctx.font = localOptions.font;
     ctx.fillStyle = localOptions.color;
     let i = 1;
@@ -11481,6 +11528,8 @@ async function face(inCanvas2, result, drawOptions) {
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
   for (const f of result) {
     ctx.font = localOptions.font;
     ctx.strokeStyle = localOptions.color;
@@ -11613,6 +11662,8 @@ async function body(inCanvas2, result, drawOptions) {
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
   ctx.lineJoin = "round";
   for (let i = 0; i < result.length; i++) {
     ctx.strokeStyle = localOptions.color;
@@ -11656,6 +11707,8 @@ async function hand(inCanvas2, result, drawOptions) {
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
   ctx.lineJoin = "round";
   ctx.font = localOptions.font;
   for (const h of result) {
@@ -11722,6 +11775,8 @@ async function object(inCanvas2, result, drawOptions) {
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
   ctx.lineJoin = "round";
   ctx.font = localOptions.font;
   for (const h of result) {
@@ -11747,6 +11802,8 @@ async function person(inCanvas2, result, drawOptions) {
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
   ctx.lineJoin = "round";
   ctx.font = localOptions.font;
   for (let i = 0; i < result.length; i++) {
@@ -11771,6 +11828,8 @@ async function canvas2(input, output) {
   if (!input || !output)
     return;
   const ctx = getCanvasContext(output);
+  if (!ctx)
+    return;
   ctx.drawImage(input, 0, 0);
 }
 async function all(inCanvas2, result, drawOptions) {
@@ -11808,6 +11867,8 @@ function insidePoly(x, y, polygon) {
 }
 async function mask(face5) {
   if (!face5.tensor)
+    return face5.tensor;
+  if (!face5.mesh || face5.mesh.length < 100)
     return face5.tensor;
   const width = face5.tensor.shape[2] || 0;
   const height = face5.tensor.shape[1] || 0;
@@ -11939,7 +12000,7 @@ var calculateFaceAngle = (face5, imageSize) => {
 };
 
 // src/face/face.ts
-var detectFace = async (parent, input) => {
+var detectFace = async (instance, input) => {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
   let timeStamp;
   let ageRes;
@@ -11951,114 +12012,114 @@ var detectFace = async (parent, input) => {
   let livenessRes;
   let descRes;
   const faceRes = [];
-  parent.state = "run:face";
+  instance.state = "run:face";
   timeStamp = now();
-  const faces = await predict10(input, parent.config);
-  parent.performance.face = env.perfadd ? (parent.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+  const faces = await predict10(input, instance.config);
+  instance.performance.face = env.perfadd ? (instance.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   if (!input.shape || input.shape.length !== 4)
     return [];
   if (!faces)
     return [];
   for (let i = 0; i < faces.length; i++) {
-    parent.analyze("Get Face");
+    instance.analyze("Get Face");
     if (!faces[i].tensor || faces[i].tensor["isDisposedInternal"]) {
       log("Face object is disposed:", faces[i].tensor);
       continue;
     }
-    if ((_a = parent.config.face.detector) == null ? void 0 : _a.mask) {
+    if ((_a = instance.config.face.detector) == null ? void 0 : _a.mask) {
       const masked = await mask(faces[i]);
       tf32.dispose(faces[i].tensor);
       faces[i].tensor = masked;
     }
     const rotation = faces[i].mesh && faces[i].mesh.length > 200 ? calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]) : null;
-    parent.analyze("Start Emotion:");
-    if (parent.config.async) {
-      emotionRes = ((_b = parent.config.face.emotion) == null ? void 0 : _b.enabled) ? predict8(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze("Start Emotion:");
+    if (instance.config.async) {
+      emotionRes = ((_b = instance.config.face.emotion) == null ? void 0 : _b.enabled) ? predict8(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = "run:emotion";
+      instance.state = "run:emotion";
       timeStamp = now();
-      emotionRes = ((_c = parent.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict8(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.emotion = env.perfadd ? (parent.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      emotionRes = ((_c = instance.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict8(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.emotion = env.perfadd ? (instance.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze("End Emotion:");
-    parent.analyze("Start AntiSpoof:");
-    if (parent.config.async) {
-      antispoofRes = ((_d = parent.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict4(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze("End Emotion:");
+    instance.analyze("Start AntiSpoof:");
+    if (instance.config.async) {
+      antispoofRes = ((_d = instance.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict4(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = "run:antispoof";
+      instance.state = "run:antispoof";
       timeStamp = now();
-      antispoofRes = ((_e = parent.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict4(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      antispoofRes = ((_e = instance.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict4(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.antispoof = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze("End AntiSpoof:");
-    parent.analyze("Start Liveness:");
-    if (parent.config.async) {
-      livenessRes = ((_f = parent.config.face.liveness) == null ? void 0 : _f.enabled) ? predict14(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze("End AntiSpoof:");
+    instance.analyze("Start Liveness:");
+    if (instance.config.async) {
+      livenessRes = ((_f = instance.config.face.liveness) == null ? void 0 : _f.enabled) ? predict14(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = "run:liveness";
+      instance.state = "run:liveness";
       timeStamp = now();
-      livenessRes = ((_g = parent.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict14(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.liveness = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      livenessRes = ((_g = instance.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict14(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.liveness = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze("End Liveness:");
-    parent.analyze("Start GEAR:");
-    if (parent.config.async) {
-      gearRes = ((_h = parent.config.face["gear"]) == null ? void 0 : _h.enabled) ? predict(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+    instance.analyze("End Liveness:");
+    instance.analyze("Start GEAR:");
+    if (instance.config.async) {
+      gearRes = ((_h = instance.config.face["gear"]) == null ? void 0 : _h.enabled) ? predict(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
     } else {
-      parent.state = "run:gear";
+      instance.state = "run:gear";
       timeStamp = now();
-      gearRes = ((_i = parent.config.face["gear"]) == null ? void 0 : _i.enabled) ? await predict(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.gear = Math.trunc(now() - timeStamp);
+      gearRes = ((_i = instance.config.face["gear"]) == null ? void 0 : _i.enabled) ? await predict(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
+      instance.performance.gear = Math.trunc(now() - timeStamp);
     }
-    parent.analyze("End GEAR:");
-    parent.analyze("Start SSRNet:");
-    if (parent.config.async) {
-      ageRes = ((_j = parent.config.face["ssrnet"]) == null ? void 0 : _j.enabled) ? predict2(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
-      genderRes = ((_k = parent.config.face["ssrnet"]) == null ? void 0 : _k.enabled) ? predict3(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+    instance.analyze("End GEAR:");
+    instance.analyze("Start SSRNet:");
+    if (instance.config.async) {
+      ageRes = ((_j = instance.config.face["ssrnet"]) == null ? void 0 : _j.enabled) ? predict2(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
+      genderRes = ((_k = instance.config.face["ssrnet"]) == null ? void 0 : _k.enabled) ? predict3(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
     } else {
-      parent.state = "run:ssrnet";
+      instance.state = "run:ssrnet";
       timeStamp = now();
-      ageRes = ((_l = parent.config.face["ssrnet"]) == null ? void 0 : _l.enabled) ? await predict2(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
-      genderRes = ((_m = parent.config.face["ssrnet"]) == null ? void 0 : _m.enabled) ? await predict3(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.ssrnet = Math.trunc(now() - timeStamp);
+      ageRes = ((_l = instance.config.face["ssrnet"]) == null ? void 0 : _l.enabled) ? await predict2(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
+      genderRes = ((_m = instance.config.face["ssrnet"]) == null ? void 0 : _m.enabled) ? await predict3(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
+      instance.performance.ssrnet = Math.trunc(now() - timeStamp);
     }
-    parent.analyze("End SSRNet:");
-    parent.analyze("Start MobileFaceNet:");
-    if (parent.config.async) {
-      mobilefacenetRes = ((_n = parent.config.face["mobilefacenet"]) == null ? void 0 : _n.enabled) ? predict9(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
+    instance.analyze("End SSRNet:");
+    instance.analyze("Start MobileFaceNet:");
+    if (instance.config.async) {
+      mobilefacenetRes = ((_n = instance.config.face["mobilefacenet"]) == null ? void 0 : _n.enabled) ? predict9(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
     } else {
-      parent.state = "run:mobilefacenet";
+      instance.state = "run:mobilefacenet";
       timeStamp = now();
-      mobilefacenetRes = ((_o = parent.config.face["mobilefacenet"]) == null ? void 0 : _o.enabled) ? await predict9(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.mobilefacenet = Math.trunc(now() - timeStamp);
+      mobilefacenetRes = ((_o = instance.config.face["mobilefacenet"]) == null ? void 0 : _o.enabled) ? await predict9(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : {};
+      instance.performance.mobilefacenet = Math.trunc(now() - timeStamp);
     }
-    parent.analyze("End MobileFaceNet:");
-    parent.analyze("Start Description:");
-    if (parent.config.async) {
-      descRes = ((_p = parent.config.face.description) == null ? void 0 : _p.enabled) ? predict11(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze("End MobileFaceNet:");
+    instance.analyze("Start Description:");
+    if (instance.config.async) {
+      descRes = ((_p = instance.config.face.description) == null ? void 0 : _p.enabled) ? predict11(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = "run:description";
+      instance.state = "run:description";
       timeStamp = now();
-      descRes = ((_q = parent.config.face.description) == null ? void 0 : _q.enabled) ? await predict11(faces[i].tensor || tf32.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.description = env.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      descRes = ((_q = instance.config.face.description) == null ? void 0 : _q.enabled) ? await predict11(faces[i].tensor || tf32.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.description = env.perfadd ? (instance.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze("End Description:");
-    if (parent.config.async) {
+    instance.analyze("End Description:");
+    if (instance.config.async) {
       [ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
-    parent.analyze("Finish Face:");
-    if (((_r = parent.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && ageRes && genderRes)
+    instance.analyze("Finish Face:");
+    if (((_r = instance.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && ageRes && genderRes)
       descRes = { age: ageRes.age, gender: genderRes.gender, genderScore: genderRes.genderScore };
-    if (((_s = parent.config.face["gear"]) == null ? void 0 : _s.enabled) && gearRes)
+    if (((_s = instance.config.face["gear"]) == null ? void 0 : _s.enabled) && gearRes)
       descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
-    if (((_t = parent.config.face["mobilefacenet"]) == null ? void 0 : _t.enabled) && mobilefacenetRes)
+    if (((_t = instance.config.face["mobilefacenet"]) == null ? void 0 : _t.enabled) && mobilefacenetRes)
       descRes.descriptor = mobilefacenetRes;
-    if (!((_u = parent.config.face.iris) == null ? void 0 : _u.enabled) && ((_w = (_v = faces[i]) == null ? void 0 : _v.annotations) == null ? void 0 : _w.leftEyeIris) && ((_y = (_x = faces[i]) == null ? void 0 : _x.annotations) == null ? void 0 : _y.rightEyeIris)) {
+    if (!((_u = instance.config.face.iris) == null ? void 0 : _u.enabled) && ((_w = (_v = faces[i]) == null ? void 0 : _v.annotations) == null ? void 0 : _w.leftEyeIris) && ((_y = (_x = faces[i]) == null ? void 0 : _x.annotations) == null ? void 0 : _y.rightEyeIris)) {
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0] && faces[i].annotations.leftEyeIris.length > 0 && faces[i].annotations.rightEyeIris.length > 0 && faces[i].annotations.leftEyeIris[0] !== null && faces[i].annotations.rightEyeIris[0] !== null ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
-    const tensor3 = ((_z = parent.config.face.detector) == null ? void 0 : _z.return) ? tf32.squeeze(faces[i].tensor) : null;
+    const tensor3 = ((_z = instance.config.face.detector) == null ? void 0 : _z.return) ? tf32.squeeze(faces[i].tensor) : null;
     tf32.dispose(faces[i].tensor);
     if (faces[i].tensor)
       delete faces[i].tensor;
@@ -12089,18 +12150,18 @@ var detectFace = async (parent, input) => {
     if (tensor3)
       res.tensor = tensor3;
     faceRes.push(res);
-    parent.analyze("End Face");
+    instance.analyze("End Face");
   }
-  parent.analyze("End FaceMesh:");
-  if (parent.config.async) {
-    if (parent.performance.face)
-      delete parent.performance.face;
-    if (parent.performance.age)
-      delete parent.performance.age;
-    if (parent.performance.gender)
-      delete parent.performance.gender;
-    if (parent.performance.emotion)
-      delete parent.performance.emotion;
+  instance.analyze("End FaceMesh:");
+  if (instance.config.async) {
+    if (instance.performance.face)
+      delete instance.performance.face;
+    if (instance.performance.age)
+      delete instance.performance.age;
+    if (instance.performance.gender)
+      delete instance.performance.gender;
+    if (instance.performance.emotion)
+      delete instance.performance.emotion;
   }
   return faceRes;
 };
@@ -12227,16 +12288,19 @@ var hand2 = (res) => {
 };
 
 // src/util/interpolate.ts
-var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
 var interpolateTime = 0;
 function calc2(newResult, config3) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
   const t0 = now();
   if (!newResult)
-    return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+    return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
   const elapsed = Date.now() - newResult.timestamp;
   const bufferedFactor = elapsed < 1e3 ? 8 - Math.log(elapsed + 1) : 1;
-  bufferedResult.canvas = newResult.canvas;
+  if (newResult.canvas)
+    bufferedResult.canvas = newResult.canvas;
+  if (newResult.error)
+    bufferedResult.error = newResult.error;
   if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length) {
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
   } else {
@@ -13259,7 +13323,7 @@ async function warmup(instance, userConfig) {
   instance.state = "warmup";
   if (userConfig)
     instance.config = mergeDeep(instance.config, userConfig);
-  if (!instance.config.warmup || instance.config.warmup === "none")
+  if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === "none")
     return { error: "null" };
   let res;
   return new Promise(async (resolve) => {
@@ -13359,7 +13423,7 @@ var Human = class {
       person: (output, result, options3) => person(output, result, options3),
       all: (output, result, options3) => all(output, result, options3)
     };
-    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
+    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [], error: null };
     this.process = { tensor: null, canvas: null };
     this.faceTriangulation = triangulation;
     this.faceUVMap = uvmap;
@@ -13468,7 +13532,8 @@ var Human = class {
       const error = __privateGet(this, _sanity).call(this, input);
       if (error) {
         log(error, input);
-        resolve({ error });
+        this.emit("error");
+        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error });
       }
       const timeStart = now();
       await check(this);
@@ -13482,7 +13547,8 @@ var Human = class {
       if (!img.tensor) {
         if (this.config.debug)
           log("could not convert input to tensor");
-        resolve({ error: "could not convert input to tensor" });
+        this.emit("error");
+        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error: "could not convert input to tensor" });
         return;
       }
       this.emit("image");
@@ -13601,6 +13667,7 @@ var Human = class {
         performance: this.performance,
         canvas: this.process.canvas,
         timestamp: Date.now(),
+        error: null,
         get persons() {
           return join2(faceRes, bodyRes, handRes, gestureRes, shape);
         }

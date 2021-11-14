@@ -3,7 +3,7 @@
  */
 
 import { TRI468 as triangulation } from '../face/facemeshcoords';
-import { mergeDeep, now } from './util';
+import { mergeDeep, now, log } from './util';
 import { env } from './env';
 import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Point } from '../result';
 import type { AnyCanvas } from '../exports';
@@ -71,8 +71,14 @@ export const options: DrawOptions = {
 let drawTime = 0;
 
 const getCanvasContext = (input) => {
-  if (input && input.getContext) return input.getContext('2d');
-  throw new Error('invalid canvas');
+  if (!input) log('draw error: invalid canvas');
+  else if (!input.getContext) log('draw error: canvas context not defined');
+  else {
+    const ctx = input.getContext('2d');
+    if (!ctx) log('draw error: cannot get canvas context');
+    else return ctx;
+  }
+  return null;
 };
 
 const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
@@ -174,6 +180,7 @@ export async function gesture(inCanvas: AnyCanvas, result: Array<GestureResult>,
   if (!result || !inCanvas) return;
   if (localOptions.drawGestures) {
     const ctx = getCanvasContext(inCanvas);
+    if (!ctx) return;
     ctx.font = localOptions.font;
     ctx.fillStyle = localOptions.color;
     let i = 1;
@@ -201,6 +208,7 @@ export async function face(inCanvas: AnyCanvas, result: Array<FaceResult>, drawO
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
+  if (!ctx) return;
   for (const f of result) {
     ctx.font = localOptions.font;
     ctx.strokeStyle = localOptions.color;
@@ -324,6 +332,7 @@ export async function body(inCanvas: AnyCanvas, result: Array<BodyResult>, drawO
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
+  if (!ctx) return;
   ctx.lineJoin = 'round';
   for (let i = 0; i < result.length; i++) {
     ctx.strokeStyle = localOptions.color;
@@ -367,6 +376,7 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
+  if (!ctx) return;
   ctx.lineJoin = 'round';
   ctx.font = localOptions.font;
   for (const h of result) {
@@ -433,6 +443,7 @@ export async function object(inCanvas: AnyCanvas, result: Array<ObjectResult>, d
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
+  if (!ctx) return;
   ctx.lineJoin = 'round';
   ctx.font = localOptions.font;
   for (const h of result) {
@@ -459,6 +470,7 @@ export async function person(inCanvas: AnyCanvas, result: Array<PersonResult>, d
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
+  if (!ctx) return;
   ctx.lineJoin = 'round';
   ctx.font = localOptions.font;
 
@@ -482,9 +494,10 @@ export async function person(inCanvas: AnyCanvas, result: Array<PersonResult>, d
 }
 
 /** draw processed canvas */
-export async function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement) {
+export async function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: AnyCanvas) {
   if (!input || !output) return;
   const ctx = getCanvasContext(output);
+  if (!ctx) return;
   ctx.drawImage(input, 0, 0);
 }
 

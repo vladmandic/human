@@ -56,7 +56,7 @@ export declare function object(inCanvas: AnyCanvas, result: Array<ObjectResult>,
 /** draw combined person results instead of individual detection result objects */
 export declare function person(inCanvas: AnyCanvas, result: Array<PersonResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
 /** draw processed canvas */
-export declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement): Promise<void>;
+export declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: AnyCanvas): Promise<void>;
 /** meta-function that performs draw for: canvas, face, body, hand
  * @returns {Promise}
 */

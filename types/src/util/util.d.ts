@@ -1,8 +1,8 @@
 /**
  * Simple helper functions used accross codebase
  */
-export declare function join(folder: string, file: string): string;
 export declare function log(...msg: any[]): void;
+export declare function join(folder: string, file: string): string;
 export declare const now: () => number;
 export declare function validate(defaults: any, config: any, parent?: string, msgs?: Array<{
     reason: string;

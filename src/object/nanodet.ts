@@ -24,7 +24,6 @@ export async function load(config: Config): Promise<GraphModel> {
     model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || ''));
     const inputs = Object.values(model.modelSignature['inputs']);
     model.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model.inputSize) throw new Error(`cannot determine model inputSize: ${config.object.modelPath}`);
     if (!model || !model.modelUrl) log('load model failed:', config.object.modelPath);
     else if (config.debug) log('load model:', model.modelUrl);
   } else if (config.debug) log('cached model:', model.modelUrl);

@@ -2,21 +2,21 @@
  * Simple helper functions used accross codebase
  */
 
-// helper function: join two paths
-export function join(folder: string, file: string): string {
-  const separator = folder.endsWith('/') ? '' : '/';
-  const skipJoin = file.startsWith('.') || file.startsWith('/') || file.startsWith('http:') || file.startsWith('https:') || file.startsWith('file:');
-  const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
-  if (!path.toLocaleLowerCase().includes('.json')) throw new Error(`modelpath error: ${path} expecting json file`);
-  return path;
-}
-
 // helper function: wrapper around console output
 export function log(...msg): void {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
   // eslint-disable-next-line no-console
   if (msg) console.log(ts, 'Human:', ...msg);
+}
+
+// helper function: join two paths
+export function join(folder: string, file: string): string {
+  const separator = folder.endsWith('/') ? '' : '/';
+  const skipJoin = file.startsWith('.') || file.startsWith('/') || file.startsWith('http:') || file.startsWith('https:') || file.startsWith('file:');
+  const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
+  if (!path.toLocaleLowerCase().includes('.json')) throw new Error(`modelpath error: expecting json file: ${path}`);
+  return path;
 }
 
 // helper function: gets elapsed time on both browser and nodejs

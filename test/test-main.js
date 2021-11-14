@@ -314,7 +314,7 @@ async function test(Human, inputConfig) {
   log('info', 'test: image null');
   res = await human.detect(null);
   if (!res || !res.error) log('error', 'failed: invalid input', res);
-  else log('state', 'passed: invalid input', res);
+  else log('state', 'passed: invalid input', res.error || res);
 
   // test face similarity
   log('info', 'test face similarity');

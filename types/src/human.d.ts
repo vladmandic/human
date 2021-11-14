@@ -12,18 +12,13 @@ import * as draw from './util/draw';
 import * as facemesh from './face/facemesh';
 import * as match from './face/match';
 import * as models from './models';
-import type { Input, Tensor, DrawOptions, Config, Result } from './exports';
+import type { Input, Tensor, DrawOptions, Config, Result, AnyCanvas } from './exports';
 export * from './exports';
 /** Instance of TensorFlow/JS used by Human
  * - Can be TFJS that is bundled with `Human` or a manually imported TFJS library
  * @external [API](https://js.tensorflow.org/api/latest/)
  */
 export declare type TensorFlow = typeof tf;
-/** Error message */
-export declare type Error = {
-    /** @property error message */
-    error: string;
-};
 /** **Human** library main class
  *
  * All methods and properties are available only as members of Human class
@@ -55,7 +50,7 @@ export declare class Human {
     /** currenty processed image tensor and canvas */
     process: {
         tensor: Tensor | null;
-        canvas: OffscreenCanvas | HTMLCanvasElement | null;
+        canvas: AnyCanvas | null;
     };
     /** Instance of TensorFlow/JS used by Human
      *  - Can be embedded or externally provided
@@ -134,7 +129,7 @@ export declare class Human {
      */
     image(input: Input, getTensor?: boolean): Promise<{
         tensor: Tensor<import("@tensorflow/tfjs-core").Rank> | null;
-        canvas: import("./exports").AnyCanvas | null;
+        canvas: AnyCanvas | null;
     }>;
     /** Segmentation method takes any input and returns processed canvas with body segmentation
      *  - Segmentation is not triggered as part of detect process
@@ -151,8 +146,8 @@ export declare class Human {
      */
     segmentation(input: Input, background?: Input): Promise<{
         data: number[] | Tensor;
-        canvas: HTMLCanvasElement | OffscreenCanvas | null;
-        alpha: HTMLCanvasElement | OffscreenCanvas | null;
+        canvas: AnyCanvas | null;
+        alpha: AnyCanvas | null;
     }>;
     /** Enhance method performs additional enhacements to face image previously detected for futher processing
      *
@@ -217,7 +212,7 @@ export declare class Human {
      * @param userConfig?: {@link Config}
      * @returns result: {@link Result}
     */
-    detect(input: Input, userConfig?: Partial<Config>): Promise<Result | Error>;
+    detect(input: Input, userConfig?: Partial<Config>): Promise<Result>;
 }
 /** Class Human as default export */
 export { Human as default };

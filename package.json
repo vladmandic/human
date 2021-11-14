@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition",
   "sideEffects": false,
   "main": "dist/human.node.js",
@@ -67,7 +67,7 @@
     "@types/node": "^16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
-    "@vladmandic/build": "^0.6.3",
+    "@vladmandic/build": "^0.6.4",
     "@vladmandic/pilogger": "^0.3.5",
     "canvas": "^2.8.0",
     "dayjs": "^1.10.7",

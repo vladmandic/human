@@ -18,6 +18,7 @@ function insidePoly(x: number, y: number, polygon: Array<{ x: number, y: number 
 
 export async function mask(face: FaceResult): Promise<Tensor | undefined> {
   if (!face.tensor) return face.tensor;
+  if (!face.mesh || face.mesh.length < 100) return face.tensor;
   const width = face.tensor.shape[2] || 0;
   const height = face.tensor.shape[1] || 0;
   const buffer = await face.tensor.buffer();

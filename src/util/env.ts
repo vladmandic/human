@@ -134,9 +134,13 @@ export class Env {
     }
     this.webgpu.supported = this.browser && typeof navigator['gpu'] !== 'undefined';
     this.webgpu.backend = this.backends.includes('webgpu');
-    if (this.webgpu.supported) this.webgpu.adapter = (await navigator['gpu'].requestAdapter()).name;
-    // enumerate kernels
-    this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+    try {
+      if (this.webgpu.supported) this.webgpu.adapter = (await navigator['gpu'].requestAdapter()).name;
+      // enumerate kernels
+      this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+    } catch {
+      this.webgpu.supported = false;
+    }
   }
 
   async updateCPU() {

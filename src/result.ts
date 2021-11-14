@@ -4,6 +4,7 @@
 
 import type { Tensor } from './tfjs/types';
 import type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
+import type { AnyCanvas } from './exports';
 
 /** generic box as [x, y, width, height] */
 export type Box = [number, number, number, number];
@@ -185,9 +186,11 @@ export interface Result {
   /** global performance object with timing values for each operation */
   performance: Record<string, number>,
   /** optional processed canvas that can be used to draw input on screen */
-  canvas?: OffscreenCanvas | HTMLCanvasElement | null | undefined,
+  canvas?: AnyCanvas | null,
   /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */
   readonly timestamp: number,
   /** getter property that returns unified persons object  */
   persons: Array<PersonResult>,
+  /** @property Last known error message */
+  error: string | null;
 }

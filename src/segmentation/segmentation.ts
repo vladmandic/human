@@ -82,7 +82,7 @@ export async function process(input: Input, background: Input | undefined, confi
   for (let i = 0; i < width * height; i++) compositeData.data[4 * i + 3] = alphaData.data[4 * i + 0]; // copy original alpha value to new composite canvas
   compositeCtx.putImageData(compositeData, 0, 0);
 
-  let mergedCanvas: HTMLCanvasElement | OffscreenCanvas | null = null;
+  let mergedCanvas: AnyCanvas | null = null;
   if (background && compositeCanvas) { // draw background with segmentation as overlay if background is present
     mergedCanvas = image.canvas(width, height);
     const bgImage = await image.process(background, config);

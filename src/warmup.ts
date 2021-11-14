@@ -107,7 +107,7 @@ export async function warmup(instance: Human, userConfig?: Partial<Config>): Pro
   const t0 = now();
   instance.state = 'warmup';
   if (userConfig) instance.config = mergeDeep(instance.config, userConfig) as Config;
-  if (!instance.config.warmup || instance.config.warmup === 'none') return { error: 'null' };
+  if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === 'none') return { error: 'null' };
   let res;
   return new Promise(async (resolve) => {
     if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);

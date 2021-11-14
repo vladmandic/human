@@ -77,7 +77,7 @@ export async function check(instance: Human, force = false) {
       if (instance.config.backend === 'wasm') {
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
         if (typeof tf?.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath);
-        else throw new Error('wasm backend is not loaded');
+        else throw new Error('backend error: attempting to use wasm backend but wasm path is not set');
         const simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
         const mt = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
         if (instance.config.debug) log(`wasm execution: ${simd ? 'SIMD' : 'no SIMD'} ${mt ? 'multithreaded' : 'singlethreaded'}`);

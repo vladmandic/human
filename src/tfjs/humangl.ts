@@ -5,12 +5,13 @@ import { log } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 import * as models from '../models';
+import type { AnyCanvas } from '../exports';
 // import { env } from '../env';
 
 export const config = {
   name: 'humangl',
   priority: 999,
-  canvas: <null | OffscreenCanvas | HTMLCanvasElement>null,
+  canvas: <null | AnyCanvas>null,
   gl: <null | WebGL2RenderingContext>null,
   extensions: <string[]> [],
   webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
@@ -71,10 +72,9 @@ export async function register(instance: Human): Promise<void> {
       if (config.canvas) {
         config.canvas.addEventListener('webglcontextlost', async (e) => {
           log('error: humangl:', e.type);
-          // log('gpu memory usage:', instance.tf.engine().backendInstance.numBytesInGPU);
           log('possible browser memory leak using webgl or conflict with multiple backend registrations');
           instance.emit('error');
-          throw new Error('browser webgl error');
+          throw new Error('backend error: webgl context lost');
           // log('resetting humangl backend');
           // env.initial = true;
           // models.reset(instance);

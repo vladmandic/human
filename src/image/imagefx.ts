@@ -5,6 +5,7 @@
 
 import * as shaders from './imagefxshaders';
 import { canvas } from './image';
+import { log } from '../util/util';
 
 const collect = (source, prefix, collection) => {
   const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');
@@ -19,15 +20,24 @@ class GLProgram {
   attribute = {};
   gl: WebGLRenderingContext;
   id: WebGLProgram;
+
   constructor(gl, vertexSource, fragmentSource) {
     this.gl = gl;
     const vertexShader = this.compile(vertexSource, this.gl.VERTEX_SHADER);
     const fragmentShader = this.compile(fragmentSource, this.gl.FRAGMENT_SHADER);
     this.id = this.gl.createProgram() as WebGLProgram;
+    if (!vertexShader || !fragmentShader) return;
+    if (!this.id) {
+      log('filter: could not create webgl program');
+      return;
+    }
     this.gl.attachShader(this.id, vertexShader);
     this.gl.attachShader(this.id, fragmentShader);
     this.gl.linkProgram(this.id);
-    if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS)) throw new Error(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
+    if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS)) {
+      log(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
+      return;
+    }
     this.gl.useProgram(this.id);
     collect(vertexSource, 'attribute', this.attribute); // Collect attributes
     for (const a in this.attribute) this.attribute[a] = this.gl.getAttribLocation(this.id, a);
@@ -36,11 +46,18 @@ class GLProgram {
     for (const u in this.uniform) this.uniform[u] = this.gl.getUniformLocation(this.id, u);
   }
 
-  compile = (source, type): WebGLShader => {
+  compile = (source, type): WebGLShader | null => {
     const shader = this.gl.createShader(type) as WebGLShader;
+    if (!shader) {
+      log('filter: could not create shader');
+      return null;
+    }
     this.gl.shaderSource(shader, source);
     this.gl.compileShader(shader);
-    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) throw new Error(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
+    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+      log(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
+      return null;
+    }
     return shader;
   };
 }
@@ -67,7 +84,12 @@ export function GLImageFilter() {
   const shaderProgramCache = { }; // key is the shader program source, value is the compiled program
   const DRAW = { INTERMEDIATE: 1 };
   const gl = fxcanvas.getContext('webgl') as WebGLRenderingContext;
-  if (!gl) throw new Error('filter: cannot get webgl context');
+  // @ts-ignore used for sanity checks outside of imagefx
+  this.gl = gl;
+  if (!gl) {
+    log('filter: cannot get webgl context');
+    return;
+  }
 
   function resize(width, height) {
     if (width === fxcanvas.width && height === fxcanvas.height) return; // Same width/height? Nothing to do here
@@ -102,7 +124,7 @@ export function GLImageFilter() {
     return { fbo, texture };
   }
 
-  function getTempFramebuffer(index) {
+  function getTempFramebuffer(index): { fbo: WebGLFramebuffer | null, texture: WebGLTexture | null } {
     tempFramebuffers[index] = tempFramebuffers[index] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
     return tempFramebuffers[index] as { fbo: WebGLFramebuffer, texture: WebGLTexture };
   }
@@ -128,13 +150,17 @@ export function GLImageFilter() {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
-  function compileShader(fragmentSource) {
+  function compileShader(fragmentSource): GLProgram | null {
     if (shaderProgramCache[fragmentSource]) {
       currentProgram = shaderProgramCache[fragmentSource];
       gl.useProgram((currentProgram ? currentProgram.id : null) || null);
       return currentProgram as GLProgram;
     }
     currentProgram = new GLProgram(gl, shaders.vertexIdentity, fragmentSource);
+    if (!currentProgram) {
+      log('filter: could not get webgl program');
+      return null;
+    }
     const floatSize = Float32Array.BYTES_PER_ELEMENT;
     const vertSize = 4 * floatSize;
     gl.enableVertexAttribArray(currentProgram.attribute['pos']);
@@ -156,6 +182,7 @@ export function GLImageFilter() {
         ? shaders.colorMatrixWithoutAlpha
         : shaders.colorMatrixWithAlpha;
       const program = compileShader(shader);
+      if (!program) return;
       gl.uniform1fv(program.uniform['m'], m);
       draw();
     },
@@ -292,6 +319,7 @@ export function GLImageFilter() {
       const pixelSizeX = 1 / fxcanvas.width;
       const pixelSizeY = 1 / fxcanvas.height;
       const program = compileShader(shaders.convolution);
+      if (!program) return;
       gl.uniform1fv(program.uniform['m'], m);
       gl.uniform2f(program.uniform['px'], pixelSizeX, pixelSizeY);
       draw();
@@ -348,6 +376,7 @@ export function GLImageFilter() {
       const blurSizeX = (size / 7) / fxcanvas.width;
       const blurSizeY = (size / 7) / fxcanvas.height;
       const program = compileShader(shaders.blur);
+      if (!program) return;
       // Vertical
       gl.uniform2f(program.uniform['px'], 0, blurSizeY);
       draw(DRAW.INTERMEDIATE);
@@ -360,6 +389,7 @@ export function GLImageFilter() {
       const blurSizeX = (size) / fxcanvas.width;
       const blurSizeY = (size) / fxcanvas.height;
       const program = compileShader(shaders.pixelate);
+      if (!program) return;
       gl.uniform2f(program.uniform['size'], blurSizeX, blurSizeY);
       draw();
     },

@@ -21,7 +21,7 @@ import type { Tensor } from '../tfjs/types';
 import type { Human } from '../human';
 import { calculateFaceAngle } from './angles';
 
-export const detectFace = async (parent: Human /* instance of human */, input: Tensor): Promise<FaceResult[]> => {
+export const detectFace = async (instance: Human /* instance of human */, input: Tensor): Promise<FaceResult[]> => {
   // run facemesh, includes blazeface and iris
   // eslint-disable-next-line no-async-promise-executor
   let timeStamp;
@@ -34,16 +34,16 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
   let livenessRes;
   let descRes;
   const faceRes: Array<FaceResult> = [];
-  parent.state = 'run:face';
+  instance.state = 'run:face';
   timeStamp = now();
 
-  const faces = await facemesh.predict(input, parent.config);
-  parent.performance.face = env.perfadd ? (parent.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+  const faces = await facemesh.predict(input, instance.config);
+  instance.performance.face = env.perfadd ? (instance.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   if (!input.shape || input.shape.length !== 4) return [];
   if (!faces) return [];
   // for (const face of faces) {
   for (let i = 0; i < faces.length; i++) {
-    parent.analyze('Get Face');
+    instance.analyze('Get Face');
 
     // is something went wrong, skip the face
     // @ts-ignore possibly undefied
@@ -53,7 +53,7 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
     }
 
     // optional face mask
-    if (parent.config.face.detector?.mask) {
+    if (instance.config.face.detector?.mask) {
       const masked = await mask.mask(faces[i]);
       tf.dispose(faces[i].tensor);
       faces[i].tensor = masked as Tensor;
@@ -63,106 +63,106 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
     const rotation = faces[i].mesh && (faces[i].mesh.length > 200) ? calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]) : null;
 
     // run emotion, inherits face from blazeface
-    parent.analyze('Start Emotion:');
-    if (parent.config.async) {
-      emotionRes = parent.config.face.emotion?.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze('Start Emotion:');
+    if (instance.config.async) {
+      emotionRes = instance.config.face.emotion?.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = 'run:emotion';
+      instance.state = 'run:emotion';
       timeStamp = now();
-      emotionRes = parent.config.face.emotion?.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.emotion = env.perfadd ? (parent.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      emotionRes = instance.config.face.emotion?.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.emotion = env.perfadd ? (instance.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End Emotion:');
+    instance.analyze('End Emotion:');
 
     // run antispoof, inherits face from blazeface
-    parent.analyze('Start AntiSpoof:');
-    if (parent.config.async) {
-      antispoofRes = parent.config.face.antispoof?.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze('Start AntiSpoof:');
+    if (instance.config.async) {
+      antispoofRes = instance.config.face.antispoof?.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = 'run:antispoof';
+      instance.state = 'run:antispoof';
       timeStamp = now();
-      antispoofRes = parent.config.face.antispoof?.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.antispoof = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      antispoofRes = instance.config.face.antispoof?.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.antispoof = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End AntiSpoof:');
+    instance.analyze('End AntiSpoof:');
 
     // run liveness, inherits face from blazeface
-    parent.analyze('Start Liveness:');
-    if (parent.config.async) {
-      livenessRes = parent.config.face.liveness?.enabled ? liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze('Start Liveness:');
+    if (instance.config.async) {
+      livenessRes = instance.config.face.liveness?.enabled ? liveness.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = 'run:liveness';
+      instance.state = 'run:liveness';
       timeStamp = now();
-      livenessRes = parent.config.face.liveness?.enabled ? await liveness.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.liveness = env.perfadd ? (parent.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      livenessRes = instance.config.face.liveness?.enabled ? await liveness.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.liveness = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End Liveness:');
+    instance.analyze('End Liveness:');
 
     // run gear, inherits face from blazeface
-    parent.analyze('Start GEAR:');
-    if (parent.config.async) {
-      gearRes = parent.config.face['gear']?.enabled ? gear.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+    instance.analyze('Start GEAR:');
+    if (instance.config.async) {
+      gearRes = instance.config.face['gear']?.enabled ? gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
     } else {
-      parent.state = 'run:gear';
+      instance.state = 'run:gear';
       timeStamp = now();
-      gearRes = parent.config.face['gear']?.enabled ? await gear.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.gear = Math.trunc(now() - timeStamp);
+      gearRes = instance.config.face['gear']?.enabled ? await gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
+      instance.performance.gear = Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End GEAR:');
+    instance.analyze('End GEAR:');
 
     // run gear, inherits face from blazeface
-    parent.analyze('Start SSRNet:');
-    if (parent.config.async) {
-      ageRes = parent.config.face['ssrnet']?.enabled ? ssrnetAge.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
-      genderRes = parent.config.face['ssrnet']?.enabled ? ssrnetGender.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+    instance.analyze('Start SSRNet:');
+    if (instance.config.async) {
+      ageRes = instance.config.face['ssrnet']?.enabled ? ssrnetAge.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
+      genderRes = instance.config.face['ssrnet']?.enabled ? ssrnetGender.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
     } else {
-      parent.state = 'run:ssrnet';
+      instance.state = 'run:ssrnet';
       timeStamp = now();
-      ageRes = parent.config.face['ssrnet']?.enabled ? await ssrnetAge.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
-      genderRes = parent.config.face['ssrnet']?.enabled ? await ssrnetGender.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.ssrnet = Math.trunc(now() - timeStamp);
+      ageRes = instance.config.face['ssrnet']?.enabled ? await ssrnetAge.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
+      genderRes = instance.config.face['ssrnet']?.enabled ? await ssrnetGender.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
+      instance.performance.ssrnet = Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End SSRNet:');
+    instance.analyze('End SSRNet:');
 
     // run gear, inherits face from blazeface
-    parent.analyze('Start MobileFaceNet:');
-    if (parent.config.async) {
-      mobilefacenetRes = parent.config.face['mobilefacenet']?.enabled ? mobilefacenet.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
+    instance.analyze('Start MobileFaceNet:');
+    if (instance.config.async) {
+      mobilefacenetRes = instance.config.face['mobilefacenet']?.enabled ? mobilefacenet.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
     } else {
-      parent.state = 'run:mobilefacenet';
+      instance.state = 'run:mobilefacenet';
       timeStamp = now();
-      mobilefacenetRes = parent.config.face['mobilefacenet']?.enabled ? await mobilefacenet.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : {};
-      parent.performance.mobilefacenet = Math.trunc(now() - timeStamp);
+      mobilefacenetRes = instance.config.face['mobilefacenet']?.enabled ? await mobilefacenet.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : {};
+      instance.performance.mobilefacenet = Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End MobileFaceNet:');
+    instance.analyze('End MobileFaceNet:');
 
     // run emotion, inherits face from blazeface
-    parent.analyze('Start Description:');
-    if (parent.config.async) {
-      descRes = parent.config.face.description?.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
+    instance.analyze('Start Description:');
+    if (instance.config.async) {
+      descRes = instance.config.face.description?.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
-      parent.state = 'run:description';
+      instance.state = 'run:description';
       timeStamp = now();
-      descRes = parent.config.face.description?.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), parent.config, i, faces.length) : null;
-      parent.performance.description = env.perfadd ? (parent.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      descRes = instance.config.face.description?.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.description = env.perfadd ? (instance.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
-    parent.analyze('End Description:');
+    instance.analyze('End Description:');
 
     // if async wait for results
-    if (parent.config.async) {
+    if (instance.config.async) {
       [ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
-    parent.analyze('Finish Face:');
+    instance.analyze('Finish Face:');
 
     // override age/gender if alternative models are used
-    if (parent.config.face['ssrnet']?.enabled && ageRes && genderRes) descRes = { age: ageRes.age, gender: genderRes.gender, genderScore: genderRes.genderScore };
-    if (parent.config.face['gear']?.enabled && gearRes) descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
+    if (instance.config.face['ssrnet']?.enabled && ageRes && genderRes) descRes = { age: ageRes.age, gender: genderRes.gender, genderScore: genderRes.genderScore };
+    if (instance.config.face['gear']?.enabled && gearRes) descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
     // override descriptor if embedding model is used
-    if (parent.config.face['mobilefacenet']?.enabled && mobilefacenetRes) descRes.descriptor = mobilefacenetRes;
+    if (instance.config.face['mobilefacenet']?.enabled && mobilefacenetRes) descRes.descriptor = mobilefacenetRes;
 
     // calculate iris distance
     // iris: array[ center, left, top, right, bottom]
-    if (!parent.config.face.iris?.enabled && faces[i]?.annotations?.leftEyeIris && faces[i]?.annotations?.rightEyeIris) {
+    if (!instance.config.face.iris?.enabled && faces[i]?.annotations?.leftEyeIris && faces[i]?.annotations?.rightEyeIris) {
       delete faces[i].annotations.leftEyeIris;
       delete faces[i].annotations.rightEyeIris;
     }
@@ -173,7 +173,7 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
       : 0; // note: average human iris size is 11.7mm
 
     // optionally return tensor
-    const tensor = parent.config.face.detector?.return ? tf.squeeze(faces[i].tensor) : null;
+    const tensor = instance.config.face.detector?.return ? tf.squeeze(faces[i].tensor) : null;
     // dispose original face tensor
     tf.dispose(faces[i].tensor);
     // delete temp face image
@@ -195,14 +195,14 @@ export const detectFace = async (parent: Human /* instance of human */, input: T
     if (rotation) res.rotation = rotation;
     if (tensor) res.tensor = tensor;
     faceRes.push(res);
-    parent.analyze('End Face');
+    instance.analyze('End Face');
   }
-  parent.analyze('End FaceMesh:');
-  if (parent.config.async) {
-    if (parent.performance.face) delete parent.performance.face;
-    if (parent.performance.age) delete parent.performance.age;
-    if (parent.performance.gender) delete parent.performance.gender;
-    if (parent.performance.emotion) delete parent.performance.emotion;
+  instance.analyze('End FaceMesh:');
+  if (instance.config.async) {
+    if (instance.performance.face) delete instance.performance.face;
+    if (instance.performance.age) delete instance.performance.age;
+    if (instance.performance.gender) delete instance.performance.gender;
+    if (instance.performance.emotion) delete instance.performance.emotion;
   }
   return faceRes;
 };

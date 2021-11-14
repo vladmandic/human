@@ -36,7 +36,7 @@ import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
 import * as warmups from './warmup';
 // type definitions
-import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult } from './exports';
+import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas } from './exports';
 // type exports
 export * from './exports';
 
@@ -45,12 +45,6 @@ export * from './exports';
  * @external [API](https://js.tensorflow.org/api/latest/)
  */
 export type TensorFlow = typeof tf;
-
-/** Error message */
-export type Error = {
-  /** @property error message */
-  error: string,
-};
 
 /** **Human** library main class
  *
@@ -84,7 +78,7 @@ export class Human {
   state: string;
 
   /** currenty processed image tensor and canvas */
-  process: { tensor: Tensor | null, canvas: OffscreenCanvas | HTMLCanvasElement | null };
+  process: { tensor: Tensor | null, canvas: AnyCanvas | null };
 
   /** Instance of TensorFlow/JS used by Human
    *  - Can be embedded or externally provided
@@ -161,16 +155,16 @@ export class Human {
     // reexport draw methods
     this.draw = {
       options: draw.options as DrawOptions,
-      canvas: (input: HTMLCanvasElement | OffscreenCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: HTMLCanvasElement) => draw.canvas(input, output),
-      face: (output: HTMLCanvasElement | OffscreenCanvas, result: FaceResult[], options?: Partial<DrawOptions>) => draw.face(output, result, options),
-      body: (output: HTMLCanvasElement | OffscreenCanvas, result: BodyResult[], options?: Partial<DrawOptions>) => draw.body(output, result, options),
-      hand: (output: HTMLCanvasElement | OffscreenCanvas, result: HandResult[], options?: Partial<DrawOptions>) => draw.hand(output, result, options),
-      gesture: (output: HTMLCanvasElement | OffscreenCanvas, result: GestureResult[], options?: Partial<DrawOptions>) => draw.gesture(output, result, options),
-      object: (output: HTMLCanvasElement | OffscreenCanvas, result: ObjectResult[], options?: Partial<DrawOptions>) => draw.object(output, result, options),
-      person: (output: HTMLCanvasElement | OffscreenCanvas, result: PersonResult[], options?: Partial<DrawOptions>) => draw.person(output, result, options),
-      all: (output: HTMLCanvasElement | OffscreenCanvas, result: Result, options?: Partial<DrawOptions>) => draw.all(output, result, options),
+      canvas: (input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: AnyCanvas) => draw.canvas(input, output),
+      face: (output: AnyCanvas, result: FaceResult[], options?: Partial<DrawOptions>) => draw.face(output, result, options),
+      body: (output: AnyCanvas, result: BodyResult[], options?: Partial<DrawOptions>) => draw.body(output, result, options),
+      hand: (output: AnyCanvas, result: HandResult[], options?: Partial<DrawOptions>) => draw.hand(output, result, options),
+      gesture: (output: AnyCanvas, result: GestureResult[], options?: Partial<DrawOptions>) => draw.gesture(output, result, options),
+      object: (output: AnyCanvas, result: ObjectResult[], options?: Partial<DrawOptions>) => draw.object(output, result, options),
+      person: (output: AnyCanvas, result: PersonResult[], options?: Partial<DrawOptions>) => draw.person(output, result, options),
+      all: (output: AnyCanvas, result: Result, options?: Partial<DrawOptions>) => draw.all(output, result, options),
     };
-    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [] };
+    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [], error: null };
     // export access to image processing
     // @ts-ignore eslint-typescript cannot correctly infer type in anonymous function
     this.process = { tensor: null, canvas: null };
@@ -253,7 +247,7 @@ export class Human {
    *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
    *  - `alpha` as grayscale canvas that represents segmentation alpha values
    */
-  async segmentation(input: Input, background?: Input): Promise<{ data: number[] | Tensor, canvas: HTMLCanvasElement | OffscreenCanvas | null, alpha: HTMLCanvasElement | OffscreenCanvas | null }> {
+  async segmentation(input: Input, background?: Input): Promise<{ data: number[] | Tensor, canvas: AnyCanvas | null, alpha: AnyCanvas | null }> {
     return segmentation.process(input, background, this.config);
   }
 
@@ -389,7 +383,7 @@ export class Human {
    * @param userConfig?: {@link Config}
    * @returns result: {@link Result}
   */
-  async detect(input: Input, userConfig?: Partial<Config>): Promise<Result | Error> {
+  async detect(input: Input, userConfig?: Partial<Config>): Promise<Result> {
     // detection happens inside a promise
     this.state = 'detect';
     return new Promise(async (resolve) => {
@@ -404,7 +398,8 @@ export class Human {
       const error = this.#sanity(input);
       if (error) {
         log(error, input);
-        resolve({ error });
+        this.emit('error');
+        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error });
       }
 
       const timeStart = now();
@@ -417,14 +412,15 @@ export class Human {
 
       timeStamp = now();
       this.state = 'image';
-      const img = await image.process(input, this.config) as { canvas: HTMLCanvasElement | OffscreenCanvas, tensor: Tensor };
+      const img = await image.process(input, this.config) as { canvas: AnyCanvas, tensor: Tensor };
       this.process = img;
       this.performance.inputProcess = this.env.perfadd ? (this.performance.inputProcess || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');
 
       if (!img.tensor) {
         if (this.config.debug) log('could not convert input to tensor');
-        resolve({ error: 'could not convert input to tensor' });
+        this.emit('error');
+        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error: 'could not convert input to tensor' });
         return;
       }
       this.emit('image');
@@ -534,6 +530,7 @@ export class Human {
         performance: this.performance,
         canvas: this.process.canvas,
         timestamp: Date.now(),
+        error: null,
         get persons() { return persons.join(faceRes as FaceResult[], bodyRes as BodyResult[], handRes as HandResult[], gestureRes, shape); },
       };
 

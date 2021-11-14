@@ -33,7 +33,7 @@
     "noUncheckedIndexedAccess": false,
     "noUnusedLocals": false,
     "noUnusedParameters": true,
-    "preserveConstEnums": false,
+    "preserveConstEnums": true,
     "pretty": true,
     "removeComments": false,
     "resolveJsonModule": true,

@@ -11,12 +11,12 @@ import * as efficientPoseCoords from '../body/efficientposecoords';
 import { now } from './util';
 import { env } from './env';
 
-const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
 let interpolateTime = 0;
 
 export function calc(newResult: Result, config: Config): Result {
   const t0 = now();
-  if (!newResult) return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0 };
+  if (!newResult) return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
   // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
   // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
   // thus mixing by-reference and by-value assignments to minimize memory operations
@@ -31,7 +31,8 @@ export function calc(newResult: Result, config: Config): Result {
   // - at  1sec delay buffer = 1 which means live data is used
   const bufferedFactor = elapsed < 1000 ? 8 - Math.log(elapsed + 1) : 1;
 
-  bufferedResult.canvas = newResult.canvas;
+  if (newResult.canvas) bufferedResult.canvas = newResult.canvas;
+  if (newResult.error) bufferedResult.error = newResult.error;
 
   // interpolate body results
   if (!bufferedResult.body || (newResult.body.length !== bufferedResult.body.length)) {

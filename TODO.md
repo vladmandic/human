@@ -56,3 +56,5 @@ Other:
 - Improved `similarity` and `match` score range normalization
 - Documentation overhaul
 - Fixed optional `gear`, `ssrnet`, `mobilefacenet` modules
+- Improved error handling
+- Fix Firefox WebGPU compatibility issue

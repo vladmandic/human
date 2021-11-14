@@ -28,9 +28,10 @@ export function canvas(width, height): AnyCanvas {
   let c;
   if (env.browser) { // browser defines canvas object
     if (env.worker) { // if runing in web  worker use OffscreenCanvas
+      if (typeof OffscreenCanvas === 'undefined') throw new Error('canvas error: attempted to run in web worker but OffscreenCanvas is not supported');
       c = new OffscreenCanvas(width, height);
     } else { // otherwise use DOM canvas
-      if (typeof document === 'undefined') throw new Error('attempted to run in web worker but offscreenCanvas is not supported');
+      if (typeof document === 'undefined') throw new Error('canvas error: attempted to run in browser but DOM is not defined');
       c = document.createElement('canvas');
       c.width = width;
       c.height = height;
@@ -39,8 +40,8 @@ export function canvas(width, height): AnyCanvas {
     // @ts-ignore // env.canvas is an external monkey-patch
     if (typeof env.Canvas !== 'undefined') c = new env.Canvas(width, height);
     else if (typeof globalThis.Canvas !== 'undefined') c = new globalThis.Canvas(width, height);
+    // else throw new Error('canvas error: attempted to use canvas in nodejs without canvas support installed');
   }
-  // if (!c) throw new Error('cannot create canvas');
   return c;
 }
 
@@ -58,7 +59,7 @@ export function copy(input: AnyCanvas, output?: AnyCanvas) {
 export async function process(input: Input, config: Config, getTensor: boolean = true): Promise<{ tensor: Tensor | null, canvas: AnyCanvas | null }> {
   if (!input) {
     // throw new Error('input is missing');
-    if (config.debug) log('input is missing');
+    if (config.debug) log('input error: input is missing');
     return { tensor: null, canvas: null }; // video may become temporarily unavailable due to onresize
   }
   // sanity checks since different browsers do not implement all dom elements
@@ -75,12 +76,12 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     && !(typeof HTMLCanvasElement !== 'undefined' && input instanceof HTMLCanvasElement)
     && !(typeof OffscreenCanvas !== 'undefined' && input instanceof OffscreenCanvas)
   ) {
-    throw new Error('input type is not recognized');
+    throw new Error('input error: type is not recognized');
   }
   if (input instanceof tf.Tensor) { // if input is tensor use as-is without filters but correct shape as needed
     let tensor: Tensor | null = null;
-    if ((input as Tensor)['isDisposedInternal']) throw new Error('input tensor is disposed');
-    if (!(input as Tensor)['shape']) throw new Error('input tensor has no shape');
+    if ((input as Tensor)['isDisposedInternal']) throw new Error('input error: attempted to use tensor but it is disposed');
+    if (!(input as Tensor)['shape']) throw new Error('input error: attempted to use tensor without a shape');
     if ((input as Tensor).shape.length === 3) { // [height, width, 3 || 4]
       if ((input as Tensor).shape[2] === 3) { // [height, width, 3] so add batch
         tensor = tf.expandDims(input, 0);
@@ -97,7 +98,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       }
     }
     // at the end shape must be [1, height, width, 3]
-    if (tensor == null || tensor.shape.length !== 4 || tensor.shape[0] !== 1 || tensor.shape[3] !== 3) throw new Error(`could not process input tensor with shape: ${input['shape']}`);
+    if (tensor == null || tensor.shape.length !== 4 || tensor.shape[0] !== 1 || tensor.shape[3] !== 3) throw new Error(`input error: attempted to use tensor with unrecognized shape: ${input['shape']}`);
     if ((tensor as Tensor).dtype === 'int32') {
       const cast = tf.cast(tensor, 'float32');
       tf.dispose(tensor);
@@ -132,7 +133,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     else if ((config.filter.height || 0) > 0) targetWidth = originalWidth * ((config.filter.height || 0) / originalHeight);
     if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
     else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
-    if (!targetWidth || !targetHeight) throw new Error('input cannot determine dimension');
+    if (!targetWidth || !targetHeight) throw new Error('input error: cannot determine dimension');
     if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
 
     // draw input to our canvas
@@ -156,7 +157,10 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     if (config.filter.enabled && env.webgl.supported) {
       if (!fx) fx = env.browser ? new fxImage.GLImageFilter() : null; // && (typeof document !== 'undefined')
       env.filter = !!fx;
-      if (!fx) return { tensor: null, canvas: inCanvas };
+      if (!fx || !fx.add) {
+        if (config.debug) log('input process error: cannot initialize filters');
+        return { tensor: null, canvas: inCanvas };
+      }
       fx.reset();
       if (config.filter.brightness !== 0) fx.add('brightness', config.filter.brightness);
       if (config.filter.contrast !== 0) fx.add('contrast', config.filter.contrast);
@@ -181,7 +185,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     }
 
     if (!getTensor) return { tensor: null, canvas: outCanvas }; // just canvas was requested
-    if (!outCanvas) throw new Error('cannot create output canvas');
+    if (!outCanvas) throw new Error('canvas error: cannot create output');
 
     // create tensor from image unless input was a tensor already
     let pixels;
@@ -218,7 +222,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       tf.dispose(pixels);
       pixels = rgb;
     }
-    if (!pixels) throw new Error('cannot create tensor from input');
+    if (!pixels) throw new Error('input error: cannot create tensor');
     const casted = tf.cast(pixels, 'float32');
     const tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
     tf.dispose([pixels, casted]);

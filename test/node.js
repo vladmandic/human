@@ -104,8 +104,8 @@ async function testAll() {
   log.info('demos:', demos);
   // for (const demo of demos) await runDemo(demo);
   for (const test of tests) await runTest(test);
-  log.info();
-  log.info('failed', failedMessages);
+  log.info('all tests complete');
+  log.info('failed:', { count: failedMessages.length, messages: failedMessages });
   log.info('status:', status);
 }
 

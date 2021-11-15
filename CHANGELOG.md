@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/11/14 mandic00@live.com
+
+
 ### **2.5.2** 2021/11/14 mandic00@live.com
 
-
-### **origin/main** 2021/11/13 mandic00@live.com
-
+- fix mobilefacenet module
 - fix gear and ssrnet modules
 - fix for face crop when mesh is disabled
 - implement optional face masking

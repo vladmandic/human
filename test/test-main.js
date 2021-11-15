@@ -67,6 +67,8 @@ async function testInstance(human) {
   log('info', 'human version:', human.version);
   log('info', 'platform:', human.env.platform, 'agent:', human.env.agent);
   log('info', 'tfjs version:', human.tf.version.tfjs);
+  const bindingVer = human.tf.backend()['binding'] ? human.tf.backend()['binding']['TF_Version'] : null;
+  if (bindingVer) log('info', 'tensorflow binding version:', bindingVer);
 
   await human.load();
   if (config.backend === human.tf.getBackend()) log('state', 'passed: set backend:', config.backend);

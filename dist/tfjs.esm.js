@@ -12,7 +12,7 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   throw new Error('Dynamic require of "' + x + '" is not supported');
 });
 
-// ../tfjs/dist/tfjs.esm.js
+// node_modules/.pnpm/github.com+vladmandic+tfjs@bd7dac71f4f8de0e9c11a5fd16b2cbd0b81da494/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;

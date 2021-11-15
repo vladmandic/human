@@ -54,7 +54,8 @@ async function init() {
   await human.load();
   const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   log.info('Loaded:', loaded);
-  log.info('Memory state:', human.tf.engine().memory());
+  // log.info('Memory state:', human.tf.engine().memory());
+  log.data(tf.backend()['binding'] ? tf.backend()['binding']['TF_Version'] : null);
 }
 
 async function detect(input) {

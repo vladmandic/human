@@ -54,7 +54,8 @@ New:
 Other:
 - Improved **Safari** compatibility
 - Improved `similarity` and `match` score range normalization
-- Documentation overhaul
-- Fixed optional `gear`, `ssrnet`, `mobilefacenet` modules
 - Improved error handling
-- Fix Firefox WebGPU compatibility issue
+- Improved VSCode out-of-the-box experience
+- Documentation overhaul
+- Fix for optional `gear`, `ssrnet`, `mobilefacenet` modules
+- Fix for Firefox WebGPU compatibility issue

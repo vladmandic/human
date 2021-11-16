@@ -41,7 +41,10 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         landmarks: possible.landmarks,
         confidence: possible.confidence,
       };
-      boxCache.push(util.squarifyBox(util.enlargeBox(util.scaleBoxCoordinates(box, possibleBoxes.scaleFactor), Math.sqrt(config.face.detector?.cropFactor || 1.6))));
+      const boxScaled = util.scaleBoxCoordinates(box, possibleBoxes.scaleFactor);
+      const boxEnlarged = util.enlargeBox(boxScaled, Math.sqrt(config.face.detector?.cropFactor || 1.6));
+      const boxSquared = util.squarifyBox(boxEnlarged);
+      boxCache.push(boxSquared);
     }
     skipped = 0;
   } else {
@@ -67,7 +70,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     };
 
     // optional rotation correction based on detector data only if mesh is disabled otherwise perform it later when we have more accurate mesh data. if no rotation correction this function performs crop
-    [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(!config.face.mesh?.enabled && config.face.detector?.rotation, box, input, config.face.mesh?.enabled ? inputSize : blazeface.size());
+    [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(config.face.detector?.rotation, box, input, config.face.mesh?.enabled ? inputSize : blazeface.size());
     if (config?.filter?.equalization) {
       const equilized = await histogramEqualization(face.tensor as Tensor);
       tf.dispose(face.tensor);

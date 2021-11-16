@@ -262,7 +262,7 @@ const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js
 
 export async function skip(config, input: Tensor) {
   let skipFrame = false;
-  if (config.cacheSensitivity === 0) return skipFrame;
+  if (config.cacheSensitivity === 0 || !input.shape || input.shape.length !== 4 || input.shape[1] > 2048 || input.shape[2] > 2048) return skipFrame; // cache disabled or input is invalid or too large for cache analysis
 
   /*
   const checkSum = await checksum(input);

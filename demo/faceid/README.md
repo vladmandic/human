@@ -32,3 +32,10 @@ designed to serve as a quick check when used together with other indicators:
 - Checks if input has obvious artifacts due to recording (e.g. playing back phone recording of a face)
 - Configuration: `human.config.face.liveness`.enabled
 - Result: `human.result.face[0].live` as score
+
+### Models
+
+**FaceID** is compatible with
+- `faceres.json` (default) perfoms combined age/gender/descriptor analysis
+- `faceres-deep.json` higher resolution variation of `faceres`
+- `mobilefacenet` alternative model for face descriptor analysis

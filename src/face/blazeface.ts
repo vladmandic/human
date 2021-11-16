@@ -13,7 +13,6 @@ import type { Point } from '../result';
 
 const keypointsCount = 6;
 let model: GraphModel | null;
-let anchorsData: [number, number][] = [];
 let anchors: Tensor | null = null;
 let inputSize = 0;
 
@@ -27,9 +26,7 @@ export async function load(config: Config): Promise<GraphModel> {
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
-  if (inputSize === -1) inputSize = 64;
-  anchorsData = util.generateAnchors(inputSize);
-  anchors = tf.tensor2d(anchorsData);
+  anchors = tf.tensor2d(util.generateAnchors(inputSize));
   return model;
 }
 
@@ -73,7 +70,6 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   t.logits = tf.slice(t.batch, [0, 0], [-1, 1]);
   t.sigmoid = tf.sigmoid(t.logits);
   t.scores = tf.squeeze(t.sigmoid);
-
   t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, (config.face.detector?.maxDetected || 0), (config.face.detector?.iouThreshold || 0), (config.face.detector?.minConfidence || 0));
   const nms = await t.nms.array() as number[];
   const boxes: Array<{ box: { startPoint: Point, endPoint: Point }, landmarks: Point[], confidence: number }> = [];
@@ -86,12 +82,11 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
       b.slice = tf.slice(t.batch, [nms[i], keypointsCount - 1], [1, -1]);
       b.squeeze = tf.squeeze(b.slice);
       b.landmarks = tf.reshape(b.squeeze, [keypointsCount, -1]);
-      b.startPoint = tf.slice(b.bbox, [0, 0], [-1, 2]);
-      b.endPoint = tf.slice(b.bbox, [0, 2], [-1, 2]);
+      const points = await b.bbox.data();
       boxes.push({
         box: {
-          startPoint: (await b.startPoint.data()) as unknown as Point,
-          endPoint: (await b.endPoint.data()) as unknown as Point,
+          startPoint: [points[0], points[1]] as Point,
+          endPoint: [points[2], points[3]] as Point,
         },
         landmarks: (await b.landmarks.array()) as Point[],
         confidence,

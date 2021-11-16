@@ -8,7 +8,7 @@
 import { Human } from "../../dist/human.esm.js";
 var humanConfig = {
   modelBasePath: "../../models",
-  filter: { equalization: false }
+  filter: { equalization: true }
 };
 var human = new Human(humanConfig);
 human.env["perfadd"] = false;

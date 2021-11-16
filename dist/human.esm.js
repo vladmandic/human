@@ -14194,7 +14194,8 @@ function intersectionOverUnion(boxes, i, j) {
   const intersectionYmax = Math.min(ymaxI, ymaxJ);
   const intersectionXmax = Math.min(xmaxI, xmaxJ);
   const intersectionArea = Math.max(intersectionYmax - intersectionYmin, 0) * Math.max(intersectionXmax - intersectionXmin, 0);
-  return intersectionArea / (areaI + areaJ - intersectionArea);
+  const iou = intersectionArea / (areaI + areaJ - intersectionArea);
+  return iou;
 }
 function suppressWeight(iouThreshold, scale22, iou) {
   const weight = Math.exp(scale22 * iou * iou);
@@ -71538,7 +71539,7 @@ async function process2(input2, config3, getTensor2 = true) {
 }
 async function skip(config3, input2) {
   let skipFrame = false;
-  if (config3.cacheSensitivity === 0)
+  if (config3.cacheSensitivity === 0 || !input2.shape || input2.shape.length !== 4 || input2.shape[1] > 2048 || input2.shape[2] > 2048)
     return skipFrame;
   if (!last.inputTensor) {
     last.inputTensor = clone(input2);
@@ -75352,7 +75353,6 @@ function correctFaceRotation(rotate, box4, input2, inputSize8) {
 // src/face/blazeface.ts
 var keypointsCount = 6;
 var model6;
-var anchorsData = [];
 var anchors = null;
 var inputSize = 0;
 var size = () => inputSize;
@@ -75369,10 +75369,7 @@ async function load5(config3) {
   } else if (config3.debug)
     log("cached model:", model6["modelUrl"]);
   inputSize = model6.inputs[0].shape ? model6.inputs[0].shape[2] : 0;
-  if (inputSize === -1)
-    inputSize = 64;
-  anchorsData = generateAnchors(inputSize);
-  anchors = tensor2d(anchorsData);
+  anchors = tensor2d(generateAnchors(inputSize));
   return model6;
 }
 function decodeBounds(boxOutputs) {
@@ -75426,12 +75423,11 @@ async function getBoxes(inputImage, config3) {
       b.slice = slice(t.batch, [nms[i], keypointsCount - 1], [1, -1]);
       b.squeeze = squeeze(b.slice);
       b.landmarks = reshape(b.squeeze, [keypointsCount, -1]);
-      b.startPoint = slice(b.bbox, [0, 0], [-1, 2]);
-      b.endPoint = slice(b.bbox, [0, 2], [-1, 2]);
+      const points = await b.bbox.data();
       boxes.push({
         box: {
-          startPoint: await b.startPoint.data(),
-          endPoint: await b.endPoint.data()
+          startPoint: [points[0], points[1]],
+          endPoint: [points[2], points[3]]
         },
         landmarks: await b.landmarks.array(),
         confidence
@@ -76204,7 +76200,7 @@ var inputSize5 = 0;
 var skipped10 = Number.MAX_SAFE_INTEGER;
 var lastTime10 = 0;
 async function predict10(input2, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime10;
   const skipFrame = skipped10 < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
@@ -76218,7 +76214,10 @@ async function predict10(input2, config3) {
         landmarks: possible.landmarks,
         confidence: possible.confidence
       };
-      boxCache.push(squarifyBox(enlargeBox(scaleBoxCoordinates(box4, possibleBoxes.scaleFactor), Math.sqrt(((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6))));
+      const boxScaled = scaleBoxCoordinates(box4, possibleBoxes.scaleFactor);
+      const boxEnlarged = enlargeBox(boxScaled, Math.sqrt(((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6));
+      const boxSquared = squarifyBox(boxEnlarged);
+      boxCache.push(boxSquared);
     }
     skipped10 = 0;
   } else {
@@ -76242,14 +76241,14 @@ async function predict10(input2, config3) {
       faceScore: 0,
       annotations: {}
     };
-    [angle, rotationMatrix, face5.tensor] = correctFaceRotation(!((_d = config3.face.mesh) == null ? void 0 : _d.enabled) && ((_e = config3.face.detector) == null ? void 0 : _e.rotation), box4, input2, ((_f = config3.face.mesh) == null ? void 0 : _f.enabled) ? inputSize5 : size());
-    if ((_g = config3 == null ? void 0 : config3.filter) == null ? void 0 : _g.equalization) {
+    [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_d = config3.face.detector) == null ? void 0 : _d.rotation, box4, input2, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? inputSize5 : size());
+    if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
       dispose(face5.tensor);
       face5.tensor = equilized;
     }
     face5.boxScore = Math.round(100 * box4.confidence) / 100;
-    if (!((_h = config3.face.mesh) == null ? void 0 : _h.enabled)) {
+    if (!((_g = config3.face.mesh) == null ? void 0 : _g.enabled)) {
       face5.box = getClampedBox(box4, input2);
       face5.boxRaw = getRawBox(box4, input2);
       face5.score = face5.boxScore;
@@ -76270,22 +76269,22 @@ async function predict10(input2, config3) {
       const coordsReshaped = reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       dispose([contourCoords, coordsReshaped, confidence, contours]);
-      if (face5.faceScore < (((_i = config3.face.detector) == null ? void 0 : _i.minConfidence) || 1)) {
+      if (face5.faceScore < (((_h = config3.face.detector) == null ? void 0 : _h.minConfidence) || 1)) {
         box4.confidence = face5.faceScore;
       } else {
-        if ((_j = config3.face.iris) == null ? void 0 : _j.enabled)
+        if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
           rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
         face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize5]);
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
-        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_k = config3.face.detector) == null ? void 0 : _k.cropFactor) || 1.6), confidence: box4.confidence });
+        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_j = config3.face.detector) == null ? void 0 : _j.cropFactor) || 1.6), confidence: box4.confidence });
         face5.box = getClampedBox(box4, input2);
         face5.boxRaw = getRawBox(box4, input2);
         face5.score = face5.faceScore;
         newCache.push(box4);
         dispose(face5.tensor);
-        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_l = config3.face.detector) == null ? void 0 : _l.rotation, box4, input2, inputSize5);
+        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_k = config3.face.detector) == null ? void 0 : _k.rotation, box4, input2, inputSize5);
       }
     }
     faces.push(face5);

@@ -19,10 +19,12 @@ const userConfig = {
   filter: {
     enabled: true,
     equalization: true,
+    width: 0,
   },
   face: {
     enabled: true,
-    detector: { rotation: true, return: true, maxDetected: 50 },
+    // detector: { rotation: false, return: true, maxDetected: 50, iouThreshold: 0.206, minConfidence: 0.122 },
+    detector: { return: true, rotation: true, maxDetected: 50, iouThreshold: 0.01, minConfidence: 0.2 },
     mesh: { enabled: true },
     iris: { enabled: false },
     emotion: { enabled: true },
@@ -138,7 +140,8 @@ async function SelectFaceCanvas(face) {
 async function AddFaceCanvas(index, res, fileName) {
   all[index] = res.face;
   for (const i in res.face) {
-    if (res.face[i].mesh.length === 0 || !res.face[i].tensor) continue; // did not get valid results
+    if (!res.face[i].tensor) continue; // did not get valid results
+    if ((res.face[i].faceScore || 0) < human.config.face.detector.minConfidence) continue; // face analysis score too low
     all[index][i].fileName = fileName;
     const canvas = document.createElement('canvas');
     canvas.tag = { sample: index, face: i, source: fileName };
@@ -177,9 +180,9 @@ async function AddImageElement(index, image, length) {
   return new Promise((resolve) => {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
+      document.getElementById('images').appendChild(img); // and finally we can add it
       human.detect(img, userConfig).then((res) => {
         AddFaceCanvas(index, res, image); // then wait until image is analyzed
-        document.getElementById('images').appendChild(img); // and finally we can add it
         resolve(true);
       });
     };
@@ -236,12 +239,8 @@ async function main() {
     log('Discovered images:', images);
   }
 
-  // images = ['/samples/in/solvay1927.jpg'];
+  // images = ['/samples/in/person-lexi.jpg', '/samples/in/person-carolina.jpg', '/samples/in/solvay1927.jpg'];
 
-  // download and analyze all images
-  // const promises = [];
-  // for (let i = 0; i < images.length; i++) promises.push(AddImageElement(i, images[i], images.length));
-  // await Promise.all(promises);
   const t0 = human.now();
   for (let i = 0; i < images.length; i++) await AddImageElement(i, images[i], images.length);
   const t1 = human.now();

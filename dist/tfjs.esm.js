@@ -13480,7 +13480,8 @@ function intersectionOverUnion(boxes, i, j) {
   const intersectionYmax = Math.min(ymaxI, ymaxJ);
   const intersectionXmax = Math.min(xmaxI, xmaxJ);
   const intersectionArea = Math.max(intersectionYmax - intersectionYmin, 0) * Math.max(intersectionXmax - intersectionXmin, 0);
-  return intersectionArea / (areaI + areaJ - intersectionArea);
+  const iou = intersectionArea / (areaI + areaJ - intersectionArea);
+  return iou;
 }
 function suppressWeight(iouThreshold, scale2, iou) {
   const weight = Math.exp(scale2 * iou * iou);

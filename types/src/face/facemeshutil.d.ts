@@ -13,8 +13,8 @@ export declare const getBoxCenter: (box: any) => [number, number];
 export declare const getClampedBox: (box: any, input: any) => Box;
 export declare const getRawBox: (box: any, input: any) => Box;
 export declare const scaleBoxCoordinates: (box: any, factor: any) => {
-    startPoint: number[];
-    endPoint: number[];
+    startPoint: Point;
+    endPoint: Point;
     landmarks: any;
     confidence: any;
 };

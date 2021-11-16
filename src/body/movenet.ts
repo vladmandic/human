@@ -39,21 +39,17 @@ export async function load(config: Config): Promise<GraphModel> {
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
-  if (inputSize === -1) inputSize = 256;
   return model;
 }
 
-async function parseSinglePose(res, config, image, inputBox) {
+async function parseSinglePose(res, config, image) {
   const kpt = res[0][0];
   const keypoints: Array<BodyKeypoint> = [];
   let score = 0;
   for (let id = 0; id < kpt.length; id++) {
     score = kpt[id][2];
     if (score > config.body.minConfidence) {
-      const positionRaw: Point = [
-        (inputBox[3] - inputBox[1]) * kpt[id][1] + inputBox[1],
-        (inputBox[2] - inputBox[0]) * kpt[id][0] + inputBox[0],
-      ];
+      const positionRaw: Point = [kpt[id][1], kpt[id][0]];
       keypoints.push({
         score: Math.round(100 * score) / 100,
         part: coords.kpt[id],
@@ -84,7 +80,7 @@ async function parseSinglePose(res, config, image, inputBox) {
   return bodies;
 }
 
-async function parseMultiPose(res, config, image, inputBox) {
+async function parseMultiPose(res, config, image) {
   const bodies: Array<BodyResult> = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
@@ -94,10 +90,7 @@ async function parseMultiPose(res, config, image, inputBox) {
       for (let i = 0; i < 17; i++) {
         const score = kpt[3 * i + 2];
         if (score > config.body.minConfidence) {
-          const positionRaw: Point = [
-            (inputBox[3] - inputBox[1]) * kpt[3 * i + 1] + inputBox[1],
-            (inputBox[2] - inputBox[0]) * kpt[3 * i + 0] + inputBox[0],
-          ];
+          const positionRaw: Point = [kpt[3 * i + 1], kpt[3 * i + 0]];
           keypoints.push({
             part: coords.kpt[i],
             score: Math.round(100 * score) / 100,
@@ -181,8 +174,8 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
     cache.last = now();
     const res = await t.res.array();
     cache.bodies = (t.res.shape[2] === 17)
-      ? await parseSinglePose(res, config, input, [0, 0, 1, 1])
-      : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
+      ? await parseSinglePose(res, config, input)
+      : await parseMultiPose(res, config, input);
     for (const body of cache.bodies) {
       fix.rescaleBody(body, [input.shape[2] || 1, input.shape[1] || 1]);
       fix.jitter(body.keypoints);

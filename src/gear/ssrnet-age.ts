@@ -6,9 +6,10 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { env } from '../util/env';
+import * as constants from '../tfjs/constants';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
-import { env } from '../util/env';
 
 let model: GraphModel | null;
 const last: Array<{ age: number }> = [];
@@ -43,7 +44,7 @@ export async function predict(image: Tensor, config: Config, idx, count): Promis
     if (!model?.inputs || !model.inputs[0] || !model.inputs[0].shape) return;
     const t: Record<string, Tensor> = {};
     t.resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-    t.enhance = tf.mul(t.resize, 255);
+    t.enhance = tf.mul(t.resize, constants.tf255);
     const obj = { age: 0 };
     if (config.face['ssrnet'].enabled) t.age = model.execute(t.enhance) as Tensor;
     if (t.age) {

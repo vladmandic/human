@@ -6,6 +6,7 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import * as constants from '../tfjs/constants';
 import { labels } from './labels';
 import type { ObjectResult, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -117,7 +118,7 @@ export async function predict(image: Tensor, config: Config): Promise<ObjectResu
   return new Promise(async (resolve) => {
     const outputSize = [image.shape[2], image.shape[1]];
     const resize = tf.image.resizeBilinear(image, [model.inputSize, model.inputSize], false);
-    const norm = tf.div(resize, 255);
+    const norm = tf.div(resize, constants.tf255);
     const transpose = norm.transpose([0, 3, 1, 2]);
     tf.dispose(norm);
     tf.dispose(resize);

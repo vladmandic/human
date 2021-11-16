@@ -6,6 +6,7 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import * as constants from '../tfjs/constants';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import { env } from '../util/env';
@@ -50,7 +51,7 @@ export async function predict(image: Tensor, config: Config, idx, count): Promis
       const greenNorm = tf.mul(green, rgb[1]);
       const blueNorm = tf.mul(blue, rgb[2]);
       const grayscale = tf.addN([redNorm, greenNorm, blueNorm]);
-      const normalize = tf.mul(tf.sub(grayscale, 0.5), 2); // range grayscale:-1..1
+      const normalize = tf.mul(tf.sub(grayscale, constants.tf05), 2); // range grayscale:-1..1
       return normalize;
     });
     const obj = { gender: '', genderScore: 0 };

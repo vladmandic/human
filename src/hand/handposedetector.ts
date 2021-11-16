@@ -6,6 +6,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './handposeutil';
 import * as anchors from './handposeanchors';
+import * as constants from '../tfjs/constants';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Point } from '../result';
 
@@ -55,8 +56,8 @@ export class HandDetector {
   async predict(input, config): Promise<{ startPoint: Point; endPoint: Point, palmLandmarks: Point[]; confidence: number }[]> {
     const t: Record<string, Tensor> = {};
     t.resize = tf.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
-    t.div = tf.div(t.resize, 127.5);
-    t.image = tf.sub(t.div, 1);
+    t.div = tf.div(t.resize, constants.tf127);
+    t.image = tf.sub(t.div, constants.tf1);
     t.batched = this.model.execute(t.image) as Tensor;
     t.predictions = tf.squeeze(t.batched);
     t.slice = tf.slice(t.predictions, [0, 0], [-1, 1]);

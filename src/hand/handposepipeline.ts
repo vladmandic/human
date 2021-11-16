@@ -6,6 +6,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './handposeutil';
 import type * as detector from './handposedetector';
+import * as constants from '../tfjs/constants';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';
 import { now } from '../util/util';
@@ -120,7 +121,7 @@ export class HandPipeline {
         const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = util.cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
-        const handImage = tf.div(croppedInput, 255);
+        const handImage = tf.div(croppedInput, constants.tf255);
         tf.dispose(croppedInput);
         tf.dispose(rotatedImage);
         const [confidenceT, keypoints] = this.handPoseModel.execute(handImage) as Array<Tensor>;

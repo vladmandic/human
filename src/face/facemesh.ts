@@ -126,7 +126,6 @@ export async function load(config: Config): Promise<GraphModel> {
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
-  if (inputSize === -1) inputSize = 64;
   return model;
 }
 

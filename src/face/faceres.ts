@@ -8,10 +8,11 @@
  */
 
 import { log, join, now } from '../util/util';
+import { env } from '../util/env';
 import * as tf from '../../dist/tfjs.esm.js';
+import * as constants from '../tfjs/constants';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
-import { env } from '../util/env';
 
 let model: GraphModel | null;
 const last: Array<{
@@ -40,7 +41,7 @@ export function enhance(input): Tensor {
   const tensor = (input.image || input.tensor || input) as Tensor; // input received from detector is already normalized to 0..1, input is also assumed to be straightened
   if (!model?.inputs[0].shape) return tensor; // model has no shape so no point continuing
   const crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-  const norm = tf.mul(crop, 255);
+  const norm = tf.mul(crop, constants.tf255);
   tf.dispose(crop);
   return norm;
   /*

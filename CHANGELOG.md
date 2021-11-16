@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/14 mandic00@live.com
+### **release 2.5.2** 2021/11/15 mandic00@live.com
 
+- improve error handling
 
 ### **2.5.2** 2021/11/14 mandic00@live.com
 

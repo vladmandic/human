@@ -11,8 +11,8 @@ import { Human } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Hu
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
   modelBasePath: '../../models',
-  filter: { equalization: false },
-  // backend: 'webgpu',
+  filter: { equalization: true },
+  // backend: 'webgpu' as 'webgpu,
   // async: true,
   // face: { enabled: false, detector: { rotation: true }, iris: { enabled: false }, description: { enabled: false }, emotion: { enabled: false } },
   // body: { enabled: false },

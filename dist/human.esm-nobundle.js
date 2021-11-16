@@ -979,13 +979,13 @@ async function histogramEqualization(inputImage) {
   const max4 = [tfjs_esm_exports.max(channels[0]), tfjs_esm_exports.max(channels[1]), tfjs_esm_exports.max(channels[2])];
   const absMax = await Promise.all(max4.map((channel) => channel.data()));
   const maxValue = 0.99 * Math.max(absMax[0][0], absMax[1][0], absMax[2][0]);
-  const sub8 = [tfjs_esm_exports.sub(channels[0], min2[0]), tfjs_esm_exports.sub(channels[1], min2[1]), tfjs_esm_exports.sub(channels[2], min2[2])];
+  const sub9 = [tfjs_esm_exports.sub(channels[0], min2[0]), tfjs_esm_exports.sub(channels[1], min2[1]), tfjs_esm_exports.sub(channels[2], min2[2])];
   const range = [tfjs_esm_exports.sub(max4[0], min2[0]), tfjs_esm_exports.sub(max4[1], min2[1]), tfjs_esm_exports.sub(max4[2], min2[2])];
   const fact = [tfjs_esm_exports.div(maxValue, range[0]), tfjs_esm_exports.div(maxValue, range[1]), tfjs_esm_exports.div(maxValue, range[2])];
-  const enh = [tfjs_esm_exports.mul(sub8[0], fact[0]), tfjs_esm_exports.mul(sub8[1], fact[1]), tfjs_esm_exports.mul(sub8[2], fact[2])];
+  const enh = [tfjs_esm_exports.mul(sub9[0], fact[0]), tfjs_esm_exports.mul(sub9[1], fact[1]), tfjs_esm_exports.mul(sub9[2], fact[2])];
   const rgb3 = tfjs_esm_exports.stack([enh[0], enh[1], enh[2]], 2);
   const reshape8 = tfjs_esm_exports.reshape(rgb3, [1, squeeze9.shape[0], squeeze9.shape[1], 3]);
-  tfjs_esm_exports.dispose([...channels, ...min2, ...max4, ...sub8, ...range, ...fact, ...enh, rgb3, squeeze9]);
+  tfjs_esm_exports.dispose([...channels, ...min2, ...max4, ...sub9, ...range, ...fact, ...enh, rgb3, squeeze9]);
   return reshape8;
 }
 
@@ -1438,6 +1438,14 @@ async function predict(image29, config3, idx, count2) {
   });
 }
 
+// src/tfjs/constants.ts
+var tf255 = tfjs_esm_exports.scalar(255, "float32");
+var tf1 = tfjs_esm_exports.scalar(1, "float32");
+var tf22 = tfjs_esm_exports.scalar(2, "float32");
+var tf05 = tfjs_esm_exports.scalar(0.5, "float32");
+var tf127 = tfjs_esm_exports.scalar(127.5, "float32");
+var rgb = tfjs_esm_exports.tensor1d([0.2989, 0.587, 0.114], "float32");
+
 // src/gear/ssrnet-age.ts
 var model2;
 var last3 = [];
@@ -1475,7 +1483,7 @@ async function predict2(image29, config3, idx, count2) {
       return;
     const t = {};
     t.resize = tfjs_esm_exports.image.resizeBilinear(image29, [model2.inputs[0].shape[2], model2.inputs[0].shape[1]], false);
-    t.enhance = tfjs_esm_exports.mul(t.resize, 255);
+    t.enhance = tfjs_esm_exports.mul(t.resize, tf255);
     const obj = { age: 0 };
     if (config3.face["ssrnet"].enabled)
       t.age = model2.execute(t.enhance);
@@ -1497,7 +1505,7 @@ var last4 = [];
 var lastCount3 = 0;
 var lastTime3 = 0;
 var skipped3 = Number.MAX_SAFE_INTEGER;
-var rgb = [0.2989, 0.587, 0.114];
+var rgb2 = [0.2989, 0.587, 0.114];
 async function load3(config3) {
   if (env.initial)
     model3 = null;
@@ -1529,11 +1537,11 @@ async function predict3(image29, config3, idx, count2) {
     t.resize = tfjs_esm_exports.image.resizeBilinear(image29, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
     t.enhance = tfjs_esm_exports.tidy(() => {
       const [red, green, blue] = tfjs_esm_exports.split(t.resize, 3, 3);
-      const redNorm = tfjs_esm_exports.mul(red, rgb[0]);
-      const greenNorm = tfjs_esm_exports.mul(green, rgb[1]);
-      const blueNorm = tfjs_esm_exports.mul(blue, rgb[2]);
+      const redNorm = tfjs_esm_exports.mul(red, rgb2[0]);
+      const greenNorm = tfjs_esm_exports.mul(green, rgb2[1]);
+      const blueNorm = tfjs_esm_exports.mul(blue, rgb2[2]);
       const grayscale = tfjs_esm_exports.addN([redNorm, greenNorm, blueNorm]);
-      const normalize = tfjs_esm_exports.mul(tfjs_esm_exports.sub(grayscale, 0.5), 2);
+      const normalize = tfjs_esm_exports.mul(tfjs_esm_exports.sub(grayscale, tf05), 2);
       return normalize;
     });
     const obj = { gender: "", genderScore: 0 };
@@ -4900,7 +4908,7 @@ var cutBoxFromImageAndResize = (box4, image29, cropSize) => {
   const h = image29.shape[1];
   const w = image29.shape[2];
   const crop2 = tfjs_esm_exports.image.cropAndResize(image29, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
-  const norm = tfjs_esm_exports.div(crop2, 255);
+  const norm = tfjs_esm_exports.div(crop2, tf255);
   tfjs_esm_exports.dispose(crop2);
   return norm;
 };
@@ -5029,6 +5037,7 @@ var keypointsCount = 6;
 var model5;
 var anchors = null;
 var inputSize = 0;
+var inputSizeT = null;
 var size = () => inputSize;
 async function load5(config3) {
   var _a, _b;
@@ -5043,6 +5052,7 @@ async function load5(config3) {
   } else if (config3.debug)
     log("cached model:", model5["modelUrl"]);
   inputSize = model5.inputs[0].shape ? model5.inputs[0].shape[2] : 0;
+  inputSizeT = tfjs_esm_exports.scalar(inputSize, "int32");
   anchors = tfjs_esm_exports.tensor2d(generateAnchors(inputSize));
   return model5;
 }
@@ -5051,13 +5061,13 @@ function decodeBounds(boxOutputs) {
   t.boxStarts = tfjs_esm_exports.slice(boxOutputs, [0, 1], [-1, 2]);
   t.centers = tfjs_esm_exports.add(t.boxStarts, anchors);
   t.boxSizes = tfjs_esm_exports.slice(boxOutputs, [0, 3], [-1, 2]);
-  t.boxSizesNormalized = tfjs_esm_exports.div(t.boxSizes, inputSize);
-  t.centersNormalized = tfjs_esm_exports.div(t.centers, inputSize);
-  t.halfBoxSize = tfjs_esm_exports.div(t.boxSizesNormalized, 2);
+  t.boxSizesNormalized = tfjs_esm_exports.div(t.boxSizes, inputSizeT);
+  t.centersNormalized = tfjs_esm_exports.div(t.centers, inputSizeT);
+  t.halfBoxSize = tfjs_esm_exports.div(t.boxSizesNormalized, tf22);
   t.starts = tfjs_esm_exports.sub(t.centersNormalized, t.halfBoxSize);
   t.ends = tfjs_esm_exports.add(t.centersNormalized, t.halfBoxSize);
-  t.startNormalized = tfjs_esm_exports.mul(t.starts, inputSize);
-  t.endNormalized = tfjs_esm_exports.mul(t.ends, inputSize);
+  t.startNormalized = tfjs_esm_exports.mul(t.starts, inputSizeT);
+  t.endNormalized = tfjs_esm_exports.mul(t.ends, inputSizeT);
   const boxes = tfjs_esm_exports.concat2d([t.startNormalized, t.endNormalized], 1);
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   return boxes;
@@ -5068,8 +5078,8 @@ async function getBoxes(inputImage, config3) {
     return { boxes: [] };
   const t = {};
   t.resized = tfjs_esm_exports.image.resizeBilinear(inputImage, [inputSize, inputSize]);
-  t.div = tfjs_esm_exports.div(t.resized, 127.5);
-  t.normalized = tfjs_esm_exports.sub(t.div, 0.5);
+  t.div = tfjs_esm_exports.div(t.resized, tf127);
+  t.normalized = tfjs_esm_exports.sub(t.div, tf05);
   const res = model5 == null ? void 0 : model5.execute(t.normalized);
   if (Array.isArray(res)) {
     const sorted = res.sort((a, b) => a.size - b.size);
@@ -5237,7 +5247,7 @@ async function prepareImage(input) {
   ];
   t.pad = tfjs_esm_exports.pad(input, padding);
   t.resize = tfjs_esm_exports.image.resizeBilinear(t.pad, [inputSize2[1][0], inputSize2[1][1]]);
-  const final = tfjs_esm_exports.div(t.resize, 255);
+  const final = tfjs_esm_exports.div(t.resize, tf255);
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   return final;
 }
@@ -5532,19 +5542,22 @@ async function load7(config3) {
     log("cached model:", model7["modelUrl"]);
   return model7;
 }
-function max2d(inputs, minScore) {
+async function max2d(inputs, minScore) {
   const [width, height] = inputs.shape;
-  return tfjs_esm_exports.tidy(() => {
-    const reshaped = tfjs_esm_exports.reshape(inputs, [height * width]);
-    const newScore = tfjs_esm_exports.max(reshaped, 0).dataSync()[0];
-    if (newScore > minScore) {
-      const coordinates = tfjs_esm_exports.argMax(reshaped, 0);
-      const x = tfjs_esm_exports.mod(coordinates, width).dataSync()[0];
-      const y = tfjs_esm_exports.div(coordinates, tfjs_esm_exports.scalar(width, "int32")).dataSync()[0];
-      return [x, y, newScore];
-    }
-    return [0, 0, newScore];
-  });
+  const reshaped = tfjs_esm_exports.reshape(inputs, [height * width]);
+  const max4 = tfjs_esm_exports.max(reshaped, 0);
+  const newScore = (await max4.data())[0];
+  tfjs_esm_exports.dispose([reshaped, max4]);
+  if (newScore > minScore) {
+    const coordinates = tfjs_esm_exports.argMax(reshaped, 0);
+    const mod2 = tfjs_esm_exports.mod(coordinates, width);
+    const x = (await mod2.data())[0];
+    const div12 = tfjs_esm_exports.div(coordinates, tfjs_esm_exports.scalar(width, "int32"));
+    const y = (await div12.data())[0];
+    tfjs_esm_exports.dispose([mod2, div12]);
+    return [x, y, newScore];
+  }
+  return [0, 0, newScore];
 }
 async function predict7(image29, config3) {
   const skipTime = (config3.body.skipTime || 0) > now() - lastTime7;
@@ -5560,8 +5573,8 @@ async function predict7(image29, config3) {
       if (!(model7 == null ? void 0 : model7.inputs[0].shape))
         return null;
       const resize = tfjs_esm_exports.image.resizeBilinear(image29, [model7.inputs[0].shape[2], model7.inputs[0].shape[1]], false);
-      const enhance3 = tfjs_esm_exports.mul(resize, 2);
-      const norm = enhance3.sub(1);
+      const enhance3 = tfjs_esm_exports.mul(resize, tf22);
+      const norm = tfjs_esm_exports.sub(enhance3, tf1);
       return norm;
     });
     let resT;
@@ -5576,7 +5589,7 @@ async function predict7(image29, config3) {
       const stack4 = squeeze9.unstack(2);
       tfjs_esm_exports.dispose(squeeze9);
       for (let id = 0; id < stack4.length; id++) {
-        const [x2, y2, partScore] = max2d(stack4[id], config3.body.minConfidence);
+        const [x2, y2, partScore] = await max2d(stack4[id], config3.body.minConfidence);
         if (partScore > (((_a = config3.body) == null ? void 0 : _a.minConfidence) || 0)) {
           cache2.keypoints.push({
             score: Math.round(100 * partScore) / 100,
@@ -5632,7 +5645,6 @@ var last6 = [];
 var lastCount5 = 0;
 var lastTime8 = 0;
 var skipped8 = Number.MAX_SAFE_INTEGER;
-var rgb2 = [0.2989, 0.587, 0.114];
 async function load8(config3) {
   var _a, _b;
   if (env.initial)
@@ -5665,13 +5677,10 @@ async function predict8(image29, config3, idx, count2) {
       const t = {};
       const inputSize8 = (model8 == null ? void 0 : model8.inputs[0].shape) ? model8.inputs[0].shape[2] : 0;
       t.resize = tfjs_esm_exports.image.resizeBilinear(image29, [inputSize8, inputSize8], false);
-      [t.red, t.green, t.blue] = tfjs_esm_exports.split(t.resize, 3, 3);
-      t.redNorm = tfjs_esm_exports.mul(t.red, rgb2[0]);
-      t.greenNorm = tfjs_esm_exports.mul(t.green, rgb2[1]);
-      t.blueNorm = tfjs_esm_exports.mul(t.blue, rgb2[2]);
-      t.grayscale = tfjs_esm_exports.addN([t.redNorm, t.greenNorm, t.blueNorm]);
-      t.grayscaleSub = tfjs_esm_exports.sub(t.grayscale, 0.5);
-      t.grayscaleMul = tfjs_esm_exports.mul(t.grayscaleSub, 2);
+      t.channels = tfjs_esm_exports.mul(t.resize, rgb);
+      t.grayscale = tfjs_esm_exports.sum(t.channels, 3, true);
+      t.grayscaleSub = tfjs_esm_exports.sub(t.grayscale, tf05);
+      t.grayscaleMul = tfjs_esm_exports.mul(t.grayscaleSub, tf22);
       t.emotion = model8 == null ? void 0 : model8.execute(t.grayscaleMul);
       lastTime8 = now();
       const data = await t.emotion.data();
@@ -5979,8 +5988,6 @@ async function load11(config3) {
   } else if (config3.debug)
     log("cached model:", model11["modelUrl"]);
   inputSize5 = model11.inputs[0].shape ? model11.inputs[0].shape[2] : 0;
-  if (inputSize5 === -1)
-    inputSize5 = 64;
   return model11;
 }
 var triangulation = TRI468;
@@ -6012,7 +6019,7 @@ function enhance2(input) {
   if (!(model12 == null ? void 0 : model12.inputs[0].shape))
     return tensor3;
   const crop2 = tfjs_esm_exports.image.resizeBilinear(tensor3, [model12.inputs[0].shape[2], model12.inputs[0].shape[1]], false);
-  const norm = tfjs_esm_exports.mul(crop2, 255);
+  const norm = tfjs_esm_exports.mul(crop2, tf255);
   tfjs_esm_exports.dispose(crop2);
   return norm;
 }
@@ -9167,8 +9174,8 @@ var HandDetector = class {
   async predict(input, config3) {
     const t = {};
     t.resize = tfjs_esm_exports.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
-    t.div = tfjs_esm_exports.div(t.resize, 127.5);
-    t.image = tfjs_esm_exports.sub(t.div, 1);
+    t.div = tfjs_esm_exports.div(t.resize, tf127);
+    t.image = tfjs_esm_exports.sub(t.div, tf1);
     t.batched = this.model.execute(t.image);
     t.predictions = tfjs_esm_exports.squeeze(t.batched);
     t.slice = tfjs_esm_exports.slice(t.predictions, [0, 0], [-1, 1]);
@@ -9298,7 +9305,7 @@ var HandPipeline = class {
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
-        const handImage = tfjs_esm_exports.div(croppedInput, 255);
+        const handImage = tfjs_esm_exports.div(croppedInput, tf255);
         tfjs_esm_exports.dispose(croppedInput);
         tfjs_esm_exports.dispose(rotatedImage);
         const [confidenceT, keypoints] = this.handPoseModel.execute(handImage);
@@ -10005,8 +10012,7 @@ async function detectFingers(input, h, config3) {
   if (input && models2[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
     const t = {};
     t.crop = tfjs_esm_exports.image.cropAndResize(input, [h.boxCrop], [0], [inputSize6[1][0], inputSize6[1][1]], "bilinear");
-    t.cast = tfjs_esm_exports.cast(t.crop, "float32");
-    t.div = tfjs_esm_exports.div(t.cast, 255);
+    t.div = tfjs_esm_exports.div(t.crop, tf255);
     [t.score, t.keypoints] = models2[1].execute(t.div, ["Identity_1", "Identity"]);
     const rawScore = (await t.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
@@ -10296,21 +10302,16 @@ async function load15(config3) {
   } else if (config3.debug)
     log("cached model:", model14["modelUrl"]);
   inputSize7 = model14.inputs[0].shape ? model14.inputs[0].shape[2] : 0;
-  if (inputSize7 === -1)
-    inputSize7 = 256;
   return model14;
 }
-async function parseSinglePose(res, config3, image29, inputBox) {
+async function parseSinglePose(res, config3, image29) {
   const kpt4 = res[0][0];
   const keypoints = [];
   let score = 0;
   for (let id = 0; id < kpt4.length; id++) {
     score = kpt4[id][2];
     if (score > config3.body.minConfidence) {
-      const positionRaw = [
-        (inputBox[3] - inputBox[1]) * kpt4[id][1] + inputBox[1],
-        (inputBox[2] - inputBox[0]) * kpt4[id][0] + inputBox[0]
-      ];
+      const positionRaw = [kpt4[id][1], kpt4[id][0]];
       keypoints.push({
         score: Math.round(100 * score) / 100,
         part: kpt3[id],
@@ -10341,7 +10342,7 @@ async function parseSinglePose(res, config3, image29, inputBox) {
   bodies.push(body4);
   return bodies;
 }
-async function parseMultiPose(res, config3, image29, inputBox) {
+async function parseMultiPose(res, config3, image29) {
   const bodies = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt4 = res[0][id];
@@ -10351,10 +10352,7 @@ async function parseMultiPose(res, config3, image29, inputBox) {
       for (let i = 0; i < 17; i++) {
         const score = kpt4[3 * i + 2];
         if (score > config3.body.minConfidence) {
-          const positionRaw = [
-            (inputBox[3] - inputBox[1]) * kpt4[3 * i + 1] + inputBox[1],
-            (inputBox[2] - inputBox[0]) * kpt4[3 * i + 0] + inputBox[0]
-          ];
+          const positionRaw = [kpt4[3 * i + 1], kpt4[3 * i + 0]];
           keypoints.push({
             part: kpt3[i],
             score: Math.round(100 * score) / 100,
@@ -10403,7 +10401,7 @@ async function predict15(input, config3) {
     t.res = model14 == null ? void 0 : model14.execute(t.input);
     cache5.last = now();
     const res = await t.res.array();
-    cache5.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input, [0, 0, 1, 1]) : await parseMultiPose(res, config3, input, [0, 0, 1, 1]);
+    cache5.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input) : await parseMultiPose(res, config3, input);
     for (const body4 of cache5.bodies) {
       rescaleBody(body4, [input.shape[2] || 1, input.shape[1] || 1]);
       jitter(body4.keypoints);
@@ -10506,7 +10504,7 @@ async function predict16(image29, config3) {
   return new Promise(async (resolve) => {
     const outputSize2 = [image29.shape[2], image29.shape[1]];
     const resize = tfjs_esm_exports.image.resizeBilinear(image29, [model15.inputSize, model15.inputSize], false);
-    const norm = tfjs_esm_exports.div(resize, 255);
+    const norm = tfjs_esm_exports.div(resize, tf255);
     const transpose = norm.transpose([0, 3, 1, 2]);
     tfjs_esm_exports.dispose(norm);
     tfjs_esm_exports.dispose(resize);
@@ -10890,7 +10888,7 @@ async function process5(input, background, config3) {
   const t = {};
   t.resize = tfjs_esm_exports.image.resizeBilinear(inputImage.tensor, [model17.inputs[0].shape ? model17.inputs[0].shape[1] : 0, model17.inputs[0].shape ? model17.inputs[0].shape[2] : 0], false);
   tfjs_esm_exports.dispose(inputImage.tensor);
-  t.norm = tfjs_esm_exports.div(t.resize, 255);
+  t.norm = tfjs_esm_exports.div(t.resize, tf255);
   t.res = model17.execute(t.norm);
   t.squeeze = tfjs_esm_exports.squeeze(t.res, 0);
   if (t.squeeze.shape[2] === 2) {
@@ -12346,12 +12344,12 @@ function calc2(newResult, config3) {
 
 // src/face/match.ts
 function distance(descriptor1, descriptor2, options3 = { order: 2, multiplier: 25 }) {
-  let sum2 = 0;
+  let sum3 = 0;
   for (let i = 0; i < descriptor1.length; i++) {
     const diff = !options3.order || options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
-    sum2 += !options3.order || options3.order === 2 ? diff * diff : diff ** options3.order;
+    sum3 += !options3.order || options3.order === 2 ? diff * diff : diff ** options3.order;
   }
-  return (options3.multiplier || 20) * sum2;
+  return (options3.multiplier || 20) * sum3;
 }
 var normalizeDistance = (dist, order, min2, max4) => {
   if (dist === 0)

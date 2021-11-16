@@ -7,6 +7,7 @@
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './efficientposecoords';
+import * as constants from '../tfjs/constants';
 import type { BodyResult, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
@@ -33,19 +34,22 @@ export async function load(config: Config): Promise<GraphModel> {
 }
 
 // performs argmax and max functions on a 2d tensor
-function max2d(inputs, minScore) {
+async function max2d(inputs, minScore) {
   const [width, height] = inputs.shape;
-  return tf.tidy(() => {
-    const reshaped = tf.reshape(inputs, [height * width]); // combine all data
-    const newScore = tf.max(reshaped, 0).dataSync()[0]; // get highest score // inside tf.tidy
-    if (newScore > minScore) { // skip coordinate calculation is score is too low
-      const coordinates = tf.argMax(reshaped, 0);
-      const x = tf.mod(coordinates, width).dataSync()[0]; // inside tf.tidy
-      const y = tf.div(coordinates, tf.scalar(width, 'int32')).dataSync()[0]; // inside tf.tidy
-      return [x, y, newScore];
-    }
-    return [0, 0, newScore];
-  });
+  const reshaped = tf.reshape(inputs, [height * width]); // combine all data
+  const max = tf.max(reshaped, 0);
+  const newScore = (await max.data())[0]; // get highest score
+  tf.dispose([reshaped, max]);
+  if (newScore > minScore) { // skip coordinate calculation is score is too low
+    const coordinates = tf.argMax(reshaped, 0);
+    const mod = tf.mod(coordinates, width);
+    const x = (await mod.data())[0];
+    const div = tf.div(coordinates, tf.scalar(width, 'int32'));
+    const y = (await div.data())[0];
+    tf.dispose([mod, div]);
+    return [x, y, newScore];
+  }
+  return [0, 0, newScore];
 }
 
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
@@ -60,8 +64,8 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
     const tensor = tf.tidy(() => {
       if (!model?.inputs[0].shape) return null;
       const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-      const enhance = tf.mul(resize, 2);
-      const norm = enhance.sub(1);
+      const enhance = tf.mul(resize, constants.tf2);
+      const norm = tf.sub(enhance, constants.tf1);
       return norm;
     });
 
@@ -80,7 +84,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
       // process each unstacked tensor as a separate body part
       for (let id = 0; id < stack.length; id++) {
         // actual processing to get coordinates and score
-        const [x, y, partScore] = max2d(stack[id], config.body.minConfidence);
+        const [x, y, partScore] = await max2d(stack[id], config.body.minConfidence);
         if (partScore > (config.body?.minConfidence || 0)) {
           cache.keypoints.push({
             score: Math.round(100 * partScore) / 100,

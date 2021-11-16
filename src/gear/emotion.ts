@@ -9,6 +9,7 @@ import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import * as tf from '../../dist/tfjs.esm.js';
 import { env } from '../util/env';
+import * as constants from '../tfjs/constants';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model: GraphModel | null;
@@ -16,9 +17,6 @@ const last: Array<Array<{ score: number, emotion: string }>> = [];
 let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
-
-// tuning values
-const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
@@ -47,14 +45,16 @@ export async function predict(image: Tensor, config: Config, idx, count): Promis
       t.resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
       // const box = [[0.15, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
       // const resize = tf.image.cropAndResize(image, box, [0], [inputSize, inputSize]);
-      [t.red, t.green, t.blue] = tf.split(t.resize, 3, 3);
+      // [t.red, t.green, t.blue] = tf.split(t.resize, 3, 3);
       // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
-      t.redNorm = tf.mul(t.red, rgb[0]);
-      t.greenNorm = tf.mul(t.green, rgb[1]);
-      t.blueNorm = tf.mul(t.blue, rgb[2]);
-      t.grayscale = tf.addN([t.redNorm, t.greenNorm, t.blueNorm]);
-      t.grayscaleSub = tf.sub(t.grayscale, 0.5);
-      t.grayscaleMul = tf.mul(t.grayscaleSub, 2);
+      // t.redNorm = tf.mul(t.red, rgb[0]);
+      // t.greenNorm = tf.mul(t.green, rgb[1]);
+      // t.blueNorm = tf.mul(t.blue, rgb[2]);
+      // t.grayscale = tf.addN([t.redNorm, t.greenNorm, t.blueNorm]);
+      t.channels = tf.mul(t.resize, constants.rgb);
+      t.grayscale = tf.sum(t.channels, 3, true);
+      t.grayscaleSub = tf.sub(t.grayscale, constants.tf05);
+      t.grayscaleMul = tf.mul(t.grayscaleSub, constants.tf2);
       t.emotion = model?.execute(t.grayscaleMul) as Tensor; // result is already in range 0..1, no need for additional activation
       lastTime = now();
       const data = await t.emotion.data();

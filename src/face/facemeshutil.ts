@@ -5,6 +5,7 @@
 
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './facemeshcoords';
+import * as constants from '../tfjs/constants';
 import type { Box, Point } from '../result';
 import { env } from '../util/env';
 
@@ -40,7 +41,7 @@ export const cutBoxFromImageAndResize = (box, image, cropSize) => {
   const h = image.shape[1];
   const w = image.shape[2];
   const crop = tf.image.cropAndResize(image, [[box.startPoint[1] / h, box.startPoint[0] / w, box.endPoint[1] / h, box.endPoint[0] / w]], [0], cropSize);
-  const norm = tf.div(crop, 255);
+  const norm = tf.div(crop, constants.tf255);
   tf.dispose(crop);
   return norm;
 };

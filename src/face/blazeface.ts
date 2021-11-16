@@ -6,6 +6,7 @@
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './facemeshutil';
+import * as constants from '../tfjs/constants';
 import type { Config } from '../config';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';
@@ -15,6 +16,7 @@ const keypointsCount = 6;
 let model: GraphModel | null;
 let anchors: Tensor | null = null;
 let inputSize = 0;
+let inputSizeT: Tensor | null = null;
 
 export const size = () => inputSize;
 
@@ -26,7 +28,8 @@ export async function load(config: Config): Promise<GraphModel> {
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
-  anchors = tf.tensor2d(util.generateAnchors(inputSize));
+  inputSizeT = tf.scalar(inputSize, 'int32') as Tensor;
+  anchors = tf.tensor2d(util.generateAnchors(inputSize)) as Tensor;
   return model;
 }
 
@@ -35,13 +38,13 @@ function decodeBounds(boxOutputs) {
   t.boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
   t.centers = tf.add(t.boxStarts, anchors);
   t.boxSizes = tf.slice(boxOutputs, [0, 3], [-1, 2]);
-  t.boxSizesNormalized = tf.div(t.boxSizes, inputSize);
-  t.centersNormalized = tf.div(t.centers, inputSize);
-  t.halfBoxSize = tf.div(t.boxSizesNormalized, 2);
+  t.boxSizesNormalized = tf.div(t.boxSizes, inputSizeT);
+  t.centersNormalized = tf.div(t.centers, inputSizeT);
+  t.halfBoxSize = tf.div(t.boxSizesNormalized, constants.tf2);
   t.starts = tf.sub(t.centersNormalized, t.halfBoxSize);
   t.ends = tf.add(t.centersNormalized, t.halfBoxSize);
-  t.startNormalized = tf.mul(t.starts, inputSize);
-  t.endNormalized = tf.mul(t.ends, inputSize);
+  t.startNormalized = tf.mul(t.starts, inputSizeT);
+  t.endNormalized = tf.mul(t.ends, inputSizeT);
   const boxes = tf.concat2d([t.startNormalized, t.endNormalized], 1);
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return boxes;
@@ -53,8 +56,8 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   const t: Record<string, Tensor> = {};
 
   t.resized = tf.image.resizeBilinear(inputImage, [inputSize, inputSize]);
-  t.div = tf.div(t.resized, 127.5);
-  t.normalized = tf.sub(t.div, 0.5);
+  t.div = tf.div(t.resized, constants.tf127);
+  t.normalized = tf.sub(t.div, constants.tf05);
   const res = model?.execute(t.normalized) as Tensor[];
   if (Array.isArray(res)) { // are we using tfhub or pinto converted model?
     const sorted = res.sort((a, b) => a.size - b.size);

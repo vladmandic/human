@@ -6,9 +6,9 @@
 
 ### Exploring
 
-- Optical Flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
-- Histogram Equalization: Regular, Adaptive, Contrast Limited, CLAHE
-- TFLite Models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
+- Optical flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
+- Advanced histogram equalization: Adaptive, Contrast Limited, CLAHE
+- TFLite models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
 - Body segmentation: `robust-video-matting`
 - TFJS incompatibility with latest `long.js` 5.0.0 due to CJS to ESM switch
 
@@ -19,6 +19,7 @@
 #### WebGPU
 
 Experimental support only until support is officially added in Chromium
+
 - Performance issues:
   <https://github.com/tensorflow/tfjs/issues/5689>
 
@@ -39,7 +40,7 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 broad
 
 <br><hr><br>
 
-## Pending release notes:
+## Pending Release Notes
 
 New:
 - new demo `demos/faceid` that utilizes multiple algorithm  to validate input before triggering face recognition

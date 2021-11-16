@@ -15,6 +15,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 import * as fingerPose from './fingerpose';
 import { fakeOps } from '../tfjs/backend';
+import * as constants from '../tfjs/constants';
 
 const models: [GraphModel | null, GraphModel | null] = [null, null];
 const modelOutputNodes = ['StatefulPartitionedCall/Postprocessor/Slice', 'StatefulPartitionedCall/Postprocessor/ExpandDims_1'];
@@ -154,8 +155,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
   if (input && models[1] && config.hand.landmarks && h.score > (config.hand.minConfidence || 0)) {
     const t: Record<string, Tensor> = {};
     t.crop = tf.image.cropAndResize(input, [h.boxCrop], [0], [inputSize[1][0], inputSize[1][1]], 'bilinear');
-    t.cast = tf.cast(t.crop, 'float32');
-    t.div = tf.div(t.cast, 255);
+    t.div = tf.div(t.crop, constants.tf255);
     [t.score, t.keypoints] = models[1].execute(t.div, ['Identity_1', 'Identity']) as Tensor[];
     const rawScore = (await t.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100; // reverse sigmoid value

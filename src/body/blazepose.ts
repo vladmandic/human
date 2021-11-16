@@ -3,6 +3,7 @@
  */
 
 import * as tf from '../../dist/tfjs.esm.js';
+import * as constants from '../tfjs/constants';
 import { log, join, now } from '../util/util';
 import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -71,7 +72,7 @@ async function prepareImage(input: Tensor): Promise<Tensor> {
   ];
   t.pad = tf.pad(input, padding);
   t.resize = tf.image.resizeBilinear(t.pad, [inputSize[1][0], inputSize[1][1]]);
-  const final = tf.div(t.resize, 255);
+  const final = tf.div(t.resize, constants.tf255);
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return final;
 }

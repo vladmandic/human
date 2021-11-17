@@ -11,7 +11,7 @@
     "serve": ["serve"]
   },
   "clean": {
-    "locations": ["dist/*", "types/*", "typedoc/*"]
+    "locations": ["dist/*", "types/lib/*", "typedoc/*"]
   },
   "lint": {
     "locations": [ "*.json", "src/**/*.ts", "test/**/*.js", "demo/**/*.js" ],
@@ -139,7 +139,7 @@
         "sourcemap": true,
         "minify": false,
         "external": ["fs", "os", "buffer", "util"],
-        "typings": "types",
+        "typings": "types/lib",
         "typedoc": "typedoc"
       },
       {

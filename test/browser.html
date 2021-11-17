@@ -71,7 +71,7 @@
       }
 
       async function wait(time) {
-        const waiting = new Promise((resolve) => setTimeout(() => resolve(), time));
+        const waiting = new Promise((resolve) => { setTimeout(() => resolve(), time); });
         await waiting;
       }
 

@@ -40,12 +40,6 @@ import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult
 // type exports
 export * from './exports';
 
-/** Instance of TensorFlow/JS used by Human
- * - Can be TFJS that is bundled with `Human` or a manually imported TFJS library
- * @external [API](https://js.tensorflow.org/api/latest/)
- */
-export type TensorFlow = typeof tf;
-
 /** **Human** library main class
  *
  * All methods and properties are available only as members of Human class
@@ -54,7 +48,7 @@ export type TensorFlow = typeof tf;
  * - Results object definition: {@link Result}
  * - Possible inputs: {@link Input}
  *
- * @param userConfig: {@link Config}
+ * @param userConfig - {@link Config}
  * @returns instance of {@link Human}
  */
 export class Human {
@@ -82,17 +76,17 @@ export class Human {
 
   /** Instance of TensorFlow/JS used by Human
    *  - Can be embedded or externally provided
-   * @internal
-   *
-   * [TFJS API]<https://js.tensorflow.org/api/latest/>
+   * [TFJS API]: {@link https://js.tensorflow.org/api/latest/}
    */
-  tf: TensorFlow;
+  tf;
 
   /** Object containing environment information used for diagnostics */
   env: Env;
 
   /** Draw helper classes that can draw detected objects on canvas using specified draw
-   * @property options global settings for all draw operations, can be overriden for each draw method {@link DrawOptions}
+   * - canvas: draws input to canvas
+   * - options: are global settings for all draw operations, can be overriden for each draw method {@link DrawOptions}
+   * - face, body, hand, gesture, object, person: draws detected results as overlays on canvas
    */
   draw: { canvas: typeof draw.canvas, face: typeof draw.face, body: typeof draw.body, hand: typeof draw.hand, gesture: typeof draw.gesture, object: typeof draw.object, person: typeof draw.person, all: typeof draw.all, options: DrawOptions };
 
@@ -103,7 +97,6 @@ export class Human {
   models: models.Models;
 
   /** Container for events dispatched by Human
-   * {@type} EventTarget
    * Possible events:
    * - `create`: triggered when Human object is instantiated
    * - `load`: triggered when models are loaded (explicitly or on-demand)
@@ -114,9 +107,9 @@ export class Human {
    */
   events: EventTarget | undefined;
   /** Reference face triangualtion array of 468 points, used for triangle references between points */
-  faceTriangulation: typeof facemesh.triangulation;
+  faceTriangulation: number[];
   /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
-  faceUVMap: typeof facemesh.uvmap;
+  faceUVMap: [number, number][];
   /** Performance object that contains values for all recently performed operations */
   performance: Record<string, number>; // perf members are dynamically defined as needed
   #numTensors: number;
@@ -127,9 +120,7 @@ export class Human {
   // definition end
 
   /** Constructor for **Human** library that is futher used for all operations
-   *
-   * @param {Config} userConfig
-   * @returns {Human}
+   * @param userConfig - user configuration object {@link Config}
    */
   constructor(userConfig?: Partial<Config>) {
     this.env = env;
@@ -177,8 +168,7 @@ export class Human {
     this.emit('create');
   }
 
-  // helper function: measure tensor leak
-  /** @hidden */
+  /** internal function to measure tensor leaks */
   analyze = (...msg: string[]) => {
     if (!this.#analyzeMemoryLeaks) return;
     const currentTensors = this.tf.engine().state.numTensors;
@@ -188,8 +178,7 @@ export class Human {
     if (leaked !== 0) log(...msg, leaked);
   };
 
-  // quick sanity check on inputs
-  /** @hidden */
+  /** internal function for quick sanity check on inputs @hidden */
   #sanity = (input: Input): null | string => {
     if (!this.#checkSanity) return null;
     if (!input) return 'input is not defined';
@@ -214,9 +203,11 @@ export class Human {
     return validate(defaults, userConfig || this.config);
   }
 
-  /** Exports face matching methods */
+  /** Exports face matching methods {@link match#similarity} */
   public similarity = match.similarity;
+  /** Exports face matching methods {@link match#distance} */
   public distance = match.distance;
+  /** Exports face matching methods {@link match#match} */
   public match = match.match;
 
   /** Utility wrapper for performance.now() */
@@ -226,9 +217,9 @@ export class Human {
 
   /** Process input as return canvas and tensor
    *
-   * @param input: {@link Input}
-   * @param {boolean} input.getTensor should image processing also return tensor or just canvas
-   * @returns { tensor, canvas }
+   * @param input - any input {@link Input}
+   * @param getTensor - should image processing also return tensor or just canvas
+   * Returns object with `tensor` and `canvas`
    */
   image(input: Input, getTensor: boolean = true) {
     return image.process(input, this.config, getTensor);
@@ -236,13 +227,10 @@ export class Human {
 
   /** Segmentation method takes any input and returns processed canvas with body segmentation
    *  - Segmentation is not triggered as part of detect process
-   *
-   *  Returns:
-   *
-   * @param input: {@link Input}
-   * @param background?: {@link Input}
+   * @param input - {@link Input}
+   * @param background - {@link Input}
    *  - Optional parameter background is used to fill the background with specific input
-   * @returns {object}
+   *  Returns:
    *  - `data` as raw data array with per-pixel segmentation values
    *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
    *  - `alpha` as grayscale canvas that represents segmentation alpha values
@@ -253,7 +241,7 @@ export class Human {
 
   /** Enhance method performs additional enhacements to face image previously detected for futher processing
    *
-   * @param input: Tensor as provided in human.result.face[n].tensor
+   * @param input - Tensor as provided in human.result.face[n].tensor
    * @returns Tensor
    */
   // eslint-disable-next-line class-methods-use-this
@@ -266,7 +254,6 @@ export class Human {
    * - when passing manually generated tensors:
    *  - both input tensors must be in format [1, height, width, 3]
    *  - if resolution of tensors does not match, second tensor will be resized to match resolution of the first tensor
-   * @returns {number}
    * - return value is pixel similarity score normalized by input resolution and rgb channels
   */
   compare(firstImageTensor: Tensor, secondImageTensor: Tensor): Promise<number> {
@@ -277,8 +264,6 @@ export class Human {
    *  - Normally done implicitly during initial load phase
    *  - Call to explictly register and initialize TFJS backend without any other operations
    *  - Use when changing backend during runtime
-   *
-   * @returns {void}
    */
   async init(): Promise<void> {
     await backend.check(this, true);
@@ -288,8 +273,7 @@ export class Human {
   /** Load method preloads all configured models on-demand
    * - Not explicitly required as any required model is load implicitly on it's first run
    *
-   * @param userConfig?: {@link Config}
-   * @return Promise<void>
+   * @param userConfig - {@link Config}
   */
   async load(userConfig?: Partial<Config>): Promise<void> {
     this.state = 'load';
@@ -323,8 +307,7 @@ export class Human {
     if (current > (this.performance.loadModels as number || 0)) this.performance.loadModels = this.env.perfadd ? (this.performance.loadModels || 0) + current : current;
   }
 
-  // emit event
-  /** @hidden */
+  /** emit event */
   emit = (event: string) => {
     if (this.events && this.events.dispatchEvent) this.events?.dispatchEvent(new Event(event));
   };
@@ -332,8 +315,8 @@ export class Human {
   /** Runs interpolation using last known result and returns smoothened result
    * Interpolation is based on time since last known result so can be called independently
    *
-   * @param result?: {@link Result} optional use specific result set to run interpolation on
-   * @returns result: {@link Result}
+   * @param result - {@link Result} optional use specific result set to run interpolation on
+   * @returns result - {@link Result}
    */
   next(result: Result = this.result): Result {
     return interpolate.calc(result, this.config) as Result;
@@ -342,8 +325,8 @@ export class Human {
   /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup
    * - only used for `webgl` and `humangl` backends
-   * @param userConfig?: {@link Config}
-   * @returns result: {@link Result}
+   * @param userConfig - {@link Config}
+   * @returns result - {@link Result}
   */
   async warmup(userConfig?: Partial<Config>) {
     const t0 = now();
@@ -379,9 +362,9 @@ export class Human {
    * - Run inference for all configured models
    * - Process and return result: {@link Result}
    *
-   * @param input: {@link Input}
-   * @param userConfig?: {@link Config}
-   * @returns result: {@link Result}
+   * @param input - {@link Input}
+   * @param userConfig - {@link Config}
+   * @returns result - {@link Result}
   */
   async detect(input: Input, userConfig?: Partial<Config>): Promise<Result> {
     // detection happens inside a promise

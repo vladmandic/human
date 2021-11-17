@@ -44,12 +44,12 @@ async function main() {
     const inputImage = await canvas.loadImage(input); // load image using canvas library
     log.info('Loaded image', input, inputImage.width, inputImage.height);
     const inputCanvas = new canvas.Canvas(inputImage.width, inputImage.height); // create canvas
-    const ctx = inputCanvas.getContext('2d');
-    ctx.drawImage(inputImage, 0, 0); // draw input image onto canvas
+    const inputCtx = inputCanvas.getContext('2d');
+    inputCtx.drawImage(inputImage, 0, 0); // draw input image onto canvas
+    const imageData = inputCtx.getImageData(0, 0, inputCanvas.width, inputCanvas.height);
 
     // run detection
-    const result = await human.detect(inputCanvas);
-
+    const result = await human.detect(imageData);
     // run segmentation
     // const seg = await human.segmentation(inputCanvas);
     // log.data('Segmentation:', { data: seg.data.length, alpha: typeof seg.alpha, canvas: typeof seg.canvas });
@@ -65,11 +65,14 @@ async function main() {
     }
 
     // draw detected results onto canvas and save it to a file
-    human.draw.all(inputCanvas, result); // use human build-in method to draw results as overlays on canvas
+    const outputCanvas = new canvas.Canvas(inputImage.width, inputImage.height); // create canvas
+    const outputCtx = outputCanvas.getContext('2d');
+    outputCtx.drawImage(result.canvas || inputImage, 0, 0); // draw input image onto canvas
+    human.draw.all(outputCanvas, result); // use human build-in method to draw results as overlays on canvas
     const outFile = fs.createWriteStream(output); // write canvas to new image file
-    outFile.on('finish', () => log.state('Output image:', output, inputCanvas.width, inputCanvas.height));
+    outFile.on('finish', () => log.state('Output image:', output, outputCanvas.width, outputCanvas.height));
     outFile.on('error', (err) => log.error('Output error:', output, err));
-    const stream = inputCanvas.createJPEGStream({ quality: 0.5, progressive: true, chromaSubsampling: true });
+    const stream = outputCanvas.createJPEGStream({ quality: 0.5, progressive: true, chromaSubsampling: true });
     stream.pipe(outFile);
   }
 }

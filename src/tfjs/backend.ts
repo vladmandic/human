@@ -5,6 +5,7 @@ import { log, now } from '../util/util';
 import { env } from '../util/env';
 import * as humangl from './humangl';
 import * as tf from '../../dist/tfjs.esm.js';
+import * as constants from './constants';
 
 function registerCustomOps() {
   if (!env.kernels.includes('mod')) {
@@ -87,6 +88,7 @@ export async function check(instance: Human, force = false) {
       try {
         await tf.setBackend(instance.config.backend);
         await tf.ready();
+        constants.init();
       } catch (err) {
         log('error: cannot set backend:', instance.config.backend, err);
         return false;

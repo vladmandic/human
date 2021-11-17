@@ -33,26 +33,20 @@ export async function load(config: Config): Promise<GraphModel> {
 
 async function process(res: Tensor | null, outputShape, config: Config) {
   if (!res) return [];
+  const t: Record<string, Tensor> = {};
   const results: Array<ObjectResult> = [];
   const detections = await res.array();
-  const squeezeT = tf.squeeze(res);
-  tf.dispose(res);
-  const arr = tf.split(squeezeT, 6, 1); // x1, y1, x2, y2, score, class
-  tf.dispose(squeezeT);
-  const stackT = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // reorder dims as tf.nms expects y, x
-  const boxesT = tf.squeeze(stackT);
-  tf.dispose(stackT);
-  const scoresT = tf.squeeze(arr[4]);
-  const classesT = tf.squeeze(arr[5]);
-  arr.forEach((t) => tf.dispose(t));
-  const nmsT = await tf.image.nonMaxSuppressionAsync(boxesT, scoresT, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
-  tf.dispose(boxesT);
-  tf.dispose(scoresT);
-  tf.dispose(classesT);
-  const nms = await nmsT.data();
-  tf.dispose(nmsT);
+  t.squeeze = tf.squeeze(res);
+  const arr = tf.split(t.squeeze, 6, 1) as Tensor[]; // x1, y1, x2, y2, score, class
+  t.stack = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // reorder dims as tf.nms expects y, x
+  t.boxes = tf.squeeze(t.stack);
+  t.scores = tf.squeeze(arr[4]);
+  t.classes = tf.squeeze(arr[5]);
+  tf.dispose([res, ...arr]);
+  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
+  const nms = await t.nms.data();
   let i = 0;
-  for (const id of nms) {
+  for (const id of Array.from(nms)) {
     const score = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
@@ -74,6 +68,7 @@ async function process(res: Tensor | null, outputShape, config: Config) {
     ];
     results.push({ id: i++, score, class: classVal, label, box, boxRaw });
   }
+  Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return results;
 }
 

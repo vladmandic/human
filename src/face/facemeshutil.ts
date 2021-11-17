@@ -5,7 +5,7 @@
 
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './facemeshcoords';
-import * as constants from '../tfjs/constants';
+import { constants } from '../tfjs/constants';
 import type { Box, Point } from '../result';
 import { env } from '../util/env';
 

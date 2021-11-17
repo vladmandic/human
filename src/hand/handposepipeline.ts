@@ -6,7 +6,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './handposeutil';
 import type * as detector from './handposedetector';
-import * as constants from '../tfjs/constants';
+import { constants } from '../tfjs/constants';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';
 import { now } from '../util/util';

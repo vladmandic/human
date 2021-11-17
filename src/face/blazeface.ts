@@ -6,7 +6,7 @@
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './facemeshutil';
-import * as constants from '../tfjs/constants';
+import { constants } from '../tfjs/constants';
 import type { Config } from '../config';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';

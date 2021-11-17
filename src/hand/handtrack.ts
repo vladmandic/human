@@ -15,7 +15,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 import * as fingerPose from './fingerpose';
 import { fakeOps } from '../tfjs/backend';
-import * as constants from '../tfjs/constants';
+import { constants } from '../tfjs/constants';
 
 const models: [GraphModel | null, GraphModel | null] = [null, null];
 const modelOutputNodes = ['StatefulPartitionedCall/Postprocessor/Slice', 'StatefulPartitionedCall/Postprocessor/ExpandDims_1'];

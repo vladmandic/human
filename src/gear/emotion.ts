@@ -9,7 +9,7 @@ import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import * as tf from '../../dist/tfjs.esm.js';
 import { env } from '../util/env';
-import * as constants from '../tfjs/constants';
+import { constants } from '../tfjs/constants';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model: GraphModel | null;

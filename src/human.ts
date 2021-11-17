@@ -347,8 +347,8 @@ export class Human {
       if (kernels[kernel.name]) kernels[kernel.name] += kernel.kernelTimeMs;
       else kernels[kernel.name] = kernel.kernelTimeMs;
     }
-    const kernelArr: Array<{ name, ms }> = [];
-    Object.entries(kernels).forEach((key) => kernelArr.push({ name: key[0], ms: key[1] })); // convert to array
+    const kernelArr: Array<{ name: string, ms: number }> = [];
+    Object.entries(kernels).forEach((key) => kernelArr.push({ name: key[0], ms: key[1] as unknown as number })); // convert to array
     kernelArr.sort((a, b) => b.ms - a.ms); // sort
     kernelArr.length = 20; // crop
     const res: Record<string, number> = {};
@@ -497,7 +497,7 @@ export class Human {
       let gestureRes: GestureResult[] = [];
       if (this.config.gesture.enabled) {
         timeStamp = now();
-        gestureRes = [...gesture.face(faceRes), ...gesture.body(bodyRes), ...gesture.hand(handRes), ...gesture.iris(faceRes)];
+        gestureRes = [...gesture.face(faceRes as FaceResult[]), ...gesture.body(bodyRes as BodyResult[]), ...gesture.hand(handRes as HandResult[]), ...gesture.iris(faceRes as FaceResult[])];
         if (!this.config.async) this.performance.gesture = this.env.perfadd ? (this.performance.gesture || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
         else if (this.performance.gesture) delete this.performance.gesture;
       }

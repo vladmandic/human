@@ -149,6 +149,7 @@ export class Env {
     const cpu = { model: '', flags: [] };
     if (this.node && this.platform.startsWith('linux')) {
       // eslint-disable-next-line global-require
+      /*
       const fs = require('fs');
       try {
         const data = fs.readFileSync('/proc/cpuinfo').toString();
@@ -160,7 +161,8 @@ export class Env {
             cpu.flags = line.match(/:(.*)/g)[0].replace(':', '').trim().split(' ').sort();
           }
         }
-      } catch { /**/ }
+      } catch { }
+      */
     }
     if (!this['cpu']) Object.defineProperty(this, 'cpu', { value: cpu });
     else this['cpu'] = cpu;

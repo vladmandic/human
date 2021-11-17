@@ -5,34 +5,26 @@
 import type { GestureResult } from '../result';
 import * as fingerPose from '../hand/fingerpose';
 
-/**
- * @typedef FaceGesture
- */
+/** face gesture type */
 export type FaceGesture =
   `facing ${'left' | 'center' | 'right'}`
   | `blink ${'left' | 'right'} eye`
   | `mouth ${number}% open`
   | `head ${'up' | 'down'}`;
 
-/**
- * @typedef IrisGesture
- */
+/** iris gesture type */
 export type IrisGesture =
   'facing center'
   | `looking ${'left' | 'right' | 'up' | 'down'}`
   | 'looking center';
 
-/**
- * @typedef BodyGesture
- */
+/** body gesture type */
 export type BodyGesture =
   `leaning ${'left' | 'right'}`
   | `raise ${'left' | 'right'} hand`
   | 'i give up';
 
-/**
- * @typedef BodyGesture
- */
+/** hand gesture type */
 export type HandGesture =
   `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} forward`
   | `${'thumb' | 'index' | 'middle' | 'ring' | 'pinky'} up`

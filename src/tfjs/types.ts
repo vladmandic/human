@@ -4,7 +4,7 @@
  * TensorFlow Tensor type
  * @external
  */
-export { Tensor, TensorLike } from '@tensorflow/tfjs-core/dist/index';
+export { Tensor, TensorLike, Rank } from '@tensorflow/tfjs-core/dist/index';
 
 /**
  * TensorFlow GraphModel type

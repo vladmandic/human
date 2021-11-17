@@ -1,3 +1,5 @@
+/// <reference types="offscreencanvas" />
+
 /** meta-function that performs draw for: canvas, face, body, hand */
 declare function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>): Promise<[void, void, void, void, void] | null>;
 
@@ -1208,17 +1210,7 @@ declare class Human {
      * @param userConfig - {@link Config}
      * @returns result - {@link Result}
      */
-    warmup(userConfig?: Partial<Config>): Promise<Result | {
-        error: any; /** Container for events dispatched by Human
-        * Possible events:
-        * - `create`: triggered when Human object is instantiated
-        * - `load`: triggered when models are loaded (explicitly or on-demand)
-        * - `image`: triggered when input image is processed
-        * - `result`: triggered when detection is complete
-        * - `warmup`: triggered when warmup is complete
-        * - `error`: triggered on some errors
-        */
-    }>;
+    warmup(userConfig?: Partial<Config>): Promise<Result>;
     /** Run detect with tensorflow profiling
      * - result object will contain total exeuction time information for top-20 kernels
      * - actual detection object can be accessed via `human.result`

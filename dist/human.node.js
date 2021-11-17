@@ -1358,19 +1358,6 @@ var Env = class {
   async updateCPU() {
     const cpu = { model: "", flags: [] };
     if (this.node && this.platform.startsWith("linux")) {
-      const fs = require("fs");
-      try {
-        const data = fs.readFileSync("/proc/cpuinfo").toString();
-        for (const line of data.split("\n")) {
-          if (line.startsWith("model name")) {
-            cpu.model = line.match(/:(.*)/g)[0].replace(":", "").trim();
-          }
-          if (line.startsWith("flags")) {
-            cpu.flags = line.match(/:(.*)/g)[0].replace(":", "").trim().split(" ").sort();
-          }
-        }
-      } catch (e) {
-      }
     }
     if (!this["cpu"])
       Object.defineProperty(this, "cpu", { value: cpu });
@@ -12200,7 +12187,7 @@ var face2 = (res) => {
   const gestures = [];
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 450) {
-      const zDiff = res[i].mesh[33][2] - res[i].mesh[263][2];
+      const zDiff = (res[i].mesh[33][2] || 0) - (res[i].mesh[263][2] || 0);
       const xDiff = res[i].mesh[33][0] - res[i].mesh[263][0];
       if (Math.abs(zDiff / xDiff) <= 0.15)
         gestures.push({ face: i, gesture: "facing center" });
@@ -12215,7 +12202,7 @@ var face2 = (res) => {
       const mouthOpen = Math.min(100, 500 * Math.abs(res[i].mesh[13][1] - res[i].mesh[14][1]) / Math.abs(res[i].mesh[10][1] - res[i].mesh[152][1]));
       if (mouthOpen > 10)
         gestures.push({ face: i, gesture: `mouth ${Math.trunc(mouthOpen)}% open` });
-      const chinDepth = res[i].mesh[152][2];
+      const chinDepth = res[i].mesh[152][2] || 0;
       if (Math.abs(chinDepth) > 10)
         gestures.push({ face: i, gesture: `head ${chinDepth < 0 ? "up" : "down"}` });
     }
@@ -12278,7 +12265,7 @@ var hand2 = (res) => {
       }
     }
     if (fingers && fingers.length > 0) {
-      const closest = fingers.reduce((best, a) => best.position[2] < a.position[2] ? best : a);
+      const closest = fingers.reduce((best, a) => (best.position[2] || 0) < (a.position[2] || 0) ? best : a);
       gestures.push({ hand: i, gesture: `${closest.name} forward` });
       const highest = fingers.reduce((best, a) => best.position[1] < a.position[1] ? best : a);
       gestures.push({ hand: i, gesture: `${highest.name} up` });
@@ -13281,6 +13268,8 @@ async function warmupCanvas(instance) {
       img = new Image();
     else if (env.Image)
       img = new env.Image();
+    else
+      return;
     img.onload = async () => {
       const canvas3 = canvas(img.naturalWidth, img.naturalHeight);
       if (!canvas3) {
@@ -13328,8 +13317,9 @@ async function warmup(instance, userConfig) {
   instance.state = "warmup";
   if (userConfig)
     instance.config = mergeDeep(instance.config, userConfig);
-  if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === "none")
-    return { error: "null" };
+  if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === "none") {
+    return { face: [], body: [], hand: [], gesture: [], object: [], performance: instance.performance, timestamp: now(), persons: [], error: null };
+  }
   let res;
   return new Promise(async (resolve) => {
     if (typeof createImageBitmap === "function")

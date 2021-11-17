@@ -48,10 +48,11 @@ async function warmupCanvas(instance: Human) {
         src = null;
     }
     // src = encodeURI('../assets/human-sample-upper.jpg');
-    let img;
+    let img: HTMLImageElement;
     if (typeof Image !== 'undefined') img = new Image();
     // @ts-ignore env.image is an external monkey-patch
     else if (env.Image) img = new env.Image();
+    else return;
     img.onload = async () => {
       const canvas = image.canvas(img.naturalWidth, img.naturalHeight);
       if (!canvas) {
@@ -103,11 +104,13 @@ async function warmupNode(instance: Human) {
  * - only used for `webgl` and `humangl` backends
  * @param userConfig?: Config
 */
-export async function warmup(instance: Human, userConfig?: Partial<Config>): Promise<Result | { error }> {
+export async function warmup(instance: Human, userConfig?: Partial<Config>): Promise<Result> {
   const t0 = now();
   instance.state = 'warmup';
   if (userConfig) instance.config = mergeDeep(instance.config, userConfig) as Config;
-  if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === 'none') return { error: 'null' };
+  if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === 'none') {
+    return { face: [], body: [], hand: [], gesture: [], object: [], performance: instance.performance, timestamp: now(), persons: [], error: null };
+  }
   let res;
   return new Promise(async (resolve) => {
     if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);

@@ -24,7 +24,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(image: Tensor, config: Config, idx, count): Promise<number> {
+export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<number> {
   if (!model) return 0;
   const skipTime = (config.face.liveness?.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.face.liveness?.skipFrames || 0);

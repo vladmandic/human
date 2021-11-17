@@ -2,7 +2,7 @@
  * Gesture detection algorithm
  */
 
-import type { GestureResult } from '../result';
+import type { GestureResult, BodyResult, FaceResult, HandResult, Point } from '../result';
 import * as fingerPose from '../hand/fingerpose';
 
 /** face gesture type */
@@ -31,7 +31,7 @@ export type HandGesture =
   | 'victory'
   | 'thumbs up';
 
-export const body = (res): GestureResult[] => {
+export const body = (res: BodyResult[]): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ body: number, gesture: BodyGesture }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -53,12 +53,12 @@ export const body = (res): GestureResult[] => {
   return gestures;
 };
 
-export const face = (res): GestureResult[] => {
+export const face = (res: FaceResult[]): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ face: number, gesture: FaceGesture }> = [];
   for (let i = 0; i < res.length; i++) {
     if (res[i].mesh && res[i].mesh.length > 450) {
-      const zDiff = res[i].mesh[33][2] - res[i].mesh[263][2];
+      const zDiff = (res[i].mesh[33][2] || 0) - (res[i].mesh[263][2] || 0);
       const xDiff = res[i].mesh[33][0] - res[i].mesh[263][0];
       if (Math.abs(zDiff / xDiff) <= 0.15) gestures.push({ face: i, gesture: 'facing center' });
       else gestures.push({ face: i, gesture: `facing ${zDiff < 0 ? 'left' : 'right'}` });
@@ -68,14 +68,14 @@ export const face = (res): GestureResult[] => {
       if (openRight < 0.2) gestures.push({ face: i, gesture: 'blink right eye' });
       const mouthOpen = Math.min(100, 500 * Math.abs(res[i].mesh[13][1] - res[i].mesh[14][1]) / Math.abs(res[i].mesh[10][1] - res[i].mesh[152][1]));
       if (mouthOpen > 10) gestures.push({ face: i, gesture: `mouth ${Math.trunc(mouthOpen)}% open` });
-      const chinDepth = res[i].mesh[152][2];
+      const chinDepth = res[i].mesh[152][2] || 0;
       if (Math.abs(chinDepth) > 10) gestures.push({ face: i, gesture: `head ${chinDepth < 0 ? 'up' : 'down'}` });
     }
   }
   return gestures;
 };
 
-export const iris = (res): GestureResult[] => {
+export const iris = (res: FaceResult[]): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ iris: number, gesture: IrisGesture }> = [];
   for (let i = 0; i < res.length; i++) {
@@ -116,18 +116,18 @@ export const iris = (res): GestureResult[] => {
   return gestures;
 };
 
-export const hand = (res): GestureResult[] => {
+export const hand = (res: HandResult[]): GestureResult[] => {
   if (!res) return [];
   const gestures: Array<{ hand: number, gesture: HandGesture }> = [];
   for (let i = 0; i < res.length; i++) {
-    const fingers: Array<{ name: string, position: number }> = [];
+    const fingers: Array<{ name: string, position: Point }> = [];
     if (res[i]['annotations']) {
       for (const [finger, pos] of Object.entries(res[i]['annotations'])) {
         if (finger !== 'palmBase' && Array.isArray(pos) && pos[0]) fingers.push({ name: finger.toLowerCase(), position: pos[0] }); // get tip of each finger
       }
     }
     if (fingers && fingers.length > 0) {
-      const closest = fingers.reduce((best, a) => (best.position[2] < a.position[2] ? best : a));
+      const closest = fingers.reduce((best, a) => ((best.position[2] || 0) < (a.position[2] || 0) ? best : a));
       gestures.push({ hand: i, gesture: `${closest.name} forward` as HandGesture });
       const highest = fingers.reduce((best, a) => (best.position[1] < a.position[1] ? best : a));
       gestures.push({ hand: i, gesture: `${highest.name} up` as HandGesture });

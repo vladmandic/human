@@ -31,7 +31,7 @@ export async function load(config: Config) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function predict(image: Tensor, config: Config, idx, count): Promise<{ age: number }> {
+export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<{ age: number }> {
   if (!model) return { age: 0 };
   const skipFrame = skipped < (config.face['ssrnet']?.skipFrames || 0);
   const skipTime = (config.face['ssrnet']?.skipTime || 0) > (now() - lastTime);

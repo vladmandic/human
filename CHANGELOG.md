@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/16 mandic00@live.com
+### **HEAD -> main** 2021/11/17 mandic00@live.com
 
+- optimize centernet
 - cache frequent tf constants
 - add extra face rotation prior to mesh
 - release 2.5.2

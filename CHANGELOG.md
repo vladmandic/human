@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **release 2.5.2** 2021/11/15 mandic00@live.com
+### **HEAD -> main** 2021/11/16 mandic00@live.com
 
+- add extra face rotation prior to mesh
+- release 2.5.2
 - improve error handling
 
 ### **2.5.2** 2021/11/14 mandic00@live.com

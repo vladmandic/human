@@ -1837,7 +1837,7 @@ var require_xorshift7 = __commonJS({
           me.i = i + 1 & 7;
           return v;
         };
-        function init2(me2, seed2) {
+        function init22(me2, seed2) {
           var j, w, X = [];
           if (seed2 === (seed2 | 0)) {
             w = X[0] = seed2;
@@ -1861,7 +1861,7 @@ var require_xorshift7 = __commonJS({
             me2.next();
           }
         }
-        init2(me, seed);
+        init22(me, seed);
       }
       function copy2(f, t) {
         t.x = f.x.slice();
@@ -1921,7 +1921,7 @@ var require_xor4096 = __commonJS({
           me.i = i;
           return v + (w ^ w >>> 16) | 0;
         };
-        function init2(me2, seed2) {
+        function init22(me2, seed2) {
           var t, v, i, j, w, X = [], limit = 128;
           if (seed2 === (seed2 | 0)) {
             v = seed2;
@@ -1963,7 +1963,7 @@ var require_xor4096 = __commonJS({
           me2.X = X;
           me2.i = i;
         }
-        init2(me, seed);
+        init22(me, seed);
       }
       function copy2(f, t) {
         t.i = f.i;
@@ -6185,12 +6185,12 @@ function getGlobalMap() {
   }
   return ns._tfGlobals;
 }
-function getGlobal(key, init2) {
+function getGlobal(key, init22) {
   const globalMap = getGlobalMap();
   if (globalMap.has(key)) {
     return globalMap.get(key);
   } else {
-    const singleton = init2();
+    const singleton = init22();
     globalMap.set(key, singleton);
     return globalMap.get(key);
   }
@@ -9083,8 +9083,8 @@ async function moveModel(sourceURL, destURL) {
   return cloneModelInternal(sourceURL, destURL, deleteSource);
 }
 var PlatformBrowser = class {
-  fetch(path, init2) {
-    return fetch(path, init2);
+  fetch(path, init22) {
+    return fetch(path, init22);
   }
   now() {
     return performance.now();
@@ -9517,18 +9517,18 @@ var HTTPRequest = class {
     if (modelArtifacts.modelTopology instanceof ArrayBuffer) {
       throw new Error("BrowserHTTPRequest.save() does not support saving model topology in binary formats yet.");
     }
-    const init2 = Object.assign({ method: this.DEFAULT_METHOD }, this.requestInit);
-    init2.body = new FormData();
+    const init22 = Object.assign({ method: this.DEFAULT_METHOD }, this.requestInit);
+    init22.body = new FormData();
     const weightsManifest = [{
       paths: ["./model.weights.bin"],
       weights: modelArtifacts.weightSpecs
     }];
     const modelTopologyAndWeightManifest = getModelJSONForModelArtifacts(modelArtifacts, weightsManifest);
-    init2.body.append("model.json", new Blob([JSON.stringify(modelTopologyAndWeightManifest)], { type: JSON_TYPE }), "model.json");
+    init22.body.append("model.json", new Blob([JSON.stringify(modelTopologyAndWeightManifest)], { type: JSON_TYPE }), "model.json");
     if (modelArtifacts.weightData != null) {
-      init2.body.append("model.weights.bin", new Blob([modelArtifacts.weightData], { type: OCTET_STREAM_MIME_TYPE }), "model.weights.bin");
+      init22.body.append("model.weights.bin", new Blob([modelArtifacts.weightData], { type: OCTET_STREAM_MIME_TYPE }), "model.weights.bin");
     }
-    const response = await this.fetch(this.path, init2);
+    const response = await this.fetch(this.path, init22);
     if (response.ok) {
       return {
         modelArtifactsInfo: getModelArtifactsInfoForJSON(modelArtifacts),
@@ -24804,13 +24804,13 @@ var DepthwiseConv2D = class extends BaseConv {
 };
 DepthwiseConv2D.className = "DepthwiseConv2D";
 serialization_exports.registerClass(DepthwiseConv2D);
-function standardizeArgs(inputs, initialState, constants14, numConstants) {
+function standardizeArgs(inputs, initialState, constants3, numConstants) {
   if (Array.isArray(inputs)) {
-    if (initialState != null || constants14 != null) {
+    if (initialState != null || constants3 != null) {
       throw new ValueError("When inputs is an array, neither initialState or constants should be provided");
     }
     if (numConstants != null) {
-      constants14 = inputs.slice(inputs.length - numConstants, inputs.length);
+      constants3 = inputs.slice(inputs.length - numConstants, inputs.length);
       inputs = inputs.slice(0, inputs.length - numConstants);
     }
     if (inputs.length > 1) {
@@ -24826,10 +24826,10 @@ function standardizeArgs(inputs, initialState, constants14, numConstants) {
     }
   }
   initialState = toListOrNull(initialState);
-  constants14 = toListOrNull(constants14);
-  return { inputs, initialState, constants: constants14 };
+  constants3 = toListOrNull(constants3);
+  return { inputs, initialState, constants: constants3 };
 }
-function rnn(stepFunction, inputs, initialStates, goBackwards = false, mask3, constants14, unroll = false, needPerStepOutputs = false) {
+function rnn(stepFunction, inputs, initialStates, goBackwards = false, mask3, constants3, unroll = false, needPerStepOutputs = false) {
   return tidy(() => {
     const ndim = inputs.shape.length;
     if (ndim < 3) {
@@ -24837,7 +24837,7 @@ function rnn(stepFunction, inputs, initialStates, goBackwards = false, mask3, co
     }
     const axes = [1, 0].concat(range2(2, ndim));
     inputs = transpose(inputs, axes);
-    if (constants14 != null) {
+    if (constants3 != null) {
       throw new NotImplementedError("The rnn() functoin of the deeplearn.js backend does not support constants yet.");
     }
     if (unroll) {
@@ -25077,14 +25077,14 @@ var _RNN = class extends Layer {
   }
   apply(inputs, kwargs) {
     let initialState = kwargs == null ? null : kwargs["initialState"];
-    let constants14 = kwargs == null ? null : kwargs["constants"];
+    let constants3 = kwargs == null ? null : kwargs["constants"];
     if (kwargs == null) {
       kwargs = {};
     }
-    const standardized = standardizeArgs(inputs, initialState, constants14, this.numConstants);
+    const standardized = standardizeArgs(inputs, initialState, constants3, this.numConstants);
     inputs = standardized.inputs;
     initialState = standardized.initialState;
-    constants14 = standardized.constants;
+    constants3 = standardized.constants;
     let additionalInputs = [];
     let additionalSpecs = [];
     if (initialState != null) {
@@ -25096,10 +25096,10 @@ var _RNN = class extends Layer {
       }
       additionalSpecs = additionalSpecs.concat(this.stateSpec);
     }
-    if (constants14 != null) {
-      kwargs["constants"] = constants14;
-      additionalInputs = additionalInputs.concat(constants14);
-      this.numConstants = constants14.length;
+    if (constants3 != null) {
+      kwargs["constants"] = constants3;
+      additionalInputs = additionalInputs.concat(constants3);
+      this.numConstants = constants3.length;
     }
     const isTensor = additionalInputs[0] instanceof SymbolicTensor;
     if (isTensor) {
@@ -25996,13 +25996,13 @@ var ConvLSTM2DCell = class extends LSTMCell {
     if (this.useBias) {
       let biasInitializer;
       if (this.unitForgetBias) {
-        const init2 = this.biasInitializer;
+        const init22 = this.biasInitializer;
         const filters = this.filters;
         biasInitializer = new (_a = class extends Initializer {
           apply(shape, dtype) {
-            const biasI = init2.apply([filters]);
+            const biasI = init22.apply([filters]);
             const biasF = ones2([filters]);
-            const biasCAndO = init2.apply([filters * 2]);
+            const biasCAndO = init22.apply([filters * 2]);
             return concatenate([biasI, biasF, biasCAndO]);
           }
         }, _a.className = "CustomInit", _a)();
@@ -28198,19 +28198,19 @@ var Bidirectional = class extends Wrapper {
   }
   apply(inputs, kwargs) {
     let initialState = kwargs == null ? null : kwargs["initialState"];
-    let constants14 = kwargs == null ? null : kwargs["constants"];
+    let constants3 = kwargs == null ? null : kwargs["constants"];
     if (kwargs == null) {
       kwargs = {};
     }
-    const standardized = standardizeArgs(inputs, initialState, constants14, this.numConstants);
+    const standardized = standardizeArgs(inputs, initialState, constants3, this.numConstants);
     inputs = standardized.inputs;
     initialState = standardized.initialState;
-    constants14 = standardized.constants;
+    constants3 = standardized.constants;
     if (Array.isArray(inputs)) {
       initialState = inputs.slice(1);
       inputs = inputs[0];
     }
-    if ((initialState == null || initialState.length === 0) && constants14 == null) {
+    if ((initialState == null || initialState.length === 0) && constants3 == null) {
       return super.apply(inputs, kwargs);
     }
     const additionalInputs = [];
@@ -28227,7 +28227,7 @@ var Bidirectional = class extends Wrapper {
       this.backwardLayer.stateSpec = stateSpecs.slice(numStates / 2);
       additionalSpecs.push(...stateSpecs);
     }
-    if (constants14 != null) {
+    if (constants3 != null) {
       throw new NotImplementedError("Support for constants in Bidirectional layers is not implemented yet.");
     }
     const isSymbolicTensor = additionalInputs[0] instanceof SymbolicTensor;
@@ -39449,7 +39449,7 @@ async function urlChunkIterator(url, options3 = {}, fetchFunc) {
   }
 }
 var getRequestInitFromRequest = (request) => {
-  const init2 = {
+  const init22 = {
     method: request.method,
     headers: request.headers,
     body: request.body,
@@ -39460,7 +39460,7 @@ var getRequestInitFromRequest = (request) => {
     referrer: request.referrer,
     integrity: request.integrity
   };
-  return init2;
+  return init22;
 };
 function isLocalPath(source) {
   return typeof source === "string" && source.substr(0, 7) === "file://";
@@ -71309,9 +71309,9 @@ async function histogramEqualization(inputImage) {
   const range7 = [sub(max7[0], min7[0]), sub(max7[1], min7[1]), sub(max7[2], min7[2])];
   const fact = [div(maxValue, range7[0]), div(maxValue, range7[1]), div(maxValue, range7[2])];
   const enh = [mul(sub5[0], fact[0]), mul(sub5[1], fact[1]), mul(sub5[2], fact[2])];
-  const rgb3 = stack([enh[0], enh[1], enh[2]], 2);
-  const reshape7 = reshape(rgb3, [1, squeeze2.shape[0], squeeze2.shape[1], 3]);
-  dispose([...channels, ...min7, ...max7, ...sub5, ...range7, ...fact, ...enh, rgb3, squeeze2]);
+  const rgb2 = stack([enh[0], enh[1], enh[2]], 2);
+  const reshape7 = reshape(rgb2, [1, squeeze2.shape[0], squeeze2.shape[1], 3]);
+  dispose([...channels, ...min7, ...max7, ...sub5, ...range7, ...fact, ...enh, rgb2, squeeze2]);
   return reshape7;
 }
 
@@ -71374,9 +71374,9 @@ async function process2(input2, config3, getTensor2 = true) {
       if (input2.shape[2] === 3) {
         tensor2 = expandDims(input2, 0);
       } else if (input2.shape[2] === 4) {
-        const rgb3 = slice3d(input2, [0, 0, 0], [-1, -1, 3]);
-        tensor2 = expandDims(rgb3, 0);
-        dispose(rgb3);
+        const rgb2 = slice3d(input2, [0, 0, 0], [-1, -1, 3]);
+        tensor2 = expandDims(rgb2, 0);
+        dispose(rgb2);
       }
     } else if (input2.shape.length === 4) {
       if (input2.shape[3] === 3) {
@@ -71525,9 +71525,9 @@ async function process2(input2, config3, getTensor2 = true) {
       }
     }
     if (depth === 4) {
-      const rgb3 = slice3d(pixels, [0, 0, 0], [-1, -1, 3]);
+      const rgb2 = slice3d(pixels, [0, 0, 0], [-1, -1, 3]);
       dispose(pixels);
-      pixels = rgb3;
+      pixels = rgb2;
     }
     if (!pixels)
       throw new Error("input error: cannot create tensor");
@@ -71765,12 +71765,22 @@ async function predict(image7, config3, idx, count3) {
 }
 
 // src/tfjs/constants.ts
-var tf255 = scalar(255, "float32");
-var tf1 = scalar(1, "float32");
-var tf22 = scalar(2, "float32");
-var tf05 = scalar(0.5, "float32");
-var tf127 = scalar(127.5, "float32");
-var rgb = tensor1d([0.2989, 0.587, 0.114], "float32");
+var constants = {
+  tf255: 255,
+  tf1: 1,
+  tf2: 2,
+  tf05: 0.5,
+  tf127: 127.5,
+  rgb: [0.2989, 0.587, 0.114]
+};
+function init2() {
+  constants.tf255 = scalar(255, "float32");
+  constants.tf1 = scalar(1, "float32");
+  constants.tf2 = scalar(2, "float32");
+  constants.tf05 = scalar(0.5, "float32");
+  constants.tf127 = scalar(127.5, "float32");
+  constants.rgb = tensor1d([0.2989, 0.587, 0.114], "float32");
+}
 
 // src/gear/ssrnet-age.ts
 var model3;
@@ -71809,7 +71819,7 @@ async function predict2(image7, config3, idx, count3) {
       return;
     const t = {};
     t.resize = image.resizeBilinear(image7, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
-    t.enhance = mul(t.resize, tf255);
+    t.enhance = mul(t.resize, constants.tf255);
     const obj = { age: 0 };
     if (config3.face["ssrnet"].enabled)
       t.age = model3.execute(t.enhance);
@@ -71831,7 +71841,7 @@ var last4 = [];
 var lastCount3 = 0;
 var lastTime3 = 0;
 var skipped3 = Number.MAX_SAFE_INTEGER;
-var rgb2 = [0.2989, 0.587, 0.114];
+var rgb = [0.2989, 0.587, 0.114];
 async function load3(config3) {
   if (env2.initial)
     model4 = null;
@@ -71863,11 +71873,11 @@ async function predict3(image7, config3, idx, count3) {
     t.resize = image.resizeBilinear(image7, [model4.inputs[0].shape[2], model4.inputs[0].shape[1]], false);
     t.enhance = tidy(() => {
       const [red, green, blue] = split(t.resize, 3, 3);
-      const redNorm = mul(red, rgb2[0]);
-      const greenNorm = mul(green, rgb2[1]);
-      const blueNorm = mul(blue, rgb2[2]);
+      const redNorm = mul(red, rgb[0]);
+      const greenNorm = mul(green, rgb[1]);
+      const blueNorm = mul(blue, rgb[2]);
       const grayscale = addN([redNorm, greenNorm, blueNorm]);
-      const normalize = mul(sub(grayscale, tf05), 2);
+      const normalize = mul(sub(grayscale, constants.tf05), 2);
       return normalize;
     });
     const obj = { gender: "", genderScore: 0 };
@@ -75234,7 +75244,7 @@ var cutBoxFromImageAndResize = (box4, image7, cropSize) => {
   const h = image7.shape[1];
   const w = image7.shape[2];
   const crop2 = image.cropAndResize(image7, [[box4.startPoint[1] / h, box4.startPoint[0] / w, box4.endPoint[1] / h, box4.endPoint[0] / w]], [0], cropSize);
-  const norm2 = div(crop2, tf255);
+  const norm2 = div(crop2, constants.tf255);
   dispose(crop2);
   return norm2;
 };
@@ -75389,7 +75399,7 @@ function decodeBounds(boxOutputs) {
   t.boxSizes = slice(boxOutputs, [0, 3], [-1, 2]);
   t.boxSizesNormalized = div(t.boxSizes, inputSizeT);
   t.centersNormalized = div(t.centers, inputSizeT);
-  t.halfBoxSize = div(t.boxSizesNormalized, tf22);
+  t.halfBoxSize = div(t.boxSizesNormalized, constants.tf2);
   t.starts = sub(t.centersNormalized, t.halfBoxSize);
   t.ends = add2(t.centersNormalized, t.halfBoxSize);
   t.startNormalized = mul(t.starts, inputSizeT);
@@ -75404,8 +75414,8 @@ async function getBoxes(inputImage, config3) {
     return { boxes: [] };
   const t = {};
   t.resized = image.resizeBilinear(inputImage, [inputSize, inputSize]);
-  t.div = div(t.resized, tf127);
-  t.normalized = sub(t.div, tf05);
+  t.div = div(t.resized, constants.tf127);
+  t.normalized = sub(t.div, constants.tf05);
   const res = model6 == null ? void 0 : model6.execute(t.normalized);
   if (Array.isArray(res)) {
     const sorted = res.sort((a, b) => a.size - b.size);
@@ -75573,7 +75583,7 @@ async function prepareImage(input2) {
   ];
   t.pad = pad(input2, padding);
   t.resize = image.resizeBilinear(t.pad, [inputSize2[1][0], inputSize2[1][1]]);
-  const final = div(t.resize, tf255);
+  const final = div(t.resize, constants.tf255);
   Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   return final;
 }
@@ -75754,26 +75764,20 @@ async function load6(config3) {
 async function process3(res, outputShape, config3) {
   if (!res)
     return [];
+  const t = {};
   const results = [];
   const detections = await res.array();
-  const squeezeT = squeeze(res);
-  dispose(res);
-  const arr = split(squeezeT, 6, 1);
-  dispose(squeezeT);
-  const stackT = stack([arr[1], arr[0], arr[3], arr[2]], 1);
-  const boxesT = squeeze(stackT);
-  dispose(stackT);
-  const scoresT = squeeze(arr[4]);
-  const classesT = squeeze(arr[5]);
-  arr.forEach((t) => dispose(t));
-  const nmsT = await image.nonMaxSuppressionAsync(boxesT, scoresT, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
-  dispose(boxesT);
-  dispose(scoresT);
-  dispose(classesT);
-  const nms = await nmsT.data();
-  dispose(nmsT);
+  t.squeeze = squeeze(res);
+  const arr = split(t.squeeze, 6, 1);
+  t.stack = stack([arr[1], arr[0], arr[3], arr[2]], 1);
+  t.boxes = squeeze(t.stack);
+  t.scores = squeeze(arr[4]);
+  t.classes = squeeze(arr[5]);
+  dispose([res, ...arr]);
+  t.nms = await image.nonMaxSuppressionAsync(t.boxes, t.scores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
+  const nms = await t.nms.data();
   let i = 0;
-  for (const id of nms) {
+  for (const id of Array.from(nms)) {
     const score = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
@@ -75795,6 +75799,7 @@ async function process3(res, outputShape, config3) {
     ];
     results.push({ id: i++, score, class: classVal, label, box: box4, boxRaw });
   }
+  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   return results;
 }
 async function predict6(input2, config3) {
@@ -75899,8 +75904,8 @@ async function predict7(image7, config3) {
       if (!(model8 == null ? void 0 : model8.inputs[0].shape))
         return null;
       const resize = image.resizeBilinear(image7, [model8.inputs[0].shape[2], model8.inputs[0].shape[1]], false);
-      const enhance3 = mul(resize, tf22);
-      const norm2 = sub(enhance3, tf1);
+      const enhance3 = mul(resize, constants.tf2);
+      const norm2 = sub(enhance3, constants.tf1);
       return norm2;
     });
     let resT;
@@ -76003,10 +76008,10 @@ async function predict8(image7, config3, idx, count3) {
       const t = {};
       const inputSize8 = (model9 == null ? void 0 : model9.inputs[0].shape) ? model9.inputs[0].shape[2] : 0;
       t.resize = image.resizeBilinear(image7, [inputSize8, inputSize8], false);
-      t.channels = mul(t.resize, rgb);
+      t.channels = mul(t.resize, constants.rgb);
       t.grayscale = sum2(t.channels, 3, true);
-      t.grayscaleSub = sub(t.grayscale, tf05);
-      t.grayscaleMul = mul(t.grayscaleSub, tf22);
+      t.grayscaleSub = sub(t.grayscale, constants.tf05);
+      t.grayscaleMul = mul(t.grayscaleSub, constants.tf2);
       t.emotion = model9 == null ? void 0 : model9.execute(t.grayscaleMul);
       lastTime8 = now();
       const data = await t.emotion.data();
@@ -76345,7 +76350,7 @@ function enhance2(input2) {
   if (!(model13 == null ? void 0 : model13.inputs[0].shape))
     return tensor2;
   const crop2 = image.resizeBilinear(tensor2, [model13.inputs[0].shape[2], model13.inputs[0].shape[1]], false);
-  const norm2 = mul(crop2, tf255);
+  const norm2 = mul(crop2, constants.tf255);
   dispose(crop2);
   return norm2;
 }
@@ -79500,8 +79505,8 @@ var HandDetector = class {
   async predict(input2, config3) {
     const t = {};
     t.resize = image.resizeBilinear(input2, [this.inputSize, this.inputSize]);
-    t.div = div(t.resize, tf127);
-    t.image = sub(t.div, tf1);
+    t.div = div(t.resize, constants.tf127);
+    t.image = sub(t.div, constants.tf1);
     t.batched = this.model.execute(t.image);
     t.predictions = squeeze(t.batched);
     t.slice = slice(t.predictions, [0, 0], [-1, 1]);
@@ -79631,7 +79636,7 @@ var HandPipeline = class {
         const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
         const croppedInput = cutBoxFromImageAndResize2(newBox, rotatedImage, [this.inputSize, this.inputSize]);
-        const handImage = div(croppedInput, tf255);
+        const handImage = div(croppedInput, constants.tf255);
         dispose(croppedInput);
         dispose(rotatedImage);
         const [confidenceT, keypoints] = this.handPoseModel.execute(handImage);
@@ -80338,7 +80343,7 @@ async function detectFingers(input2, h, config3) {
   if (input2 && models2[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
     const t = {};
     t.crop = image.cropAndResize(input2, [h.boxCrop], [0], [inputSize6[1][0], inputSize6[1][1]], "bilinear");
-    t.div = div(t.crop, tf255);
+    t.div = div(t.crop, constants.tf255);
     [t.score, t.keypoints] = models2[1].execute(t.div, ["Identity_1", "Identity"]);
     const rawScore = (await t.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
@@ -80830,7 +80835,7 @@ async function predict16(image7, config3) {
   return new Promise(async (resolve) => {
     const outputSize2 = [image7.shape[2], image7.shape[1]];
     const resize = image.resizeBilinear(image7, [model16.inputSize, model16.inputSize], false);
-    const norm2 = div(resize, tf255);
+    const norm2 = div(resize, constants.tf255);
     const transpose6 = norm2.transpose([0, 3, 1, 2]);
     dispose(norm2);
     dispose(resize);
@@ -81214,7 +81219,7 @@ async function process5(input2, background, config3) {
   const t = {};
   t.resize = image.resizeBilinear(inputImage.tensor, [model18.inputs[0].shape ? model18.inputs[0].shape[1] : 0, model18.inputs[0].shape ? model18.inputs[0].shape[2] : 0], false);
   dispose(inputImage.tensor);
-  t.norm = div(t.resize, tf255);
+  t.norm = div(t.resize, constants.tf255);
   t.res = model18.execute(t.norm);
   t.squeeze = squeeze(t.res, 0);
   if (t.squeeze.shape[2] === 2) {
@@ -81583,6 +81588,7 @@ async function check(instance, force = false) {
       try {
         await setBackend(instance.config.backend);
         await ready();
+        init2();
       } catch (err) {
         log("error: cannot set backend:", instance.config.backend, err);
         return false;

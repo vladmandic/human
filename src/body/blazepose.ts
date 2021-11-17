@@ -3,7 +3,7 @@
  */
 
 import * as tf from '../../dist/tfjs.esm.js';
-import * as constants from '../tfjs/constants';
+import { constants } from '../tfjs/constants';
 import { log, join, now } from '../util/util';
 import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';

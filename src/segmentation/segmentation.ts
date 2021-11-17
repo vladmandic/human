@@ -9,7 +9,7 @@
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
-import * as constants from '../tfjs/constants';
+import { constants } from '../tfjs/constants';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';

@@ -12,7 +12,7 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   throw new Error('Dynamic require of "' + x + '" is not supported');
 });
 
-// node_modules/.pnpm/github.com+vladmandic+tfjs@bd7dac71f4f8de0e9c11a5fd16b2cbd0b81da494/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
+// node_modules/.pnpm/github.com+vladmandic+tfjs@6f39b4dfb584b119e670d4477ca63391f98b6f29/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -47,7 +47,7 @@ var __toModule = (module) => {
   return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", module && module.__esModule && "default" in module ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
 };
 var require_long = __commonJS({
-  "node_modules/.pnpm/long@4.0.0/node_modules/long/src/long.js"(exports, module) {
+  "src/node_modules/long/src/long.js"(exports, module) {
     module.exports = Long2;
     var wasm = null;
     try {
@@ -869,8 +869,8 @@ var require_long = __commonJS({
     };
   }
 });
-var require_node_fetch = __commonJS({
-  "(disabled):node-fetch"() {
+var require_browser = __commonJS({
+  "(disabled):src/node_modules/node-fetch/browser.js"() {
   }
 });
 var require_util = __commonJS({
@@ -878,7 +878,7 @@ var require_util = __commonJS({
   }
 });
 var require_alea = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/alea.js"(exports, module) {
+  "src/node_modules/seedrandom/lib/alea.js"(exports, module) {
     (function(global2, module2, define2) {
       function Alea(seed) {
         var me = this, mash = Mash();
@@ -962,7 +962,7 @@ var require_alea = __commonJS({
   }
 });
 var require_xor128 = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xor128.js"(exports, module) {
+  "src/node_modules/seedrandom/lib/xor128.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -1028,7 +1028,7 @@ var require_xor128 = __commonJS({
   }
 });
 var require_xorwow = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xorwow.js"(exports, module) {
+  "src/node_modules/seedrandom/lib/xorwow.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -1101,7 +1101,7 @@ var require_xorwow = __commonJS({
   }
 });
 var require_xorshift7 = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xorshift7.js"(exports, module) {
+  "src/node_modules/seedrandom/lib/xorshift7.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this;
@@ -1190,7 +1190,7 @@ var require_xorshift7 = __commonJS({
   }
 });
 var require_xor4096 = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/xor4096.js"(exports, module) {
+  "src/node_modules/seedrandom/lib/xor4096.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this;
@@ -1294,7 +1294,7 @@ var require_xor4096 = __commonJS({
   }
 });
 var require_tychei = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/lib/tychei.js"(exports, module) {
+  "src/node_modules/seedrandom/lib/tychei.js"(exports, module) {
     (function(global2, module2, define2) {
       function XorGen(seed) {
         var me = this, strseed = "";
@@ -1370,7 +1370,7 @@ var require_crypto = __commonJS({
   }
 });
 var require_seedrandom = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/seedrandom.js"(exports, module) {
+  "src/node_modules/seedrandom/seedrandom.js"(exports, module) {
     (function(global2, pool3, math) {
       var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask = width - 1, nodecrypto;
       function seedrandom5(seed, options, callback) {
@@ -1501,7 +1501,7 @@ var require_seedrandom = __commonJS({
   }
 });
 var require_seedrandom2 = __commonJS({
-  "node_modules/.pnpm/seedrandom@3.0.5/node_modules/seedrandom/index.js"(exports, module) {
+  "src/node_modules/seedrandom/index.js"(exports, module) {
     var alea5 = require_alea();
     var xor128 = require_xor128();
     var xorwow = require_xorwow();
@@ -1524,12 +1524,12 @@ var require_string_decoder = __commonJS({
 });
 var require_tfjs_backend_wasm_threaded_simd = __commonJS({
   "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js"(exports, module) {
-    var WasmBackendModuleThreadedSimd = function() {
+    var WasmBackendModuleThreadedSimd2 = function() {
       var _scriptDir = typeof document !== "undefined" && document.currentScript ? document.currentScript.src : void 0;
       if (typeof __filename !== "undefined")
         _scriptDir = _scriptDir || __filename;
-      return function(WasmBackendModuleThreadedSimd2) {
-        WasmBackendModuleThreadedSimd2 = WasmBackendModuleThreadedSimd2 || {};
+      return function(WasmBackendModuleThreadedSimd3) {
+        WasmBackendModuleThreadedSimd3 = WasmBackendModuleThreadedSimd3 || {};
         function GROWABLE_HEAP_I8() {
           if (wasmMemory.buffer != buffer2) {
             updateGlobalBufferAndViews(wasmMemory.buffer);
@@ -1560,12 +1560,16 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           }
           return HEAPF64;
         }
-        var Module = typeof WasmBackendModuleThreadedSimd2 !== "undefined" ? WasmBackendModuleThreadedSimd2 : {};
+        var Module = typeof WasmBackendModuleThreadedSimd3 !== "undefined" ? WasmBackendModuleThreadedSimd3 : {};
         var readyPromiseResolve, readyPromiseReject;
         Module["ready"] = new Promise(function(resolve, reject) {
           readyPromiseResolve = resolve;
           readyPromiseReject = reject;
         });
+        var beforeListeners;
+        if (process && process.listeners) {
+          beforeListeners = { uncaughtException: process.listeners("uncaughtException"), unhandledRejection: process.listeners("unhandledRejection") };
+        }
         var moduleOverrides = {};
         var key;
         for (key in Module) {
@@ -3807,33 +3811,58 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           PThread.initWorker();
         }
         run();
-        return WasmBackendModuleThreadedSimd2.ready;
+        var listenersAdded;
+        if (beforeListeners) {
+          listenersAdded = { uncaughtException: process.listeners("uncaughtException").filter(function(listener) {
+            return !beforeListeners.uncaughtException.indexOf(listener) > -1;
+          }), unhandledRejection: process.listeners("unhandledRejection").filter(function(listener) {
+            return !beforeListeners.unhandledRejection.indexOf(listener) > -1;
+          }) };
+        }
+        var actualModule = WasmBackendModule || WasmBackendModuleThreadedSimd3;
+        var tmpDispose = actualModule["_dispose"];
+        actualModule["_dispose"] = function() {
+          tmpDispose();
+          if (listenersAdded) {
+            listenersAdded.uncaughtException.forEach(function(listener) {
+              process.removeListener("uncaughtException", listener);
+            });
+            listenersAdded.unhandledRejection.forEach(function(listener) {
+              process.removeListener("unhandledRejection", listener);
+            });
+          }
+        };
+        return WasmBackendModuleThreadedSimd3.ready;
       };
     }();
     if (typeof exports === "object" && typeof module === "object")
-      module.exports = WasmBackendModuleThreadedSimd;
+      module.exports = WasmBackendModuleThreadedSimd2;
     else if (typeof define === "function" && define["amd"])
       define([], function() {
-        return WasmBackendModuleThreadedSimd;
+        return WasmBackendModuleThreadedSimd2;
       });
     else if (typeof exports === "object")
-      exports["WasmBackendModuleThreadedSimd"] = WasmBackendModuleThreadedSimd;
+      exports["WasmBackendModuleThreadedSimd"] = WasmBackendModuleThreadedSimd2;
   }
 });
 var require_tfjs_backend_wasm = __commonJS({
   "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(exports, module) {
-    var WasmBackendModule = function() {
+    var WasmBackendModule2 = function() {
       var _scriptDir = typeof document !== "undefined" && document.currentScript ? document.currentScript.src : void 0;
       if (typeof __filename !== "undefined")
         _scriptDir = _scriptDir || __filename;
-      return function(WasmBackendModule2) {
-        WasmBackendModule2 = WasmBackendModule2 || {};
-        var Module = typeof WasmBackendModule2 !== "undefined" ? WasmBackendModule2 : {};
+      return function(WasmBackendModule3) {
+        WasmBackendModule3 = WasmBackendModule3 || {};
+        var Module = typeof WasmBackendModule3 !== "undefined" ? WasmBackendModule3 : {};
         var readyPromiseResolve, readyPromiseReject;
         Module["ready"] = new Promise(function(resolve, reject) {
           readyPromiseResolve = resolve;
           readyPromiseReject = reject;
         });
+        var beforeListeners;
+        if (process && process.listeners) {
+          beforeListeners = { uncaughtException: process.listeners("uncaughtException"), unhandledRejection: process.listeners("unhandledRejection") };
+        }
         var moduleOverrides = {};
         var key;
         for (key in Module) {
@@ -4790,17 +4819,38 @@ var require_tfjs_backend_wasm = __commonJS({
           }
         }
         run();
-        return WasmBackendModule2.ready;
+        var listenersAdded;
+        if (beforeListeners) {
+          listenersAdded = { uncaughtException: process.listeners("uncaughtException").filter(function(listener) {
+            return !beforeListeners.uncaughtException.indexOf(listener) > -1;
+          }), unhandledRejection: process.listeners("unhandledRejection").filter(function(listener) {
+            return !beforeListeners.unhandledRejection.indexOf(listener) > -1;
+          }) };
+        }
+        var actualModule = WasmBackendModule3 || WasmBackendModuleThreadedSimd;
+        var tmpDispose = actualModule["_dispose"];
+        actualModule["_dispose"] = function() {
+          tmpDispose();
+          if (listenersAdded) {
+            listenersAdded.uncaughtException.forEach(function(listener) {
+              process.removeListener("uncaughtException", listener);
+            });
+            listenersAdded.unhandledRejection.forEach(function(listener) {
+              process.removeListener("unhandledRejection", listener);
+            });
+          }
+        };
+        return WasmBackendModule3.ready;
       };
     }();
     if (typeof exports === "object" && typeof module === "object")
-      module.exports = WasmBackendModule;
+      module.exports = WasmBackendModule2;
     else if (typeof define === "function" && define["amd"])
       define([], function() {
-        return WasmBackendModule;
+        return WasmBackendModule2;
       });
     else if (typeof exports === "object")
-      exports["WasmBackendModule"] = WasmBackendModule;
+      exports["WasmBackendModule"] = WasmBackendModule2;
   }
 });
 var EPSILON_FLOAT32 = 1e-7;
@@ -8400,7 +8450,7 @@ if (env().get("IS_BROWSER")) {
   }
 }
 var getNodeFetch = {
-  importFetch: () => require_node_fetch()
+  importFetch: () => require_browser()
 };
 var systemFetch;
 var PlatformNode = class {
@@ -13480,8 +13530,7 @@ function intersectionOverUnion(boxes, i, j) {
   const intersectionYmax = Math.min(ymaxI, ymaxJ);
   const intersectionXmax = Math.min(xmaxI, xmaxJ);
   const intersectionArea = Math.max(intersectionYmax - intersectionYmin, 0) * Math.max(intersectionXmax - intersectionXmin, 0);
-  const iou = intersectionArea / (areaI + areaJ - intersectionArea);
-  return iou;
+  return intersectionArea / (areaI + areaJ - intersectionArea);
 }
 function suppressWeight(iouThreshold, scale2, iou) {
   const weight = Math.exp(scale2 * iou * iou);
@@ -28068,6 +28117,15 @@ var DataType8;
   DataType49[DataType49["DT_QUINT8"] = 12] = "DT_QUINT8";
   DataType49[DataType49["DT_QINT32"] = 13] = "DT_QINT32";
   DataType49[DataType49["DT_BFLOAT16"] = 14] = "DT_BFLOAT16";
+  DataType49[DataType49["DT_QINT16"] = 15] = "DT_QINT16";
+  DataType49[DataType49["DT_QUINT16"] = 16] = "DT_QUINT16";
+  DataType49[DataType49["DT_UINT16"] = 17] = "DT_UINT16";
+  DataType49[DataType49["DT_COMPLEX128"] = 18] = "DT_COMPLEX128";
+  DataType49[DataType49["DT_HALF"] = 19] = "DT_HALF";
+  DataType49[DataType49["DT_RESOURCE"] = 20] = "DT_RESOURCE";
+  DataType49[DataType49["DT_VARIANT"] = 21] = "DT_VARIANT";
+  DataType49[DataType49["DT_UINT32"] = 22] = "DT_UINT32";
+  DataType49[DataType49["DT_UINT64"] = 23] = "DT_UINT64";
   DataType49[DataType49["DT_FLOAT_REF"] = 101] = "DT_FLOAT_REF";
   DataType49[DataType49["DT_DOUBLE_REF"] = 102] = "DT_DOUBLE_REF";
   DataType49[DataType49["DT_INT32_REF"] = 103] = "DT_INT32_REF";
@@ -28082,6 +28140,15 @@ var DataType8;
   DataType49[DataType49["DT_QUINT8_REF"] = 112] = "DT_QUINT8_REF";
   DataType49[DataType49["DT_QINT32_REF"] = 113] = "DT_QINT32_REF";
   DataType49[DataType49["DT_BFLOAT16_REF"] = 114] = "DT_BFLOAT16_REF";
+  DataType49[DataType49["DT_QINT16_REF"] = 115] = "DT_QINT16_REF";
+  DataType49[DataType49["DT_QUINT16_REF"] = 116] = "DT_QUINT16_REF";
+  DataType49[DataType49["DT_UINT16_REF"] = 117] = "DT_UINT16_REF";
+  DataType49[DataType49["DT_COMPLEX128_REF"] = 118] = "DT_COMPLEX128_REF";
+  DataType49[DataType49["DT_HALF_REF"] = 119] = "DT_HALF_REF";
+  DataType49[DataType49["DT_RESOURCE_REF"] = 120] = "DT_RESOURCE_REF";
+  DataType49[DataType49["DT_VARIANT_REF"] = 121] = "DT_VARIANT_REF";
+  DataType49[DataType49["DT_UINT32_REF"] = 122] = "DT_UINT32_REF";
+  DataType49[DataType49["DT_UINT64_REF"] = 123] = "DT_UINT64_REF";
 })(DataType8 || (DataType8 = {}));
 var SaverDef;
 (function(SaverDef2) {
@@ -34354,6 +34421,7 @@ function parseDtypeParam(value) {
   }
   switch (value) {
     case DataType8.DT_FLOAT:
+    case DataType8.DT_HALF:
       return "float32";
     case DataType8.DT_INT32:
     case DataType8.DT_INT64:
@@ -61117,55 +61185,24 @@ var addNConfig3 = {
 };
 var ArgMinMaxProgram2 = class {
   constructor(inputShape, axis, reduceType) {
+    this.workGroupSize = [64, 1, 1];
     this.variableNames = ["x"];
-    this.uniforms = "axis : i32;";
+    this.uniforms = "axis : i32; infinityValue : f32;";
+    this.size = true;
     const axes = [axis];
     backend_util_exports.assertAxesAreInnerMostDims("arg" + reduceType.charAt(0).toUpperCase() + reduceType.slice(1), axes, inputShape.length);
     this.op = reduceType === "min" ? "<" : ">";
-    const [outputShape, reduceShape] = backend_util_exports.computeOutAndReduceShapes(inputShape, axes);
+    const [outputShape] = backend_util_exports.computeOutAndReduceShapes(inputShape, axes);
     this.outputShape = outputShape.length === 0 ? [1] : outputShape;
-    const reduceSize = util_exports.sizeFromShape(reduceShape);
-    this.reductionFactor = 2;
-    const xMaxThreads = 256;
-    const xThreads = Math.min(Math.ceil(reduceSize / this.reductionFactor), xMaxThreads);
-    this.workGroupSize = [xThreads, 1, 1];
-    this.dispatchLayout = { x: [], y: this.outputShape.map((d, i) => i) };
-    this.dispatch = computeDispatch(this.dispatchLayout, this.outputShape, this.workGroupSize);
+    this.dispatchLayout = flatDispatchLayout(this.outputShape);
+    this.dispatch = computeDispatch(this.dispatchLayout, this.outputShape, [1, 1, 1]);
     this.inputShape = inputShape;
     this.shaderKey = `argMinMax${this.op}`;
   }
   getUserCode() {
-    const reduceInSharedMemory = this.workGroupSize[0] > 1;
     const sharedMemorySnippet = `
       var<workgroup> xBestIndices : array<i32, ${this.workGroupSize[0]}>;
       var<workgroup> xBestValues : array<f32, ${this.workGroupSize[0]}>;
-    `;
-    const sharedMemoryReduceSnippet = `
-      xBestIndices[localId.x] = bestIndex;
-      xBestValues[localId.x] = bestValue;
-
-      for(var currentSize = WorkGroupSize; currentSize > 1; currentSize = DIV_CEIL(currentSize, ${this.reductionFactor})) {
-        workgroupBarrier();
-
-        for (var w = 0; w < ${this.reductionFactor}; w = w + 1) {
-          let i = i32(localId.x) * ${this.reductionFactor} + w;
-          if (i < currentSize) {
-            let candidateIndex = xBestIndices[i];
-            let candidate = xBestValues[i];
-            if(candidate ${this.op} bestValue && !isNanCustom(candidate)) {
-              bestValue = candidate;
-              bestIndex = candidateIndex;
-            }
-          }
-        }
-
-        xBestIndices[localId.x] = bestIndex;
-        xBestValues[localId.x] = bestValue;
-      }
-
-      if (localId.x == 0u) {
-        setOutputFlatI32(flatOutputIndex, i32(bestIndex));
-      }
     `;
     const indexOutputCoords = (outputCoords, index) => {
       if (this.outputShape.length === 1) {
@@ -61182,20 +61219,18 @@ var ArgMinMaxProgram2 = class {
       }
     };
     const userCode = `
-      fn DIV_CEIL(a : i32, b : i32) -> i32 {
-        return ((a - 1) / b + 1);
+      fn DIV_CEIL(a : u32, b : u32) -> u32 {
+        return ((a - 1u) / b + 1u);
       }
 
-      let WorkGroupSize = ${this.workGroupSize[0]};
-
-      ${reduceInSharedMemory ? sharedMemorySnippet : ""}
+      ${sharedMemorySnippet}
 
       // In order to get a flattened index into the input tensor, we need to
       // add back the index along the reduced dimension to |outputCoords|.
       // This function outputs the offset to the first value along
       // |axis| and the stride to get the next value of the input along |axis|.
-      fn getInputCoordInfo(globalId : vec3<u32>) -> vec2<i32>{
-        let outputCoords = getOutputCoordsWithNonFlatDispatchLayout(globalId);
+      fn getInputCoordInfo(outputIndex : i32) -> vec2<i32>{
+        let outputCoords = getCoordsFromFlatIndex(outputIndex);
         var i = ${this.outputShape.length - 1};
 
         var stride = 1;
@@ -61220,28 +61255,45 @@ var ArgMinMaxProgram2 = class {
         return coordInfo[0] + coordInfo[1] * index;
       }
 
-      ${getNonFlatDispatchLayoutMainHeaderString()} {
-        let coordInfo = getInputCoordInfo(globalId);
-
-        var bestIndex = 0;
-        var bestValue = f32(x.numbers[getInputIndex(coordInfo, bestIndex)]);
-
+      ${getMainHeaderAndGlobalIndexString()}
+        let outputIndex = index / i32(workGroupSizeX);
+        let coordInfo = getInputCoordInfo(outputIndex);
         let Length = ${indexInputShape("uniforms.axis")};
-        let WorkPerThread = DIV_CEIL(Length, WorkGroupSize);
 
-        for (var w = 0; w < WorkPerThread; w = w + 1) {
-          let i = i32(globalId.x) * WorkPerThread + w;
-          if (i < Length) {
-            let candidate = f32(x.numbers[getInputIndex(coordInfo, i)]);
-            if (candidate ${this.op} bestValue && !isNanCustom(f32(candidate))) {
-              bestValue = candidate;
-              bestIndex = i;
-            }
+        var bestIndex = i32(localId.x);
+        var bestValue = uniforms.infinityValue;
+
+        for (var k = i32(localId.x); k < Length && outputIndex < uniforms.size;
+            k = k + i32(workGroupSizeX)) {
+          let candidate = f32(x.numbers[getInputIndex(coordInfo, k)]);
+          if (!isNanCustom(candidate) && candidate ${this.op} bestValue) {
+            bestValue = candidate;
+            bestIndex = k;
           }
         }
+        xBestValues[localId.x] = bestValue;
+        xBestIndices[localId.x] = bestIndex;
+        workgroupBarrier();
 
-        let flatOutputIndex = i32(globalId.y);
-        ${reduceInSharedMemory ? sharedMemoryReduceSnippet : "setOutputFlatI32(flatOutputIndex, bestIndex);"}
+        var reduceSize = min(u32(Length), workGroupSizeX);
+        for (var currentSize = reduceSize / 2u; reduceSize > 1u;
+            currentSize = reduceSize / 2u) {
+          let interval = DIV_CEIL(reduceSize, 2u);
+          if (localId.x < currentSize) {
+            let candidate = xBestValues[localId.x + interval];
+            if (candidate ${this.op} bestValue) {
+              bestValue = candidate;
+              xBestValues[localId.x] = bestValue;
+              xBestIndices[localId.x] = xBestIndices[localId.x + interval];
+            }
+          }
+          reduceSize = interval;
+          workgroupBarrier();
+        }
+
+        if (localId.x == 0u && outputIndex < uniforms.size) {
+          setOutputFlatI32(outputIndex, xBestIndices[localId.x]);
+        }
       }
     `;
     return userCode;
@@ -61377,7 +61429,10 @@ function argMax4(args) {
   }
   backend_util_exports.assertAxesAreInnerMostDims("argMax", [axes[0]], $x.shape.length);
   const program = new ArgMinMaxProgram2($x.shape, axes[0], "max");
-  const uniformData = [{ type: "int32", data: [axes[0]] }];
+  const uniformData = [
+    { type: "int32", data: [axes[0]] },
+    { type: "float32", data: [Number.NEGATIVE_INFINITY] }
+  ];
   const out = backend2.runWebGPUProgram(program, [$x], "int32", uniformData);
   intermediateTensorInfos.forEach((t) => backend2.disposeData(t.dataId));
   return out;
@@ -61402,7 +61457,10 @@ function argMin4(args) {
   }
   backend_util_exports.assertAxesAreInnerMostDims("argMin", [axes[0]], $x.shape.length);
   const program = new ArgMinMaxProgram2($x.shape, axes[0], "min");
-  const uniformData = [{ type: "int32", data: [axes[0]] }];
+  const uniformData = [
+    { type: "int32", data: [axes[0]] },
+    { type: "float32", data: [Number.POSITIVE_INFINITY] }
+  ];
   const out = backend2.runWebGPUProgram(program, [$x], "int32", uniformData);
   intermediateTensorInfos.forEach((t) => backend2.disposeData(t.dataId));
   return out;
@@ -69865,7 +69923,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211110";
+var externalVersion = "3.11.0-20211117";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,

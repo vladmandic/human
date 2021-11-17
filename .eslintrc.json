@@ -33,7 +33,8 @@
     "dist",
     "media",
     "models",
-    "node_modules"
+    "node_modules",
+    "types/human.d.ts"
   ],
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",

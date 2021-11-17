@@ -48,6 +48,7 @@ export type DrawOptions = {
   useCurves: boolean,
 }
 
+/** currently set draw options {@link DrawOptions} */
 export const options: DrawOptions = {
   color: <string>'rgba(173, 216, 230, 0.6)', // 'lightblue' with light alpha channel
   labelColor: <string>'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
@@ -501,9 +502,7 @@ export async function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaElem
   ctx.drawImage(input, 0, 0);
 }
 
-/** meta-function that performs draw for: canvas, face, body, hand
- * @returns {Promise}
-*/
+/** meta-function that performs draw for: canvas, face, body, hand */
 export async function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>) {
   if (!result || !result.performance || !result || !inCanvas) return null;
   const timeStamp = now();

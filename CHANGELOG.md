@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2021/11/16 mandic00@live.com
 
+- cache frequent tf constants
 - add extra face rotation prior to mesh
 - release 2.5.2
 - improve error handling

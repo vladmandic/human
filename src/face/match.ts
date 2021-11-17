@@ -3,12 +3,11 @@ export type Descriptor = Array<number>
 export type MatchOptions = { order?: number, threshold?: number, multiplier?: number, min?: number, max?: number } | undefined;
 
 /** Calculates distance between two descriptors
- * @param {object} options
- * @param {number} options.order algorithm to use
- * - Euclidean distance if `order` is 2 (default), Minkowski distance algorithm of nth order if `order` is higher than 2
- * @param {number} options.multiplier by how much to enhance difference analysis in range of 1..100
- * - default is 20 which normalizes results to similarity above 0.5 can be considered a match
- * @returns {number}
+ * @param options - calculation options
+ * - order - algorithm to use
+ *   Euclidean distance if `order` is 2 (default), Minkowski distance algorithm of nth order if `order` is higher than 2
+ * - multiplier - by how much to enhance difference analysis in range of 1..100
+ *   default is 20 which normalizes results to similarity above 0.5 can be considered a match
  */
 export function distance(descriptor1: Descriptor, descriptor2: Descriptor, options: MatchOptions = { order: 2, multiplier: 25 }) {
   // general minkowski distance, euclidean distance is limited case where order is 2
@@ -30,15 +29,15 @@ const normalizeDistance = (dist, order, min, max) => {
 };
 
 /** Calculates normalized similarity between two face descriptors based on their `distance`
- * @param {object} options
- * @param {number} options.order algorithm to use
- * - Euclidean distance if `order` is 2 (default), Minkowski distance algorithm of nth order if `order` is higher than 2
- * @param {number} options.multiplier by how much to enhance difference analysis in range of 1..100
- * - default is 20 which normalizes results to similarity above 0.5 can be considered a match
- * @param {number} options.min normalize similarity result to a given range
- * @param {number} options.max normalzie similarity resutl to a given range
- * - default is 0.2...0.8
- * @returns {number} similarity between two face descriptors normalized to 0..1 range where 0 is no similarity and 1 is perfect similarity
+ * @param options - calculation options
+ * - order - algorithm to use
+ *   Euclidean distance if `order` is 2 (default), Minkowski distance algorithm of nth order if `order` is higher than 2
+ * - multiplier - by how much to enhance difference analysis in range of 1..100
+ *   default is 20 which normalizes results to similarity above 0.5 can be considered a match
+ * - min - normalize similarity result to a given range
+ * - max - normalzie similarity resutl to a given range
+ *   default is 0.2...0.8
+ * Returns similarity between two face descriptors normalized to 0..1 range where 0 is no similarity and 1 is perfect similarity
  */
 export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options: MatchOptions = { order: 2, multiplier: 25, min: 0.2, max: 0.8 }) {
   const dist = distance(descriptor1, descriptor2, options);
@@ -46,12 +45,10 @@ export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, opt
 }
 
 /** Matches given descriptor to a closest entry in array of descriptors
- * @param descriptor face descriptor
- * @param descriptors array of face descriptors to commpare given descriptor to
- * @param {object} options
- * @param {number} options.order see {@link similarity}
- * @param {number} options.multiplier see {@link similarity}
- * @returns {object}
+ * @param descriptor - face descriptor
+ * @param descriptors - array of face descriptors to commpare given descriptor to
+ * @param options - see {@link similarity}
+ * Returns
  * - `index` index array index where best match was found or -1 if no matches
  * - {@link distance} calculated `distance` of given descriptor to the best match
  * - {@link similarity} calculated normalized `similarity` of given descriptor to the best match

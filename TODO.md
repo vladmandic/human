@@ -60,3 +60,14 @@ Other:
 - Documentation overhaul
 - Fix for optional `gear`, `ssrnet`, `mobilefacenet` modules
 - Fix for Firefox WebGPU compatibility issue
+
+```
+cp tfjs/tfjs.esm.d.ts types/lib/dist/
+node_modules/.bin/api-extractor run --local --verbose
+cp types/human.d.ts dist/human.esm-nobundle.d.ts
+cp types/human.d.ts dist/human.esm.d.ts
+cp types/human.d.ts dist/human.d.ts
+cp types/human.d.ts dist/human.node-gpu.d.ts
+cp types/human.d.ts dist/human.node.d.ts
+cp types/human.d.ts dist/human.node-wasm.d.ts
+```

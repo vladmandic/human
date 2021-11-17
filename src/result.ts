@@ -62,6 +62,7 @@ export interface FaceResult {
   tensor?: Tensor,
 }
 
+/** Body Result keypoints */
 export interface BodyKeypoint {
   /** body part name */
   part: string,
@@ -136,7 +137,6 @@ export interface ObjectResult {
 }
 
 /** Gesture combined results
- * @typedef Gesture Type
  * Each result has:
  * - part: part name and number where gesture was detected: `face`, `iris`, `body`, `hand`
  * - gesture: gesture detected
@@ -191,6 +191,6 @@ export interface Result {
   readonly timestamp: number,
   /** getter property that returns unified persons object  */
   persons: Array<PersonResult>,
-  /** @property Last known error message */
+  /** Last known error message */
   error: string | null;
 }

@@ -110,6 +110,7 @@ export class Env {
     }
   }
 
+  /** update backend information */
   async updateBackend() {
     // analyze backends
     this.backends = Object.keys(tf.engine().registryFactory);
@@ -143,6 +144,7 @@ export class Env {
     }
   }
 
+  /** update cpu information */
   async updateCPU() {
     const cpu = { model: '', flags: [] };
     if (this.node && this.platform.startsWith('linux')) {

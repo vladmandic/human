@@ -8,7 +8,12 @@
 import { Human } from "../../dist/human.esm.js";
 var humanConfig = {
   modelBasePath: "../../models",
-  filter: { equalization: true }
+  filter: { enabled: true, equalization: false },
+  face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
+  body: { enabled: true },
+  hand: { enabled: true },
+  object: { enabled: false },
+  gesture: { enabled: true }
 };
 var human = new Human(humanConfig);
 human.env["perfadd"] = false;
@@ -80,7 +85,7 @@ async function drawLoop() {
   setTimeout(drawLoop, 30);
 }
 async function main() {
-  log("human version:", human.version, "| tfjs version:", human.tf.version_core);
+  log("human version:", human.version, "| tfjs version:", human.tf.version["tfjs-core"]);
   log("platform:", human.env.platform, "| agent:", human.env.agent);
   status("loading...");
   await human.load();

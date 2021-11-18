@@ -313,7 +313,7 @@ async function main() {
   }
 }
 async function init() {
-  log2("human version:", human.version, "| tfjs version:", human.tf.version_core);
+  log2("human version:", human.version, "| tfjs version:", human.tf.version["tfjs-core"]);
   log2("options:", JSON.stringify(options).replace(/{|}|"|\[|\]/g, "").replace(/,/g, " "));
   printFPS("loading...");
   log2("known face records:", await count());

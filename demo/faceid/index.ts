@@ -257,7 +257,7 @@ async function main() { // main entry point
 }
 
 async function init() {
-  log('human version:', human.version, '| tfjs version:', human.tf.version_core);
+  log('human version:', human.version, '| tfjs version:', human.tf.version['tfjs-core']);
   log('options:', JSON.stringify(options).replace(/{|}|"|\[|\]/g, '').replace(/,/g, ' '));
   printFPS('loading...');
   log('known face records:', await indexDb.count());

@@ -19,7 +19,7 @@ const Human = require('../../dist/human.node.js').default; // or const Human = r
 let human = null;
 
 const myConfig = {
-  backend: 'tensorflow',
+  // backend: 'tensorflow',
   modelBasePath: 'file://models/',
   debug: true,
   async: false,

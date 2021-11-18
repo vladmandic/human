@@ -91,8 +91,7 @@
         "platform": "browser",
         "format": "esm",
         "input": "tfjs/tf-version.ts",
-        "output": "dist/tfjs.version.js",
-        "external": ["fs", "os", "buffer", "util"]
+        "output": "dist/tfjs.version.js"
       },
       {
         "name": "tfjs/browser/esm/nobundle",
@@ -100,7 +99,7 @@
         "format": "esm",
         "input": "tfjs/tf-browser.ts",
         "output": "dist/tfjs.esm.js",
-        "external": ["@tensorflow", "fs", "os", "buffer", "util"]
+        "external": ["@tensorflow"]
       },
       {
         "name": "human/browser/esm/nobundle",
@@ -109,7 +108,7 @@
         "input": "src/human.ts",
         "output": "dist/human.esm-nobundle.js",
         "sourcemap": true,
-        "external": ["@tensorflow", "fs", "os", "buffer", "util"]
+        "external": ["@tensorflow"]
       },
       {
         "name": "tfjs/browser/esm/custom",
@@ -117,8 +116,7 @@
         "format": "esm",
         "input": "tfjs/tf-custom.ts",
         "output": "dist/tfjs.esm.js",
-        "sourcemap": false,
-        "external": ["fs", "os", "buffer", "util"]
+        "sourcemap": false
       },
       {
         "name": "human/browser/iife/bundle",
@@ -128,7 +126,7 @@
         "output": "dist/human.js",
         "minify": true,
         "globalName": "Human",
-        "external": ["fs", "os", "buffer", "util"]
+        "external": ["@tensorflow"]
       },
       {
         "name": "human/browser/esm/bundle",
@@ -138,7 +136,7 @@
         "output": "dist/human.esm.js",
         "sourcemap": true,
         "minify": false,
-        "external": ["fs", "os", "buffer", "util"],
+        "external": ["@tensorflow"],
         "typings": "types/lib",
         "typedoc": "typedoc"
       },

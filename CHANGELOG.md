@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/17 mandic00@live.com
+### **2.5.3** 2021/11/18 mandic00@live.com
 
+
+### **origin/main** 2021/11/17 mandic00@live.com
+
+- create typedef rollup
 - optimize centernet
 - cache frequent tf constants
 - add extra face rotation prior to mesh

@@ -124,7 +124,7 @@ export class Human {
    */
   constructor(userConfig?: Partial<Config>) {
     this.env = env;
-    defaults.wasmPath = tf.version_core.includes('-') // custom build or official build
+    defaults.wasmPath = tf.version['tfjs-core'].includes('-') // custom build or official build
       ? 'https://vladmandic.github.io/tfjs/dist/'
       : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
     defaults.modelBasePath = env.browser ? '../models/' : 'file://models/';
@@ -283,7 +283,7 @@ export class Human {
 
     if (this.env.initial) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
-      if (this.config.debug) log(`tfjs version: ${this.tf.version_core}`);
+      if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core']}`);
       if (!await backend.check(this)) log('error: backend check failed');
       await tf.ready();
       if (this.env.browser) {

@@ -43,21 +43,21 @@ MoveNet MultiPose model does not work with WASM backend due to missing F32 broad
 ## Pending Release Notes
 
 New:
-- New type definitions rollup
-- New demo `demos/faceid` that utilizes multiple algorithm  to validate input before triggering face recognition
-- New optional model `liveness`  
+- Demo `demos/faceid` that utilizes multiple algorithm  to validate input before triggering face recognition
+- Type definitions rollup for `Human` and `TFJS`
+- Optional module `liveness`  
   checks if input appears to be a real-world live image or a recording  
-  best used together with `antispoofing` that checks if input appears to have a realistic face
-- New face masking option in `face.config.detector.mask`  
+  best used together with module `antispoofing` that checks if input appears to have a realistic face
+- Face masking option in `face.config.detector.mask`  
   result is shading of face image outside of face area which is useful for increased sensitivity of other modules that rely on detected face as input 
-- New face crop option in `face.config.detector.cropFactor`
+- Face crop option in `face.config.detector.cropFactor`
   result is user-definable fine-tuning for other modules that rely on detected face as input 
 
 Other:
+- Documentation overhaul
 - Improved **Safari** compatibility
 - Improved `similarity` and `match` score range normalization
 - Improved error handling
 - Improved VSCode out-of-the-box experience
-- Documentation overhaul
 - Fix for optional `gear`, `ssrnet`, `mobilefacenet` modules
 - Fix for Firefox WebGPU compatibility issue

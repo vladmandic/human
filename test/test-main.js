@@ -266,7 +266,7 @@ async function test(Human, inputConfig) {
   config.cacheSensitivity = 0;
   config.warmup = 'none';
   res = await testWarmup(human, 'default');
-  if (res.error !== 'null') log('error', 'failed: warmup none result mismatch');
+  if (res.error !== null) log('error', 'failed: warmup none result mismatch');
   else log('state', 'passed: warmup none result match');
   config.warmup = 'face';
   res = await testWarmup(human, 'default');

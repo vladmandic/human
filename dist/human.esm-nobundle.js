@@ -1290,7 +1290,7 @@ var Env = class {
     __publicField(this, "ImageData");
     this.browser = typeof navigator !== "undefined";
     this.node = typeof process !== "undefined";
-    this.tfjs = { version: tfjs_esm_exports.version_core };
+    this.tfjs = { version: version9["tfjs-core"] };
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;
     this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
@@ -1351,7 +1351,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version10 = "2.5.2";
+var version10 = "2.5.3";
 
 // src/gear/gear.ts
 var model;
@@ -13313,7 +13313,7 @@ var Human = class {
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     this.env = env;
-    config.wasmPath = tfjs_esm_exports.version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
+    config.wasmPath = version9["tfjs-core"].includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfjs_esm_exports.version_core}/dist/`;
     config.modelBasePath = env.browser ? "../models/" : "file://models/";
     config.backend = env.browser ? "humangl" : "tensorflow";
     this.version = version10;
@@ -13385,7 +13385,7 @@ var Human = class {
       if (this.config.debug)
         log(`version: ${this.version}`);
       if (this.config.debug)
-        log(`tfjs version: ${this.tf.version_core}`);
+        log(`tfjs version: ${this.tf.version["tfjs-core"]}`);
       if (!await check(this))
         log("error: backend check failed");
       await tfjs_esm_exports.ready();

@@ -16,7 +16,7 @@ const Human = require('../../dist/human.node.js').default; // or const Human = r
 let human = null;
 
 const myConfig = {
-  backend: 'tensorflow',
+  // backend: 'tensorflow',
   modelBasePath: 'file://models/',
   debug: false,
   async: true,
@@ -78,7 +78,7 @@ async function main() {
   // wait until tf is ready
   await human.tf.ready();
   // pre-load models
-  log.state('Worker: PID:', process.pid, `TensorFlow/JS ${human.tf.version_core} Human ${human.version} Backend: ${human.tf.getBackend()}`);
+  log.state('Worker: PID:', process.pid, `TensorFlow/JS ${human.tf.version['tfjs-core']} Human ${human.version} Backend: ${human.tf.getBackend()}`);
   await human.load();
 
   // now we're ready, so send message back to main that it knows it can use this worker

@@ -7,13 +7,6 @@
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
-var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
-}) : x)(function(x) {
-  if (typeof require !== "undefined")
-    return require.apply(this, arguments);
-  throw new Error('Dynamic require of "' + x + '" is not supported');
-});
 var __export = (target, all6) => {
   __markAsModule(target);
   for (var name in all6)
@@ -707,7 +700,7 @@ __export(tfjs_esm_exports, {
   variableGrads: () => variableGrads,
   version: () => version8,
   version_converter: () => version3,
-  version_core: () => version_core,
+  version_core: () => version,
   version_cpu: () => version5,
   version_layers: () => version2,
   version_wasm: () => version7,
@@ -720,13 +713,6 @@ __export(tfjs_esm_exports, {
   zeros: () => zeros,
   zerosLike: () => zerosLike
 });
-var __require2 = ((x) => typeof __require !== "undefined" ? __require : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: (a, b) => (typeof __require !== "undefined" ? __require : a)[b]
-}) : x)(function(x) {
-  if (typeof __require !== "undefined")
-    return __require.apply(this, arguments);
-  throw new Error('Dynamic require of "' + x + '" is not supported');
-});
 var __create = Object.create;
 var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -734,14 +720,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule2 = (target) => __defProp2(target, "__esModule", { value: true });
-var __require22 = ((x) => typeof __require2 !== "undefined" ? __require2 : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: (a, b) => (typeof __require2 !== "undefined" ? __require2 : a)[b]
-}) : x)(function(x) {
-  if (typeof __require2 !== "undefined")
-    return __require2.apply(this, arguments);
-  throw new Error('Dynamic require of "' + x + '" is not supported');
-});
-var __commonJS = (cb, mod4) => function __require222() {
+var __commonJS = (cb, mod4) => function __require() {
   return mod4 || (0, cb[Object.keys(cb)[0]])((mod4 = { exports: {} }).exports, mod4), mod4.exports;
 };
 var __export2 = (target, all52) => {
@@ -2236,6 +2215,26 @@ var require_string_decoder = __commonJS({
   "(disabled):src/node_modules/string_decoder/index.js"() {
   }
 });
+var require_fs = __commonJS({
+  "(disabled):fs"() {
+  }
+});
+var require_path = __commonJS({
+  "(disabled):path"() {
+  }
+});
+var require_worker_threads = __commonJS({
+  "(disabled):worker_threads"() {
+  }
+});
+var require_perf_hooks = __commonJS({
+  "(disabled):perf_hooks"() {
+  }
+});
+var require_os = __commonJS({
+  "(disabled):os"() {
+  }
+});
 var require_tfjs_backend_wasm_threaded_simd = __commonJS({
   "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js"(exports, module) {
     var WasmBackendModuleThreadedSimd2 = function() {
@@ -2320,15 +2319,15 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
         var nodePath;
         if (ENVIRONMENT_IS_NODE) {
           if (ENVIRONMENT_IS_WORKER) {
-            scriptDirectory = __require22("path").dirname(scriptDirectory) + "/";
+            scriptDirectory = require_path().dirname(scriptDirectory) + "/";
           } else {
             scriptDirectory = __dirname + "/";
           }
           read_ = function shell_read(filename, binary) {
             if (!nodeFS)
-              nodeFS = __require22("fs");
+              nodeFS = require_fs();
             if (!nodePath)
-              nodePath = __require22("path");
+              nodePath = require_path();
             filename = nodePath["normalize"](filename);
             return nodeFS["readFileSync"](filename, binary ? null : "utf8");
           };
@@ -2358,7 +2357,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           };
           var nodeWorkerThreads;
           try {
-            nodeWorkerThreads = __require22("worker_threads");
+            nodeWorkerThreads = require_worker_threads();
           } catch (e) {
             console.error('The "worker_threads" module is not supported in this node.js build - perhaps a newer version is needed?');
             throw e;
@@ -2412,9 +2411,9 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
           if (ENVIRONMENT_IS_NODE) {
             read_ = function shell_read(filename, binary) {
               if (!nodeFS)
-                nodeFS = __require22("fs");
+                nodeFS = require_fs();
               if (!nodePath)
-                nodePath = __require22("path");
+                nodePath = require_path();
               filename = nodePath["normalize"](filename);
               return nodeFS["readFileSync"](filename, binary ? null : "utf8");
             };
@@ -2464,7 +2463,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
         }
         if (ENVIRONMENT_IS_NODE) {
           if (typeof performance === "undefined") {
-            global.performance = __require22("perf_hooks").performance;
+            global.performance = require_perf_hooks().performance;
           }
         }
         var out = Module["print"] || console.log.bind(console);
@@ -3305,7 +3304,7 @@ var require_tfjs_backend_wasm_threaded_simd = __commonJS({
         }
         function _emscripten_num_logical_cores() {
           if (ENVIRONMENT_IS_NODE)
-            return __require22("os").cpus().length;
+            return require_os().cpus().length;
           return navigator["hardwareConcurrency"];
         }
         function _emscripten_proxy_to_main_thread_js(index2, sync) {
@@ -4609,15 +4608,15 @@ var require_tfjs_backend_wasm = __commonJS({
         var nodePath;
         if (ENVIRONMENT_IS_NODE) {
           if (ENVIRONMENT_IS_WORKER) {
-            scriptDirectory = __require22("path").dirname(scriptDirectory) + "/";
+            scriptDirectory = require_path().dirname(scriptDirectory) + "/";
           } else {
             scriptDirectory = __dirname + "/";
           }
           read_ = function shell_read(filename, binary) {
             if (!nodeFS)
-              nodeFS = __require22("fs");
+              nodeFS = require_fs();
             if (!nodePath)
-              nodePath = __require22("path");
+              nodePath = require_path();
             filename = nodePath["normalize"](filename);
             return nodeFS["readFileSync"](filename, binary ? null : "utf8");
           };
@@ -10715,6 +10714,7 @@ function encodeStrings(a) {
   }
   return a;
 }
+var version = "0.0.0";
 function enableProdMode() {
   env().set("PROD", true);
 }
@@ -39541,7 +39541,7 @@ var FileDataSource = class extends DataSource {
   }
   async iterator() {
     if (isLocalPath(this.input) && env().get("IS_NODE")) {
-      const fs = __require22("fs");
+      const fs = require_fs();
       this.input = fs.readFileSync(this.input.substr(7));
     }
     return new FileChunkIterator(this.input, this.options);
@@ -46495,7 +46495,7 @@ ENV4.registerFlag("WEBGL_USE_SHAPES_UNIFORMS", () => false);
 ENV4.registerFlag("TOPK_LAST_DIM_CPU_HANDOFF_SIZE_THRESHOLD", () => 1e5);
 ENV4.registerFlag("TOPK_K_CPU_HANDOFF_THRESHOLD", () => 128);
 function getGlslDifferences() {
-  let version9;
+  let version92;
   let attribute;
   let varyingVs;
   let varyingFs;
@@ -46506,7 +46506,7 @@ function getGlslDifferences() {
   let defineSpecialInf;
   let defineRound;
   if (env().getNumber("WEBGL_VERSION") === 2) {
-    version9 = "#version 300 es";
+    version92 = "#version 300 es";
     attribute = "in";
     varyingVs = "out";
     varyingFs = "in";
@@ -46537,7 +46537,7 @@ function getGlslDifferences() {
       }
     `;
   } else {
-    version9 = "";
+    version92 = "";
     attribute = "attribute";
     varyingVs = "varying";
     varyingFs = "varying";
@@ -46574,7 +46574,7 @@ function getGlslDifferences() {
     `;
   }
   return {
-    version: version9,
+    version: version92,
     attribute,
     varyingVs,
     varyingFs,
@@ -70637,7 +70637,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211117";
+var externalVersion = "3.11.0-20211118";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -70648,7 +70648,6 @@ var version8 = {
   "tfjs-backend-webgl": externalVersion,
   "tfjs-backend-wasm": externalVersion
 };
-var version_core = version8["tfjs-core"];
 
 // src/image/imagefxshaders.ts
 var vertexIdentity = `
@@ -71681,7 +71680,7 @@ var Env = class {
     __publicField(this, "ImageData");
     this.browser = typeof navigator !== "undefined";
     this.node = typeof process !== "undefined";
-    this.tfjs = { version: version_core };
+    this.tfjs = { version: version8["tfjs-core"] };
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;
     this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
@@ -71742,7 +71741,7 @@ var Env = class {
 var env2 = new Env();
 
 // package.json
-var version = "2.5.2";
+var version9 = "2.5.3";
 
 // src/gear/gear.ts
 var model2;
@@ -83704,11 +83703,11 @@ var Human = class {
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     this.env = env2;
-    config.wasmPath = version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version_core}/dist/`;
+    config.wasmPath = version8["tfjs-core"].includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${version}/dist/`;
     config.modelBasePath = env2.browser ? "../models/" : "file://models/";
     config.backend = env2.browser ? "humangl" : "tensorflow";
-    this.version = version;
-    Object.defineProperty(this, "version", { value: version });
+    this.version = version9;
+    Object.defineProperty(this, "version", { value: version9 });
     this.config = JSON.parse(JSON.stringify(config));
     Object.seal(this.config);
     if (userConfig)
@@ -83776,7 +83775,7 @@ var Human = class {
       if (this.config.debug)
         log(`version: ${this.version}`);
       if (this.config.debug)
-        log(`tfjs version: ${this.tf.version_core}`);
+        log(`tfjs version: ${this.tf.version["tfjs-core"]}`);
       if (!await check(this))
         log("error: backend check failed");
       await ready();

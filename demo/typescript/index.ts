@@ -10,15 +10,15 @@
 import { Human } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
-  modelBasePath: '../../models',
-  filter: { equalization: true },
   // backend: 'webgpu' as 'webgpu,
   // async: true,
-  // face: { enabled: false, detector: { rotation: true }, iris: { enabled: false }, description: { enabled: false }, emotion: { enabled: false } },
-  // body: { enabled: false },
-  // hand: { enabled: false },
-  // object: { enabled: true },
-  // gesture: { enabled: true },
+  modelBasePath: '../../models',
+  filter: { enabled: true, equalization: false },
+  face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
+  body: { enabled: true },
+  hand: { enabled: true },
+  object: { enabled: false },
+  gesture: { enabled: true },
 };
 
 const human = new Human(humanConfig); // create instance of human with overrides from user configuration
@@ -97,7 +97,7 @@ async function drawLoop() { // main screen refresh loop
 }
 
 async function main() { // main entry point
-  log('human version:', human.version, '| tfjs version:', human.tf.version_core);
+  log('human version:', human.version, '| tfjs version:', human.tf.version['tfjs-core']);
   log('platform:', human.env.platform, '| agent:', human.env.agent);
   status('loading...');
   await human.load(); // preload all models

@@ -81,7 +81,7 @@ export class Env {
   constructor() {
     this.browser = typeof navigator !== 'undefined';
     this.node = typeof process !== 'undefined';
-    this.tfjs = { version: tf.version_core };
+    this.tfjs = { version: tf.version['tfjs-core'] };
     this.offscreen = typeof OffscreenCanvas !== 'undefined';
     this.initial = true;
     // @ts-ignore WorkerGlobalScope evaluated in browser only
@@ -148,8 +148,8 @@ export class Env {
   async updateCPU() {
     const cpu = { model: '', flags: [] };
     if (this.node && this.platform.startsWith('linux')) {
-      // eslint-disable-next-line global-require
       /*
+      // eslint-disable-next-line global-require
       const fs = require('fs');
       try {
         const data = fs.readFileSync('/proc/cpuinfo').toString();

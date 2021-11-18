@@ -16,4 +16,4 @@ export type { GraphModel } from '@tensorflow/tfjs-converter/dist/index';
  * @external long
  */
 // eslint-disable-next-line node/no-missing-import
-export type { Long } from 'long';
+// export type { Long } from 'long';

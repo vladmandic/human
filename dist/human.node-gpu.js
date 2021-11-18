@@ -1307,7 +1307,7 @@ var Env = class {
     __publicField(this, "ImageData");
     this.browser = typeof navigator !== "undefined";
     this.node = typeof process !== "undefined";
-    this.tfjs = { version: tf3.version_core };
+    this.tfjs = { version: tf3.version["tfjs-core"] };
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;
     this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
@@ -1371,7 +1371,7 @@ var env = new Env();
 var tf35 = __toModule(require_tfjs_esm());
 
 // package.json
-var version = "2.5.2";
+var version2 = "2.5.3";
 
 // src/tfjs/humangl.ts
 var tf30 = __toModule(require_tfjs_esm());
@@ -13390,11 +13390,11 @@ var Human = class {
         (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
     });
     this.env = env;
-    config.wasmPath = tf35.version_core.includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf35.version_core}/dist/`;
+    config.wasmPath = tf35.version["tfjs-core"].includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf35.version_core}/dist/`;
     config.modelBasePath = env.browser ? "../models/" : "file://models/";
     config.backend = env.browser ? "humangl" : "tensorflow";
-    this.version = version;
-    Object.defineProperty(this, "version", { value: version });
+    this.version = version2;
+    Object.defineProperty(this, "version", { value: version2 });
     this.config = JSON.parse(JSON.stringify(config));
     Object.seal(this.config);
     if (userConfig)
@@ -13462,7 +13462,7 @@ var Human = class {
       if (this.config.debug)
         log(`version: ${this.version}`);
       if (this.config.debug)
-        log(`tfjs version: ${this.tf.version_core}`);
+        log(`tfjs version: ${this.tf.version["tfjs-core"]}`);
       if (!await check(this))
         log("error: backend check failed");
       await tf35.ready();

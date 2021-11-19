@@ -5231,15 +5231,23 @@ async function prepareImage(input) {
   const t = {};
   if (!input.shape || !input.shape[1] || !input.shape[2])
     return input;
-  padding = [
-    [0, 0],
-    [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0],
-    [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0],
-    [0, 0]
-  ];
-  t.pad = tfjs_esm_exports.pad(input, padding);
-  t.resize = tfjs_esm_exports.image.resizeBilinear(t.pad, [inputSize2[1][0], inputSize2[1][1]]);
-  const final = tfjs_esm_exports.div(t.resize, constants.tf255);
+  let final;
+  if (input.shape[1] !== input.shape[2]) {
+    padding = [
+      [0, 0],
+      [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0],
+      [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0],
+      [0, 0]
+    ];
+    t.pad = tfjs_esm_exports.pad(input, padding);
+    t.resize = tfjs_esm_exports.image.resizeBilinear(t.pad, [inputSize2[1][0], inputSize2[1][1]]);
+    final = tfjs_esm_exports.div(t.resize, constants.tf255);
+  } else if (input.shape[1] !== inputSize2[1][0]) {
+    t.resize = tfjs_esm_exports.image.resizeBilinear(input, [inputSize2[1][0], inputSize2[1][1]]);
+    final = tfjs_esm_exports.div(t.resize, constants.tf255);
+  } else {
+    final = tfjs_esm_exports.div(input, constants.tf255);
+  }
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   return final;
 }
@@ -12234,11 +12242,13 @@ function calc2(newResult, config3) {
         part: keypoint.part,
         position: [
           bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[0] + keypoint.position[0]) / bufferedFactor : keypoint.position[0],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[1] + keypoint.position[1]) / bufferedFactor : keypoint.position[1]
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[1] + keypoint.position[1]) / bufferedFactor : keypoint.position[1],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[2] || 0) + (keypoint.position[2] || 0)) / bufferedFactor : keypoint.position[2]
         ],
         positionRaw: [
           bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[0] + keypoint.positionRaw[0]) / bufferedFactor : keypoint.position[0],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[1] + keypoint.positionRaw[1]) / bufferedFactor : keypoint.position[1]
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[1] + keypoint.positionRaw[1]) / bufferedFactor : keypoint.position[1],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[2] || 0) + (keypoint.positionRaw[2] || 0)) / bufferedFactor : keypoint.position[1]
         ]
       }));
       const annotations2 = {};

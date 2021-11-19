@@ -64,15 +64,23 @@ function calculateBoxes(keypoints: Array<BodyKeypoint>, outputSize: [number, num
 async function prepareImage(input: Tensor): Promise<Tensor> {
   const t: Record<string, Tensor> = {};
   if (!input.shape || !input.shape[1] || !input.shape[2]) return input;
-  padding = [
-    [0, 0], // dont touch batch
-    [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0], // height before&after
-    [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0], // width before&after
-    [0, 0], // dont touch rbg
-  ];
-  t.pad = tf.pad(input, padding);
-  t.resize = tf.image.resizeBilinear(t.pad, [inputSize[1][0], inputSize[1][1]]);
-  const final = tf.div(t.resize, constants.tf255);
+  let final: Tensor;
+  if (input.shape[1] !== input.shape[2]) { // only pad if width different than height
+    padding = [
+      [0, 0], // dont touch batch
+      [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0], // height before&after
+      [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0], // width before&after
+      [0, 0], // dont touch rbg
+    ];
+    t.pad = tf.pad(input, padding);
+    t.resize = tf.image.resizeBilinear(t.pad, [inputSize[1][0], inputSize[1][1]]);
+    final = tf.div(t.resize, constants.tf255);
+  } else if (input.shape[1] !== inputSize[1][0]) { // if input needs resizing
+    t.resize = tf.image.resizeBilinear(input, [inputSize[1][0], inputSize[1][1]]);
+    final = tf.div(t.resize, constants.tf255);
+  } else { // if input is already in a correct resolution just normalize it
+    final = tf.div(input, constants.tf255);
+  }
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return final;
 }

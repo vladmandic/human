@@ -75527,12 +75527,12 @@ var kpt = [
   "rightElbow",
   "leftWrist",
   "rightWrist",
-  "leftPalm",
-  "rightPalm",
-  "leftIndex",
-  "rightIndex",
   "leftPinky",
   "rightPinky",
+  "leftIndex",
+  "rightIndex",
+  "leftThumb",
+  "rightThumb",
   "leftHip",
   "rightHip",
   "leftKnee",
@@ -75545,9 +75545,9 @@ var kpt = [
   "rightFoot",
   "bodyCenter",
   "bodyTop",
-  "leftThumb",
+  "leftPalm",
   "leftHand",
-  "rightThumb",
+  "rightPalm",
   "rightHand"
 ];
 var connected = {
@@ -75556,9 +75556,11 @@ var connected = {
   torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
   leftArm: ["leftShoulder", "leftElbow", "leftWrist", "leftPalm"],
   rightArm: ["rightShoulder", "rightElbow", "rightWrist", "rightPalm"],
-  leftHand: [],
-  rightHand: [],
-  head: []
+  leftHand: ["leftHand", "leftPalm", "leftPinky", "leftPalm", "leftIndex", "leftPalm", "leftThumb"],
+  rightHand: ["rightHand", "rightPalm", "rightPinky", "rightPalm", "rightIndex", "rightPalm", "rightThumb"],
+  leftEye: ["leftEyeInside", "leftEye", "leftEyeOutside"],
+  rightEye: ["rightEyeInside", "rightEye", "rightEyeOutside"],
+  mouth: ["leftMouth", "rightMouth"]
 };
 
 // src/body/blazepose.ts
@@ -75676,7 +75678,7 @@ async function detectParts(input2, config3, outputSize2) {
     for (let i = 0; i < indexes.length - 1; i++) {
       const pt0 = keypoints.find((kpt4) => kpt4.part === indexes[i]);
       const pt1 = keypoints.find((kpt4) => kpt4.part === indexes[i + 1]);
-      if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+      if (pt0 && pt1)
         pt.push([pt0.position, pt1.position]);
     }
     annotations2[name] = pt;
@@ -81993,6 +81995,8 @@ async function body(inCanvas2, result, drawOptions) {
     }
     if (localOptions.drawPoints && result[i].keypoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
+        if (!result[i].keypoints[pt].score || result[i].keypoints[pt].score === 0)
+          continue;
         ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position[2] || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position[2] || 0)}, 255, 0.5)` : localOptions.color;
         point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
       }
@@ -82000,6 +82004,8 @@ async function body(inCanvas2, result, drawOptions) {
     if (localOptions.drawLabels && result[i].keypoints) {
       ctx.font = localOptions.font;
       for (const pt of result[i].keypoints) {
+        if (!pt.score || pt.score === 0)
+          continue;
         ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + 2 * pt.position[2]}, ${127.5 - 2 * pt.position[2]}, 255, 0.5)` : localOptions.color;
         ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
       }

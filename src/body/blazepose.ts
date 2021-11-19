@@ -127,7 +127,8 @@ async function detectParts(input: Tensor, config: Config, outputSize: [number, n
     for (let i = 0; i < indexes.length - 1; i++) {
       const pt0 = keypoints.find((kpt) => kpt.part === indexes[i]);
       const pt1 = keypoints.find((kpt) => kpt.part === indexes[i + 1]);
-      if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
+      // if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
+      if (pt0 && pt1) pt.push([pt0.position, pt1.position]);
     }
     annotations[name] = pt;
   }

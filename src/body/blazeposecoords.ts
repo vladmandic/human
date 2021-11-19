@@ -18,12 +18,12 @@ export const kpt: Array<string> = [
   'rightElbow',      // 14
   'leftWrist',       // 15
   'rightWrist',      // 16
-  'leftPalm',        // 17
-  'rightPalm',       // 18
+  'leftPinky',       // 17
+  'rightPinky',      // 18
   'leftIndex',       // 19
   'rightIndex',      // 20
-  'leftPinky',       // 21
-  'rightPinky',      // 22
+  'leftThumb',       // 21
+  'rightThumb',      // 22
   'leftHip',         // 23
   'rightHip',        // 24
   'leftKnee',        // 25
@@ -36,10 +36,10 @@ export const kpt: Array<string> = [
   'rightFoot',       // 32
   'bodyCenter',      // 33
   'bodyTop',         // 34
-  'leftThumb',       // 35
-  'leftHand',        // 36
-  'rightThumb',      // 37
-  'rightHand',       // 38
+  'leftPalm',        // 35 // z-coord not ok
+  'leftHand',        // 36 // similar to wrist but z-coord not ok
+  'rightPalm',       // 37 // z-coord not ok
+  'rightHand',       // 38 // similar to wrist but z-coord not ok
 ];
 
 export const connected: Record<string, string[]> = {
@@ -48,7 +48,9 @@ export const connected: Record<string, string[]> = {
   torso: ['leftShoulder', 'rightShoulder', 'rightHip', 'leftHip', 'leftShoulder'],
   leftArm: ['leftShoulder', 'leftElbow', 'leftWrist', 'leftPalm'],
   rightArm: ['rightShoulder', 'rightElbow', 'rightWrist', 'rightPalm'],
-  leftHand: [],
-  rightHand: [],
-  head: [],
+  leftHand: ['leftHand', 'leftPalm', 'leftPinky', 'leftPalm', 'leftIndex', 'leftPalm', 'leftThumb'],
+  rightHand: ['rightHand', 'rightPalm', 'rightPinky', 'rightPalm', 'rightIndex', 'rightPalm', 'rightThumb'],
+  leftEye: ['leftEyeInside', 'leftEye', 'leftEyeOutside'],
+  rightEye: ['rightEyeInside', 'rightEye', 'rightEyeOutside'],
+  mouth: ['leftMouth', 'rightMouth'],
 };

@@ -138,10 +138,12 @@ export class Env {
     try {
       if (this.webgpu.supported) this.webgpu.adapter = (await navigator['gpu'].requestAdapter()).name;
       // enumerate kernels
-      this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
     } catch {
       this.webgpu.supported = false;
     }
+    try {
+      this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+    } catch { /**/ }
   }
 
   /** update cpu information */

@@ -4,7 +4,7 @@
   author: <https://github.com/vladmandic>'
 */
 
-// node_modules/.pnpm/github.com+vladmandic+tfjs@78c185a728b2afcbfd2e37d38a254f4242c8223a/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
+// node_modules/.pnpm/github.com+vladmandic+tfjs@14eabb5e489a9403713f08c3595e04728a838e82/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -28107,54 +28107,54 @@ ENV3.registerFlag("KEEP_INTERMEDIATE_TENSORS", () => false, (debugValue) => {
   }
 });
 var DataType8;
-(function(DataType49) {
-  DataType49[DataType49["DT_INVALID"] = 0] = "DT_INVALID";
-  DataType49[DataType49["DT_FLOAT"] = 1] = "DT_FLOAT";
-  DataType49[DataType49["DT_DOUBLE"] = 2] = "DT_DOUBLE";
-  DataType49[DataType49["DT_INT32"] = 3] = "DT_INT32";
-  DataType49[DataType49["DT_UINT8"] = 4] = "DT_UINT8";
-  DataType49[DataType49["DT_INT16"] = 5] = "DT_INT16";
-  DataType49[DataType49["DT_INT8"] = 6] = "DT_INT8";
-  DataType49[DataType49["DT_STRING"] = 7] = "DT_STRING";
-  DataType49[DataType49["DT_COMPLEX64"] = 8] = "DT_COMPLEX64";
-  DataType49[DataType49["DT_INT64"] = 9] = "DT_INT64";
-  DataType49[DataType49["DT_BOOL"] = 10] = "DT_BOOL";
-  DataType49[DataType49["DT_QINT8"] = 11] = "DT_QINT8";
-  DataType49[DataType49["DT_QUINT8"] = 12] = "DT_QUINT8";
-  DataType49[DataType49["DT_QINT32"] = 13] = "DT_QINT32";
-  DataType49[DataType49["DT_BFLOAT16"] = 14] = "DT_BFLOAT16";
-  DataType49[DataType49["DT_QINT16"] = 15] = "DT_QINT16";
-  DataType49[DataType49["DT_QUINT16"] = 16] = "DT_QUINT16";
-  DataType49[DataType49["DT_UINT16"] = 17] = "DT_UINT16";
-  DataType49[DataType49["DT_COMPLEX128"] = 18] = "DT_COMPLEX128";
-  DataType49[DataType49["DT_HALF"] = 19] = "DT_HALF";
-  DataType49[DataType49["DT_RESOURCE"] = 20] = "DT_RESOURCE";
-  DataType49[DataType49["DT_VARIANT"] = 21] = "DT_VARIANT";
-  DataType49[DataType49["DT_UINT32"] = 22] = "DT_UINT32";
-  DataType49[DataType49["DT_UINT64"] = 23] = "DT_UINT64";
-  DataType49[DataType49["DT_FLOAT_REF"] = 101] = "DT_FLOAT_REF";
-  DataType49[DataType49["DT_DOUBLE_REF"] = 102] = "DT_DOUBLE_REF";
-  DataType49[DataType49["DT_INT32_REF"] = 103] = "DT_INT32_REF";
-  DataType49[DataType49["DT_UINT8_REF"] = 104] = "DT_UINT8_REF";
-  DataType49[DataType49["DT_INT16_REF"] = 105] = "DT_INT16_REF";
-  DataType49[DataType49["DT_INT8_REF"] = 106] = "DT_INT8_REF";
-  DataType49[DataType49["DT_STRING_REF"] = 107] = "DT_STRING_REF";
-  DataType49[DataType49["DT_COMPLEX64_REF"] = 108] = "DT_COMPLEX64_REF";
-  DataType49[DataType49["DT_INT64_REF"] = 109] = "DT_INT64_REF";
-  DataType49[DataType49["DT_BOOL_REF"] = 110] = "DT_BOOL_REF";
-  DataType49[DataType49["DT_QINT8_REF"] = 111] = "DT_QINT8_REF";
-  DataType49[DataType49["DT_QUINT8_REF"] = 112] = "DT_QUINT8_REF";
-  DataType49[DataType49["DT_QINT32_REF"] = 113] = "DT_QINT32_REF";
-  DataType49[DataType49["DT_BFLOAT16_REF"] = 114] = "DT_BFLOAT16_REF";
-  DataType49[DataType49["DT_QINT16_REF"] = 115] = "DT_QINT16_REF";
-  DataType49[DataType49["DT_QUINT16_REF"] = 116] = "DT_QUINT16_REF";
-  DataType49[DataType49["DT_UINT16_REF"] = 117] = "DT_UINT16_REF";
-  DataType49[DataType49["DT_COMPLEX128_REF"] = 118] = "DT_COMPLEX128_REF";
-  DataType49[DataType49["DT_HALF_REF"] = 119] = "DT_HALF_REF";
-  DataType49[DataType49["DT_RESOURCE_REF"] = 120] = "DT_RESOURCE_REF";
-  DataType49[DataType49["DT_VARIANT_REF"] = 121] = "DT_VARIANT_REF";
-  DataType49[DataType49["DT_UINT32_REF"] = 122] = "DT_UINT32_REF";
-  DataType49[DataType49["DT_UINT64_REF"] = 123] = "DT_UINT64_REF";
+(function(DataType48) {
+  DataType48[DataType48["DT_INVALID"] = 0] = "DT_INVALID";
+  DataType48[DataType48["DT_FLOAT"] = 1] = "DT_FLOAT";
+  DataType48[DataType48["DT_DOUBLE"] = 2] = "DT_DOUBLE";
+  DataType48[DataType48["DT_INT32"] = 3] = "DT_INT32";
+  DataType48[DataType48["DT_UINT8"] = 4] = "DT_UINT8";
+  DataType48[DataType48["DT_INT16"] = 5] = "DT_INT16";
+  DataType48[DataType48["DT_INT8"] = 6] = "DT_INT8";
+  DataType48[DataType48["DT_STRING"] = 7] = "DT_STRING";
+  DataType48[DataType48["DT_COMPLEX64"] = 8] = "DT_COMPLEX64";
+  DataType48[DataType48["DT_INT64"] = 9] = "DT_INT64";
+  DataType48[DataType48["DT_BOOL"] = 10] = "DT_BOOL";
+  DataType48[DataType48["DT_QINT8"] = 11] = "DT_QINT8";
+  DataType48[DataType48["DT_QUINT8"] = 12] = "DT_QUINT8";
+  DataType48[DataType48["DT_QINT32"] = 13] = "DT_QINT32";
+  DataType48[DataType48["DT_BFLOAT16"] = 14] = "DT_BFLOAT16";
+  DataType48[DataType48["DT_QINT16"] = 15] = "DT_QINT16";
+  DataType48[DataType48["DT_QUINT16"] = 16] = "DT_QUINT16";
+  DataType48[DataType48["DT_UINT16"] = 17] = "DT_UINT16";
+  DataType48[DataType48["DT_COMPLEX128"] = 18] = "DT_COMPLEX128";
+  DataType48[DataType48["DT_HALF"] = 19] = "DT_HALF";
+  DataType48[DataType48["DT_RESOURCE"] = 20] = "DT_RESOURCE";
+  DataType48[DataType48["DT_VARIANT"] = 21] = "DT_VARIANT";
+  DataType48[DataType48["DT_UINT32"] = 22] = "DT_UINT32";
+  DataType48[DataType48["DT_UINT64"] = 23] = "DT_UINT64";
+  DataType48[DataType48["DT_FLOAT_REF"] = 101] = "DT_FLOAT_REF";
+  DataType48[DataType48["DT_DOUBLE_REF"] = 102] = "DT_DOUBLE_REF";
+  DataType48[DataType48["DT_INT32_REF"] = 103] = "DT_INT32_REF";
+  DataType48[DataType48["DT_UINT8_REF"] = 104] = "DT_UINT8_REF";
+  DataType48[DataType48["DT_INT16_REF"] = 105] = "DT_INT16_REF";
+  DataType48[DataType48["DT_INT8_REF"] = 106] = "DT_INT8_REF";
+  DataType48[DataType48["DT_STRING_REF"] = 107] = "DT_STRING_REF";
+  DataType48[DataType48["DT_COMPLEX64_REF"] = 108] = "DT_COMPLEX64_REF";
+  DataType48[DataType48["DT_INT64_REF"] = 109] = "DT_INT64_REF";
+  DataType48[DataType48["DT_BOOL_REF"] = 110] = "DT_BOOL_REF";
+  DataType48[DataType48["DT_QINT8_REF"] = 111] = "DT_QINT8_REF";
+  DataType48[DataType48["DT_QUINT8_REF"] = 112] = "DT_QUINT8_REF";
+  DataType48[DataType48["DT_QINT32_REF"] = 113] = "DT_QINT32_REF";
+  DataType48[DataType48["DT_BFLOAT16_REF"] = 114] = "DT_BFLOAT16_REF";
+  DataType48[DataType48["DT_QINT16_REF"] = 115] = "DT_QINT16_REF";
+  DataType48[DataType48["DT_QUINT16_REF"] = 116] = "DT_QUINT16_REF";
+  DataType48[DataType48["DT_UINT16_REF"] = 117] = "DT_UINT16_REF";
+  DataType48[DataType48["DT_COMPLEX128_REF"] = 118] = "DT_COMPLEX128_REF";
+  DataType48[DataType48["DT_HALF_REF"] = 119] = "DT_HALF_REF";
+  DataType48[DataType48["DT_RESOURCE_REF"] = 120] = "DT_RESOURCE_REF";
+  DataType48[DataType48["DT_VARIANT_REF"] = 121] = "DT_VARIANT_REF";
+  DataType48[DataType48["DT_UINT32_REF"] = 122] = "DT_UINT32_REF";
+  DataType48[DataType48["DT_UINT64_REF"] = 123] = "DT_UINT64_REF";
 })(DataType8 || (DataType8 = {}));
 var SaverDef;
 (function(SaverDef2) {
@@ -45245,6 +45245,7 @@ function getTextureConfig(gl, textureHalfFloatExtension) {
     defaultNumChannels = 1;
     textureTypeHalfFloat = glany.HALF_FLOAT;
     textureTypeFloat = glany.FLOAT;
+    downloadTextureFormat = glany.RGBA8;
   } else {
     internalFormatFloat = gl.RGBA;
     internalFormatHalfFloat = gl.RGBA;
@@ -45255,8 +45256,8 @@ function getTextureConfig(gl, textureHalfFloatExtension) {
     defaultNumChannels = 4;
     textureTypeHalfFloat = textureHalfFloatExtension != null ? textureHalfFloatExtension.HALF_FLOAT_OES : null;
     textureTypeFloat = gl.FLOAT;
+    downloadTextureFormat = gl.RGBA;
   }
-  downloadTextureFormat = gl.RGBA;
   return {
     internalFormatFloat,
     internalFormatHalfFloat,
@@ -48088,7 +48089,11 @@ function createAndConfigureTexture(gl, width, height, internalFormat, textureFor
   callAndCheck(gl, () => gl.texParameteri(tex2d, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE));
   callAndCheck(gl, () => gl.texParameteri(tex2d, gl.TEXTURE_MIN_FILTER, gl.NEAREST));
   callAndCheck(gl, () => gl.texParameteri(tex2d, gl.TEXTURE_MAG_FILTER, gl.NEAREST));
-  callAndCheck(gl, () => gl.texImage2D(tex2d, 0, internalFormat, width, height, 0, textureFormat, textureType, null));
+  if (env().getNumber("WEBGL_VERSION") === 1) {
+    callAndCheck(gl, () => gl.texImage2D(tex2d, 0, internalFormat, width, height, 0, textureFormat, textureType, null));
+  } else {
+    callAndCheck(gl, () => gl.texStorage2D(tex2d, 1, internalFormat, width, height));
+  }
   callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
   return texture;
 }
@@ -48148,15 +48153,29 @@ function uploadDenseMatrixToTexture(gl, texture, width, height, data, textureCon
     internalFormat = textureConfig.internalFormatPackedFloat;
   }
   dataForUpload.set(data);
-  callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, gl.RGBA, texelDataType, dataForUpload));
+  if (env().getNumber("WEBGL_VERSION") === 2) {
+    callAndCheck(gl, () => gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, gl.RGBA, texelDataType, dataForUpload));
+  } else {
+    callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, gl.RGBA, texelDataType, dataForUpload));
+  }
   callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
 }
 function uploadPixelDataToTexture(gl, texture, pixels) {
   callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, texture));
   if (pixels.data instanceof Uint8Array) {
-    callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, pixels.width, pixels.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels.data));
+    if (env().getNumber("WEBGL_VERSION") === 2) {
+      callAndCheck(gl, () => gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, pixels.width, pixels.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels.data));
+      gl.flush();
+    } else {
+      callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, pixels.width, pixels.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels.data));
+    }
   } else {
-    callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, pixels));
+    if (env().getNumber("WEBGL_VERSION") === 2) {
+      callAndCheck(gl, () => gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels));
+      gl.flush();
+    } else {
+      callAndCheck(gl, () => gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, pixels));
+    }
   }
   callAndCheck(gl, () => gl.bindTexture(gl.TEXTURE_2D, null));
 }
@@ -48938,6 +48957,8 @@ function numBytesForInternalFormat(gl, internalFormat) {
     return 16;
   } else if (internalFormat === glany.RGBA16F) {
     return 8;
+  } else if (internalFormat === glany.RGBA8) {
+    return 4;
   }
   throw new Error(`Unknown internal format ${internalFormat}`);
 }
@@ -49605,7 +49626,9 @@ var _MathBackendWebGL = class extends KernelBackend {
           texData.isPacked = true;
           texData.shape = input2.shape;
         }
-      } else if (!!texData.isPacked !== !!program.packedInputs) {
+      }
+      this.uploadToGPU(input2.dataId);
+      if (!!texData.isPacked !== !!program.packedInputs) {
         input2 = texData.isPacked ? this.unpackTensor(input2) : this.packTensor(input2);
         dataToDispose.push(input2);
         texData = this.texData.get(input2.dataId);
@@ -49618,7 +49641,6 @@ var _MathBackendWebGL = class extends KernelBackend {
         texData = this.texData.get(input2.dataId);
         savedInput.shape = targetShape;
       }
-      this.uploadToGPU(input2.dataId);
       return { shape: input2.shape, texData, isUniform: false };
     });
     this.uploadToGPU(output.dataId);
@@ -49731,18 +49753,23 @@ var _MathBackendWebGL = class extends KernelBackend {
       let program;
       let width = texShape[1], height = texShape[0];
       const isByteArray = values instanceof Uint8Array || values instanceof Uint8ClampedArray;
-      if (isPacked) {
+      if (isPacked || !isByteArray) {
         [width, height] = getPackedMatrixTextureShapeWidthHeight(texShape[0], texShape[1]);
+      }
+      if (isPacked) {
         program = new EncodeMatrixPackedProgram(shapeAs3D, isByteArray);
       } else {
         program = new EncodeMatrixProgram(shapeAs3D, isByteArray);
       }
-      const tempDenseInputHandle = this.makeTensorInfo([height, width], dtype);
+      const tempDenseInputTexShape = isByteArray ? [height, width] : texShape;
+      const tempDenseInputHandle = this.makeTensorInfo(tempDenseInputTexShape, dtype);
+      const tempDenseInputTexData = this.texData.get(tempDenseInputHandle.dataId);
       if (isByteArray) {
-        this.texData.get(tempDenseInputHandle.dataId).usage = TextureUsage.PIXELS;
+        tempDenseInputTexData.usage = TextureUsage.PIXELS;
       } else {
-        this.texData.get(tempDenseInputHandle.dataId).usage = TextureUsage.UPLOAD;
+        tempDenseInputTexData.usage = TextureUsage.UPLOAD;
       }
+      tempDenseInputTexData.texShape = tempDenseInputTexShape;
       this.gpgpu.uploadDenseMatrixToTexture(this.getTexture(tempDenseInputHandle.dataId), width, height, values);
       const customValues = [[height, width]];
       const preventEagerUnpacking = true;
@@ -63248,31 +63275,27 @@ var multiplyConfig3 = {
   kernelFunc: multiplyKernelFunc
 };
 var ReduceProgram2 = class {
-  constructor(reduceInfo, reduceType, outputDtype) {
+  constructor(reduceInfo, reduceType) {
+    this.workGroupSize = [64, 1, 1];
     this.variableNames = ["x"];
     this.uniforms = "reduceSize : i32;";
+    this.size = true;
     this.inputShape = [reduceInfo.batchSize, reduceInfo.inSize];
     const [outputShape] = backend_util_exports.computeOutAndReduceShapes(this.inputShape, [1]);
     this.outputShape = outputShape.length === 0 ? [1] : outputShape;
-    this.reductionFactor = 2;
-    const xMaxThreads = 256;
-    const xThreads = Math.min(Math.ceil(reduceInfo.inSize / this.reductionFactor), xMaxThreads);
-    this.workGroupSize = [xThreads, 1, 1];
-    this.dispatchLayout = { x: [], y: this.outputShape.map((d, i) => i) };
-    this.dispatch = computeDispatch(this.dispatchLayout, this.outputShape, this.workGroupSize);
+    this.dispatchLayout = flatDispatchLayout(this.outputShape);
+    this.dispatch = computeDispatch(this.dispatchLayout, this.outputShape, [1, 1, 1]);
     this.reduceType = reduceType;
-    this.shaderKey = `reduce_${reduceType}_${outputDtype}`;
+    this.shaderKey = `reduce_${reduceType}`;
   }
   getUserCode() {
-    const reduceInSharedMemory = this.workGroupSize[0] > 1;
     let reduceOp = ``;
     let initValue = "0.0";
     if (this.reduceType === "min" || this.reduceType === "max") {
       reduceOp = `
          if (isNanCustom(candidate)) {
           bestValue = uniforms.NAN;
-         } elseif (candidate ${this.reduceType === "min" ? "<" : ">"}
-           bestValue)
+         } elseif (!isNanCustom(bestValue) && candidate ${this.reduceType === "min" ? "<" : ">"} bestValue)
            {  bestValue = candidate; }`;
       initValue = "f32(x.numbers[offset])";
     } else if (this.reduceType === "sum" || this.reduceType === "mean") {
@@ -63281,57 +63304,51 @@ var ReduceProgram2 = class {
       reduceOp = " bestValue = bestValue * candidate; ";
       initValue = "1.0";
     }
-    const outputSnippet = this.reduceType === "mean" ? `setOutputFlat(flatOutputIndex, bestValue / f32(uniforms.reduceSize));` : `setOutputFlat(flatOutputIndex, bestValue);`;
+    const outputSnippet = this.reduceType === "mean" ? `setOutputFlat(outputIndex, bestValue / f32(uniforms.reduceSize));` : `setOutputFlat(outputIndex, bestValue);`;
     const sharedMemorySnippet = `
          var<workgroup> xBestValues : array<f32, ${this.workGroupSize[0]}>;
        `;
-    const sharedMemoryReduceSnippet = `
-       xBestValues[localId.x] = bestValue;
-       ${this.reduceType === "sum" || this.reduceType === "mean" || this.reduceType === "prod" ? `bestValue = ${initValue};` : " "}
-       var currentSize = WorkGroupSize;
-       for(; currentSize > 1;) {
-         workgroupBarrier();
-         for (var w = 0; w < ${this.reductionFactor}; w = w + 1) {
-           let i = i32(localId.x) * ${this.reductionFactor} + w;
-           if (i < currentSize) {
-             let candidate = xBestValues[i];
-             ${reduceOp}
-           }
-         }
-         workgroupBarrier();
-         xBestValues[localId.x] = bestValue;
-         currentSize = DIV_CEIL(currentSize, ${this.reductionFactor});
-         ${this.reduceType === "sum" || this.reduceType === "mean" || this.reduceType === "prod" ? `if(currentSize > 1) { bestValue = ${initValue}; }` : ""}
-       }
-       if (localId.x == 0u) {
-         ${outputSnippet}
-       }
-     `;
     const userCode = `
-       fn DIV_CEIL(a : i32, b : i32) -> i32 {
-        return ((a - 1) / b + 1);
+       fn DIV_CEIL(a : u32, b : u32) -> u32 {
+        return ((a - 1u) / b + 1u);
        }
-       let WorkGroupSize = ${this.workGroupSize[0]};
-       ${reduceInSharedMemory ? sharedMemorySnippet : ""}
-       fn getOffset(globalId : vec3<u32>) -> i32 {
-         let outputCoords = getOutputCoordsWithNonFlatDispatchLayout(globalId);
+
+       ${sharedMemorySnippet}
+       fn getOffset(outputIndex : i32) -> i32 {
+         let outputCoords = getCoordsFromFlatIndex(outputIndex);
          let offset = ${this.outputShape.length === 1 ? "outputCoords" : "outputCoords[0]"} * uniforms.reduceSize;
-         return offset;
+          return offset;
        }
-       ${getNonFlatDispatchLayoutMainHeaderString()} {
-         let offset = getOffset(globalId);
+       ${getMainHeaderAndGlobalIndexString()}
+         let outputIndex = index / i32(workGroupSizeX);
+         let offset = getOffset(outputIndex);
          var bestValue = ${initValue};
          let Length = uniforms.reduceSize;
-         let WorkPerThread = DIV_CEIL(Length, WorkGroupSize);
-         for (var w = 0; w < WorkPerThread; w = w + 1) {
-           let i = i32(globalId.x) * WorkPerThread + w;
-           if (i < Length) {
-             let candidate = f32(x.numbers[offset + i]);
-             ${reduceOp}
-           }
+         let WorkPerThread = DIV_CEIL(u32(Length), workGroupSizeX);
+         for (var k = i32(localId.x); k < Length && outputIndex < uniforms.size;
+             k = k + i32(workGroupSizeX)) {
+           let candidate = f32(x.numbers[offset + k]);
+           ${reduceOp}
          }
-         let flatOutputIndex = i32(globalId.y);
-         ${reduceInSharedMemory ? sharedMemoryReduceSnippet : outputSnippet}
+         xBestValues[localId.x] = bestValue;
+         workgroupBarrier();
+
+         var reduceSize = min(u32(Length), workGroupSizeX);
+         for (var currentSize = reduceSize / 2u; reduceSize > 1u;
+             currentSize = reduceSize / 2u) {
+           let interval = DIV_CEIL(reduceSize, 2u);
+           if (localId.x < currentSize) {
+            let candidate = xBestValues[localId.x + interval];
+            ${reduceOp}
+            xBestValues[localId.x] = bestValue;
+           }
+           reduceSize = interval;
+           workgroupBarrier();
+         }
+
+         if (localId.x == 0u && outputIndex < uniforms.size) {
+          ${outputSnippet}
+        }
        }
      `;
     return userCode;
@@ -63379,7 +63396,7 @@ function reduce2(x, axis, keepDims, reduceType, backend2) {
     const uniformData = [
       { type: "int32", data: [inSize] }
     ];
-    const program = new ReduceProgram2(reduceInfo, reduceType, dtype);
+    const program = new ReduceProgram2(reduceInfo, reduceType);
     const reduced = backend2.runWebGPUProgram(program, [input2], dtype, uniformData);
     toDispose.push(reduced);
     res = reshape5({ inputs: { x: reduced }, attrs: { shape: resOutShape }, backend: backend2 });
@@ -64798,7 +64815,7 @@ var ScatterOptimizedProgram = class {
       `;
     }
     const updatesSnippet = `getUpdates(${updatesString})`;
-    const atomicAddSnippet = this.type === "int32" ? `ignore(atomicAdd(&(result.numbers[flatIndex]), i32(updateValue)));` : `
+    const atomicAddSnippet = this.type === "int32" ? `atomicAdd(&(result.numbers[flatIndex]), i32(updateValue));` : `
      var assumed = atomicLoad(&(result.numbers[flatIndex]));
      var success = 0;
      for (; success == 0;) {
@@ -69929,7 +69946,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211118";
+var externalVersion = "3.11.0-20211121";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,

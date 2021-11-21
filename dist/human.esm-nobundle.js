@@ -1333,9 +1333,12 @@ var Env = class {
     try {
       if (this.webgpu.supported)
         this.webgpu.adapter = (await navigator["gpu"].requestAdapter()).name;
-      this.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
     } catch (e) {
       this.webgpu.supported = false;
+    }
+    try {
+      this.kernels = tfjs_esm_exports.getKernelsForBackend(tfjs_esm_exports.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+    } catch (e) {
     }
   }
   async updateCPU() {
@@ -5163,11 +5166,9 @@ var kpt = [
 var connected = {
   leftLeg: ["leftHip", "leftKnee", "leftAnkle", "leftHeel", "leftFoot"],
   rightLeg: ["rightHip", "rightKnee", "rightAnkle", "rightHeel", "rightFoot"],
-  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
+  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder", "rightShoulder"],
   leftArm: ["leftShoulder", "leftElbow", "leftWrist", "leftPalm"],
   rightArm: ["rightShoulder", "rightElbow", "rightWrist", "rightPalm"],
-  leftHand: ["leftHand", "leftPalm", "leftPinky", "leftPalm", "leftIndex", "leftPalm", "leftThumb"],
-  rightHand: ["rightHand", "rightPalm", "rightPinky", "rightPalm", "rightIndex", "rightPalm", "rightThumb"],
   leftEye: ["leftEyeInside", "leftEye", "leftEyeOutside"],
   rightEye: ["rightEyeInside", "rightEye", "rightEyeOutside"],
   mouth: ["leftMouth", "rightMouth"]

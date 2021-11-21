@@ -9,10 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/11/19 mandic00@live.com
+
+- edit blazepose keypoints
+- new build process
+
 ### **2.5.3** 2021/11/18 mandic00@live.com
-
-
-### **origin/main** 2021/11/17 mandic00@live.com
 
 - create typedef rollup
 - optimize centernet

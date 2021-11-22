@@ -71,7 +71,7 @@ export async function load(instance: Human): Promise<void> {
     if (!instance.models.handskeleton && instance.config.hand.landmarks && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
   }
   if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
-  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body.detector?.modelPath && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body['detector'] && instance.config.body['detector']['modelPath']) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
   if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
   if (instance.config.body.enabled && !instance.models.movenet && instance.config.body?.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
   if (instance.config.body.enabled && !instance.models.posenet && instance.config.body?.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);

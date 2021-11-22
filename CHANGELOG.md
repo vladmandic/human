@@ -9,7 +9,11 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/21 mandic00@live.com
+### **2.5.4** 2021/11/22 mandic00@live.com
+
+- prototype blazepose detector
+
+### **origin/main** 2021/11/21 mandic00@live.com
 
 - add body 3d interpolation
 - edit blazepose keypoints

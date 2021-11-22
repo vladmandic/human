@@ -1351,7 +1351,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version10 = "2.5.3";
+var version10 = "2.5.4";
 
 // src/gear/gear.ts
 var model;
@@ -11071,7 +11071,7 @@ function reset(instance) {
     instance.models[model18] = null;
 }
 async function load19(instance) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D, _E, _F, _G;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D;
   if (env.initial)
     reset(instance);
   if (instance.config.hand.enabled) {
@@ -11082,43 +11082,43 @@ async function load19(instance) {
   }
   if (instance.config.body.enabled && !instance.models.blazepose && ((_f = (_e = instance.config.body) == null ? void 0 : _e.modelPath) == null ? void 0 : _f.includes("blazepose")))
     instance.models.blazepose = loadPose(instance.config);
-  if (instance.config.body.enabled && !instance.models.blazeposedetect && ((_g = instance.config.body.detector) == null ? void 0 : _g.modelPath) && ((_i = (_h = instance.config.body) == null ? void 0 : _h.modelPath) == null ? void 0 : _i.includes("blazepose")))
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body["detector"] && instance.config.body["detector"]["modelPath"])
     instance.models.blazeposedetect = loadDetect(instance.config);
-  if (instance.config.body.enabled && !instance.models.efficientpose && ((_k = (_j = instance.config.body) == null ? void 0 : _j.modelPath) == null ? void 0 : _k.includes("efficientpose")))
+  if (instance.config.body.enabled && !instance.models.efficientpose && ((_h = (_g = instance.config.body) == null ? void 0 : _g.modelPath) == null ? void 0 : _h.includes("efficientpose")))
     instance.models.efficientpose = load7(instance.config);
-  if (instance.config.body.enabled && !instance.models.movenet && ((_m = (_l = instance.config.body) == null ? void 0 : _l.modelPath) == null ? void 0 : _m.includes("movenet")))
+  if (instance.config.body.enabled && !instance.models.movenet && ((_j = (_i = instance.config.body) == null ? void 0 : _i.modelPath) == null ? void 0 : _j.includes("movenet")))
     instance.models.movenet = load15(instance.config);
-  if (instance.config.body.enabled && !instance.models.posenet && ((_o = (_n = instance.config.body) == null ? void 0 : _n.modelPath) == null ? void 0 : _o.includes("posenet")))
+  if (instance.config.body.enabled && !instance.models.posenet && ((_l = (_k = instance.config.body) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("posenet")))
     instance.models.posenet = load17(instance.config);
   if (instance.config.face.enabled && !instance.models.facedetect)
     instance.models.facedetect = load5(instance.config);
-  if (instance.config.face.enabled && ((_p = instance.config.face.antispoof) == null ? void 0 : _p.enabled) && !instance.models.antispoof)
+  if (instance.config.face.enabled && ((_m = instance.config.face.antispoof) == null ? void 0 : _m.enabled) && !instance.models.antispoof)
     instance.models.antispoof = load4(instance.config);
-  if (instance.config.face.enabled && ((_q = instance.config.face.liveness) == null ? void 0 : _q.enabled) && !instance.models.liveness)
+  if (instance.config.face.enabled && ((_n = instance.config.face.liveness) == null ? void 0 : _n.enabled) && !instance.models.liveness)
     instance.models.liveness = load14(instance.config);
-  if (instance.config.face.enabled && ((_r = instance.config.face.description) == null ? void 0 : _r.enabled) && !instance.models.faceres)
+  if (instance.config.face.enabled && ((_o = instance.config.face.description) == null ? void 0 : _o.enabled) && !instance.models.faceres)
     instance.models.faceres = load12(instance.config);
-  if (instance.config.face.enabled && ((_s = instance.config.face.emotion) == null ? void 0 : _s.enabled) && !instance.models.emotion)
+  if (instance.config.face.enabled && ((_p = instance.config.face.emotion) == null ? void 0 : _p.enabled) && !instance.models.emotion)
     instance.models.emotion = load8(instance.config);
-  if (instance.config.face.enabled && ((_t = instance.config.face.iris) == null ? void 0 : _t.enabled) && !instance.models.faceiris)
+  if (instance.config.face.enabled && ((_q = instance.config.face.iris) == null ? void 0 : _q.enabled) && !instance.models.faceiris)
     instance.models.faceiris = load10(instance.config);
-  if (instance.config.face.enabled && ((_u = instance.config.face.mesh) == null ? void 0 : _u.enabled) && !instance.models.facemesh)
+  if (instance.config.face.enabled && ((_r = instance.config.face.mesh) == null ? void 0 : _r.enabled) && !instance.models.facemesh)
     instance.models.facemesh = load11(instance.config);
-  if (instance.config.face.enabled && ((_v = instance.config.face["gear"]) == null ? void 0 : _v.enabled) && !instance.models.gear)
+  if (instance.config.face.enabled && ((_s = instance.config.face["gear"]) == null ? void 0 : _s.enabled) && !instance.models.gear)
     instance.models.gear = load(instance.config);
-  if (instance.config.face.enabled && ((_w = instance.config.face["ssrnet"]) == null ? void 0 : _w.enabled) && !instance.models.ssrnetage)
+  if (instance.config.face.enabled && ((_t = instance.config.face["ssrnet"]) == null ? void 0 : _t.enabled) && !instance.models.ssrnetage)
     instance.models.ssrnetage = load2(instance.config);
-  if (instance.config.face.enabled && ((_x = instance.config.face["ssrnet"]) == null ? void 0 : _x.enabled) && !instance.models.ssrnetgender)
+  if (instance.config.face.enabled && ((_u = instance.config.face["ssrnet"]) == null ? void 0 : _u.enabled) && !instance.models.ssrnetgender)
     instance.models.ssrnetgender = load3(instance.config);
-  if (instance.config.face.enabled && ((_y = instance.config.face["mobilefacenet"]) == null ? void 0 : _y.enabled) && !instance.models.mobilefacenet)
+  if (instance.config.face.enabled && ((_v = instance.config.face["mobilefacenet"]) == null ? void 0 : _v.enabled) && !instance.models.mobilefacenet)
     instance.models.mobilefacenet = load9(instance.config);
-  if (instance.config.hand.enabled && !instance.models.handtrack && ((_A = (_z = instance.config.hand.detector) == null ? void 0 : _z.modelPath) == null ? void 0 : _A.includes("handtrack")))
+  if (instance.config.hand.enabled && !instance.models.handtrack && ((_x = (_w = instance.config.hand.detector) == null ? void 0 : _w.modelPath) == null ? void 0 : _x.includes("handtrack")))
     instance.models.handtrack = loadDetect2(instance.config);
-  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_C = (_B = instance.config.hand.detector) == null ? void 0 : _B.modelPath) == null ? void 0 : _C.includes("handtrack")))
+  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_z = (_y = instance.config.hand.detector) == null ? void 0 : _y.modelPath) == null ? void 0 : _z.includes("handtrack")))
     instance.models.handskeleton = loadSkeleton(instance.config);
-  if (instance.config.object.enabled && !instance.models.centernet && ((_E = (_D = instance.config.object) == null ? void 0 : _D.modelPath) == null ? void 0 : _E.includes("centernet")))
+  if (instance.config.object.enabled && !instance.models.centernet && ((_B = (_A = instance.config.object) == null ? void 0 : _A.modelPath) == null ? void 0 : _B.includes("centernet")))
     instance.models.centernet = load6(instance.config);
-  if (instance.config.object.enabled && !instance.models.nanodet && ((_G = (_F = instance.config.object) == null ? void 0 : _F.modelPath) == null ? void 0 : _G.includes("nanodet")))
+  if (instance.config.object.enabled && !instance.models.nanodet && ((_D = (_C = instance.config.object) == null ? void 0 : _C.modelPath) == null ? void 0 : _D.includes("nanodet")))
     instance.models.nanodet = load16(instance.config);
   if (instance.config.segmentation.enabled && !instance.models.segmentation)
     instance.models.segmentation = load18(instance.config);

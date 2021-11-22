@@ -35,17 +35,6 @@ export declare interface BodyConfig extends GenericConfig {
     maxDetected: number;
     /** minimum confidence for a detected body before results are discarded */
     minConfidence: number;
-    /** experimental: detector used for body model before actual analysis */
-    detector?: {
-        /** experimental: enable body detector before body landmarks */
-        enabled: boolean;
-        /** experimental: path to optional body detector model json file */
-        modelPath: string;
-        /** experimental: minimum confidence for a detected body before results are discarded */
-        minConfidence: number;
-        /** experimental: minimum overlap between two detected bodies before one is discarded */
-        iouThreshold: number;
-    };
 }
 
 /** body gesture type */

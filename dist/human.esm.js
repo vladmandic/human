@@ -176,9 +176,6 @@ var config = {
   body: {
     enabled: true,
     modelPath: "movenet-lightning.json",
-    detector: {
-      modelPath: ""
-    },
     maxDetected: -1,
     minConfidence: 0.3,
     skipFrames: 1,
@@ -5984,12 +5981,12 @@ function computeStrides(shape) {
   if (rank < 2) {
     return [];
   }
-  const strides = new Array(rank - 1);
-  strides[rank - 2] = shape[rank - 1];
+  const strides2 = new Array(rank - 1);
+  strides2[rank - 2] = shape[rank - 1];
   for (let i = rank - 3; i >= 0; --i) {
-    strides[i] = strides[i + 1] * shape[i + 1];
+    strides2[i] = strides2[i + 1] * shape[i + 1];
   }
-  return strides;
+  return strides2;
 }
 function createNestedArray(offset, shape, a, isComplex = false) {
   const ret = new Array();
@@ -6056,7 +6053,7 @@ function assertNonNegativeIntegerDimensions(shape) {
     assert(Number.isInteger(dimSize) && dimSize >= 0, () => `Tensor must have a shape comprised of positive integers but got shape [${shape}].`);
   });
 }
-function locToIndex(locs, rank, strides) {
+function locToIndex(locs, rank, strides2) {
   if (rank === 0) {
     return 0;
   } else if (rank === 1) {
@@ -6064,11 +6061,11 @@ function locToIndex(locs, rank, strides) {
   }
   let index2 = locs[locs.length - 1];
   for (let i = 0; i < locs.length - 1; ++i) {
-    index2 += strides[i] * locs[i];
+    index2 += strides2[i] * locs[i];
   }
   return index2;
 }
-function indexToLoc(index2, rank, strides) {
+function indexToLoc(index2, rank, strides2) {
   if (rank === 0) {
     return [];
   } else if (rank === 1) {
@@ -6076,8 +6073,8 @@ function indexToLoc(index2, rank, strides) {
   }
   const locs = new Array(rank);
   for (let i = 0; i < locs.length - 1; ++i) {
-    locs[i] = Math.floor(index2 / strides[i]);
-    index2 -= locs[i] * strides[i];
+    locs[i] = Math.floor(index2 / strides2[i]);
+    index2 -= locs[i] * strides2[i];
   }
   locs[locs.length - 1] = index2;
   return locs;
@@ -6916,10 +6913,10 @@ var FORMAT_LIMIT_NUM_VALS = 20;
 var FORMAT_NUM_FIRST_LAST_VALS = 3;
 var FORMAT_NUM_SIG_DIGITS = 7;
 function tensorToString(vals, shape, dtype, verbose) {
-  const strides = computeStrides(shape);
-  const padPerCol = computeMaxSizePerColumn(vals, shape, dtype, strides);
+  const strides2 = computeStrides(shape);
+  const padPerCol = computeMaxSizePerColumn(vals, shape, dtype, strides2);
   const rank = shape.length;
-  const valsLines = subTensorToString(vals, shape, dtype, strides, padPerCol);
+  const valsLines = subTensorToString(vals, shape, dtype, strides2, padPerCol);
   const lines2 = ["Tensor"];
   if (verbose) {
     lines2.push(`  dtype: ${dtype}`);
@@ -6930,9 +6927,9 @@ function tensorToString(vals, shape, dtype, verbose) {
   lines2.push(valsLines.map((l) => "    " + l).join("\n"));
   return lines2.join("\n");
 }
-function computeMaxSizePerColumn(vals, shape, dtype, strides) {
+function computeMaxSizePerColumn(vals, shape, dtype, strides2) {
   const n = sizeFromShape(shape);
-  const numCols = strides[strides.length - 1];
+  const numCols = strides2[strides2.length - 1];
   const padPerCol = new Array(numCols).fill(0);
   const rank = shape.length;
   const valuesOrTuples = dtype === "complex64" ? createComplexTuples(vals) : vals;
@@ -6962,7 +6959,7 @@ function valToString(val, pad3, dtype) {
 function boolNumToString(v) {
   return v === 0 ? "false" : "true";
 }
-function subTensorToString(vals, shape, dtype, strides, padPerCol, isLast = true) {
+function subTensorToString(vals, shape, dtype, strides2, padPerCol, isLast = true) {
   const storagePerElement = dtype === "complex64" ? 2 : 1;
   const size2 = shape[0];
   const rank = shape.length;
@@ -6995,8 +6992,8 @@ function subTensorToString(vals, shape, dtype, strides, padPerCol, isLast = true
     ];
   }
   const subshape = shape.slice(1);
-  const substrides = strides.slice(1);
-  const stride = strides[0] * storagePerElement;
+  const substrides = strides2.slice(1);
+  const stride = strides2[0] * storagePerElement;
   const lines2 = [];
   if (size2 > FORMAT_LIMIT_NUM_VALS) {
     for (let i = 0; i < FORMAT_NUM_FIRST_LAST_VALS; i++) {
@@ -10055,11 +10052,11 @@ function prepareAndValidate(tensor2, indices) {
     sliceSize *= inputShape[i];
     resultShape.push(inputShape[i]);
   }
-  const strides = [
+  const strides2 = [
     ...computeStrides(tensor2.shape).map((stride) => stride / sliceSize),
     1
   ].slice(0, sliceRank);
-  return [resultShape, nResult, sliceSize, strides];
+  return [resultShape, nResult, sliceSize, strides2];
 }
 var scatter_nd_util_exports = {};
 __export2(scatter_nd_util_exports, {
@@ -10124,9 +10121,9 @@ function calculateShapes(updates, indices, shape) {
   }
   const safeSliceDim = sliceRank < 1 ? 1 : sliceRank;
   const numUpdates = sizeFromShape(indices.shape) / safeSliceDim;
-  const strides = [...computeStrides(shape.slice(0, sliceRank)), 1];
+  const strides2 = [...computeStrides(shape.slice(0, sliceRank)), 1];
   const outputSize2 = sizeFromShape(shape);
-  return { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 };
+  return { sliceRank, numUpdates, sliceSize, strides: strides2, outputSize: outputSize2 };
 }
 var slice_util_exports = {};
 __export2(slice_util_exports, {
@@ -10167,15 +10164,15 @@ function maskToAxes(mask3) {
   }
   return axes;
 }
-function computeOutShape(begin, end, strides) {
+function computeOutShape(begin, end, strides2) {
   const size2 = [];
   for (let axis = 0; axis < begin.length; axis++) {
-    size2[axis] = Math.ceil((end[axis] - begin[axis]) / strides[axis]);
+    size2[axis] = Math.ceil((end[axis] - begin[axis]) / strides2[axis]);
   }
   return size2;
 }
-function stridesWithElidedDims(strides, ellipsisInsertionIndex, numElidedAxes, inputShape) {
-  const newStrides = [...strides];
+function stridesWithElidedDims(strides2, ellipsisInsertionIndex, numElidedAxes, inputShape) {
+  const newStrides = [...strides2];
   for (let i = newStrides.length; i < inputShape.length; i++) {
     newStrides.push(1);
   }
@@ -10202,7 +10199,7 @@ function getElidedAxes(numElidedAxes, ellipsisInsertionIndex) {
   }
   return elidedAxes;
 }
-function getNormalizedAxes(inputShape, ellipsisAxes, numInterpolatedAxes, begin, end, strides, beginMask, endMask, ellipsisMask) {
+function getNormalizedAxes(inputShape, ellipsisAxes, numInterpolatedAxes, begin, end, strides2, beginMask, endMask, ellipsisMask) {
   const inputRank = inputShape.length;
   let normalizedBegin = new Array(inputRank), normalizedEnd = new Array(inputRank), normalizedStrides = new Array(inputRank);
   if (ellipsisAxes.length && numInterpolatedAxes > 0) {
@@ -10210,12 +10207,12 @@ function getNormalizedAxes(inputShape, ellipsisAxes, numInterpolatedAxes, begin,
     const numElidedAxes = numInterpolatedAxes + 1;
     normalizedBegin = startIndicesWithElidedDims(beginMask, fullIndex, numElidedAxes, begin, inputShape);
     normalizedEnd = stopIndicesWithElidedDims(endMask, fullIndex, numElidedAxes, end, inputShape);
-    normalizedStrides = stridesWithElidedDims(strides, fullIndex, numElidedAxes, inputShape);
+    normalizedStrides = stridesWithElidedDims(strides2, fullIndex, numElidedAxes, inputShape);
   } else {
     for (let axis = 0; axis < inputRank; axis++) {
-      normalizedBegin[axis] = startForAxis(beginMask, begin, strides, inputShape, axis, ellipsisMask);
-      normalizedEnd[axis] = stopForAxis(endMask, end, strides, inputShape, axis, ellipsisMask);
-      normalizedStrides[axis] = stridesForAxis(strides, axis, ellipsisMask);
+      normalizedBegin[axis] = startForAxis(beginMask, begin, strides2, inputShape, axis, ellipsisMask);
+      normalizedEnd[axis] = stopForAxis(endMask, end, strides2, inputShape, axis, ellipsisMask);
+      normalizedStrides[axis] = stridesForAxis(strides2, axis, ellipsisMask);
     }
   }
   return {
@@ -10265,16 +10262,16 @@ function stopIndicesWithElidedDims(endMask, ellipsisInsertionIndex, numElidedAxe
   }
   return newIndices;
 }
-function stridesForAxis(strides, axis, ellipsisMask) {
-  let stride = strides[axis];
+function stridesForAxis(strides2, axis, ellipsisMask) {
+  let stride = strides2[axis];
   if (ellipsisMask & 1 << axis || stride == null) {
     stride = 1;
   }
   return stride;
 }
-function startForAxis(beginMask, startIndices, strides, inputShape, axis, ellipsisMask) {
+function startForAxis(beginMask, startIndices, strides2, inputShape, axis, ellipsisMask) {
   let start = startIndices[axis];
-  const stride = strides[axis] || 1;
+  const stride = strides2[axis] || 1;
   if (beginMask & 1 << axis || ellipsisMask & 1 << axis || start == null) {
     if (stride > 0) {
       start = Number.MIN_SAFE_INTEGER;
@@ -10289,9 +10286,9 @@ function startForAxis(beginMask, startIndices, strides, inputShape, axis, ellips
   start = clamp(0, start, axisSize - 1);
   return start;
 }
-function stopForAxis(endMask, stopIndices, strides, inputShape, axis, ellipsisMask) {
+function stopForAxis(endMask, stopIndices, strides2, inputShape, axis, ellipsisMask) {
   let stop = stopIndices[axis];
-  const stride = strides[axis] || 1;
+  const stride = strides2[axis] || 1;
   if (endMask & 1 << axis || ellipsisMask & 1 << axis || stop == null) {
     if (stride > 0) {
       stop = Number.MAX_SAFE_INTEGER;
@@ -10325,10 +10322,10 @@ function isSliceContinous(shape, begin, size2) {
   }
   return true;
 }
-function computeFlatOffset(begin, strides) {
+function computeFlatOffset(begin, strides2) {
   let flatOffset = begin.length > 0 ? begin[begin.length - 1] : 1;
   for (let i = 0; i < begin.length - 1; i++) {
-    flatOffset += begin[i] * strides[i];
+    flatOffset += begin[i] * strides2[i];
   }
   return flatOffset;
 }
@@ -10365,13 +10362,13 @@ function parseSliceParams(x, begin, size2) {
   });
   return [begin_, size_];
 }
-function sliceInfo(xShape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask) {
+function sliceInfo(xShape, begin, end, strides2, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask) {
   let stridesNonNull;
-  if (strides == null) {
+  if (strides2 == null) {
     stridesNonNull = new Array(begin.length);
     stridesNonNull.fill(1);
   } else {
-    stridesNonNull = strides;
+    stridesNonNull = strides2;
   }
   if (ellipsisMask != null && (ellipsisMask & ellipsisMask - 1) !== 0) {
     throw new Error("Multiple ellipses in slice is not allowed.");
@@ -10921,13 +10918,13 @@ function atanh_(x) {
   return ENGINE.runKernel(Atanh, inputs);
 }
 var atanh = op({ atanh_ });
-function computeDilation2DInfo(inputShape, filterShape, strides, pad3, dataFormat = "NHWC", dilations) {
+function computeDilation2DInfo(inputShape, filterShape, strides2, pad3, dataFormat = "NHWC", dilations) {
   const inputChannels = inputShape[3];
   const $filterShape = [...filterShape, inputChannels];
   const $dataFormat = convertConv2DDataFormat(dataFormat);
-  return computeConv2DInfo(inputShape, $filterShape, strides, dilations, pad3, null, null, $dataFormat);
+  return computeConv2DInfo(inputShape, $filterShape, strides2, dilations, pad3, null, null, $dataFormat);
 }
-function computePool2DInfo(inShape, filterSize, strides, dilations, pad3, roundingMode, dataFormat = "channelsLast") {
+function computePool2DInfo(inShape, filterSize, strides2, dilations, pad3, roundingMode, dataFormat = "channelsLast") {
   const [filterHeight, filterWidth] = parseTupleParam(filterSize);
   let filterShape;
   if (dataFormat === "channelsLast") {
@@ -10937,9 +10934,9 @@ function computePool2DInfo(inShape, filterSize, strides, dilations, pad3, roundi
   } else {
     throw new Error(`Unknown dataFormat ${dataFormat}`);
   }
-  return computeConv2DInfo(inShape, filterShape, strides, dilations, pad3, roundingMode, false, dataFormat);
+  return computeConv2DInfo(inShape, filterShape, strides2, dilations, pad3, roundingMode, false, dataFormat);
 }
-function computePool3DInfo(inShape, filterSize, strides, dilations, pad3, roundingMode, dataFormat = "NDHWC") {
+function computePool3DInfo(inShape, filterSize, strides2, dilations, pad3, roundingMode, dataFormat = "NDHWC") {
   const [filterDepth, filterHeight, filterWidth] = parse3TupleParam(filterSize);
   let filterShape;
   let $dataFormat;
@@ -10952,9 +10949,9 @@ function computePool3DInfo(inShape, filterSize, strides, dilations, pad3, roundi
   } else {
     throw new Error(`Unknown dataFormat ${dataFormat}`);
   }
-  return computeConv3DInfo(inShape, filterShape, strides, dilations, pad3, false, $dataFormat, roundingMode);
+  return computeConv3DInfo(inShape, filterShape, strides2, dilations, pad3, false, $dataFormat, roundingMode);
 }
-function computeConv2DInfo(inShape, filterShape, strides, dilations, pad3, roundingMode, depthwise = false, dataFormat = "channelsLast") {
+function computeConv2DInfo(inShape, filterShape, strides2, dilations, pad3, roundingMode, depthwise = false, dataFormat = "channelsLast") {
   let [batchSize, inHeight, inWidth, inChannels] = [-1, -1, -1, -1];
   if (dataFormat === "channelsLast") {
     [batchSize, inHeight, inWidth, inChannels] = inShape;
@@ -10964,7 +10961,7 @@ function computeConv2DInfo(inShape, filterShape, strides, dilations, pad3, round
     throw new Error(`Unknown dataFormat ${dataFormat}`);
   }
   const [filterHeight, filterWidth, , filterChannels] = filterShape;
-  const [strideHeight, strideWidth] = parseTupleParam(strides);
+  const [strideHeight, strideWidth] = parseTupleParam(strides2);
   const [dilationHeight, dilationWidth] = parseTupleParam(dilations);
   const effectiveFilterHeight = getEffectiveFilterSize(filterHeight, dilationHeight);
   const effectiveFilterWidth = getEffectiveFilterSize(filterWidth, dilationWidth);
@@ -10999,7 +10996,7 @@ function computeConv2DInfo(inShape, filterShape, strides, dilations, pad3, round
     filterShape
   };
 }
-function computeConv3DInfo(inShape, filterShape, strides, dilations, pad3, depthwise = false, dataFormat = "channelsLast", roundingMode) {
+function computeConv3DInfo(inShape, filterShape, strides2, dilations, pad3, depthwise = false, dataFormat = "channelsLast", roundingMode) {
   let [batchSize, inDepth, inHeight, inWidth, inChannels] = [-1, -1, -1, -1, -1];
   if (dataFormat === "channelsLast") {
     [batchSize, inDepth, inHeight, inWidth, inChannels] = inShape;
@@ -11009,7 +11006,7 @@ function computeConv3DInfo(inShape, filterShape, strides, dilations, pad3, depth
     throw new Error(`Unknown dataFormat ${dataFormat}`);
   }
   const [filterDepth, filterHeight, filterWidth, , filterChannels] = filterShape;
-  const [strideDepth, strideHeight, strideWidth] = parse3TupleParam(strides);
+  const [strideDepth, strideHeight, strideWidth] = parse3TupleParam(strides2);
   const [dilationDepth, dilationHeight, dilationWidth] = parse3TupleParam(dilations);
   const effectiveFilterDepth = getEffectiveFilterSize(filterDepth, dilationDepth);
   const effectiveFilterHeight = getEffectiveFilterSize(filterHeight, dilationHeight);
@@ -11204,8 +11201,8 @@ function tupleValuesAreOne(param) {
   const [dimA, dimB, dimC] = parseTupleParam(param);
   return dimA === 1 && dimB === 1 && dimC === 1;
 }
-function eitherStridesOrDilationsAreOne(strides, dilations) {
-  return tupleValuesAreOne(strides) || tupleValuesAreOne(dilations);
+function eitherStridesOrDilationsAreOne(strides2, dilations) {
+  return tupleValuesAreOne(strides2) || tupleValuesAreOne(dilations);
 }
 function convertConv2DDataFormat(dataFormat) {
   if (dataFormat === "NHWC") {
@@ -11223,10 +11220,10 @@ function reshape_(x, shape) {
   return ENGINE.runKernel(Reshape, inputs, attrs);
 }
 var reshape = op({ reshape_ });
-function avgPool_(x, filterSize, strides, pad3, dimRoundingMode) {
+function avgPool_(x, filterSize, strides2, pad3, dimRoundingMode) {
   const $x = convertToTensor(x, "x", "avgPool", "float32");
   const dilations = 1;
-  assert(eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
+  assert(eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
   let x4D = $x;
   let reshapedTo4D = false;
   if ($x.rank === 3) {
@@ -11238,7 +11235,7 @@ function avgPool_(x, filterSize, strides, pad3, dimRoundingMode) {
     assert(isInt(pad3), () => `Error in avgPool: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { x: x4D };
-  const attrs = { filterSize, strides, pad: pad3, dimRoundingMode };
+  const attrs = { filterSize, strides: strides2, pad: pad3, dimRoundingMode };
   let res = ENGINE.runKernel(AvgPool, inputs, attrs);
   res = cast(res, $x.dtype);
   if (reshapedTo4D) {
@@ -11247,7 +11244,7 @@ function avgPool_(x, filterSize, strides, pad3, dimRoundingMode) {
   return res;
 }
 var avgPool = op({ avgPool_ });
-function avgPool3d_(x, filterSize, strides, pad3, dimRoundingMode, dataFormat = "NDHWC") {
+function avgPool3d_(x, filterSize, strides2, pad3, dimRoundingMode, dataFormat = "NDHWC") {
   const $x = convertToTensor(x, "x", "avgPool3d", "float32");
   let x5D = $x;
   let reshapedTo5D = false;
@@ -11261,7 +11258,7 @@ function avgPool3d_(x, filterSize, strides, pad3, dimRoundingMode, dataFormat = 
     assert(isInt(pad3), () => `Error in avgPool3d: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { x: x5D };
-  const attrs = { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat };
+  const attrs = { filterSize, strides: strides2, pad: pad3, dimRoundingMode, dataFormat };
   let res = ENGINE.runKernel(AvgPool3D, inputs, attrs);
   res = cast(res, x5D.dtype);
   if (reshapedTo5D) {
@@ -11548,7 +11545,7 @@ function concat4d_(tensors, axis) {
   return concat(tensors, axis);
 }
 var concat4d = op({ concat4d_ });
-function conv2d_(x, filter, strides, pad3, dataFormat = "NHWC", dilations = [1, 1], dimRoundingMode) {
+function conv2d_(x, filter, strides2, pad3, dataFormat = "NHWC", dilations = [1, 1], dimRoundingMode) {
   const $x = convertToTensor(x, "x", "conv2d", "float32");
   const $filter = convertToTensor(filter, "filter", "conv2d", "float32");
   let x4D = $x;
@@ -11564,9 +11561,9 @@ function conv2d_(x, filter, strides, pad3, dataFormat = "NHWC", dilations = [1, 
   }
   const inDepth = dataFormat === "NHWC" ? x4D.shape[3] : x4D.shape[1];
   assert(inDepth === $filter.shape[2], () => `Error in conv2d: depth of input (${inDepth}) must match input depth for filter ${$filter.shape[2]}.`);
-  assert(eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in conv2D: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
+  assert(eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in conv2D: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
   const inputs = { x: x4D, filter: $filter };
-  const attrs = { strides, pad: pad3, dataFormat, dilations, dimRoundingMode };
+  const attrs = { strides: strides2, pad: pad3, dataFormat, dilations, dimRoundingMode };
   const res = ENGINE.runKernel(Conv2D, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -11593,17 +11590,17 @@ function conv1d_(x, filter, stride, pad3, dataFormat = "NWC", dilation = 1, dimR
   assert(dataFormat === "NWC", () => `Error in conv1d: got dataFormat of ${dataFormat} but only NWC is currently supported.`);
   const filter4D = reshape($filter, [1, $filter.shape[0], $filter.shape[1], $filter.shape[2]]);
   const input4D = reshape(x3D, [x3D.shape[0], 1, x3D.shape[1], x3D.shape[2]]);
-  const strides = [1, stride];
+  const strides2 = [1, stride];
   const dilations = [1, dilation];
   const conv2dDataFormat = "NHWC";
-  const res = conv2d(input4D, filter4D, strides, pad3, conv2dDataFormat, dilations, dimRoundingMode);
+  const res = conv2d(input4D, filter4D, strides2, pad3, conv2dDataFormat, dilations, dimRoundingMode);
   if (reshapedTo3D) {
     return reshape(res, [res.shape[2], res.shape[3]]);
   }
   return reshape(res, [res.shape[0], res.shape[2], res.shape[3]]);
 }
 var conv1d = op({ conv1d_ });
-function conv2DBackpropInput_(xShape, dy, filter, strides, pad3, dataFormat = "NHWC", dimRoundingMode) {
+function conv2DBackpropInput_(xShape, dy, filter, strides2, pad3, dataFormat = "NHWC", dimRoundingMode) {
   assert(xShape.length === dy.rank, () => `Length of inShape (${xShape.length}) and rank of dy (${dy.rank}) must match`);
   let xShape4D = xShape;
   let dy4D = dy;
@@ -11624,7 +11621,7 @@ function conv2DBackpropInput_(xShape, dy, filter, strides, pad3, dataFormat = "N
     assert(isInt(pad3), () => `Error in conv2dDerInput: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { dy: dy4D, filter };
-  const attrs = { strides, pad: pad3, dataFormat, dimRoundingMode, inputShape: xShape4D };
+  const attrs = { strides: strides2, pad: pad3, dataFormat, dimRoundingMode, inputShape: xShape4D };
   const res = ENGINE.runKernel(Conv2DBackpropInput, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -11632,13 +11629,13 @@ function conv2DBackpropInput_(xShape, dy, filter, strides, pad3, dataFormat = "N
   return res;
 }
 var conv2DBackpropInput = op({ conv2DBackpropInput_ });
-function conv2dTranspose_(x, filter, outputShape, strides, pad3, dimRoundingMode) {
+function conv2dTranspose_(x, filter, outputShape, strides2, pad3, dimRoundingMode) {
   const $x = convertToTensor(x, "x", "conv2dTranspose");
   const $filter = convertToTensor(filter, "filter", "conv2dTranspose");
-  return conv2DBackpropInput(outputShape, $x, $filter, strides, pad3, "NHWC", dimRoundingMode);
+  return conv2DBackpropInput(outputShape, $x, $filter, strides2, pad3, "NHWC", dimRoundingMode);
 }
 var conv2dTranspose = op({ conv2dTranspose_ });
-function conv3d_(x, filter, strides, pad3, dataFormat = "NDHWC", dilations = [1, 1, 1]) {
+function conv3d_(x, filter, strides2, pad3, dataFormat = "NDHWC", dilations = [1, 1, 1]) {
   const $x = convertToTensor(x, "x", "conv3d");
   const $filter = convertToTensor(filter, "filter", "conv3d");
   let x5D = $x;
@@ -11650,10 +11647,10 @@ function conv3d_(x, filter, strides, pad3, dataFormat = "NDHWC", dilations = [1,
   assert(x5D.rank === 5, () => `Error in conv3d: input must be rank 5, but got rank ${x5D.rank}.`);
   assert($filter.rank === 5, () => `Error in conv3d: filter must be rank 5, but got rank ${$filter.rank}.`);
   assert(x5D.shape[4] === $filter.shape[3], () => `Error in conv3d: depth of input (${x5D.shape[4]}) must match input depth for filter ${$filter.shape[3]}.`);
-  assert(eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in conv3D: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
+  assert(eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in conv3D: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
   assert(dataFormat === "NDHWC", () => `Error in conv3d: got dataFormat of ${dataFormat} but only NDHWC is currently supported.`);
   const inputs = { x: x5D, filter: $filter };
-  const attrs = { strides, pad: pad3, dataFormat, dilations };
+  const attrs = { strides: strides2, pad: pad3, dataFormat, dilations };
   const res = ENGINE.runKernel(Conv3D, inputs, attrs);
   if (reshapedTo5D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3], res.shape[4]]);
@@ -11661,7 +11658,7 @@ function conv3d_(x, filter, strides, pad3, dataFormat = "NDHWC", dilations = [1,
   return res;
 }
 var conv3d = op({ conv3d_ });
-function conv3DBackpropInput_(xShape, dy, filter, strides, pad3) {
+function conv3DBackpropInput_(xShape, dy, filter, strides2, pad3) {
   assert(xShape.length === dy.rank, () => `Length of inShape (${xShape.length}) and rank of dy (${dy.rank}) must match`);
   let xShape5D = xShape;
   let dy5D = dy;
@@ -11679,7 +11676,7 @@ function conv3DBackpropInput_(xShape, dy, filter, strides, pad3) {
   assert(inDepth === filter.shape[3], () => `Error in conv3dDerInput: depth of input (${inDepth}) must match input depth for filter ${filter.shape[3]}.`);
   assert(outDepth === filter.shape[4], () => `Error in conv3dDerInput: depth of output (${outDepth}) must match output depth for filter ${filter.shape[4]}.`);
   const inputs = { dy: dy5D, filter };
-  const attrs = { pad: pad3, strides, inputShape: xShape5D };
+  const attrs = { pad: pad3, strides: strides2, inputShape: xShape5D };
   const res = ENGINE.runKernel(Conv3DBackpropInputV2, inputs, attrs);
   if (reshapedTo5D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3], res.shape[4]]);
@@ -11687,10 +11684,10 @@ function conv3DBackpropInput_(xShape, dy, filter, strides, pad3) {
   return res;
 }
 var conv3DBackpropInput = op({ conv3DBackpropInput_ });
-function conv3dTranspose_(x, filter, outputShape, strides, pad3) {
+function conv3dTranspose_(x, filter, outputShape, strides2, pad3) {
   const $x = convertToTensor(x, "x", "conv3dTranspose");
   const $filter = convertToTensor(filter, "filter", "conv3dTranspose");
-  return conv3DBackpropInput(outputShape, $x, $filter, strides, pad3);
+  return conv3DBackpropInput(outputShape, $x, $filter, strides2, pad3);
 }
 var conv3dTranspose = op({ conv3dTranspose_ });
 function cos_(x) {
@@ -11742,7 +11739,7 @@ function depthToSpace_(x, blockSize, dataFormat = "NHWC") {
   return ENGINE.runKernel(DepthToSpace, inputs, attrs);
 }
 var depthToSpace = op({ depthToSpace_ });
-function depthwiseConv2d_(x, filter, strides, pad3, dataFormat = "NHWC", dilations = [1, 1], dimRoundingMode) {
+function depthwiseConv2d_(x, filter, strides2, pad3, dataFormat = "NHWC", dilations = [1, 1], dimRoundingMode) {
   const $x = convertToTensor(x, "x", "depthwiseConv2d", "float32");
   const $filter = convertToTensor(filter, "filter", "depthwiseConv2d", "float32");
   let x4D = $x;
@@ -11758,7 +11755,7 @@ function depthwiseConv2d_(x, filter, strides, pad3, dataFormat = "NHWC", dilatio
     assert(isInt(pad3), () => `Error in depthwiseConv2d: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { x: x4D, filter: $filter };
-  const attrs = { strides, pad: pad3, dataFormat, dilations, dimRoundingMode };
+  const attrs = { strides: strides2, pad: pad3, dataFormat, dilations, dimRoundingMode };
   const res = ENGINE.runKernel(DepthwiseConv2dNative, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -11772,7 +11769,7 @@ function diag_(x) {
   return ENGINE.runKernel(Diag, inputs);
 }
 var diag = op({ diag_ });
-function dilation2d_(x, filter, strides, pad3, dilations = [1, 1], dataFormat = "NHWC") {
+function dilation2d_(x, filter, strides2, pad3, dilations = [1, 1], dataFormat = "NHWC") {
   const $x = convertToTensor(x, "x", "dilation2d");
   const $filter = convertToTensor(filter, "filter", "dilation2d");
   assert($x.rank === 3 || $x.rank === 4, () => `Error in dilation2d: input must be rank 3 or 4, but got rank ${$x.rank}.`);
@@ -11785,7 +11782,7 @@ function dilation2d_(x, filter, strides, pad3, dilations = [1, 1], dataFormat = 
     reshapedTo4D = true;
   }
   const inputs = { x: x4D, filter: $filter };
-  const attrs = { strides, pad: pad3, dilations };
+  const attrs = { strides: strides2, pad: pad3, dilations };
   const res = ENGINE.runKernel(Dilation2D, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -12344,7 +12341,7 @@ function logicalXor_(a, b) {
   return logicalAnd(logicalOr(a, b), logicalNot(logicalAnd(a, b)));
 }
 var logicalXor = op({ logicalXor_ });
-function maxPool_(x, filterSize, strides, pad3, dimRoundingMode) {
+function maxPool_(x, filterSize, strides2, pad3, dimRoundingMode) {
   const $x = convertToTensor(x, "x", "maxPool");
   const dilations = 1;
   let x4D = $x;
@@ -12354,12 +12351,12 @@ function maxPool_(x, filterSize, strides, pad3, dimRoundingMode) {
     x4D = reshape($x, [1, $x.shape[0], $x.shape[1], $x.shape[2]]);
   }
   assert(x4D.rank === 4, () => `Error in maxPool: input must be rank 4 but got rank ${x4D.rank}.`);
-  assert(eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
+  assert(eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
   if (dimRoundingMode != null) {
     assert(isInt(pad3), () => `Error in maxPool: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { x: x4D };
-  const attrs = { filterSize, strides, pad: pad3, dimRoundingMode };
+  const attrs = { filterSize, strides: strides2, pad: pad3, dimRoundingMode };
   const res = ENGINE.runKernel(MaxPool, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -12367,7 +12364,7 @@ function maxPool_(x, filterSize, strides, pad3, dimRoundingMode) {
   return res;
 }
 var maxPool = op({ maxPool_ });
-function maxPool3d_(x, filterSize = [1, 1, 1], strides, pad3, dimRoundingMode, dataFormat = "NDHWC") {
+function maxPool3d_(x, filterSize = [1, 1, 1], strides2, pad3, dimRoundingMode, dataFormat = "NDHWC") {
   const $x = convertToTensor(x, "x", "maxPool3d");
   let x5D = $x;
   let reshapedTo5D = false;
@@ -12381,7 +12378,7 @@ function maxPool3d_(x, filterSize = [1, 1, 1], strides, pad3, dimRoundingMode, d
     assert(isInt(pad3), () => `Error in maxPool3d: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { x: x5D };
-  const attrs = { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat };
+  const attrs = { filterSize, strides: strides2, pad: pad3, dimRoundingMode, dataFormat };
   const res = ENGINE.runKernel(MaxPool3D, inputs, attrs);
   if (reshapedTo5D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3], res.shape[4]]);
@@ -12389,10 +12386,10 @@ function maxPool3d_(x, filterSize = [1, 1, 1], strides, pad3, dimRoundingMode, d
   return res;
 }
 var maxPool3d = op({ maxPool3d_ });
-function maxPoolWithArgmax_(x, filterSize, strides, pad3, includeBatchInIndex = false) {
+function maxPoolWithArgmax_(x, filterSize, strides2, pad3, includeBatchInIndex = false) {
   const $x = convertToTensor(x, "x", "maxPoolWithArgmax");
   const inputs = { x: $x };
-  const attrs = { filterSize, strides, pad: pad3, includeBatchInIndex };
+  const attrs = { filterSize, strides: strides2, pad: pad3, includeBatchInIndex };
   const result = ENGINE.runKernel(MaxPoolWithArgmax, inputs, attrs);
   return { result: result[0], indexes: result[1] };
 }
@@ -12636,12 +12633,12 @@ function spaceToBatchND_(x, blockShape, paddings) {
   return ENGINE.runKernel(SpaceToBatchND, inputs, attrs);
 }
 var spaceToBatchND = op({ spaceToBatchND_ });
-function pool_(input2, windowShape, poolingType, pad3, dilations, strides) {
+function pool_(input2, windowShape, poolingType, pad3, dilations, strides2) {
   if (dilations == null) {
     dilations = [1, 1];
   }
-  if (strides == null) {
-    strides = 1;
+  if (strides2 == null) {
+    strides2 = 1;
   }
   if (pad3 === 0) {
     pad3 = "valid";
@@ -12653,8 +12650,8 @@ function pool_(input2, windowShape, poolingType, pad3, dilations, strides) {
     reshapedTo4D = true;
     x4D = reshape($x, [1, $x.shape[0], $x.shape[1], $x.shape[2]]);
   }
-  assert(eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in pool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
-  const convInfo = computePool2DInfo(x4D.shape, windowShape, strides, dilations, pad3);
+  assert(eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in pool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
+  const convInfo = computePool2DInfo(x4D.shape, windowShape, strides2, dilations, pad3);
   const dilation = [convInfo.dilationHeight, convInfo.dilationWidth];
   let basePadding;
   if (pad3 === "same") {
@@ -12666,7 +12663,7 @@ function pool_(input2, windowShape, poolingType, pad3, dilations, strides) {
   const [adjustedPadding, adjustedCrops] = requiredSpaceToBatchPaddings([convInfo.inHeight, convInfo.inWidth], dilation, basePadding);
   const convertedPad = isDilationOne ? pad3 : "valid";
   const convertedX = isDilationOne ? x4D : spaceToBatchND(x4D, dilation, adjustedPadding);
-  const forwardOp = poolingType === "avg" ? () => avgPool(convertedX, windowShape, strides, convertedPad) : () => maxPool(convertedX, windowShape, strides, convertedPad);
+  const forwardOp = poolingType === "avg" ? () => avgPool(convertedX, windowShape, strides2, convertedPad) : () => maxPool(convertedX, windowShape, strides2, convertedPad);
   const y = forwardOp();
   const res = isDilationOne ? y : batchToSpaceND(y, dilation, adjustedCrops);
   if (reshapedTo4D) {
@@ -12992,7 +12989,7 @@ function selu_(x) {
   return ENGINE.runKernel(Selu, inputs);
 }
 var selu = op({ selu_ });
-function separableConv2d_(x, depthwiseFilter, pointwiseFilter, strides, pad3, dilation = [1, 1], dataFormat = "NHWC") {
+function separableConv2d_(x, depthwiseFilter, pointwiseFilter, strides2, pad3, dilation = [1, 1], dataFormat = "NHWC") {
   const $x = convertToTensor(x, "x", "separableConv2d");
   const $depthwiseFilter = convertToTensor(depthwiseFilter, "depthwiseFilter", "separableConv2d");
   const $pointwiseFilter = convertToTensor(pointwiseFilter, "pointwiseFilter", "separableConv2d");
@@ -13013,7 +13010,7 @@ function separableConv2d_(x, depthwiseFilter, pointwiseFilter, strides, pad3, di
   const inChannels = $depthwiseFilter.shape[2];
   const channelMultiplier = $depthwiseFilter.shape[3];
   assert($pointwiseFilter.shape[2] === inChannels * channelMultiplier, () => `Error in separableConv2d: the third dimension of pointwise filter must be ${inChannels * channelMultiplier}, but got ${$pointwiseFilter.shape[2]}.`);
-  const depthwise = depthwiseConv2d(x4D, $depthwiseFilter, strides, pad3, dataFormat, dilation);
+  const depthwise = depthwiseConv2d(x4D, $depthwiseFilter, strides2, pad3, dataFormat, dilation);
   const pointwiseStride = 1;
   const res = conv2d(depthwise, $pointwiseFilter, pointwiseStride, "valid", dataFormat);
   if (reshapedTo4D) {
@@ -13222,13 +13219,13 @@ function step_(x, alpha2 = 0) {
   return ENGINE.runKernel(Step, inputs, attrs);
 }
 var step = op({ step_ });
-function stridedSlice_(x, begin, end, strides, beginMask = 0, endMask = 0, ellipsisMask = 0, newAxisMask = 0, shrinkAxisMask = 0) {
+function stridedSlice_(x, begin, end, strides2, beginMask = 0, endMask = 0, ellipsisMask = 0, newAxisMask = 0, shrinkAxisMask = 0) {
   const $x = convertToTensor(x, "x", "stridedSlice", "string_or_numeric");
   const inputs = { x: $x };
   const attrs = {
     begin,
     end,
-    strides,
+    strides: strides2,
     beginMask,
     endMask,
     ellipsisMask,
@@ -13631,7 +13628,7 @@ __export2(fused_ops_exports, {
   depthwiseConv2d: () => depthwiseConv2d2,
   matMul: () => matMul2
 });
-function conv2DBackpropFilter_(x, dy, filterShape, strides, pad3, dataFormat = "NHWC", dimRoundingMode) {
+function conv2DBackpropFilter_(x, dy, filterShape, strides2, pad3, dataFormat = "NHWC", dimRoundingMode) {
   let x4D = x;
   if (x.rank === 3) {
     x4D = reshape(x, [1, x.shape[0], x.shape[1], x.shape[2]]);
@@ -13651,7 +13648,7 @@ function conv2DBackpropFilter_(x, dy, filterShape, strides, pad3, dataFormat = "
     assert(isInt(pad3), () => `Error in conv2dDerFilter: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { x: x4D, dy: dy4D };
-  const attrs = { strides, pad: pad3, dataFormat, dimRoundingMode, filterShape };
+  const attrs = { strides: strides2, pad: pad3, dataFormat, dimRoundingMode, filterShape };
   return ENGINE.runKernel(Conv2DBackpropFilter, inputs, attrs);
 }
 var conv2DBackpropFilter = op({ conv2DBackpropFilter_ });
@@ -13697,7 +13694,7 @@ var shouldFuse = (gradientDepth, activation2) => {
 function fusedConv2d_({
   x,
   filter,
-  strides,
+  strides: strides2,
   pad: pad3,
   dataFormat = "NHWC",
   dilations = [1, 1],
@@ -13709,7 +13706,7 @@ function fusedConv2d_({
 }) {
   activation2 = activation2 || "linear";
   if (shouldFuse(ENGINE.state.gradientDepth, activation2) === false) {
-    let result = conv2d(x, filter, strides, pad3, dataFormat, dilations, dimRoundingMode);
+    let result = conv2d(x, filter, strides2, pad3, dataFormat, dilations, dimRoundingMode);
     if (bias != null) {
       result = add2(result, bias);
     }
@@ -13729,9 +13726,9 @@ function fusedConv2d_({
     assert(isInt(pad3), () => `Error in fused conv2d: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   assert(x4D.shape[3] === $filter.shape[2], () => `Error in conv2d: depth of input (${x4D.shape[3]}) must match input depth for filter ${$filter.shape[2]}.`);
-  assert(eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in conv2D: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
+  assert(eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in conv2D: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
   assert(dataFormat === "NHWC", () => `Error in conv2d: got dataFormat of ${dataFormat} but only NHWC is currently supported.`);
-  const convInfo = computeConv2DInfo(x4D.shape, $filter.shape, strides, dilations, pad3, dimRoundingMode);
+  const convInfo = computeConv2DInfo(x4D.shape, $filter.shape, strides2, dilations, pad3, dimRoundingMode);
   let $bias;
   if (bias != null) {
     $bias = convertToTensor(bias, "bias", "fused conv2d");
@@ -13746,8 +13743,8 @@ function fusedConv2d_({
     const [$filter2, x4D2, y, $bias2] = saved;
     const dyActivation = getFusedDyActivation(dy, y, activation2);
     assert(tupleValuesAreOne(dilations), () => `Error in gradient of fused conv2D: dilation rates greater than 1 are not yet supported in gradients. Got dilations '${dilations}'`);
-    const xDer = conv2DBackpropInput(x4D2.shape, dyActivation, $filter2, strides, pad3);
-    const filterDer = conv2DBackpropFilter(x4D2, dyActivation, $filter2.shape, strides, pad3);
+    const xDer = conv2DBackpropInput(x4D2.shape, dyActivation, $filter2, strides2, pad3);
+    const filterDer = conv2DBackpropFilter(x4D2, dyActivation, $filter2.shape, strides2, pad3);
     const der = [xDer, filterDer];
     if ($bias2 != null) {
       const biasDer = getFusedBiasGradient($bias2, dyActivation);
@@ -13762,7 +13759,7 @@ function fusedConv2d_({
     preluActivationWeights: $preluActivationWeights
   };
   const attrs = {
-    strides,
+    strides: strides2,
     pad: pad3,
     dataFormat,
     dilations,
@@ -13793,7 +13790,7 @@ function fusedConv2d_({
   }
 }
 var conv2d2 = op({ fusedConv2d_ });
-function depthwiseConv2dNativeBackpropFilter_(x, dy, filterShape, strides, pad3, dilations = [1, 1], dimRoundingMode) {
+function depthwiseConv2dNativeBackpropFilter_(x, dy, filterShape, strides2, pad3, dilations = [1, 1], dimRoundingMode) {
   let x4D = x;
   if (x.rank === 3) {
     x4D = reshape(x, [1, x.shape[0], x.shape[1], x.shape[2]]);
@@ -13803,11 +13800,11 @@ function depthwiseConv2dNativeBackpropFilter_(x, dy, filterShape, strides, pad3,
     dy4D = reshape(dy, [1, dy.shape[0], dy.shape[1], dy.shape[2]]);
   }
   const inputs = { x: x4D, dy: dy4D };
-  const attrs = { strides, pad: pad3, dimRoundingMode, dilations, filterShape };
+  const attrs = { strides: strides2, pad: pad3, dimRoundingMode, dilations, filterShape };
   return ENGINE.runKernel(DepthwiseConv2dNativeBackpropFilter, inputs, attrs);
 }
 var depthwiseConv2dNativeBackpropFilter = op({ depthwiseConv2dNativeBackpropFilter_ });
-function depthwiseConv2dNativeBackpropInput_(xShape, dy, filter, strides, pad3, dilations = [1, 1], dimRoundingMode) {
+function depthwiseConv2dNativeBackpropInput_(xShape, dy, filter, strides2, pad3, dilations = [1, 1], dimRoundingMode) {
   let dy4D = dy;
   let reshapedTo4D = false;
   if (dy.rank === 3) {
@@ -13815,7 +13812,7 @@ function depthwiseConv2dNativeBackpropInput_(xShape, dy, filter, strides, pad3, 
     dy4D = reshape(dy, [1, dy.shape[0], dy.shape[1], dy.shape[2]]);
   }
   const inputs = { dy: dy4D, filter };
-  const attrs = { strides, pad: pad3, dimRoundingMode, dilations, inputShape: xShape };
+  const attrs = { strides: strides2, pad: pad3, dimRoundingMode, dilations, inputShape: xShape };
   const res = ENGINE.runKernel(DepthwiseConv2dNativeBackpropInput, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -13826,7 +13823,7 @@ var depthwiseConv2dNativeBackpropInput = op({ depthwiseConv2dNativeBackpropInput
 function fusedDepthwiseConv2d_({
   x,
   filter,
-  strides,
+  strides: strides2,
   pad: pad3,
   dataFormat = "NHWC",
   dilations = [1, 1],
@@ -13837,7 +13834,7 @@ function fusedDepthwiseConv2d_({
   leakyreluAlpha
 }) {
   if (shouldFuse(ENGINE.state.gradientDepth, activation2) === false) {
-    let result = depthwiseConv2d(x, filter, strides, pad3, dataFormat, dilations, dimRoundingMode);
+    let result = depthwiseConv2d(x, filter, strides2, pad3, dataFormat, dilations, dimRoundingMode);
     if (bias != null) {
       result = add2(result, bias);
     }
@@ -13857,11 +13854,11 @@ function fusedDepthwiseConv2d_({
   if (dilations == null) {
     dilations = [1, 1];
   }
-  assert(eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in fused depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
+  assert(eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in fused depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
   if (dimRoundingMode != null) {
     assert(isInt(pad3), () => `Error in fused depthwiseConv2d: pad must be an integer when using dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
-  const convInfo = computeConv2DInfo(x4D.shape, $filter.shape, strides, dilations, pad3, dimRoundingMode, true);
+  const convInfo = computeConv2DInfo(x4D.shape, $filter.shape, strides2, dilations, pad3, dimRoundingMode, true);
   let $bias;
   if (bias != null) {
     $bias = convertToTensor(bias, "bias", "fused conv2d");
@@ -13876,8 +13873,8 @@ function fusedDepthwiseConv2d_({
     assert(tupleValuesAreOne(dilations), () => `Error in gradient of fused depthwiseConv2d: dilation rates greater than 1 are not yet supported. Got dilations '${dilations}'`);
     const [$filter2, x4D2, y, bias2] = saved;
     const dyActivation = getFusedDyActivation(dy, y, activation2);
-    const xDer = depthwiseConv2dNativeBackpropInput(x4D2.shape, dyActivation, $filter2, strides, pad3, dilations, dimRoundingMode);
-    const filterDer = depthwiseConv2dNativeBackpropFilter(x4D2, dyActivation, $filter2.shape, strides, pad3, dilations, dimRoundingMode);
+    const xDer = depthwiseConv2dNativeBackpropInput(x4D2.shape, dyActivation, $filter2, strides2, pad3, dilations, dimRoundingMode);
+    const filterDer = depthwiseConv2dNativeBackpropFilter(x4D2, dyActivation, $filter2.shape, strides2, pad3, dilations, dimRoundingMode);
     if (bias2 != null) {
       const biasDer = getFusedBiasGradient($bias, dyActivation);
       return [xDer, filterDer, biasDer];
@@ -13891,7 +13888,7 @@ function fusedDepthwiseConv2d_({
     preluActivationWeights: $preluActivationWeights
   };
   const attrs = {
-    strides,
+    strides: strides2,
     pad: pad3,
     dataFormat,
     dilations,
@@ -16325,7 +16322,7 @@ var atanhGradConfig = {
     return { x: () => div(dy, sub(scalar(1), square(cast(x, "float32")))) };
   }
 };
-function avgPool3dGrad_(dy, input2, filterSize, strides, pad3, dimRoundingMode) {
+function avgPool3dGrad_(dy, input2, filterSize, strides2, pad3, dimRoundingMode) {
   const $dy = convertToTensor(dy, "dy", "avgPool3dGrad");
   const $input = convertToTensor(input2, "input", "avgPool3dGrad");
   let dy5D = $dy;
@@ -16348,7 +16345,7 @@ function avgPool3dGrad_(dy, input2, filterSize, strides, pad3, dimRoundingMode) 
     assert(isInt(pad3), () => `Error in avgPool3dGrad: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { dy: dy5D, input: input5D };
-  const attrs = { filterSize, strides, pad: pad3, dimRoundingMode };
+  const attrs = { filterSize, strides: strides2, pad: pad3, dimRoundingMode };
   const res = ENGINE.runKernel(AvgPool3DGrad, inputs, attrs);
   if (reshapedTo5D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3], res.shape[4]]);
@@ -16361,13 +16358,13 @@ var avgPool3DGradConfig = {
   inputsToSave: ["x"],
   gradFunc: (dy, saved, attrs) => {
     const [x] = saved;
-    const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+    const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
     return {
-      x: () => avgPool3dGrad(dy, x, filterSize, strides, pad3, dimRoundingMode)
+      x: () => avgPool3dGrad(dy, x, filterSize, strides2, pad3, dimRoundingMode)
     };
   }
 };
-function avgPoolGrad_(dy, input2, filterSize, strides, pad3) {
+function avgPoolGrad_(dy, input2, filterSize, strides2, pad3) {
   const $dy = convertToTensor(dy, "dy", "avgPoolGrad");
   const $input = convertToTensor(input2, "input", "avgPoolGrad");
   assert($input.rank === $dy.rank, () => `Rank of input (${$input.rank}) does not match rank of dy (${$dy.rank})`);
@@ -16382,7 +16379,7 @@ function avgPoolGrad_(dy, input2, filterSize, strides, pad3) {
   assert(dy4D.rank === 4, () => `Error in avgPoolGrad: dy must be rank 4 but got rank ${dy4D.rank}.`);
   assert(input4D.rank === 4, () => `Error in avgPoolGrad: input must be rank 4 but got rank ${input4D.rank}.`);
   const inputs = { dy: dy4D, input: input4D };
-  const attrs = { filterSize, strides, pad: pad3 };
+  const attrs = { filterSize, strides: strides2, pad: pad3 };
   const res = ENGINE.runKernel(AvgPoolGrad, inputs, attrs);
   if (reshapedTo4D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3]]);
@@ -16395,8 +16392,8 @@ var avgPoolGradConfig = {
   inputsToSave: ["x"],
   gradFunc: (dy, saved, attrs) => {
     const [x] = saved;
-    const { filterSize, strides, pad: pad3 } = attrs;
-    return { x: () => avgPoolGrad(dy, x, filterSize, strides, pad3) };
+    const { filterSize, strides: strides2, pad: pad3 } = attrs;
+    return { x: () => avgPoolGrad(dy, x, filterSize, strides2, pad3) };
   }
 };
 var batchMatMulGradConfig = {
@@ -16503,11 +16500,11 @@ var conv2DGradConfig = {
   inputsToSave: ["x", "filter"],
   gradFunc: (dy, saved, attrs) => {
     const [x4D, $filter] = saved;
-    const { dilations, strides, pad: pad3, dataFormat } = attrs;
+    const { dilations, strides: strides2, pad: pad3, dataFormat } = attrs;
     assert(tupleValuesAreOne(dilations), () => `Error in gradient of conv2D: dilation rates greater than 1 are not yet supported in gradients. Got dilations '${dilations}'`);
     return {
-      x: () => conv2DBackpropInput(x4D.shape, dy, $filter, strides, pad3, dataFormat),
-      filter: () => conv2DBackpropFilter(x4D, dy, $filter.shape, strides, pad3, dataFormat)
+      x: () => conv2DBackpropInput(x4D.shape, dy, $filter, strides2, pad3, dataFormat),
+      filter: () => conv2DBackpropFilter(x4D, dy, $filter.shape, strides2, pad3, dataFormat)
     };
   }
 };
@@ -16516,14 +16513,14 @@ var conv2DBackpropInputGradConfig = {
   inputsToSave: ["dy", "filter"],
   gradFunc: (ddx, saved, attrs) => {
     const [dy, filter] = saved;
-    const { strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
+    const { strides: strides2, pad: pad3, dataFormat, dimRoundingMode } = attrs;
     return {
-      dy: () => conv2d(ddx, filter, strides, pad3, dataFormat, 1, dimRoundingMode),
-      filter: () => conv2DBackpropFilter(ddx, dy, filter.shape, strides, pad3, dataFormat, dimRoundingMode)
+      dy: () => conv2d(ddx, filter, strides2, pad3, dataFormat, 1, dimRoundingMode),
+      filter: () => conv2DBackpropFilter(ddx, dy, filter.shape, strides2, pad3, dataFormat, dimRoundingMode)
     };
   }
 };
-function conv3DBackpropFilter_(x, dy, filterShape, strides, pad3) {
+function conv3DBackpropFilter_(x, dy, filterShape, strides2, pad3) {
   let x5D = x;
   if (x.rank === 4) {
     x5D = reshape(x, [1, x.shape[0], x.shape[1], x.shape[2], x.shape[3]]);
@@ -16538,7 +16535,7 @@ function conv3DBackpropFilter_(x, dy, filterShape, strides, pad3) {
   assert(x5D.shape[4] === filterShape[3], () => `Error in conv3dDerFilter: depth of input ${x5D.shape[4]}) must match input depth in filter (${filterShape[3]}.`);
   assert(dy5D.shape[4] === filterShape[4], () => `Error in conv3dDerFilter: depth of dy (${dy5D.shape[4]}) must match output depth for filter (${filterShape[4]}).`);
   const inputs = { x: x5D, dy: dy5D };
-  const attrs = { strides, pad: pad3, filterShape };
+  const attrs = { strides: strides2, pad: pad3, filterShape };
   return ENGINE.runKernel(Conv3DBackpropFilterV2, inputs, attrs);
 }
 var conv3DBackpropFilter = op({ conv3DBackpropFilter_ });
@@ -16546,12 +16543,12 @@ var conv3DGradConfig = {
   kernelName: Conv3D,
   inputsToSave: ["x", "filter"],
   gradFunc: (dy, saved, attrs) => {
-    const { dilations, strides, pad: pad3 } = attrs;
+    const { dilations, strides: strides2, pad: pad3 } = attrs;
     assert(tupleValuesAreOne(dilations), () => `Error in gradient of conv3D: dilation rates greater than 1 are not yet supported in gradients. Got dilations '${dilations}'`);
     const [x5D, $filter] = saved;
     return {
-      x: () => conv3DBackpropInput(x5D.shape, dy, $filter, strides, pad3),
-      filter: () => conv3DBackpropFilter(x5D, dy, $filter.shape, strides, pad3)
+      x: () => conv3DBackpropInput(x5D.shape, dy, $filter, strides2, pad3),
+      filter: () => conv3DBackpropFilter(x5D, dy, $filter.shape, strides2, pad3)
     };
   }
 };
@@ -16593,20 +16590,20 @@ var depthwiseConv2dNativeGradConfig = {
   kernelName: DepthwiseConv2dNative,
   inputsToSave: ["x", "filter"],
   gradFunc: (dy, saved, attrs) => {
-    const { dilations, strides, pad: pad3, dimRoundingMode } = attrs;
+    const { dilations, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
     const $dilations = dilations == null ? [1, 1] : dilations;
     assert(tupleValuesAreOne($dilations), () => `Error in gradient of depthwiseConv2dNative: dilation rates greater than 1 are not yet supported. Got dilations '${$dilations}'`);
     const [x, filter] = saved;
     assert(x.rank === 4, () => `Error in gradient of depthwiseConv2dNative: input must be rank 4, but got rank ${x.rank}.`);
     assert(filter.rank === 4, () => `Error in gradient of depthwiseConv2dNative: filter must be rank 4, but got rank ${filter.rank}.`);
     assert(x.shape[3] === filter.shape[2], () => `Error in gradient of depthwiseConv2d: number of input channels (${x.shape[3]}) must match the inChannels dimension in filter ${filter.shape[2]}.`);
-    assert(eitherStridesOrDilationsAreOne(strides, $dilations), () => `Error in gradient of depthwiseConv2d: Either strides or dilations must be  1. Got strides ${strides} and dilations '${$dilations}'.`);
+    assert(eitherStridesOrDilationsAreOne(strides2, $dilations), () => `Error in gradient of depthwiseConv2d: Either strides or dilations must be  1. Got strides ${strides2} and dilations '${$dilations}'.`);
     if (dimRoundingMode != null) {
       assert(isInt(pad3), () => `Error in depthwiseConv2d: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
     }
     return {
-      x: () => depthwiseConv2dNativeBackpropInput(x.shape, dy, filter, strides, pad3, $dilations, dimRoundingMode),
-      filter: () => depthwiseConv2dNativeBackpropFilter(x, dy, filter.shape, strides, pad3, $dilations, dimRoundingMode)
+      x: () => depthwiseConv2dNativeBackpropInput(x.shape, dy, filter, strides2, pad3, $dilations, dimRoundingMode),
+      filter: () => depthwiseConv2dNativeBackpropFilter(x, dy, filter.shape, strides2, pad3, $dilations, dimRoundingMode)
     };
   }
 };
@@ -16940,7 +16937,7 @@ var maximumGradConfig = {
     return { a: derA, b: derB };
   }
 };
-function maxPool3dGrad_(dy, input2, output, filterSize, strides, pad3, dimRoundingMode) {
+function maxPool3dGrad_(dy, input2, output, filterSize, strides2, pad3, dimRoundingMode) {
   const $dy = convertToTensor(dy, "dy", "maxPool3dGrad");
   const $input = convertToTensor(input2, "input", "maxPool3dGrad");
   const $output = convertToTensor(output, "output", "maxPool3dGrad");
@@ -16973,7 +16970,7 @@ function maxPool3dGrad_(dy, input2, output, filterSize, strides, pad3, dimRoundi
     assert(isInt(pad3), () => `Error in maxPool3dGrad: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { dy: dy5D, input: input5D, output: output5D };
-  const attrs = { filterSize, strides, pad: pad3, dimRoundingMode };
+  const attrs = { filterSize, strides: strides2, pad: pad3, dimRoundingMode };
   const res = ENGINE.runKernel(MaxPool3DGrad, inputs, attrs);
   if (reshapedTo5D) {
     return reshape(res, [res.shape[1], res.shape[2], res.shape[3], res.shape[4]]);
@@ -16987,13 +16984,13 @@ var maxPool3DGradConfig = {
   outputsToSave: [true],
   gradFunc: (dy, saved, attrs) => {
     const [x, y] = saved;
-    const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+    const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
     return {
-      x: () => maxPool3dGrad(dy, x, y, filterSize, strides, pad3, dimRoundingMode)
+      x: () => maxPool3dGrad(dy, x, y, filterSize, strides2, pad3, dimRoundingMode)
     };
   }
 };
-function maxPoolGrad_(dy, input2, output, filterSize, strides, pad3, dimRoundingMode) {
+function maxPoolGrad_(dy, input2, output, filterSize, strides2, pad3, dimRoundingMode) {
   const $dy = convertToTensor(dy, "dy", "maxPoolGrad");
   const $input = convertToTensor(input2, "input", "maxPoolGrad");
   const $output = convertToTensor(output, "output", "maxPoolGrad");
@@ -17004,7 +17001,7 @@ function maxPoolGrad_(dy, input2, output, filterSize, strides, pad3, dimRounding
     assert(isInt(pad3), () => `Error in maxPoolGrad: pad must be an integer when using, dimRoundingMode ${dimRoundingMode} but got pad ${pad3}.`);
   }
   const inputs = { dy: $dy, input: $input, output: $output };
-  const attrs = { filterSize, strides, pad: pad3, dimRoundingMode };
+  const attrs = { filterSize, strides: strides2, pad: pad3, dimRoundingMode };
   return ENGINE.runKernel(MaxPoolGrad, inputs, attrs);
 }
 var maxPoolGrad = op({ maxPoolGrad_ });
@@ -17014,9 +17011,9 @@ var maxPoolGradConfig = {
   outputsToSave: [true],
   gradFunc: (dy, saved, attrs) => {
     const [x, y] = saved;
-    const { filterSize, strides, pad: pad3 } = attrs;
+    const { filterSize, strides: strides2, pad: pad3 } = attrs;
     return {
-      x: () => maxPoolGrad(dy, x, y, filterSize, strides, pad3)
+      x: () => maxPoolGrad(dy, x, y, filterSize, strides2, pad3)
     };
   }
 };
@@ -24051,7 +24048,7 @@ function preprocessConv3DInput(x, dataFormat) {
     }
   });
 }
-function conv1dWithBias(x, kernel, bias, strides = 1, padding2 = "valid", dataFormat, dilationRate = 1) {
+function conv1dWithBias(x, kernel, bias, strides2 = 1, padding2 = "valid", dataFormat, dilationRate = 1) {
   return tidy(() => {
     if (dataFormat == null) {
       dataFormat = imageDataFormat();
@@ -24072,14 +24069,14 @@ function conv1dWithBias(x, kernel, bias, strides = 1, padding2 = "valid", dataFo
     if (padding2 === "causal") {
       throw new NotImplementedError("The support for CAUSAL padding mode in conv1dWithBias is not implemented yet.");
     }
-    let y = conv1d(x, kernel, strides, padding2 === "same" ? "same" : "valid", "NWC", dilationRate);
+    let y = conv1d(x, kernel, strides2, padding2 === "same" ? "same" : "valid", "NWC", dilationRate);
     if (bias != null) {
       y = biasAdd(y, bias);
     }
     return y;
   });
 }
-function conv2dWithBiasActivation(x, kernel, bias, strides = [1, 1], padding2 = "valid", dataFormat, dilationRate, activation2 = null) {
+function conv2dWithBiasActivation(x, kernel, bias, strides2 = [1, 1], padding2 = "valid", dataFormat, dilationRate, activation2 = null) {
   return tidy(() => {
     if (dataFormat == null) {
       dataFormat = imageDataFormat();
@@ -24098,7 +24095,7 @@ function conv2dWithBiasActivation(x, kernel, bias, strides = [1, 1], padding2 = 
     y = fused_ops_exports.conv2d({
       x: y,
       filter: kernel,
-      strides,
+      strides: strides2,
       pad: padding2 === "same" ? "same" : "valid",
       dilations: dilationRate,
       dataFormat: "NHWC",
@@ -24111,7 +24108,7 @@ function conv2dWithBiasActivation(x, kernel, bias, strides = [1, 1], padding2 = 
     return y;
   });
 }
-function conv3dWithBias(x, kernel, bias, strides = [1, 1, 1], padding2 = "valid", dataFormat, dilationRate) {
+function conv3dWithBias(x, kernel, bias, strides2 = [1, 1, 1], padding2 = "valid", dataFormat, dilationRate) {
   return tidy(() => {
     if (dataFormat == null) {
       dataFormat = imageDataFormat();
@@ -24127,7 +24124,7 @@ function conv3dWithBias(x, kernel, bias, strides = [1, 1, 1], padding2 = "valid"
     if (padding2 === "causal") {
       throw new NotImplementedError("The support for CAUSAL padding mode in conv3dWithBias is not implemented yet.");
     }
-    y = conv3d(y, kernel, strides, padding2 === "same" ? "same" : "valid", "NDHWC", dilationRate);
+    y = conv3d(y, kernel, strides2, padding2 === "same" ? "same" : "valid", "NDHWC", dilationRate);
     if (bias != null) {
       y = biasAdd(y, bias);
     }
@@ -24763,7 +24760,7 @@ var UpSampling2D = class extends Layer {
 };
 UpSampling2D.className = "UpSampling2D";
 serialization_exports.registerClass(UpSampling2D);
-function depthwiseConv2d3(x, depthwiseKernel, strides = [1, 1], padding2 = "valid", dataFormat, dilationRate) {
+function depthwiseConv2d3(x, depthwiseKernel, strides2 = [1, 1], padding2 = "valid", dataFormat, dilationRate) {
   return tidy(() => {
     if (dataFormat == null) {
       dataFormat = imageDataFormat();
@@ -24776,7 +24773,7 @@ function depthwiseConv2d3(x, depthwiseKernel, strides = [1, 1], padding2 = "vali
     if (depthwiseKernel.rank !== 4) {
       throw new ValueError(`depthwiseKernel is required to be 4-D, but is instead ${depthwiseKernel.rank}-D`);
     }
-    y = depthwiseConv2d(y, depthwiseKernel, strides, padding2 === "same" ? "same" : "valid", "NHWC", dilationRate);
+    y = depthwiseConv2d(y, depthwiseKernel, strides2, padding2 === "same" ? "same" : "valid", "NHWC", dilationRate);
     if (dataFormat === "channelsFirst") {
       y = transpose(y, [0, 3, 1, 2]);
     }
@@ -25991,12 +25988,12 @@ var ConvRNN2D = class extends RNN {
     });
   }
   computeSingleOutputShape(inputShape) {
-    const { dataFormat, filters, kernelSize, padding: padding2, strides, dilationRate } = this.cell;
+    const { dataFormat, filters, kernelSize, padding: padding2, strides: strides2, dilationRate } = this.cell;
     const isChannelsFirst = dataFormat === "channelsFirst";
     const h = inputShape[isChannelsFirst ? 3 : 2];
     const w = inputShape[isChannelsFirst ? 4 : 3];
-    const hOut = convOutputLength(h, kernelSize[0], padding2, strides[0], dilationRate[0]);
-    const wOut = convOutputLength(w, kernelSize[1], padding2, strides[1], dilationRate[1]);
+    const hOut = convOutputLength(h, kernelSize[0], padding2, strides2[0], dilationRate[0]);
+    const wOut = convOutputLength(w, kernelSize[1], padding2, strides2[1], dilationRate[1]);
     const outShape = [
       ...inputShape.slice(0, 2),
       ...isChannelsFirst ? [filters, hOut, wOut] : [hOut, wOut, filters]
@@ -26010,7 +26007,7 @@ var ConvLSTM2DCell = class extends LSTMCell {
     const {
       filters,
       kernelSize,
-      strides,
+      strides: strides2,
       padding: padding2,
       dataFormat,
       dilationRate
@@ -26020,7 +26017,7 @@ var ConvLSTM2DCell = class extends LSTMCell {
     assertPositiveInteger(this.filters, "filters");
     this.kernelSize = normalizeArray(kernelSize, 2, "kernelSize");
     this.kernelSize.forEach((size2) => assertPositiveInteger(size2, "kernelSize"));
-    this.strides = normalizeArray(strides || 1, 2, "strides");
+    this.strides = normalizeArray(strides2 || 1, 2, "strides");
     this.strides.forEach((stride) => assertPositiveInteger(stride, "strides"));
     this.padding = padding2 || "valid";
     checkPaddingMode(this.padding);
@@ -26145,8 +26142,8 @@ var ConvLSTM2DCell = class extends LSTMCell {
     return out;
   }
   recurrentConv(x, w) {
-    const strides = 1;
-    return conv2d(x, w, strides, "same", this.dataFormat === "channelsFirst" ? "NCHW" : "NHWC");
+    const strides2 = 1;
+    return conv2d(x, w, strides2, "same", this.dataFormat === "channelsFirst" ? "NCHW" : "NHWC");
   }
 };
 ConvLSTM2DCell.className = "ConvLSTM2DCell";
@@ -27665,13 +27662,13 @@ var ZeroPadding2D = class extends Layer {
 };
 ZeroPadding2D.className = "ZeroPadding2D";
 serialization_exports.registerClass(ZeroPadding2D);
-function pool2d(x, poolSize, strides, padding2, dataFormat, poolMode) {
+function pool2d(x, poolSize, strides2, padding2, dataFormat, poolMode) {
   return tidy(() => {
     checkDataFormat(dataFormat);
     checkPoolMode(poolMode);
     checkPaddingMode(padding2);
-    if (strides == null) {
-      strides = [1, 1];
+    if (strides2 == null) {
+      strides2 = [1, 1];
     }
     if (padding2 == null) {
       padding2 = "valid";
@@ -27686,9 +27683,9 @@ function pool2d(x, poolSize, strides, padding2, dataFormat, poolMode) {
     let y;
     const paddingString = padding2 === "same" ? "same" : "valid";
     if (poolMode === "max") {
-      y = maxPool(x, poolSize, strides, paddingString);
+      y = maxPool(x, poolSize, strides2, paddingString);
     } else {
-      y = avgPool(x, poolSize, strides, paddingString);
+      y = avgPool(x, poolSize, strides2, paddingString);
     }
     if (dataFormat === "channelsFirst") {
       y = transpose(y, [0, 3, 1, 2]);
@@ -27696,13 +27693,13 @@ function pool2d(x, poolSize, strides, padding2, dataFormat, poolMode) {
     return y;
   });
 }
-function pool3d(x, poolSize, strides, padding2, dataFormat, poolMode) {
+function pool3d(x, poolSize, strides2, padding2, dataFormat, poolMode) {
   return tidy(() => {
     checkDataFormat(dataFormat);
     checkPoolMode(poolMode);
     checkPaddingMode(padding2);
-    if (strides == null) {
-      strides = [1, 1, 1];
+    if (strides2 == null) {
+      strides2 = [1, 1, 1];
     }
     if (padding2 == null) {
       padding2 = "valid";
@@ -27717,9 +27714,9 @@ function pool3d(x, poolSize, strides, padding2, dataFormat, poolMode) {
     let y;
     const paddingString = padding2 === "same" ? "same" : "valid";
     if (poolMode === "max") {
-      y = maxPool3d(x, poolSize, strides, paddingString);
+      y = maxPool3d(x, poolSize, strides2, paddingString);
     } else {
-      y = avgPool3d(x, poolSize, strides, paddingString);
+      y = avgPool3d(x, poolSize, strides2, paddingString);
     }
     if (dataFormat === "channelsFirst") {
       y = transpose(y, [0, 4, 1, 2, 3]);
@@ -27785,10 +27782,10 @@ var MaxPooling1D = class extends Pooling1D {
   constructor(args) {
     super(args);
   }
-  poolingFunction(inputs, poolSize, strides, padding2, dataFormat) {
+  poolingFunction(inputs, poolSize, strides2, padding2, dataFormat) {
     checkDataFormat(dataFormat);
     checkPaddingMode(padding2);
-    return pool2d(inputs, poolSize, strides, padding2, dataFormat, "max");
+    return pool2d(inputs, poolSize, strides2, padding2, dataFormat, "max");
   }
 };
 MaxPooling1D.className = "MaxPooling1D";
@@ -27797,10 +27794,10 @@ var AveragePooling1D = class extends Pooling1D {
   constructor(args) {
     super(args);
   }
-  poolingFunction(inputs, poolSize, strides, padding2, dataFormat) {
+  poolingFunction(inputs, poolSize, strides2, padding2, dataFormat) {
     checkDataFormat(dataFormat);
     checkPaddingMode(padding2);
-    return pool2d(inputs, poolSize, strides, padding2, dataFormat, "avg");
+    return pool2d(inputs, poolSize, strides2, padding2, dataFormat, "avg");
   }
 };
 AveragePooling1D.className = "AveragePooling1D";
@@ -27864,10 +27861,10 @@ var MaxPooling2D = class extends Pooling2D {
   constructor(args) {
     super(args);
   }
-  poolingFunction(inputs, poolSize, strides, padding2, dataFormat) {
+  poolingFunction(inputs, poolSize, strides2, padding2, dataFormat) {
     checkDataFormat(dataFormat);
     checkPaddingMode(padding2);
-    return pool2d(inputs, poolSize, strides, padding2, dataFormat, "max");
+    return pool2d(inputs, poolSize, strides2, padding2, dataFormat, "max");
   }
 };
 MaxPooling2D.className = "MaxPooling2D";
@@ -27876,10 +27873,10 @@ var AveragePooling2D = class extends Pooling2D {
   constructor(args) {
     super(args);
   }
-  poolingFunction(inputs, poolSize, strides, padding2, dataFormat) {
+  poolingFunction(inputs, poolSize, strides2, padding2, dataFormat) {
     checkDataFormat(dataFormat);
     checkPaddingMode(padding2);
-    return pool2d(inputs, poolSize, strides, padding2, dataFormat, "avg");
+    return pool2d(inputs, poolSize, strides2, padding2, dataFormat, "avg");
   }
 };
 AveragePooling2D.className = "AveragePooling2D";
@@ -27945,10 +27942,10 @@ var MaxPooling3D = class extends Pooling3D {
   constructor(args) {
     super(args);
   }
-  poolingFunction(inputs, poolSize, strides, padding2, dataFormat) {
+  poolingFunction(inputs, poolSize, strides2, padding2, dataFormat) {
     checkDataFormat(dataFormat);
     checkPaddingMode(padding2);
-    return pool3d(inputs, poolSize, strides, padding2, dataFormat, "max");
+    return pool3d(inputs, poolSize, strides2, padding2, dataFormat, "max");
   }
 };
 MaxPooling3D.className = "MaxPooling3D";
@@ -27957,10 +27954,10 @@ var AveragePooling3D = class extends Pooling3D {
   constructor(args) {
     super(args);
   }
-  poolingFunction(inputs, poolSize, strides, padding2, dataFormat) {
+  poolingFunction(inputs, poolSize, strides2, padding2, dataFormat) {
     checkDataFormat(dataFormat);
     checkPaddingMode(padding2);
-    return pool3d(inputs, poolSize, strides, padding2, dataFormat, "avg");
+    return pool3d(inputs, poolSize, strides2, padding2, dataFormat, "avg");
   }
 };
 AveragePooling3D.className = "AveragePooling3D";
@@ -36253,11 +36250,11 @@ var executeOp4 = (node2, tensorMap, context) => {
       return [maxPool3d(getParamValue("x", node2, tensorMap, context), [kernelSize[1], kernelSize[2], kernelSize[3]], [stride[1], stride[2], stride[3]], pad3)];
     }
     case "Dilation2D": {
-      const strides = getParamValue("strides", node2, tensorMap, context);
+      const strides2 = getParamValue("strides", node2, tensorMap, context);
       const pad3 = getParamValue("pad", node2, tensorMap, context);
       const dilations = getParamValue("dilations", node2, tensorMap, context);
-      const strideHeight = strides[1];
-      const strideWidth = strides[2];
+      const strideHeight = strides2[1];
+      const strideWidth = strides2[2];
       const dilationHeight = dilations[1];
       const dilationWidth = dilations[2];
       return [dilation2d(getParamValue("x", node2, tensorMap, context), getParamValue("filter", node2, tensorMap, context), [strideHeight, strideWidth], pad3, [dilationHeight, dilationWidth], "NHWC")];
@@ -36795,14 +36792,14 @@ var executeOp15 = (node2, tensorMap, context) => {
     case "StridedSlice": {
       const begin = getParamValue("begin", node2, tensorMap, context);
       const end = getParamValue("end", node2, tensorMap, context);
-      const strides = getParamValue("strides", node2, tensorMap, context);
+      const strides2 = getParamValue("strides", node2, tensorMap, context);
       const beginMask = getParamValue("beginMask", node2, tensorMap, context);
       const endMask = getParamValue("endMask", node2, tensorMap, context);
       const ellipsisMask = getParamValue("ellipsisMask", node2, tensorMap, context);
       const newAxisMask = getParamValue("newAxisMask", node2, tensorMap, context);
       const shrinkAxisMask = getParamValue("shrinkAxisMask", node2, tensorMap, context);
       const tensor2 = getParamValue("x", node2, tensorMap, context);
-      return [stridedSlice(tensor2, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask)];
+      return [stridedSlice(tensor2, begin, end, strides2, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask)];
     }
     case "Pack": {
       return tidy(() => {
@@ -40158,14 +40155,14 @@ var floorConfig = {
   backendName: "cpu",
   kernelFunc: floor2
 };
-function gatherNdImpl(indicesData, paramsBuf, dtype, numSlices, sliceRank, sliceSize, strides, paramsShape, paramsSize) {
+function gatherNdImpl(indicesData, paramsBuf, dtype, numSlices, sliceRank, sliceSize, strides2, paramsShape, paramsSize) {
   const outBuf = buffer([numSlices, sliceSize], dtype);
   for (let i = 0; i < numSlices; i++) {
     const index2 = [];
     let flattenIndex = 0;
     for (let j = 0; j < sliceRank; j++) {
       const dim = indicesData[i * sliceRank + j];
-      flattenIndex += dim * strides[j];
+      flattenIndex += dim * strides2[j];
       index2.push(dim);
     }
     if (flattenIndex < 0 || flattenIndex >= paramsSize / sliceSize) {
@@ -40706,13 +40703,13 @@ var squaredDifferenceConfig = {
   backendName: "cpu",
   kernelFunc: squaredDifference2
 };
-function stridedSliceImpl(outShape, xBuf, strides, begin) {
+function stridedSliceImpl(outShape, xBuf, strides2, begin) {
   const outBuf = buffer(outShape, xBuf.dtype);
   for (let i = 0; i < outBuf.size; i++) {
     const loc = outBuf.indexToLoc(i);
     const newLoc = new Array(loc.length);
     for (let j = 0; j < newLoc.length; j++) {
-      newLoc[j] = loc[j] * strides[j] + begin[j];
+      newLoc[j] = loc[j] * strides2[j] + begin[j];
     }
     outBuf.set(xBuf.get(...newLoc), ...loc);
   }
@@ -41505,7 +41502,7 @@ var atanhConfig = {
   backendName: "cpu",
   kernelFunc: atanh2
 };
-function pool2(xValues, xShape, dtype, strides, convInfo, poolType) {
+function pool2(xValues, xShape, dtype, strides2, convInfo, poolType) {
   const strideHeight = convInfo.strideHeight;
   const strideWidth = convInfo.strideWidth;
   const dilationHeight = convInfo.dilationHeight;
@@ -41522,7 +41519,7 @@ function pool2(xValues, xShape, dtype, strides, convInfo, poolType) {
   const outputColStrides = convInfo.outShape[3];
   for (let b = 0; b < convInfo.batchSize; ++b) {
     const outputBatchOffset = b * outputBatchStrides;
-    const inputBatchOffset = b * strides[0];
+    const inputBatchOffset = b * strides2[0];
     for (let d = 0; d < convInfo.inChannels; ++d) {
       for (let yR = 0; yR < convInfo.outHeight; ++yR) {
         const xRCorner = yR * strideHeight - padTop;
@@ -41537,9 +41534,9 @@ function pool2(xValues, xShape, dtype, strides, convInfo, poolType) {
           let avgValue = 0;
           let count22 = 0;
           for (let xR = xRMin; xR < xRMax; xR += dilationHeight) {
-            const xROffset = inputBatchOffset + xR * strides[1];
+            const xROffset = inputBatchOffset + xR * strides2[1];
             for (let xC = xCMin; xC < xCMax; xC += dilationWidth) {
-              const xCOffset = xROffset + xC * strides[2];
+              const xCOffset = xROffset + xC * strides2[2];
               const pixel = xValues[xCOffset + d];
               if (poolType === "max" && pixel > minMaxValue) {
                 minMaxValue = pixel;
@@ -41611,7 +41608,7 @@ function maxPoolPositions(xValues, xShape, dtype, convInfo, flattenPositions = f
   }
   return maxPositions;
 }
-function pool3d2(xValues, xShape, dtype, strides, convInfo, poolType) {
+function pool3d2(xValues, xShape, dtype, strides2, convInfo, poolType) {
   const strideDepth = convInfo.strideDepth;
   const strideHeight = convInfo.strideHeight;
   const strideWidth = convInfo.strideWidth;
@@ -41633,7 +41630,7 @@ function pool3d2(xValues, xShape, dtype, strides, convInfo, poolType) {
   const outputColStrides = convInfo.outShape[4];
   for (let batch = 0; batch < convInfo.batchSize; ++batch) {
     const outputBatchOffset = batch * outputBatchStrides;
-    const inputBatchOffset = batch * strides[0];
+    const inputBatchOffset = batch * strides2[0];
     for (let channel = 0; channel < convInfo.inChannels; ++channel) {
       for (let yDepth = 0; yDepth < convInfo.outDepth; ++yDepth) {
         const xDepthCorner = yDepth * strideDepth - padFront;
@@ -41663,11 +41660,11 @@ function pool3d2(xValues, xShape, dtype, strides, convInfo, poolType) {
             let avgValue = 0;
             let count22 = 0;
             for (let xDepth = xDepthMin; xDepth < xDepthMax; xDepth += dilationDepth) {
-              const xDepthOffset = inputBatchOffset + xDepth * strides[1];
+              const xDepthOffset = inputBatchOffset + xDepth * strides2[1];
               for (let xRow = xRowMin; xRow < xRowMax; xRow += dilationHeight) {
-                const xRowOffset = xDepthOffset + xRow * strides[2];
+                const xRowOffset = xDepthOffset + xRow * strides2[2];
                 for (let xCol = xColMin; xCol < xColMax; xCol += dilationWidth) {
-                  const xColOffset = xRowOffset + xCol * strides[3];
+                  const xColOffset = xRowOffset + xCol * strides2[3];
                   const pixel = xValues[xColOffset + channel];
                   if (poolType === "max" && pixel > minMaxValue) {
                     minMaxValue = pixel;
@@ -41761,17 +41758,17 @@ function avgPool2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
   assertNotComplex(x, "avgPool");
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   let res;
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
     res = identity2({ inputs: { x }, backend: backend22 });
   } else {
     const xValues = backend22.data.get(x.dataId).values;
-    const strides2 = util_exports.computeStrides(x.shape);
-    const buffer2 = pool2(xValues, x.shape, x.dtype, strides2, convInfo, "avg");
+    const strides22 = util_exports.computeStrides(x.shape);
+    const buffer2 = pool2(xValues, x.shape, x.dtype, strides22, convInfo, "avg");
     res = backend22.makeTensorInfo(convInfo.outShape, x.dtype, buffer2.values);
   }
   return res;
@@ -41784,9 +41781,9 @@ var avgPoolConfig = {
 function avgPool3D(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   assertNotComplex(x, "avgPool3d");
-  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode, dataFormat);
+  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides2, 1, pad3, dimRoundingMode, dataFormat);
   const xValues = backend22.data.get(x.dataId).values;
   const outBuf = pool3d2(xValues, x.shape, x.dtype, util_exports.computeStrides(x.shape), convInfo, "avg");
   return backend22.makeTensorInfo(outBuf.shape, "float32", outBuf.values);
@@ -41799,9 +41796,9 @@ var avgPool3DConfig = {
 function avgPool3DGrad(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, input: input2 } = inputs;
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   assertNotComplex([dy, input2], "avgPool3DGrad");
-  const convInfo = backend_util_exports.computePool3DInfo(input2.shape, filterSize, strides, 1, pad3, dimRoundingMode);
+  const convInfo = backend_util_exports.computePool3DInfo(input2.shape, filterSize, strides2, 1, pad3, dimRoundingMode);
   const strideDepth = convInfo.strideDepth;
   const strideHeight = convInfo.strideHeight;
   const strideWidth = convInfo.strideWidth;
@@ -41867,8 +41864,8 @@ function avgPoolGrad2(args) {
   const { dy, input: input2 } = inputs;
   const x = input2;
   assertNotComplex([dy, input2], "avgPoolGrad");
-  const { filterSize, strides, pad: pad3 } = attrs;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3);
+  const { filterSize, strides: strides2, pad: pad3 } = attrs;
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, 1, pad3);
   const strideHeight = convInfo.strideHeight;
   const strideWidth = convInfo.strideWidth;
   const filterHeight = convInfo.filterHeight;
@@ -42114,10 +42111,10 @@ var concatConfig = {
 function conv2D(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
+  const { strides: strides2, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
   assertNotComplex([x, filter], "conv2d");
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode, false, $dataFormat);
   const filterHeight = convInfo.filterHeight;
   const filterWidth = convInfo.filterWidth;
   const dilationHeight = convInfo.dilationHeight;
@@ -42185,10 +42182,10 @@ var conv2DConfig = {
 function conv2DBackpropFilter2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, dy } = inputs;
-  const { strides, pad: pad3, dataFormat, dimRoundingMode, filterShape } = attrs;
+  const { strides: strides2, pad: pad3, dataFormat, dimRoundingMode, filterShape } = attrs;
   assertNotComplex([x, dy], "conv2dBackpropFilter");
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides2, 1, pad3, dimRoundingMode, false, $dataFormat);
   const { strideHeight, strideWidth, filterHeight, filterWidth } = convInfo;
   const isChannelsLast = convInfo.dataFormat === "channelsLast";
   const dW = new TensorBuffer(convInfo.filterShape, "float32");
@@ -42235,12 +42232,12 @@ var conv2DBackpropFilterConfig = {
 function conv2DBackpropInput2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, filter } = inputs;
-  const { inputShape, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
+  const { inputShape, strides: strides2, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   assertNotComplex([dy, filter], "conv2dBackpropInput");
   const filterStrides = util_exports.computeStrides(filter.shape);
   const dyStrides = util_exports.computeStrides(dy.shape);
   let $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides2, 1, pad3, dimRoundingMode, false, $dataFormat);
   const dx = new TensorBuffer(convInfo.inShape, "float32");
   const dxValues = dx.values;
   const dyValues = backend22.data.get(dy.dataId).values;
@@ -42311,9 +42308,9 @@ var conv2DBackpropInputConfig = {
 function conv3D(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dilations } = attrs;
+  const { strides: strides2, pad: pad3, dilations } = attrs;
   assertNotComplex([x, filter], "conv3d");
-  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filter.shape, strides, dilations, pad3);
+  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filter.shape, strides2, dilations, pad3);
   const {
     filterDepth,
     filterHeight,
@@ -42390,11 +42387,11 @@ var conv3DConfig = {
 function conv3DBackpropFilterV2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, dy } = inputs;
-  const { strides, pad: pad3, filterShape } = attrs;
+  const { strides: strides2, pad: pad3, filterShape } = attrs;
   assertNotComplex([x, dy], "conv3dBackpropFilterV2");
   const xStrides = util_exports.computeStrides(x.shape);
   const dyStrides = util_exports.computeStrides(dy.shape);
-  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filterShape, strides, 1, pad3);
+  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filterShape, strides2, 1, pad3);
   const strideDepth = convInfo.strideDepth;
   const strideHeight = convInfo.strideHeight;
   const strideWidth = convInfo.strideWidth;
@@ -42463,11 +42460,11 @@ var conv3DBackpropFilterV2Config = {
 function conv3DBackpropInputV2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, filter } = inputs;
-  const { pad: pad3, strides, inputShape } = attrs;
+  const { pad: pad3, strides: strides2, inputShape } = attrs;
   assertNotComplex([dy], "conv3dBackpropInputV2");
   const dyStrides = util_exports.computeStrides(dy.shape);
   const filterStrides = util_exports.computeStrides(filter.shape);
-  const convInfo = backend_util_exports.computeConv3DInfo(inputShape, filter.shape, strides, 1, pad3);
+  const convInfo = backend_util_exports.computeConv3DInfo(inputShape, filter.shape, strides2, 1, pad3);
   const dx = new TensorBuffer(convInfo.inShape, "float32");
   const dxValues = dx.values;
   const [dxS0, dxS1, dxS2, dxS3] = dx.strides;
@@ -42754,7 +42751,7 @@ var depthToSpaceConfig = {
 function depthwiseConv2dNative(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dilations, dimRoundingMode } = attrs;
+  const { strides: strides2, pad: pad3, dilations, dimRoundingMode } = attrs;
   assertNotComplex([x, filter], "depthwiseConv2DNative");
   const xStrides = util_exports.computeStrides(x.shape);
   const filterStrides = util_exports.computeStrides(filter.shape);
@@ -42762,8 +42759,8 @@ function depthwiseConv2dNative(args) {
   if ($dilations == null) {
     $dilations = [1, 1];
   }
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides} and dilations '${$dilations}'`);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad3, dimRoundingMode, true);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${$dilations}'`);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, $dilations, pad3, dimRoundingMode, true);
   const { filterHeight, filterWidth, dilationHeight, dilationWidth, padInfo } = convInfo;
   const padLeft = padInfo.left;
   const padTop = padInfo.top;
@@ -42820,9 +42817,9 @@ var depthwiseConv2dNativeConfig = {
 function depthwiseConv2dNativeBackpropFilter2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, dy } = inputs;
-  const { strides, dilations, pad: pad3, dimRoundingMode, filterShape } = attrs;
+  const { strides: strides2, dilations, pad: pad3, dimRoundingMode, filterShape } = attrs;
   assertNotComplex([x, dy], "depthwiseConv2dNativeBackpropFilter");
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides, dilations, pad3, dimRoundingMode, true);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides2, dilations, pad3, dimRoundingMode, true);
   const { strideHeight, strideWidth, filterHeight, filterWidth } = convInfo;
   const dW = new TensorBuffer(convInfo.filterShape, "float32");
   const leftPad = convInfo.padInfo.left;
@@ -42865,11 +42862,11 @@ var depthwiseConv2dNativeBackpropFilterConfig = {
 function depthwiseConv2dNativeBackpropInput2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, filter } = inputs;
-  const { strides, dilations, pad: pad3, dimRoundingMode, inputShape } = attrs;
+  const { strides: strides2, dilations, pad: pad3, dimRoundingMode, inputShape } = attrs;
   assertNotComplex([dy, filter], "depthwiseConv2DNativeBackpropInput");
   const dyStrides = util_exports.computeStrides(dy.shape);
   const filterStrides = util_exports.computeStrides(filter.shape);
-  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, dilations, pad3, dimRoundingMode, true);
+  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides2, dilations, pad3, dimRoundingMode, true);
   const dx = new TensorBuffer(convInfo.inShape, "float32");
   const dxValues = dx.values;
   const [dxS0, dxS1, dxS2] = dx.strides;
@@ -42953,7 +42950,7 @@ var dilation2dConfig = {
   backendName: "cpu",
   kernelFunc: ({ inputs, backend: backend22, attrs }) => {
     const { x, filter } = inputs;
-    const { strides, pad: pad3, dilations } = attrs;
+    const { strides: strides2, pad: pad3, dilations } = attrs;
     const cpuBackend = backend22;
     const xVals = cpuBackend.data.get(x.dataId).values;
     const xRank = x.shape.length;
@@ -42974,7 +42971,7 @@ var dilation2dConfig = {
       dilationHeight,
       dilationWidth,
       outShape
-    } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides, pad3, "NHWC", dilations);
+    } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides2, pad3, "NHWC", dilations);
     const outSize = util_exports.sizeFromShape(outShape);
     const outRank = outShape.length;
     const outputVals = util_exports.getArrayFromDType(x.dtype, outSize);
@@ -43016,7 +43013,7 @@ var dilation2dBackpropFilterConfig = {
   backendName: "cpu",
   kernelFunc: ({ inputs, backend: backend22, attrs }) => {
     const { x, filter, dy } = inputs;
-    const { strides, pad: pad3, dilations } = attrs;
+    const { strides: strides2, pad: pad3, dilations } = attrs;
     const cpuBackend = backend22;
     const $x = util_exports.toNestedArray(x.shape, cpuBackend.data.get(x.dataId).values);
     const $filter = util_exports.toNestedArray(filter.shape, cpuBackend.data.get(filter.dataId).values);
@@ -43035,7 +43032,7 @@ var dilation2dBackpropFilterConfig = {
       dilationHeight,
       dilationWidth,
       outShape
-    } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides, pad3, "NHWC", dilations);
+    } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides2, pad3, "NHWC", dilations);
     util_exports.assert(dy.rank === outShape.length, () => `Error in ${Dilation2DBackpropFilter}, dy must have the same rank as output ${outShape.length}, but got ${dy.rank}`);
     const $dy = util_exports.toNestedArray(outShape, cpuBackend.data.get(dy.dataId).values);
     const gradients = util_exports.makeZerosNestedTypedArray(filter.shape, filter.dtype);
@@ -43078,7 +43075,7 @@ var dilation2dBackpropInputConfig = {
   backendName: "cpu",
   kernelFunc: ({ inputs, backend: backend22, attrs }) => {
     const { x, filter, dy } = inputs;
-    const { strides, pad: pad3, dilations } = attrs;
+    const { strides: strides2, pad: pad3, dilations } = attrs;
     const cpuBackend = backend22;
     const $x = util_exports.toNestedArray(x.shape, cpuBackend.data.get(x.dataId).values);
     const $filter = util_exports.toNestedArray(filter.shape, cpuBackend.data.get(filter.dataId).values);
@@ -43097,7 +43094,7 @@ var dilation2dBackpropInputConfig = {
       dilationHeight,
       dilationWidth,
       outShape
-    } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides, pad3, "NHWC", dilations);
+    } = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides2, pad3, "NHWC", dilations);
     util_exports.assert(dy.rank === outShape.length, () => `Error in ${Dilation2DBackpropInput}, dy must have the same rank as output ${outShape.length}, but got ${dy.rank}`);
     const $dy = util_exports.toNestedArray(outShape, cpuBackend.data.get(dy.dataId).values);
     const gradients = util_exports.makeZerosNestedTypedArray(x.shape, x.dtype);
@@ -43358,17 +43355,17 @@ function fftBatch(input2, inverse, cpuBackend) {
   return result;
 }
 function fftImpl(input2, inverse, cpuBackend) {
-  const inputSize8 = util_exports.sizeFromShape(input2.shape);
+  const inputSize9 = util_exports.sizeFromShape(input2.shape);
   const inputVals = cpuBackend.data.get(input2.dataId);
   const realVals = cpuBackend.data.get(inputVals.complexTensorInfos.real.dataId).values;
   const imagVals = cpuBackend.data.get(inputVals.complexTensorInfos.imag.dataId).values;
-  if (isExponentOf2(inputSize8)) {
-    const result = fftRadix2(realVals, imagVals, inputSize8, inverse, cpuBackend);
+  if (isExponentOf2(inputSize9)) {
+    const result = fftRadix2(realVals, imagVals, inputSize9, inverse, cpuBackend);
     const resultShape = [input2.shape[0], input2.shape[1]];
     if (inverse) {
       const realInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.real);
       const imagInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.imag);
-      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize8, "float32"));
+      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize9, "float32"));
       const sizeInfoCopy = identity2({ inputs: { x: sizeInfo }, backend: cpuBackend });
       const divRealInfo = realDivConfig.kernelFunc({ inputs: { a: realInfo, b: sizeInfo }, backend: cpuBackend });
       const divImagInfo = realDivConfig.kernelFunc({ inputs: { a: imagInfo, b: sizeInfoCopy }, backend: cpuBackend });
@@ -43385,7 +43382,7 @@ function fftImpl(input2, inverse, cpuBackend) {
     return result;
   } else {
     const data = backend_util_exports.mergeRealAndImagArrays(realVals, imagVals);
-    const rawOutput = fourierTransformByMatmul(data, inputSize8, inverse);
+    const rawOutput = fourierTransformByMatmul(data, inputSize9, inverse);
     return backend_util_exports.splitRealAndImagArrays(rawOutput);
   }
 }
@@ -43507,9 +43504,9 @@ function fourierTransformByMatmul(data, size2, inverse) {
 function fft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize8 = util_exports.sizeFromShape(input2.shape);
+  const inputSize9 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize8 / innerDimensionSize;
+  const batch = inputSize9 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -43590,7 +43587,7 @@ function fusedConv2D(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
-    strides,
+    strides: strides2,
     pad: pad3,
     dataFormat,
     dilations,
@@ -43601,7 +43598,7 @@ function fusedConv2D(args) {
   let result = conv2D({
     inputs: { x, filter },
     backend: backend22,
-    attrs: { strides, pad: pad3, dataFormat, dilations, dimRoundingMode }
+    attrs: { strides: strides2, pad: pad3, dataFormat, dilations, dimRoundingMode }
   });
   if (bias) {
     const resultOld = result;
@@ -43624,7 +43621,7 @@ function fusedDepthwiseConv2D(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
-    strides,
+    strides: strides2,
     pad: pad3,
     dataFormat,
     dilations,
@@ -43635,7 +43632,7 @@ function fusedDepthwiseConv2D(args) {
   let result = depthwiseConv2dNative({
     inputs: { x, filter },
     backend: backend22,
-    attrs: { strides, pad: pad3, dataFormat, dilations, dimRoundingMode }
+    attrs: { strides: strides2, pad: pad3, dataFormat, dilations, dimRoundingMode }
   });
   if (bias) {
     const oldResult = result;
@@ -43660,13 +43657,13 @@ function gatherNd(args) {
   const paramsSize = util_exports.sizeFromShape(params.shape);
   const indicesShape = indices.shape;
   const sliceRank = indicesShape[indicesShape.length - 1];
-  const [resultShape, numSlices, sliceSize, strides] = backend_util_exports.prepareAndValidate(params, indices);
+  const [resultShape, numSlices, sliceSize, strides2] = backend_util_exports.prepareAndValidate(params, indices);
   if (numSlices === 0) {
     return backend22.makeTensorInfo(resultShape, params.dtype, []);
   }
   const indicesData = backend22.data.get(indices.dataId).values;
   const paramsBuf = backend22.bufferSync(params);
-  const outBuf = gatherNdImpl(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides, params.shape, paramsSize);
+  const outBuf = gatherNdImpl(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides2, params.shape, paramsSize);
   return backend22.makeTensorInfo(resultShape, params.dtype, outBuf.values);
 }
 var gatherNdConfig = {
@@ -43730,9 +43727,9 @@ var gatherV2Config = {
 function ifft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize8 = util_exports.sizeFromShape(input2.shape);
+  const inputSize9 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize8 / innerDimensionSize;
+  const batch = inputSize9 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -43916,17 +43913,17 @@ function maxPool2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
   assertNotComplex(x, "maxPool");
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   let res;
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
     res = identity2({ inputs: { x }, backend: backend22 });
   } else {
     const xValues = backend22.data.get(x.dataId).values;
-    const strides2 = util_exports.computeStrides(x.shape);
-    const buffer2 = pool2(xValues, x.shape, x.dtype, strides2, convInfo, "max");
+    const strides22 = util_exports.computeStrides(x.shape);
+    const buffer2 = pool2(xValues, x.shape, x.dtype, strides22, convInfo, "max");
     res = backend22.makeTensorInfo(convInfo.outShape, x.dtype, buffer2.values);
   }
   return res;
@@ -43939,9 +43936,9 @@ var maxPoolConfig = {
 function maxPool3D(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   assertNotComplex(x, "maxPool3d");
-  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode, dataFormat);
+  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides2, 1, pad3, dimRoundingMode, dataFormat);
   const xValues = backend22.data.get(x.dataId).values;
   const outBuf = pool3d2(xValues, x.shape, x.dtype, util_exports.computeStrides(x.shape), convInfo, "max");
   return backend22.makeTensorInfo(outBuf.shape, "float32", outBuf.values);
@@ -43954,9 +43951,9 @@ var maxPool3DConfig = {
 function maxPool3DGrad(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, input: input2 } = inputs;
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   assertNotComplex([dy, input2], "maxPool3DGrad");
-  const convInfo = backend_util_exports.computePool3DInfo(input2.shape, filterSize, strides, 1, pad3, dimRoundingMode);
+  const convInfo = backend_util_exports.computePool3DInfo(input2.shape, filterSize, strides2, 1, pad3, dimRoundingMode);
   const inputBuf = backend22.bufferSync(input2);
   const maxPosBuf = maxPool3dPositions(inputBuf, convInfo);
   const strideDepth = convInfo.strideDepth;
@@ -44026,8 +44023,8 @@ function maxPoolGrad2(args) {
   const { dy, input: input2, output } = inputs;
   const x = input2;
   assertNotComplex([input2, output], "maxPoolGrad");
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, 1, pad3, dimRoundingMode);
   const xValues = backend22.data.get(x.dataId).values;
   const maxPosBuf = buffer(convInfo.outShape, x.dtype, maxPoolPositions(xValues, x.shape, x.dtype, convInfo).values);
   const strideHeight = convInfo.strideHeight;
@@ -44081,8 +44078,8 @@ var maxPoolGradConfig2 = {
   kernelFunc: maxPoolGrad2
 };
 function maxPoolWithArgmaxImpl(xValues, xShape, dtype, includeBatchInIndex, convInfo) {
-  const strides = util_exports.computeStrides(xShape);
-  const maxPools = pool2(xValues, xShape, dtype, strides, convInfo, "max");
+  const strides2 = util_exports.computeStrides(xShape);
+  const maxPools = pool2(xValues, xShape, dtype, strides2, convInfo, "max");
   const maxPositions = maxPoolPositions(xValues, xShape, dtype, convInfo, true, includeBatchInIndex);
   return [maxPools.values, maxPositions.values];
 }
@@ -44091,11 +44088,11 @@ var maxPoolWithArgmaxConfig = {
   backendName: "cpu",
   kernelFunc: ({ inputs, attrs, backend: backend22 }) => {
     const { x } = inputs;
-    const { filterSize, strides, pad: pad3, includeBatchInIndex } = attrs;
+    const { filterSize, strides: strides2, pad: pad3, includeBatchInIndex } = attrs;
     const cpuBackend = backend22;
     assertNotComplex(x, "MaxPoolWithArgmax");
     const values = cpuBackend.data.get(x.dataId).values;
-    const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, [1, 1], pad3);
+    const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, [1, 1], pad3);
     const [pooled, indexes] = maxPoolWithArgmaxImpl(values, x.shape, x.dtype, includeBatchInIndex, convInfo);
     const pooledDataId = cpuBackend.write(pooled, convInfo.outShape, x.dtype);
     const indexesDataId = cpuBackend.write(indexes, convInfo.outShape, x.dtype);
@@ -44868,7 +44865,7 @@ var roundConfig = {
   backendName: "cpu",
   kernelFunc: round3
 };
-function scatterImpl(indices, updates, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides, defaultValue, sumDupeIndices) {
+function scatterImpl(indices, updates, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides2, defaultValue, sumDupeIndices) {
   const flattenShape = [outputSize2 / sliceSize, sliceSize];
   const indicesData = indices.values;
   const updatesData = updates.values;
@@ -44883,7 +44880,7 @@ function scatterImpl(indices, updates, shape, outputSize2, sliceSize, numUpdates
     for (let j = 0; j < sliceRank; j++) {
       const dim = indicesData[i * sliceRank + j];
       index2.push(dim);
-      flattenIndex += dim * strides[j];
+      flattenIndex += dim * strides2[j];
     }
     if (flattenIndex < 0 || flattenIndex >= outputSize2 / sliceSize) {
       throw new Error(`Invalid indices: ${index2} does not index into ${shape}`);
@@ -44902,11 +44899,11 @@ function scatterNd(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides: strides2, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
   const sumDupeIndices = true;
   const indicesBuf = backend22.bufferSync(indices);
   const updatesBuf = backend22.bufferSync(updates);
-  const outBuf = scatterImpl(indicesBuf, updatesBuf, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides, 0, sumDupeIndices);
+  const outBuf = scatterImpl(indicesBuf, updatesBuf, shape, outputSize2, sliceSize, numUpdates, sliceRank, strides2, 0, sumDupeIndices);
   return backend22.makeTensorInfo(shape, outBuf.dtype, outBuf.values);
 }
 var scatterNdConfig = {
@@ -45165,12 +45162,12 @@ function sparseToDense2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
+  const { sliceRank, numUpdates, sliceSize, strides: strides2, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
   const indicesBuf = backend22.bufferSync(sparseIndices);
   const updatesBuf = backend22.bufferSync(sparseValues);
   const $defaultValue = backend22.data.get(defaultValue.dataId).values[0];
-  const outBuf = scatterImpl(indicesBuf, updatesBuf, outputShape, outputSize2, sliceSize, numUpdates, sliceRank, strides, $defaultValue, sumDupeIndices);
+  const outBuf = scatterImpl(indicesBuf, updatesBuf, outputShape, outputSize2, sliceSize, numUpdates, sliceRank, strides2, $defaultValue, sumDupeIndices);
   return backend22.makeTensorInfo(outputShape, outBuf.dtype, outBuf.values);
 }
 var sparseToDenseConfig = {
@@ -45235,7 +45232,7 @@ function stridedSlice2(args) {
   const {
     begin,
     end,
-    strides,
+    strides: strides2,
     beginMask,
     endMask,
     ellipsisMask,
@@ -45252,7 +45249,7 @@ function stridedSlice2(args) {
     begin: $begin,
     end: $end,
     strides: $strides
-  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
+  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides2, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
     result = reshape3({ inputs: { x }, backend: backend22, attrs: { shape: finalShape } });
@@ -45394,10 +45391,10 @@ function transform2(args) {
   const [batch, imageHeight, imageWidth, numChannels] = image32.shape;
   const [outHeight, outWidth] = outputShape != null ? outputShape : [imageHeight, imageWidth];
   const outShape = [batch, outHeight, outWidth, numChannels];
-  const strides = util_exports.computeStrides(image32.shape);
-  const batchStride = strides[0];
-  const rowStride = strides[1];
-  const colStride = strides[2];
+  const strides2 = util_exports.computeStrides(image32.shape);
+  const batchStride = strides2[0];
+  const rowStride = strides2[1];
+  const colStride = strides2[2];
   const outVals = util_exports.getTypedArrayFromDType(image32.dtype, util_exports.sizeFromShape(outShape));
   outVals.fill(fillValue);
   const imageVals = backend22.data.get(image32.dataId).values;
@@ -46588,45 +46585,45 @@ function getGlslDifferences() {
   };
 }
 function getLogicalCoordinatesFromFlatIndex(coords32, shape, index2 = "index") {
-  const strides = util_exports.computeStrides(shape);
-  return strides.map((stride, i) => {
+  const strides2 = util_exports.computeStrides(shape);
+  return strides2.map((stride, i) => {
     const line1 = `int ${coords32[i]} = ${index2} / ${stride}`;
-    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * ${stride}` : `index -= ${coords32[i]} * ${stride}`;
+    const line2 = i === strides2.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * ${stride}` : `index -= ${coords32[i]} * ${stride}`;
     return `${line1}; ${line2};`;
   }).join("");
 }
 function getOutputLogicalCoordinatesFromFlatIndexByUniform(coords32, shape, index2 = "index") {
-  const strides = util_exports.computeStrides(shape);
-  return strides.map((_, i) => {
+  const strides2 = util_exports.computeStrides(shape);
+  return strides2.map((_, i) => {
     const line1 = `int ${coords32[i]} = ${index2} / outShapeStrides[${i}]`;
-    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * outShapeStrides[${i}]` : `index -= ${coords32[i]} * outShapeStrides[${i}]`;
+    const line2 = i === strides2.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * outShapeStrides[${i}]` : `index -= ${coords32[i]} * outShapeStrides[${i}]`;
     return `${line1}; ${line2};`;
   }).join("");
 }
 function symbolicallyComputeStrides(indicesArr, variableName) {
   const numCoords = indicesArr.length;
   const shape = indicesArr.map((d) => `${variableName}[${d}]`);
-  const strides = new Array(numCoords - 1);
-  strides[numCoords - 2] = shape[numCoords - 1];
+  const strides2 = new Array(numCoords - 1);
+  strides2[numCoords - 2] = shape[numCoords - 1];
   for (let i = numCoords - 3; i >= 0; --i) {
-    strides[i] = `(${strides[i + 1]} * ${shape[i + 1]})`;
+    strides2[i] = `(${strides2[i + 1]} * ${shape[i + 1]})`;
   }
-  return strides;
+  return strides2;
 }
 function getLogicalCoordinatesFromFlatIndexByUniform(coords32, variableName, index2 = "index") {
   const indicesArray = coords32.map((_, i) => i);
-  const strides = symbolicallyComputeStrides(indicesArray, variableName);
-  return strides.map((_, i) => {
-    const line1 = `int ${coords32[i]} = ${index2} / ${strides[i]}`;
-    const line2 = i === strides.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * ${strides[i]}` : `index -= ${coords32[i]} * ${strides[i]}`;
+  const strides2 = symbolicallyComputeStrides(indicesArray, variableName);
+  return strides2.map((_, i) => {
+    const line1 = `int ${coords32[i]} = ${index2} / ${strides2[i]}`;
+    const line2 = i === strides2.length - 1 ? `int ${coords32[i + 1]} = ${index2} - ${coords32[i]} * ${strides2[i]}` : `index -= ${coords32[i]} * ${strides2[i]}`;
     return `${line1}; ${line2};`;
   }).join("");
 }
 function getFlatIndexFrom3D(shape) {
-  const strides = util_exports.computeStrides(shape).map((d) => d.toString());
+  const strides2 = util_exports.computeStrides(shape).map((d) => d.toString());
   return `
   int getFlatIndex(ivec3 coords) {
-    return coords.x * ${strides[0]} + coords.y * ${strides[1]} + coords.z;
+    return coords.x * ${strides2[0]} + coords.y * ${strides2[1]} + coords.z;
   }
 `;
 }
@@ -48448,16 +48445,16 @@ function runProgram(gpgpu, binary, inputs, output, customUniformValues) {
     }
   }
   if (binary.outShapeStridesLocation) {
-    const strides = util_exports.computeStrides(output.shape);
+    const strides2 = util_exports.computeStrides(output.shape);
     switch (output.shape.length) {
       case 2:
-        gpgpu.gl.uniform1iv(binary.outShapeStridesLocation, new Int32Array(strides));
+        gpgpu.gl.uniform1iv(binary.outShapeStridesLocation, new Int32Array(strides2));
         break;
       case 3:
-        gpgpu.gl.uniform2iv(binary.outShapeStridesLocation, new Int32Array(strides));
+        gpgpu.gl.uniform2iv(binary.outShapeStridesLocation, new Int32Array(strides2));
         break;
       case 4:
-        gpgpu.gl.uniform3iv(binary.outShapeStridesLocation, new Int32Array(strides));
+        gpgpu.gl.uniform3iv(binary.outShapeStridesLocation, new Int32Array(strides2));
         break;
       default:
         break;
@@ -48507,8 +48504,8 @@ function makeShaderKey(program, inputs, output) {
       } else if (uniformShape.length === 2 && !program.packedInputs) {
         rank2 = `${uniformShape[0] > 1}_${uniformShape[1] > 1}`;
       } else if (uniformShape.length > 2 && !program.packedInputs) {
-        const strides = util_exports.computeStrides(uniformShape);
-        rank34 = `${strides[0] === xTexShape[1]}_${strides[strides.length - 1] === xTexShape[1]}`;
+        const strides2 = util_exports.computeStrides(uniformShape);
+        rank34 = `${strides2[0] === xTexShape[1]}_${strides2[strides2.length - 1] === xTexShape[1]}`;
       }
       const xRank = x.shape.length;
       const isLogicalShapTexShapeEqual = uniformShape.length === 2 && util_exports.arraysEqual(x.shape, xTexShape);
@@ -52442,10 +52439,10 @@ function avgPool3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
   assertNotComplex2(x, "avgPool");
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
     return identity3({ inputs: { x }, backend: backend22 });
   }
@@ -52460,9 +52457,9 @@ var avgPoolConfig2 = {
 function avgPool3D2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { filterSize, strides, pad: pad3, dimRoundingMode, dataFormat } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   const dilations = [1, 1, 1];
-  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode, dataFormat);
+  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode, dataFormat);
   const avgPoolProgram = new Pool3DProgram(convInfo, "avg", false);
   return backend22.runWebGLProgram(avgPoolProgram, [x], "float32");
 }
@@ -52614,9 +52611,9 @@ function avgPool3DGrad2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, input: input2 } = inputs;
   const x = input2;
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = [1, 1, 1];
-  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   const avgPoolBackpropProgram = new AvgPool3DBackpropProgram(convInfo);
   return backend22.runWebGLProgram(avgPoolBackpropProgram, [dy], x.dtype);
 }
@@ -52630,8 +52627,8 @@ function avgPoolGrad3(args) {
   const { dy, input: input2 } = inputs;
   const x = input2;
   assertNotComplex2([dy, input2], "avgPoolGrad");
-  const { filterSize, strides, pad: pad3 } = attrs;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3);
+  const { filterSize, strides: strides2, pad: pad3 } = attrs;
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, 1, pad3);
   const avgPoolBackpropProgram = new AvgPool2DBackpropProgram(convInfo);
   return backend22.runWebGLProgram(avgPoolBackpropProgram, [dy], x.dtype);
 }
@@ -53859,9 +53856,9 @@ function conv2dWithIm2Row({
 function conv2d4(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
+  const { strides: strides2, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode, false, $dataFormat);
   let out;
   if (convInfo.filterHeight === 1 && convInfo.filterWidth === 1 && convInfo.dilationHeight === 1 && convInfo.dilationWidth === 1 && convInfo.strideHeight === 1 && convInfo.strideWidth === 1 && (convInfo.padInfo.type === "SAME" || convInfo.padInfo.type === "VALID")) {
     out = conv2dByMatMul({ x, filter, convInfo, backend: backend22 });
@@ -54135,9 +54132,9 @@ var Conv3DDerInputProgram = class {
 function conv2DBackpropFilter3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, dy } = inputs;
-  const { strides, pad: pad3, dataFormat, dimRoundingMode, filterShape } = attrs;
+  const { strides: strides2, pad: pad3, dataFormat, dimRoundingMode, filterShape } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides2, 1, pad3, dimRoundingMode, false, $dataFormat);
   const program = new Conv2DDerFilterProgram(convInfo);
   return backend22.runWebGLProgram(program, [x, dy], "float32");
 }
@@ -54149,9 +54146,9 @@ var conv2DBackpropFilterConfig2 = {
 function conv2DBackpropInput3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, filter } = inputs;
-  const { inputShape, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
+  const { inputShape, strides: strides2, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides2, 1, pad3, dimRoundingMode, false, $dataFormat);
   const program = new Conv2DDerInputProgram(convInfo);
   return backend22.runWebGLProgram(program, [dy, filter], "float32");
 }
@@ -54163,8 +54160,8 @@ var conv2DBackpropInputConfig2 = {
 function conv3D2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dilations } = attrs;
-  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filter.shape, strides, dilations, pad3);
+  const { strides: strides2, pad: pad3, dilations } = attrs;
+  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filter.shape, strides2, dilations, pad3);
   const program = new Conv3DProgram(convInfo);
   return backend22.runWebGLProgram(program, [x, filter], "float32");
 }
@@ -54176,8 +54173,8 @@ var conv3DConfig2 = {
 function conv3DBackpropFilterV22(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, dy } = inputs;
-  const { strides, pad: pad3, filterShape } = attrs;
-  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filterShape, strides, 1, pad3);
+  const { strides: strides2, pad: pad3, filterShape } = attrs;
+  const convInfo = backend_util_exports.computeConv3DInfo(x.shape, filterShape, strides2, 1, pad3);
   const program = new Conv3DDerFilterProgram(convInfo);
   return backend22.runWebGLProgram(program, [x, dy], "float32");
 }
@@ -54189,8 +54186,8 @@ var conv3DBackpropFilterV2Config2 = {
 function conv3DBackpropInput2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, filter } = inputs;
-  const { pad: pad3, strides, inputShape } = attrs;
-  const convInfo = backend_util_exports.computeConv3DInfo(inputShape, filter.shape, strides, 1, pad3);
+  const { pad: pad3, strides: strides2, inputShape } = attrs;
+  const convInfo = backend_util_exports.computeConv3DInfo(inputShape, filter.shape, strides2, 1, pad3);
   const program = new Conv3DDerInputProgram(convInfo);
   return backend22.runWebGLProgram(program, [dy, filter], "float32");
 }
@@ -54920,13 +54917,13 @@ var DepthwiseConvPacked2DProgram = class {
 function depthwiseConv2dNative2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dilations, dimRoundingMode } = attrs;
+  const { strides: strides2, pad: pad3, dilations, dimRoundingMode } = attrs;
   let $dilations = dilations;
   if ($dilations == null) {
     $dilations = [1, 1];
   }
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides} and dilations '${$dilations}'`);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad3, dimRoundingMode, true);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${$dilations}'`);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, $dilations, pad3, dimRoundingMode, true);
   let program;
   if (env().getBool("WEBGL_PACK_DEPTHWISECONV") && convInfo.strideWidth <= 2 && convInfo.outChannels / convInfo.inChannels === 1) {
     program = new DepthwiseConvPacked2DProgram(convInfo);
@@ -55055,8 +55052,8 @@ var DepthwiseConv2DDerInputProgram = class {
 function depthwiseConv2dNativeBackpropFilter3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, dy } = inputs;
-  const { strides, dilations, pad: pad3, dimRoundingMode, filterShape } = attrs;
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides, dilations, pad3, dimRoundingMode, true);
+  const { strides: strides2, dilations, pad: pad3, dimRoundingMode, filterShape } = attrs;
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filterShape, strides2, dilations, pad3, dimRoundingMode, true);
   const program = new DepthwiseConv2DDerFilterProgram(convInfo);
   return backend22.runWebGLProgram(program, [x, dy], "float32");
 }
@@ -55068,8 +55065,8 @@ var depthwiseConv2dNativeBackpropFilterConfig2 = {
 function depthwiseConv2dNativeBackpropInput3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, filter } = inputs;
-  const { strides, dilations, pad: pad3, dimRoundingMode, inputShape } = attrs;
-  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, dilations, pad3, dimRoundingMode, true);
+  const { strides: strides2, dilations, pad: pad3, dimRoundingMode, inputShape } = attrs;
+  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides2, dilations, pad3, dimRoundingMode, true);
   const program = new DepthwiseConv2DDerInputProgram(convInfo);
   return backend22.runWebGLProgram(program, [dy, filter], "float32");
 }
@@ -55169,8 +55166,8 @@ var Dilation2DProgram = class {
 function dilation2D(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dilations } = attrs;
-  const convInfo = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides, pad3, "NHWC", dilations);
+  const { strides: strides2, pad: pad3, dilations } = attrs;
+  const convInfo = backend_util_exports.computeDilation2DInfo(x.shape, filter.shape, strides2, pad3, "NHWC", dilations);
   let out;
   const program = new Dilation2DProgram(convInfo);
   out = backend22.runWebGLProgram(program, [x, filter], "float32");
@@ -55408,9 +55405,9 @@ var FFTProgram = class {
 };
 function fftImpl2(x, inverse, backend22) {
   const xData = backend22.texData.get(x.dataId);
-  const inputSize8 = util_exports.sizeFromShape(x.shape);
+  const inputSize9 = util_exports.sizeFromShape(x.shape);
   const innerDimensionSize = x.shape[x.shape.length - 1];
-  const batch = inputSize8 / innerDimensionSize;
+  const batch = inputSize9 / innerDimensionSize;
   const input2D = reshape4({ inputs: { x }, backend: backend22, attrs: { shape: [batch, innerDimensionSize] } });
   const xShape = input2D.shape;
   const realProgram = new FFTProgram("real", xShape, inverse);
@@ -55676,7 +55673,7 @@ function fusedConv2d(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
-    strides,
+    strides: strides2,
     pad: pad3,
     dataFormat,
     dilations,
@@ -55685,7 +55682,7 @@ function fusedConv2d(args) {
     leakyreluAlpha
   } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode, false, $dataFormat);
   let out;
   const intermediates = [];
   if (convInfo.filterHeight === 1 && convInfo.filterWidth === 1 && convInfo.dilationHeight === 1 && convInfo.dilationWidth === 1 && convInfo.strideHeight === 1 && convInfo.strideWidth === 1 && (convInfo.padInfo.type === "SAME" || convInfo.padInfo.type === "VALID")) {
@@ -55743,14 +55740,14 @@ var fusedConv2DConfig2 = {
 function fusedDepthwiseConv2D2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
-  const { strides, pad: pad3, dilations, dimRoundingMode, activation: activation2, leakyreluAlpha } = attrs;
+  const { strides: strides2, pad: pad3, dilations, dimRoundingMode, activation: activation2, leakyreluAlpha } = attrs;
   const intermediates = [];
   let $dilations = dilations;
   if ($dilations == null) {
     $dilations = [1, 1];
   }
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides} and dilations '${$dilations}'`);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad3, dimRoundingMode, true);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${$dilations}'`);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, $dilations, pad3, dimRoundingMode, true);
   const shouldPackDepthwiseConv = env().getBool("WEBGL_PACK_DEPTHWISECONV") && convInfo.strideWidth <= 2 && convInfo.outChannels / convInfo.inChannels === 1;
   const fusedActivation = activation2 ? mapActivationToShaderProgram(activation2, shouldPackDepthwiseConv) : null;
   const programInputs = [x, filter];
@@ -55790,12 +55787,12 @@ var fusedDepthwiseConv2DConfig2 = {
   kernelFunc: fusedDepthwiseConv2D2
 };
 var GatherNDProgram = class {
-  constructor(sliceDim, strides, shape) {
+  constructor(sliceDim, strides2, shape) {
     this.sliceDim = sliceDim;
-    this.strides = strides;
+    this.strides = strides2;
     this.variableNames = ["x", "indices"];
     this.outputShape = shape;
-    const stridesType = getCoordsDataType(strides.length);
+    const stridesType = getCoordsDataType(strides2.length);
     const dtype = getCoordsDataType(shape.length);
     const strideString = this.sliceDim > 1 ? "strides[j]" : "strides";
     this.userCode = `
@@ -55818,7 +55815,7 @@ function gatherNd2(args) {
   const indicesShape = indices.shape;
   const sliceRank = indicesShape[indicesShape.length - 1];
   const paramsSize = util_exports.sizeFromShape(params.shape);
-  const [resultShape, numSlices, sliceSize, strides] = backend_util_exports.prepareAndValidate(params, indices);
+  const [resultShape, numSlices, sliceSize, strides2] = backend_util_exports.prepareAndValidate(params, indices);
   const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend22, attrs: { shape: [numSlices, sliceRank] } });
   const flattenX = reshape4({
     inputs: { x: params },
@@ -55828,10 +55825,10 @@ function gatherNd2(args) {
   if (backend22.shouldExecuteOnCPU([params, indices]) || params.dtype === "string") {
     const indicesData = backend22.readSync(indices.dataId);
     const paramsBuf = backend22.bufferSync(params);
-    const outValue = gatherNdImplCPU(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides, params.shape, paramsSize);
+    const outValue = gatherNdImplCPU(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides2, params.shape, paramsSize);
     return backend22.makeTensorInfo(resultShape, params.dtype, outValue.values);
   }
-  const program = new GatherNDProgram(sliceRank, strides, [numSlices, sliceSize]);
+  const program = new GatherNDProgram(sliceRank, strides2, [numSlices, sliceSize]);
   const res = backend22.runWebGLProgram(program, [flattenX, flattenIndices], flattenX.dtype);
   const reshaped = reshape4({ inputs: { x: res }, backend: backend22, attrs: { shape: resultShape } });
   backend22.disposeIntermediateTensorInfo(flattenIndices);
@@ -56394,10 +56391,10 @@ function maxPool3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
   assertNotComplex2(x, "maxPool");
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
     return identity3({ inputs: { x }, backend: backend22 });
   }
@@ -56412,9 +56409,9 @@ var maxPoolConfig2 = {
 function maxPool3d2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { filterSize, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   const dilations = [1, 1, 1];
-  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode, dataFormat);
+  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode, dataFormat);
   const maxPoolProgram = new Pool3DProgram(convInfo, "max", false);
   return backend22.runWebGLProgram(maxPoolProgram, [x], x.dtype);
 }
@@ -56572,9 +56569,9 @@ function maxPool3DGrad2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, input: input2 } = inputs;
   const x = input2;
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = [1, 1, 1];
-  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  const convInfo = backend_util_exports.computePool3DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   const maxPool3dPositionsProgram = new Pool3DProgram(convInfo, "max", true);
   const maxPool3dPositions2 = backend22.runWebGLProgram(maxPool3dPositionsProgram, [x], x.dtype);
   const maxPoolBackpropProgram = new MaxPool3DBackpropProgram(convInfo);
@@ -56592,8 +56589,8 @@ function maxPoolGrad3(args) {
   const { dy, input: input2, output } = inputs;
   const x = input2;
   assertNotComplex2([input2, output], "maxPoolGrad");
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, 1, pad3, dimRoundingMode);
   const getPositions = true;
   const maxPoolPositionsProgram = new Pool2DProgram(convInfo, "max", getPositions);
   const maxPoolPositions2 = backend22.runWebGLProgram(maxPoolPositionsProgram, [x], x.dtype);
@@ -56619,12 +56616,12 @@ var maxPoolWithArgmaxConfig2 = {
   backendName: "webgl",
   kernelFunc: ({ inputs, attrs, backend: backend22 }) => {
     const { x } = inputs;
-    const { filterSize, strides, pad: pad3, includeBatchInIndex } = attrs;
+    const { filterSize, strides: strides2, pad: pad3, includeBatchInIndex } = attrs;
     const webglBackend = backend22;
     util_exports.assert(x.shape.length === 4, () => `Error in maxPool: input must be rank 4 but got rank ${x.shape.length}.`);
     const dilations = [1, 1];
-    util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides} and dilations '${dilations}'`);
-    const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3);
+    util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, dilations), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${dilations}'`);
+    const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, dilations, pad3);
     const [result, indexes] = maxPoolWithArgmaxImpl2(x, includeBatchInIndex, convInfo, webglBackend);
     return [result, indexes];
   }
@@ -58193,10 +58190,10 @@ var rsqrtConfig2 = {
   kernelFunc: rsqrt3
 };
 var ScatterProgram = class {
-  constructor(updateSize, sliceDim, indicesRank, updatesRank, strides, shape, summingDupeIndex = true) {
+  constructor(updateSize, sliceDim, indicesRank, updatesRank, strides2, shape, summingDupeIndex = true) {
     this.variableNames = ["updates", "indices", "defaultValue"];
     this.outputShape = shape;
-    const stridesType = getCoordsDataType(strides.length);
+    const stridesType = getCoordsDataType(strides2.length);
     const dtype = getCoordsDataType(shape.length);
     let indicesString = "";
     if (indicesRank === 1) {
@@ -58214,7 +58211,7 @@ var ScatterProgram = class {
     const updatesSnippet = `getUpdates(${updatesString})`;
     const strideString = sliceDim > 1 ? "strides[j]" : "strides";
     this.userCode = `
-        ${stridesType} strides = ${stridesType}(${strides});
+        ${stridesType} strides = ${stridesType}(${strides2});
 
         void main() {
           ${dtype} coords = getOutputCoords();
@@ -58240,7 +58237,7 @@ function scatterNd2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides: strides2, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
   const flattenShape = [outputSize2 / sliceSize, sliceSize];
   if (outputSize2 === 0) {
     return backend22.makeTensorInfo(shape, indices.dtype);
@@ -58248,7 +58245,7 @@ function scatterNd2(args) {
   const flattenIndices = reshape4({ inputs: { x: indices }, backend: backend22, attrs: { shape: [numUpdates, sliceRank] } });
   const flattenX = reshape4({ inputs: { x: updates }, backend: backend22, attrs: { shape: [numUpdates, sliceSize] } });
   const defaultValue = backend22.makeTensorInfo([], "float32", new Float32Array([0]));
-  const program = new ScatterProgram(numUpdates, sliceRank, flattenIndices.shape.length, flattenX.shape.length, strides, flattenShape);
+  const program = new ScatterProgram(numUpdates, sliceRank, flattenIndices.shape.length, flattenX.shape.length, strides2, flattenShape);
   const res = backend22.runWebGLProgram(program, [flattenX, flattenIndices, defaultValue], flattenX.dtype);
   const reshaped = reshape4({ inputs: { x: res }, backend: backend22, attrs: { shape } });
   backend22.disposeIntermediateTensorInfo(flattenIndices);
@@ -58552,9 +58549,9 @@ function sparseToDense3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
-  const { sliceRank, numUpdates, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
+  const { sliceRank, numUpdates, strides: strides2, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
-  const program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize2, 1], sumDupeIndices);
+  const program = new ScatterProgram(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides2, [outputSize2, 1], sumDupeIndices);
   const res = backend22.runWebGLProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype);
   const reshaped = reshape4({ inputs: { x: res }, backend: backend22, attrs: { shape: outputShape } });
   backend22.disposeIntermediateTensorInfo(res);
@@ -58622,7 +58619,7 @@ var stepConfig2 = {
   kernelFunc: step3
 };
 var StridedSliceProgram = class {
-  constructor(begin, strides, size2) {
+  constructor(begin, strides2, size2) {
     this.variableNames = ["x"];
     this.outputShape = size2;
     const rank = size2.length;
@@ -58640,7 +58637,7 @@ var StridedSliceProgram = class {
     }
     this.userCode = `
       ${inputDtype} begin = ${inputDtype}(${begin});
-      ${inputDtype} strides = ${inputDtype}(${strides});
+      ${inputDtype} strides = ${inputDtype}(${strides2});
 
       void main() {
         ${dtype} coords = getOutputCoords();
@@ -58655,7 +58652,7 @@ function stridedSlice3(args) {
   const {
     begin,
     end,
-    strides,
+    strides: strides2,
     beginMask,
     endMask,
     ellipsisMask,
@@ -58671,7 +58668,7 @@ function stridedSlice3(args) {
     begin: $begin,
     end: $end,
     strides: $strides
-  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
+  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides2, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
     result = reshape4({ inputs: { x }, backend: backend22, attrs: { shape: finalShape } });
@@ -59635,12 +59632,12 @@ function symbolicallyComputeStrides2(indicesArr, variableName) {
   }
   const numCoords = indicesArr.length;
   const shape = indicesArr.map((d) => `${variableName}[${d}]`);
-  const strides = new Array(numCoords - 1);
-  strides[numCoords - 2] = shape[numCoords - 1];
+  const strides2 = new Array(numCoords - 1);
+  strides2[numCoords - 2] = shape[numCoords - 1];
   for (let i = numCoords - 3; i >= 0; --i) {
-    strides[i] = `(${strides[i + 1]} * ${shape[i + 1]})`;
+    strides2[i] = `(${strides2[i + 1]} * ${shape[i + 1]})`;
   }
-  return strides;
+  return strides2;
 }
 function getCoordsDataType2(rank) {
   if (rank <= 1) {
@@ -60140,14 +60137,14 @@ function generateGetOutputCoords(outShape, dispatchLayout) {
     if (arr.length === 1) {
       gatherDimensionsStr += `let d${arr[0]} = i32(globalId[${i}]);`;
     } else {
-      const strides = symbolicallyComputeStrides2(arr, "uniforms.outShape");
+      const strides2 = symbolicallyComputeStrides2(arr, "uniforms.outShape");
       gatherDimensionsStr += `var index${i} = i32(globalId[${i}]);`;
-      for (let j = 0; j < strides.length; j++) {
-        gatherDimensionsStr += `let d${arr[j]} = index${i} / ${strides[j]};`;
-        if (j === strides.length - 1) {
-          gatherDimensionsStr += `let d${arr[j + 1]} = index${i} - d${arr[j]} * ${strides[j]};`;
+      for (let j = 0; j < strides2.length; j++) {
+        gatherDimensionsStr += `let d${arr[j]} = index${i} / ${strides2[j]};`;
+        if (j === strides2.length - 1) {
+          gatherDimensionsStr += `let d${arr[j + 1]} = index${i} - d${arr[j]} * ${strides2[j]};`;
         } else {
-          gatherDimensionsStr += `index${i} = index${i} - d${arr[j]} * ${strides[j]};`;
+          gatherDimensionsStr += `index${i} = index${i} - d${arr[j]} * ${strides2[j]};`;
         }
       }
     }
@@ -60172,21 +60169,21 @@ function generateGetCoordsFromFlatIndex(shape) {
   if (rank <= 1) {
     return `fn getCoordsFromFlatIndex(index : i32) -> i32 { return index; }`;
   }
-  const strides = util_exports.computeStrides(shape);
+  const strides2 = util_exports.computeStrides(shape);
   const dtype = getCoordsDataType2(rank);
   const coords32 = [];
   for (let i = 0; i < rank; i++) {
     coords32.push(`d${i}`);
   }
-  if (strides.length === 1) {
+  if (strides2.length === 1) {
     return `    fn getCoordsFromFlatIndex(index : i32) -> vec2<i32> {
       let d0 = index / uniforms.outShapeStrides; let d1 = index - d0 * uniforms.outShapeStrides;
       return vec2<i32>(d0, d1);
     }`;
   }
-  const snippet = "var index2 = index;" + strides.map((_, i) => {
+  const snippet = "var index2 = index;" + strides2.map((_, i) => {
     const line1 = `let ${coords32[i]} = index2 / uniforms.outShapeStrides[${i}]`;
-    const line2 = i === strides.length - 1 ? `let ${coords32[i + 1]} = index2 - ${coords32[i]} * uniforms.outShapeStrides[${i}]` : `index2 = index2 - ${coords32[i]} * uniforms.outShapeStrides[${i}]`;
+    const line2 = i === strides2.length - 1 ? `let ${coords32[i + 1]} = index2 - ${coords32[i]} * uniforms.outShapeStrides[${i}]` : `index2 = index2 - ${coords32[i]} * uniforms.outShapeStrides[${i}]`;
     return `${line1}; ${line2};`;
   }).join("");
   return `
@@ -62303,9 +62300,9 @@ var PoolWithFilterSizeEqualsOneProgram = class {
 function avgPool4(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   if (convInfo.filterWidth === 1 && convInfo.filterHeight === 1 && util_exports.arraysEqual(convInfo.inShape, convInfo.outShape)) {
     return identity4({ inputs: { x }, backend: backend22 });
   }
@@ -63282,9 +63279,9 @@ var Conv2DNaiveProgram = class {
 function conv2d5(args) {
   const { inputs, attrs, backend: backend22 } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
+  const { strides: strides2, pad: pad3, dataFormat, dilations, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode, false, $dataFormat);
   if (convInfo.filterHeight === 1 && convInfo.filterWidth === 1 && convInfo.dilationHeight === 1 && convInfo.dilationWidth === 1 && convInfo.strideHeight === 1 && convInfo.strideWidth === 1 && (convInfo.padInfo.type === "SAME" || convInfo.padInfo.type === "VALID")) {
     return conv2dByMatMul2({ x, filter, convInfo, backend: backend22 });
   }
@@ -63465,9 +63462,9 @@ var Conv2DDerInputProgram2 = class {
 function conv2DBackpropInput4(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { dy, filter } = inputs;
-  const { inputShape, strides, pad: pad3, dataFormat, dimRoundingMode } = attrs;
+  const { inputShape, strides: strides2, pad: pad3, dataFormat, dimRoundingMode } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, 1, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides2, 1, pad3, dimRoundingMode, false, $dataFormat);
   const dimensions = [
     { type: "int32", data: [convInfo.filterHeight, convInfo.filterWidth] },
     {
@@ -63947,12 +63944,12 @@ var DepthwiseConv2DProgram2 = class {
 function depthwiseConv2dNative3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter } = inputs;
-  const { strides, pad: pad3, dilations, dimRoundingMode } = attrs;
+  const { strides: strides2, pad: pad3, dilations, dimRoundingMode } = attrs;
   let $dilations = dilations;
   if ($dilations == null) {
     $dilations = [1, 1];
   }
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad3, dimRoundingMode, true);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, $dilations, pad3, dimRoundingMode, true);
   let program;
   if (convInfo.batchSize === 1 && convInfo.inHeight === convInfo.outHeight && convInfo.inWidth === convInfo.outWidth && convInfo.strideHeight === 1 && convInfo.strideWidth === 1 && convInfo.filterHeight === convInfo.filterWidth && convInfo.inChannels === convInfo.outChannels && convInfo.filterHeight === 3 && convInfo.inChannels % 4 === 0) {
     program = new DepthwiseConv2D3x3Program(convInfo);
@@ -64350,7 +64347,7 @@ function fromPixelsExternalImage(args) {
   const { externalImage, backend: backend22, attrs, outShape, useImport } = args;
   const { numChannels } = attrs;
   const size2 = util_exports.sizeFromShape(outShape);
-  const strides = util_exports.computeStrides(outShape);
+  const strides2 = util_exports.computeStrides(outShape);
   const output = backend22.makeTensorInfo(outShape, "int32");
   const program = backend22.getFromPixelsProgram(useImport ? "import" : "copyExternal");
   program.updateOutputShape(outShape);
@@ -64369,7 +64366,7 @@ function fromPixelsExternalImage(args) {
   }
   const info = backend22.tensorMap.get(output.dataId);
   info.bufferInfo.buffer = backend22.acquireBuffer(info.bufferInfo.byteSize);
-  const uniformData = [size2, numChannels, ...strides, ...program.dispatch];
+  const uniformData = [size2, numChannels, ...strides2, ...program.dispatch];
   program.setUniform(backend22.device, uniformData);
   let externalResource;
   if (useImport) {
@@ -64529,7 +64526,7 @@ function fusedConv2d2(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
-    strides,
+    strides: strides2,
     pad: pad3,
     dataFormat,
     dilations,
@@ -64538,7 +64535,7 @@ function fusedConv2d2(args) {
     leakyreluAlpha
   } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode, false, $dataFormat);
   const hasBias = bias != null;
   const hasPreluActivationWeights = preluActivationWeights != null;
   let program;
@@ -64593,13 +64590,13 @@ var fusedConv2DConfig3 = {
 function fusedDepthwiseConv2D3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
-  const { strides, pad: pad3, dilations, dimRoundingMode, activation: activation2 } = attrs;
+  const { strides: strides2, pad: pad3, dilations, dimRoundingMode, activation: activation2 } = attrs;
   let $dilations = dilations;
   if ($dilations == null) {
     $dilations = [1, 1];
   }
-  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides} and dilations '${$dilations}'`);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad3, dimRoundingMode, true);
+  util_exports.assert(backend_util_exports.eitherStridesOrDilationsAreOne(strides2, $dilations), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${strides2} and dilations '${$dilations}'`);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, $dilations, pad3, dimRoundingMode, true);
   const programInputs = [x, filter];
   const hasBias = bias != null;
   const hasPreluActivationWeights = preluActivationWeights != null;
@@ -64672,7 +64669,7 @@ function gatherNd3(args) {
   const indicesShape = indices.shape;
   const sliceRank = indicesShape[indicesShape.length - 1];
   const paramsSize = util_exports.sizeFromShape(params.shape);
-  const [resultShape, numSlices, sliceSize, strides] = backend_util_exports.prepareAndValidate(params, indices);
+  const [resultShape, numSlices, sliceSize, strides2] = backend_util_exports.prepareAndValidate(params, indices);
   const flattenIndices = reshape5({ inputs: { x: indices }, backend: backend22, attrs: { shape: [numSlices, sliceRank] } });
   const flattenX = reshape5({
     inputs: { x: params },
@@ -64682,11 +64679,11 @@ function gatherNd3(args) {
   if (backend22.shouldExecuteOnCPU([params, indices]) || params.dtype === "string") {
     const indicesData = backend22.readSync(indices.dataId);
     const paramsBuf = backend22.bufferSync(params);
-    const outValue = gatherNdImplCPU2(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides, params.shape, paramsSize);
+    const outValue = gatherNdImplCPU2(indicesData, paramsBuf, params.dtype, numSlices, sliceRank, sliceSize, strides2, params.shape, paramsSize);
     return backend22.makeTensorInfo(resultShape, params.dtype, outValue.values);
   }
   const program = new GatherNDProgram2(sliceRank, [numSlices, sliceSize]);
-  const uniformData = [{ type: "int32", data: [sliceRank] }, { type: "int32", data: strides }];
+  const uniformData = [{ type: "int32", data: [sliceRank] }, { type: "int32", data: strides2 }];
   const res = backend22.runWebGPUProgram(program, [flattenX, flattenIndices], flattenX.dtype, uniformData);
   const reshaped = reshape5({ inputs: { x: res }, backend: backend22, attrs: { shape: resultShape } });
   backend22.disposeData(flattenIndices.dataId);
@@ -64872,9 +64869,9 @@ var maximumConfig3 = {
 function maxPool4(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { x } = inputs;
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
   const dilations = 1;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, dilations, pad3, dimRoundingMode);
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, dilations, pad3, dimRoundingMode);
   let program;
   const dimensions = [];
   if (convInfo.filterHeight === 1 && convInfo.filterWidth === 1) {
@@ -65476,7 +65473,7 @@ var rsqrtConfig3 = {
   kernelFunc: rsqrt4
 };
 var ScatterOptimizedProgram = class {
-  constructor(flattenXShape, sliceDim, indicesRank, updatesRank, strides, shape, outputDtype) {
+  constructor(flattenXShape, sliceDim, indicesRank, updatesRank, strides2, shape, outputDtype) {
     this.variableNames = ["updates", "indices"];
     this.workGroupSize = [64, 1, 1];
     this.atomic = true;
@@ -65486,7 +65483,7 @@ var ScatterOptimizedProgram = class {
     this.dispatch = computeDispatch(this.dispatchLayout, flattenXShape, this.workGroupSize);
     this.sliceDimGreaterThanOne = sliceDim > 1;
     this.shaderKey = `scatter_${indicesRank}_${updatesRank}_${this.sliceDimGreaterThanOne}_${outputDtype}`;
-    const stridesType = getCoordsDataType2(strides.length);
+    const stridesType = getCoordsDataType2(strides2.length);
     this.uniforms = `sliceDim : i32; strides: ${stridesType}; size: i32;`;
     this.updatesRank = updatesRank;
     this.indicesRank = indicesRank;
@@ -65559,7 +65556,7 @@ function scatterNd3(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { indices, updates } = inputs;
   const { shape } = attrs;
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides: strides2, outputSize: outputSize2 } = backend_util_exports.calculateShapes(updates, indices, shape);
   const flattenShape = [outputSize2 / sliceSize, sliceSize];
   if (outputSize2 === 0) {
     return backend22.makeTensorInfo(shape, indices.dtype);
@@ -65571,10 +65568,10 @@ function scatterNd3(args) {
   const size2 = util_exports.sizeFromShape(flattenX.shape);
   const uniformData = [
     { type: "int32", data: [sliceRank] },
-    { type: "int32", data: strides },
+    { type: "int32", data: strides2 },
     { type: "int32", data: [size2] }
   ];
-  const program = new ScatterOptimizedProgram(flattenX.shape, sliceRank, flattenIndices.shape.length, flattenX.shape.length, strides, flattenShape, type);
+  const program = new ScatterOptimizedProgram(flattenX.shape, sliceRank, flattenIndices.shape.length, flattenX.shape.length, strides2, flattenShape, type);
   const res = backend22.runWebGPUProgram(program, [flattenX, flattenIndices], type, uniformData, output);
   const reshaped = reshape5({ inputs: { x: res }, backend: backend22, attrs: { shape } });
   backend22.disposeData(flattenIndices.dataId);
@@ -65745,7 +65742,7 @@ var spaceToBatchNDConfig3 = {
   kernelFunc: spaceToBatchND4
 };
 var ScatterProgram2 = class {
-  constructor(updateSize, sliceDim, indicesRank, updatesRank, strides, shape, summingDupeIndex = true) {
+  constructor(updateSize, sliceDim, indicesRank, updatesRank, strides2, shape, summingDupeIndex = true) {
     this.variableNames = ["updates", "indices", "defaultValue"];
     this.workGroupSize = [64, 1, 1];
     this.workPerThread = 4;
@@ -65755,7 +65752,7 @@ var ScatterProgram2 = class {
     this.dispatch = computeDispatch(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]);
     const sliceDimGreaterThanOne = sliceDim > 1;
     this.shaderKey = `scatter_${indicesRank}_${updatesRank}_${sliceDimGreaterThanOne}`;
-    const stridesType = getCoordsDataType2(strides.length);
+    const stridesType = getCoordsDataType2(strides2.length);
     this.uniforms = `updateSize : i32; sliceDim : i32; strides: ${stridesType};`;
     let indicesString = "";
     if (indicesRank === 1) {
@@ -65812,14 +65809,14 @@ function sparseToDense4(args) {
   const { inputs, backend: backend22, attrs } = args;
   const { sparseIndices, sparseValues, defaultValue } = inputs;
   const { outputShape } = attrs;
-  const { sliceRank, numUpdates, strides, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
+  const { sliceRank, numUpdates, strides: strides2, outputSize: outputSize2 } = backend_util_exports.calculateShapes(sparseValues, sparseIndices, outputShape);
   const sumDupeIndices = false;
   const uniformData = [
     { type: "int32", data: [numUpdates] },
     { type: "int32", data: [sliceRank] },
-    { type: "int32", data: strides }
+    { type: "int32", data: strides2 }
   ];
-  const program = new ScatterProgram2(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides, [outputSize2, 1], sumDupeIndices);
+  const program = new ScatterProgram2(numUpdates, sliceRank, sparseIndices.shape.length, sparseValues.shape.length, strides2, [outputSize2, 1], sumDupeIndices);
   const res = backend22.runWebGPUProgram(program, [sparseValues, sparseIndices, defaultValue], sparseValues.dtype, uniformData);
   const reshaped = reshape5({ inputs: { x: res }, backend: backend22, attrs: { shape: outputShape } });
   backend22.disposeData(res.dataId);
@@ -65918,7 +65915,7 @@ function stridedSlice4(args) {
   const {
     begin,
     end,
-    strides,
+    strides: strides2,
     beginMask,
     endMask,
     ellipsisMask,
@@ -65934,7 +65931,7 @@ function stridedSlice4(args) {
     begin: $begin,
     end: $end,
     strides: $strides
-  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
+  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides2, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
     result = reshape5({ inputs: { x }, backend: backend22, attrs: { shape: finalShape } });
@@ -67334,8 +67331,8 @@ var _WebGPUBackend = class extends KernelBackend {
     bufferShapes.map((d) => {
       uniformsWithType.push({ type: uniformsType, data: d });
     });
-    const strides = util_exports.computeStrides(output.shape);
-    uniformsWithType.push({ type: uniformsType, data: strides });
+    const strides2 = util_exports.computeStrides(output.shape);
+    uniformsWithType.push({ type: uniformsType, data: strides2 });
     if (program.size) {
       const size2 = util_exports.sizeFromShape(program.outputShape);
       uniformsWithType.push({ type: uniformsType, data: [program.isVec4 ? size2 / 4 : size2] });
@@ -67946,8 +67943,8 @@ function avgPool5(args) {
   const { inputs, attrs, backend: backend22 } = args;
   const x = inputs.x;
   const xId = backend22.dataIdMap.get(x.dataId).id;
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, 1, pad3, dimRoundingMode);
   const filterHeight = convInfo.filterHeight;
   const filterWidth = convInfo.filterWidth;
   const padTop = convInfo.padInfo.top;
@@ -68290,9 +68287,9 @@ function conv2d6(args) {
   const { x, filter } = inputs;
   const xId = backend22.dataIdMap.get(x.dataId).id;
   const filterId = backend22.dataIdMap.get(filter.dataId).id;
-  const { strides, dilations, pad: pad3, dimRoundingMode, dataFormat } = attrs;
+  const { strides: strides2, dilations, pad: pad3, dimRoundingMode, dataFormat } = attrs;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode, false, $dataFormat);
   const filterHeight = convInfo.filterHeight;
   const filterWidth = convInfo.filterWidth;
   const padTop = convInfo.padInfo.top;
@@ -68355,10 +68352,10 @@ function setup10(backend22) {
 function conv2DBackpropInput5(args) {
   const { backend: backend22, inputs, attrs } = args;
   const { dy, filter } = inputs;
-  const { strides, pad: pad3, dataFormat, dimRoundingMode, inputShape } = attrs;
+  const { strides: strides2, pad: pad3, dataFormat, dimRoundingMode, inputShape } = attrs;
   const dilations = 1;
   const $dataFormat = backend_util_exports.convertConv2DDataFormat(dataFormat);
-  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides, dilations, pad3, dimRoundingMode, false, $dataFormat);
+  const convInfo = backend_util_exports.computeConv2DInfo(inputShape, filter.shape, strides2, dilations, pad3, dimRoundingMode, false, $dataFormat);
   const {
     batchSize,
     filterHeight,
@@ -68568,9 +68565,9 @@ function depthwiseConv2d5(args) {
   const { x, filter } = inputs;
   const xId = backend22.dataIdMap.get(x.dataId).id;
   const filterId = backend22.dataIdMap.get(filter.dataId).id;
-  const { strides, dilations, pad: pad3, dimRoundingMode } = attrs;
+  const { strides: strides2, dilations, pad: pad3, dimRoundingMode } = attrs;
   const $dilations = dilations == null ? [1, 1] : dilations;
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, $dilations, pad3, dimRoundingMode, true);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, $dilations, pad3, dimRoundingMode, true);
   const filterHeight = convInfo.filterHeight;
   const filterWidth = convInfo.filterWidth;
   const padTop = convInfo.padInfo.top;
@@ -68722,7 +68719,7 @@ function fusedConv2d3(args) {
   const { inputs, attrs, backend: backend22 } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
-    strides,
+    strides: strides2,
     pad: pad3,
     dilations,
     dataFormat,
@@ -68730,7 +68727,7 @@ function fusedConv2d3(args) {
     activation: activation2,
     leakyreluAlpha
   } = attrs;
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode);
   const fusedActivation = FusableActivation[activation2];
   if (fusedActivation == null) {
     throw new Error(`${activation2} activation not yet supported for FusedConv2D in the wasm backend.`);
@@ -68811,7 +68808,7 @@ function fusedDepthwiseConv2d(args) {
   const { inputs, attrs, backend: backend22 } = args;
   const { x, filter, bias, preluActivationWeights } = inputs;
   const {
-    strides,
+    strides: strides2,
     pad: pad3,
     dilations,
     dataFormat,
@@ -68819,7 +68816,7 @@ function fusedDepthwiseConv2d(args) {
     activation: activation2,
     leakyreluAlpha
   } = attrs;
-  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides, dilations, pad3, dimRoundingMode, true);
+  const convInfo = backend_util_exports.computeConv2DInfo(x.shape, filter.shape, strides2, dilations, pad3, dimRoundingMode, true);
   const fusedActivation = FusableActivation[activation2];
   if (fusedActivation == null) {
     throw new Error(`${activation2} activation not yet supported for FusedDepthwiseConv2D in the wasm backend.`);
@@ -68884,7 +68881,7 @@ function setup19(backend22) {
 function gatherNd4(args) {
   const { backend: backend22, inputs } = args;
   const { params, indices } = inputs;
-  const [resultShape, numSlices, sliceSize, strides] = gather_nd_util_exports.prepareAndValidate(params, indices);
+  const [resultShape, numSlices, sliceSize, strides2] = gather_nd_util_exports.prepareAndValidate(params, indices);
   const out = backend22.makeOutput(resultShape, params.dtype);
   if (numSlices === 0) {
     return out;
@@ -68895,7 +68892,7 @@ function gatherNd4(args) {
   const xId = xData.id;
   const indicesData = backend22.dataIdMap.get(indices.dataId);
   const indicesId = indicesData.id;
-  const stridesBytes = new Uint8Array(new Int32Array(strides).buffer);
+  const stridesBytes = new Uint8Array(new Int32Array(strides2).buffer);
   const outId = backend22.dataIdMap.get(out.dataId).id;
   wasmGatherNd(xId, CppDType[params.dtype], indicesId, numSlices, sliceRank, sliceSize, stridesBytes, outId);
   return out;
@@ -69090,8 +69087,8 @@ function maxPool5(args) {
   const x = inputs.x;
   const xId = backend22.dataIdMap.get(x.dataId).id;
   util_exports.assert(x.dtype === "float32", () => `Error in MaxPool: only float32 input is supported. Got ${x.dtype}.`);
-  const { filterSize, strides, pad: pad3, dimRoundingMode } = attrs;
-  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides, 1, pad3, dimRoundingMode);
+  const { filterSize, strides: strides2, pad: pad3, dimRoundingMode } = attrs;
+  const convInfo = backend_util_exports.computePool2DInfo(x.shape, filterSize, strides2, 1, pad3, dimRoundingMode);
   const filterHeight = convInfo.filterHeight;
   const filterWidth = convInfo.filterWidth;
   const padTop = convInfo.padInfo.top;
@@ -69713,12 +69710,12 @@ function scatterNd4(args) {
   if (util_exports.sizeFromShape(shape) === 0) {
     return out;
   }
-  const { sliceRank, numUpdates, sliceSize, strides, outputSize: outputSize2 } = scatter_nd_util_exports.calculateShapes(updates, indices, shape);
+  const { sliceRank, numUpdates, sliceSize, strides: strides2, outputSize: outputSize2 } = scatter_nd_util_exports.calculateShapes(updates, indices, shape);
   const indicesData = backend22.dataIdMap.get(indices.dataId);
   const indicesId = indicesData.id;
   const updatesData = backend22.dataIdMap.get(updates.dataId);
   const updatesId = updatesData.id;
-  const stridesBytes = new Uint8Array(new Int32Array(strides).buffer);
+  const stridesBytes = new Uint8Array(new Int32Array(strides2).buffer);
   const outId = backend22.dataIdMap.get(out.dataId).id;
   wasmScatterNd(indicesId, updatesId, CppDType[updates.dtype], sliceRank, numUpdates, sliceSize, stridesBytes, outputSize2, outId);
   return out;
@@ -69917,7 +69914,7 @@ function stridedSlice5(args) {
   const {
     begin,
     end,
-    strides,
+    strides: strides2,
     beginMask,
     endMask,
     ellipsisMask,
@@ -69933,7 +69930,7 @@ function stridedSlice5(args) {
     begin: $begin,
     end: $end,
     strides: $strides
-  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
+  } = slice_util_exports.sliceInfo(x.shape, begin, end, strides2, beginMask, endMask, ellipsisMask, newAxisMask, shrinkAxisMask);
   let result;
   if (isIdentity) {
     result = reshape6({ inputs: { x }, backend: backend22, attrs: { shape: finalShape } });
@@ -70116,7 +70113,7 @@ function transform5(args) {
     outWidth,
     numChannels
   ];
-  const strides = new Uint8Array(new Int32Array(util_exports.computeStrides(image32.shape)).buffer);
+  const strides2 = new Uint8Array(new Int32Array(util_exports.computeStrides(image32.shape)).buffer);
   const out = backend22.makeOutput(outShape, image32.dtype);
   const outId = backend22.dataIdMap.get(out.dataId).id;
   const imageData = backend22.dataIdMap.get(image32.dataId);
@@ -70142,7 +70139,7 @@ function transform5(args) {
       fillModeId = 1;
       break;
   }
-  wasmTransform(imageId, transformsId, transforms.shape[0] > 1, batch, outHeight, outWidth, numChannels, imageWidth, imageHeight, strides, image32.shape.length - 1, interpolationModeId, fillModeId, fillValue, outId);
+  wasmTransform(imageId, transformsId, transforms.shape[0] > 1, batch, outHeight, outWidth, numChannels, imageWidth, imageHeight, strides2, image32.shape.length - 1, interpolationModeId, fillModeId, fillValue, outId);
   return out;
 }
 var transformConfig4 = {
@@ -75371,13 +75368,13 @@ var invertTransformMatrix = (matrix) => {
   return [rotationComponent[0].concat(invertedTranslation[0]), rotationComponent[1].concat(invertedTranslation[1]), [0, 0, 1]];
 };
 var rotatePoint = (homogeneousCoordinate, rotationMatrix) => [dot4(homogeneousCoordinate, rotationMatrix[0]), dot4(homogeneousCoordinate, rotationMatrix[1])];
-function generateAnchors(inputSize8) {
-  const spec = { strides: [inputSize8 / 16, inputSize8 / 8], anchors: [2, 6] };
+function generateAnchors(inputSize9) {
+  const spec = { strides: [inputSize9 / 16, inputSize9 / 8], anchors: [2, 6] };
   const anchors4 = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize8 + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize8 + stride - 1) / stride);
+    const gridRows = Math.floor((inputSize9 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize9 + stride - 1) / stride);
     const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -75390,11 +75387,11 @@ function generateAnchors(inputSize8) {
   }
   return anchors4;
 }
-function transformRawCoords(coordsRaw, box4, angle, rotationMatrix, inputSize8) {
+function transformRawCoords(coordsRaw, box4, angle, rotationMatrix, inputSize9) {
   const boxSize = getBoxSize(box4);
   const coordsScaled = coordsRaw.map((coord) => [
-    boxSize[0] / inputSize8 * (coord[0] - inputSize8 / 2),
-    boxSize[1] / inputSize8 * (coord[1] - inputSize8 / 2),
+    boxSize[0] / inputSize9 * (coord[0] - inputSize9 / 2),
+    boxSize[1] / inputSize9 * (coord[1] - inputSize9 / 2),
     coord[2] || 0
   ]);
   const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
@@ -75408,7 +75405,7 @@ function transformRawCoords(coordsRaw, box4, angle, rotationMatrix, inputSize8) 
     Math.round(coord[2] || 0)
   ]);
 }
-function correctFaceRotation(rotate, box4, input2, inputSize8) {
+function correctFaceRotation(rotate, box4, input2, inputSize9) {
   const symmetryLine = box4.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
   let angle = 0;
   let rotationMatrix = fixedRotationMatrix;
@@ -75421,13 +75418,13 @@ function correctFaceRotation(rotate, box4, input2, inputSize8) {
       const centerRaw = [center[0] / input2.shape[2], center[1] / input2.shape[1]];
       const rotated = image.rotateWithOffset(input2, angle, 0, centerRaw);
       rotationMatrix = buildRotationMatrix(-angle, center);
-      face5 = cutBoxFromImageAndResize(box4, rotated, [inputSize8, inputSize8]);
+      face5 = cutBoxFromImageAndResize(box4, rotated, [inputSize9, inputSize9]);
       dispose(rotated);
     } else {
-      face5 = cutBoxFromImageAndResize(box4, input2, [inputSize8, inputSize8]);
+      face5 = cutBoxFromImageAndResize(box4, input2, [inputSize9, inputSize9]);
     }
   } else {
-    face5 = cutBoxFromImageAndResize(box4, input2, [inputSize8, inputSize8]);
+    face5 = cutBoxFromImageAndResize(box4, input2, [inputSize9, inputSize9]);
   }
   return [angle, rotationMatrix, face5];
 }
@@ -75581,52 +75578,118 @@ var connected = {
   mouth: ["leftMouth", "rightMouth"]
 };
 
+// src/body/blazeposedetector.ts
+var inputSize2 = 224;
+var anchorTensor;
+var numLayers = 5;
+var strides = [8, 16, 32, 32, 32];
+async function createAnchors() {
+  const anchors4 = [];
+  let layerId = 0;
+  while (layerId < numLayers) {
+    let anchorCount = 0;
+    let lastSameStrideLayer = layerId;
+    while (lastSameStrideLayer < strides.length && strides[lastSameStrideLayer] === strides[layerId]) {
+      anchorCount += 2;
+      lastSameStrideLayer++;
+    }
+    const stride = strides[layerId];
+    const featureMapHeight = Math.ceil(inputSize2 / stride);
+    const featureMapWidth = Math.ceil(inputSize2 / stride);
+    for (let y = 0; y < featureMapHeight; ++y) {
+      for (let x = 0; x < featureMapWidth; ++x) {
+        for (let anchorId = 0; anchorId < anchorCount; ++anchorId) {
+          anchors4.push({ x: (x + 0.5) / featureMapWidth, y: (y + 0.5) / featureMapHeight });
+        }
+      }
+    }
+    layerId = lastSameStrideLayer;
+  }
+  anchorTensor = { x: tensor1d(anchors4.map((a) => a.x)), y: tensor1d(anchors4.map((a) => a.y)) };
+}
+var cropFactor = [5, 5];
+function decodeBoxes(boxesTensor, anchor) {
+  return tidy(() => {
+    const split4 = split(boxesTensor, 12, 1);
+    let xCenter = squeeze(split4[0]);
+    let yCenter = squeeze(split4[1]);
+    let width = squeeze(split4[2]);
+    let height = squeeze(split4[3]);
+    xCenter = add2(div(xCenter, inputSize2), anchor.x);
+    yCenter = add2(div(yCenter, inputSize2), anchor.y);
+    width = mul(div(width, inputSize2), cropFactor[0]);
+    height = mul(div(height, inputSize2), cropFactor[1]);
+    const xMin = sub(xCenter, div(width, 2));
+    const yMin = sub(yCenter, div(height, 2));
+    const boxes = stack([xMin, yMin, width, height], 1);
+    return boxes;
+  });
+}
+async function decode(boxesTensor, logitsTensor, config3, outputSize2) {
+  const t = {};
+  t.boxes = decodeBoxes(boxesTensor, anchorTensor);
+  t.scores = sigmoid(logitsTensor);
+  t.argmax = argMax(t.scores);
+  const i = (await t.argmax.data())[0];
+  const scores = await t.scores.data();
+  const detected = [];
+  const minScore = config3.body["detector"] && config3.body["detector"]["minConfidence"] ? config3.body["detector"]["minConfidence"] : 0;
+  if (scores[i] >= minScore) {
+    const boxes = await t.boxes.array();
+    const boxRaw = boxes[i];
+    const box4 = [boxRaw[0] * outputSize2[0], boxRaw[1] * outputSize2[1], boxRaw[2] * outputSize2[0], boxRaw[3] * outputSize2[1]];
+    detected.push({ box: box4, boxRaw, score: scores[i] });
+  }
+  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
+  return detected;
+}
+
 // src/body/blazepose.ts
 var env3 = { initial: true };
-var models = [null, null];
-var inputSize2 = [[0, 0], [0, 0]];
+var models = { detector: null, landmarks: null };
+var inputSize3 = { detector: [224, 224], landmarks: [256, 256] };
 var skipped5 = Number.MAX_SAFE_INTEGER;
-var outputNodes;
+var outputNodes = {
+  landmarks: ["ld_3d", "activation_segmentation", "activation_heatmap", "world_3d", "output_poseflag"],
+  detector: []
+};
 var cache = null;
+var lastBox;
 var padding = [[0, 0], [0, 0], [0, 0], [0, 0]];
 var lastTime5 = 0;
+var sigmoid6 = (x) => 1 - 1 / (1 + Math.exp(x));
 async function loadDetect(config3) {
-  var _a, _b, _c;
   if (env3.initial)
-    models[0] = null;
-  if (!models[0] && ((_a = config3.body.detector) == null ? void 0 : _a.modelPath) || "") {
-    models[0] = await loadGraphModel(join(config3.modelBasePath, ((_b = config3.body.detector) == null ? void 0 : _b.modelPath) || ""));
-    const inputs = Object.values(models[0].modelSignature["inputs"]);
-    inputSize2[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
-    inputSize2[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models[0] || !models[0]["modelUrl"])
-      log("load model failed:", (_c = config3.body.detector) == null ? void 0 : _c.modelPath);
+    models.detector = null;
+  if (!models.detector && config3.body["detector"] && config3.body["detector"]["modelPath"] || "") {
+    models.detector = await loadGraphModel(join(config3.modelBasePath, config3.body["detector"]["modelPath"] || ""));
+    const inputs = Object.values(models.detector.modelSignature["inputs"]);
+    inputSize3.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize3.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models.detector || !models.detector["modelUrl"])
+      log("load model failed:", config3.body["detector"]["modelPath"]);
     else if (config3.debug)
-      log("load model:", models[0]["modelUrl"]);
-  } else if (config3.debug && models[0])
-    log("cached model:", models[0]["modelUrl"]);
-  return models[0];
+      log("load model:", models.detector["modelUrl"]);
+  } else if (config3.debug && models.detector)
+    log("cached model:", models.detector["modelUrl"]);
+  await createAnchors();
+  return models.detector;
 }
 async function loadPose(config3) {
-  var _a;
   if (env3.initial)
-    models[1] = null;
-  if (!models[1]) {
-    models[1] = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
-    const inputs = Object.values(models[1].modelSignature["inputs"]);
-    inputSize2[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
-    inputSize2[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if ((_a = config3.body.modelPath) == null ? void 0 : _a.includes("lite"))
-      outputNodes = ["ld_3d", "output_segmentation", "output_heatmap", "world_3d", "output_poseflag"];
-    else
-      outputNodes = ["Identity", "Identity_2", "Identity_3", "Identity_4", "Identity_1"];
-    if (!models[1] || !models[1]["modelUrl"])
+    models.landmarks = null;
+  if (!models.landmarks) {
+    models.landmarks = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    const inputs = Object.values(models.landmarks.modelSignature["inputs"]);
+    inputSize3.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize3.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!models.landmarks || !models.landmarks["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
-      log("load model:", models[1]["modelUrl"]);
+      log("load model:", models.landmarks["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", models[1]["modelUrl"]);
-  return models[1];
+    log("cached model:", models.landmarks["modelUrl"]);
+  return models.landmarks;
 }
 function calculateBoxes(keypoints, outputSize2) {
   const x = keypoints.map((a) => a.position[0]);
@@ -75635,23 +75698,29 @@ function calculateBoxes(keypoints, outputSize2) {
   const keypointsBoxRaw = [keypointsBox[0] / outputSize2[0], keypointsBox[1] / outputSize2[1], keypointsBox[2] / outputSize2[0], keypointsBox[3] / outputSize2[1]];
   return { keypointsBox, keypointsBoxRaw };
 }
-async function prepareImage(input2) {
+async function prepareImage(input2, size2, box4) {
   const t = {};
   if (!input2.shape || !input2.shape[1] || !input2.shape[2])
     return input2;
   let final;
   if (input2.shape[1] !== input2.shape[2]) {
+    const height = box4 ? [Math.trunc(input2.shape[1] * box4[1]), Math.trunc(input2.shape[1] * (box4[1] + box4[3]))] : [input2.shape[2] > input2.shape[1] ? Math.trunc((input2.shape[2] - input2.shape[1]) / 2) : 0, input2.shape[2] > input2.shape[1] ? Math.trunc((input2.shape[2] - input2.shape[1]) / 2) : 0];
+    const width = box4 ? [Math.trunc(input2.shape[2] * box4[0]), Math.trunc(input2.shape[2] * (box4[0] + box4[2]))] : [input2.shape[1] > input2.shape[2] ? Math.trunc((input2.shape[1] - input2.shape[2]) / 2) : 0, input2.shape[1] > input2.shape[2] ? Math.trunc((input2.shape[1] - input2.shape[2]) / 2) : 0];
     padding = [
       [0, 0],
-      [input2.shape[2] > input2.shape[1] ? Math.trunc((input2.shape[2] - input2.shape[1]) / 2) : 0, input2.shape[2] > input2.shape[1] ? Math.trunc((input2.shape[2] - input2.shape[1]) / 2) : 0],
-      [input2.shape[1] > input2.shape[2] ? Math.trunc((input2.shape[1] - input2.shape[2]) / 2) : 0, input2.shape[1] > input2.shape[2] ? Math.trunc((input2.shape[1] - input2.shape[2]) / 2) : 0],
+      height,
+      width,
       [0, 0]
     ];
-    t.pad = pad(input2, padding);
-    t.resize = image.resizeBilinear(t.pad, [inputSize2[1][0], inputSize2[1][1]]);
+    if (box4) {
+      t.resize = image.cropAndResize(input2, [box4], [0], [size2, size2]);
+    } else {
+      t.pad = pad(input2, padding);
+      t.resize = image.resizeBilinear(t.pad, [size2, size2]);
+    }
     final = div(t.resize, constants.tf255);
-  } else if (input2.shape[1] !== inputSize2[1][0]) {
-    t.resize = image.resizeBilinear(input2, [inputSize2[1][0], inputSize2[1][1]]);
+  } else if (input2.shape[1] !== size2) {
+    t.resize = image.resizeBilinear(input2, [size2, size2]);
     final = div(t.resize, constants.tf255);
   } else {
     final = div(input2, constants.tf255);
@@ -75662,34 +75731,40 @@ async function prepareImage(input2) {
 function rescaleKeypoints(keypoints, outputSize2) {
   for (const kpt4 of keypoints) {
     kpt4.position = [
-      kpt4.position[0] * (outputSize2[0] + padding[2][0] + padding[2][1]) / outputSize2[0] - padding[2][0],
-      kpt4.position[1] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1] - padding[1][0],
+      Math.trunc(kpt4.position[0] * (outputSize2[0] + padding[2][0] + padding[2][1]) / outputSize2[0] - padding[2][0]),
+      Math.trunc(kpt4.position[1] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1] - padding[1][0]),
       kpt4.position[2]
     ];
-    kpt4.positionRaw = [
-      kpt4.position[0] / outputSize2[0],
-      kpt4.position[1] / outputSize2[1],
-      kpt4.position[2]
-    ];
+    kpt4.positionRaw = [kpt4.position[0] / outputSize2[0], kpt4.position[1] / outputSize2[1], kpt4.position[2]];
   }
   return keypoints;
 }
-var sigmoid6 = (x) => 1 - 1 / (1 + Math.exp(x));
-async function detectParts(input2, config3, outputSize2) {
+function rescaleBoxes(boxes, outputSize2) {
+  for (const box4 of boxes) {
+    box4.box = [
+      Math.trunc(box4.box[0] * (outputSize2[0] + padding[2][0] + padding[2][1]) / outputSize2[0]),
+      Math.trunc(box4.box[1] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1]),
+      Math.trunc(box4.box[2] * (outputSize2[0] + padding[2][0] + padding[2][1]) / outputSize2[0]),
+      Math.trunc(box4.box[3] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1])
+    ];
+    box4.boxRaw = [box4.box[0] / outputSize2[0], box4.box[1] / outputSize2[1], box4.box[2] / outputSize2[0], box4.box[3] / outputSize2[1]];
+  }
+  return boxes;
+}
+async function detectLandmarks(input2, config3, outputSize2) {
   var _a;
   const t = {};
-  t.input = await prepareImage(input2);
-  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = (_a = models[1]) == null ? void 0 : _a.execute(t.input, outputNodes);
-  const poseScoreRaw = (await t.poseflag.data())[0];
-  const poseScore = Math.max(0, (poseScoreRaw - 0.8) / (1 - 0.8));
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = (_a = models.landmarks) == null ? void 0 : _a.execute(input2, outputNodes.landmarks);
+  const poseScore = (await t.poseflag.data())[0];
   const points = await t.ld.data();
+  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   const keypointsRelative = [];
   const depth = 5;
   for (let i = 0; i < points.length / depth; i++) {
     const score = sigmoid6(points[depth * i + 3]);
     const presence = sigmoid6(points[depth * i + 4]);
     const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
-    const positionRaw = [points[depth * i + 0] / inputSize2[1][0], points[depth * i + 1] / inputSize2[1][1], points[depth * i + 2] + 0];
+    const positionRaw = [points[depth * i + 0] / inputSize3.landmarks[0], points[depth * i + 1] / inputSize3.landmarks[1], points[depth * i + 2] + 0];
     const position = [Math.trunc(outputSize2[0] * positionRaw[0]), Math.trunc(outputSize2[1] * positionRaw[1]), positionRaw[2]];
     keypointsRelative.push({ part: kpt[i], positionRaw, position, score: adjScore });
   }
@@ -75697,7 +75772,6 @@ async function detectParts(input2, config3, outputSize2) {
     return null;
   const keypoints = rescaleKeypoints(keypointsRelative, outputSize2);
   const boxes = calculateBoxes(keypoints, [outputSize2[0], outputSize2[1]]);
-  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   const annotations2 = {};
   for (const [name, indexes] of Object.entries(connected)) {
     const pt = [];
@@ -75712,6 +75786,19 @@ async function detectParts(input2, config3, outputSize2) {
   const body4 = { id: 0, score: Math.trunc(100 * poseScore) / 100, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints, annotations: annotations2 };
   return body4;
 }
+async function detectBoxes(input2, config3, outputSize2) {
+  var _a;
+  const t = {};
+  t.res = (_a = models.detector) == null ? void 0 : _a.execute(input2, ["Identity"]);
+  t.logitsRaw = slice(t.res, [0, 0, 0], [1, -1, 1]);
+  t.boxesRaw = slice(t.res, [0, 0, 1], [1, -1, -1]);
+  t.logits = squeeze(t.logitsRaw);
+  t.boxes = squeeze(t.boxesRaw);
+  const boxes = await decode(t.boxes, t.logits, config3, outputSize2);
+  rescaleBoxes(boxes, outputSize2);
+  Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
+  return boxes;
+}
 async function predict5(input2, config3) {
   const outputSize2 = [input2.shape[2] || 0, input2.shape[1] || 0];
   const skipTime = (config3.body.skipTime || 0) > now() - lastTime5;
@@ -75719,7 +75806,21 @@ async function predict5(input2, config3) {
   if (config3.skipAllowed && skipTime && skipFrame && cache !== null) {
     skipped5++;
   } else {
-    cache = await detectParts(input2, config3, outputSize2);
+    const t = {};
+    if (config3.body["detector"] && config3.body["detector"]["enabled"]) {
+      t.detector = await prepareImage(input2, 224);
+      const boxes = await detectBoxes(t.detector, config3, outputSize2);
+      if (boxes && boxes.length === 1) {
+        t.landmarks = await prepareImage(input2, 256, boxes[0].box);
+        cache = await detectLandmarks(t.landmarks, config3, outputSize2);
+      }
+      if (cache)
+        cache.score = boxes[0].score;
+    } else {
+      t.landmarks = await prepareImage(input2, 256, lastBox);
+      cache = await detectLandmarks(t.landmarks, config3, outputSize2);
+    }
+    Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
     lastTime5 = now();
     skipped5 = 0;
   }
@@ -75814,7 +75915,7 @@ var labels = [
 
 // src/object/centernet.ts
 var model7;
-var inputSize3 = 0;
+var inputSize4 = 0;
 var last5 = [];
 var lastTime6 = 0;
 var skipped6 = Number.MAX_SAFE_INTEGER;
@@ -75824,7 +75925,7 @@ async function load6(config3) {
   if (!model7) {
     model7 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model7.modelSignature["inputs"]);
-    inputSize3 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    inputSize4 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!model7 || !model7["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
@@ -75854,14 +75955,14 @@ async function process3(res, outputShape, config3) {
     const classVal = detections[0][id][5];
     const label = labels[classVal].label;
     const [x, y] = [
-      detections[0][id][0] / inputSize3,
-      detections[0][id][1] / inputSize3
+      detections[0][id][0] / inputSize4,
+      detections[0][id][1] / inputSize4
     ];
     const boxRaw = [
       x,
       y,
-      detections[0][id][2] / inputSize3 - x,
-      detections[0][id][3] / inputSize3 - y
+      detections[0][id][2] / inputSize4 - x,
+      detections[0][id][3] / inputSize4 - y
     ];
     const box4 = [
       Math.trunc(boxRaw[0] * outputShape[0]),
@@ -75884,7 +75985,7 @@ async function predict6(input2, config3) {
   skipped6 = 0;
   return new Promise(async (resolve) => {
     const outputSize2 = [input2.shape[2], input2.shape[1]];
-    const resize = image.resizeBilinear(input2, [inputSize3, inputSize3]);
+    const resize = image.resizeBilinear(input2, [inputSize4, inputSize4]);
     const objectT = config3.object.enabled ? model7 == null ? void 0 : model7.execute(resize, ["tower_0/detections"]) : null;
     lastTime6 = now();
     dispose(resize);
@@ -76078,8 +76179,8 @@ async function predict8(image7, config3, idx, count3) {
     const obj = [];
     if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
       const t = {};
-      const inputSize8 = (model9 == null ? void 0 : model9.inputs[0].shape) ? model9.inputs[0].shape[2] : 0;
-      t.resize = image.resizeBilinear(image7, [inputSize8, inputSize8], false);
+      const inputSize9 = (model9 == null ? void 0 : model9.inputs[0].shape) ? model9.inputs[0].shape[2] : 0;
+      t.resize = image.resizeBilinear(image7, [inputSize9, inputSize9], false);
       t.channels = mul(t.resize, constants.rgb);
       t.grayscale = sum2(t.channels, 3, true);
       t.grayscaleSub = sub(t.grayscale, constants.tf05);
@@ -76149,7 +76250,7 @@ async function predict9(input2, config3, idx, count3) {
 
 // src/face/iris.ts
 var model11;
-var inputSize4 = 0;
+var inputSize5 = 0;
 var irisEnlarge = 2.3;
 var leftOutline = meshAnnotations["leftEyeLower0"];
 var rightOutline = meshAnnotations["rightEyeLower0"];
@@ -76175,9 +76276,9 @@ async function load10(config3) {
       log("load model:", model11["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", model11["modelUrl"]);
-  inputSize4 = model11.inputs[0].shape ? model11.inputs[0].shape[2] : 0;
-  if (inputSize4 === -1)
-    inputSize4 = 64;
+  inputSize5 = model11.inputs[0].shape ? model11.inputs[0].shape[2] : 0;
+  if (inputSize5 === -1)
+    inputSize5 = 64;
   return model11;
 }
 function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
@@ -76209,7 +76310,7 @@ var getEyeBox = (rawCoords, face5, eyeInnerCornerIndex, eyeOuterCornerIndex, mes
     box4.startPoint[0] / meshSize,
     box4.endPoint[1] / meshSize,
     box4.endPoint[0] / meshSize
-  ]], [0], [inputSize4, inputSize4]);
+  ]], [0], [inputSize5, inputSize5]);
   if (flip && env2.kernels.includes("flipleftright")) {
     const flipped = image.flipLeftRight(crop2);
     dispose(crop2);
@@ -76224,8 +76325,8 @@ var getEyeCoords = (eyeData, eyeBox, eyeBoxSize, flip = false) => {
     const y = eyeData[i * 3 + 1];
     const z = eyeData[i * 3 + 2];
     eyeRawCoords.push([
-      (flip ? 1 - x / inputSize4 : x / inputSize4) * eyeBoxSize[0] + eyeBox.startPoint[0],
-      y / inputSize4 * eyeBoxSize[1] + eyeBox.startPoint[1],
+      (flip ? 1 - x / inputSize5 : x / inputSize5) * eyeBoxSize[0] + eyeBox.startPoint[0],
+      y / inputSize5 * eyeBoxSize[1] + eyeBox.startPoint[1],
       z
     ]);
   }
@@ -76282,7 +76383,7 @@ async function augmentIris(rawCoords, face5, config3, meshSize) {
 // src/face/facemesh.ts
 var boxCache = [];
 var model12 = null;
-var inputSize5 = 0;
+var inputSize6 = 0;
 var skipped10 = Number.MAX_SAFE_INTEGER;
 var lastTime10 = 0;
 async function predict10(input2, config3) {
@@ -76327,7 +76428,7 @@ async function predict10(input2, config3) {
       faceScore: 0,
       annotations: {}
     };
-    [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_d = config3.face.detector) == null ? void 0 : _d.rotation, box4, input2, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? inputSize5 : size());
+    [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_d = config3.face.detector) == null ? void 0 : _d.rotation, box4, input2, ((_e = config3.face.mesh) == null ? void 0 : _e.enabled) ? inputSize6 : size());
     if ((_f = config3 == null ? void 0 : config3.filter) == null ? void 0 : _f.equalization) {
       const equilized = await histogramEqualization(face5.tensor);
       dispose(face5.tensor);
@@ -76342,7 +76443,7 @@ async function predict10(input2, config3) {
         (box4.startPoint[0] + box4.endPoint[0]) / 2 + (box4.endPoint[0] + box4.startPoint[0]) * pt[0] / size(),
         (box4.startPoint[1] + box4.endPoint[1]) / 2 + (box4.endPoint[1] + box4.startPoint[1]) * pt[1] / size()
       ]);
-      face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize5]);
+      face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize6]);
       for (const key of Object.keys(blazeFaceLandmarks))
         face5.annotations[key] = [face5.mesh[blazeFaceLandmarks[key]]];
     } else if (!model12) {
@@ -76359,9 +76460,9 @@ async function predict10(input2, config3) {
         box4.confidence = face5.faceScore;
       } else {
         if ((_i = config3.face.iris) == null ? void 0 : _i.enabled)
-          rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize5);
-        face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize5);
-        face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize5]);
+          rawCoords = await augmentIris(rawCoords, face5.tensor, config3, inputSize6);
+        face5.mesh = transformRawCoords(rawCoords, box4, angle, rotationMatrix, inputSize6);
+        face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize6]);
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
         box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_j = config3.face.detector) == null ? void 0 : _j.cropFactor) || 1.6), confidence: box4.confidence });
@@ -76370,7 +76471,7 @@ async function predict10(input2, config3) {
         face5.score = face5.faceScore;
         newCache.push(box4);
         dispose(face5.tensor);
-        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_k = config3.face.detector) == null ? void 0 : _k.rotation, box4, input2, inputSize5);
+        [angle, rotationMatrix, face5.tensor] = correctFaceRotation((_k = config3.face.detector) == null ? void 0 : _k.rotation, box4, input2, inputSize6);
       }
     }
     faces.push(face5);
@@ -76390,7 +76491,7 @@ async function load11(config3) {
       log("load model:", model12["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", model12["modelUrl"]);
-  inputSize5 = model12.inputs[0].shape ? model12.inputs[0].shape[2] : 0;
+  inputSize6 = model12.inputs[0].shape ? model12.inputs[0].shape[2] : 0;
   return model12;
 }
 var triangulation = TRI468;
@@ -80299,7 +80400,7 @@ function crop(box4) {
 // src/hand/handtrack.ts
 var models2 = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
-var inputSize6 = [[0, 0], [0, 0]];
+var inputSize7 = [[0, 0], [0, 0]];
 var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
 var faceIndex = 4;
 var boxExpandFact = 1.6;
@@ -80328,8 +80429,8 @@ async function loadDetect2(config3) {
     fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
     models2[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
     const inputs = Object.values(models2[0].modelSignature["inputs"]);
-    inputSize6[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
-    inputSize6[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    inputSize7[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize7[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!models2[0] || !models2[0]["modelUrl"])
       log("load model failed:", (_b = config3.hand.detector) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -80345,8 +80446,8 @@ async function loadSkeleton(config3) {
   if (!models2[1]) {
     models2[1] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
     const inputs = Object.values(models2[1].modelSignature["inputs"]);
-    inputSize6[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
-    inputSize6[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    inputSize7[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize7[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!models2[1] || !models2[1]["modelUrl"])
       log("load model failed:", (_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -80414,7 +80515,7 @@ async function detectFingers(input2, h, config3) {
   };
   if (input2 && models2[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
     const t = {};
-    t.crop = image.cropAndResize(input2, [h.boxCrop], [0], [inputSize6[1][0], inputSize6[1][1]], "bilinear");
+    t.crop = image.cropAndResize(input2, [h.boxCrop], [0], [inputSize7[1][0], inputSize7[1][1]], "bilinear");
     t.div = div(t.crop, constants.tf255);
     [t.score, t.keypoints] = models2[1].execute(t.div, ["Identity_1", "Identity"]);
     const rawScore = (await t.score.data())[0];
@@ -80423,7 +80524,7 @@ async function detectFingers(input2, h, config3) {
       hand3.fingerScore = score;
       t.reshaped = reshape(t.keypoints, [-1, 3]);
       const coordsData = await t.reshaped.array();
-      const coordsRaw = coordsData.map((kpt4) => [kpt4[0] / inputSize6[1][1], kpt4[1] / inputSize6[1][0], kpt4[2] || 0]);
+      const coordsRaw = coordsData.map((kpt4) => [kpt4[0] / inputSize7[1][1], kpt4[1] / inputSize7[1][0], kpt4[2] || 0]);
       const coordsNorm = coordsRaw.map((kpt4) => [kpt4[0] * h.boxRaw[2], kpt4[1] * h.boxRaw[3], kpt4[2] || 0]);
       hand3.keypoints = coordsNorm.map((kpt4) => [
         outputSize[0] * (kpt4[0] + h.boxRaw[0]),
@@ -80649,7 +80750,7 @@ function jitter(keypoints) {
   }
   return keypoints;
 }
-function padInput(input2, inputSize8) {
+function padInput(input2, inputSize9) {
   const t = {};
   if (!input2.shape || !input2.shape[1] || !input2.shape[2])
     return input2;
@@ -80660,7 +80761,7 @@ function padInput(input2, inputSize8) {
     [0, 0]
   ];
   t.pad = pad(input2, cache4.padding);
-  t.resize = image.resizeBilinear(t.pad, [inputSize8, inputSize8]);
+  t.resize = image.resizeBilinear(t.pad, [inputSize9, inputSize9]);
   const final = cast(t.resize, "int32");
   Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   return final;
@@ -80685,7 +80786,7 @@ function rescaleBody(body4, outputSize2) {
 
 // src/body/movenet.ts
 var model15;
-var inputSize7 = 0;
+var inputSize8 = 0;
 var skipped14 = Number.MAX_SAFE_INTEGER;
 var cache5 = {
   boxes: [],
@@ -80704,7 +80805,7 @@ async function load15(config3) {
       log("load model:", model15["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", model15["modelUrl"]);
-  inputSize7 = model15.inputs[0].shape ? model15.inputs[0].shape[2] : 0;
+  inputSize8 = model15.inputs[0].shape ? model15.inputs[0].shape[2] : 0;
   return model15;
 }
 async function parseSinglePose(res, config3, image7) {
@@ -80800,7 +80901,7 @@ async function predict15(input2, config3) {
   return new Promise(async (resolve) => {
     const t = {};
     skipped14 = 0;
-    t.input = padInput(input2, inputSize7);
+    t.input = padInput(input2, inputSize8);
     t.res = model15 == null ? void 0 : model15.execute(t.input);
     cache5.last = now();
     const res = await t.res.array();
@@ -80833,7 +80934,7 @@ async function load16(config3) {
     log("cached model:", model16.modelUrl);
   return model16;
 }
-async function process4(res, inputSize8, outputShape, config3) {
+async function process4(res, inputSize9, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
@@ -80851,7 +80952,7 @@ async function process4(res, inputSize8, outputShape, config3) {
           if (score > config3.object.minConfidence && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
-            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize8));
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize9));
             const [x, y] = [
               cx - scaleBox / strideSize * boxOffset[0],
               cy - scaleBox / strideSize * boxOffset[1]
@@ -81213,7 +81314,7 @@ function getInstanceScore(existingPoses, keypoints) {
   }, 0);
   return notOverlappedKeypointScores / keypoints.length;
 }
-function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence2) {
+function decode2(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence2) {
   const poses = [];
   const queue = buildPartWithScoreQueue(minConfidence2, scores);
   while (poses.length < maxDetected && !queue.empty()) {
@@ -81244,7 +81345,7 @@ async function predict17(input2, config3) {
   const buffers = await Promise.all(res.map((tensor2) => tensor2.buffer()));
   for (const t of res)
     dispose(t);
-  const decoded = await decode(buffers[0], buffers[1], buffers[2], buffers[3], config3.body.maxDetected, config3.body.minConfidence);
+  const decoded = await decode2(buffers[0], buffers[1], buffers[2], buffers[3], config3.body.maxDetected, config3.body.minConfidence);
   if (!model17.inputs[0].shape)
     return [];
   const scaled = scalePoses(decoded, [input2.shape[1], input2.shape[2]], [model17.inputs[0].shape[2], model17.inputs[0].shape[1]]);

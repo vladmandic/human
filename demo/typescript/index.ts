@@ -7,9 +7,9 @@
  * @license MIT
  */
 
-import { Human } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
+import { Human, Config } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
-const humanConfig = { // user configuration for human, used to fine-tune behavior
+const humanConfig: Partial<Config> = { // user configuration for human, used to fine-tune behavior
   // backend: 'webgpu' as 'webgpu,
   // async: true,
   modelBasePath: '../../models',

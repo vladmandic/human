@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/19 mandic00@live.com
+### **HEAD -> main** 2021/11/21 mandic00@live.com
 
+- add body 3d interpolation
 - edit blazepose keypoints
 - new build process
 

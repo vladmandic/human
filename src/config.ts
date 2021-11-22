@@ -78,11 +78,19 @@ export interface BodyConfig extends GenericConfig {
   maxDetected: number,
   /** minimum confidence for a detected body before results are discarded */
   minConfidence: number,
-  /** detector used for body model before actual analysis */
+  /* experimental
+  /** experimental: detector used for body model before actual analysis
   detector?: {
-    /** path to optional body detector model json file */
-    modelPath: string
+    /** experimental: enable body detector before body landmarks
+    enabled: boolean,
+    /** experimental: path to optional body detector model json file
+    modelPath: string,
+    /** experimental: minimum confidence for a detected body before results are discarded
+    minConfidence: number,
+    /** experimental: minimum overlap between two detected bodies before one is discarded
+    iouThreshold: number
   },
+  */
 }
 
 /** Configures all hand detection specific options */
@@ -365,9 +373,6 @@ const config: Config = {
   body: {
     enabled: true,
     modelPath: 'movenet-lightning.json',
-    detector: {
-      modelPath: '',
-    },
     maxDetected: -1,
     minConfidence: 0.3,
     skipFrames: 1,

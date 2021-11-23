@@ -18,6 +18,8 @@ let anchors: Tensor | null = null;
 let inputSize = 0;
 let inputSizeT: Tensor | null = null;
 
+type DetectBox = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
+
 export const size = () => inputSize;
 
 export async function load(config: Config): Promise<GraphModel> {
@@ -75,7 +77,7 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   t.scores = tf.squeeze(t.sigmoid);
   t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, (config.face.detector?.maxDetected || 0), (config.face.detector?.iouThreshold || 0), (config.face.detector?.minConfidence || 0));
   const nms = await t.nms.array() as number[];
-  const boxes: Array<{ box: { startPoint: Point, endPoint: Point }, landmarks: Point[], confidence: number }> = [];
+  const boxes: Array<DetectBox> = [];
   const scores = await t.scores.data();
   for (let i = 0; i < nms.length; i++) {
     const confidence = scores[nms[i]];
@@ -87,10 +89,8 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
       b.landmarks = tf.reshape(b.squeeze, [keypointsCount, -1]);
       const points = await b.bbox.data();
       boxes.push({
-        box: {
-          startPoint: [points[0], points[1]] as Point,
-          endPoint: [points[2], points[3]] as Point,
-        },
+        startPoint: [points[0], points[1]] as Point,
+        endPoint: [points[2], points[3]] as Point,
         landmarks: (await b.landmarks.array()) as Point[],
         confidence,
       });

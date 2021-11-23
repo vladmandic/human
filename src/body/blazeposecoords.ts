@@ -48,9 +48,9 @@ export const connected: Record<string, string[]> = {
   torso: ['leftShoulder', 'rightShoulder', 'rightHip', 'leftHip', 'leftShoulder', 'rightShoulder'],
   leftArm: ['leftShoulder', 'leftElbow', 'leftWrist', 'leftPalm'],
   rightArm: ['rightShoulder', 'rightElbow', 'rightWrist', 'rightPalm'],
-  // leftHand: ['leftHand', 'leftPalm', 'leftPinky', 'leftPalm', 'leftIndex', 'leftPalm', 'leftThumb'],
-  // rightHand: ['rightHand', 'rightPalm', 'rightPinky', 'rightPalm', 'rightIndex', 'rightPalm', 'rightThumb'],
   leftEye: ['leftEyeInside', 'leftEye', 'leftEyeOutside'],
   rightEye: ['rightEyeInside', 'rightEye', 'rightEyeOutside'],
   mouth: ['leftMouth', 'rightMouth'],
+  // leftHand: ['leftHand', 'leftPalm', 'leftPinky', 'leftPalm', 'leftIndex', 'leftPalm', 'leftThumb'],
+  // rightHand: ['rightHand', 'rightPalm', 'rightPinky', 'rightPalm', 'rightIndex', 'rightPalm', 'rightThumb'],
 };

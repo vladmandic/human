@@ -42,7 +42,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         confidence: possible.confidence,
       };
       const boxScaled = util.scaleBoxCoordinates(box, possibleBoxes.scaleFactor);
-      const boxEnlarged = util.enlargeBox(boxScaled, Math.sqrt(config.face.detector?.cropFactor || 1.6));
+      const calcFactor = (config.face.detector?.cropFactor || 1.6) * 1400 / (boxScaled.endPoint[0] - boxScaled.startPoint[0] + 1400); // detected face box is not the same size as calculated face box and scale also depends on detected face size
+      const boxEnlarged = util.enlargeBox(boxScaled, calcFactor);
       const boxSquared = util.squarifyBox(boxEnlarged);
       boxCache.push(boxSquared);
     }
@@ -103,7 +104,10 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
         for (const key of Object.keys(coords.meshAnnotations)) face.annotations[key] = coords.meshAnnotations[key].map((index) => face.mesh[index]); // add annotations
-        box = util.squarifyBox({ ...util.enlargeBox(util.calculateLandmarksBoundingBox(face.mesh), (config.face.detector?.cropFactor || 1.6)), confidence: box.confidence }); // redefine box with mesh calculated one
+        const boxCalculated = util.calculateLandmarksBoundingBox(face.mesh);
+        const boxEnlarged = util.enlargeBox(boxCalculated, (config.face.detector?.cropFactor || 1.6));
+        const boxSquared = util.squarifyBox(boxEnlarged);
+        box = { ...boxSquared, confidence: box.confidence }; // redefine box with mesh calculated one
         face.box = util.getClampedBox(box, input); // update detected box with box around the face mesh
         face.boxRaw = util.getRawBox(box, input);
         face.score = face.faceScore;

@@ -76402,7 +76402,8 @@ async function predict10(input2, config3) {
         confidence: possible.confidence
       };
       const boxScaled = scaleBoxCoordinates(box4, possibleBoxes.scaleFactor);
-      const boxEnlarged = enlargeBox(boxScaled, Math.sqrt(((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6));
+      const calcFactor = (((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6) * 1400 / (boxScaled.endPoint[0] - boxScaled.startPoint[0] + 1400);
+      const boxEnlarged = enlargeBox(boxScaled, calcFactor);
       const boxSquared = squarifyBox(boxEnlarged);
       boxCache.push(boxSquared);
     }
@@ -76465,7 +76466,10 @@ async function predict10(input2, config3) {
         face5.meshRaw = face5.mesh.map((pt) => [pt[0] / (input2.shape[2] || 0), pt[1] / (input2.shape[1] || 0), (pt[2] || 0) / inputSize6]);
         for (const key of Object.keys(meshAnnotations))
           face5.annotations[key] = meshAnnotations[key].map((index2) => face5.mesh[index2]);
-        box4 = squarifyBox({ ...enlargeBox(calculateLandmarksBoundingBox(face5.mesh), ((_j = config3.face.detector) == null ? void 0 : _j.cropFactor) || 1.6), confidence: box4.confidence });
+        const boxCalculated = calculateLandmarksBoundingBox(face5.mesh);
+        const boxEnlarged = enlargeBox(boxCalculated, ((_j = config3.face.detector) == null ? void 0 : _j.cropFactor) || 1.6);
+        const boxSquared = squarifyBox(boxEnlarged);
+        box4 = { ...boxSquared, confidence: box4.confidence };
         face5.box = getClampedBox(box4, input2);
         face5.boxRaw = getRawBox(box4, input2);
         face5.score = face5.faceScore;

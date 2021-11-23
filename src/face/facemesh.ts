@@ -19,8 +19,8 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import type { FaceResult, Point } from '../result';
 import type { Config } from '../config';
 
-type BoxCache = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
-let boxCache: Array<BoxCache> = [];
+type DetectBox = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
+let boxCache: Array<DetectBox> = [];
 let model: GraphModel | null = null;
 let inputSize = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
@@ -35,14 +35,9 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     lastTime = now();
     boxCache = []; // empty cache
     for (const possible of possibleBoxes.boxes) { // extract data from detector
-      const box: BoxCache = {
-        startPoint: possible.box.startPoint,
-        endPoint: possible.box.endPoint,
-        landmarks: possible.landmarks,
-        confidence: possible.confidence,
-      };
-      const boxScaled = util.scaleBoxCoordinates(box, possibleBoxes.scaleFactor);
-      const calcFactor = (config.face.detector?.cropFactor || 1.6) * 1400 / (boxScaled.endPoint[0] - boxScaled.startPoint[0] + 1400); // detected face box is not the same size as calculated face box and scale also depends on detected face size
+      const boxScaled = util.scaleBoxCoordinates(possible, possibleBoxes.scaleFactor);
+      const detectedWidth = (boxScaled.endPoint[0] - boxScaled.startPoint[0]) / (input.shape[2] || 1000);
+      const calcFactor = (config.face.detector?.cropFactor || 1.6) / (detectedWidth + 0.75) / 1.34; // detected face box is not the same size as calculated face box and scale also depends on detected face size
       const boxEnlarged = util.enlargeBox(boxScaled, calcFactor);
       const boxSquared = util.squarifyBox(boxEnlarged);
       boxCache.push(boxSquared);
@@ -52,7 +47,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     skipped++;
   }
   const faces: Array<FaceResult> = [];
-  const newCache: Array<BoxCache> = [];
+  const newCache: Array<DetectBox> = [];
   let id = 0;
   for (let i = 0; i < boxCache.length; i++) {
     let box = boxCache[i];

@@ -5099,10 +5099,8 @@ async function getBoxes(inputImage, config3) {
       b.landmarks = tfjs_esm_exports.reshape(b.squeeze, [keypointsCount, -1]);
       const points = await b.bbox.data();
       boxes.push({
-        box: {
-          startPoint: [points[0], points[1]],
-          endPoint: [points[2], points[3]]
-        },
+        startPoint: [points[0], points[1]],
+        endPoint: [points[2], points[3]],
         landmarks: await b.landmarks.array(),
         confidence
       });
@@ -5988,14 +5986,9 @@ async function predict10(input, config3) {
     lastTime10 = now();
     boxCache = [];
     for (const possible of possibleBoxes.boxes) {
-      const box4 = {
-        startPoint: possible.box.startPoint,
-        endPoint: possible.box.endPoint,
-        landmarks: possible.landmarks,
-        confidence: possible.confidence
-      };
-      const boxScaled = scaleBoxCoordinates(box4, possibleBoxes.scaleFactor);
-      const calcFactor = (((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6) * 1400 / (boxScaled.endPoint[0] - boxScaled.startPoint[0] + 1400);
+      const boxScaled = scaleBoxCoordinates(possible, possibleBoxes.scaleFactor);
+      const detectedWidth = (boxScaled.endPoint[0] - boxScaled.startPoint[0]) / (input.shape[2] || 1e3);
+      const calcFactor = (((_c = config3.face.detector) == null ? void 0 : _c.cropFactor) || 1.6) / (detectedWidth + 0.75) / 1.34;
       const boxEnlarged = enlargeBox(boxScaled, calcFactor);
       const boxSquared = squarifyBox(boxEnlarged);
       boxCache.push(boxSquared);
@@ -12341,20 +12334,20 @@ function calc2(newResult, config3) {
     bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
   } else {
     for (let i = 0; i < newResult.body.length; i++) {
-      const box4 = newResult.body[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + b) / bufferedFactor);
-      const boxRaw = newResult.body[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + b) / bufferedFactor);
-      const keypoints = newResult.body[i].keypoints.map((keypoint, j) => ({
-        score: keypoint.score,
-        part: keypoint.part,
+      const box4 = newResult.body[i].box.map((newBoxCoord, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + newBoxCoord) / bufferedFactor);
+      const boxRaw = newResult.body[i].boxRaw.map((newBoxCoord, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + newBoxCoord) / bufferedFactor);
+      const keypoints = newResult.body[i].keypoints.map((newKpt, j) => ({
+        score: newKpt.score,
+        part: newKpt.part,
         position: [
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[0] + keypoint.position[0]) / bufferedFactor : keypoint.position[0],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].position[1] + keypoint.position[1]) / bufferedFactor : keypoint.position[1],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[2] || 0) + (keypoint.position[2] || 0)) / bufferedFactor : keypoint.position[2]
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[0] || 0) + (newKpt.position[0] || 0)) / bufferedFactor : newKpt.position[0],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[1] || 0) + (newKpt.position[1] || 0)) / bufferedFactor : newKpt.position[1],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[2] || 0) + (newKpt.position[2] || 0)) / bufferedFactor : newKpt.position[2]
         ],
         positionRaw: [
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[0] + keypoint.positionRaw[0]) / bufferedFactor : keypoint.position[0],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * bufferedResult.body[i].keypoints[j].positionRaw[1] + keypoint.positionRaw[1]) / bufferedFactor : keypoint.position[1],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[2] || 0) + (keypoint.positionRaw[2] || 0)) / bufferedFactor : keypoint.position[1]
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[0] || 0) + (newKpt.positionRaw[0] || 0)) / bufferedFactor : newKpt.position[0],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[1] || 0) + (newKpt.positionRaw[1] || 0)) / bufferedFactor : newKpt.position[1],
+          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[2] || 0) + (newKpt.positionRaw[2] || 0)) / bufferedFactor : newKpt.position[2]
         ]
       }));
       const annotations2 = {};
@@ -12370,7 +12363,7 @@ function calc2(newResult, config3) {
         for (let j = 0; j < indexes.length - 1; j++) {
           const pt0 = keypoints.find((kp) => kp.part === indexes[j]);
           const pt1 = keypoints.find((kp) => kp.part === indexes[j + 1]);
-          if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+          if (pt0 && pt1)
             pt.push([pt0.position, pt1.position]);
         }
         annotations2[name] = pt;

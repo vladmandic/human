@@ -334,7 +334,7 @@ async function test(Human, inputConfig) {
   res1 = human.similarity(desc1, desc1);
   res2 = human.similarity(desc1, desc2);
   res3 = human.similarity(desc1, desc3);
-  if (res1 < 1 || res2 < 0.50 || res3 < 0.50) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
+  if (res1 < 1 || res2 < 0.50 || res3 < 0.45 || res2 > 0.75 || res3 > 0.75) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
   else log('state', 'passed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
 
   // test face matching
@@ -373,8 +373,8 @@ async function test(Human, inputConfig) {
   if (!face || face?.box?.length !== 4 || face?.mesh?.length !== 478 || face?.embedding?.length !== 1024 || face?.rotation?.matrix?.length !== 9) {
     log('error', 'failed: sensitive face result mismatch', res?.face?.length, face?.box?.length, face?.mesh?.length, face?.embedding?.length, face?.rotation?.matrix?.length);
   } else log('state', 'passed: sensitive face result match');
-  if (!face || face?.emotion?.length < 3) log('error', 'failed: sensitive face emotion result mismatch', face?.emotion.length);
-  else log('state', 'passed: sensitive face emotion result', face?.emotion.length);
+  if (!face || face?.emotion?.length < 1 || face.emotion[0].score < 0.55 || face.emotion[0].emotion !== 'neutral') log('error', 'failed: sensitive face emotion result mismatch', face?.emotion);
+  else log('state', 'passed: sensitive face emotion result', face?.emotion);
 
   // test sensitive details body
   const body = res && res.body ? res.body[0] : null;

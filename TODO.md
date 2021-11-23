@@ -31,13 +31,6 @@ Feature is automatically disabled in NodeJS without user impact
 - Backend NodeJS missing kernel op `RotateWithOffset`  
   <https://github.com/tensorflow/tfjs/issues/5473>  
 
-### Body Detection
-
-MoveNet MultiPose model does not work with WASM backend due to missing F32 broadcast implementation
-
-- Backend WASM missing F32 broadcat implementation  
-  <https://github.com/tensorflow/tfjs/issues/5516>  
-
 <br><hr><br>
 
 ## Pending Release Notes
@@ -61,3 +54,6 @@ Other:
 - Improved VSCode out-of-the-box experience
 - Fix for optional `gear`, `ssrnet`, `mobilefacenet` modules
 - Fix for Firefox WebGPU compatibility issue
+- Fix face detect box scale and rotation
+- Fix body interpolation
+- Updated `blazepose` implementation

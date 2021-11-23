@@ -106,7 +106,9 @@ async function testAll() {
   for (const test of tests) await runTest(test);
   log.info('all tests complete');
   log.info('failed:', { count: failedMessages.length, messages: failedMessages });
-  log.info('status:', status);
+  for (const [test, result] of Object.entries(status)) {
+    log.info('status:', { test, ...result });
+  }
 }
 
 testAll();

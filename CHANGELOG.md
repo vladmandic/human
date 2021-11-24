@@ -11,14 +11,13 @@
   
 ### **HEAD -> main** 2021/11/23 mandic00@live.com
 
+- fix face box scaling on detection
 - cleanup
 
 ### **2.5.4** 2021/11/22 mandic00@live.com
 
 - prototype blazepose detector
-
-### **origin/main** 2021/11/21 mandic00@live.com
-
+- minor fixes
 - add body 3d interpolation
 - edit blazepose keypoints
 - new build process

@@ -10,7 +10,7 @@
 import { Human, Config } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
 const humanConfig: Partial<Config> = { // user configuration for human, used to fine-tune behavior
-  // backend: 'webgpu' as 'webgpu,
+  // backend: 'webgpu' as const,
   // async: true,
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false },

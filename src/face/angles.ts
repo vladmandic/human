@@ -78,7 +78,7 @@ export const calculateFaceAngle = (face, imageSize): {
     if (isNaN(thetaX)) thetaX = 0;
     if (isNaN(thetaY)) thetaY = 0;
     if (isNaN(thetaZ)) thetaZ = 0;
-    return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
+    return { pitch: -thetaX, yaw: -thetaY, roll: -thetaZ };
   };
   // simple Euler angle calculation based existing 3D mesh
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars

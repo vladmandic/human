@@ -10,8 +10,7 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import * as coords from './blazeposecoords';
 import * as detect from './blazeposedetector';
-
-interface DetectedBox { box: Box, boxRaw: Box, score: number }
+import * as box from '../util/box';
 
 const env = { initial: true };
 // const models: [GraphModel | null, GraphModel | null] = [null, null];
@@ -24,7 +23,7 @@ const outputNodes: { detector: string[], landmarks: string[] } = {
 };
 
 let cache: BodyResult | null = null;
-let lastBox: Box | undefined;
+let cropBox: Box | undefined;
 let padding: [number, number][] = [[0, 0], [0, 0], [0, 0], [0, 0]];
 let lastTime = 0;
 
@@ -63,50 +62,43 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
   return [models.detector, models.landmarks];
 }
 
-function calculateBoxes(keypoints: Array<BodyKeypoint>, outputSize: [number, number]): { keypointsBox: Box, keypointsBoxRaw: Box } {
-  const x = keypoints.map((a) => a.position[0]);
-  const y = keypoints.map((a) => a.position[1]);
-  const keypointsBox: Box = [Math.min(...x), Math.min(...y), Math.max(...x) - Math.min(...x), Math.max(...y) - Math.min(...y)];
-  const keypointsBoxRaw: Box = [keypointsBox[0] / outputSize[0], keypointsBox[1] / outputSize[1], keypointsBox[2] / outputSize[0], keypointsBox[3] / outputSize[1]];
-  return { keypointsBox, keypointsBoxRaw };
-}
-
-async function prepareImage(input: Tensor, size: number, box?: Box): Promise<Tensor> {
+async function prepareImage(input: Tensor, size: number): Promise<Tensor> {
   const t: Record<string, Tensor> = {};
   if (!input.shape || !input.shape[1] || !input.shape[2]) return input;
   let final: Tensor;
+  if (cropBox) {
+    t.cropped = tf.image.cropAndResize(input, [cropBox], [0], [input.shape[1], input.shape[2]]); // if we have cached box use it to crop input
+  }
   if (input.shape[1] !== input.shape[2]) { // only pad if width different than height
-    const height: [number, number] = box
-      ? [Math.trunc(input.shape[1] * box[1]), Math.trunc(input.shape[1] * (box[1] + box[3]))]
-      : [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0];
-    const width: [number, number] = box
-      ? [Math.trunc(input.shape[2] * box[0]), Math.trunc(input.shape[2] * (box[0] + box[2]))]
-      : [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0];
+    const height: [number, number] = [
+      input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0,
+      input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0,
+    ];
+    const width: [number, number] = [
+      input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0,
+      input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0,
+    ];
     padding = [
       [0, 0], // dont touch batch
       height, // height before&after
       width, // width before&after
       [0, 0], // dont touch rbg
     ];
-    if (box) {
-      t.resize = tf.image.cropAndResize(input, [box], [0], [size, size]);
-    } else {
-      t.pad = tf.pad(input, padding);
-      t.resize = tf.image.resizeBilinear(t.pad, [size, size]);
-    }
+    t.pad = tf.pad(t.cropped || input, padding); // use cropped box if it exists
+    t.resize = tf.image.resizeBilinear(t.pad, [size, size]);
     final = tf.div(t.resize, constants.tf255);
   } else if (input.shape[1] !== size) { // if input needs resizing
-    t.resize = tf.image.resizeBilinear(input, [size, size]);
+    t.resize = tf.image.resizeBilinear(t.cropped || input, [size, size]);
     final = tf.div(t.resize, constants.tf255);
   } else { // if input is already in a correct resolution just normalize it
-    final = tf.div(input, constants.tf255);
+    final = tf.div(t.cropped || input, constants.tf255);
   }
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return final;
 }
 
 function rescaleKeypoints(keypoints: Array<BodyKeypoint>, outputSize: [number, number]): Array<BodyKeypoint> {
-  for (const kpt of keypoints) {
+  for (const kpt of keypoints) { // first rescale due to padding
     kpt.position = [
       Math.trunc(kpt.position[0] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0] - padding[2][0]),
       Math.trunc(kpt.position[1] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1] - padding[1][0]),
@@ -114,20 +106,21 @@ function rescaleKeypoints(keypoints: Array<BodyKeypoint>, outputSize: [number, n
     ];
     kpt.positionRaw = [kpt.position[0] / outputSize[0], kpt.position[1] / outputSize[1], kpt.position[2] as number];
   }
-  return keypoints;
-}
-
-function rescaleBoxes(boxes: Array<DetectedBox>, outputSize: [number, number]): Array<DetectedBox> {
-  for (const box of boxes) {
-    box.box = [
-      Math.trunc(box.box[0] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0]),
-      Math.trunc(box.box[1] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1]),
-      Math.trunc(box.box[2] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0]),
-      Math.trunc(box.box[3] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1]),
-    ];
-    box.boxRaw = [box.box[0] / outputSize[0], box.box[1] / outputSize[1], box.box[2] / outputSize[0], box.box[3] / outputSize[1]];
+  if (cropBox) { // second rescale due to cropping
+    for (const kpt of keypoints) {
+      kpt.positionRaw = [
+        kpt.positionRaw[0] + cropBox[1], // correct offset due to crop
+        kpt.positionRaw[1] + cropBox[0], // correct offset due to crop
+        kpt.positionRaw[2] as number,
+      ];
+      kpt.position = [
+        Math.trunc(kpt.positionRaw[0] * outputSize[0]),
+        Math.trunc(kpt.positionRaw[1] * outputSize[1]),
+        kpt.positionRaw[2] as number,
+      ];
+    }
   }
-  return boxes;
+  return keypoints;
 }
 
 async function detectLandmarks(input: Tensor, config: Config, outputSize: [number, number]): Promise<BodyResult | null> {
@@ -155,20 +148,36 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
   }
   if (poseScore < (config.body.minConfidence || 0)) return null;
   const keypoints: Array<BodyKeypoint> = rescaleKeypoints(keypointsRelative, outputSize); // keypoints were relative to input image which is padded
-  const boxes = calculateBoxes(keypoints, [outputSize[0], outputSize[1]]); // now find boxes based on rescaled keypoints
+  const kpts = keypoints.map((k) => k.position);
+  const boxes = box.calc(kpts, [outputSize[0], outputSize[1]]); // now find boxes based on rescaled keypoints
   const annotations: Record<string, Point[][]> = {};
   for (const [name, indexes] of Object.entries(coords.connected)) {
     const pt: Array<Point[]> = [];
     for (let i = 0; i < indexes.length - 1; i++) {
       const pt0 = keypoints.find((kpt) => kpt.part === indexes[i]);
       const pt1 = keypoints.find((kpt) => kpt.part === indexes[i + 1]);
-      // if (pt0 && pt1 && pt0.score > (config.body.minConfidence || 0) && pt1.score > (config.body.minConfidence || 0)) pt.push([pt0.position, pt1.position]);
       if (pt0 && pt1) pt.push([pt0.position, pt1.position]);
     }
     annotations[name] = pt;
   }
-  const body = { id: 0, score: Math.trunc(100 * poseScore) / 100, box: boxes.keypointsBox, boxRaw: boxes.keypointsBoxRaw, keypoints, annotations };
+  const body = { id: 0, score: Math.trunc(100 * poseScore) / 100, box: boxes.box, boxRaw: boxes.boxRaw, keypoints, annotations };
   return body;
+}
+
+/*
+interface DetectedBox { box: Box, boxRaw: Box, score: number }
+
+function rescaleBoxes(boxes: Array<DetectedBox>, outputSize: [number, number]): Array<DetectedBox> {
+  for (const b of boxes) {
+    b.box = [
+      Math.trunc(b.box[0] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0]),
+      Math.trunc(b.box[1] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1]),
+      Math.trunc(b.box[2] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0]),
+      Math.trunc(b.box[3] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1]),
+    ];
+    b.boxRaw = [b.box[0] / outputSize[0], b.box[1] / outputSize[1], b.box[2] / outputSize[0], b.box[3] / outputSize[1]];
+  }
+  return boxes;
 }
 
 async function detectBoxes(input: Tensor, config: Config, outputSize: [number, number]) {
@@ -183,6 +192,7 @@ async function detectBoxes(input: Tensor, config: Config, outputSize: [number, n
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return boxes;
 }
+*/
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
   const outputSize: [number, number] = [input.shape[2] || 0, input.shape[1] || 0];
@@ -192,33 +202,31 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
     skipped++;
   } else {
     const t: Record<string, Tensor> = {};
+    /*
     if (config.body['detector'] && config.body['detector']['enabled']) {
       t.detector = await prepareImage(input, 224);
       const boxes = await detectBoxes(t.detector, config, outputSize);
-      if (boxes && boxes.length === 1) {
-        t.landmarks = await prepareImage(input, 256, boxes[0].box); // padded and resized according to detector
-        cache = await detectLandmarks(t.landmarks, config, outputSize);
-      }
-      if (cache) cache.score = boxes[0].score;
-    } else {
-      t.landmarks = await prepareImage(input, 256, lastBox); // padded and resized
-      cache = await detectLandmarks(t.landmarks, config, outputSize);
-      /*
-      lastBox = undefined;
-      if (cache?.box) {
-        const cx = cache.boxRaw[0] + (cache.boxRaw[2] / 2);
-        const cy = cache.boxRaw[1] + (cache.boxRaw[3] / 2);
-        let size = cache.boxRaw[2] > cache.boxRaw[3] ? cache.boxRaw[2] : cache.boxRaw[3];
-        size = (size * 1.2) / 2; // enlarge and half it
-        lastBox = [cx - size, cy - size, 2 * size, 2 * size];
-      }
-      */
     }
+    */
+    t.landmarks = await prepareImage(input, 256); // padded and resized
+    cache = await detectLandmarks(t.landmarks, config, outputSize);
+    /*
+    cropBox = [0, 0, 1, 1]; // reset crop coordinates
+    if (cache?.boxRaw && config.skipAllowed) {
+      const cx = (2.0 * cache.boxRaw[0] + cache.boxRaw[2]) / 2;
+      const cy = (2.0 * cache.boxRaw[1] + cache.boxRaw[3]) / 2;
+      let size = cache.boxRaw[2] > cache.boxRaw[3] ? cache.boxRaw[2] : cache.boxRaw[3];
+      size = (size * 1.0) / 2; // enlarge and half it
+      if (cx > 0.1 && cx < 0.9 && cy > 0.1 && cy < 0.9 && size > 0.1) { // only update if box is sane
+        const y = 0; // cy - size;
+        const x = cx - size;
+        cropBox = [y, x, y + 1, x + 1]; // [y0,x0,y1,x1] used for cropping but width/height are not yet implemented so we only reposition image to center of body
+      }
+    }
+    */
     Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-    // if (cache && boxes.length > 0) cache.box = boxes[0].box;
     lastTime = now();
     skipped = 0;
   }
-  if (cache) return [cache];
-  return [];
+  return cache ? [cache] : [];
 }

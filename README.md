@@ -149,7 +149,7 @@ and optionally matches detected face with database of known people to guess thei
 
 <br>
 
-2. **Face3D OpenGL Rendering:**  
+2. **3D Rendering:**  
 > [human-motion](https://github.com/vladmandic/human-motion)
 
 ![Face3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg)

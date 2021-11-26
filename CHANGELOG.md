@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/23 mandic00@live.com
+### **HEAD -> main** 2021/11/24 mandic00@live.com
 
+- release preview
 - fix face box scaling on detection
 - cleanup
 

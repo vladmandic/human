@@ -1,5 +1,3 @@
-/// <reference types="offscreencanvas" />
-
 export declare const version: {
   'tfjs-core': string;
   'tfjs-backend-cpu': string;

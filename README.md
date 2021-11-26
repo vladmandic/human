@@ -51,7 +51,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - **Face Match** [[*Live*]](https://vladmandic.github.io/human/demo/facematch/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Extract faces from images, calculates face descriptors and simmilarities and matches them to known database
 - **Face ID** [[*Live*]](https://vladmandic.github.io/human/demo/faceid/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/faceid): Runs multiple checks to validate webcam input before performing face match to faces in IndexDB
 - **Multi-thread** [[*Live*]](https://vladmandic.github.io/human/demo/multithread/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/multithread): Runs each `human` module in a separate web worker for highest possible performance  
-- **Face 3D** [[*Live*]](https://vladmandic.github.io/human/demo/face3d/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/face3d): Uses WebCam as input and draws 3D render of face mesh using `Three.js`
+- **3D Analysis** [[*Live*]](https://vladmandic.github.io/human-motion/src/index.html) [[*Details*]](https://github.com/vladmandic/human-motion): 3D tracking and visualization of heead, face, eye, body and hand
 - **Virtual Avatar** [[*Live*]](https://vladmandic.github.io/human-vrm/src/human-vrm.html) [[*Details*]](https://github.com/vladmandic/human-vrm): VR model with head, face, eye, body and hand tracking  
 
 ### NodeJS Demos
@@ -150,14 +150,18 @@ and optionally matches detected face with database of known people to guess thei
 <br>
 
 2. **Face3D OpenGL Rendering:**  
-> [demo/face3d](demo/face3d/index.html)
+> [human-motion](https://github.com/vladmandic/human-motion)
 
-![Face Matching](assets/screenshot-face3d.jpg)
+![Face3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg)
+![Body3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-body.jpg)
+![Hand3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-hand.jpg)
 
 <br>
 
 3. **VR Model Tracking:**  
-![vrmodel](assets/screenshot-vrm.jpg)
+> [human-vrmmotion](https://github.com/vladmandic/human-vrm)
+
+![VRM](https://github.com/vladmandic/human-vrm/raw/main/assets/human-vrm-screenshot.jpg)
 
 <br>
 

@@ -1351,7 +1351,7 @@ var Env = class {
 var env = new Env();
 
 // package.json
-var version10 = "2.5.4";
+var version10 = "2.5.5";
 
 // src/gear/gear.ts
 var model;

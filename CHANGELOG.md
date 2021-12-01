@@ -9,8 +9,13 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/11/24 mandic00@live.com
+### **2.5.5** 2021/12/01 mandic00@live.com
 
+
+### **origin/main** 2021/11/26 mandic00@live.com
+
+- added human-motion
+- add offscreencanvas typedefs
 - release preview
 - fix face box scaling on detection
 - cleanup

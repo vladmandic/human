@@ -64429,8 +64429,12 @@ var makeBindGroup = (device, bindGroupLayout, inputs, output, uniforms) => {
 var compileProgram2 = (device, program, pipelineLayout, inputsData, output, isFromPixel = false) => {
   const outputData = { dtype: output.dtype, shape: output.shape };
   const source = makeShader2(inputsData, outputData, program, isFromPixel);
-  const module = device.createShaderModule({ code: source });
-  const pipeline = device.createComputePipeline({ layout: pipelineLayout, compute: { module, entryPoint: "main" } });
+  const module = device.createShaderModule({ code: source, label: program.constructor.name });
+  const pipeline = device.createComputePipeline({
+    layout: pipelineLayout,
+    compute: { module, entryPoint: "main" },
+    label: program.constructor.name
+  });
   return pipeline;
 };
 function makeShaderKey2(program, shapes, types, broadcastDimsKey = "", inputShapesEqualsOutShape = "") {
@@ -70999,7 +71003,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211201";
+var externalVersion = "3.11.0-20211207";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,
@@ -72041,7 +72045,7 @@ var Env = class {
     __publicField(this, "Image");
     __publicField(this, "ImageData");
     this.browser = typeof navigator !== "undefined";
-    this.node = typeof process !== "undefined";
+    this.node = typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined";
     this.tfjs = { version: version8["tfjs-core"] };
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;

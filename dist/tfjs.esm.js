@@ -4,7 +4,7 @@
   author: <https://github.com/vladmandic>'
 */
 
-// node_modules/.pnpm/github.com+vladmandic+tfjs@d896c6c29a2fc558735bc257fce9451a8c59249d/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
+// node_modules/.pnpm/github.com+vladmandic+tfjs@61d53a7c46cea516efb6efaf8c00c3b4a94db146/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -63724,8 +63724,12 @@ var makeBindGroup = (device, bindGroupLayout, inputs, output, uniforms) => {
 var compileProgram2 = (device, program, pipelineLayout, inputsData, output, isFromPixel = false) => {
   const outputData = { dtype: output.dtype, shape: output.shape };
   const source = makeShader2(inputsData, outputData, program, isFromPixel);
-  const module = device.createShaderModule({ code: source });
-  const pipeline = device.createComputePipeline({ layout: pipelineLayout, compute: { module, entryPoint: "main" } });
+  const module = device.createShaderModule({ code: source, label: program.constructor.name });
+  const pipeline = device.createComputePipeline({
+    layout: pipelineLayout,
+    compute: { module, entryPoint: "main" },
+    label: program.constructor.name
+  });
   return pipeline;
 };
 function makeShaderKey2(program, shapes, types, broadcastDimsKey = "", inputShapesEqualsOutShape = "") {
@@ -70294,7 +70298,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211201";
+var externalVersion = "3.11.0-20211207";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,

@@ -1286,7 +1286,7 @@ var Env = class {
     __publicField(this, "Image");
     __publicField(this, "ImageData");
     this.browser = typeof navigator !== "undefined";
-    this.node = typeof process !== "undefined";
+    this.node = typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined";
     this.tfjs = { version: version9["tfjs-core"] };
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;

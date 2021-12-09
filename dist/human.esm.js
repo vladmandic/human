@@ -71003,7 +71003,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211207";
+var externalVersion = "3.12.0-20211209";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,

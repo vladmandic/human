@@ -237,14 +237,14 @@ import * as dist_star from "@tensorflow/tfjs/dist/index.js";
 import * as dist_star2 from "@tensorflow/tfjs-backend-webgl/dist/index.js";
 import { Tensor } from "@tensorflow/tfjs/dist/index.js";
 import { GraphModel } from "@tensorflow/tfjs-converter/dist/index";
-var version = "3.11.0";
-var version2 = "3.11.0";
-var version3 = "3.11.0";
-var version4 = "3.11.0";
-var version5 = "3.11.0";
-var version6 = "3.11.0";
-var version7 = "3.11.0";
-var version8 = "3.11.0";
+var version = "3.12.0";
+var version2 = "3.12.0";
+var version3 = "3.12.0";
+var version4 = "3.12.0";
+var version5 = "3.12.0";
+var version6 = "3.12.0";
+var version7 = "3.12.0";
+var version8 = "3.12.0";
 var version9 = {
   tfjs: version,
   "tfjs-core": version2,

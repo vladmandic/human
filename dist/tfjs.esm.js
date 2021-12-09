@@ -4,7 +4,7 @@
   author: <https://github.com/vladmandic>'
 */
 
-// node_modules/.pnpm/github.com+vladmandic+tfjs@61d53a7c46cea516efb6efaf8c00c3b4a94db146/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
+// node_modules/.pnpm/github.com+vladmandic+tfjs@937979cd60017ad6640fa8ea5c84c77fc549f841/node_modules/@vladmandic/tfjs/dist/tfjs.esm.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -70298,7 +70298,7 @@ registerBackend("wasm", async () => {
   const { wasm } = await init();
   return new BackendWasm(wasm);
 }, WASM_PRIORITY);
-var externalVersion = "3.11.0-20211207";
+var externalVersion = "3.12.0-20211209";
 var version8 = {
   tfjs: externalVersion,
   "tfjs-core": externalVersion,

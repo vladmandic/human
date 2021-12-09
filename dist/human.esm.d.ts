@@ -902,6 +902,20 @@ export declare class GraphModel implements InferenceModel {
      * @doc {heading: 'Models', subheading: 'Classes'}
      */
     executeAsync(inputs: Tensor | Tensor[] | NamedTensorMap, outputs?: string | string[]): Promise<Tensor | Tensor[]>;
+    /**
+     * Get intermediate tensors for model debugging mode (flag
+     * KEEP_INTERMEDIATE_TENSORS is true).
+     *
+     * @doc {heading: 'Models', subheading: 'Classes'}
+     */
+    getIntermediateTensors(): NamedTensorsMap;
+    /**
+     * Dispose intermediate tensors for model debugging mode (flag
+     * KEEP_INTERMEDIATE_TENSORS is true).
+     *
+     * @doc {heading: 'Models', subheading: 'Classes'}
+     */
+    disposeIntermediateTensors(): void;
     private convertTensorMapToTensorsMap;
     /**
      * Releases the memory used by the weight tensors and resourceManager.

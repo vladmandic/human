@@ -390,10 +390,11 @@ async function setupCamera() {
     },
   };
   // enumerate devices for diag purposes
-  if (initialCameraAccess) {
-    navigator.mediaDevices.enumerateDevices().then((devices) => log('enumerated input devices:', devices));
-    log('camera constraints', constraints);
-  }
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  if (initialCameraAccess) log('enumerated input devices:', devices);
+  // to select specific camera add deviceid from enumerated devices to camera constraints
+  // constraints.video.deviceId = '6794499e046cf4aebf41cfeb7d1ef48a17bd65f72bafb55f3c0b06405d3d487b';
+  if (initialCameraAccess) log('camera constraints', constraints);
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
   } catch (err) {

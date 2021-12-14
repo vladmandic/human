@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/12/09 mandic00@live.com
+### **HEAD -> main** 2021/12/13 mandic00@live.com
 
 - fix node detection in electron environment
 
@@ -556,139 +556,72 @@
 
 - fix for face detector when mesh is disabled
 - optimize for npm
-
-### **0.40.9** 2021/03/08 mandic00@live.com
-
+- 0.40.9
 - fix performance issue when running with low confidence
-
-### **0.40.8** 2021/03/08 mandic00@live.com
-
-
-### **0.40.7** 2021/03/06 mandic00@live.com
-
+- 0.40.8
+- 0.40.7
 - implemented 3d face angle calculations
-
-### **0.40.6** 2021/03/06 mandic00@live.com
-
+- 0.40.6
 - add curve draw output
-
-### **0.40.5** 2021/03/05 mandic00@live.com
-
+- 0.40.5
 - fix human.draw
-
-### **0.40.4** 2021/03/05 mandic00@live.com
-
+- 0.40.4
 - cleanup blazepose code
 - fix demo
-
-### **0.40.3** 2021/03/05 mandic00@live.com
-
-
-### **0.40.2** 2021/03/05 mandic00@live.com
-
+- 0.40.3
+- 0.40.2
 - added blazepose-upper
-
-### **0.40.1** 2021/03/04 mandic00@live.com
-
+- 0.40.1
 - implement blazepose and update demos
 - add todo list
-
-### **0.30.6** 2021/03/03 mandic00@live.com
-
+- 0.30.6
 - fine tuning age and face models
-
-### **0.30.5** 2021/03/02 mandic00@live.com
-
+- 0.30.5
 - add debug logging flag
-
-### **0.30.4** 2021/03/01 mandic00@live.com
-
+- 0.30.4
 - added skipinitial flag
-
-### **0.30.3** 2021/02/28 mandic00@live.com
-
+- 0.30.3
 - typo
-
-### **0.30.2** 2021/02/26 mandic00@live.com
-
+- 0.30.2
 - rebuild
 - fix typo
-
-### **0.30.1** 2021/02/25 mandic00@live.com
-
-
-### **0.20.11** 2021/02/24 mandic00@live.com
-
-
-### **0.20.10** 2021/02/22 mandic00@live.com
-
-
-### **0.20.9** 2021/02/21 mandic00@live.com
-
+- 0.30.1
+- 0.20.11
+- 0.20.10
+- 0.20.9
 - remove extra items
 - simmilarity fix
-
-### **0.20.8** 2021/02/21 mandic00@live.com
-
+- 0.20.8
 - embedding fix
-
-### **0.20.7** 2021/02/21 mandic00@live.com
-
+- 0.20.7
 - build fix
-
-### **0.20.6** 2021/02/21 mandic00@live.com
-
+- 0.20.6
 - embedding fix
-
-### **0.20.5** 2021/02/21 mandic00@live.com
-
+- 0.20.5
 - fix imagefx and add dev builds
 
 ### **0.20.4** 2021/02/19 mandic00@live.com
 
 - 0.20.4
-
-### **0.20.3** 2021/02/17 mandic00@live.com
-
+- 0.20.3
 - rebuild
-
-### **0.20.2** 2021/02/13 mandic00@live.com
-
+- 0.20.2
 - merge branch 'main' of https://github.com/vladmandic/human into main
 - create codeql-analysis.yml
 - create security.md
 - add templates
-
-### **0.20.1** 2021/02/08 mandic00@live.com
-
+- 0.20.1
 - menu fixes
 - convert to typescript
-
-### **0.11.5** 2021/02/06 mandic00@live.com
-
+- 0.11.5
 - added faceboxes alternative model
-
-### **0.11.4** 2021/02/06 mandic00@live.com
-
-
-### **0.11.3** 2021/02/02 mandic00@live.com
-
-
-### **0.11.2** 2021/01/30 mandic00@live.com
-
+- 0.11.4
+- 0.11.3
+- 0.11.2
 - added warmup for nodejs
-
-### **update for tfjs 3.0.0** 2021/01/29 mandic00@live.com
-
-
-### **0.11.1** 2021/01/29 mandic00@live.com
-
-
-### **0.10.2** 2021/01/22 mandic00@live.com
-
-
-### **0.10.1** 2021/01/20 mandic00@live.com
-
+- 0.11.1
+- 0.10.2
+- 0.10.1
 
 ### **0.9.26** 2021/01/18 mandic00@live.com
 
@@ -807,9 +740,7 @@
 ### **0.9.3** 2020/11/16 mandic00@live.com
 
 - switched to minified build
-
-### **release: 1.2** 2020/11/15 mandic00@live.com
-
+- web worker fixes
 - full rebuild
 
 ### **0.9.2** 2020/11/14 mandic00@live.com
@@ -1077,9 +1008,6 @@
 
 
 ### **0.2.2** 2020/10/12 mandic00@live.com
-
-
-### **release: 1.0** 2020/10/12 mandic00@live.com
 
 
 ### **0.2.1** 2020/10/12 mandic00@live.com

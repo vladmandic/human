@@ -241,7 +241,6 @@ export interface Config {
    * default: `full`
   */
   warmup: '' | 'none' | 'face' | 'full' | 'body',
-  // warmup: string;
 
   /** Base model path (typically starting with file://, http:// or https://) for all models
    * - individual modelPath values are relative to this path

@@ -8,14 +8,14 @@ import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './efficientposecoords';
 import { constants } from '../tfjs/constants';
-import type { BodyResult, Point } from '../result';
+import type { BodyResult, Point, BodyLandmark, BodyAnnotation } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
 let lastTime = 0;
-const cache: BodyResult = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
+const cache: BodyResult = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} as Record<BodyAnnotation, Point[][]> };
 
 // const keypoints: Array<BodyKeypoint> = [];
 // let box: Box = [0, 0, 0, 0];
@@ -88,7 +88,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
         if (partScore > (config.body?.minConfidence || 0)) {
           cache.keypoints.push({
             score: Math.round(100 * partScore) / 100,
-            part: coords.kpt[id],
+            part: coords.kpt[id] as BodyLandmark,
             positionRaw: [ // normalized to 0..1
               // @ts-ignore model is not undefined here
               x / model.inputs[0].shape[2], y / model.inputs[0].shape[1],

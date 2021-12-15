@@ -11,6 +11,15 @@ export type Box = [number, number, number, number];
 /** generic point as [x, y, z?] */
 export type Point = [number, number, number?];
 
+export type Emotion = 'angry' | 'disgust' | 'fear' | 'happy' | 'sad' | 'surprise' | 'neutral';
+export type Gender = 'male' | 'female' | 'unknown';
+export type Race = 'white' | 'black' | 'asian' | 'indian' | 'other';
+export type FaceLandmark = 'leftEye' | 'rightEye' | 'nose' | 'mouth' | 'leftEar' | 'rightEar' | 'symmetryLine' | 'silhouette'
+ | 'lipsUpperOuter' | 'lipsLowerOuter' | 'lipsUpperInner' | 'lipsLowerInner'
+ | 'rightEyeUpper0' | 'rightEyeLower0' | 'rightEyeUpper1' | 'rightEyeLower1' | 'rightEyeUpper2' | 'rightEyeLower2' | 'rightEyeLower3' | 'rightEyebrowUpper' | 'rightEyebrowLower' | 'rightEyeIris'
+ | 'leftEyeUpper0' | 'leftEyeLower0' | 'leftEyeUpper1' | 'leftEyeLower1' | 'leftEyeUpper2' | 'leftEyeLower2' | 'leftEyeLower3' | 'leftEyebrowUpper' | 'leftEyebrowLower' | 'leftEyeIris'
+ | 'midwayBetweenEyes' | 'noseTip' | 'noseBottom' | 'noseRightCorner' | 'noseLeftCorner' | 'rightCheek' | 'leftCheek';
+
 /** Face results
  * - Combined results of face detector, face mesh, age, gender, emotion, embedding, iris models
  * - Some values may be null if specific model is not enabled
@@ -33,17 +42,17 @@ export interface FaceResult {
   /** detected face mesh normalized to 0..1 */
   meshRaw: Array<Point>
   /** mesh keypoints combined into annotated results */
-  annotations: Record<string, Point[]>,
+  annotations: Record<FaceLandmark, Point[]>,
   /** detected age */
   age?: number,
   /** detected gender */
-  gender?: string,
+  gender?: Gender,
   /** gender detection score */
   genderScore?: number,
   /** detected emotions */
-  emotion?: Array<{ score: number, emotion: string }>,
+  emotion?: Array<{ score: number, emotion: Emotion }>,
   /** detected race */
-  race?: Array<{ score: number, race: string }>,
+  race?: Array<{ score: number, race: Race }>,
   /** face descriptor */
   embedding?: Array<number>,
   /** face iris distance from camera */
@@ -62,10 +71,21 @@ export interface FaceResult {
   tensor?: Tensor,
 }
 
+export type BodyLandmarkPoseNet = 'nose' | 'leftEye' | 'rightEye' | 'leftEar' | 'rightEar' | 'leftShoulder' | 'rightShoulder' | 'leftElbow' | 'rightElbow' | 'leftWrist' | 'rightWrist' | 'leftHip' | 'rightHip' | 'leftKnee' | 'rightKnee' | 'leftAnkle' | 'rightAnkle';
+export type BodyLandmarkMoveNet = 'nose' | 'leftEye' | 'rightEye' | 'leftEar' | 'rightEar' | 'leftShoulder' | 'rightShoulder' | 'leftElbow' | 'rightElbow' | 'leftWrist' | 'rightWrist' | 'leftHip' | 'rightHip' | 'leftKnee' | 'rightKnee' | 'leftAnkle' | 'rightAnkle';
+export type BodyLandmarkEfficientNet = 'head' | 'neck' | 'rightShoulder' | 'rightElbow' | 'rightWrist' | 'chest' | 'leftShoulder' | 'leftElbow' | 'leftWrist' | 'bodyCenter' | 'rightHip' | 'rightKnee' | 'rightAnkle' | 'leftHip' | 'leftKnee' | 'leftAnkle';
+export type BodyLandmarkBlazePose = 'nose' | 'leftEyeInside' | 'leftEye' | 'leftEyeOutside' | 'rightEyeInside' | 'rightEye' | 'rightEyeOutside' | 'leftEar' | 'rightEar' | 'leftMouth' | 'rightMouth' | 'leftShoulder' | 'rightShoulder'
+  | 'leftElbow' | 'rightElbow' | 'leftWrist' | 'rightWrist' | 'leftPinky' | 'rightPinky' | 'leftIndex' | 'rightIndex' | 'leftThumb' | 'rightThumb' | 'leftHip' | 'rightHip' | 'leftKnee' | 'rightKnee' | 'leftAnkle' | 'rightAnkle'
+  | 'leftHeel' | 'rightHeel' | 'leftFoot' | 'rightFoot' | 'bodyCenter' | 'bodyTop' | 'leftPalm' | 'leftHand' | 'rightPalm' | 'rightHand';
+export type BodyLandmark = BodyLandmarkPoseNet | BodyLandmarkMoveNet | BodyLandmarkEfficientNet | BodyLandmarkBlazePose;
+export type BodyAnnotationBlazePose = 'leftLeg' | 'rightLeg' | 'torso' | 'leftArm' | 'rightArm' | 'leftEye' | 'rightEye' | 'mouth';
+export type BodyAnnotationEfficientPose = 'leftLeg' | 'rightLeg' | 'torso' | 'leftArm' | 'rightArm' | 'head';
+export type BodyAnnotation = BodyAnnotationBlazePose | BodyAnnotationEfficientPose;
+
 /** Body Result keypoints */
 export interface BodyKeypoint {
   /** body part name */
-  part: string,
+  part: BodyLandmark,
   /** body part position */
   position: Point,
   /** body part position normalized to 0..1 */
@@ -87,8 +107,13 @@ export interface BodyResult {
   /** detected body keypoints */
   keypoints: Array<BodyKeypoint>
   /** detected body keypoints combined into annotated parts */
-  annotations: Record<string, Array<Point[]>>,
+  annotations: Record<BodyAnnotation, Point[][]>,
 }
+
+export type HandType = 'hand' | 'fist' | 'pinch' | 'point' | 'face' | 'tip' | 'pinchtip';
+export type Finger = 'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm';
+export type FingerCurl = 'none' | 'half' | 'full';
+export type FingerDirection = 'verticalUp' | 'verticalDown' | 'horizontalLeft' | 'horizontalRight' | 'diagonalUpRight' | 'diagonalUpLeft' | 'diagonalDownRight' | 'diagonalDownLeft';
 
 /** Hand results */
 export interface HandResult {
@@ -107,18 +132,19 @@ export interface HandResult {
   /** detected hand keypoints */
   keypoints: Array<Point>,
   /** detected hand class */
-  label: string,
+  label: HandType,
   /** detected hand keypoints combined into annotated parts */
-  annotations: Record<
-    'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm',
-    Array<Point>
-  >,
+  annotations: Record<Finger, Array<Point>>,
   /** detected hand parts annotated with part gestures */
-  landmarks: Record<
-    'index' | 'middle' | 'pinky' | 'ring' | 'thumb',
-    { curl: 'none' | 'half' | 'full', direction: 'verticalUp' | 'verticalDown' | 'horizontalLeft' | 'horizontalRight' | 'diagonalUpRight' | 'diagonalUpLeft' | 'diagonalDownRight' | 'diagonalDownLeft' }
-  >,
+  landmarks: Record<Finger, { curl: FingerCurl, direction: FingerDirection }>,
 }
+
+export type ObjectType = 'person' | 'bicycle' | 'car' | 'motorcycle' | 'airplane' | 'bus' | 'train' | 'truck' | 'boat' | 'traffic light' | 'fire hydrant' | 'stop sign' | 'parking meter'
+  | 'bench' | 'bird' | 'cat' | 'dog' | 'horse' | 'sheep' | 'cow' | 'elephant' | 'bear' | 'zebra' | 'giraffe' | 'backpack' | 'umbrella' | 'handbag' | 'tie' | 'suitcase' | 'frisbee'
+  | 'skis' | 'snowboard' | 'sports ball' | 'kite' | 'baseball bat' | 'baseball glove' | 'skateboard' | 'surfboard' | 'tennis racket' | 'bottle' | 'wine glass' | 'cup' | 'fork'
+  | 'knife' | 'spoon' | 'bowl' | 'banana' | 'apple' | 'sandwich' | 'orange' | 'broccoli' | 'carrot' | 'hot dog' | 'pizza' | 'donut' | 'cake' | 'chair' | 'couch' | 'potted plant'
+  | 'bed' | 'dining table' | 'toilet' | 'tv' | 'laptop' | 'mouse' | 'remote' | 'keyboard' | 'cell phone' | 'microwave' | 'oven' | 'toaster' | 'sink' | 'refrigerator' | 'book'
+  | 'clock' | 'vase' | 'scissors' | 'teddy bear' | 'hair drier' | 'toothbrush';
 
 /** Object results */
 export interface ObjectResult {
@@ -129,7 +155,7 @@ export interface ObjectResult {
   /** detected object class id */
   class: number,
   /** detected object class name */
-  label: string,
+  label: ObjectType,
   /** detected object box */
   box: Box,
   /** detected object box normalized to 0..1 */

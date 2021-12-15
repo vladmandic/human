@@ -11,6 +11,7 @@ export type { Box, Point } from './result';
 export type { Models } from './models';
 export type { Env } from './util/env';
 export type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
+export type { Emotion, Finger, FingerCurl, FingerDirection, HandType, Gender, Race, FaceLandmark, BodyLandmark, BodyAnnotation, ObjectType } from './result';
 export { env } from './util/env';
 
 /** Events dispatched by `human.events`

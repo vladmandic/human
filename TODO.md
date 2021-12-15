@@ -10,7 +10,6 @@
 - Advanced histogram equalization: Adaptive, Contrast Limited, CLAHE
 - TFLite models: <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
 - Body segmentation: `robust-video-matting`
-- TFJS incompatibility with latest `long.js` 5.0.0 due to CJS to ESM switch
 
 <br><hr><br>
 
@@ -57,3 +56,4 @@ Other:
 - Fix face detect box scale and rotation
 - Fix body interpolation
 - Updated `blazepose` implementation
+- Strong typing for all string enums in `config` and `results`

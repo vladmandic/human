@@ -5,7 +5,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import { constants } from '../tfjs/constants';
 import { log, join, now } from '../util/util';
-import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
+import type { BodyKeypoint, BodyResult, BodyLandmark, Box, Point, BodyAnnotation } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import * as coords from './blazeposecoords';
@@ -144,13 +144,13 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
     const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
     const positionRaw: Point = [points[depth * i + 0] / inputSize.landmarks[0], points[depth * i + 1] / inputSize.landmarks[1], points[depth * i + 2] + 0];
     const position: Point = [Math.trunc(outputSize[0] * positionRaw[0]), Math.trunc(outputSize[1] * positionRaw[1]), positionRaw[2] as number];
-    keypointsRelative.push({ part: coords.kpt[i], positionRaw, position, score: adjScore });
+    keypointsRelative.push({ part: coords.kpt[i] as BodyLandmark, positionRaw, position, score: adjScore });
   }
   if (poseScore < (config.body.minConfidence || 0)) return null;
   const keypoints: Array<BodyKeypoint> = rescaleKeypoints(keypointsRelative, outputSize); // keypoints were relative to input image which is padded
   const kpts = keypoints.map((k) => k.position);
   const boxes = box.calc(kpts, [outputSize[0], outputSize[1]]); // now find boxes based on rescaled keypoints
-  const annotations: Record<string, Point[][]> = {};
+  const annotations: Record<BodyAnnotation, Point[][]> = {} as Record<BodyAnnotation, Point[][]>;
   for (const [name, indexes] of Object.entries(coords.connected)) {
     const pt: Array<Point[]> = [];
     for (let i = 0; i < indexes.length - 1; i++) {

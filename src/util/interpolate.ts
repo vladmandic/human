@@ -2,7 +2,7 @@
  * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 
-import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Box, Point } from '../result';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation } from '../result';
 import type { Config } from '../config';
 
 import * as moveNetCoords from '../body/movenetcoords';
@@ -46,7 +46,7 @@ export function calc(newResult: Result, config: Config): Result {
       const keypoints = (newResult.body[i].keypoints // update keypoints
         .map((newKpt, j) => ({
           score: newKpt.score,
-          part: newKpt.part,
+          part: newKpt.part as BodyLandmark,
           position: [
             bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[0] || 0) + (newKpt.position[0] || 0)) / bufferedFactor : newKpt.position[0],
             bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[1] || 0) + (newKpt.position[1] || 0)) / bufferedFactor : newKpt.position[1],
@@ -57,9 +57,9 @@ export function calc(newResult: Result, config: Config): Result {
             bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[1] || 0) + (newKpt.positionRaw[1] || 0)) / bufferedFactor : newKpt.position[1],
             bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[2] || 0) + (newKpt.positionRaw[2] || 0)) / bufferedFactor : newKpt.position[2],
           ],
-        }))) as Array<{ score: number, part: string, position: [number, number, number?], positionRaw: [number, number, number?] }>;
+        }))) as Array<{ score: number, part: BodyLandmark, position: [number, number, number?], positionRaw: [number, number, number?] }>;
 
-      const annotations: Record<string, Point[][]> = {}; // recreate annotations
+      const annotations: Record<BodyAnnotation, Point[][]> = {} as Record<BodyAnnotation, Point[][]>; // recreate annotations
       let coords = { connected: {} };
       if (config.body?.modelPath?.includes('efficientpose')) coords = efficientPoseCoords;
       else if (config.body?.modelPath?.includes('blazepose')) coords = blazePoseCoords;

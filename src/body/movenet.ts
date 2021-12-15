@@ -9,7 +9,7 @@ import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './movenetcoords';
 import * as fix from './movenetfix';
-import type { BodyKeypoint, BodyResult, Box, Point } from '../result';
+import type { BodyKeypoint, BodyResult, BodyLandmark, BodyAnnotation, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { fakeOps } from '../tfjs/backend';
@@ -52,7 +52,7 @@ async function parseSinglePose(res, config, image) {
       const positionRaw: Point = [kpt[id][1], kpt[id][0]];
       keypoints.push({
         score: Math.round(100 * score) / 100,
-        part: coords.kpt[id],
+        part: coords.kpt[id] as BodyLandmark,
         positionRaw,
         position: [ // normalized to input image size
           Math.round((image.shape[2] || 0) * positionRaw[0]),
@@ -92,7 +92,7 @@ async function parseMultiPose(res, config, image) {
         if (score > config.body.minConfidence) {
           const positionRaw: Point = [kpt[3 * i + 1], kpt[3 * i + 0]];
           keypoints.push({
-            part: coords.kpt[i],
+            part: coords.kpt[i] as BodyLandmark,
             score: Math.round(100 * score) / 100,
             positionRaw,
             position: [Math.round((image.shape[2] || 0) * positionRaw[0]), Math.round((image.shape[1] || 0) * positionRaw[1])],
@@ -103,7 +103,7 @@ async function parseMultiPose(res, config, image) {
       // movenet-multipose has built-in box details
       // const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
       // const box: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
-      const annotations: Record<string, Point[][]> = {};
+      const annotations: Record<BodyAnnotation, Point[][]> = {} as Record<BodyAnnotation, Point[][]>;
       for (const [name, indexes] of Object.entries(coords.connected)) {
         const pt: Array<Point[]> = [];
         for (let i = 0; i < indexes.length - 1; i++) {

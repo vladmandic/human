@@ -162,9 +162,9 @@ export const detectFace = async (instance: Human /* instance of human */, input:
 
     // calculate iris distance
     // iris: array[ center, left, top, right, bottom]
-    if (!instance.config.face.iris?.enabled && faces[i]?.annotations?.leftEyeIris && faces[i]?.annotations?.rightEyeIris) {
-      delete faces[i].annotations.leftEyeIris;
-      delete faces[i].annotations.rightEyeIris;
+    if (!instance.config.face.iris?.enabled) {
+      // if (faces[i]?.annotations?.leftEyeIris) delete faces[i].annotations.leftEyeIris;
+      // if (faces[i]?.annotations?.rightEyeIris) delete faces[i].annotations.rightEyeIris;
     }
     const irisSize = (faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0]
       && (faces[i].annotations.leftEyeIris.length > 0) && (faces[i].annotations.rightEyeIris.length > 0)

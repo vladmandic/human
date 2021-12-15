@@ -72115,7 +72115,7 @@ var Env = class {
 var env2 = new Env();
 
 // package.json
-var version9 = "2.5.5";
+var version9 = "2.5.6";
 
 // src/gear/gear.ts
 var model2;

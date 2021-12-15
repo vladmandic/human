@@ -6,11 +6,12 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import type { Gender, Race } from '../result';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import { env } from '../util/env';
 
-type GearType = { age: number, gender: string, genderScore: number, race: Array<{ score: number, race: string }> }
+type GearType = { age: number, gender: Gender, genderScore: number, race: Array<{ score: number, race: Race }> }
 let model: GraphModel | null;
 const last: Array<GearType> = [];
 const raceNames = ['white', 'black', 'asian', 'indian', 'other'];
@@ -53,7 +54,7 @@ export async function predict(image: Tensor, config: Config, idx, count): Promis
     obj.genderScore = Math.round(100 * (gender[0] > gender[1] ? gender[0] : gender[1])) / 100;
     const race = await t.race.data();
     for (let i = 0; i < race.length; i++) {
-      if (race[i] > (config.face['gear']?.minConfidence || 0.2)) obj.race.push({ score: Math.round(100 * race[i]) / 100, race: raceNames[i] });
+      if (race[i] > (config.face['gear']?.minConfidence || 0.2)) obj.race.push({ score: Math.round(100 * race[i]) / 100, race: raceNames[i] as Race });
     }
     obj.race.sort((a, b) => b.score - a.score);
     // {0: 'Below20', 1: '21-25', 2: '26-30', 3: '31-40',4: '41-50', 5: '51-60', 6: 'Above60'}

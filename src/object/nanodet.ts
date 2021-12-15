@@ -8,7 +8,7 @@ import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { constants } from '../tfjs/constants';
 import { labels } from './labels';
-import type { ObjectResult, Box } from '../result';
+import type { ObjectResult, ObjectType, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
@@ -72,7 +72,7 @@ async function process(res, inputSize, outputShape, config) {
               // strideSize,
               score: Math.round(100 * score) / 100,
               class: j + 1,
-              label: labels[j].label,
+              label: labels[j].label as ObjectType,
               // center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
               // centerRaw: [cx, cy],
               box: box.map((a) => Math.trunc(a)) as Box,

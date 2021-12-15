@@ -9,7 +9,7 @@
 import { log, join, now } from '../util/util';
 import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { HandResult, Box, Point } from '../result';
+import type { HandResult, HandType, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
@@ -39,7 +39,7 @@ type HandDetectResult = {
   box: Box,
   boxRaw: Box,
   boxCrop: Box,
-  label: string,
+  label: HandType,
 }
 
 const cache: {
@@ -129,7 +129,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
     const boxCrop: Box = box.crop(boxRaw); // crop box is based on raw box
     const boxFull: Box = [Math.trunc(boxData[0] * outputSize[0]), Math.trunc(boxData[1] * outputSize[1]), Math.trunc(boxData[2] * outputSize[0]), Math.trunc(boxData[3] * outputSize[1])];
     const score = scores[nmsIndex];
-    const label = classes[classNum[nmsIndex]];
+    const label = classes[classNum[nmsIndex]] as HandType;
     const hand: HandDetectResult = { id: id++, score, box: boxFull, boxRaw, boxCrop, label };
     hands.push(hand);
   }

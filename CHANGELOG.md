@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/12/13 mandic00@live.com
+### **HEAD -> main** 2021/12/14 mandic00@live.com
 
+- rebuild
 - fix node detection in electron environment
 
 ### **2.5.5** 2021/12/01 mandic00@live.com

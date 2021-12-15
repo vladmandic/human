@@ -16,7 +16,7 @@ import * as iris from './iris';
 import { histogramEqualization } from '../image/enhance';
 import { env } from '../util/env';
 import type { GraphModel, Tensor } from '../tfjs/types';
-import type { FaceResult, Point } from '../result';
+import type { FaceResult, FaceLandmark, Point } from '../result';
 import type { Config } from '../config';
 
 type DetectBox = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
@@ -62,7 +62,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       score: 0,
       boxScore: 0,
       faceScore: 0,
-      annotations: {},
+      annotations: {} as Record<FaceLandmark, Point[]>,
     };
 
     // optional rotation correction based on detector data only if mesh is disabled otherwise perform it later when we have more accurate mesh data. if no rotation correction this function performs crop

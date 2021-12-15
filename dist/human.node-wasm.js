@@ -1564,7 +1564,7 @@ async function predict3(image29, config3, idx, count2) {
       const normalize = tf7.mul(tf7.sub(grayscale, constants.tf05), 2);
       return normalize;
     });
-    const obj = { gender: "", genderScore: 0 };
+    const obj = { gender: "unknown", genderScore: 0 };
     if (config3.face["ssrnet"].enabled)
       t.gender = model3.execute(t.enhance);
     const data = await t.gender.data();
@@ -10709,7 +10709,8 @@ function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolut
       part,
       position: [Math.trunc(position.x * scaleX), Math.trunc(position.y * scaleY)],
       positionRaw: [position.x / inputResolutionHeight, position.y / inputResolutionHeight]
-    }))
+    })),
+    annotations: {}
   });
   const scaledPoses = poses.map((pose, i) => scalePose(pose, i));
   return scaledPoses;
@@ -12047,7 +12048,7 @@ var calculateFaceAngle = (face5, imageSize) => {
 
 // src/face/face.ts
 var detectFace = async (instance, input) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
   let timeStamp;
   let ageRes;
   let gearRes;
@@ -12160,12 +12161,10 @@ var detectFace = async (instance, input) => {
       descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
     if (((_t = instance.config.face["mobilefacenet"]) == null ? void 0 : _t.enabled) && mobilefacenetRes)
       descRes.descriptor = mobilefacenetRes;
-    if (!((_u = instance.config.face.iris) == null ? void 0 : _u.enabled) && ((_w = (_v = faces[i]) == null ? void 0 : _v.annotations) == null ? void 0 : _w.leftEyeIris) && ((_y = (_x = faces[i]) == null ? void 0 : _x.annotations) == null ? void 0 : _y.rightEyeIris)) {
-      delete faces[i].annotations.leftEyeIris;
-      delete faces[i].annotations.rightEyeIris;
+    if (!((_u = instance.config.face.iris) == null ? void 0 : _u.enabled)) {
     }
     const irisSize = faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0] && faces[i].annotations.leftEyeIris.length > 0 && faces[i].annotations.rightEyeIris.length > 0 && faces[i].annotations.leftEyeIris[0] !== null && faces[i].annotations.rightEyeIris[0] !== null ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
-    const tensor3 = ((_z = instance.config.face.detector) == null ? void 0 : _z.return) ? tf34.squeeze(faces[i].tensor) : null;
+    const tensor3 = ((_v = instance.config.face.detector) == null ? void 0 : _v.return) ? tf34.squeeze(faces[i].tensor) : null;
     tf34.dispose(faces[i].tensor);
     if (faces[i].tensor)
       delete faces[i].tensor;

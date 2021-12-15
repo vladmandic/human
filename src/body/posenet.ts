@@ -6,7 +6,7 @@
 
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
-import type { BodyResult, Box } from '../result';
+import type { BodyResult, BodyLandmark, Box } from '../result';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
@@ -14,7 +14,6 @@ import * as utils from './posenetutils';
 
 let model: GraphModel;
 const poseNetOutputs = ['MobilenetV1/offset_2/BiasAdd'/* offsets */, 'MobilenetV1/heatmap_2/BiasAdd'/* heatmapScores */, 'MobilenetV1/displacement_fwd_2/BiasAdd'/* displacementFwd */, 'MobilenetV1/displacement_bwd_2/BiasAdd'/* displacementBwd */];
-
 const localMaximumRadius = 1;
 const outputStride = 16;
 const squaredNmsRadius = 50 ** 2;
@@ -59,7 +58,7 @@ export function decodePose(root, scores, offsets, displacementsFwd, displacement
   const rootPoint = utils.getImageCoords(root.part, outputStride, offsets);
   keypoints[root.part.id] = {
     score: root.score,
-    part: utils.partNames[root.part.id],
+    part: utils.partNames[root.part.id] as BodyLandmark,
     position: rootPoint,
   };
   // Decode the part positions upwards in the tree, following the backward displacements.

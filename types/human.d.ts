@@ -29,6 +29,12 @@ export declare type BackendType = ['cpu', 'wasm', 'webgl', 'humangl', 'tensorflo
 /** draw detected bodies */
 declare function body(inCanvas: AnyCanvas, result: Array<BodyResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
 
+export declare type BodyAnnotation = BodyAnnotationBlazePose | BodyAnnotationEfficientPose;
+
+export declare type BodyAnnotationBlazePose = 'leftLeg' | 'rightLeg' | 'torso' | 'leftArm' | 'rightArm' | 'leftEye' | 'rightEye' | 'mouth';
+
+export declare type BodyAnnotationEfficientPose = 'leftLeg' | 'rightLeg' | 'torso' | 'leftArm' | 'rightArm' | 'head';
+
 /** Configures all body detection specific options */
 export declare interface BodyConfig extends GenericConfig {
     /** maximum numboer of detected bodies */
@@ -43,7 +49,7 @@ export declare type BodyGesture = `leaning ${'left' | 'right'}` | `raise ${'left
 /** Body Result keypoints */
 export declare interface BodyKeypoint {
     /** body part name */
-    part: string;
+    part: BodyLandmark;
     /** body part position */
     position: Point;
     /** body part position normalized to 0..1 */
@@ -51,6 +57,16 @@ export declare interface BodyKeypoint {
     /** body part detection score */
     score: number;
 }
+
+export declare type BodyLandmark = BodyLandmarkPoseNet | BodyLandmarkMoveNet | BodyLandmarkEfficientNet | BodyLandmarkBlazePose;
+
+export declare type BodyLandmarkBlazePose = 'nose' | 'leftEyeInside' | 'leftEye' | 'leftEyeOutside' | 'rightEyeInside' | 'rightEye' | 'rightEyeOutside' | 'leftEar' | 'rightEar' | 'leftMouth' | 'rightMouth' | 'leftShoulder' | 'rightShoulder' | 'leftElbow' | 'rightElbow' | 'leftWrist' | 'rightWrist' | 'leftPinky' | 'rightPinky' | 'leftIndex' | 'rightIndex' | 'leftThumb' | 'rightThumb' | 'leftHip' | 'rightHip' | 'leftKnee' | 'rightKnee' | 'leftAnkle' | 'rightAnkle' | 'leftHeel' | 'rightHeel' | 'leftFoot' | 'rightFoot' | 'bodyCenter' | 'bodyTop' | 'leftPalm' | 'leftHand' | 'rightPalm' | 'rightHand';
+
+export declare type BodyLandmarkEfficientNet = 'head' | 'neck' | 'rightShoulder' | 'rightElbow' | 'rightWrist' | 'chest' | 'leftShoulder' | 'leftElbow' | 'leftWrist' | 'bodyCenter' | 'rightHip' | 'rightKnee' | 'rightAnkle' | 'leftHip' | 'leftKnee' | 'leftAnkle';
+
+export declare type BodyLandmarkMoveNet = 'nose' | 'leftEye' | 'rightEye' | 'leftEar' | 'rightEar' | 'leftShoulder' | 'rightShoulder' | 'leftElbow' | 'rightElbow' | 'leftWrist' | 'rightWrist' | 'leftHip' | 'rightHip' | 'leftKnee' | 'rightKnee' | 'leftAnkle' | 'rightAnkle';
+
+export declare type BodyLandmarkPoseNet = 'nose' | 'leftEye' | 'rightEye' | 'leftEar' | 'rightEar' | 'leftShoulder' | 'rightShoulder' | 'leftElbow' | 'rightElbow' | 'leftWrist' | 'rightWrist' | 'leftHip' | 'rightHip' | 'leftKnee' | 'rightKnee' | 'leftAnkle' | 'rightAnkle';
 
 /** Body results */
 export declare interface BodyResult {
@@ -65,7 +81,7 @@ export declare interface BodyResult {
     /** detected body keypoints */
     keypoints: Array<BodyKeypoint>;
     /** detected body keypoints combined into annotated parts */
-    annotations: Record<string, Array<Point[]>>;
+    annotations: Record<BodyAnnotation, Point[][]>;
 }
 
 /** generic box as [x, y, width, height] */
@@ -356,6 +372,8 @@ export declare type DrawOptions = {
     useCurves: boolean;
 };
 
+export declare type Emotion = 'angry' | 'disgust' | 'fear' | 'happy' | 'sad' | 'surprise' | 'neutral';
+
 /**
  * Encode a map from names to weight values as an ArrayBuffer, along with an
  * `Array` of `WeightsManifestEntry` as specification of the encoded weights.
@@ -519,6 +537,8 @@ export declare type FaceGesture = `facing ${'left' | 'center' | 'right'}` | `bli
 export declare interface FaceIrisConfig extends GenericConfig {
 }
 
+export declare type FaceLandmark = 'leftEye' | 'rightEye' | 'nose' | 'mouth' | 'leftEar' | 'rightEar' | 'symmetryLine' | 'silhouette' | 'lipsUpperOuter' | 'lipsLowerOuter' | 'lipsUpperInner' | 'lipsLowerInner' | 'rightEyeUpper0' | 'rightEyeLower0' | 'rightEyeUpper1' | 'rightEyeLower1' | 'rightEyeUpper2' | 'rightEyeLower2' | 'rightEyeLower3' | 'rightEyebrowUpper' | 'rightEyebrowLower' | 'rightEyeIris' | 'leftEyeUpper0' | 'leftEyeLower0' | 'leftEyeUpper1' | 'leftEyeLower1' | 'leftEyeUpper2' | 'leftEyeLower2' | 'leftEyeLower3' | 'leftEyebrowUpper' | 'leftEyebrowLower' | 'leftEyeIris' | 'midwayBetweenEyes' | 'noseTip' | 'noseBottom' | 'noseRightCorner' | 'noseLeftCorner' | 'rightCheek' | 'leftCheek';
+
 /** Liveness part of face configuration */
 export declare interface FaceLivenessConfig extends GenericConfig {
 }
@@ -549,22 +569,22 @@ export declare interface FaceResult {
     /** detected face mesh normalized to 0..1 */
     meshRaw: Array<Point>;
     /** mesh keypoints combined into annotated results */
-    annotations: Record<string, Point[]>;
+    annotations: Record<FaceLandmark, Point[]>;
     /** detected age */
     age?: number;
     /** detected gender */
-    gender?: string;
+    gender?: Gender;
     /** gender detection score */
     genderScore?: number;
     /** detected emotions */
     emotion?: Array<{
         score: number;
-        emotion: string;
+        emotion: Emotion;
     }>;
     /** detected race */
     race?: Array<{
         score: number;
-        race: string;
+        race: Race;
     }>;
     /** face descriptor */
     embedding?: Array<number>;
@@ -646,6 +666,12 @@ export declare interface FilterConfig {
     pixelate: number;
 }
 
+export declare type Finger = 'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm';
+
+export declare type FingerCurl = 'none' | 'half' | 'full';
+
+export declare type FingerDirection = 'verticalUp' | 'verticalDown' | 'horizontalLeft' | 'horizontalRight' | 'diagonalUpRight' | 'diagonalUpLeft' | 'diagonalDownRight' | 'diagonalDownLeft';
+
 /**
  * Creates an IOHandler that loads model artifacts from memory.
  *
@@ -668,6 +694,8 @@ export declare interface FilterConfig {
  * @returns A passthrough `IOHandler` that simply loads the provided data.
  */
 declare function fromMemory(modelArtifacts: {} | ModelArtifacts, weightSpecs?: WeightsManifestEntry[], weightData?: ArrayBuffer, trainingConfig?: TrainingConfig): IOHandler;
+
+export declare type Gender = 'male' | 'female' | 'unknown';
 
 /** Generic config type inherited by all module types */
 export declare interface GenericConfig {
@@ -970,15 +998,17 @@ export declare interface HandResult {
     /** detected hand keypoints */
     keypoints: Array<Point>;
     /** detected hand class */
-    label: string;
+    label: HandType;
     /** detected hand keypoints combined into annotated parts */
-    annotations: Record<'index' | 'middle' | 'pinky' | 'ring' | 'thumb' | 'palm', Array<Point>>;
+    annotations: Record<Finger, Array<Point>>;
     /** detected hand parts annotated with part gestures */
-    landmarks: Record<'index' | 'middle' | 'pinky' | 'ring' | 'thumb', {
-        curl: 'none' | 'half' | 'full';
-        direction: 'verticalUp' | 'verticalDown' | 'horizontalLeft' | 'horizontalRight' | 'diagonalUpRight' | 'diagonalUpLeft' | 'diagonalDownRight' | 'diagonalDownLeft';
+    landmarks: Record<Finger, {
+        curl: FingerCurl;
+        direction: FingerDirection;
     }>;
 }
+
+export declare type HandType = 'hand' | 'fist' | 'pinch' | 'point' | 'face' | 'tip' | 'pinchtip';
 
 /**
  * Creates an IOHandler subtype that sends model artifacts to HTTP server.
@@ -1865,12 +1895,14 @@ export declare interface ObjectResult {
     /** detected object class id */
     class: number;
     /** detected object class name */
-    label: string;
+    label: ObjectType;
     /** detected object box */
     box: Box;
     /** detected object box normalized to 0..1 */
     boxRaw: Box;
 }
+
+export declare type ObjectType = 'person' | 'bicycle' | 'car' | 'motorcycle' | 'airplane' | 'bus' | 'train' | 'truck' | 'boat' | 'traffic light' | 'fire hydrant' | 'stop sign' | 'parking meter' | 'bench' | 'bird' | 'cat' | 'dog' | 'horse' | 'sheep' | 'cow' | 'elephant' | 'bear' | 'zebra' | 'giraffe' | 'backpack' | 'umbrella' | 'handbag' | 'tie' | 'suitcase' | 'frisbee' | 'skis' | 'snowboard' | 'sports ball' | 'kite' | 'baseball bat' | 'baseball glove' | 'skateboard' | 'surfboard' | 'tennis racket' | 'bottle' | 'wine glass' | 'cup' | 'fork' | 'knife' | 'spoon' | 'bowl' | 'banana' | 'apple' | 'sandwich' | 'orange' | 'broccoli' | 'carrot' | 'hot dog' | 'pizza' | 'donut' | 'cake' | 'chair' | 'couch' | 'potted plant' | 'bed' | 'dining table' | 'toilet' | 'tv' | 'laptop' | 'mouse' | 'remote' | 'keyboard' | 'cell phone' | 'microwave' | 'oven' | 'toaster' | 'sink' | 'refrigerator' | 'book' | 'clock' | 'vase' | 'scissors' | 'teddy bear' | 'hair drier' | 'toothbrush';
 
 /**
  * Callback for the progress of a long-running action such as an HTTP
@@ -1912,6 +1944,8 @@ export declare interface PersonResult {
 
 /** generic point as [x, y, z?] */
 export declare type Point = [number, number, number?];
+
+export declare type Race = 'white' | 'black' | 'asian' | 'indian' | 'other';
 
 export declare enum Rank {
     R0 = "R0",

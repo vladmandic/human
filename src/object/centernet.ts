@@ -7,7 +7,7 @@
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { labels } from './labels';
-import type { ObjectResult, Box } from '../result';
+import type { ObjectResult, ObjectType, Box } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
@@ -49,7 +49,7 @@ async function process(res: Tensor | null, outputShape, config: Config) {
   for (const id of Array.from(nms)) {
     const score = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
-    const label = labels[classVal].label;
+    const label = labels[classVal].label as ObjectType;
     const [x, y] = [
       detections[0][id][0] / inputSize,
       detections[0][id][1] / inputSize,

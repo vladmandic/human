@@ -164,7 +164,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
     const normalized = tf.sub(tf.div(tf.cast(resized, 'float32'), 127.5), 1.0);
     const results: Array<Tensor> = model.execute(normalized, poseNetOutputs) as Array<Tensor>;
     const results3d = results.map((y) => tf.squeeze(y, [0]));
-    results3d[1] = results3d[1].sigmoid(); // apply sigmoid on scores
+    results3d[1] = tf.sigmoid(results3d[1]); // apply sigmoid on scores
     return results3d;
   });
 

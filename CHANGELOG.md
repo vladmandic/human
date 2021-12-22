@@ -9,12 +9,15 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/12/18 mandic00@live.com
+
+
+### **release: 2.5.6** 2021/12/15 mandic00@live.com
+
+
 ### **2.5.6** 2021/12/15 mandic00@live.com
 
 - strong type for string enums
-
-### **origin/main** 2021/12/14 mandic00@live.com
-
 - rebuild
 - fix node detection in electron environment
 

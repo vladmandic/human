@@ -10940,7 +10940,7 @@ async function predict17(input, config3) {
     const normalized = tf29.sub(tf29.div(tf29.cast(resized, "float32"), 127.5), 1);
     const results = model16.execute(normalized, poseNetOutputs);
     const results3d = results.map((y) => tf29.squeeze(y, [0]));
-    results3d[1] = results3d[1].sigmoid();
+    results3d[1] = tf29.sigmoid(results3d[1]);
     return results3d;
   });
   const buffers = await Promise.all(res.map((tensor3) => tensor3.buffer()));

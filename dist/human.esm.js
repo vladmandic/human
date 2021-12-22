@@ -81633,7 +81633,7 @@ async function predict17(input2, config3) {
     const normalized = sub(div(cast(resized, "float32"), 127.5), 1);
     const results = model17.execute(normalized, poseNetOutputs);
     const results3d = results.map((y) => squeeze(y, [0]));
-    results3d[1] = results3d[1].sigmoid();
+    results3d[1] = sigmoid(results3d[1]);
     return results3d;
   });
   const buffers = await Promise.all(res.map((tensor2) => tensor2.buffer()));

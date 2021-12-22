@@ -10869,7 +10869,7 @@ async function predict17(input, config3) {
     const normalized = tfjs_esm_exports.sub(tfjs_esm_exports.div(tfjs_esm_exports.cast(resized, "float32"), 127.5), 1);
     const results = model16.execute(normalized, poseNetOutputs);
     const results3d = results.map((y) => tfjs_esm_exports.squeeze(y, [0]));
-    results3d[1] = results3d[1].sigmoid();
+    results3d[1] = tfjs_esm_exports.sigmoid(results3d[1]);
     return results3d;
   });
   const buffers = await Promise.all(res.map((tensor3) => tensor3.buffer()));

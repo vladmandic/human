@@ -60,7 +60,7 @@ export class Models {
 
 export function reset(instance: Human): void {
   // if (instance.config.debug) log('resetting loaded models');
-  for (const model of Object.keys(instance.models)) instance.models[model] = null;
+  for (const model of Object.keys(instance.models)) instance.models[model as keyof Models] = null;
 }
 
 /** Load method preloads all instance.configured models on-demand */
@@ -71,6 +71,7 @@ export async function load(instance: Human): Promise<void> {
     if (!instance.models.handskeleton && instance.config.hand.landmarks && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
   }
   if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
+  // @ts-ignore optional model
   if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body['detector'] && instance.config.body['detector']['modelPath']) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
   if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
   if (instance.config.body.enabled && !instance.models.movenet && instance.config.body?.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
@@ -82,9 +83,13 @@ export async function load(instance: Human): Promise<void> {
   if (instance.config.face.enabled && instance.config.face.emotion?.enabled && !instance.models.emotion) instance.models.emotion = emotion.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.mesh?.enabled && !instance.models.facemesh) instance.models.facemesh = facemesh.load(instance.config);
+  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['gear']?.enabled && !instance.models.gear) instance.models.gear = gear.load(instance.config);
+  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetage) instance.models.ssrnetage = ssrnetAge.load(instance.config);
+  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetgender) instance.models.ssrnetgender = ssrnetGender.load(instance.config);
+  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['mobilefacenet']?.enabled && !instance.models.mobilefacenet) instance.models.mobilefacenet = mobilefacenet.load(instance.config);
   if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
@@ -94,7 +99,7 @@ export async function load(instance: Human): Promise<void> {
 
   // models are loaded in parallel asynchronously so lets wait until they are actually loaded
   for await (const model of Object.keys(instance.models)) {
-    if (instance.models[model] && typeof instance.models[model] !== 'undefined') instance.models[model] = await instance.models[model];
+    if (instance.models[model as keyof Models] && typeof instance.models[model as keyof Models] !== 'undefined') instance.models[model as keyof Models] = await instance.models[model as keyof Models];
   }
 }
 
@@ -102,44 +107,30 @@ export async function validate(instance: Human): Promise<void> {
   interface Op { name: string, category: string, op: string }
   const simpleOps = ['const', 'placeholder', 'noop', 'pad', 'squeeze', 'add', 'sub', 'mul', 'div'];
   for (const defined of Object.keys(instance.models)) {
-    if (instance.models[defined]) { // check if model is loaded
-      let models: GraphModel[] = [];
-      if (Array.isArray(instance.models[defined])) {
-        models = instance.models[defined]
-          .filter((model) => (model !== null))
-          .map((model) => ((model && model.executor) ? model : model.model));
-      } else {
-        models = [instance.models[defined]];
+    const model: GraphModel | null = instance.models[defined as keyof Models] as GraphModel | null;
+    if (!model) continue;
+    const ops: string[] = [];
+    // @ts-ignore // executor is a private method
+    const executor = model?.executor;
+    if (executor && executor.graph.nodes) {
+      for (const kernel of Object.values(executor.graph.nodes)) {
+        const op = (kernel as Op).op.toLowerCase();
+        if (!ops.includes(op)) ops.push(op);
       }
-      for (const model of models) {
-        if (!model) {
-          if (instance.config.debug) log('model marked as loaded but not defined:', defined);
-          continue;
-        }
-        const ops: string[] = [];
-        // @ts-ignore // executor is a private method
-        const executor = model?.executor;
-        if (executor && executor.graph.nodes) {
-          for (const kernel of Object.values(executor.graph.nodes)) {
-            const op = (kernel as Op).op.toLowerCase();
-            if (!ops.includes(op)) ops.push(op);
-          }
-        } else {
-          if (!executor && instance.config.debug) log('model signature not determined:', defined);
-        }
-        const missing: string[] = [];
-        for (const op of ops) {
-          if (!simpleOps.includes(op) // exclude simple ops
-            && !instance.env.kernels.includes(op) // check actual kernel ops
-            && !instance.env.kernels.includes(op.replace('_', '')) // check variation without _
-            && !instance.env.kernels.includes(op.replace('native', '')) // check standard variation
-            && !instance.env.kernels.includes(op.replace('v2', ''))) { // check non-versioned variation
-            missing.push(op);
-          }
-        }
-        // log('model validation ops:', defined, ops);
-        if (missing.length > 0 && instance.config.debug) log('model validation:', defined, missing);
+    } else {
+      if (!executor && instance.config.debug) log('model signature not determined:', defined);
+    }
+    const missing: string[] = [];
+    for (const op of ops) {
+      if (!simpleOps.includes(op) // exclude simple ops
+        && !instance.env.kernels.includes(op) // check actual kernel ops
+        && !instance.env.kernels.includes(op.replace('_', '')) // check variation without _
+        && !instance.env.kernels.includes(op.replace('native', '')) // check standard variation
+        && !instance.env.kernels.includes(op.replace('v2', ''))) { // check non-versioned variation
+        missing.push(op);
       }
     }
+    // log('model validation ops:', defined, ops);
+    if (instance.config.debug && missing.length > 0) log('model validation failed:', defined, missing);
   }
 }

@@ -71,7 +71,7 @@ export const options: DrawOptions = {
 
 let drawTime = 0;
 
-const getCanvasContext = (input) => {
+const getCanvasContext = (input: AnyCanvas) => {
   if (!input) log('draw error: invalid canvas');
   else if (!input.getContext) log('draw error: canvas context not defined');
   else {
@@ -82,9 +82,9 @@ const getCanvasContext = (input) => {
   return null;
 };
 
-const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
+const rad2deg = (theta: number) => Math.round((theta * 180) / Math.PI);
 
-function point(ctx: CanvasRenderingContext2D, x, y, z, localOptions) {
+function point(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, x: number, y: number, z: number | undefined, localOptions: DrawOptions) {
   z = z || 0;
   ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.3)` : localOptions.color;
   ctx.beginPath();
@@ -92,14 +92,14 @@ function point(ctx: CanvasRenderingContext2D, x, y, z, localOptions) {
   ctx.fill();
 }
 
-function rect(ctx: CanvasRenderingContext2D, x, y, width, height, localOptions) {
+function rect(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, x: number, y: number, width: number, height: number, localOptions: DrawOptions) {
   ctx.beginPath();
+  ctx.lineWidth = localOptions.lineWidth;
   if (localOptions.useCurves) {
     const cx = (x + x + width) / 2;
     const cy = (y + y + height) / 2;
     ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, 2 * Math.PI);
   } else {
-    ctx.lineWidth = localOptions.lineWidth;
     ctx.moveTo(x + localOptions.roundRect, y);
     ctx.lineTo(x + width - localOptions.roundRect, y);
     ctx.quadraticCurveTo(x + width, y, x + width, y + localOptions.roundRect);
@@ -114,7 +114,7 @@ function rect(ctx: CanvasRenderingContext2D, x, y, width, height, localOptions) 
   ctx.stroke();
 }
 
-function lines(ctx: CanvasRenderingContext2D, points: Point[], localOptions) {
+function lines(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, points: Point[], localOptions: DrawOptions) {
   if (points.length < 2) return;
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
@@ -131,8 +131,9 @@ function lines(ctx: CanvasRenderingContext2D, points: Point[], localOptions) {
   }
 }
 
-function curves(ctx: CanvasRenderingContext2D, points: Point[], localOptions) {
+function curves(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, points: Point[], localOptions: DrawOptions) {
   if (points.length < 2) return;
+  ctx.lineWidth = localOptions.lineWidth;
   if (!localOptions.useCurves || points.length <= 2) {
     lines(ctx, points, localOptions);
     return;
@@ -151,7 +152,7 @@ function curves(ctx: CanvasRenderingContext2D, points: Point[], localOptions) {
   }
 }
 
-function arrow(ctx: CanvasRenderingContext2D, from: Point, to: Point, radius = 5) {
+function arrow(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, from: Point, to: Point, radius = 5) {
   let angle;
   let x;
   let y;
@@ -246,13 +247,13 @@ export async function face(inCanvas: AnyCanvas, result: Array<FaceResult>, drawO
         ctx.fillText(labels[i], x + 4, y + 15);
       }
     }
-    ctx.lineWidth = 1;
+    // ctx.lineWidth = localOptions.lineWidth;
+    ctx.lineWidth = 2;
     if (f.mesh && f.mesh.length > 0) {
       if (localOptions.drawPoints) {
         for (const pt of f.mesh) point(ctx, pt[0], pt[1], pt[2], localOptions);
       }
       if (localOptions.drawPolygons) {
-        ctx.lineWidth = 1;
         if (f.mesh.length > 450) {
           for (let i = 0; i < triangulation.length / 3; i++) {
             const points = [
@@ -406,9 +407,10 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
       }
     }
     if (localOptions.drawLabels && h.annotations) {
-      const addHandLabel = (part, title) => {
+      const addHandLabel = (part: Array<Point>, title: string) => {
         if (!part || part.length === 0 || !part[0]) return;
-        ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * part[part.length - 1][2])}, ${127.5 - (2 * part[part.length - 1][2])}, 255, 0.5)` : localOptions.color;
+        const z = part[part.length - 1][2] || 0;
+        ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + (2 * z)}, ${127.5 - (2 * z)}, 255, 0.5)` : localOptions.color;
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
@@ -420,11 +422,12 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
       addHandLabel(h.annotations['palm'], 'palm');
     }
     if (localOptions.drawPolygons && h.annotations) {
-      const addHandLine = (part) => {
+      const addHandLine = (part: Array<Point>) => {
         if (!part || part.length === 0 || !part[0]) return;
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
-          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + (i * part[i][2])}, ${127.5 - (i * part[i][2])}, 255, 0.5)` : localOptions.color;
+          const z = part[i][2] || 0;
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + (i * z)}, ${127.5 - (i * z)}, 255, 0.5)` : localOptions.color;
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();
@@ -497,7 +500,7 @@ export async function person(inCanvas: AnyCanvas, result: Array<PersonResult>, d
 }
 
 /** draw processed canvas */
-export async function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: AnyCanvas) {
+export async function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) {
   if (!input || !output) return;
   const ctx = getCanvasContext(output);
   if (!ctx) return;

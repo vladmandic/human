@@ -100,8 +100,8 @@ export function calc(newResult: Result, config: Config): Result {
         for (const key of Object.keys(newResult.hand[i].annotations)) { // update annotations
           annotations[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0]
             ? newResult.hand[i].annotations[key]
-              .map((val, j) => val
-                .map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor))
+              .map((val, j: number) => val
+                .map((coord: number, k: number) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor))
             : null;
         }
       }

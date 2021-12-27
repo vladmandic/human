@@ -1,3 +1,5 @@
+import type { Config } from '../exports';
+
 /**
  * Simple helper functions used accross codebase
  */
@@ -26,7 +28,7 @@ export const now = () => {
 };
 
 // helper function: checks current config validity
-export function validate(defaults, config, parent = 'config', msgs: Array<{ reason: string, where: string, expected?: string }> = []) {
+export function validate(defaults: Partial<Config>, config: Partial<Config>, parent = 'config', msgs: Array<{ reason: string, where: string, expected?: string }> = []) {
   for (const key of Object.keys(config)) {
     if (typeof config[key] === 'object') {
       validate(defaults[key], config[key], key, msgs);

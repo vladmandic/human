@@ -30,7 +30,7 @@ async function warmupBitmap(instance: Human) {
   return res;
 }
 
-async function warmupCanvas(instance: Human) {
+async function warmupCanvas(instance: Human): Promise<Result | undefined> {
   return new Promise((resolve) => {
     let src;
     // let size = 0;
@@ -57,7 +57,7 @@ async function warmupCanvas(instance: Human) {
       const canvas = image.canvas(img.naturalWidth, img.naturalHeight);
       if (!canvas) {
         log('Warmup: Canvas not found');
-        resolve({});
+        resolve(undefined);
       } else {
         const ctx = canvas.getContext('2d');
         if (ctx) ctx.drawImage(img, 0, 0);
@@ -68,18 +68,18 @@ async function warmupCanvas(instance: Human) {
       }
     };
     if (src) img.src = src;
-    else resolve(null);
+    else resolve(undefined);
   });
 }
 
-async function warmupNode(instance: Human) {
+async function warmupNode(instance: Human): Promise<Result | undefined> {
   const atob = (str: string) => Buffer.from(str, 'base64');
   let img;
   if (instance.config.warmup === 'face') img = atob(sample.face);
-  if (instance.config.warmup === 'body' || instance.config.warmup === 'full') img = atob(sample.body);
-  if (!img) return null;
+  else img = atob(sample.body);
   let res;
-  if (typeof tf['node'] !== 'undefined') {
+  if ('node' in tf) {
+    // @ts-ignore tf.node may be undefined
     const data = tf['node'].decodeJpeg(img);
     const expanded = data.expandDims(0);
     instance.tf.dispose(data);
@@ -104,7 +104,7 @@ async function warmupNode(instance: Human) {
  * - only used for `webgl` and `humangl` backends
  * @param userConfig?: Config
 */
-export async function warmup(instance: Human, userConfig?: Partial<Config>): Promise<Result> {
+export async function warmup(instance: Human, userConfig?: Partial<Config>): Promise<Result | undefined> {
   const t0 = now();
   instance.state = 'warmup';
   if (userConfig) instance.config = mergeDeep(instance.config, userConfig) as Config;

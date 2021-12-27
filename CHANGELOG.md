@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2021/12/18 mandic00@live.com
+### **2.5.7** 2021/12/27 mandic00@live.com
 
+
+### **origin/main** 2021/12/22 mandic00@live.com
+
+- fix posenet
 
 ### **release: 2.5.6** 2021/12/15 mandic00@live.com
 

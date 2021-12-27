@@ -6,11 +6,11 @@
 import { Finger, FingerCurl, FingerDirection, FingerGesture } from './fingerdef';
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const { thumb, index, middle, ring, pinky } = Finger;
+export const { thumb, index, middle, ring, pinky } = Finger;
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const { none, half, full } = FingerCurl;
+export const { none, half, full } = FingerCurl;
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const { verticalUp, verticalDown, horizontalLeft, horizontalRight, diagonalUpRight, diagonalUpLeft, diagonalDownRight, diagonalDownLeft } = FingerDirection;
+export const { verticalUp, verticalDown, horizontalLeft, horizontalRight, diagonalUpRight, diagonalUpLeft, diagonalDownRight, diagonalDownLeft } = FingerDirection;
 
 // describe thumbs up gesture 👍
 const ThumbsUp = new FingerGesture('thumbs up');

@@ -20,37 +20,32 @@ import type { FaceResult, FaceLandmark, Point } from '../result';
 import type { Config } from '../config';
 
 type DetectBox = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
-let boxCache: Array<DetectBox> = [];
+
+const cache = {
+  boxes: [] as DetectBox[],
+  skipped: Number.MAX_SAFE_INTEGER,
+  timestamp: 0,
+};
+
 let model: GraphModel | null = null;
 let inputSize = 0;
-let skipped = Number.MAX_SAFE_INTEGER;
-let lastTime = 0;
 
 export async function predict(input: Tensor, config: Config): Promise<FaceResult[]> {
   // reset cached boxes
-  const skipTime = (config.face.detector?.skipTime || 0) > (now() - lastTime);
-  const skipFrame = skipped < (config.face.detector?.skipFrames || 0);
-  if (!config.skipAllowed || !skipTime || !skipFrame || boxCache.length === 0) {
-    const possibleBoxes = await blazeface.getBoxes(input, config); // get results from blazeface detector
-    lastTime = now();
-    boxCache = []; // empty cache
-    for (const possible of possibleBoxes.boxes) { // extract data from detector
-      const boxScaled = util.scaleBoxCoordinates(possible, possibleBoxes.scaleFactor);
-      const detectedWidth = (boxScaled.endPoint[0] - boxScaled.startPoint[0]) / (input.shape[2] || 1000);
-      const calcFactor = (config.face.detector?.cropFactor || 1.6) / (detectedWidth + 0.75) / 1.34; // detected face box is not the same size as calculated face box and scale also depends on detected face size
-      const boxEnlarged = util.enlargeBox(boxScaled, calcFactor);
-      const boxSquared = util.squarifyBox(boxEnlarged);
-      boxCache.push(boxSquared);
-    }
-    skipped = 0;
+  const skipTime = (config.face.detector?.skipTime || 0) > (now() - cache.timestamp);
+  const skipFrame = cache.skipped < (config.face.detector?.skipFrames || 0);
+  if (!config.skipAllowed || !skipTime || !skipFrame || cache.boxes.length === 0) {
+    cache.boxes = await blazeface.getBoxes(input, config); // get results from blazeface detector
+    cache.timestamp = now();
+    cache.skipped = 0;
   } else {
-    skipped++;
+    cache.skipped++;
   }
   const faces: Array<FaceResult> = [];
   const newCache: Array<DetectBox> = [];
   let id = 0;
-  for (let i = 0; i < boxCache.length; i++) {
-    let box = boxCache[i];
+  for (let i = 0; i < cache.boxes.length; i++) {
+    const box = cache.boxes[i];
     let angle = 0;
     let rotationMatrix;
     const face: FaceResult = { // init face result
@@ -74,7 +69,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     }
     face.boxScore = Math.round(100 * box.confidence) / 100;
     if (!config.face.mesh?.enabled) { // mesh not enabled, return resuts from detector only
-      face.box = util.getClampedBox(box, input);
+      face.box = util.clampBox(box, input);
       face.boxRaw = util.getRawBox(box, input);
       face.score = face.boxScore;
       face.mesh = box.landmarks.map((pt) => [
@@ -99,21 +94,16 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
         for (const key of Object.keys(coords.meshAnnotations)) face.annotations[key] = coords.meshAnnotations[key].map((index) => face.mesh[index]); // add annotations
-        const boxCalculated = util.calculateLandmarksBoundingBox(face.mesh);
-        const boxEnlarged = util.enlargeBox(boxCalculated, (config.face.detector?.cropFactor || 1.6));
-        const boxSquared = util.squarifyBox(boxEnlarged);
-        box = { ...boxSquared, confidence: box.confidence }; // redefine box with mesh calculated one
-        face.box = util.getClampedBox(box, input); // update detected box with box around the face mesh
-        face.boxRaw = util.getRawBox(box, input);
         face.score = face.faceScore;
-        newCache.push(box);
-        tf.dispose(face.tensor);
-        [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(config.face.detector?.rotation, box, input, inputSize); // optional rotate once more based on mesh data
+        const calculatedBox = { ...util.calculateFaceBox(face.mesh, box), confidence: box.confidence, landmarks: box.landmarks };
+        face.box = util.clampBox(calculatedBox, input);
+        face.boxRaw = util.getRawBox(calculatedBox, input);
+        newCache.push(calculatedBox);
       }
     }
     faces.push(face);
   }
-  boxCache = [...newCache]; // reset cache
+  cache.boxes = newCache; // reset cache
   return faces;
 }
 

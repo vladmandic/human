@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const rad2deg = (theta) => Math.round((theta * 180) / Math.PI);
-
 const calculateGaze = (face): { bearing: number, strength: number } => {
   const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
   if (!face.annotations['rightEyeIris'] || !face.annotations['leftEyeIris']) return { bearing: 0, strength: 0 };
@@ -16,7 +13,6 @@ const calculateGaze = (face): { bearing: number, strength: number } => {
   const eyeSize = left // eye size is difference between extreme points for both x and y, used to normalize & squarify eye dimensions
     ? [face.mesh[133][0] - face.mesh[33][0], face.mesh[23][1] - face.mesh[27][1]]
     : [face.mesh[263][0] - face.mesh[362][0], face.mesh[253][1] - face.mesh[257][1]];
-
   const eyeDiff = [ // x distance between extreme point and center point normalized with eye size
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1],
@@ -24,7 +20,6 @@ const calculateGaze = (face): { bearing: number, strength: number } => {
   let strength = Math.sqrt((eyeDiff[0] ** 2) + (eyeDiff[1] ** 2)); // vector length is a diagonal between two differences
   strength = Math.min(strength, face.boxRaw[2] / 2, face.boxRaw[3] / 2); // limit strength to half of box size to avoid clipping due to low precision
   const bearing = (radians([0, 0], eyeDiff) + (Math.PI / 2)) % Math.PI; // using eyeDiff instead eyeCenter/irisCenter combo due to manual adjustments and rotate clockwise 90degrees
-
   return { bearing, strength };
 };
 
@@ -56,7 +51,7 @@ export const calculateFaceAngle = (face, imageSize): {
   // 3x3 rotation matrix to Euler angles based on https://www.geometrictools.com/Documentation/EulerAngles.pdf
   const rotationMatrixToEulerAngle = (r) => {
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    const [r00, r01, r02, r10, r11, r12, r20, r21, r22] = r;
+    const [r00, _r01, _r02, r10, r11, r12, r20, r21, r22] = r;
     let thetaX: number;
     let thetaY: number;
     let thetaZ: number;
@@ -80,22 +75,17 @@ export const calculateFaceAngle = (face, imageSize): {
     if (isNaN(thetaZ)) thetaZ = 0;
     return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
   };
-  // simple Euler angle calculation based existing 3D mesh
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  const meshToEulerAngle = (mesh) => {
+
+  /*
+  const meshToEulerAngle = (mesh) => { // simple Euler angle calculation based existing 3D mesh
     const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    const angle = {
-      // values are in radians in range of -pi/2 to pi/2 which is -90 to +90 degrees, value of 0 means center
-      // pitch is face move up/down
-      pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]), // looking at y,z of top and bottom points of the face
-      // yaw is face turn left/right
-      yaw: radians(mesh[33][0], mesh[33][2], mesh[263][0], mesh[263][2]), // looking at x,z of outside corners of leftEye and rightEye
-      // roll is face lean left/right
-      roll: radians(mesh[33][0], mesh[33][1], mesh[263][0], mesh[263][1]), // looking at x,y of outside corners of leftEye and rightEye
+    return { // values are in radians in range of -pi/2 to pi/2 which is -90 to +90 degrees, value of 0 means center
+      pitch: radians(mesh[10][1], mesh[10][2], mesh[152][1], mesh[152][2]), // looking at y,z of top and bottom points of the face // pitch is face move up/down
+      yaw: radians(mesh[33][0], mesh[33][2], mesh[263][0], mesh[263][2]), // looking at x,z of outside corners of leftEye and rightEye // yaw is face turn left/right
+      roll: radians(mesh[33][0], mesh[33][1], mesh[263][0], mesh[263][1]), // looking at x,y of outside corners of leftEye and rightEye // roll is face lean left/right
     };
-    return angle;
   };
+  */
 
   // initialize gaze and mesh
   const mesh = face.meshRaw;
@@ -103,12 +93,7 @@ export const calculateFaceAngle = (face, imageSize): {
 
   const size = Math.max(face.boxRaw[2] * imageSize[0], face.boxRaw[3] * imageSize[1]) / 1.5;
   // top, bottom, left, right
-  const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [
-    // make the xyz coordinates proportional, independent of the image/box size
-    pt[0] * imageSize[0] / size,
-    pt[1] * imageSize[1] / size,
-    pt[2],
-  ]);
+  const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [pt[0] * imageSize[0] / size, pt[1] * imageSize[1] / size, pt[2]]); // make the xyz coordinates proportional, independent of the image/box size
 
   const y_axis = normalize(subVectors(pts[1], pts[0]));
   let x_axis = normalize(subVectors(pts[3], pts[2]));

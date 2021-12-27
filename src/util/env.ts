@@ -133,11 +133,12 @@ export class Env {
         this.webgl.renderer = gl.getParameter(gl.RENDERER);
       }
     }
+    // @ts-ignore navigator.gpu is only defined when webgpu is available in browser
     this.webgpu.supported = this.browser && typeof navigator['gpu'] !== 'undefined';
     this.webgpu.backend = this.backends.includes('webgpu');
     try {
+      // @ts-ignore navigator.gpu is only defined when webgpu is available in browser
       if (this.webgpu.supported) this.webgpu.adapter = (await navigator['gpu'].requestAdapter()).name;
-      // enumerate kernels
     } catch {
       this.webgpu.supported = false;
     }

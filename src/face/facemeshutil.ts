@@ -15,9 +15,9 @@ export const disposeBox = (t) => tf.dispose([t.startPoint, t.endPoint]);
 
 export const getBoxSize = (box): [number, number] => [Math.abs(box.endPoint[0] - box.startPoint[0]), Math.abs(box.endPoint[1] - box.startPoint[1])];
 
-export const getBoxCenter = (box): [number, number] => [box.startPoint[0] + (box.endPoint[0] - box.startPoint[0]) / 2, box.startPoint[1] + (box.endPoint[1] - box.startPoint[1]) / 2];
+export const getBoxCenter = (box): [number, number, number] => [box.startPoint[0] + (box.endPoint[0] - box.startPoint[0]) / 2, box.startPoint[1] + (box.endPoint[1] - box.startPoint[1]) / 2, 1];
 
-export const getClampedBox = (box, input): Box => (box ? [
+export const clampBox = (box, input): Box => (box ? [
   Math.trunc(Math.max(0, box.startPoint[0])),
   Math.trunc(Math.max(0, box.startPoint[1])),
   Math.trunc(Math.min((input.shape[2] || 0), box.endPoint[0]) - Math.max(0, box.startPoint[0])),
@@ -37,10 +37,11 @@ export const scaleBoxCoordinates = (box, factor) => {
   return { startPoint, endPoint, landmarks: box.landmarks, confidence: box.confidence };
 };
 
-export const cutBoxFromImageAndResize = (box, image, cropSize) => {
+export const cutAndResize = (box, image, cropSize) => {
   const h = image.shape[1];
   const w = image.shape[2];
-  const crop = tf.image.cropAndResize(image, [[box.startPoint[1] / h, box.startPoint[0] / w, box.endPoint[1] / h, box.endPoint[0] / w]], [0], cropSize);
+  const cutBox = [box.startPoint[1] / h, box.startPoint[0] / w, box.endPoint[1] / h, box.endPoint[0] / w];
+  const crop = tf.image.cropAndResize(image, [cutBox], [0], cropSize);
   const norm = tf.div(crop, constants.tf255);
   tf.dispose(crop);
   return norm;
@@ -61,9 +62,9 @@ export const squarifyBox = (box) => {
 };
 
 export const calculateLandmarksBoundingBox = (landmarks) => {
-  const xs = landmarks.map((d) => d[0]);
-  const ys = landmarks.map((d) => d[1]);
-  return { startPoint: [Math.min(...xs), Math.min(...ys)] as Point, endPoint: [Math.max(...xs), Math.max(...ys)] as Point, landmarks };
+  const x = landmarks.map((d) => d[0]);
+  const y = landmarks.map((d) => d[1]);
+  return { startPoint: [Math.min(...x), Math.min(...y)] as Point, endPoint: [Math.max(...x), Math.max(...y)] as Point, landmarks };
 };
 
 export const fixedRotationMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
@@ -141,19 +142,20 @@ export function generateAnchors(inputSize) {
 export function transformRawCoords(coordsRaw, box, angle, rotationMatrix, inputSize) {
   const boxSize = getBoxSize(box);
   const coordsScaled = coordsRaw.map((coord) => ([ // scaled around zero-point
-    boxSize[0] / inputSize * (coord[0] - inputSize / 2),
-    boxSize[1] / inputSize * (coord[1] - inputSize / 2),
-    coord[2] || 0,
+    (boxSize[0] / inputSize) * (coord[0] - (inputSize / 2)),
+    (boxSize[1] / inputSize) * (coord[1] - (inputSize / 2)),
+    (coord[2] || 0),
   ]));
   const largeAngle = angle && (angle !== 0) && (Math.abs(angle) > 0.2);
   const coordsRotationMatrix = largeAngle ? buildRotationMatrix(angle, [0, 0]) : fixedRotationMatrix;
   const coordsRotated = largeAngle ? coordsScaled.map((coord) => ([...rotatePoint(coord, coordsRotationMatrix), coord[2]])) : coordsScaled;
   const inverseRotationMatrix = largeAngle ? invertTransformMatrix(rotationMatrix) : fixedRotationMatrix;
-  const boxCenter = [...getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint }), 1];
+  const boxCenter = getBoxCenter(box);
+  const offsets = [dot(boxCenter, inverseRotationMatrix[0]), dot(boxCenter, inverseRotationMatrix[1])];
   return coordsRotated.map((coord) => ([
-    Math.round(coord[0] + dot(boxCenter, inverseRotationMatrix[0])),
-    Math.round(coord[1] + dot(boxCenter, inverseRotationMatrix[1])),
-    Math.round(coord[2] || 0),
+    Math.trunc(coord[0] + offsets[0]),
+    Math.trunc(coord[1] + offsets[1]),
+    Math.trunc(coord[2] || 0),
   ]));
 }
 
@@ -165,21 +167,43 @@ export function correctFaceRotation(rotate, box, input, inputSize) {
   let rotationMatrix = fixedRotationMatrix; // default
   let face; // default
 
-  if (rotate && env.kernels.includes('rotatewithoffset')) {
+  if (rotate && env.kernels.includes('rotatewithoffset')) { // rotateWithOffset is not defined for tfjs-node
     angle = computeRotation(box.landmarks[symmetryLine[0]], box.landmarks[symmetryLine[1]]);
     const largeAngle = angle && (angle !== 0) && (Math.abs(angle) > 0.2);
-    if (largeAngle) {
-      const center: Point = getBoxCenter({ startPoint: box.startPoint, endPoint: box.endPoint });
+    if (largeAngle) { // perform rotation only if angle is sufficiently high
+      const center: Point = getBoxCenter(box);
       const centerRaw: Point = [center[0] / input.shape[2], center[1] / input.shape[1]];
-      const rotated = tf.image.rotateWithOffset(input, angle, 0, centerRaw); // rotateWithOffset is not defined for tfjs-node
+      const rotated = tf.image.rotateWithOffset(input, angle, 0, centerRaw);
       rotationMatrix = buildRotationMatrix(-angle, center);
-      face = cutBoxFromImageAndResize(box, rotated, [inputSize, inputSize]);
+      face = cutAndResize(box, rotated, [inputSize, inputSize]);
       tf.dispose(rotated);
     } else {
-      face = cutBoxFromImageAndResize(box, input, [inputSize, inputSize]);
+      face = cutAndResize(box, input, [inputSize, inputSize]);
     }
   } else {
-    face = cutBoxFromImageAndResize(box, input, [inputSize, inputSize]);
+    face = cutAndResize(box, input, [inputSize, inputSize]);
   }
   return [angle, rotationMatrix, face];
 }
+
+export const findFaceCenter = (mesh) => {
+  const x = mesh.map((m) => m[0]);
+  const y = mesh.map((m) => m[1]);
+  // weighted center
+  /*
+  const sum = (arr: number[]) => arr.reduce((prev, curr) => prev + curr, 0);
+  return [sum(x) / mesh.length, sum(y) / mesh.length];
+  */
+  // absolute center
+  return [Math.min(...x) + (Math.max(...x) - Math.min(...x)) / 2, Math.min(...y) + (Math.max(...y) - Math.min(...y)) / 2];
+};
+
+export const calculateFaceBox = (mesh, previousBox) => {
+  const center = findFaceCenter(mesh);
+  const boxSize = getBoxSize(previousBox);
+  const calculatedBox = {
+    startPoint: [center[0] - boxSize[0] / 2, center[1] - boxSize[1] / 2] as Point,
+    endPoint: [center[0] + boxSize[0] / 2, center[1] + boxSize[1] / 2] as Point,
+  };
+  return calculatedBox;
+};

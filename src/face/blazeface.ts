@@ -13,6 +13,7 @@ import { env } from '../util/env';
 import type { Point } from '../result';
 
 const keypointsCount = 6;
+const faceBoxScaleFactor = 1.2;
 let model: GraphModel | null;
 let anchors: Tensor | null = null;
 let inputSize = 0;
@@ -54,7 +55,7 @@ function decodeBounds(boxOutputs) {
 
 export async function getBoxes(inputImage: Tensor, config: Config) {
   // sanity check on input
-  if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return { boxes: [] };
+  if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return [];
   const t: Record<string, Tensor> = {};
 
   t.resized = tf.image.resizeBilinear(inputImage, [inputSize, inputSize]);
@@ -88,16 +89,19 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
       b.squeeze = tf.squeeze(b.slice);
       b.landmarks = tf.reshape(b.squeeze, [keypointsCount, -1]);
       const points = await b.bbox.data();
-      boxes.push({
+      const rawBox = {
         startPoint: [points[0], points[1]] as Point,
         endPoint: [points[2], points[3]] as Point,
         landmarks: (await b.landmarks.array()) as Point[],
         confidence,
-      });
+      };
+      const scaledBox = util.scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize]);
+      const enlargedBox = util.enlargeBox(scaledBox, faceBoxScaleFactor);
+      const squaredBox = util.squarifyBox(enlargedBox);
+      boxes.push(squaredBox);
       Object.keys(b).forEach((tensor) => tf.dispose(b[tensor]));
     }
   }
-
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-  return { boxes, scaleFactor: [inputImage.shape[2] / inputSize, inputImage.shape[1] / inputSize] };
+  return boxes;
 }

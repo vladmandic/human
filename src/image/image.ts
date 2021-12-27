@@ -24,7 +24,7 @@ const last: { inputSum: number, cacheDiff: number, sumMethod: number, inputTenso
   inputTensor: undefined,
 };
 
-export function canvas(width, height): AnyCanvas {
+export function canvas(width: number, height: number): AnyCanvas {
   let c;
   if (env.browser) { // browser defines canvas object
     if (env.worker) { // if runing in web  worker use OffscreenCanvas
@@ -260,7 +260,7 @@ const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js
 };
 */
 
-export async function skip(config, input: Tensor) {
+export async function skip(config: Partial<Config>, input: Tensor) {
   let skipFrame = false;
   if (config.cacheSensitivity === 0 || !input.shape || input.shape.length !== 4 || input.shape[1] > 2048 || input.shape[2] > 2048) return skipFrame; // cache disabled or input is invalid or too large for cache analysis
 
@@ -290,12 +290,12 @@ export async function skip(config, input: Tensor) {
     const diffRelative = diffSum[0] / (input.shape[1] || 1) / (input.shape[2] || 1) / 255 / 3; // squared difference relative to input resolution and averaged per channel
     tf.dispose([last.inputTensor, t.diff, t.squared, t.sum]);
     last.inputTensor = tf.clone(input);
-    skipFrame = diffRelative <= config.cacheSensitivity;
+    skipFrame = diffRelative <= (config.cacheSensitivity || 0);
   }
   return skipFrame;
 }
 
-export async function compare(config, input1: Tensor, input2: Tensor): Promise<number> {
+export async function compare(config: Partial<Config>, input1: Tensor, input2: Tensor): Promise<number> {
   const t: Record<string, Tensor> = {};
   if (!input1 || !input2 || input1.shape.length !== 4 || input1.shape.length !== input2.shape.length) {
     if (!config.debug) log('invalid input tensor or tensor shapes do not match:', input1.shape, input2.shape);

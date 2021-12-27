@@ -137,7 +137,7 @@ declare function browserFiles(files: File[]): IOHandler;
 declare function browserHTTPRequest(path: string, loadOptions?: LoadOptions): IOHandler;
 
 /** draw processed canvas */
-declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: AnyCanvas): Promise<void>;
+declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas): Promise<void>;
 
 /**
  * Concatenate a number of ArrayBuffers into one.
@@ -512,12 +512,6 @@ export declare interface FaceDetectorConfig extends GenericConfig {
     minConfidence: number;
     /** minimum overlap between two detected faces before one is discarded */
     iouThreshold: number;
-    /** factor used to expand detected face before further analysis
-     * - default: 1.6
-     * - for high-quality inputs can be reduced to increase precision
-     * - for video inputs or low-quality inputs can be increased to allow for more flexible tracking
-     */
-    cropFactor: number;
     /** should child models perform on masked image of a face */
     mask: boolean;
     /** should face detection return face tensor to be used in some other extenrnal model? */
@@ -1249,7 +1243,7 @@ declare class Human {
      * @param userConfig - {@link Config}
      * @returns result - {@link Result}
      */
-    warmup(userConfig?: Partial<Config>): Promise<Result>;
+    warmup(userConfig?: Partial<Config>): Promise<Result | undefined>;
     /** Run detect with tensorflow profiling
      * - result object will contain total exeuction time information for top-20 kernels
      * - actual detection object can be accessed via `human.result`

@@ -31,7 +31,7 @@
     "noImplicitThis": true,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "noUnusedParameters": true,
     "preserveConstEnums": true,
     "pretty": true,

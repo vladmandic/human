@@ -146,7 +146,7 @@ export class Human {
     // reexport draw methods
     this.draw = {
       options: draw.options as DrawOptions,
-      canvas: (input: AnyCanvas | HTMLImageElement | HTMLMediaElement | HTMLVideoElement, output: AnyCanvas) => draw.canvas(input, output),
+      canvas: (input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) => draw.canvas(input, output),
       face: (output: AnyCanvas, result: FaceResult[], options?: Partial<DrawOptions>) => draw.face(output, result, options),
       body: (output: AnyCanvas, result: BodyResult[], options?: Partial<DrawOptions>) => draw.body(output, result, options),
       hand: (output: AnyCanvas, result: HandResult[], options?: Partial<DrawOptions>) => draw.hand(output, result, options),
@@ -342,7 +342,7 @@ export class Human {
   */
   async profile(input: Input, userConfig?: Partial<Config>): Promise<Record<string, number>> {
     const profile = await this.tf.profile(() => this.detect(input, userConfig));
-    const kernels = {};
+    const kernels: Record<string, number> = {};
     for (const kernel of profile.kernels) { // sum kernel time values per kernel
       if (kernels[kernel.name]) kernels[kernel.name] += kernel.kernelTimeMs;
       else kernels[kernel.name] = kernel.kernelTimeMs;

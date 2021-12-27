@@ -150,11 +150,11 @@ async function verifyDetails(human) {
   verify(res.face.length === 1, 'details face length', res.face.length);
   for (const face of res.face) {
     verify(face.score > 0.9 && face.boxScore > 0.9 && face.faceScore > 0.9, 'details face score', face.score, face.boxScore, face.faceScore);
-    verify(face.age > 23 && face.age < 24 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 80, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
+    verify(face.age > 25 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 80, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
     verify(face.box.length === 4 && face.boxRaw.length === 4 && face.mesh.length === 478 && face.meshRaw.length === 478 && face.embedding.length === 1024, 'details face arrays', face.box.length, face.mesh.length, face.embedding.length);
-    verify(face.emotion.length === 3 && face.emotion[0].score > 0.45 && face.emotion[0].emotion === 'neutral', 'details face emotion', face.emotion.length, face.emotion[0]);
-    verify(face.real > 0.8, 'details face anti-spoofing', face.real);
-    verify(face.live > 0.8, 'details face liveness', face.live);
+    verify(face.emotion.length === 3 && face.emotion[0].score > 0.30 && face.emotion[0].emotion === 'fear', 'details face emotion', face.emotion.length, face.emotion[0]);
+    verify(face.real > 0.75, 'details face anti-spoofing', face.real);
+    verify(face.live > 0.75, 'details face liveness', face.live);
   }
   verify(res.body.length === 1, 'details body length', res.body.length);
   for (const body of res.body) {
@@ -365,7 +365,7 @@ async function test(Human, inputConfig) {
   config.body = { minConfidence: 0.0001 };
   config.hand = { minConfidence: 0.0001 };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 2 || res?.gesture?.length !== 8) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 2 || res?.gesture?.length < 8) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: sensitive result match');
 
   // test sensitive details face
@@ -373,7 +373,7 @@ async function test(Human, inputConfig) {
   if (!face || face?.box?.length !== 4 || face?.mesh?.length !== 478 || face?.embedding?.length !== 1024 || face?.rotation?.matrix?.length !== 9) {
     log('error', 'failed: sensitive face result mismatch', res?.face?.length, face?.box?.length, face?.mesh?.length, face?.embedding?.length, face?.rotation?.matrix?.length);
   } else log('state', 'passed: sensitive face result match');
-  if (!face || face?.emotion?.length < 1 || face.emotion[0].score < 0.55 || face.emotion[0].emotion !== 'neutral') log('error', 'failed: sensitive face emotion result mismatch', face?.emotion);
+  if (!face || face?.emotion?.length < 1 || face.emotion[0].score < 0.30) log('error', 'failed: sensitive face emotion result mismatch', face?.emotion);
   else log('state', 'passed: sensitive face emotion result', face?.emotion);
 
   // test sensitive details body

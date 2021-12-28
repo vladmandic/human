@@ -44,7 +44,7 @@ export function validate(defaults: Partial<Config>, config: Partial<Config>, par
   return msgs;
 }
 
-// helper function: perform deep merge of multiple objects so it allows full inheriance with overrides
+// helper function: perform deep merge of multiple objects so it allows full inheritance with overrides
 export function mergeDeep(...objects) {
   const isObject = (obj) => obj && typeof obj === 'object';
   return objects.reduce((prev, obj) => {

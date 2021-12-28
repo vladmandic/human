@@ -63,9 +63,13 @@
       for (const sample of samples) {
         const el = document.createElement('img');
         el.className = 'thumb';
-        el.src = el.title = el.alt = `/samples/in/${sample}`;
+        el.src = `./in/${sample}`;
+        el.title = el.src;
+        el.alt = el.src;
         el.addEventListener('click', (evt) => {
-          image.src = image.alt = image.title = el.src.replace('/in/', '/out/');
+          image.src = el.src.replace('/in/', '/out/');
+          image.alt = image.src;
+          image.title = image.src;
           strip.scrollLeft = evt.target.offsetLeft - window.innerWidth / 2 + evt.target.offsetWidth / 2;
         });
         strip.appendChild(el);

@@ -96,7 +96,7 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
         confidence,
       };
       const scaledBox = util.scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize]);
-      const enlargedBox = util.enlargeBox(scaledBox, faceBoxScaleFactor);
+      const enlargedBox = util.enlargeBox(scaledBox, config.face['scale'] || faceBoxScaleFactor);
       const squaredBox = util.squarifyBox(enlargedBox);
       boxes.push(squaredBox);
       Object.keys(b).forEach((tensor) => tf.dispose(b[tensor]));

@@ -9,11 +9,11 @@ export interface GenericConfig {
   modelPath: string,
   /** how many max frames to go without re-running model if cached results are acceptable */
   skipFrames: number,
-  /** how many max miliseconds to go without re-running model if cached results are acceptable */
+  /** how many max milliseconds to go without re-running model if cached results are acceptable */
   skipTime: number,
 }
 
-/** Dectector part of face configuration */
+/** Detector part of face configuration */
 export interface FaceDetectorConfig extends GenericConfig {
   /** is face rotation correction performed after detecting face? */
   rotation: boolean,
@@ -68,7 +68,7 @@ export interface FaceConfig extends GenericConfig {
 
 /** Configures all body detection specific options */
 export interface BodyConfig extends GenericConfig {
-  /** maximum numboer of detected bodies */
+  /** maximum number of detected bodies */
   maxDetected: number,
   /** minimum confidence for a detected body before results are discarded */
   minConfidence: number,

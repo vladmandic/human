@@ -41,7 +41,7 @@ export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands:
       else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.right?.id) person.gestures?.push(gesture);
     }
 
-    // create new overarching box from all boxes beloning to person
+    // create new overarching box from all boxes belonging to person
     const x: number[] = [];
     const y: number[] = [];
     const extractXY = (box: Box | undefined) => { // extract all [x, y] coordinates from boxes [x, y, width, height]

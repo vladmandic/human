@@ -1,5 +1,5 @@
 /**
- * Warmup algorithm that uses embedded images to excercise loaded models for faster future inference
+ * Warmup algorithm that uses embedded images to exercise loaded models for faster future inference
  */
 
 import { log, now, mergeDeep } from './util/util';

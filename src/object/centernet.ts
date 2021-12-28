@@ -31,11 +31,11 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-async function process(res: Tensor | null, outputShape, config: Config) {
+async function process(res: Tensor | null, outputShape: [number, number], config: Config) {
   if (!res) return [];
   const t: Record<string, Tensor> = {};
   const results: Array<ObjectResult> = [];
-  const detections = await res.array();
+  const detections = await res.array() as number[][][];
   t.squeeze = tf.squeeze(res);
   const arr = tf.split(t.squeeze, 6, 1) as Tensor[]; // x1, y1, x2, y2, score, class
   t.stack = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // reorder dims as tf.nms expects y, x
@@ -43,7 +43,7 @@ async function process(res: Tensor | null, outputShape, config: Config) {
   t.scores = tf.squeeze(arr[4]);
   t.classes = tf.squeeze(arr[5]);
   tf.dispose([res, ...arr]);
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
+  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, config.object.maxDetected, config.object.iouThreshold, (config.object.minConfidence || 0));
   const nms = await t.nms.data();
   let i = 0;
   for (const id of Array.from(nms)) {
@@ -81,7 +81,7 @@ export async function predict(input: Tensor, config: Config): Promise<ObjectResu
   }
   skipped = 0;
   return new Promise(async (resolve) => {
-    const outputSize = [input.shape[2], input.shape[1]];
+    const outputSize = [input.shape[2] || 0, input.shape[1] || 0] as [number, number];
     const resize = tf.image.resizeBilinear(input, [inputSize, inputSize]);
     const objectT = config.object.enabled ? model?.execute(resize, ['tower_0/detections']) as Tensor : null;
     lastTime = now();

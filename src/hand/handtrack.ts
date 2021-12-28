@@ -172,7 +172,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
       ]);
       hand.landmarks = fingerPose.analyze(hand.keypoints) as HandResult['landmarks']; // calculate finger gestures
       for (const key of Object.keys(fingerMap)) { // map keypoints to per-finger annotations
-        hand.annotations[key] = fingerMap[key].map((index) => (hand.landmarks && hand.keypoints[index] ? hand.keypoints[index] : null));
+        hand.annotations[key] = fingerMap[key].map((index: number) => (hand.landmarks && hand.keypoints[index] ? hand.keypoints[index] : null));
       }
     }
     Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));

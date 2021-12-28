@@ -11,7 +11,7 @@ import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import { env } from '../util/env';
 
-type GearType = { age: number, gender: Gender, genderScore: number, race: Array<{ score: number, race: Race }> }
+export type GearType = { age: number, gender: Gender, genderScore: number, race: Array<{ score: number, race: Race }> }
 let model: GraphModel | null;
 const last: Array<GearType> = [];
 const raceNames = ['white', 'black', 'asian', 'indian', 'other'];
@@ -32,7 +32,7 @@ export async function load(config: Config) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function predict(image: Tensor, config: Config, idx, count): Promise<GearType> {
+export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<GearType> {
   if (!model) return { age: 0, gender: 'unknown', genderScore: 0, race: [] };
   const skipFrame = skipped < (config.face['gear']?.skipFrames || 0);
   const skipTime = (config.face['gear']?.skipTime || 0) > (now() - lastTime);

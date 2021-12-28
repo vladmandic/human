@@ -1,11 +1,15 @@
-const calculateGaze = (face): { bearing: number, strength: number } => {
-  const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
+import type { Point, FaceResult } from '../result';
+
+type Vector = [number, number, number];
+
+const calculateGaze = (face: FaceResult): { bearing: number, strength: number } => {
+  const radians = (pt1: Point, pt2: Point) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
   if (!face.annotations['rightEyeIris'] || !face.annotations['leftEyeIris']) return { bearing: 0, strength: 0 };
 
   const offsetIris = [0, -0.1]; // iris center may not align with average of eye extremes
   const eyeRatio = 1; // factor to normalize changes x vs y
 
-  const left = face.mesh[33][2] > face.mesh[263][2]; // pick left or right eye depending which one is closer bazed on outsize point z axis
+  const left = (face.mesh[33][2] || 0) > (face.mesh[263][2] || 0); // pick left or right eye depending which one is closer bazed on outsize point z axis
   const irisCenter = left ? face.mesh[473] : face.mesh[468];
   const eyeCenter = left // eye center is average of extreme points on x axis for both x and y, ignoring y extreme points as eyelids naturally open/close more when gazing up/down so relative point is less precise
     ? [(face.mesh[133][0] + face.mesh[33][0]) / 2, (face.mesh[133][1] + face.mesh[33][1]) / 2]
@@ -13,7 +17,7 @@ const calculateGaze = (face): { bearing: number, strength: number } => {
   const eyeSize = left // eye size is difference between extreme points for both x and y, used to normalize & squarify eye dimensions
     ? [face.mesh[133][0] - face.mesh[33][0], face.mesh[23][1] - face.mesh[27][1]]
     : [face.mesh[263][0] - face.mesh[362][0], face.mesh[253][1] - face.mesh[257][1]];
-  const eyeDiff = [ // x distance between extreme point and center point normalized with eye size
+  const eyeDiff: Point = [ // x distance between extreme point and center point normalized with eye size
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1],
   ];
@@ -23,33 +27,33 @@ const calculateGaze = (face): { bearing: number, strength: number } => {
   return { bearing, strength };
 };
 
-export const calculateFaceAngle = (face, imageSize): {
+export const calculateFaceAngle = (face: FaceResult, imageSize: [number, number]): {
   angle: { pitch: number, yaw: number, roll: number },
   matrix: [number, number, number, number, number, number, number, number, number],
   gaze: { bearing: number, strength: number },
 } => {
   // const degrees = (theta) => Math.abs(((theta * 180) / Math.PI) % 360);
-  const normalize = (v) => { // normalize vector
+  const normalize = (v: Vector): Vector => { // normalize vector
     const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     v[0] /= length;
     v[1] /= length;
     v[2] /= length;
     return v;
   };
-  const subVectors = (a, b) => { // vector subtraction (a - b)
+  const subVectors = (a: Vector, b: Vector): Vector => { // vector subtraction (a - b)
     const x = a[0] - b[0];
     const y = a[1] - b[1];
     const z = a[2] - b[2];
     return [x, y, z];
   };
-  const crossVectors = (a, b) => { // vector cross product (a x b)
+  const crossVectors = (a: Vector, b: Vector): Vector => { // vector cross product (a x b)
     const x = a[1] * b[2] - a[2] * b[1];
     const y = a[2] * b[0] - a[0] * b[2];
     const z = a[0] * b[1] - a[1] * b[0];
     return [x, y, z];
   };
   // 3x3 rotation matrix to Euler angles based on https://www.geometrictools.com/Documentation/EulerAngles.pdf
-  const rotationMatrixToEulerAngle = (r) => {
+  const rotationMatrixToEulerAngle = (r: number[]): { pitch: number, yaw: number, roll: number } => {
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const [r00, _r01, _r02, r10, r11, r12, r20, r21, r22] = r;
     let thetaX: number;
@@ -93,10 +97,10 @@ export const calculateFaceAngle = (face, imageSize): {
 
   const size = Math.max(face.boxRaw[2] * imageSize[0], face.boxRaw[3] * imageSize[1]) / 1.5;
   // top, bottom, left, right
-  const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [pt[0] * imageSize[0] / size, pt[1] * imageSize[1] / size, pt[2]]); // make the xyz coordinates proportional, independent of the image/box size
+  const pts: Point[] = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [pt[0] * imageSize[0] / size, pt[1] * imageSize[1] / size, pt[2]] as Point); // make the xyz coordinates proportional, independent of the image/box size
 
-  const y_axis = normalize(subVectors(pts[1], pts[0]));
-  let x_axis = normalize(subVectors(pts[3], pts[2]));
+  const y_axis = normalize(subVectors(pts[1] as Vector, pts[0] as Vector));
+  let x_axis = normalize(subVectors(pts[3] as Vector, pts[2] as Vector));
   const z_axis = normalize(crossVectors(x_axis, y_axis));
   // adjust x_axis to make sure that all axes are perpendicular to each other
   x_axis = crossVectors(y_axis, z_axis);

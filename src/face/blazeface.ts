@@ -36,7 +36,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-function decodeBounds(boxOutputs) {
+function decodeBounds(boxOutputs: Tensor) {
   const t: Record<string, Tensor> = {};
   t.boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
   t.centers = tf.add(t.boxStarts, anchors);

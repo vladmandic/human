@@ -13,11 +13,14 @@ import * as tf from '../../dist/tfjs.esm.js';
 import { constants } from '../tfjs/constants';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
+import type { Gender, Race } from '../result';
+
+export type FaceRes = { age: number, gender: Gender, genderScore: number, descriptor: number[], race?: { score: number, race: Race }[] };
 
 let model: GraphModel | null;
 const last: Array<{
   age: number,
-  gender: string,
+  gender: Gender,
   genderScore: number,
   descriptor: number[],
 }> = [];
@@ -63,7 +66,7 @@ export function enhance(input): Tensor {
   */
 }
 
-export async function predict(image: Tensor, config: Config, idx, count): Promise<{ age: number, gender: string, genderScore: number, descriptor: number[] }> {
+export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<FaceRes> {
   if (!model) return { age: 0, gender: 'unknown', genderScore: 0, descriptor: [] };
   const skipFrame = skipped < (config.face.description?.skipFrames || 0);
   const skipTime = (config.face.description?.skipTime || 0) > (now() - lastTime);
@@ -75,7 +78,7 @@ export async function predict(image: Tensor, config: Config, idx, count): Promis
   return new Promise(async (resolve) => {
     const obj = {
       age: <number>0,
-      gender: <string>'unknown',
+      gender: <Gender>'unknown',
       genderScore: <number>0,
       descriptor: <number[]>[],
     };

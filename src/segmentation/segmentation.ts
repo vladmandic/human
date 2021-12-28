@@ -66,7 +66,8 @@ export async function process(input: Input, background: Input | undefined, confi
   }
 
   const alphaCanvas = image.canvas(width, height);
-  await tf.browser.toPixels(t.data, alphaCanvas);
+  // @ts-ignore browser is not defined in tfjs-node
+  if (tf.browser) await tf.browser.toPixels(t.data, alphaCanvas);
   const alphaCtx = alphaCanvas.getContext('2d') as CanvasRenderingContext2D;
   if (config.segmentation.blur && config.segmentation.blur > 0) alphaCtx.filter = `blur(${config.segmentation.blur}px)`; // use css filter for bluring, can be done with gaussian blur manually instead
   const alphaData = alphaCtx.getImageData(0, 0, width, height);

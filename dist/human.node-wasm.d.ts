@@ -37,7 +37,7 @@ export declare type BodyAnnotationEfficientPose = 'leftLeg' | 'rightLeg' | 'tors
 
 /** Configures all body detection specific options */
 export declare interface BodyConfig extends GenericConfig {
-    /** maximum numboer of detected bodies */
+    /** maximum number of detected bodies */
     maxDetected: number;
     /** minimum confidence for a detected body before results are discarded */
     minConfidence: number;
@@ -502,9 +502,11 @@ export declare interface FaceDescriptionConfig extends GenericConfig {
     minConfidence: number;
 }
 
-/** Dectector part of face configuration */
+/** Detector part of face configuration */
 export declare interface FaceDetectorConfig extends GenericConfig {
-    /** is face rotation correction performed after detecting face? */
+    /** is face rotation correction performed after detecting face?
+     * used to correctly analyze faces under high angles
+     */
     rotation: boolean;
     /** maximum number of detected faces */
     maxDetected: number;
@@ -514,7 +516,8 @@ export declare interface FaceDetectorConfig extends GenericConfig {
     iouThreshold: number;
     /** should child models perform on masked image of a face */
     mask: boolean;
-    /** should face detection return face tensor to be used in some other extenrnal model? */
+    /** should face detection return processed and cropped face tensor that can with an external model for addtional processing?
+     * if enabled it must be manually deallocated to avoid memory leak */
     return: boolean;
 }
 
@@ -695,11 +698,13 @@ export declare type Gender = 'male' | 'female' | 'unknown';
 export declare interface GenericConfig {
     /** is module enabled? */
     enabled: boolean;
-    /** path to model json file */
+    /** path to model json file (relative to `modelBasePath` */
     modelPath: string;
-    /** how many max frames to go without re-running model if cached results are acceptable */
+    /** how many max frames to go without re-running model if cached results are acceptable
+     * for two-phase models such as face and hand caching applies to bounding boxes detection only */
     skipFrames: number;
-    /** how many max miliseconds to go without re-running model if cached results are acceptable */
+    /** how many max milliseconds to go without re-running model if cached results are acceptable
+     * for two-phase models such as face and hand caching applies to bounding boxes detection only */
     skipTime: number;
 }
 

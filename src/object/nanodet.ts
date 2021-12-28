@@ -13,25 +13,26 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
-let model;
+let model: GraphModel;
 let last: Array<ObjectResult> = [];
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
+let inputSize = 0;
 
 const scaleBox = 2.5; // increase box size
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model || env.initial) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || ''));
+    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(model.modelSignature['inputs']);
-    model.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model || !model.modelUrl) log('load model failed:', config.object.modelPath);
-    else if (config.debug) log('load model:', model.modelUrl);
-  } else if (config.debug) log('cached model:', model.modelUrl);
+    inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!model || !model['modelUrl']) log('load model failed:', config.object.modelPath);
+    else if (config.debug) log('load model:', model['modelUrl']);
+  } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 
-async function process(res, inputSize, outputShape, config) {
+async function process(res: Tensor[], outputShape: [number, number], config: Config) {
   let id = 0;
   let results: Array<ObjectResult> = [];
   for (const strideSize of [1, 2, 4]) { // try each stride size as it detects large/medium/small objects
@@ -39,18 +40,18 @@ async function process(res, inputSize, outputShape, config) {
     tf.tidy(async () => { // wrap in tidy to automatically deallocate temp tensors
       const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
       // find boxes and scores output depending on stride
-      const scoresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] === labels.length))?.squeeze();
-      const featuresT = res.find((a) => (a.shape[1] === (baseSize ** 2) && a.shape[2] < labels.length))?.squeeze();
+      const scoresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) === labels.length)));
+      const featuresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) < labels.length)));
       const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
       const boxIdx = await boxesMax.argMax(2).array(); // what we need is indexes of features with highest scores, not values itself
       const scores = await scoresT.array(); // optionally use exponential scores or just as-is
       for (let i = 0; i < scoresT.shape[0]; i++) { // total strides (x * y matrix)
         for (let j = 0; j < scoresT.shape[1]; j++) { // one score for each class
           const score = scores[i][j]; // get score for current position
-          if (score > config.object.minConfidence && j !== 61) {
+          if (score > (config.object.minConfidence || 0) && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize; // center.y normalized to range 0..1
-            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
+            const boxOffset = boxIdx[i].map((a: number) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
             const [x, y] = [
               cx - (scaleBox / strideSize * boxOffset[0]),
               cy - (scaleBox / strideSize * boxOffset[1]),
@@ -116,8 +117,8 @@ export async function predict(image: Tensor, config: Config): Promise<ObjectResu
   skipped = 0;
   if (!env.kernels.includes('mod') || !env.kernels.includes('sparsetodense')) return last;
   return new Promise(async (resolve) => {
-    const outputSize = [image.shape[2], image.shape[1]];
-    const resize = tf.image.resizeBilinear(image, [model.inputSize, model.inputSize], false);
+    const outputSize = [image.shape[2] || 0, image.shape[1] || 0];
+    const resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
     const norm = tf.div(resize, constants.tf255);
     const transpose = norm.transpose([0, 3, 1, 2]);
     tf.dispose(norm);
@@ -128,7 +129,7 @@ export async function predict(image: Tensor, config: Config): Promise<ObjectResu
     lastTime = now();
     tf.dispose(transpose);
 
-    const obj = await process(objectT, model.inputSize, outputSize, config);
+    const obj = await process(objectT as Tensor[], outputSize as [number, number], config);
     last = obj;
     resolve(obj);
   });

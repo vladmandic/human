@@ -16132,15 +16132,15 @@ function getSparseReshapeEmptyTensorZeroOutputDimErrorMessage() {
   return "reshape cannot infer the missing input size for an empty tensor unless all specified input sizes are non-zero";
 }
 function getSparseReshapeInputOutputMultipleErrorMessage(inputShape, outputShape) {
-  const inputSize9 = sizeFromShape(inputShape);
+  const inputSize10 = sizeFromShape(inputShape);
   const outputSize2 = sizeFromShape(outputShape);
-  return `Input to reshape is a SparseTensor with ${inputSize9}
+  return `Input to reshape is a SparseTensor with ${inputSize10}
   dense values, but the requested shape requires a multiple of ${outputSize2}. inputShape=${inputShape} outputShape= ${outputShape}`;
 }
 function getSparseReshapeInputOutputMismatchErrorMessage(inputShape, outputShape) {
-  const inputSize9 = sizeFromShape(inputShape);
+  const inputSize10 = sizeFromShape(inputShape);
   const outputSize2 = sizeFromShape(outputShape);
-  return `Input to reshape is a tensor with ${inputSize9} dense values, but the requested shape has ${outputSize2}. inputShape=${inputShape} outputShape=${outputShape}`;
+  return `Input to reshape is a tensor with ${inputSize10} dense values, but the requested shape has ${outputSize2}. inputShape=${inputShape} outputShape=${outputShape}`;
 }
 function getSparseSegmentReductionNegativeSegmentIdsErrorMessage() {
   return `segment ids must be >= 0`;
@@ -43418,17 +43418,17 @@ function fftBatch(input2, inverse, cpuBackend) {
   return result;
 }
 function fftImpl(input2, inverse, cpuBackend) {
-  const inputSize9 = util_exports.sizeFromShape(input2.shape);
+  const inputSize10 = util_exports.sizeFromShape(input2.shape);
   const inputVals = cpuBackend.data.get(input2.dataId);
   const realVals = cpuBackend.data.get(inputVals.complexTensorInfos.real.dataId).values;
   const imagVals = cpuBackend.data.get(inputVals.complexTensorInfos.imag.dataId).values;
-  if (isExponentOf2(inputSize9)) {
-    const result = fftRadix2(realVals, imagVals, inputSize9, inverse, cpuBackend);
+  if (isExponentOf2(inputSize10)) {
+    const result = fftRadix2(realVals, imagVals, inputSize10, inverse, cpuBackend);
     const resultShape = [input2.shape[0], input2.shape[1]];
     if (inverse) {
       const realInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.real);
       const imagInfo = cpuBackend.makeTensorInfo(resultShape, "float32", result.imag);
-      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize9, "float32"));
+      const sizeInfo = cpuBackend.makeTensorInfo([], "float32", util_exports.createScalarValue(inputSize10, "float32"));
       const sizeInfoCopy = identity2({ inputs: { x: sizeInfo }, backend: cpuBackend });
       const divRealInfo = realDivConfig.kernelFunc({ inputs: { a: realInfo, b: sizeInfo }, backend: cpuBackend });
       const divImagInfo = realDivConfig.kernelFunc({ inputs: { a: imagInfo, b: sizeInfoCopy }, backend: cpuBackend });
@@ -43445,7 +43445,7 @@ function fftImpl(input2, inverse, cpuBackend) {
     return result;
   } else {
     const data = backend_util_exports.mergeRealAndImagArrays(realVals, imagVals);
-    const rawOutput = fourierTransformByMatmul(data, inputSize9, inverse);
+    const rawOutput = fourierTransformByMatmul(data, inputSize10, inverse);
     return backend_util_exports.splitRealAndImagArrays(rawOutput);
   }
 }
@@ -43567,9 +43567,9 @@ function fourierTransformByMatmul(data, size2, inverse) {
 function fft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize9 = util_exports.sizeFromShape(input2.shape);
+  const inputSize10 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize9 / innerDimensionSize;
+  const batch = inputSize10 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -43790,9 +43790,9 @@ var gatherV2Config = {
 function ifft2(args) {
   const { inputs, backend: backend22 } = args;
   const { input: input2 } = inputs;
-  const inputSize9 = util_exports.sizeFromShape(input2.shape);
+  const inputSize10 = util_exports.sizeFromShape(input2.shape);
   const innerDimensionSize = input2.shape[input2.shape.length - 1];
-  const batch = inputSize9 / innerDimensionSize;
+  const batch = inputSize10 / innerDimensionSize;
   const input2D = reshape3({
     inputs: { x: input2 },
     backend: backend22,
@@ -55477,9 +55477,9 @@ var FFTProgram = class {
 };
 function fftImpl2(x, inverse, backend22) {
   const xData = backend22.texData.get(x.dataId);
-  const inputSize9 = util_exports.sizeFromShape(x.shape);
+  const inputSize10 = util_exports.sizeFromShape(x.shape);
   const innerDimensionSize = x.shape[x.shape.length - 1];
-  const batch = inputSize9 / innerDimensionSize;
+  const batch = inputSize10 / innerDimensionSize;
   const input2D = reshape4({ inputs: { x }, backend: backend22, attrs: { shape: [batch, innerDimensionSize] } });
   const xShape = input2D.shape;
   const realProgram = new FFTProgram("real", xShape, inverse);
@@ -75725,13 +75725,13 @@ var invertTransformMatrix = (matrix) => {
   return [rotationComponent[0].concat(invertedTranslation[0]), rotationComponent[1].concat(invertedTranslation[1]), [0, 0, 1]];
 };
 var rotatePoint = (homogeneousCoordinate, rotationMatrix) => [dot4(homogeneousCoordinate, rotationMatrix[0]), dot4(homogeneousCoordinate, rotationMatrix[1])];
-function generateAnchors(inputSize9) {
-  const spec = { strides: [inputSize9 / 16, inputSize9 / 8], anchors: [2, 6] };
+function generateAnchors(inputSize10) {
+  const spec = { strides: [inputSize10 / 16, inputSize10 / 8], anchors: [2, 6] };
   const anchors4 = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
-    const gridRows = Math.floor((inputSize9 + stride - 1) / stride);
-    const gridCols = Math.floor((inputSize9 + stride - 1) / stride);
+    const gridRows = Math.floor((inputSize10 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize10 + stride - 1) / stride);
     const anchorsNum = spec.anchors[i];
     for (let gridY = 0; gridY < gridRows; gridY++) {
       const anchorY = stride * (gridY + 0.5);
@@ -75744,11 +75744,11 @@ function generateAnchors(inputSize9) {
   }
   return anchors4;
 }
-function transformRawCoords(coordsRaw, box5, angle, rotationMatrix, inputSize9) {
+function transformRawCoords(coordsRaw, box5, angle, rotationMatrix, inputSize10) {
   const boxSize = getBoxSize(box5);
   const coordsScaled = coordsRaw.map((coord) => [
-    boxSize[0] / inputSize9 * (coord[0] - inputSize9 / 2),
-    boxSize[1] / inputSize9 * (coord[1] - inputSize9 / 2),
+    boxSize[0] / inputSize10 * (coord[0] - inputSize10 / 2),
+    boxSize[1] / inputSize10 * (coord[1] - inputSize10 / 2),
     coord[2] || 0
   ]);
   const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
@@ -75763,7 +75763,7 @@ function transformRawCoords(coordsRaw, box5, angle, rotationMatrix, inputSize9) 
     Math.trunc(coord[2] || 0)
   ]);
 }
-function correctFaceRotation(rotate, box5, input2, inputSize9) {
+function correctFaceRotation(rotate, box5, input2, inputSize10) {
   const symmetryLine = box5.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
   let angle = 0;
   let rotationMatrix = fixedRotationMatrix;
@@ -75776,13 +75776,13 @@ function correctFaceRotation(rotate, box5, input2, inputSize9) {
       const centerRaw = [center[0] / input2.shape[2], center[1] / input2.shape[1]];
       const rotated = image.rotateWithOffset(input2, angle, 0, centerRaw);
       rotationMatrix = buildRotationMatrix(-angle, center);
-      face5 = cutAndResize(box5, rotated, [inputSize9, inputSize9]);
+      face5 = cutAndResize(box5, rotated, [inputSize10, inputSize10]);
       dispose(rotated);
     } else {
-      face5 = cutAndResize(box5, input2, [inputSize9, inputSize9]);
+      face5 = cutAndResize(box5, input2, [inputSize10, inputSize10]);
     }
   } else {
-    face5 = cutAndResize(box5, input2, [inputSize9, inputSize9]);
+    face5 = cutAndResize(box5, input2, [inputSize10, inputSize10]);
   }
   return [angle, rotationMatrix, face5];
 }
@@ -75885,7 +75885,7 @@ async function getBoxes(inputImage, config3) {
         confidence
       };
       const scaledBox = scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize]);
-      const enlargedBox = enlargeBox(scaledBox, faceBoxScaleFactor);
+      const enlargedBox = enlargeBox(scaledBox, config3.face["scale"] || faceBoxScaleFactor);
       const squaredBox = squarifyBox(enlargedBox);
       boxes.push(squaredBox);
       Object.keys(b).forEach((tensor2) => dispose(b[tensor2]));
@@ -76295,7 +76295,7 @@ async function process3(res, outputShape, config3) {
   t.scores = squeeze(arr[4]);
   t.classes = squeeze(arr[5]);
   dispose([res, ...arr]);
-  t.nms = await image.nonMaxSuppressionAsync(t.boxes, t.scores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
+  t.nms = await image.nonMaxSuppressionAsync(t.boxes, t.scores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence || 0);
   const nms = await t.nms.data();
   let i = 0;
   for (const id of Array.from(nms)) {
@@ -76332,7 +76332,7 @@ async function predict6(input2, config3) {
   }
   skipped6 = 0;
   return new Promise(async (resolve) => {
-    const outputSize2 = [input2.shape[2], input2.shape[1]];
+    const outputSize2 = [input2.shape[2] || 0, input2.shape[1] || 0];
     const resize = image.resizeBilinear(input2, [inputSize4, inputSize4]);
     const objectT = config3.object.enabled ? model7 == null ? void 0 : model7.execute(resize, ["tower_0/detections"]) : null;
     lastTime6 = now();
@@ -76527,8 +76527,8 @@ async function predict8(image7, config3, idx, count3) {
     const obj = [];
     if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
       const t = {};
-      const inputSize9 = (model9 == null ? void 0 : model9.inputs[0].shape) ? model9.inputs[0].shape[2] : 0;
-      t.resize = image.resizeBilinear(image7, [inputSize9, inputSize9], false);
+      const inputSize10 = (model9 == null ? void 0 : model9.inputs[0].shape) ? model9.inputs[0].shape[2] : 0;
+      t.resize = image.resizeBilinear(image7, [inputSize10, inputSize10], false);
       t.channels = mul(t.resize, constants.rgb);
       t.grayscale = sum2(t.channels, 3, true);
       t.grayscaleSub = sub(t.grayscale, constants.tf05);
@@ -81051,7 +81051,7 @@ function jitter(keypoints) {
   }
   return keypoints;
 }
-function padInput(input2, inputSize9) {
+function padInput(input2, inputSize10) {
   const t = {};
   if (!input2.shape || !input2.shape[1] || !input2.shape[2])
     return input2;
@@ -81062,7 +81062,7 @@ function padInput(input2, inputSize9) {
     [0, 0]
   ];
   t.pad = pad(input2, cache5.padding);
-  t.resize = image.resizeBilinear(t.pad, [inputSize9, inputSize9]);
+  t.resize = image.resizeBilinear(t.pad, [inputSize10, inputSize10]);
   const final = cast(t.resize, "int32");
   Object.keys(t).forEach((tensor2) => dispose(t[tensor2]));
   return final;
@@ -81221,36 +81221,36 @@ var model16;
 var last9 = [];
 var lastTime14 = 0;
 var skipped14 = Number.MAX_SAFE_INTEGER;
+var inputSize9 = 0;
 var scaleBox = 2.5;
 async function load16(config3) {
   if (!model16 || env2.initial) {
     model16 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model16.modelSignature["inputs"]);
-    model16.inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : null;
-    if (!model16 || !model16.modelUrl)
+    inputSize9 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+    if (!model16 || !model16["modelUrl"])
       log("load model failed:", config3.object.modelPath);
     else if (config3.debug)
-      log("load model:", model16.modelUrl);
+      log("load model:", model16["modelUrl"]);
   } else if (config3.debug)
-    log("cached model:", model16.modelUrl);
+    log("cached model:", model16["modelUrl"]);
   return model16;
 }
-async function process4(res, inputSize9, outputShape, config3) {
+async function process4(res, outputShape, config3) {
   let id = 0;
   let results = [];
   for (const strideSize of [1, 2, 4]) {
     tidy(async () => {
-      var _a, _b;
       const baseSize = strideSize * 13;
-      const scoresT = (_a = res.find((a) => a.shape[1] === baseSize ** 2 && a.shape[2] === labels.length)) == null ? void 0 : _a.squeeze();
-      const featuresT = (_b = res.find((a) => a.shape[1] === baseSize ** 2 && a.shape[2] < labels.length)) == null ? void 0 : _b.squeeze();
+      const scoresT = squeeze(res.find((a) => a.shape[1] === baseSize ** 2 && (a.shape[2] || 0) === labels.length));
+      const featuresT = squeeze(res.find((a) => a.shape[1] === baseSize ** 2 && (a.shape[2] || 0) < labels.length));
       const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]);
       const boxIdx = await boxesMax.argMax(2).array();
       const scores = await scoresT.array();
       for (let i = 0; i < scoresT.shape[0]; i++) {
         for (let j = 0; j < scoresT.shape[1]; j++) {
           const score = scores[i][j];
-          if (score > config3.object.minConfidence && j !== 61) {
+          if (score > (config3.object.minConfidence || 0) && j !== 61) {
             const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
             const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
             const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize9));
@@ -81307,8 +81307,8 @@ async function predict16(image7, config3) {
   if (!env2.kernels.includes("mod") || !env2.kernels.includes("sparsetodense"))
     return last9;
   return new Promise(async (resolve) => {
-    const outputSize2 = [image7.shape[2], image7.shape[1]];
-    const resize = image.resizeBilinear(image7, [model16.inputSize, model16.inputSize], false);
+    const outputSize2 = [image7.shape[2] || 0, image7.shape[1] || 0];
+    const resize = image.resizeBilinear(image7, [inputSize9, inputSize9], false);
     const norm2 = div(resize, constants.tf255);
     const transpose6 = norm2.transpose([0, 3, 1, 2]);
     dispose(norm2);
@@ -81318,7 +81318,7 @@ async function predict16(image7, config3) {
       objectT = model16.execute(transpose6);
     lastTime14 = now();
     dispose(transpose6);
-    const obj = await process4(objectT, model16.inputSize, outputSize2, config3);
+    const obj = await process4(objectT, outputSize2, config3);
     last9 = obj;
     resolve(obj);
   });
@@ -81715,7 +81715,8 @@ async function process5(input2, background, config3) {
     return { data, canvas: null, alpha: null };
   }
   const alphaCanvas = canvas(width, height);
-  await browser_exports.toPixels(t.data, alphaCanvas);
+  if (browser_exports)
+    await browser_exports.toPixels(t.data, alphaCanvas);
   const alphaCtx = alphaCanvas.getContext("2d");
   if (config3.segmentation.blur && config3.segmentation.blur > 0)
     alphaCtx.filter = `blur(${config3.segmentation.blur}px)`;
@@ -82631,7 +82632,7 @@ var calculateGaze = (face5) => {
     return { bearing: 0, strength: 0 };
   const offsetIris = [0, -0.1];
   const eyeRatio = 1;
-  const left = face5.mesh[33][2] > face5.mesh[263][2];
+  const left = (face5.mesh[33][2] || 0) > (face5.mesh[263][2] || 0);
   const irisCenter = left ? face5.mesh[473] : face5.mesh[468];
   const eyeCenter = left ? [(face5.mesh[133][0] + face5.mesh[33][0]) / 2, (face5.mesh[133][1] + face5.mesh[33][1]) / 2] : [(face5.mesh[263][0] + face5.mesh[362][0]) / 2, (face5.mesh[263][1] + face5.mesh[362][1]) / 2];
   const eyeSize = left ? [face5.mesh[133][0] - face5.mesh[33][0], face5.mesh[23][1] - face5.mesh[27][1]] : [face5.mesh[263][0] - face5.mesh[362][0], face5.mesh[253][1] - face5.mesh[257][1]];
@@ -82720,7 +82721,7 @@ var calculateFaceAngle = (face5, imageSize) => {
 // src/face/face.ts
 var detectFace = async (instance, input2) => {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
-  let timeStamp;
+  let timeStamp = now();
   let ageRes;
   let gearRes;
   let genderRes;
@@ -82731,7 +82732,6 @@ var detectFace = async (instance, input2) => {
   let descRes;
   const faceRes = [];
   instance.state = "run:face";
-  timeStamp = now();
   const faces = await predict10(input2, instance.config);
   instance.performance.face = env2.perfadd ? (instance.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   if (!input2.shape || input2.shape.length !== 4)
@@ -82752,63 +82752,63 @@ var detectFace = async (instance, input2) => {
     const rotation = faces[i].mesh && faces[i].mesh.length > 200 ? calculateFaceAngle(faces[i], [input2.shape[2], input2.shape[1]]) : null;
     instance.analyze("Start Emotion:");
     if (instance.config.async) {
-      emotionRes = ((_b = instance.config.face.emotion) == null ? void 0 : _b.enabled) ? predict8(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      emotionRes = ((_b = instance.config.face.emotion) == null ? void 0 : _b.enabled) ? predict8(faces[i].tensor || tensor([]), instance.config, i, faces.length) : [];
     } else {
       instance.state = "run:emotion";
       timeStamp = now();
-      emotionRes = ((_c = instance.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict8(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      emotionRes = ((_c = instance.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict8(faces[i].tensor || tensor([]), instance.config, i, faces.length) : [];
       instance.performance.emotion = env2.perfadd ? (instance.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze("End Emotion:");
     instance.analyze("Start AntiSpoof:");
     if (instance.config.async) {
-      antispoofRes = ((_d = instance.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict4(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      antispoofRes = ((_d = instance.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict4(faces[i].tensor || tensor([]), instance.config, i, faces.length) : 0;
     } else {
       instance.state = "run:antispoof";
       timeStamp = now();
-      antispoofRes = ((_e = instance.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict4(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      antispoofRes = ((_e = instance.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict4(faces[i].tensor || tensor([]), instance.config, i, faces.length) : 0;
       instance.performance.antispoof = env2.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze("End AntiSpoof:");
     instance.analyze("Start Liveness:");
     if (instance.config.async) {
-      livenessRes = ((_f = instance.config.face.liveness) == null ? void 0 : _f.enabled) ? predict14(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      livenessRes = ((_f = instance.config.face.liveness) == null ? void 0 : _f.enabled) ? predict14(faces[i].tensor || tensor([]), instance.config, i, faces.length) : 0;
     } else {
       instance.state = "run:liveness";
       timeStamp = now();
-      livenessRes = ((_g = instance.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict14(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      livenessRes = ((_g = instance.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict14(faces[i].tensor || tensor([]), instance.config, i, faces.length) : 0;
       instance.performance.liveness = env2.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze("End Liveness:");
     instance.analyze("Start GEAR:");
     if (instance.config.async) {
-      gearRes = ((_h = instance.config.face["gear"]) == null ? void 0 : _h.enabled) ? predict(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
+      gearRes = ((_h = instance.config.face["gear"]) == null ? void 0 : _h.enabled) ? predict(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = "run:gear";
       timeStamp = now();
-      gearRes = ((_i = instance.config.face["gear"]) == null ? void 0 : _i.enabled) ? await predict(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
+      gearRes = ((_i = instance.config.face["gear"]) == null ? void 0 : _i.enabled) ? await predict(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
       instance.performance.gear = Math.trunc(now() - timeStamp);
     }
     instance.analyze("End GEAR:");
     instance.analyze("Start SSRNet:");
     if (instance.config.async) {
-      ageRes = ((_j = instance.config.face["ssrnet"]) == null ? void 0 : _j.enabled) ? predict2(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
-      genderRes = ((_k = instance.config.face["ssrnet"]) == null ? void 0 : _k.enabled) ? predict3(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
+      ageRes = ((_j = instance.config.face["ssrnet"]) == null ? void 0 : _j.enabled) ? predict2(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      genderRes = ((_k = instance.config.face["ssrnet"]) == null ? void 0 : _k.enabled) ? predict3(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = "run:ssrnet";
       timeStamp = now();
-      ageRes = ((_l = instance.config.face["ssrnet"]) == null ? void 0 : _l.enabled) ? await predict2(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
-      genderRes = ((_m = instance.config.face["ssrnet"]) == null ? void 0 : _m.enabled) ? await predict3(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
+      ageRes = ((_l = instance.config.face["ssrnet"]) == null ? void 0 : _l.enabled) ? await predict2(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
+      genderRes = ((_m = instance.config.face["ssrnet"]) == null ? void 0 : _m.enabled) ? await predict3(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
       instance.performance.ssrnet = Math.trunc(now() - timeStamp);
     }
     instance.analyze("End SSRNet:");
     instance.analyze("Start MobileFaceNet:");
     if (instance.config.async) {
-      mobilefacenetRes = ((_n = instance.config.face["mobilefacenet"]) == null ? void 0 : _n.enabled) ? predict9(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
+      mobilefacenetRes = ((_n = instance.config.face["mobilefacenet"]) == null ? void 0 : _n.enabled) ? predict9(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = "run:mobilefacenet";
       timeStamp = now();
-      mobilefacenetRes = ((_o = instance.config.face["mobilefacenet"]) == null ? void 0 : _o.enabled) ? await predict9(faces[i].tensor || tensor([]), instance.config, i, faces.length) : {};
+      mobilefacenetRes = ((_o = instance.config.face["mobilefacenet"]) == null ? void 0 : _o.enabled) ? await predict9(faces[i].tensor || tensor([]), instance.config, i, faces.length) : null;
       instance.performance.mobilefacenet = Math.trunc(now() - timeStamp);
     }
     instance.analyze("End MobileFaceNet:");
@@ -82826,12 +82826,26 @@ var detectFace = async (instance, input2) => {
       [ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
     instance.analyze("Finish Face:");
-    if (((_r = instance.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && ageRes && genderRes)
-      descRes = { age: ageRes.age, gender: genderRes.gender, genderScore: genderRes.genderScore };
-    if (((_s = instance.config.face["gear"]) == null ? void 0 : _s.enabled) && gearRes)
-      descRes = { age: gearRes.age, gender: gearRes.gender, genderScore: gearRes.genderScore, race: gearRes.race };
-    if (((_t = instance.config.face["mobilefacenet"]) == null ? void 0 : _t.enabled) && mobilefacenetRes)
+    if (((_r = instance.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && ageRes && genderRes) {
+      descRes = {
+        ...descRes,
+        age: ageRes.age,
+        gender: genderRes.gender,
+        genderScore: genderRes.genderScore
+      };
+    }
+    if (((_s = instance.config.face["gear"]) == null ? void 0 : _s.enabled) && gearRes) {
+      descRes = {
+        ...descRes,
+        age: gearRes.age,
+        gender: gearRes.gender,
+        genderScore: gearRes.genderScore,
+        race: gearRes.race
+      };
+    }
+    if (((_t = instance.config.face["mobilefacenet"]) == null ? void 0 : _t.enabled) && mobilefacenetRes) {
       descRes.descriptor = mobilefacenetRes;
+    }
     if (!((_u = instance.config.face.iris) == null ? void 0 : _u.enabled)) {
     }
     const irisSize = faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0] && faces[i].annotations.leftEyeIris.length > 0 && faces[i].annotations.rightEyeIris.length > 0 && faces[i].annotations.leftEyeIris[0] !== null && faces[i].annotations.rightEyeIris[0] !== null ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input2.shape[2] : 0;

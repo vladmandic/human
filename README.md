@@ -42,7 +42,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 ## Demos
 
 - [**List of all Demo applications**](https://github.com/vladmandic/human/wiki/Demos)
-- [**Examples galery**](https://vladmandic.github.io/human/samples/samples.html)
+- [**Live Examples galery**](https://vladmandic.github.io/human/samples/index.html)
 
 ### Browser Demos
 

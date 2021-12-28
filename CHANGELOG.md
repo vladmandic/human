@@ -9,10 +9,13 @@
   
 ## Changelog
   
+### **HEAD -> main** 2021/12/28 mandic00@live.com
+
+- fix samples
+- fix(src): typo
+- change on how face box is calculated
+
 ### **2.5.7** 2021/12/27 mandic00@live.com
-
-
-### **origin/main** 2021/12/22 mandic00@live.com
 
 - fix posenet
 

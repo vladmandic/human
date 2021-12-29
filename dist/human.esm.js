@@ -75943,14 +75943,31 @@ var kpt = [
   "rightHand"
 ];
 var connected = {
-  leftLeg: ["leftHip", "leftKnee", "leftAnkle", "leftHeel", "leftFoot"],
-  rightLeg: ["rightHip", "rightKnee", "rightAnkle", "rightHeel", "rightFoot"],
-  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder", "rightShoulder"],
-  leftArm: ["leftShoulder", "leftElbow", "leftWrist", "leftPalm"],
-  rightArm: ["rightShoulder", "rightElbow", "rightWrist", "rightPalm"],
-  leftEye: ["leftEyeInside", "leftEye", "leftEyeOutside"],
-  rightEye: ["rightEyeInside", "rightEye", "rightEyeOutside"],
-  mouth: ["leftMouth", "rightMouth"]
+  shoulders: ["leftShoulder", "rightShoulder"],
+  hips: ["rightHip", "leftHip"],
+  mouth: ["leftMouth", "rightMouth"],
+  leftLegUpper: ["leftHip", "leftKnee"],
+  leftLegLower: ["leftKnee", "leftAnkle"],
+  leftFoot: ["leftAnkle", "leftHeel", "leftFoot"],
+  leftTorso: ["leftShoulder", "leftHip"],
+  leftArmUpper: ["leftShoulder", "leftElbow"],
+  leftArmLower: ["leftElbow", "leftWrist"],
+  leftHand: ["leftWrist", "leftPalm"],
+  leftHandPinky: ["leftPalm", "leftPinky"],
+  leftHandIndex: ["leftPalm", "leftIndex"],
+  leftHandThumb: ["leftPalm", "leftThumb"],
+  leftEyeOutline: ["leftEyeInside", "leftEyeOutside"],
+  rightLegUpper: ["rightHip", "rightKnee"],
+  rightLegLower: ["rightKnee", "rightAnkle"],
+  rightFoot: ["rightAnkle", "rightHeel", "rightFoot"],
+  rightTorso: ["rightShoulder", "rightHip"],
+  rightArmUpper: ["rightShoulder", "rightElbow"],
+  rightArmLower: ["rightElbow", "rightWrist"],
+  rightHand: ["rightWrist", "rightPalm"],
+  rightHandPinky: ["rightPalm", "rightPinky"],
+  rightHandIndex: ["rightPalm", "rightIndex"],
+  rightHandThumb: ["rightPalm", "rightThumb"],
+  rightEyeOutline: ["rightEyeInside", "rightEyeOutside"]
 };
 
 // src/body/blazeposedetector.ts
@@ -76124,6 +76141,16 @@ function rescaleKeypoints(keypoints, outputSize2) {
   }
   return keypoints;
 }
+async function fixKeypoints(keypoints) {
+  const leftPalm = keypoints.find((k) => k.part === "leftPalm");
+  const leftWrist = keypoints.find((k) => k.part === "leftWrist");
+  const leftIndex = keypoints.find((k) => k.part === "leftIndex");
+  leftPalm.position[2] = ((leftWrist.position[2] || 0) + (leftIndex.position[2] || 0)) / 2;
+  const rightPalm = keypoints.find((k) => k.part === "rightPalm");
+  const rightWrist = keypoints.find((k) => k.part === "rightWrist");
+  const rightIndex = keypoints.find((k) => k.part === "rightIndex");
+  rightPalm.position[2] = ((rightWrist.position[2] || 0) + (rightIndex.position[2] || 0)) / 2;
+}
 async function detectLandmarks(input2, config3, outputSize2) {
   var _a;
   const t = {};
@@ -76143,6 +76170,7 @@ async function detectLandmarks(input2, config3, outputSize2) {
   }
   if (poseScore < (config3.body.minConfidence || 0))
     return null;
+  fixKeypoints(keypointsRelative);
   const keypoints = rescaleKeypoints(keypointsRelative, outputSize2);
   const kpts = keypoints.map((k) => k.position);
   const boxes = calc(kpts, [outputSize2[0], outputSize2[1]]);

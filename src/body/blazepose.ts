@@ -123,6 +123,18 @@ function rescaleKeypoints(keypoints: Array<BodyKeypoint>, outputSize: [number, n
   return keypoints;
 }
 
+async function fixKeypoints(keypoints: Array<BodyKeypoint>) {
+  // palm z-coord is incorrect around near-zero so we approximate it
+  const leftPalm = keypoints.find((k) => k.part === 'leftPalm') as BodyKeypoint;
+  const leftWrist = keypoints.find((k) => k.part === 'leftWrist') as BodyKeypoint;
+  const leftIndex = keypoints.find((k) => k.part === 'leftIndex') as BodyKeypoint;
+  leftPalm.position[2] = ((leftWrist.position[2] || 0) + (leftIndex.position[2] || 0)) / 2;
+  const rightPalm = keypoints.find((k) => k.part === 'rightPalm') as BodyKeypoint;
+  const rightWrist = keypoints.find((k) => k.part === 'rightWrist') as BodyKeypoint;
+  const rightIndex = keypoints.find((k) => k.part === 'rightIndex') as BodyKeypoint;
+  rightPalm.position[2] = ((rightWrist.position[2] || 0) + (rightIndex.position[2] || 0)) / 2;
+}
+
 async function detectLandmarks(input: Tensor, config: Config, outputSize: [number, number]): Promise<BodyResult | null> {
   /**
    * t.ld: 39 keypoints [x,y,z,score,presence] normalized to input size
@@ -147,6 +159,7 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
     keypointsRelative.push({ part: coords.kpt[i] as BodyLandmark, positionRaw, position, score: adjScore });
   }
   if (poseScore < (config.body.minConfidence || 0)) return null;
+  fixKeypoints(keypointsRelative);
   const keypoints: Array<BodyKeypoint> = rescaleKeypoints(keypointsRelative, outputSize); // keypoints were relative to input image which is padded
   const kpts = keypoints.map((k) => k.position);
   const boxes = box.calc(kpts, [outputSize[0], outputSize[1]]); // now find boxes based on rescaled keypoints

@@ -51,12 +51,21 @@ const cache: {
 };
 
 const fingerMap = {
+  /*
   thumb: [0, 1, 2, 3, 4],
   index: [0, 5, 6, 7, 8],
   middle: [0, 9, 10, 11, 12],
   ring: [0, 13, 14, 15, 16],
   pinky: [0, 17, 18, 19, 20],
   palm: [0],
+  */
+  thumb: [1, 2, 3, 4],
+  index: [5, 6, 7, 8],
+  middle: [9, 10, 11, 12],
+  ring: [13, 14, 15, 16],
+  pinky: [17, 18, 19, 20],
+  base: [0],
+  palm: [0, 17, 13, 9, 5, 1, 0],
 };
 
 export async function loadDetect(config: Config): Promise<GraphModel> {

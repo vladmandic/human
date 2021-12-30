@@ -163,7 +163,7 @@ async function verifyDetails(human) {
   verify(res.hand.length === 1, 'details hand length', res.hand.length);
   for (const hand of res.hand) {
     verify(hand.score > 0.5 && hand.boxScore > 0.5 && hand.fingerScore > 0.5 && hand.box.length === 4 && hand.boxRaw.length === 4 && hand.label === 'point', 'details hand', hand.boxScore, hand.fingerScore, hand.label);
-    verify(hand.keypoints.length === 21 && Object.keys(hand.landmarks).length === 5 && Object.keys(hand.annotations).length === 6, 'details hand arrays', hand.keypoints.length, Object.keys(hand.landmarks).length, Object.keys(hand.annotations).length);
+    verify(hand.keypoints.length === 21 && Object.keys(hand.landmarks).length === 5 && Object.keys(hand.annotations).length === 7, 'details hand arrays', hand.keypoints.length, Object.keys(hand.landmarks).length, Object.keys(hand.annotations).length);
   }
   verify(res.gesture.length === 6, 'details gesture length', res.gesture.length);
   verify(res.gesture[0].gesture === 'facing right', 'details gesture first', res.gesture[0]);

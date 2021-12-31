@@ -147,6 +147,7 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
   [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = models.landmarks?.execute(input, outputNodes.landmarks) as Tensor[]; // run model
   const poseScore = (await t.poseflag.data())[0];
   const points = await t.ld.data();
+  const distances = await t.world.data();
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor])); // dont need tensors after this
   const keypointsRelative: Array<BodyKeypoint> = [];
   const depth = 5; // each points has x,y,z,visibility,presence
@@ -156,7 +157,8 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
     const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
     const positionRaw: Point = [points[depth * i + 0] / inputSize.landmarks[0], points[depth * i + 1] / inputSize.landmarks[1], points[depth * i + 2] + 0];
     const position: Point = [Math.trunc(outputSize[0] * positionRaw[0]), Math.trunc(outputSize[1] * positionRaw[1]), positionRaw[2] as number];
-    keypointsRelative.push({ part: coords.kpt[i] as BodyLandmark, positionRaw, position, score: adjScore });
+    const distance: Point = [distances[depth * i + 0], distances[depth * i + 1], distances[depth * i + 2] + 0];
+    keypointsRelative.push({ part: coords.kpt[i] as BodyLandmark, positionRaw, position, distance, score: adjScore });
   }
   if (poseScore < (config.body.minConfidence || 0)) return null;
   fixKeypoints(keypointsRelative);

@@ -5393,6 +5393,7 @@ async function detectLandmarks(input, config3, outputSize2) {
   [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = (_a = models.landmarks) == null ? void 0 : _a.execute(input, outputNodes.landmarks);
   const poseScore = (await t.poseflag.data())[0];
   const points = await t.ld.data();
+  const distances = await t.world.data();
   Object.keys(t).forEach((tensor3) => tfjs_esm_exports.dispose(t[tensor3]));
   const keypointsRelative = [];
   const depth = 5;
@@ -5402,7 +5403,8 @@ async function detectLandmarks(input, config3, outputSize2) {
     const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
     const positionRaw = [points[depth * i + 0] / inputSize3.landmarks[0], points[depth * i + 1] / inputSize3.landmarks[1], points[depth * i + 2] + 0];
     const position = [Math.trunc(outputSize2[0] * positionRaw[0]), Math.trunc(outputSize2[1] * positionRaw[1]), positionRaw[2]];
-    keypointsRelative.push({ part: kpt[i], positionRaw, position, score: adjScore });
+    const distance2 = [distances[depth * i + 0], distances[depth * i + 1], distances[depth * i + 2] + 0];
+    keypointsRelative.push({ part: kpt[i], positionRaw, position, distance: distance2, score: adjScore });
   }
   if (poseScore < (config3.body.minConfidence || 0))
     return null;
@@ -12302,20 +12304,28 @@ function calc2(newResult, config3) {
     for (let i = 0; i < newResult.body.length; i++) {
       const box5 = newResult.body[i].box.map((newBoxCoord, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + newBoxCoord) / bufferedFactor);
       const boxRaw = newResult.body[i].boxRaw.map((newBoxCoord, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + newBoxCoord) / bufferedFactor);
-      const keypoints = newResult.body[i].keypoints.map((newKpt, j) => ({
-        score: newKpt.score,
-        part: newKpt.part,
-        position: [
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[0] || 0) + (newKpt.position[0] || 0)) / bufferedFactor : newKpt.position[0],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[1] || 0) + (newKpt.position[1] || 0)) / bufferedFactor : newKpt.position[1],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[2] || 0) + (newKpt.position[2] || 0)) / bufferedFactor : newKpt.position[2]
-        ],
-        positionRaw: [
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[0] || 0) + (newKpt.positionRaw[0] || 0)) / bufferedFactor : newKpt.position[0],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[1] || 0) + (newKpt.positionRaw[1] || 0)) / bufferedFactor : newKpt.position[1],
-          bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[2] || 0) + (newKpt.positionRaw[2] || 0)) / bufferedFactor : newKpt.position[2]
-        ]
-      }));
+      const keypoints = newResult.body[i].keypoints.map((newKpt, j) => {
+        var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2;
+        return {
+          score: newKpt.score,
+          part: newKpt.part,
+          position: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[0] || 0) + (newKpt.position[0] || 0)) / bufferedFactor : newKpt.position[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[1] || 0) + (newKpt.position[1] || 0)) / bufferedFactor : newKpt.position[1],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[2] || 0) + (newKpt.position[2] || 0)) / bufferedFactor : newKpt.position[2]
+          ],
+          positionRaw: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[0] || 0) + (newKpt.positionRaw[0] || 0)) / bufferedFactor : newKpt.positionRaw[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[1] || 0) + (newKpt.positionRaw[1] || 0)) / bufferedFactor : newKpt.positionRaw[1],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[2] || 0) + (newKpt.positionRaw[2] || 0)) / bufferedFactor : newKpt.positionRaw[2]
+          ],
+          distance: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (((_a2 = bufferedResult.body[i].keypoints[j].distance) == null ? void 0 : _a2[0]) || 0) + (((_b2 = newKpt.distance) == null ? void 0 : _b2[0]) || 0)) / bufferedFactor : (_c2 = newKpt.distance) == null ? void 0 : _c2[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (((_d2 = bufferedResult.body[i].keypoints[j].distance) == null ? void 0 : _d2[1]) || 0) + (((_e2 = newKpt.distance) == null ? void 0 : _e2[1]) || 0)) / bufferedFactor : (_f2 = newKpt.distance) == null ? void 0 : _f2[1],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (((_g2 = bufferedResult.body[i].keypoints[j].distance) == null ? void 0 : _g2[2]) || 0) + (((_h2 = newKpt.distance) == null ? void 0 : _h2[2]) || 0)) / bufferedFactor : (_i2 = newKpt.distance) == null ? void 0 : _i2[2]
+          ]
+        };
+      });
       const annotations2 = {};
       let coords8 = { connected: {} };
       if ((_b = (_a = config3.body) == null ? void 0 : _a.modelPath) == null ? void 0 : _b.includes("efficientpose"))

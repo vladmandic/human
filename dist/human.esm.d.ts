@@ -54,6 +54,8 @@ export declare interface BodyKeypoint {
     position: Point;
     /** body part position normalized to 0..1 */
     positionRaw: Point;
+    /** body part position relative to body center in meters */
+    distance?: Point;
     /** body part detection score */
     score: number;
 }

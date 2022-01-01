@@ -9,12 +9,10 @@ const process = require('process');
 
 let fetch; // fetch is dynamically imported later
 
-// for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
-
-// load specific version of Human library that matches TensorFlow mode
-const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
+const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// const faceapi = require('@vladmandic/face-api'); // use this when human is installed as module (majority of use cases)
+const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
 let human = null;
 
@@ -45,7 +43,7 @@ const myConfig = {
 
 async function init() {
   // create instance of human
-  human = new Human(myConfig);
+  human = new Human.Human(myConfig);
   // wait until tf is ready
   await human.tf.ready();
   // pre-load models

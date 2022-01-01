@@ -8,17 +8,14 @@ const process = require('process');
 
 let fetch; // fetch is dynamically imported later
 
-// for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
-
-// load specific version of Human library that matches TensorFlow mode
-const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
+const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// const faceapi = require('@vladmandic/face-api'); // use this when human is installed as module (majority of use cases)
+const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
 let human = null;
 
 const myConfig = {
-  backend: 'tensorflow',
   modelBasePath: 'file://models/',
   debug: false,
   async: true,
@@ -61,32 +58,34 @@ async function detect(input) {
 async function main() {
   log.header();
 
-  human = new Human(myConfig);
+  human = new Human.Human(myConfig);
 
-  human.events.addEventListener('warmup', () => {
-    log.info('Event Warmup');
-  });
+  if (human.events) {
+    human.events.addEventListener('warmup', () => {
+      log.info('Event Warmup');
+    });
 
-  human.events.addEventListener('load', () => {
-    const loaded = Object.keys(human.models).filter((a) => human.models[a]);
-    log.info('Event Loaded:', loaded, human.tf.engine().memory());
-  });
+    human.events.addEventListener('load', () => {
+      const loaded = Object.keys(human.models).filter((a) => human.models[a]);
+      log.info('Event Loaded:', loaded, human.tf.engine().memory());
+    });
 
-  human.events.addEventListener('image', () => {
-    log.info('Event Image:', human.process.tensor.shape);
-  });
+    human.events.addEventListener('image', () => {
+      log.info('Event Image:', human.process.tensor.shape);
+    });
 
-  human.events.addEventListener('detect', () => {
-    log.data('Event Detected:');
-    const persons = human.result.persons;
-    for (let i = 0; i < persons.length; i++) {
-      const face = persons[i].face;
-      const faceTxt = face ? `score:${face.score} age:${face.age} gender:${face.gender} iris:${face.iris}` : null;
-      const body = persons[i].body;
-      const bodyTxt = body ? `score:${body.score} keypoints:${body.keypoints?.length}` : null;
-      log.data(`  #${i}: Face:${faceTxt} Body:${bodyTxt} LeftHand:${persons[i].hands.left ? 'yes' : 'no'} RightHand:${persons[i].hands.right ? 'yes' : 'no'} Gestures:${persons[i].gestures.length}`);
-    }
-  });
+    human.events.addEventListener('detect', () => {
+      log.data('Event Detected:');
+      const persons = human.result.persons;
+      for (let i = 0; i < persons.length; i++) {
+        const face = persons[i].face;
+        const faceTxt = face ? `score:${face.score} age:${face.age} gender:${face.gender} iris:${face.iris}` : null;
+        const body = persons[i].body;
+        const bodyTxt = body ? `score:${body.score} keypoints:${body.keypoints?.length}` : null;
+        log.data(`  #${i}: Face:${faceTxt} Body:${bodyTxt} LeftHand:${persons[i].hands.left ? 'yes' : 'no'} RightHand:${persons[i].hands.right ? 'yes' : 'no'} Gestures:${persons[i].gestures.length}`);
+      }
+    });
+  }
 
   await human.tf.ready(); // wait until tf is ready
 

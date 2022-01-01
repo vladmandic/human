@@ -16,18 +16,17 @@ const log = require('@vladmandic/pilogger');
 // @ts-ignore pipe2jpeg is not installed by default
 // eslint-disable-next-line node/no-missing-require
 const Pipe2Jpeg = require('pipe2jpeg');
-// for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
-// load specific version of Human library that matches TensorFlow mode
-const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+
+// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
+const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// const faceapi = require('@vladmandic/face-api'); // use this when human is installed as module (majority of use cases)
+const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
 let count = 0; // counter
 let busy = false; // busy flag
 const inputFile = './test.mp4';
 
 const humanConfig = {
-  backend: 'tensorflow',
   modelBasePath: 'file://models/',
   debug: false,
   async: true,
@@ -45,7 +44,7 @@ const humanConfig = {
   object: { enabled: false },
 };
 
-const human = new Human(humanConfig);
+const human = new Human.Human(humanConfig);
 const pipe2jpeg = new Pipe2Jpeg();
 
 const ffmpegParams = [
@@ -65,10 +64,7 @@ const ffmpegParams = [
 async function process(jpegBuffer) {
   if (busy) return; // skip processing if busy
   busy = true;
-  const decoded = tf.node.decodeJpeg(jpegBuffer, 3); // decode jpeg buffer to raw tensor
-  const tensor = tf.expandDims(decoded, 0); // almost all tf models use first dimension as batch number so we add it
-  tf.dispose(decoded);
-
+  const tensor = human.tf.node.decodeJpeg(jpegBuffer, 3); // decode jpeg buffer to raw tensor
   log.state('input frame:', ++count, 'size:', jpegBuffer.length, 'decoded shape:', tensor.shape);
   const res = await human.detect(tensor);
   log.data('gesture', JSON.stringify(res.gesture));

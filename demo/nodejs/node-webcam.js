@@ -11,11 +11,11 @@ const log = require('@vladmandic/pilogger');
 // @ts-ignore node-webcam is not installed by default
 // eslint-disable-next-line node/no-missing-require
 const nodeWebCam = require('node-webcam');
-// for NodeJS, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node'); // or const tf = require('@tensorflow/tfjs-node-gpu');
-// load specific version of Human library that matches TensorFlow mode
-const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
+
+// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
+const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// const faceapi = require('@vladmandic/face-api'); // use this when human is installed as module (majority of use cases)
+const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
 // options for node-webcam
 const tempFile = 'webcam-snap'; // node-webcam requires writting snapshot to a file, recommended to use tmpfs to avoid excessive disk writes
@@ -27,10 +27,9 @@ const camera = nodeWebCam.create(optionsCamera);
 
 // options for human
 const optionsHuman = {
-  backend: 'tensorflow',
   modelBasePath: 'file://models/',
 };
-const human = new Human(optionsHuman);
+const human = new Human.Human(optionsHuman);
 
 function buffer2tensor(buffer) {
   return human.tf.tidy(() => {
@@ -67,8 +66,8 @@ async function detect() {
         if (result && result.face && result.face.length > 0) {
           for (let i = 0; i < result.face.length; i++) {
             const face = result.face[i];
-            const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
-            log.data(`detected face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+            const emotion = face.emotion?.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
+            log.data(`detected face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion?.score} emotion:${emotion?.emotion} iris:${face.iris}`);
           }
         } else {
           log.data('  Face: N/A');

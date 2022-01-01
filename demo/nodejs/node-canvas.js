@@ -6,8 +6,11 @@ const fs = require('fs');
 const process = require('process');
 const log = require('@vladmandic/pilogger');
 const canvas = require('canvas');
-require('@tensorflow/tfjs-node'); // for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
-const Human = require('../../dist/human.node.js'); // this is 'const Human = require('../dist/human.node-gpu.js').default;'
+
+// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
+const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// const faceapi = require('@vladmandic/face-api'); // use this when human is installed as module (majority of use cases)
+const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
 const config = { // just enable all and leave default settings
   debug: false,
@@ -68,6 +71,7 @@ async function main() {
     const outputCanvas = new canvas.Canvas(inputImage.width, inputImage.height); // create canvas
     const outputCtx = outputCanvas.getContext('2d');
     outputCtx.drawImage(result.canvas || inputImage, 0, 0); // draw input image onto canvas
+    // @ts-ignore canvas is not checked for typedefs
     human.draw.all(outputCanvas, result); // use human build-in method to draw results as overlays on canvas
     const outFile = fs.createWriteStream(output); // write canvas to new image file
     outFile.on('finish', () => log.state('Output image:', output, outputCanvas.width, outputCanvas.height));

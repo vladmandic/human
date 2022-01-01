@@ -5,14 +5,15 @@
 const log = require('@vladmandic/pilogger');
 const fs = require('fs');
 const process = require('process');
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node');
-const Human = require('../../dist/human.node.js').default;
+
+// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
+const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// const faceapi = require('@vladmandic/face-api'); // use this when human is installed as module (majority of use cases)
+const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
 let human = null;
 
 const myConfig = {
-  backend: 'tensorflow',
   modelBasePath: 'file://models/',
   debug: true,
   face: { emotion: { enabled: false } },
@@ -22,7 +23,7 @@ const myConfig = {
 };
 
 async function init() {
-  human = new Human(myConfig);
+  human = new Human.Human(myConfig);
   await human.tf.ready();
   log.info('Human:', human.version);
   await human.load();

@@ -104,7 +104,7 @@ function rescaleKeypoints(keypoints: Array<BodyKeypoint>, outputSize: [number, n
       Math.trunc(kpt.position[1] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1] - padding[1][0]),
       kpt.position[2] as number,
     ];
-    kpt.positionRaw = [kpt.position[0] / outputSize[0], kpt.position[1] / outputSize[1], kpt.position[2] as number];
+    kpt.positionRaw = [kpt.position[0] / outputSize[0], kpt.position[1] / outputSize[1], 2 * (kpt.position[2] as number) / (outputSize[0] + outputSize[1])];
   }
   if (cropBox) { // second rescale due to cropping
     for (const kpt of keypoints) {

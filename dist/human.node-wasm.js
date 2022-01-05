@@ -5400,7 +5400,7 @@ function rescaleKeypoints(keypoints, outputSize2) {
       Math.trunc(kpt4.position[1] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1] - padding[1][0]),
       kpt4.position[2]
     ];
-    kpt4.positionRaw = [kpt4.position[0] / outputSize2[0], kpt4.position[1] / outputSize2[1], kpt4.position[2]];
+    kpt4.positionRaw = [kpt4.position[0] / outputSize2[0], kpt4.position[1] / outputSize2[1], 2 * kpt4.position[2] / (outputSize2[0] + outputSize2[1])];
   }
   if (cropBox) {
     for (const kpt4 of keypoints) {

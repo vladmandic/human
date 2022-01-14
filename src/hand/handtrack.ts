@@ -38,7 +38,6 @@ type HandDetectResult = {
   score: number,
   box: Box,
   boxRaw: Box,
-  boxCrop: Box,
   label: HandType,
 }
 
@@ -121,10 +120,11 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   classScores.splice(faceIndex, 1); // remove faces
   t.filtered = tf.stack(classScores, 1); // restack
   tf.dispose(classScores);
+  // t.filtered = t.scores;
   t.max = tf.max(t.filtered, 1); // max overall score
   t.argmax = tf.argMax(t.filtered, 1); // class index of max overall score
   let id = 0;
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.max, config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence);
+  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.max, (config.hand.maxDetected || 0) + 1, config.hand.iouThreshold || 0, config.hand.minConfidence || 1);
   const nms = await t.nms.data();
   const scores = await t.max.data();
   const classNum = await t.argmax.data();
@@ -132,14 +132,12 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
     const boxSlice = tf.slice(t.boxes, nmsIndex, 1);
     const boxYX = await boxSlice.data();
     tf.dispose(boxSlice);
-    // const boxSquareSize = Math.max(boxData[3] - boxData[1], boxData[2] - boxData[0]);
     const boxData: Box = [boxYX[1], boxYX[0], boxYX[3] - boxYX[1], boxYX[2] - boxYX[0]]; // yx box reshaped to standard box
     const boxRaw: Box = box.scale(boxData, detectorExpandFact);
-    const boxCrop: Box = box.crop(boxRaw); // crop box is based on raw box
     const boxFull: Box = [Math.trunc(boxData[0] * outputSize[0]), Math.trunc(boxData[1] * outputSize[1]), Math.trunc(boxData[2] * outputSize[0]), Math.trunc(boxData[3] * outputSize[1])];
     const score = scores[nmsIndex];
     const label = classes[classNum[nmsIndex]] as HandType;
-    const hand: HandDetectResult = { id: id++, score, box: boxFull, boxRaw, boxCrop, label };
+    const hand: HandDetectResult = { id: id++, score, box: boxFull, boxRaw, label };
     hands.push(hand);
   }
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
@@ -163,7 +161,8 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
   };
   if (input && models[1] && config.hand.landmarks && h.score > (config.hand.minConfidence || 0)) {
     const t: Record<string, Tensor> = {};
-    t.crop = tf.image.cropAndResize(input, [h.boxCrop], [0], [inputSize[1][0], inputSize[1][1]], 'bilinear');
+    const boxCrop = [h.boxRaw[1], h.boxRaw[0], h.boxRaw[3] + h.boxRaw[1], h.boxRaw[2] + h.boxRaw[0]] as Box;
+    t.crop = tf.image.cropAndResize(input, [boxCrop], [0], [inputSize[1][0], inputSize[1][1]], 'bilinear');
     t.div = tf.div(t.crop, constants.tf255);
     [t.score, t.keypoints] = models[1].execute(t.div, ['Identity_1', 'Identity']) as Tensor[];
     const rawScore = (await t.score.data())[0];
@@ -174,11 +173,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
       const coordsData: Point[] = await t.reshaped.array() as Point[];
       const coordsRaw: Point[] = coordsData.map((kpt) => [kpt[0] / inputSize[1][1], kpt[1] / inputSize[1][0], (kpt[2] || 0)]);
       const coordsNorm: Point[] = coordsRaw.map((kpt) => [kpt[0] * h.boxRaw[2], kpt[1] * h.boxRaw[3], (kpt[2] || 0)]);
-      hand.keypoints = (coordsNorm).map((kpt) => [
-        outputSize[0] * (kpt[0] + h.boxRaw[0]),
-        outputSize[1] * (kpt[1] + h.boxRaw[1]),
-        (kpt[2] || 0),
-      ]);
+      hand.keypoints = (coordsNorm).map((kpt) => [outputSize[0] * (kpt[0] + h.boxRaw[0]), outputSize[1] * (kpt[1] + h.boxRaw[1]), (kpt[2] || 0)]);
       hand.landmarks = fingerPose.analyze(hand.keypoints) as HandResult['landmarks']; // calculate finger gestures
       for (const key of Object.keys(fingerMap)) { // map keypoints to per-finger annotations
         hand.annotations[key] = fingerMap[key].map((index: number) => (hand.landmarks && hand.keypoints[index] ? hand.keypoints[index] : null));
@@ -220,8 +215,8 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
         if (boxKpt.box[2] / (input.shape[2] || 1) > 0.05 && boxKpt.box[3] / (input.shape[1] || 1) > 0.05 && cache.hands[i].fingerScore && cache.hands[i].fingerScore > (config.hand.minConfidence || 0)) {
           const boxScale = box.scale(boxKpt.box, boxExpandFact);
           const boxScaleRaw = box.scale(boxKpt.boxRaw, boxExpandFact);
-          const boxCrop = box.crop(boxScaleRaw);
-          cache.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw, boxCrop });
+          // const boxCrop = box.crop(boxScaleRaw);
+          cache.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw });
         }
       }
     }

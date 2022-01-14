@@ -10442,6 +10442,8 @@ async function load15(config3) {
   } else if (config3.debug)
     log("cached model:", model14["modelUrl"]);
   inputSize8 = model14.inputs[0].shape ? model14.inputs[0].shape[2] : 0;
+  if (inputSize8 < 64)
+    inputSize8 = 256;
   return model14;
 }
 async function parseSinglePose(res, config3, image24) {

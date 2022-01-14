@@ -276,6 +276,12 @@ declare function copyModel(sourceURL: string, destURL: string): Promise<ModelArt
  */
 declare type DataId = object;
 
+declare type DataToGPUOptions = DataToGPUWebGLOption;
+
+declare interface DataToGPUWebGLOption {
+    customTexShape?: [number, number];
+}
+
 /** @docalias 'float32'|'int32'|'bool'|'complex64'|'string' */
 declare type DataType = keyof DataTypeMap;
 
@@ -759,6 +765,12 @@ declare function getModelArtifactsForJSON(modelJSON: ModelJSON, loadWeights: (we
 declare function getModelArtifactsInfoForJSON(modelArtifacts: ModelArtifacts): ModelArtifactsInfo;
 
 declare const getSaveHandlers: (url: string | string[]) => IOHandler[];
+
+declare interface GPUData {
+    tensorRef: Tensor;
+    texture?: WebGLTexture;
+    texShape?: [number, number];
+}
 
 /**
  * A `tf.GraphModel` is a directed, acyclic graph built from a
@@ -2219,6 +2231,31 @@ export declare class Tensor<R extends Rank = Rank> {
      * @doc {heading: 'Tensors', subheading: 'Classes'}
      */
     data<D extends DataType = NumericDataType>(): Promise<DataTypeMap[D]>;
+    /**
+     * Copy the tensor's data to a new GPU resource. Comparing to the `dataSync()`
+     * and `data()`, this method prevents data from being downloaded to CPU.
+     *
+     * For WebGL backend, the data will be stored on a densely packed texture.
+     * This means that the texture will use the RGBA channels to store value.
+     *
+     * @param options:
+     *     For WebGL,
+     *         - customTexShape: Optional. If set, will use the user defined
+     *     texture shape to create the texture.
+     *
+     * @returns For WebGL backend, a GPUData contains the new texture and
+     *     its information.
+     *     {
+     *        tensorRef: The tensor that is associated with this texture,
+     *        texture: WebGLTexture,
+     *        texShape: [number, number] // [height, width]
+     *     }
+     *     Remember to dispose the GPUData after it is used by
+     *     `res.tensorRef.dispose()`.
+     *
+     * @doc {heading: 'Tensors', subheading: 'Classes'}
+     */
+    dataToGPU(options?: DataToGPUOptions): GPUData;
     /**
      * Synchronously downloads the values from the `tf.Tensor`. This blocks the
      * UI thread until the values are ready, which can cause performance issues.

@@ -101,7 +101,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         newCache.push(calculatedBox);
       }
     }
-    faces.push(face);
+    if (face.score > (config.face.detector?.minConfidence || 1)) faces.push(face);
+    else tf.dispose(face.tensor);
   }
   cache.boxes = newCache; // reset cache
   return faces;

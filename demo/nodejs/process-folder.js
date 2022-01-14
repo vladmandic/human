@@ -3,8 +3,8 @@ const path = require('path');
 const process = require('process');
 const log = require('@vladmandic/pilogger');
 const canvas = require('canvas');
-const tf = require('@tensorflow/tfjs-node'); // for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
-const Human = require('../../dist/human.node.js'); // this is 'const Human = require('../dist/human.node-gpu.js').default;'
+// const tf = require('@tensorflow/tfjs-node-gpu'); // for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+const Human = require('../../dist/human.node-gpu.js'); // this is 'const Human = require('../dist/human.node-gpu.js').default;'
 
 const config = { // just enable all and leave default settings
   debug: true,
@@ -56,19 +56,21 @@ async function main() {
     log.state('Loaded image:', inFile, tensor.shape);
 
     const result = await human.detect(tensor);
-    tf.dispose(tensor);
+    human.tf.dispose(tensor);
     log.data(`Detected: ${image}:`, 'Face:', result.face.length, 'Body:', result.body.length, 'Hand:', result.hand.length, 'Objects:', result.object.length, 'Gestures:', result.gesture.length);
 
     const outputCanvas = new canvas.Canvas(tensor.shape[2], tensor.shape[1]); // create canvas
     const outputCtx = outputCanvas.getContext('2d');
     const inputImage = await canvas.loadImage(buffer); // load image using canvas library
     outputCtx.drawImage(inputImage, 0, 0); // draw input image onto canvas
+    // @ts-ignore
     human.draw.all(outputCanvas, result); // use human build-in method to draw results as overlays on canvas
     const outFile = path.join(outDir, image);
     const outStream = fs.createWriteStream(outFile); // write canvas to new image file
     outStream.on('finish', () => log.state('Output image:', outFile, outputCanvas.width, outputCanvas.height));
     outStream.on('error', (err) => log.error('Output error:', outFile, err));
     const stream = outputCanvas.createJPEGStream({ quality: 0.5, progressive: true, chromaSubsampling: true });
+    // @ts-ignore
     stream.pipe(outStream);
   }
 }

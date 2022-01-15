@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/01/14 mandic00@live.com
 
+- fix face box and hand tracking when in front of face
 
 ### **2.5.8** 2022/01/14 mandic00@live.com
 

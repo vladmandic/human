@@ -5,10 +5,10 @@
  */
 
 import { log, join } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import * as handdetector from './handposedetector';
 import * as handpipeline from './handposepipeline';
 import * as fingerPose from './fingerpose';
+import { loadModel } from '../tfjs/load';
 import type { HandResult, Box, Point } from '../result';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
@@ -89,8 +89,8 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
   }
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
-      config.hand.enabled ? tf.loadGraphModel(join(config.modelBasePath, config.hand.detector?.modelPath || ''), { fromTFHub: (config.hand.detector?.modelPath || '').includes('tfhub.dev') }) as unknown as GraphModel : null,
-      config.hand.landmarks ? tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton?.modelPath || ''), { fromTFHub: (config.hand.skeleton?.modelPath || '').includes('tfhub.dev') }) as unknown as GraphModel : null,
+      config.hand.enabled ? loadModel(join(config.modelBasePath, config.hand.detector?.modelPath || '')) as unknown as GraphModel : null,
+      config.hand.landmarks ? loadModel(join(config.modelBasePath, config.hand.skeleton?.modelPath || '')) as unknown as GraphModel : null,
     ]);
     if (config.hand.enabled) {
       if (!handDetectorModel || !handDetectorModel['modelUrl']) log('load model failed:', config.hand.detector?.modelPath || '');

@@ -6,6 +6,7 @@
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './facemeshutil';
+import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
 import type { Config } from '../config';
 import type { Tensor, GraphModel } from '../tfjs/types';
@@ -26,7 +27,7 @@ export const size = () => inputSize;
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face.detector?.modelPath || '')) as unknown as GraphModel;
+    model = await loadModel(join(config.modelBasePath, config.face.detector?.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.face.detector?.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);

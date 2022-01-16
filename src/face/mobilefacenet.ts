@@ -8,6 +8,7 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
@@ -22,7 +23,7 @@ export async function load(config: Config): Promise<GraphModel> {
   const modelUrl = join(config.modelBasePath, config.face['mobilefacenet'].modelPath);
   if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(modelUrl) as unknown as GraphModel;
+    model = await loadModel(modelUrl) as unknown as GraphModel;
     if (!model) log('load model failed:', config.face['mobilefacenet'].modelPath);
     else if (config.debug) log('load model:', modelUrl);
   } else if (config.debug) log('cached model:', modelUrl);

@@ -6,6 +6,7 @@
 
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import type { BodyResult, BodyLandmark, Box } from '../result';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
@@ -179,7 +180,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model || env.initial) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
+    model = await loadModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);

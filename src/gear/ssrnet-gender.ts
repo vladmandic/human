@@ -6,6 +6,7 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
 import type { Gender } from '../result';
 import type { Config } from '../config';
@@ -25,7 +26,7 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 export async function load(config: Config | any) {
   if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face['ssrnet'].modelPathGender)) as unknown as GraphModel;
+    model = await loadModel(join(config.modelBasePath, config.face['ssrnet'].modelPathGender)) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.face['ssrnet'].modelPathGender);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);

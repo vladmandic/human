@@ -6,6 +6,7 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
 import { labels } from './labels';
 import type { ObjectResult, ObjectType, Box } from '../result';
@@ -23,7 +24,7 @@ const scaleBox = 2.5; // increase box size
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model || env.initial) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
+    model = await loadModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(model.modelSignature['inputs']);
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!model || !model['modelUrl']) log('load model failed:', config.object.modelPath);

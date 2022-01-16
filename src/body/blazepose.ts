@@ -3,6 +3,7 @@
  */
 
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
 import { log, join, now } from '../util/util';
 import type { BodyKeypoint, BodyResult, BodyLandmark, Box, Point, BodyAnnotation } from '../result';
@@ -32,7 +33,7 @@ const sigmoid = (x) => (1 - (1 / (1 + Math.exp(x))));
 export async function loadDetect(config: Config): Promise<GraphModel> {
   if (env.initial) models.detector = null;
   if (!models.detector && config.body['detector'] && config.body['detector']['modelPath'] || '') {
-    models.detector = await tf.loadGraphModel(join(config.modelBasePath, config.body['detector']['modelPath'] || '')) as unknown as GraphModel;
+    models.detector = await loadModel(join(config.modelBasePath, config.body['detector']['modelPath'] || '')) as unknown as GraphModel;
     const inputs = Object.values(models.detector.modelSignature['inputs']);
     inputSize.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -46,7 +47,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
 export async function loadPose(config: Config): Promise<GraphModel> {
   if (env.initial) models.landmarks = null;
   if (!models.landmarks) {
-    models.landmarks = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
+    models.landmarks = await loadModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(models.landmarks.modelSignature['inputs']);
     inputSize.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;

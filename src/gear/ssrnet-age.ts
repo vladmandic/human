@@ -6,6 +6,7 @@
 
 import { log, join, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import { env } from '../util/env';
 import { constants } from '../tfjs/constants';
 import type { Config } from '../config';
@@ -21,7 +22,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 export async function load(config: Config) {
   if (env.initial) model = null;
   if (!model) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.face['ssrnet'].modelPathAge)) as unknown as GraphModel;
+    model = await loadModel(join(config.modelBasePath, config.face['ssrnet'].modelPathAge)) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.face['ssrnet'].modelPathAge);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else {

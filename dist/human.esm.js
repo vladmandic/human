@@ -2060,10 +2060,10 @@ var require_seedrandom = __commonJS({
   "src/node_modules/seedrandom/seedrandom.js"(exports, module) {
     (function(global2, pool3, math) {
       var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask2 = width - 1, nodecrypto;
-      function seedrandom5(seed, options3, callback) {
+      function seedrandom5(seed, options4, callback) {
         var key = [];
-        options3 = options3 == true ? { entropy: true } : options3 || {};
-        var shortseed = mixkey(flatten4(options3.entropy ? [seed, tostring(pool3)] : seed == null ? autoseed() : seed, 3), key);
+        options4 = options4 == true ? { entropy: true } : options4 || {};
+        var shortseed = mixkey(flatten4(options4.entropy ? [seed, tostring(pool3)] : seed == null ? autoseed() : seed, 3), key);
         var arc4 = new ARC4(key);
         var prng = function() {
           var n = arc4.g(chunks), d = startdenom, x = 0;
@@ -2087,7 +2087,7 @@ var require_seedrandom = __commonJS({
         };
         prng.double = prng;
         mixkey(tostring(arc4.S), pool3);
-        return (options3.pass || callback || function(prng2, seed2, is_math_call, state) {
+        return (options4.pass || callback || function(prng2, seed2, is_math_call, state) {
           if (state) {
             if (state.S) {
               copy2(state, arc4);
@@ -2101,7 +2101,7 @@ var require_seedrandom = __commonJS({
             return seed2;
           } else
             return prng2;
-        })(prng, shortseed, "global" in options3 ? options3.global : this == math, options3.state);
+        })(prng, shortseed, "global" in options4 ? options4.global : this == math, options4.state);
       }
       function ARC4(key) {
         var t, keylen = key.length, me = this, i = 0, j = me.i = me.j = 0, s = me.S = [];
@@ -5641,7 +5641,7 @@ var KernelBackend = class {
   readSync(dataId) {
     return notYetImplemented("readSync");
   }
-  readToGPU(dataId, options3) {
+  readToGPU(dataId, options4) {
     return notYetImplemented("readToGPU");
   }
   numDataIds() {
@@ -7193,9 +7193,9 @@ var Tensor = class {
     }
     return data;
   }
-  dataToGPU(options3) {
+  dataToGPU(options4) {
     this.throwIfDisposed();
-    return trackerFn().readToGPU(this.dataId, options3);
+    return trackerFn().readToGPU(this.dataId, options4);
   }
   dataSync() {
     this.throwIfDisposed();
@@ -8084,9 +8084,9 @@ var _Engine = class {
     const info = this.state.tensorInfo.get(dataId);
     return info.backend.read(dataId);
   }
-  readToGPU(dataId, options3) {
+  readToGPU(dataId, options4) {
     const info = this.state.tensorInfo.get(dataId);
-    return info.backend.readToGPU(dataId, options3);
+    return info.backend.readToGPU(dataId, options4);
   }
   async time(query) {
     const start = now2();
@@ -23354,24 +23354,24 @@ async function modelFromJSON(modelAndWeightsConfig, customObjects) {
   }
   return model22;
 }
-async function loadLayersModelInternal(pathOrIOHandler, options3) {
-  if (options3 == null) {
-    options3 = {};
+async function loadLayersModelInternal(pathOrIOHandler, options4) {
+  if (options4 == null) {
+    options4 = {};
   }
   if (typeof pathOrIOHandler === "string") {
-    const handlers = io_exports.getLoadHandlers(pathOrIOHandler, options3);
+    const handlers = io_exports.getLoadHandlers(pathOrIOHandler, options4);
     if (handlers.length === 0) {
-      handlers.push(io_exports.browserHTTPRequest(pathOrIOHandler, options3));
+      handlers.push(io_exports.browserHTTPRequest(pathOrIOHandler, options4));
     } else if (handlers.length > 1) {
       throw new ValueError(`Found more than one (${handlers.length}) load handlers for URL '${pathOrIOHandler}'`);
     }
     pathOrIOHandler = handlers[0];
   }
-  return loadLayersModelFromIOHandler(pathOrIOHandler, void 0, options3);
+  return loadLayersModelFromIOHandler(pathOrIOHandler, void 0, options4);
 }
-async function loadLayersModelFromIOHandler(handler, customObjects, options3) {
-  if (options3 == null) {
-    options3 = {};
+async function loadLayersModelFromIOHandler(handler, customObjects, options4) {
+  if (options4 == null) {
+    options4 = {};
   }
   if (handler.load == null) {
     throw new ValueError("Cannot proceed with model loading because the IOHandler provided does not have the `load` method implemented.");
@@ -23381,7 +23381,7 @@ async function loadLayersModelFromIOHandler(handler, customObjects, options3) {
   if (modelTopology["model_config"] != null) {
     modelTopology = modelTopology["model_config"];
   }
-  const strict = options3.strict == null ? true : options3.strict;
+  const strict = options4.strict == null ? true : options4.strict;
   const fastWeightInit = artifacts.weightData != null && artifacts.weightSpecs != null && strict;
   const model22 = deserialize(convertPythonicToTs(modelTopology), customObjects, fastWeightInit);
   const trainingConfig = artifacts.trainingConfig;
@@ -23681,11 +23681,11 @@ function model(args) {
 function sequential(config3) {
   return new Sequential(config3);
 }
-function loadLayersModel(pathOrIOHandler, options3) {
-  if (options3 == null) {
-    options3 = {};
+function loadLayersModel(pathOrIOHandler, options4) {
+  if (options4 == null) {
+    options4 = {};
   }
-  return loadLayersModelInternal(pathOrIOHandler, options3);
+  return loadLayersModelInternal(pathOrIOHandler, options4);
 }
 function input(config3) {
   return Input(config3);
@@ -37916,14 +37916,14 @@ var GraphModel = class {
     this.resourceManager.dispose();
   }
 };
-async function loadGraphModel(modelUrl, options3 = {}) {
+async function loadGraphModel(modelUrl, options4 = {}) {
   if (modelUrl == null) {
     throw new Error("modelUrl in loadGraphModel() cannot be null. Please provide a url or an IOHandler that loads the model");
   }
-  if (options3 == null) {
-    options3 = {};
+  if (options4 == null) {
+    options4 = {};
   }
-  if (options3.fromTFHub) {
+  if (options4.fromTFHub) {
     if (modelUrl.load == null) {
       if (!modelUrl.endsWith("/")) {
         modelUrl = modelUrl + "/";
@@ -37931,7 +37931,7 @@ async function loadGraphModel(modelUrl, options3 = {}) {
       modelUrl = `${modelUrl}${DEFAULT_MODEL_NAME}${TFHUB_SEARCH_PARAM}`;
     }
   }
-  const model22 = new GraphModel(modelUrl, options3);
+  const model22 = new GraphModel(modelUrl, options4);
   await model22.load();
   return model22;
 }
@@ -39545,13 +39545,13 @@ var Utf8IteratorImpl = class extends OneToManyIterator {
   }
 };
 var FileChunkIterator = class extends ByteChunkIterator {
-  constructor(file, options3 = {}) {
+  constructor(file, options4 = {}) {
     super();
     this.file = file;
-    this.options = options3;
+    this.options = options4;
     util_exports.assert(file instanceof Uint8Array || (env().get("IS_BROWSER") ? file instanceof File || file instanceof Blob : false), () => "FileChunkIterator only supports File, Blob and Uint8Array right now.");
-    this.offset = options3.offset || 0;
-    this.chunkSize = options3.chunkSize || 1024 * 1024;
+    this.offset = options4.offset || 0;
+    this.chunkSize = options4.chunkSize || 1024 * 1024;
   }
   summary() {
     return `FileChunks ${this.file}`;
@@ -39590,7 +39590,7 @@ var FileChunkIterator = class extends ByteChunkIterator {
     return { value: await chunk, done: false };
   }
 };
-async function urlChunkIterator(url, options3 = {}, fetchFunc) {
+async function urlChunkIterator(url, options4 = {}, fetchFunc) {
   let urlString;
   let requestInit;
   if (typeof url === "string") {
@@ -39602,7 +39602,7 @@ async function urlChunkIterator(url, options3 = {}, fetchFunc) {
   const response = await (fetchFunc || util_exports.fetch)(urlString, requestInit);
   if (response.ok) {
     const uint8Array = new Uint8Array(await response.arrayBuffer());
-    return new FileChunkIterator(uint8Array, options3);
+    return new FileChunkIterator(uint8Array, options4);
   } else {
     throw new Error(response.statusText);
   }
@@ -39625,10 +39625,10 @@ function isLocalPath(source) {
   return typeof source === "string" && source.substr(0, 7) === "file://";
 }
 var FileDataSource = class extends DataSource {
-  constructor(input2, options3 = {}) {
+  constructor(input2, options4 = {}) {
     super();
     this.input = input2;
-    this.options = options3;
+    this.options = options4;
   }
   async iterator() {
     if (isLocalPath(this.input) && env().get("IS_NODE")) {
@@ -50141,7 +50141,7 @@ var _MathBackendWebGL = class extends KernelBackend {
     }
     return dTypeVals;
   }
-  readToGPU(dataId, options3 = {}) {
+  readToGPU(dataId, options4 = {}) {
     const texData = this.texData.get(dataId);
     const { values, shape, slice: slice6, dtype, isPacked, texture } = texData;
     if (dtype === "complex64") {
@@ -50155,7 +50155,7 @@ var _MathBackendWebGL = class extends KernelBackend {
         program = new UnaryOpProgram(shape, CLONE);
       }
       const res = this.runWebGLProgram(program, [{ dataId, shape, dtype }], dtype);
-      const gpuResouorce = this.readToGPU(res, options3);
+      const gpuResouorce = this.readToGPU(res, options4);
       this.disposeIntermediateTensorInfo(res);
       return gpuResouorce;
     }
@@ -50166,7 +50166,7 @@ var _MathBackendWebGL = class extends KernelBackend {
         throw new Error("There is no data on GPU or CPU.");
       }
     }
-    const tmpTarget = this.decode(dataId, options3.customTexShape);
+    const tmpTarget = this.decode(dataId, options4.customTexShape);
     const tensorRef = engine().makeTensorFromDataId(tmpTarget.dataId, tmpTarget.shape, tmpTarget.dtype);
     const tmpData = this.texData.get(tmpTarget.dataId);
     return { tensorRef, ...tmpData.texture };
@@ -72185,6 +72185,43 @@ var env2 = new Env();
 // package.json
 var version9 = "2.5.8";
 
+// src/tfjs/load.ts
+var options = {
+  appName: "human",
+  autoSave: true,
+  verbose: true
+};
+async function httpHandler(url, init3) {
+  if (options.fetchFunc)
+    return options.fetchFunc(url, init3);
+  else
+    log("error: fetch function is not defined");
+  return null;
+}
+var tfLoadOptions = {
+  onProgress: (...args) => {
+    if (options.onProgress)
+      options.onProgress(...args);
+    else if (options.verbose)
+      log("load model progress:", ...args);
+  },
+  fetchFunc: (url, init3) => {
+    if (options.verbose)
+      log("load model fetch:", url, init3);
+    if (url.toString().toLowerCase().startsWith("http"))
+      return httpHandler(url, init3);
+    return null;
+  }
+};
+async function loadModel2(modelUrl, loadOptions) {
+  if (loadOptions)
+    options = mergeDeep(loadOptions);
+  if (!options.fetchFunc && typeof globalThis.fetch !== "undefined")
+    options.fetchFunc = globalThis.fetch;
+  const model19 = await loadGraphModel(modelUrl, tfLoadOptions);
+  return model19;
+}
+
 // src/gear/gear.ts
 var model2;
 var last2 = [];
@@ -72197,7 +72234,7 @@ async function load(config3) {
   if (env2.initial)
     model2 = null;
   if (!model2) {
-    model2 = await loadGraphModel(join(config3.modelBasePath, config3.face["gear"].modelPath));
+    model2 = await loadModel2(join(config3.modelBasePath, config3.face["gear"].modelPath));
     if (!model2 || !model2["modelUrl"])
       log("load model failed:", config3.face["gear"].modelPath);
     else if (config3.debug)
@@ -72278,7 +72315,7 @@ async function load2(config3) {
   if (env2.initial)
     model3 = null;
   if (!model3) {
-    model3 = await loadGraphModel(join(config3.modelBasePath, config3.face["ssrnet"].modelPathAge));
+    model3 = await loadModel2(join(config3.modelBasePath, config3.face["ssrnet"].modelPathAge));
     if (!model3 || !model3["modelUrl"])
       log("load model failed:", config3.face["ssrnet"].modelPathAge);
     else if (config3.debug)
@@ -72332,7 +72369,7 @@ async function load3(config3) {
   if (env2.initial)
     model4 = null;
   if (!model4) {
-    model4 = await loadGraphModel(join(config3.modelBasePath, config3.face["ssrnet"].modelPathGender));
+    model4 = await loadModel2(join(config3.modelBasePath, config3.face["ssrnet"].modelPathGender));
     if (!model4 || !model4["modelUrl"])
       log("load model failed:", config3.face["ssrnet"].modelPathGender);
     else if (config3.debug)
@@ -72391,7 +72428,7 @@ async function load4(config3) {
   if (env2.initial)
     model5 = null;
   if (!model5) {
-    model5 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.antispoof) == null ? void 0 : _a.modelPath) || ""));
+    model5 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.antispoof) == null ? void 0 : _a.modelPath) || ""));
     if (!model5 || !model5["modelUrl"])
       log("load model failed:", (_b = config3.face.antispoof) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -75883,7 +75920,7 @@ async function load5(config3) {
   if (env2.initial)
     model6 = null;
   if (!model6) {
-    model6 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""));
+    model6 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""));
     if (!model6 || !model6["modelUrl"])
       log("load model failed:", (_b = config3.face.detector) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -76117,7 +76154,7 @@ async function loadDetect(config3) {
   if (env3.initial)
     models.detector = null;
   if (!models.detector && config3.body["detector"] && config3.body["detector"]["modelPath"] || "") {
-    models.detector = await loadGraphModel(join(config3.modelBasePath, config3.body["detector"]["modelPath"] || ""));
+    models.detector = await loadModel2(join(config3.modelBasePath, config3.body["detector"]["modelPath"] || ""));
     const inputs = Object.values(models.detector.modelSignature["inputs"]);
     inputSize3.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize3.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -76134,7 +76171,7 @@ async function loadPose(config3) {
   if (env3.initial)
     models.landmarks = null;
   if (!models.landmarks) {
-    models.landmarks = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    models.landmarks = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
     const inputs = Object.values(models.landmarks.modelSignature["inputs"]);
     inputSize3.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize3.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -76366,7 +76403,7 @@ async function load6(config3) {
   if (env2.initial)
     model7 = null;
   if (!model7) {
-    model7 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
+    model7 = await loadModel2(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model7.modelSignature["inputs"]);
     inputSize4 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!model7 || !model7["modelUrl"])
@@ -76480,7 +76517,7 @@ async function load7(config3) {
   if (env2.initial)
     model8 = null;
   if (!model8) {
-    model8 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    model8 = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model8 || !model8["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
@@ -76597,7 +76634,7 @@ async function load8(config3) {
   if (env2.initial)
     model9 = null;
   if (!model9) {
-    model9 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.emotion) == null ? void 0 : _a.modelPath) || ""));
+    model9 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.emotion) == null ? void 0 : _a.modelPath) || ""));
     if (!model9 || !model9["modelUrl"])
       log("load model failed:", (_b = config3.face.emotion) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -76655,7 +76692,7 @@ async function load9(config3) {
   if (env2.initial)
     model10 = null;
   if (!model10) {
-    model10 = await loadGraphModel(modelUrl);
+    model10 = await loadModel2(modelUrl);
     if (!model10)
       log("load model failed:", config3.face["mobilefacenet"].modelPath);
     else if (config3.debug)
@@ -76712,7 +76749,7 @@ async function load10(config3) {
   if (env2.initial)
     model11 = null;
   if (!model11) {
-    model11 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.iris) == null ? void 0 : _a.modelPath) || ""));
+    model11 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.iris) == null ? void 0 : _a.modelPath) || ""));
     if (!model11 || !model11["modelUrl"])
       log("load model failed:", (_b = config3.face.iris) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -76917,7 +76954,7 @@ async function load11(config3) {
   if (env2.initial)
     model12 = null;
   if (!model12) {
-    model12 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.mesh) == null ? void 0 : _a.modelPath) || ""));
+    model12 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.mesh) == null ? void 0 : _a.modelPath) || ""));
     if (!model12 || !model12["modelUrl"])
       log("load model failed:", (_b = config3.face.mesh) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -76942,7 +76979,7 @@ async function load12(config3) {
   if (env2.initial)
     model13 = null;
   if (!model13) {
-    model13 = await loadGraphModel(modelUrl);
+    model13 = await loadModel2(modelUrl);
     if (!model13)
       log("load model failed:", ((_b = config3.face.description) == null ? void 0 : _b.modelPath) || "");
     else if (config3.debug)
@@ -80451,7 +80488,7 @@ var fingergesture_default = [ThumbsUp, Victory, Point, MiddleFinger, OpenPalm];
 
 // src/hand/fingerpose.ts
 var minConfidence = 0.7;
-var options = {
+var options2 = {
   HALF_CURL_START_LIMIT: 60,
   NO_CURL_START_LIMIT: 130,
   DISTANCE_VOTE_POWER: 1.1,
@@ -80509,9 +80546,9 @@ function estimateFingerCurl(startPoint, midPoint, endPoint) {
   let angleOfCurve = Math.acos(cos_in);
   angleOfCurve = 57.2958 * angleOfCurve % 180;
   let fingerCurl;
-  if (angleOfCurve > options.NO_CURL_START_LIMIT)
+  if (angleOfCurve > options2.NO_CURL_START_LIMIT)
     fingerCurl = FingerCurl.none;
-  else if (angleOfCurve > options.HALF_CURL_START_LIMIT)
+  else if (angleOfCurve > options2.HALF_CURL_START_LIMIT)
     fingerCurl = FingerCurl.half;
   else
     fingerCurl = FingerCurl.full;
@@ -80588,11 +80625,11 @@ function calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) 
   let voteHorizontal = 0;
   const start_end_x_y_dist_ratio = max_dist_y / (max_dist_x + 1e-5);
   if (start_end_x_y_dist_ratio > 1.5)
-    voteVertical += options.DISTANCE_VOTE_POWER;
+    voteVertical += options2.DISTANCE_VOTE_POWER;
   else if (start_end_x_y_dist_ratio > 0.66)
-    voteDiagonal += options.DISTANCE_VOTE_POWER;
+    voteDiagonal += options2.DISTANCE_VOTE_POWER;
   else
-    voteHorizontal += options.DISTANCE_VOTE_POWER;
+    voteHorizontal += options2.DISTANCE_VOTE_POWER;
   const start_mid_dist = Math.sqrt(start_mid_x_dist * start_mid_x_dist + start_mid_y_dist * start_mid_y_dist);
   const start_end_dist = Math.sqrt(start_end_x_dist * start_end_x_dist + start_end_y_dist * start_end_y_dist);
   const mid_end_dist = Math.sqrt(mid_end_x_dist * mid_end_x_dist + mid_end_y_dist * mid_end_y_dist);
@@ -80611,12 +80648,12 @@ function calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) 
   const calcStartPoint = [calc_start_point_x, calc_start_point_y];
   const calcEndPoint = [calc_end_point_x, calc_end_point_y];
   const totalAngle = getSlopes(calcStartPoint, calcEndPoint);
-  const votes = angleOrientationAt(totalAngle, options.TOTAL_ANGLE_VOTE_POWER);
+  const votes = angleOrientationAt(totalAngle, options2.TOTAL_ANGLE_VOTE_POWER);
   voteVertical += votes[0];
   voteDiagonal += votes[1];
   voteHorizontal += votes[2];
   for (const fingerSlope of fingerSlopes) {
-    const fingerVotes = angleOrientationAt(fingerSlope, options.SINGLE_ANGLE_VOTE_POWER);
+    const fingerVotes = angleOrientationAt(fingerSlope, options2.SINGLE_ANGLE_VOTE_POWER);
     voteVertical += fingerVotes[0];
     voteDiagonal += fingerVotes[1];
     voteHorizontal += fingerVotes[2];
@@ -80765,23 +80802,23 @@ async function predict12(input2, config3) {
   return hands;
 }
 async function load13(config3) {
-  var _a, _b, _c, _d, _e, _f;
+  var _a, _b, _c, _d;
   if (env2.initial) {
     handDetectorModel = null;
     handPoseModel = null;
   }
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
-      config3.hand.enabled ? loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""), { fromTFHub: (((_b = config3.hand.detector) == null ? void 0 : _b.modelPath) || "").includes("tfhub.dev") }) : null,
-      config3.hand.landmarks ? loadGraphModel(join(config3.modelBasePath, ((_c = config3.hand.skeleton) == null ? void 0 : _c.modelPath) || ""), { fromTFHub: (((_d = config3.hand.skeleton) == null ? void 0 : _d.modelPath) || "").includes("tfhub.dev") }) : null
+      config3.hand.enabled ? loadModel2(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || "")) : null,
+      config3.hand.landmarks ? loadModel2(join(config3.modelBasePath, ((_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath) || "")) : null
     ]);
     if (config3.hand.enabled) {
       if (!handDetectorModel || !handDetectorModel["modelUrl"])
-        log("load model failed:", ((_e = config3.hand.detector) == null ? void 0 : _e.modelPath) || "");
+        log("load model failed:", ((_c = config3.hand.detector) == null ? void 0 : _c.modelPath) || "");
       else if (config3.debug)
         log("load model:", handDetectorModel["modelUrl"]);
       if (!handPoseModel || !handPoseModel["modelUrl"])
-        log("load model failed:", ((_f = config3.hand.skeleton) == null ? void 0 : _f.modelPath) || "");
+        log("load model failed:", ((_d = config3.hand.skeleton) == null ? void 0 : _d.modelPath) || "");
       else if (config3.debug)
         log("load model:", handPoseModel["modelUrl"]);
     }
@@ -80827,7 +80864,7 @@ async function loadDetect2(config3) {
     models2[0] = null;
   if (!models2[0]) {
     fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
-    models2[0] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
+    models2[0] = await loadModel2(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
     const inputs = Object.values(models2[0].modelSignature["inputs"]);
     inputSize7[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize7[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -80844,7 +80881,7 @@ async function loadSkeleton(config3) {
   if (env2.initial)
     models2[1] = null;
   if (!models2[1]) {
-    models2[1] = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
+    models2[1] = await loadModel2(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
     const inputs = Object.values(models2[1].modelSignature["inputs"]);
     inputSize7[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize7[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -80992,7 +81029,7 @@ async function load14(config3) {
   if (env2.initial)
     model14 = null;
   if (!model14) {
-    model14 = await loadGraphModel(join(config3.modelBasePath, ((_a = config3.face.liveness) == null ? void 0 : _a.modelPath) || ""));
+    model14 = await loadModel(join(config3.modelBasePath, ((_a = config3.face.liveness) == null ? void 0 : _a.modelPath) || ""));
     if (!model14 || !model14["modelUrl"])
       log("load model failed:", (_b = config3.face.liveness) == null ? void 0 : _b.modelPath);
     else if (config3.debug)
@@ -81193,7 +81230,7 @@ async function load15(config3) {
     model15 = null;
   if (!model15) {
     fakeOps(["size"], config3);
-    model15 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    model15 = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model15 || !model15["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
@@ -81321,7 +81358,7 @@ var inputSize9 = 0;
 var scaleBox = 2.5;
 async function load16(config3) {
   if (!model16 || env2.initial) {
-    model16 = await loadGraphModel(join(config3.modelBasePath, config3.object.modelPath || ""));
+    model16 = await loadModel2(join(config3.modelBasePath, config3.object.modelPath || ""));
     const inputs = Object.values(model16.modelSignature["inputs"]);
     inputSize9 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
     if (!model16 || !model16["modelUrl"])
@@ -81751,7 +81788,7 @@ async function predict17(input2, config3) {
 }
 async function load17(config3) {
   if (!model17 || env2.initial) {
-    model17 = await loadGraphModel(join(config3.modelBasePath, config3.body.modelPath || ""));
+    model17 = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
     if (!model17 || !model17["modelUrl"])
       log("load model failed:", config3.body.modelPath);
     else if (config3.debug)
@@ -81766,7 +81803,7 @@ var model18;
 var busy = false;
 async function load18(config3) {
   if (!model18 || env2.initial) {
-    model18 = await loadGraphModel(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
+    model18 = await loadModel2(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
     if (!model18 || !model18["modelUrl"])
       log("load model failed:", config3.segmentation.modelPath);
     else if (config3.debug)
@@ -82196,7 +82233,7 @@ function fakeOps(kernelNames, config3) {
 }
 
 // src/util/draw.ts
-var options2 = {
+var options3 = {
   color: "rgba(173, 216, 230, 0.6)",
   labelColor: "rgba(173, 216, 230, 1)",
   shadowColor: "black",
@@ -82321,7 +82358,7 @@ function arrow(ctx, from, to, radius = 5) {
   ctx.fill();
 }
 async function gesture(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
+  const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
     return;
   if (localOptions.drawGestures) {
@@ -82351,7 +82388,7 @@ async function gesture(inCanvas2, result, drawOptions) {
 }
 async function face(inCanvas2, result, drawOptions) {
   var _a, _b, _c, _d, _e;
-  const localOptions = mergeDeep(options2, drawOptions);
+  const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
@@ -82484,7 +82521,7 @@ async function face(inCanvas2, result, drawOptions) {
 }
 async function body(inCanvas2, result, drawOptions) {
   var _a;
-  const localOptions = mergeDeep(options2, drawOptions);
+  const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
@@ -82533,7 +82570,7 @@ async function body(inCanvas2, result, drawOptions) {
   }
 }
 async function hand(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
+  const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
@@ -82603,7 +82640,7 @@ async function hand(inCanvas2, result, drawOptions) {
   }
 }
 async function object(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
+  const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
@@ -82630,7 +82667,7 @@ async function object(inCanvas2, result, drawOptions) {
   }
 }
 async function person(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options2, drawOptions);
+  const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
     return;
   const ctx = getCanvasContext(inCanvas2);
@@ -82668,7 +82705,7 @@ async function all5(inCanvas2, result, drawOptions) {
   if (!result || !result.performance || !result || !inCanvas2)
     return null;
   const timeStamp = now();
-  const localOptions = mergeDeep(options2, drawOptions);
+  const localOptions = mergeDeep(options3, drawOptions);
   const promise = Promise.all([
     face(inCanvas2, result.face, localOptions),
     body(inCanvas2, result.body, localOptions),
@@ -83249,13 +83286,13 @@ function calc2(newResult, config3) {
 }
 
 // src/face/match.ts
-function distance(descriptor1, descriptor2, options3 = { order: 2, multiplier: 25 }) {
+function distance(descriptor1, descriptor2, options4 = { order: 2, multiplier: 25 }) {
   let sum7 = 0;
   for (let i = 0; i < descriptor1.length; i++) {
-    const diff = !options3.order || options3.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
-    sum7 += !options3.order || options3.order === 2 ? diff * diff : diff ** options3.order;
+    const diff = !options4.order || options4.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
+    sum7 += !options4.order || options4.order === 2 ? diff * diff : diff ** options4.order;
   }
-  return (options3.multiplier || 20) * sum7;
+  return (options4.multiplier || 20) * sum7;
 }
 var normalizeDistance = (dist, order, min7, max7) => {
   if (dist === 0)
@@ -83265,26 +83302,26 @@ var normalizeDistance = (dist, order, min7, max7) => {
   const clamp3 = Math.max(Math.min(norm2, 1), 0);
   return clamp3;
 };
-function similarity(descriptor1, descriptor2, options3 = { order: 2, multiplier: 25, min: 0.2, max: 0.8 }) {
-  const dist = distance(descriptor1, descriptor2, options3);
-  return normalizeDistance(dist, options3.order || 2, options3.min || 0, options3.max || 1);
+function similarity(descriptor1, descriptor2, options4 = { order: 2, multiplier: 25, min: 0.2, max: 0.8 }) {
+  const dist = distance(descriptor1, descriptor2, options4);
+  return normalizeDistance(dist, options4.order || 2, options4.min || 0, options4.max || 1);
 }
-function match2(descriptor, descriptors, options3 = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
+function match2(descriptor, descriptors, options4 = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) {
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
   let lowestDistance = Number.MAX_SAFE_INTEGER;
   let index2 = -1;
   for (let i = 0; i < descriptors.length; i++) {
-    const res = distance(descriptor, descriptors[i], options3);
+    const res = distance(descriptor, descriptors[i], options4);
     if (res < lowestDistance) {
       lowestDistance = res;
       index2 = i;
     }
-    if (lowestDistance < (options3.threshold || 0))
+    if (lowestDistance < (options4.threshold || 0))
       break;
   }
-  const normalizedSimilarity = normalizeDistance(lowestDistance, options3.order || 2, options3.min || 0, options3.max || 1);
+  const normalizedSimilarity = normalizeDistance(lowestDistance, options4.order || 2, options4.min || 0, options4.max || 1);
   return { index: index2, distance: lowestDistance, similarity: normalizedSimilarity };
 }
 
@@ -84249,15 +84286,15 @@ var Human = class {
     this.events = typeof EventTarget !== "undefined" ? new EventTarget() : void 0;
     this.models = new Models();
     this.draw = {
-      options: options2,
+      options: options3,
       canvas: (input2, output) => canvas2(input2, output),
-      face: (output, result, options3) => face(output, result, options3),
-      body: (output, result, options3) => body(output, result, options3),
-      hand: (output, result, options3) => hand(output, result, options3),
-      gesture: (output, result, options3) => gesture(output, result, options3),
-      object: (output, result, options3) => object(output, result, options3),
-      person: (output, result, options3) => person(output, result, options3),
-      all: (output, result, options3) => all5(output, result, options3)
+      face: (output, result, options4) => face(output, result, options4),
+      body: (output, result, options4) => body(output, result, options4),
+      hand: (output, result, options4) => hand(output, result, options4),
+      gesture: (output, result, options4) => gesture(output, result, options4),
+      object: (output, result, options4) => object(output, result, options4),
+      person: (output, result, options4) => person(output, result, options4),
+      all: (output, result, options4) => all5(output, result, options4)
     };
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [], error: null };
     this.process = { tensor: null, canvas: null };

@@ -8,6 +8,7 @@
 
 import { log, join } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import * as image from '../image/image';
 import { constants } from '../tfjs/constants';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -20,7 +21,7 @@ let busy = false;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model || env.initial) {
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.segmentation.modelPath || '')) as unknown as GraphModel;
+    model = await loadModel(join(config.modelBasePath, config.segmentation.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.segmentation.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);

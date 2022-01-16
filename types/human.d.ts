@@ -778,7 +778,7 @@ declare interface GPUData {
  *
  * A `tf.GraphModel` can only be created by loading from a model converted from
  * a [TensorFlow SavedModel](https://www.tensorflow.org/guide/saved_model) using
- * the command line converter tool and loaded via `tf.loadGraphModel`.
+ * the command line converter tool and loaded via `loadModel`.
  *
  * @doc {heading: 'Models', subheading: 'Classes'}
  */
@@ -847,13 +847,13 @@ export declare class GraphModel implements InferenceModel {
      * ```js
      * const modelUrl =
      *    'https://storage.googleapis.com/tfjs-models/savedmodel/mobilenet_v2_1.0_224/model.json';
-     * const model = await tf.loadGraphModel(modelUrl);
+     * const model = await loadModel(modelUrl);
      * const zeros = tf.zeros([1, 224, 224, 3]);
      * model.predict(zeros).print();
      *
      * const saveResults = await model.save('localstorage://my-model-1');
      *
-     * const loadedModel = await tf.loadGraphModel('localstorage://my-model-1');
+     * const loadedModel = await loadModel('localstorage://my-model-1');
      * console.log('Prediction from loaded model:');
      * model.predict(zeros).print();
      * ```

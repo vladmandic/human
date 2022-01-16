@@ -9,6 +9,7 @@ import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './movenetcoords';
 import * as fix from './movenetfix';
+import { loadModel } from '../tfjs/load';
 import type { BodyKeypoint, BodyResult, BodyLandmark, BodyAnnotation, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
@@ -34,7 +35,7 @@ export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
     fakeOps(['size'], config);
-    model = await tf.loadGraphModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
+    model = await loadModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
     if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
     else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);

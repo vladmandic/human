@@ -9,6 +9,7 @@
 import { log, join, now } from '../util/util';
 import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import type { HandResult, HandType, Box, Point } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
@@ -74,7 +75,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
     // handtrack model has some kernel ops defined in model but those are never referenced and non-existent in tfjs
     // ideally need to prune the model itself
     fakeOps(['tensorlistreserve', 'enter', 'tensorlistfromtensor', 'merge', 'loopcond', 'switch', 'exit', 'tensorliststack', 'nextiteration', 'tensorlistsetitem', 'tensorlistgetitem', 'reciprocal', 'shape', 'split', 'where'], config);
-    models[0] = await tf.loadGraphModel(join(config.modelBasePath, config.hand.detector?.modelPath || '')) as unknown as GraphModel;
+    models[0] = await loadModel(join(config.modelBasePath, config.hand.detector?.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(models[0].modelSignature['inputs']);
     inputSize[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -87,7 +88,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
 export async function loadSkeleton(config: Config): Promise<GraphModel> {
   if (env.initial) models[1] = null;
   if (!models[1]) {
-    models[1] = await tf.loadGraphModel(join(config.modelBasePath, config.hand.skeleton?.modelPath || '')) as unknown as GraphModel;
+    models[1] = await loadModel(join(config.modelBasePath, config.hand.skeleton?.modelPath || '')) as unknown as GraphModel;
     const inputs = Object.values(models[1].modelSignature['inputs']);
     inputSize[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;

@@ -4,7 +4,7 @@
  * Based on: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
@@ -25,11 +25,8 @@ const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config | any) {
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(join(config.modelBasePath, config.face['ssrnet'].modelPathGender)) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face['ssrnet'].modelPathGender);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) model = await loadModel(config.face['ssrnet'].modelPathGender);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

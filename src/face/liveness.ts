@@ -2,7 +2,8 @@
  * Anti-spoofing model implementation
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
+import { loadModel } from '../tfjs/load';
 import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import * as tf from '../../dist/tfjs.esm.js';
@@ -16,11 +17,8 @@ let lastTime = 0;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(join(config.modelBasePath, config.face.liveness?.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face.liveness?.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) model = await loadModel(config.face.liveness?.modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

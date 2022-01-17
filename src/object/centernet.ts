@@ -4,7 +4,7 @@
  * Based on: [**NanoDet**](https://github.com/RangiLyu/nanodet)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { labels } from './labels';
@@ -23,11 +23,9 @@ export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
     // fakeOps(['floormod'], config);
-    model = await loadModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
+    model = await loadModel(config.object.modelPath);
     const inputs = Object.values(model.modelSignature['inputs']);
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!model || !model['modelUrl']) log('load model failed:', config.object.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }

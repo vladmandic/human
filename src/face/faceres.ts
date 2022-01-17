@@ -7,7 +7,7 @@
  * Based on: [**HSE-FaceRes**](https://github.com/HSE-asavchenko/HSE_FaceRec_tf)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import { env } from '../util/env';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
@@ -31,13 +31,9 @@ let lastCount = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config: Config): Promise<GraphModel> {
-  const modelUrl = join(config.modelBasePath, config.face.description?.modelPath || '');
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(modelUrl) as unknown as GraphModel;
-    if (!model) log('load model failed:', config.face.description?.modelPath || '');
-    else if (config.debug) log('load model:', modelUrl);
-  } else if (config.debug) log('cached model:', modelUrl);
+  if (!model) model = await loadModel(config.face.description?.modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

@@ -90,7 +90,7 @@ async function main() {
   status("loading...");
   await human.load();
   log("backend:", human.tf.getBackend(), "| available:", human.env.backends);
-  log("loaded models:" + Object.values(human.models).filter((model) => model !== null).length);
+  log("loaded models:", Object.values(human.models).filter((model) => model !== null).length);
   status("initializing...");
   await human.warmup();
   await webCam();

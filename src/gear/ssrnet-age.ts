@@ -4,7 +4,7 @@
  * Based on: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { env } from '../util/env';
@@ -21,13 +21,8 @@ let skipped = Number.MAX_SAFE_INTEGER;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config) {
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(join(config.modelBasePath, config.face['ssrnet'].modelPathAge)) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face['ssrnet'].modelPathAge);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else {
-    if (config.debug) log('cached model:', model['modelUrl']);
-  }
+  if (!model) model = await loadModel(config.face['ssrnet'].modelPathAge);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

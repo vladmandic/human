@@ -4,7 +4,7 @@
  * Based on: [**EfficientPose**](https://github.com/daniegr/EfficientPose)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import * as coords from './efficientposecoords';
@@ -26,11 +26,8 @@ let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) model = await loadModel(config.body.modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

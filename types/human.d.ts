@@ -190,6 +190,10 @@ export declare interface Config {
      * default: `../models/` for browsers and `file://models/` for nodejs
      */
     modelBasePath: string;
+    /** Cache models in IndexDB on first sucessfull load
+     * default: true if indexdb is available (browsers), false if its not (nodejs)
+     */
+    cacheModels: boolean;
     /** Cache sensitivity
      * - values 0..1 where 0.01 means reset cache if input changed more than 1%
      * - set to 0 to disable caching
@@ -778,7 +782,7 @@ declare interface GPUData {
  *
  * A `tf.GraphModel` can only be created by loading from a model converted from
  * a [TensorFlow SavedModel](https://www.tensorflow.org/guide/saved_model) using
- * the command line converter tool and loaded via `loadModel`.
+ * the command line converter tool and loaded via `tf.loadGraphModel`.
  *
  * @doc {heading: 'Models', subheading: 'Classes'}
  */
@@ -847,13 +851,13 @@ export declare class GraphModel implements InferenceModel {
      * ```js
      * const modelUrl =
      *    'https://storage.googleapis.com/tfjs-models/savedmodel/mobilenet_v2_1.0_224/model.json';
-     * const model = await loadModel(modelUrl);
+     * const model = await tf.loadGraphModel(modelUrl);
      * const zeros = tf.zeros([1, 224, 224, 3]);
      * model.predict(zeros).print();
      *
      * const saveResults = await model.save('localstorage://my-model-1');
      *
-     * const loadedModel = await loadModel('localstorage://my-model-1');
+     * const loadedModel = await tf.loadGraphModel('localstorage://my-model-1');
      * console.log('Prediction from loaded model:');
      * model.predict(zeros).print();
      * ```

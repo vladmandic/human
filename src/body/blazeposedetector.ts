@@ -85,27 +85,3 @@ export async function decode(boxesTensor: Tensor, logitsTensor: Tensor, config: 
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return detected;
 }
-
-/*
-const humanConfig: Partial<Config> = {
-  warmup: 'full' as const,
-  modelBasePath: '../../models',
-  cacheSensitivity: 0,
-  filter: { enabled: false },
-  face: { enabled: false },
-  hand: { enabled: false },
-  object: { enabled: false },
-  gesture: { enabled: false },
-  body: {
-    enabled: true,
-    minConfidence: 0.1,
-    modelPath: 'blazepose/blazepose-full.json',
-    detector: {
-      enabled: false,
-      modelPath: 'blazepose/blazepose-detector.json',
-      minConfidence: 0.1,
-      iouThreshold: 0.1,
-    },
-  },
-};
-*/

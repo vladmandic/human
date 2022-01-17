@@ -153,6 +153,7 @@ function mergeDeep(...objects) {
 var config = {
   backend: "",
   modelBasePath: "",
+  cacheModels: true,
   wasmPath: "",
   debug: true,
   async: true,
@@ -1373,57 +1374,68 @@ var Env = class {
 };
 var env = new Env();
 
+// src/tfjs/load.ts
+var tf4 = __toESM(require_tfjs_esm());
+var options = {
+  cacheModels: false,
+  verbose: true,
+  debug: false,
+  modelBasePath: ""
+};
+async function httpHandler(url, init2) {
+  if (options.debug)
+    log("load model fetch:", url, init2);
+  if (typeof fetch === "undefined") {
+    log("error loading model: fetch function is not defined:");
+    return null;
+  }
+  return fetch(url, init2);
+}
+function setModelLoadOptions(config3) {
+  options.cacheModels = config3.cacheModels;
+  options.verbose = config3.debug;
+  options.modelBasePath = config3.modelBasePath;
+}
+async function loadModel(modelPath) {
+  const modelUrl = join(options.modelBasePath, modelPath || "");
+  const modelPathSegments = modelUrl.split("/");
+  const cachedModelName = "indexeddb://" + modelPathSegments[modelPathSegments.length - 1].replace(".json", "");
+  const cachedModels = await tf4.io.listModels();
+  const modelCached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName);
+  const model18 = new tf4.GraphModel(modelCached ? cachedModelName : modelUrl, { fetchFunc: (url, init2) => httpHandler(url, init2) });
+  try {
+    model18.findIOHandler();
+    if (options.debug)
+      log("model load handler:", model18.handler);
+    const artifacts = await model18.handler.load();
+    model18.loadSync(artifacts);
+    if (options.verbose)
+      log("load model:", model18["modelUrl"]);
+  } catch (err) {
+    log("error loading model:", modelUrl, err);
+  }
+  if (options.cacheModels && !modelCached) {
+    try {
+      const saveResult = await model18.save(cachedModelName);
+      log("model saved:", cachedModelName, saveResult);
+    } catch (err) {
+      log("error saving model:", modelUrl, err);
+    }
+  }
+  return model18;
+}
+
 // src/human.ts
 var tf36 = __toESM(require_tfjs_esm());
 
 // package.json
-var version2 = "2.5.8";
+var version2 = "2.6.0";
 
 // src/tfjs/humangl.ts
 var tf31 = __toESM(require_tfjs_esm());
 
 // src/gear/gear.ts
 var tf5 = __toESM(require_tfjs_esm());
-
-// src/tfjs/load.ts
-var tf4 = __toESM(require_tfjs_esm());
-var options = {
-  appName: "human",
-  autoSave: true,
-  verbose: true
-};
-async function httpHandler(url, init2) {
-  if (options.fetchFunc)
-    return options.fetchFunc(url, init2);
-  else
-    log("error: fetch function is not defined");
-  return null;
-}
-var tfLoadOptions = {
-  onProgress: (...args) => {
-    if (options.onProgress)
-      options.onProgress(...args);
-    else if (options.verbose)
-      log("load model progress:", ...args);
-  },
-  fetchFunc: (url, init2) => {
-    if (options.verbose)
-      log("load model fetch:", url, init2);
-    if (url.toString().toLowerCase().startsWith("http"))
-      return httpHandler(url, init2);
-    return null;
-  }
-};
-async function loadModel2(modelUrl, loadOptions) {
-  if (loadOptions)
-    options = mergeDeep(loadOptions);
-  if (!options.fetchFunc && typeof globalThis.fetch !== "undefined")
-    options.fetchFunc = globalThis.fetch;
-  const model18 = await tf4.loadGraphModel(modelUrl, tfLoadOptions);
-  return model18;
-}
-
-// src/gear/gear.ts
 var model;
 var last2 = [];
 var raceNames = ["white", "black", "asian", "indian", "other"];
@@ -1434,13 +1446,9 @@ var skipped = Number.MAX_SAFE_INTEGER;
 async function load(config3) {
   if (env.initial)
     model = null;
-  if (!model) {
-    model = await loadModel2(join(config3.modelBasePath, config3.face["gear"].modelPath));
-    if (!model || !model["modelUrl"])
-      log("load model failed:", config3.face["gear"].modelPath);
-    else if (config3.debug)
-      log("load model:", model["modelUrl"]);
-  } else if (config3.debug)
+  if (!model)
+    model = await loadModel(config3.face["gear"]);
+  else if (config3.debug)
     log("cached model:", model["modelUrl"]);
   return model;
 }
@@ -1519,16 +1527,10 @@ var skipped2 = Number.MAX_SAFE_INTEGER;
 async function load2(config3) {
   if (env.initial)
     model2 = null;
-  if (!model2) {
-    model2 = await loadModel2(join(config3.modelBasePath, config3.face["ssrnet"].modelPathAge));
-    if (!model2 || !model2["modelUrl"])
-      log("load model failed:", config3.face["ssrnet"].modelPathAge);
-    else if (config3.debug)
-      log("load model:", model2["modelUrl"]);
-  } else {
-    if (config3.debug)
-      log("cached model:", model2["modelUrl"]);
-  }
+  if (!model2)
+    model2 = await loadModel(config3.face["ssrnet"].modelPathAge);
+  else if (config3.debug)
+    log("cached model:", model2["modelUrl"]);
   return model2;
 }
 async function predict2(image24, config3, idx, count2) {
@@ -1574,13 +1576,9 @@ var rgb = [0.2989, 0.587, 0.114];
 async function load3(config3) {
   if (env.initial)
     model3 = null;
-  if (!model3) {
-    model3 = await loadModel2(join(config3.modelBasePath, config3.face["ssrnet"].modelPathGender));
-    if (!model3 || !model3["modelUrl"])
-      log("load model failed:", config3.face["ssrnet"].modelPathGender);
-    else if (config3.debug)
-      log("load model:", model3["modelUrl"]);
-  } else if (config3.debug)
+  if (!model3)
+    model3 = await loadModel(config3.face["ssrnet"].modelPathGender);
+  else if (config3.debug)
     log("cached model:", model3["modelUrl"]);
   return model3;
 }
@@ -1631,16 +1629,12 @@ var skipped4 = Number.MAX_SAFE_INTEGER;
 var lastCount4 = 0;
 var lastTime4 = 0;
 async function load4(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     model4 = null;
-  if (!model4) {
-    model4 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.antispoof) == null ? void 0 : _a.modelPath) || ""));
-    if (!model4 || !model4["modelUrl"])
-      log("load model failed:", (_b = config3.face.antispoof) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", model4["modelUrl"]);
-  } else if (config3.debug)
+  if (!model4)
+    model4 = await loadModel((_a = config3.face.antispoof) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
     log("cached model:", model4["modelUrl"]);
   return model4;
 }
@@ -5129,16 +5123,12 @@ var inputSize = 0;
 var inputSizeT = null;
 var size = () => inputSize;
 async function load5(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     model5 = null;
-  if (!model5) {
-    model5 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.detector) == null ? void 0 : _a.modelPath) || ""));
-    if (!model5 || !model5["modelUrl"])
-      log("load model failed:", (_b = config3.face.detector) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", model5["modelUrl"]);
-  } else if (config3.debug)
+  if (!model5)
+    model5 = await loadModel((_a = config3.face.detector) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
     log("cached model:", model5["modelUrl"]);
   inputSize = model5.inputs[0].shape ? model5.inputs[0].shape[2] : 0;
   inputSizeT = tf11.scalar(inputSize, "int32");
@@ -5371,14 +5361,10 @@ async function loadDetect(config3) {
   if (env3.initial)
     models.detector = null;
   if (!models.detector && config3.body["detector"] && config3.body["detector"]["modelPath"] || "") {
-    models.detector = await loadModel2(join(config3.modelBasePath, config3.body["detector"]["modelPath"] || ""));
+    models.detector = await loadModel(config3.body["detector"]["modelPath"]);
     const inputs = Object.values(models.detector.modelSignature["inputs"]);
     inputSize3.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize3.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models.detector || !models.detector["modelUrl"])
-      log("load model failed:", config3.body["detector"]["modelPath"]);
-    else if (config3.debug)
-      log("load model:", models.detector["modelUrl"]);
   } else if (config3.debug && models.detector)
     log("cached model:", models.detector["modelUrl"]);
   await createAnchors();
@@ -5388,14 +5374,10 @@ async function loadPose(config3) {
   if (env3.initial)
     models.landmarks = null;
   if (!models.landmarks) {
-    models.landmarks = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
+    models.landmarks = await loadModel(config3.body.modelPath);
     const inputs = Object.values(models.landmarks.modelSignature["inputs"]);
     inputSize3.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize3.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models.landmarks || !models.landmarks["modelUrl"])
-      log("load model failed:", config3.body.modelPath);
-    else if (config3.debug)
-      log("load model:", models.landmarks["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", models.landmarks["modelUrl"]);
   return models.landmarks;
@@ -5623,13 +5605,9 @@ async function load6(config3) {
   if (env.initial)
     model6 = null;
   if (!model6) {
-    model6 = await loadModel2(join(config3.modelBasePath, config3.object.modelPath || ""));
+    model6 = await loadModel(config3.object.modelPath);
     const inputs = Object.values(model6.modelSignature["inputs"]);
     inputSize4 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!model6 || !model6["modelUrl"])
-      log("load model failed:", config3.object.modelPath);
-    else if (config3.debug)
-      log("load model:", model6["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", model6["modelUrl"]);
   return model6;
@@ -5739,13 +5717,9 @@ var skipped7 = Number.MAX_SAFE_INTEGER;
 async function load7(config3) {
   if (env.initial)
     model7 = null;
-  if (!model7) {
-    model7 = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model7 || !model7["modelUrl"])
-      log("load model failed:", config3.body.modelPath);
-    else if (config3.debug)
-      log("load model:", model7["modelUrl"]);
-  } else if (config3.debug)
+  if (!model7)
+    model7 = await loadModel(config3.body.modelPath);
+  else if (config3.debug)
     log("cached model:", model7["modelUrl"]);
   return model7;
 }
@@ -5854,16 +5828,12 @@ var lastCount5 = 0;
 var lastTime8 = 0;
 var skipped8 = Number.MAX_SAFE_INTEGER;
 async function load8(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     model8 = null;
-  if (!model8) {
-    model8 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.emotion) == null ? void 0 : _a.modelPath) || ""));
-    if (!model8 || !model8["modelUrl"])
-      log("load model failed:", (_b = config3.face.emotion) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", model8["modelUrl"]);
-  } else if (config3.debug)
+  if (!model8)
+    model8 = await loadModel((_a = config3.face.emotion) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
     log("cached model:", model8["modelUrl"]);
   return model8;
 }
@@ -5913,17 +5883,12 @@ var lastCount6 = 0;
 var lastTime9 = 0;
 var skipped9 = Number.MAX_SAFE_INTEGER;
 async function load9(config3) {
-  const modelUrl = join(config3.modelBasePath, config3.face["mobilefacenet"].modelPath);
   if (env.initial)
     model9 = null;
-  if (!model9) {
-    model9 = await loadModel2(modelUrl);
-    if (!model9)
-      log("load model failed:", config3.face["mobilefacenet"].modelPath);
-    else if (config3.debug)
-      log("load model:", modelUrl);
-  } else if (config3.debug)
-    log("cached model:", modelUrl);
+  if (!model9)
+    model9 = await loadModel(config3.face["mobilefacenet"].modelPath);
+  else if (config3.debug)
+    log("cached model:", model9["modelUrl"]);
   return model9;
 }
 async function predict9(input, config3, idx, count2) {
@@ -5974,16 +5939,12 @@ var irisLandmarks = {
   numCoordinates: 76
 };
 async function load10(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     model10 = null;
-  if (!model10) {
-    model10 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.iris) == null ? void 0 : _a.modelPath) || ""));
-    if (!model10 || !model10["modelUrl"])
-      log("load model failed:", (_b = config3.face.iris) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", model10["modelUrl"]);
-  } else if (config3.debug)
+  if (!model10)
+    model10 = await loadModel((_a = config3.face.iris) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
     log("cached model:", model10["modelUrl"]);
   inputSize5 = model10.inputs[0].shape ? model10.inputs[0].shape[2] : 0;
   if (inputSize5 === -1)
@@ -6179,16 +6140,12 @@ async function predict10(input, config3) {
   return faces;
 }
 async function load11(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     model11 = null;
-  if (!model11) {
-    model11 = await loadModel2(join(config3.modelBasePath, ((_a = config3.face.mesh) == null ? void 0 : _a.modelPath) || ""));
-    if (!model11 || !model11["modelUrl"])
-      log("load model failed:", (_b = config3.face.mesh) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", model11["modelUrl"]);
-  } else if (config3.debug)
+  if (!model11)
+    model11 = await loadModel((_a = config3.face.mesh) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
     log("cached model:", model11["modelUrl"]);
   inputSize6 = model11.inputs[0].shape ? model11.inputs[0].shape[2] : 0;
   return model11;
@@ -6204,18 +6161,13 @@ var lastTime10 = 0;
 var lastCount7 = 0;
 var skipped10 = Number.MAX_SAFE_INTEGER;
 async function load12(config3) {
-  var _a, _b;
-  const modelUrl = join(config3.modelBasePath, ((_a = config3.face.description) == null ? void 0 : _a.modelPath) || "");
+  var _a;
   if (env.initial)
     model12 = null;
-  if (!model12) {
-    model12 = await loadModel2(modelUrl);
-    if (!model12)
-      log("load model failed:", ((_b = config3.face.description) == null ? void 0 : _b.modelPath) || "");
-    else if (config3.debug)
-      log("load model:", modelUrl);
-  } else if (config3.debug)
-    log("cached model:", modelUrl);
+  if (!model12)
+    model12 = await loadModel((_a = config3.face.description) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model12["modelUrl"]);
   return model12;
 }
 function enhance(input) {
@@ -10037,26 +9989,16 @@ async function predict12(input, config3) {
   return hands;
 }
 async function load13(config3) {
-  var _a, _b, _c, _d;
+  var _a, _b;
   if (env.initial) {
     handDetectorModel = null;
     handPoseModel = null;
   }
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
-      config3.hand.enabled ? loadModel2(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || "")) : null,
-      config3.hand.landmarks ? loadModel2(join(config3.modelBasePath, ((_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath) || "")) : null
+      config3.hand.enabled ? loadModel((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) : null,
+      config3.hand.landmarks ? loadModel((_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath) : null
     ]);
-    if (config3.hand.enabled) {
-      if (!handDetectorModel || !handDetectorModel["modelUrl"])
-        log("load model failed:", ((_c = config3.hand.detector) == null ? void 0 : _c.modelPath) || "");
-      else if (config3.debug)
-        log("load model:", handDetectorModel["modelUrl"]);
-      if (!handPoseModel || !handPoseModel["modelUrl"])
-        log("load model failed:", ((_d = config3.hand.skeleton) == null ? void 0 : _d.modelPath) || "");
-      else if (config3.debug)
-        log("load model:", handPoseModel["modelUrl"]);
-    }
   } else {
     if (config3.debug)
       log("cached model:", handDetectorModel["modelUrl"]);
@@ -10095,36 +10037,28 @@ var fingerMap = {
   palm: [0, 17, 13, 9, 5, 1, 0]
 };
 async function loadDetect2(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     models2[0] = null;
   if (!models2[0]) {
     fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
-    models2[0] = await loadModel2(join(config3.modelBasePath, ((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) || ""));
+    models2[0] = await loadModel((_a = config3.hand.detector) == null ? void 0 : _a.modelPath);
     const inputs = Object.values(models2[0].modelSignature["inputs"]);
     inputSize7[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize7[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models2[0] || !models2[0]["modelUrl"])
-      log("load model failed:", (_b = config3.hand.detector) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", models2[0]["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", models2[0]["modelUrl"]);
   return models2[0];
 }
 async function loadSkeleton(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     models2[1] = null;
   if (!models2[1]) {
-    models2[1] = await loadModel2(join(config3.modelBasePath, ((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath) || ""));
+    models2[1] = await loadModel((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath);
     const inputs = Object.values(models2[1].modelSignature["inputs"]);
     inputSize7[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize7[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models2[1] || !models2[1]["modelUrl"])
-      log("load model failed:", (_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", models2[1]["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", models2[1]["modelUrl"]);
   return models2[1];
@@ -10262,16 +10196,12 @@ var skipped12 = Number.MAX_SAFE_INTEGER;
 var lastCount8 = 0;
 var lastTime13 = 0;
 async function load14(config3) {
-  var _a, _b;
+  var _a;
   if (env.initial)
     model13 = null;
-  if (!model13) {
-    model13 = await loadModel(join(config3.modelBasePath, ((_a = config3.face.liveness) == null ? void 0 : _a.modelPath) || ""));
-    if (!model13 || !model13["modelUrl"])
-      log("load model failed:", (_b = config3.face.liveness) == null ? void 0 : _b.modelPath);
-    else if (config3.debug)
-      log("load model:", model13["modelUrl"]);
-  } else if (config3.debug)
+  if (!model13)
+    model13 = await loadModel((_a = config3.face.liveness) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
     log("cached model:", model13["modelUrl"]);
   return model13;
 }
@@ -10471,11 +10401,7 @@ async function load15(config3) {
     model14 = null;
   if (!model14) {
     fakeOps(["size"], config3);
-    model14 = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model14 || !model14["modelUrl"])
-      log("load model failed:", config3.body.modelPath);
-    else if (config3.debug)
-      log("load model:", model14["modelUrl"]);
+    model14 = await loadModel(config3.body.modelPath);
   } else if (config3.debug)
     log("cached model:", model14["modelUrl"]);
   inputSize8 = model14.inputs[0].shape ? model14.inputs[0].shape[2] : 0;
@@ -10600,13 +10526,9 @@ var inputSize9 = 0;
 var scaleBox = 2.5;
 async function load16(config3) {
   if (!model15 || env.initial) {
-    model15 = await loadModel2(join(config3.modelBasePath, config3.object.modelPath || ""));
+    model15 = await loadModel(config3.object.modelPath);
     const inputs = Object.values(model15.modelSignature["inputs"]);
     inputSize9 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!model15 || !model15["modelUrl"])
-      log("load model failed:", config3.object.modelPath);
-    else if (config3.debug)
-      log("load model:", model15["modelUrl"]);
   } else if (config3.debug)
     log("cached model:", model15["modelUrl"]);
   return model15;
@@ -11032,13 +10954,9 @@ async function predict17(input, config3) {
   return scaled;
 }
 async function load17(config3) {
-  if (!model16 || env.initial) {
-    model16 = await loadModel2(join(config3.modelBasePath, config3.body.modelPath || ""));
-    if (!model16 || !model16["modelUrl"])
-      log("load model failed:", config3.body.modelPath);
-    else if (config3.debug)
-      log("load model:", model16["modelUrl"]);
-  } else if (config3.debug)
+  if (!model16 || env.initial)
+    model16 = await loadModel(config3.body.modelPath);
+  else if (config3.debug)
     log("cached model:", model16["modelUrl"]);
   return model16;
 }
@@ -11048,13 +10966,9 @@ var tf30 = __toESM(require_tfjs_esm());
 var model17;
 var busy = false;
 async function load18(config3) {
-  if (!model17 || env.initial) {
-    model17 = await loadModel2(join(config3.modelBasePath, config3.segmentation.modelPath || ""));
-    if (!model17 || !model17["modelUrl"])
-      log("load model failed:", config3.segmentation.modelPath);
-    else if (config3.debug)
-      log("load model:", model17["modelUrl"]);
-  } else if (config3.debug)
+  if (!model17 || env.initial)
+    model17 = await loadModel(config3.segmentation.modelPath);
+  else if (config3.debug)
     log("cached model:", model17["modelUrl"]);
   return model17;
 }
@@ -13529,6 +13443,8 @@ var Human = class {
     Object.seal(this.config);
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
+    this.config.cacheModels = typeof indexedDB !== "undefined";
+    setModelLoadOptions(this.config);
     this.tf = tf36;
     this.state = "idle";
     __privateSet(this, _numTensors, 0);

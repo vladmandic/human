@@ -4,7 +4,7 @@
  * Based on: [**MoveNet**](https://blog.tensorflow.org/2021/05/next-generation-pose-detection-with-movenet-and-tensorflowjs.html)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as box from '../util/box';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './movenetcoords';
@@ -35,9 +35,7 @@ export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) {
     fakeOps(['size'], config);
-    model = await loadModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
+    model = await loadModel(config.body.modelPath);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
   if (inputSize < 64) inputSize = 256;

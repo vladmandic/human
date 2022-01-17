@@ -6,7 +6,7 @@
  * - [**MediaPipe Selfie**](https://drive.google.com/file/d/1dCfozqknMa068vVsO2j_1FgZkW_e3VWv/preview)
  */
 
-import { log, join } from '../util/util';
+import { log } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import * as image from '../image/image';
@@ -20,11 +20,8 @@ let model: GraphModel;
 let busy = false;
 
 export async function load(config: Config): Promise<GraphModel> {
-  if (!model || env.initial) {
-    model = await loadModel(join(config.modelBasePath, config.segmentation.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.segmentation.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model || env.initial) model = await loadModel(config.segmentation.modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

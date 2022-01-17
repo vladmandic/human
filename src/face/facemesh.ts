@@ -7,7 +7,7 @@
  * - Eye Iris Details: [**MediaPipe Iris**](https://drive.google.com/file/d/1bsWbokp9AklH2ANjCfmjqEzzxO1CNbMu/view)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import { loadModel } from '../tfjs/load';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';
@@ -111,11 +111,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(join(config.modelBasePath, config.face.mesh?.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face.mesh?.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) model = await loadModel(config.face.mesh?.modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
   return model;
 }

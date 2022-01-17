@@ -4,7 +4,7 @@
  * Based on: [**MB3-CenterNet**](https://github.com/610265158/mobilenetv3_centernet)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
@@ -24,11 +24,9 @@ const scaleBox = 2.5; // increase box size
 
 export async function load(config: Config): Promise<GraphModel> {
   if (!model || env.initial) {
-    model = await loadModel(join(config.modelBasePath, config.object.modelPath || '')) as unknown as GraphModel;
+    model = await loadModel(config.object.modelPath);
     const inputs = Object.values(model.modelSignature['inputs']);
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!model || !model['modelUrl']) log('load model failed:', config.object.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
   } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }

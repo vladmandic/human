@@ -4,7 +4,7 @@
  * Based on: [**GEAR Predictor**](https://github.com/Udolf15/GEAR-Predictor)
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import type { Gender, Race } from '../result';
@@ -24,11 +24,8 @@ let skipped = Number.MAX_SAFE_INTEGER;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config) {
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(join(config.modelBasePath, config.face['gear'].modelPath)) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face['gear'].modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) model = await loadModel(config.face['gear']);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

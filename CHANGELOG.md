@@ -9,7 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/01/14 mandic00@live.com
+### **HEAD -> main** 2022/01/16 mandic00@live.com
+
+
+### **origin/main** 2022/01/15 mandic00@live.com
 
 - fix face box and hand tracking when in front of face
 

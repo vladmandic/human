@@ -248,6 +248,11 @@ export interface Config {
   */
   modelBasePath: string,
 
+  /** Cache models in IndexDB on first sucessfull load
+   * default: true if indexdb is available (browsers), false if its not (nodejs)
+   */
+  cacheModels: boolean,
+
   /** Cache sensitivity
    * - values 0..1 where 0.01 means reset cache if input changed more than 1%
    * - set to 0 to disable caching
@@ -288,6 +293,7 @@ export interface Config {
 const config: Config = {
   backend: '',
   modelBasePath: '',
+  cacheModels: true,
   wasmPath: '',
   debug: true,
   async: true,

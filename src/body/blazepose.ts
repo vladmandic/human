@@ -5,7 +5,7 @@
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import type { BodyKeypoint, BodyResult, BodyLandmark, Box, Point, BodyAnnotation } from '../result';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
@@ -33,12 +33,10 @@ const sigmoid = (x) => (1 - (1 / (1 + Math.exp(x))));
 export async function loadDetect(config: Config): Promise<GraphModel> {
   if (env.initial) models.detector = null;
   if (!models.detector && config.body['detector'] && config.body['detector']['modelPath'] || '') {
-    models.detector = await loadModel(join(config.modelBasePath, config.body['detector']['modelPath'] || '')) as unknown as GraphModel;
+    models.detector = await loadModel(config.body['detector']['modelPath']);
     const inputs = Object.values(models.detector.modelSignature['inputs']);
     inputSize.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models.detector || !models.detector['modelUrl']) log('load model failed:', config.body['detector']['modelPath']);
-    else if (config.debug) log('load model:', models.detector['modelUrl']);
   } else if (config.debug && models.detector) log('cached model:', models.detector['modelUrl']);
   await detect.createAnchors();
   return models.detector as GraphModel;
@@ -47,12 +45,10 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
 export async function loadPose(config: Config): Promise<GraphModel> {
   if (env.initial) models.landmarks = null;
   if (!models.landmarks) {
-    models.landmarks = await loadModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
+    models.landmarks = await loadModel(config.body.modelPath);
     const inputs = Object.values(models.landmarks.modelSignature['inputs']);
     inputSize.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-    if (!models.landmarks || !models.landmarks['modelUrl']) log('load model failed:', config.body.modelPath);
-    else if (config.debug) log('load model:', models.landmarks['modelUrl']);
   } else if (config.debug) log('cached model:', models.landmarks['modelUrl']);
   return models.landmarks;
 }

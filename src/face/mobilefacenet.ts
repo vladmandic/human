@@ -6,7 +6,7 @@
  * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
-import { log, join, now } from '../util/util';
+import { log, now } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import type { Tensor, GraphModel } from '../tfjs/types';
@@ -20,13 +20,9 @@ let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
 export async function load(config: Config): Promise<GraphModel> {
-  const modelUrl = join(config.modelBasePath, config.face['mobilefacenet'].modelPath);
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(modelUrl) as unknown as GraphModel;
-    if (!model) log('load model failed:', config.face['mobilefacenet'].modelPath);
-    else if (config.debug) log('load model:', modelUrl);
-  } else if (config.debug) log('cached model:', modelUrl);
+  if (!model) model = await loadModel(config.face['mobilefacenet'].modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 

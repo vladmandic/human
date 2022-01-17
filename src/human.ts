@@ -11,6 +11,7 @@
 import { log, now, mergeDeep, validate } from './util/util';
 import { defaults } from './config';
 import { env, Env } from './util/env';
+import { setModelLoadOptions } from './tfjs/load';
 import * as tf from '../dist/tfjs.esm.js';
 import * as app from '../package.json';
 import * as backend from './tfjs/backend';
@@ -134,6 +135,8 @@ export class Human {
     this.config = JSON.parse(JSON.stringify(defaults));
     Object.seal(this.config);
     if (userConfig) this.config = mergeDeep(this.config, userConfig);
+    this.config.cacheModels = typeof indexedDB !== 'undefined';
+    setModelLoadOptions(this.config);
     this.tf = tf;
     this.state = 'idle';
     this.#numTensors = 0;

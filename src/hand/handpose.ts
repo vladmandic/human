@@ -4,7 +4,7 @@
  * Based on: [**MediaPipe HandPose**](https://drive.google.com/file/d/1sv4sSb9BSNVZhLzxXJ0jBv9DqD-4jnAz/view)
  */
 
-import { log, join } from '../util/util';
+import { log } from '../util/util';
 import * as handdetector from './handposedetector';
 import * as handpipeline from './handposepipeline';
 import * as fingerPose from './fingerpose';
@@ -89,15 +89,9 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
   }
   if (!handDetectorModel || !handPoseModel) {
     [handDetectorModel, handPoseModel] = await Promise.all([
-      config.hand.enabled ? loadModel(join(config.modelBasePath, config.hand.detector?.modelPath || '')) as unknown as GraphModel : null,
-      config.hand.landmarks ? loadModel(join(config.modelBasePath, config.hand.skeleton?.modelPath || '')) as unknown as GraphModel : null,
+      config.hand.enabled ? loadModel(config.hand.detector?.modelPath) : null,
+      config.hand.landmarks ? loadModel(config.hand.skeleton?.modelPath) : null,
     ]);
-    if (config.hand.enabled) {
-      if (!handDetectorModel || !handDetectorModel['modelUrl']) log('load model failed:', config.hand.detector?.modelPath || '');
-      else if (config.debug) log('load model:', handDetectorModel['modelUrl']);
-      if (!handPoseModel || !handPoseModel['modelUrl']) log('load model failed:', config.hand.skeleton?.modelPath || '');
-      else if (config.debug) log('load model:', handPoseModel['modelUrl']);
-    }
   } else {
     if (config.debug) log('cached model:', handDetectorModel['modelUrl']);
     if (config.debug) log('cached model:', handPoseModel['modelUrl']);

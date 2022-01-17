@@ -4,7 +4,7 @@
  * Based on: [**PoseNet**](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
  */
 
-import { log, join } from '../util/util';
+import { log } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import type { BodyResult, BodyLandmark, Box } from '../result';
@@ -179,10 +179,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
 }
 
 export async function load(config: Config): Promise<GraphModel> {
-  if (!model || env.initial) {
-    model = await loadModel(join(config.modelBasePath, config.body.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.body.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model || env.initial) model = await loadModel(config.body.modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }

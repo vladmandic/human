@@ -3,7 +3,7 @@
  * See `facemesh.ts` for entry point
  */
 
-import { log, join } from '../util/util';
+import { log } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './facemeshutil';
 import { loadModel } from '../tfjs/load';
@@ -26,11 +26,8 @@ export const size = () => inputSize;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
-  if (!model) {
-    model = await loadModel(join(config.modelBasePath, config.face.detector?.modelPath || '')) as unknown as GraphModel;
-    if (!model || !model['modelUrl']) log('load model failed:', config.face.detector?.modelPath);
-    else if (config.debug) log('load model:', model['modelUrl']);
-  } else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) model = await loadModel(config.face.detector?.modelPath);
+  else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
   inputSizeT = tf.scalar(inputSize, 'int32') as Tensor;
   anchors = tf.tensor2d(util.generateAnchors(inputSize)) as Tensor;

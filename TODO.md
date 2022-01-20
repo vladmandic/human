@@ -29,19 +29,22 @@ Feature is automatically disabled in NodeJS without user impact
 
 <br><hr><br>
 
-## Pending Release Notes
+## Human 2.6 Release Notes
 
-- Add global model cache hander using indexdb in browser environments  
+- Add model cache hander using **IndexDB** in *browser* environments  
   see `config.cacheModels` setting for details  
 - Add additional demos  
   `human-motion` and `human-avatar`  
 - Updated samples image gallery  
-- Fix face box detections when face is partially occluded  
-- Fix face box scaling  
-- Fix hand tracking when hand is in front of face  
-- Fix compatibility with `ElectronJS`  
-- Fix interpolation for some body keypoints  
-- Updated blazepose calculations  
-- Changes to blazepose and handlandmarks annotations  
+- Allow monkey-patching `fetch` in NodeJS  
+  If `fetch` function is defined, it can be used to load models  
+  from HTTP/HTTPS URLs regardless of `tfjs` platform support  
+- Fix `BlazeFace` detections when face is partially occluded  
+- Fix `BlazeFace` box scaling  
+- Fix `HandTrack` tracking when hand is in front of face  
+- Fix `ElectronJS` compatibility issues
+- Fix body keypoints interpolation algorithm
+- Updated `BlazePose` calculations  
+- Changes to `BlazePose` and `HandLandmark` annotations  
 - Strong typing for string enums  
 - Updated `TFJS`  

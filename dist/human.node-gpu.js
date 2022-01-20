@@ -1384,10 +1384,6 @@ var options = {
 async function httpHandler(url, init2) {
   if (options.debug)
     log("load model fetch:", url, init2);
-  if (typeof fetch === "undefined") {
-    log("error loading model: fetch function is not defined:");
-    return null;
-  }
   return fetch(url, init2);
 }
 function setModelLoadOptions(config3) {
@@ -1401,7 +1397,8 @@ async function loadModel(modelPath) {
   const cachedModelName = "indexeddb://" + modelPathSegments[modelPathSegments.length - 1].replace(".json", "");
   const cachedModels = await tf4.io.listModels();
   const modelCached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName);
-  const model18 = new tf4.GraphModel(modelCached ? cachedModelName : modelUrl, { fetchFunc: (url, init2) => httpHandler(url, init2) });
+  const tfLoadOptions = typeof fetch === "undefined" ? {} : { fetchFunc: (url, init2) => httpHandler(url, init2) };
+  const model18 = new tf4.GraphModel(modelCached ? cachedModelName : modelUrl, tfLoadOptions);
   try {
     model18.findIOHandler();
     if (options.debug)
@@ -1428,7 +1425,7 @@ async function loadModel(modelPath) {
 var tf36 = __toESM(require_tfjs_esm());
 
 // package.json
-var version2 = "2.6.0";
+var version2 = "2.6.1";
 
 // src/tfjs/humangl.ts
 var tf31 = __toESM(require_tfjs_esm());

@@ -12,10 +12,6 @@ const options = {
 
 async function httpHandler(url, init?): Promise<Response | null> {
   if (options.debug) log('load model fetch:', url, init);
-  if (typeof fetch === 'undefined') {
-    log('error loading model: fetch function is not defined:');
-    return null;
-  }
   return fetch(url, init);
 }
 
@@ -31,8 +27,8 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
   const cachedModelName = 'indexeddb://' + modelPathSegments[modelPathSegments.length - 1].replace('.json', ''); // generate short model name for cache
   const cachedModels = await tf.io.listModels(); // list all models already in cache
   const modelCached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
-  // create model prototype and decide if load from cache or from original modelurl
-  const model: GraphModel = new tf.GraphModel(modelCached ? cachedModelName : modelUrl, { fetchFunc: (url, init?) => httpHandler(url, init) }) as unknown as GraphModel;
+  const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url, init?) => httpHandler(url, init) };
+  const model: GraphModel = new tf.GraphModel(modelCached ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
   try {
     // @ts-ignore private function
     model.findIOHandler(); // decide how to actually load a model

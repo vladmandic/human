@@ -9,11 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/01/16 mandic00@live.com
+### **2.6.1** 2022/01/20 mandic00@live.com
 
 
-### **origin/main** 2022/01/15 mandic00@live.com
+### **origin/main** 2022/01/17 mandic00@live.com
 
+- prototype global fetch handler
 - fix face box and hand tracking when in front of face
 
 ### **2.5.8** 2022/01/14 mandic00@live.com

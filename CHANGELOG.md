@@ -9,11 +9,18 @@
   
 ## Changelog
   
+### **2.6.2** 2022/02/07 mandic00@live.com
+
+
+### **origin/main** 2022/01/20 mandic00@live.com
+
+
+### **release: 2.6.1** 2022/01/20 mandic00@live.com
+
+
 ### **2.6.1** 2022/01/20 mandic00@live.com
 
-
-### **origin/main** 2022/01/17 mandic00@live.com
-
+- implement model caching using indexdb
 - prototype global fetch handler
 - fix face box and hand tracking when in front of face
 

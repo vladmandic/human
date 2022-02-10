@@ -167,6 +167,11 @@ export declare interface Config {
      * default: auto-detects to link to CDN `jsdelivr` when running in browser
      */
     wasmPath: string;
+    /** Force WASM loader to use platform fetch
+     *
+     * default: auto-detects to link to CDN `jsdelivr` when running in browser
+     */
+    wasmPlatformFetch: false;
     /** Print debug statements to console
      *
      * default: `true`

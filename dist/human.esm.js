@@ -93,6 +93,7 @@ var config = {
   modelBasePath: "",
   cacheModels: true,
   wasmPath: "",
+  wasmPlatformFetch: false,
   debug: true,
   async: true,
   warmup: "full",
@@ -39002,7 +39003,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "2.6.2";
+var version = "2.6.3";
 
 // src/gear/gear.ts
 var model;
@@ -48856,7 +48857,7 @@ async function check(instance, force = false) {
         if (instance.config.debug)
           log("wasm path:", instance.config.wasmPath);
         if (typeof (tfjs_esm_exports == null ? void 0 : tfjs_esm_exports.setWasmPaths) !== "undefined")
-          await rpe(instance.config.wasmPath);
+          await rpe(instance.config.wasmPath, instance.config.wasmPlatformFetch);
         else
           throw new Error("backend error: attempting to use wasm backend but wasm path is not set");
         const simd = await X().getAsync("WASM_HAS_SIMD_SUPPORT");

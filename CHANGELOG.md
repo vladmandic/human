@@ -9,10 +9,10 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/02/07 mandic00@live.com
+
+
 ### **2.6.2** 2022/02/07 mandic00@live.com
-
-
-### **origin/main** 2022/01/20 mandic00@live.com
 
 
 ### **release: 2.6.1** 2022/01/20 mandic00@live.com
@@ -143,7 +143,6 @@
 
 - minor blazepose optimizations
 - compress samples
-- remove handdetect from default package
 - remove posenet from default package
 - enhanced movenet postprocessing
 - use transferrable buffer for worker messages
@@ -232,8 +231,6 @@
 - implement event emitters
 - fix iife loader
 - simplify dependencies
-- fix file permissions
-- remove old build server
 - change build process
 - add benchmark info
 - simplify canvas handling in nodejs
@@ -276,7 +273,6 @@
 
 ### **2.1.1** 2021/07/29 mandic00@live.com
 
-- proposal #141
 - add note on manually disping tensor
 - modularize model loading
 
@@ -355,8 +351,6 @@
 ### **1.9.1** 2021/05/21 mandic00@live.com
 
 - caching improvements
-- sanitize server input
-- remove nanodet weights from default distribution
 - add experimental mb3-centernet object detection
 - individual model skipframes values still max high threshold for caching
 - config.videooptimized has been removed and config.cachesensitivity has been added instead
@@ -524,7 +518,6 @@
 
 - add experimental nanodet object detection
 - full models signature
-- cleanup
 
 ### **1.1.7** 2021/03/16 mandic00@live.com
 
@@ -570,7 +563,6 @@
 ### **1.0.3** 2021/03/10 mandic00@live.com
 
 - strong typing for public classes and hide private classes
-- re-added blazeface-front
 - enhanced age, gender, emotion detection
 - full rebuild
 
@@ -596,7 +588,6 @@
 - 0.40.5
 - fix human.draw
 - 0.40.4
-- cleanup blazepose code
 - fix demo
 - 0.40.3
 - 0.40.2
@@ -619,10 +610,7 @@
 - 0.20.11
 - 0.20.10
 - 0.20.9
-- remove extra items
-- simmilarity fix
 - 0.20.8
-- embedding fix
 - 0.20.7
 - build fix
 - 0.20.6
@@ -656,7 +644,6 @@
 ### **0.9.26** 2021/01/18 mandic00@live.com
 
 - fix face detection when mesh is disabled
-- added minification notes
 - version bump
 
 ### **0.9.25** 2021/01/13 mandic00@live.com
@@ -718,7 +705,6 @@
 
 - conditional hand rotation
 - staggered skipframes
-- fix permissions
 
 ### **0.9.13** 2020/12/08 mandic00@live.com
 
@@ -827,7 +813,6 @@
 - optimized model loader
 - merge branch 'main' of https://github.com/vladmandic/human into main
 - created wiki
-- delete bug_report.md
 - optimize font resizing
 - fix nms sync call
 
@@ -851,7 +836,6 @@
 
 - optimized camera and mobile layout
 - fixed worker and filter compatibility
-- removed test code
 
 ### **0.7.2** 2020/11/04 mandic00@live.com
 
@@ -928,7 +912,6 @@
 ### **0.4.8** 2020/10/28 mandic00@live.com
 
 - revert "updated menu handler"
-- fix webpack compatibility issue
 
 ### **0.4.7** 2020/10/27 mandic00@live.com
 
@@ -1016,7 +999,6 @@
 
 ### **0.2.8** 2020/10/13 mandic00@live.com
 
-- added example image
 
 ### **0.2.7** 2020/10/13 mandic00@live.com
 
@@ -1032,7 +1014,6 @@
 
 ### **0.2.4** 2020/10/12 mandic00@live.com
 
-- removed extra files
 
 ### **0.2.3** 2020/10/12 mandic00@live.com
 

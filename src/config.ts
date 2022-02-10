@@ -221,6 +221,12 @@ export interface Config {
   */
   wasmPath: string,
 
+  /** Force WASM loader to use platform fetch
+   *
+   * default: auto-detects to link to CDN `jsdelivr` when running in browser
+  */
+  wasmPlatformFetch: false,
+
   /** Print debug statements to console
    *
    * default: `true`
@@ -295,6 +301,7 @@ const config: Config = {
   modelBasePath: '',
   cacheModels: true,
   wasmPath: '',
+  wasmPlatformFetch: false,
   debug: true,
   async: true,
   warmup: 'full',

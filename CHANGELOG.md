@@ -9,17 +9,16 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/02/10 mandic00@live.com
+
+
 ### **2.6.3** 2022/02/10 mandic00@live.com
 
-
-### **origin/main** 2022/02/10 mandic00@live.com
-
+- rebuild
 
 ### **2.6.2** 2022/02/07 mandic00@live.com
 
-
-### **release: 2.6.1** 2022/01/20 mandic00@live.com
-
+- release rebuild
 
 ### **2.6.1** 2022/01/20 mandic00@live.com
 
@@ -36,9 +35,7 @@
 ### **2.5.7** 2021/12/27 mandic00@live.com
 
 - fix posenet
-
-### **release: 2.5.6** 2021/12/15 mandic00@live.com
-
+- release refresh
 
 ### **2.5.6** 2021/12/15 mandic00@live.com
 
@@ -87,9 +84,7 @@
 - rebuild
 - add type defs when working with relative path imports
 - disable humangl backend if webgl 1.0 is detected
-
-### **release: 2.5.1** 2021/11/08 mandic00@live.com
-
+- add additional hand gestures
 
 ### **2.5.1** 2021/11/08 mandic00@live.com
 
@@ -117,9 +112,7 @@
 - add ts demo
 - switch from es2018 to es2020 for main build
 - switch to custom tfjs for demos
-
-### **release: 2.4.1** 2021/10/25 mandic00@live.com
-
+- release 2.4
 
 ### **2.4.1** 2021/10/25 mandic00@live.com
 
@@ -153,17 +146,13 @@
 - add node-match advanced example using worker thread pool
 - package updates
 - optimize image preprocessing
-
-### **release: 2.3.2** 2021/10/11 mandic00@live.com
-
+- set webgpu optimized flags
 - major precision improvements to movenet and handtrack
 - image processing fixes
 - redesign body and hand caching and interpolation
 - demo default config cleanup
 - improve gaze and face angle visualizations in draw
-
-### **release 2.3.1** 2021/10/06 mandic00@live.com
-
+- release 2.3.1
 
 ### **2.3.1** 2021/10/06 mandic00@live.com
 
@@ -173,7 +162,6 @@
 - fix backend order initialization
 - added docker notes
 - breaking change: new similarity and match methods
-- release candidate
 - tweaked default values
 - enable handtrack as default model
 - redesign face processing
@@ -203,9 +191,7 @@
 ### **2.2.2** 2021/09/17 mandic00@live.com
 
 - experimental webgl status monitoring
-
-### **release: 2.2.1** 2021/09/16 mandic00@live.com
-
+- major release
 
 ### **2.2.1** 2021/09/16 mandic00@live.com
 
@@ -289,9 +275,7 @@
 - reorganize demos
 - fix centernet box width & height
 - add body segmentation sample
-
-### **release: 2.0.1** 2021/06/08 mandic00@live.com
-
+- add release notes
 - release 2.0
 
 ### **2.0.1** 2021/06/08 mandic00@live.com
@@ -375,9 +359,7 @@
 
 ### **1.8.2** 2021/05/04 mandic00@live.com
 
-
-### **release 1.8 with major changes and tfjs 3.6.0** 2021/04/30 mandic00@live.com
-
+- release 1.8 with major changes and tfjs 3.6.0
 
 ### **1.8.1** 2021/04/30 mandic00@live.com
 
@@ -411,7 +393,6 @@
 - added filter.flip feature
 - added demo load image from http
 - mobile demo optimization and iris gestures
-- full test run
 - full rebuild
 - new look
 - added benchmarks
@@ -574,9 +555,6 @@
 - remove blazeface-front, blazepose-upper, faceboxes
 - remove blazeface-front and faceboxes
 
-### **release: 1.0.1** 2021/03/09 mandic00@live.com
-
-
 ### **1.0.1** 2021/03/09 mandic00@live.com
 
 - fix for face detector when mesh is disabled
@@ -620,9 +598,6 @@
 - embedding fix
 - 0.20.5
 - fix imagefx and add dev builds
-
-### **0.20.4** 2021/02/19 mandic00@live.com
-
 - 0.20.4
 - 0.20.3
 - rebuild

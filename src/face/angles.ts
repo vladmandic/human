@@ -21,7 +21,7 @@ const calculateGaze = (face: FaceResult): { bearing: number, strength: number } 
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1],
   ];
-  let strength = Math.sqrt((eyeDiff[0] ** 2) + (eyeDiff[1] ** 2)); // vector length is a diagonal between two differences
+  let strength = Math.sqrt((eyeDiff[0] * eyeDiff[0]) + (eyeDiff[1] * eyeDiff[1])); // vector length is a diagonal between two differences
   strength = Math.min(strength, face.boxRaw[2] / 2, face.boxRaw[3] / 2); // limit strength to half of box size to avoid clipping due to low precision
   const bearing = (radians([0, 0], eyeDiff) + (Math.PI / 2)) % Math.PI; // using eyeDiff instead eyeCenter/irisCenter combo due to manual adjustments and rotate clockwise 90degrees
   return { bearing, strength };

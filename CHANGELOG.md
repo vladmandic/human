@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/02/10 mandic00@live.com
+### **HEAD -> main** 2022/02/14 mandic00@live.com
 
+- add config option wasmplatformfetch
 
 ### **2.6.3** 2022/02/10 mandic00@live.com
 

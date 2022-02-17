@@ -171,7 +171,7 @@ export declare interface Config {
      *
      * default: auto-detects to link to CDN `jsdelivr` when running in browser
      */
-    wasmPlatformFetch: false;
+    wasmPlatformFetch: boolean;
     /** Print debug statements to console
      *
      * default: `true`

@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/02/14 mandic00@live.com
+### **2.6.4** 2022/02/27 mandic00@live.com
 
+
+### **origin/main** 2022/02/17 mandic00@live.com
+
+- refresh
 - add config option wasmplatformfetch
 
 ### **2.6.3** 2022/02/10 mandic00@live.com

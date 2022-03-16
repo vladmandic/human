@@ -134,8 +134,8 @@ export class Human {
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     this.config = JSON.parse(JSON.stringify(defaults));
     Object.seal(this.config);
-    if (userConfig) this.config = mergeDeep(this.config, userConfig);
     this.config.cacheModels = typeof indexedDB !== 'undefined';
+    if (userConfig) this.config = mergeDeep(this.config, userConfig);
     setModelLoadOptions(this.config);
     this.tf = tf;
     this.state = 'idle';

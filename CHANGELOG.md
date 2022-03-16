@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/03/07 mandic00@live.com
+
+
 ### **2.6.4** 2022/02/27 mandic00@live.com
 
-
-### **origin/main** 2022/02/17 mandic00@live.com
-
+- fix types typo
 - refresh
 - add config option wasmplatformfetch
 

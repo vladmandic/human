@@ -69,7 +69,7 @@
     "@types/offscreencanvas": "^2019.6.4",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
-    "@vladmandic/build": "^0.7.1",
+    "@vladmandic/build": "^0.7.2",
     "@vladmandic/pilogger": "^0.4.4",
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
     "canvas": "^2.9.0",

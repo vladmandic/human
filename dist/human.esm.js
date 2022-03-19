@@ -19767,7 +19767,7 @@ var A0 = class extends Ut {
     return "microphone";
   }
   static async create(e = {}) {
-    if (X().get("IS_NODE"))
+    if (!X().get("IS_BROWSER"))
       throw new Error("microphone API is only supported in browser environment.");
     let t = new A0(e);
     return await t.start(), t;
@@ -19845,7 +19845,7 @@ var E0 = class extends Ut {
     return "webcam";
   }
   static async create(e, t = {}) {
-    if (X().get("IS_NODE"))
+    if (!X().get("IS_BROWSER"))
       throw new Error("tf.data.webcam is only supported in browser environment.");
     if (!e) {
       if (e = document.createElement("video"), !t.resizeWidth || !t.resizeHeight)
@@ -37887,7 +37887,7 @@ pp("wasm", async () => {
   let { wasm: e } = await Sde();
   return new kde(e);
 }, Tde);
-var sr = "3.14.0-20220316";
+var sr = "3.14.0-20220319";
 var Gpe = { tfjs: sr, "tfjs-core": sr, "tfjs-data": sr, "tfjs-layers": sr, "tfjs-converter": sr, "tfjs-backend-cpu": sr, "tfjs-backend-webgl": sr, "tfjs-backend-wasm": sr };
 
 // src/image/imagefxshaders.ts
@@ -50904,6 +50904,16 @@ async function warmupNode(instance) {
   }
   return res;
 }
+async function runInference(instance) {
+  let res;
+  if (typeof createImageBitmap === "function")
+    res = await warmupBitmap(instance);
+  else if (typeof Image !== "undefined" || env.Canvas !== void 0)
+    res = await warmupCanvas(instance);
+  else
+    res = await warmupNode(instance);
+  return res;
+}
 async function warmup(instance, userConfig) {
   const t02 = now();
   instance.state = "warmup";
@@ -50912,17 +50922,11 @@ async function warmup(instance, userConfig) {
   if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === "none") {
     return { face: [], body: [], hand: [], gesture: [], object: [], performance: instance.performance, timestamp: now(), persons: [], error: null };
   }
-  let res;
   return new Promise(async (resolve) => {
-    if (typeof createImageBitmap === "function")
-      res = await warmupBitmap(instance);
-    else if (typeof Image !== "undefined" || env.Canvas !== void 0)
-      res = await warmupCanvas(instance);
-    else
-      res = await warmupNode(instance);
+    const res = await runInference(instance);
     const t12 = now();
     if (instance.config.debug)
-      log("Warmup", instance.config.warmup, Math.round(t12 - t02), "ms");
+      log("warmup", instance.config.warmup, Math.round(t12 - t02), "ms");
     instance.emit("warmup");
     resolve(res);
   });

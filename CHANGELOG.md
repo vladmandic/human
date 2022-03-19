@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/03/16 mandic00@live.com
 
+- fix indexdb config check
 
 ### **2.6.4** 2022/02/27 mandic00@live.com
 

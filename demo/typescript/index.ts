@@ -17,7 +17,7 @@ const humanConfig: Partial<Config> = { // user configuration for human, used to 
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
   body: { enabled: true },
   hand: { enabled: true },
-  object: { enabled: false },
+  object: { enabled: true },
   gesture: { enabled: true },
 };
 

@@ -55,7 +55,6 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   // sanity check on input
   if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return [];
   const t: Record<string, Tensor> = {};
-
   t.resized = tf.image.resizeBilinear(inputImage, [inputSize, inputSize]);
   t.div = tf.div(t.resized, constants.tf127);
   t.normalized = tf.sub(t.div, constants.tf05);

@@ -6,13 +6,13 @@ import { log, now, mergeDeep } from './util/util';
 import * as sample from './sample';
 import * as tf from '../dist/tfjs.esm.js';
 import * as image from './image/image';
+import { env } from './util/env';
 import type { Config } from './config';
 import type { Result } from './result';
-import type { Human } from './human';
-import type { Tensor } from './tfjs/types';
-import { env } from './util/env';
+import type { Human, Models } from './human';
+import type { Tensor, GraphModel } from './tfjs/types';
 
-async function warmupBitmap(instance: Human) {
+async function warmupBitmap(instance: Human): Promise<Result | undefined> {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
   let blob;
   let res;
@@ -99,6 +99,45 @@ async function warmupNode(instance: Human): Promise<Result | undefined> {
   return res;
 }
 
+async function runInference(instance: Human) {
+  let res: Result | undefined;
+  if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);
+  else if (typeof Image !== 'undefined' || env.Canvas !== undefined) res = await warmupCanvas(instance);
+  else res = await warmupNode(instance);
+  return res;
+}
+
+/** Runs pre-compile on all loaded models */
+export async function runCompile(allModels: Models) {
+  const backendType = tf.getBackend();
+  const webGLBackend = tf.backend();
+  if ((backendType !== 'webgl' && backendType !== 'humangl') || (!webGLBackend || !webGLBackend.checkCompileCompletion)) {
+    log('compile pass: skip');
+    return;
+  }
+  const models = Object.values(allModels).filter((m) => m !== null) as GraphModel[];
+  tf.env().set('ENGINE_COMPILE_ONLY', true);
+  const numTensorsStart = tf.engine().state.numTensors;
+  for (const model of models) {
+    const shape = (model.inputs && model.inputs[0] && model.inputs[0].shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
+    const dtype = (model.inputs && model.inputs[0] && model.inputs[0].dtype) ? model.inputs[0].dtype : 'float32';
+    for (let dim = 0; dim < shape.length; dim++) {
+      if (shape[dim] === -1) shape[dim] = dim === 0 ? 1 : 64; // override batch number and any dynamic dimensions
+    }
+    const tensor = tf.zeros(shape, dtype);
+    const res = await model.executeAsync(tensor);
+    if (Array.isArray(res)) res.forEach((t) => tf.dispose(t));
+    else tf.dispose(res);
+    tf.dispose(tensor);
+  }
+  const kernels = await webGLBackend.checkCompileCompletionAsync();
+  webGLBackend.getUniformLocations();
+  log('compile pass kernels:', kernels.length);
+  tf.env().set('ENGINE_COMPILE_ONLY', false);
+  const numTensorsEnd = tf.engine().state.numTensors;
+  if ((numTensorsEnd - numTensorsStart) > 0) log('tensor leak:', numTensorsEnd - numTensorsStart);
+}
+
 /** Warmup method pre-initializes all configured models for faster inference
  * - can take significant time on startup
  * - only used for `webgl` and `humangl` backends
@@ -111,13 +150,11 @@ export async function warmup(instance: Human, userConfig?: Partial<Config>): Pro
   if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === 'none') {
     return { face: [], body: [], hand: [], gesture: [], object: [], performance: instance.performance, timestamp: now(), persons: [], error: null };
   }
-  let res;
   return new Promise(async (resolve) => {
-    if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);
-    else if (typeof Image !== 'undefined' || env.Canvas !== undefined) res = await warmupCanvas(instance);
-    else res = await warmupNode(instance);
+    // await runCompile(instance.models);
+    const res = await runInference(instance);
     const t1 = now();
-    if (instance.config.debug) log('Warmup', instance.config.warmup, Math.round(t1 - t0), 'ms');
+    if (instance.config.debug) log('warmup', instance.config.warmup, Math.round(t1 - t0), 'ms');
     instance.emit('warmup');
     resolve(res);
   });

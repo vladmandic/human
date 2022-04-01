@@ -1,10 +1,8 @@
-/// <reference types="offscreencanvas" />
-
 /** meta-function that performs draw for: canvas, face, body, hand */
 declare function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>): Promise<[void, void, void, void, void] | null>;
 
 /** Defines all possible canvas types */
-export declare type AnyCanvas = HTMLCanvasElement | OffscreenCanvas;
+export declare type AnyCanvas = HTMLCanvasElement | OffscreenCanvas_2;
 
 /** Defines all possible image types */
 export declare type AnyImage = HTMLImageElement | typeof Image;
@@ -140,6 +138,13 @@ declare function browserHTTPRequest(path: string, loadOptions?: LoadOptions): IO
 
 /** draw processed canvas */
 declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas): Promise<void>;
+
+declare interface CanvasDrawImage_2 {
+    drawImage(image: CanvasImageSource | OffscreenCanvas_2, dx: number, dy: number): void;
+    drawImage(image: CanvasImageSource | OffscreenCanvas_2, dx: number, dy: number, dw: number, dh: number): void;
+    drawImage(image: CanvasImageSource | OffscreenCanvas_2, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
+}
+export { CanvasDrawImage_2 as CanvasDrawImage }
 
 /**
  * Concatenate a number of ArrayBuffers into one.
@@ -348,6 +353,7 @@ declare namespace draw {
         options
     }
 }
+export { draw }
 
 /** Draw Options
  * - Accessed via `human.draw.options` or provided per each draw method as the drawOptions optional parameter
@@ -1542,15 +1548,16 @@ declare namespace match {
         MatchOptions
     }
 }
+export { match }
 
 /** Matches given descriptor to a closest entry in array of descriptors
  * @param descriptor - face descriptor
  * @param descriptors - array of face descriptors to commpare given descriptor to
- * @param options - see {@link similarity}
+ * @param options - see `similarity` method for options description
  * Returns
  * - `index` index array index where best match was found or -1 if no matches
- * - {@link distance} calculated `distance` of given descriptor to the best match
- * - {@link similarity} calculated normalized `similarity` of given descriptor to the best match
+ * - `distance` calculated `distance` of given descriptor to the best match
+ * - `similarity` calculated normalized `similarity` of given descriptor to the best match
  */
 declare function match_2(descriptor: Descriptor, descriptors: Array<Descriptor>, options?: MatchOptions): {
     index: number;
@@ -1788,6 +1795,7 @@ declare namespace models {
         Models
     }
 }
+export { models }
 
 /**
  * An interface for the manager of a model store.
@@ -1925,6 +1933,26 @@ export declare interface ObjectResult {
 }
 
 export declare type ObjectType = 'person' | 'bicycle' | 'car' | 'motorcycle' | 'airplane' | 'bus' | 'train' | 'truck' | 'boat' | 'traffic light' | 'fire hydrant' | 'stop sign' | 'parking meter' | 'bench' | 'bird' | 'cat' | 'dog' | 'horse' | 'sheep' | 'cow' | 'elephant' | 'bear' | 'zebra' | 'giraffe' | 'backpack' | 'umbrella' | 'handbag' | 'tie' | 'suitcase' | 'frisbee' | 'skis' | 'snowboard' | 'sports ball' | 'kite' | 'baseball bat' | 'baseball glove' | 'skateboard' | 'surfboard' | 'tennis racket' | 'bottle' | 'wine glass' | 'cup' | 'fork' | 'knife' | 'spoon' | 'bowl' | 'banana' | 'apple' | 'sandwich' | 'orange' | 'broccoli' | 'carrot' | 'hot dog' | 'pizza' | 'donut' | 'cake' | 'chair' | 'couch' | 'potted plant' | 'bed' | 'dining table' | 'toilet' | 'tv' | 'laptop' | 'mouse' | 'remote' | 'keyboard' | 'cell phone' | 'microwave' | 'oven' | 'toaster' | 'sink' | 'refrigerator' | 'book' | 'clock' | 'vase' | 'scissors' | 'teddy bear' | 'hair drier' | 'toothbrush';
+
+declare interface OffscreenCanvas_2 extends EventTarget {
+    width: number;
+    height: number;
+    getContext(contextId: "2d", contextAttributes?: CanvasRenderingContext2DSettings): OffscreenCanvasRenderingContext2D_2 | null;
+    getContext(contextId: "bitmaprenderer", contextAttributes?: WebGLContextAttributes): ImageBitmapRenderingContext | null;
+    getContext(contextId: "webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
+    getContext(contextId: "webgl2", contextAttributes?: WebGLContextAttributes): WebGL2RenderingContext | null;
+    convertToBlob(options?: {
+        type?: string | undefined;
+        quality?: number | undefined;
+    }): Promise<Blob>;
+    transferToImageBitmap(): ImageBitmap;
+}
+export { OffscreenCanvas_2 as OffscreenCanvas }
+
+declare interface OffscreenCanvasRenderingContext2D_2 extends CanvasState, CanvasTransform, CanvasCompositing, CanvasImageSmoothing, CanvasFillStrokeStyles, CanvasShadowStyles, CanvasFilters, CanvasRect, CanvasDrawPath, CanvasText, CanvasDrawImage_2, CanvasImageData, CanvasPathDrawingStyles, CanvasTextDrawingStyles, CanvasPath {
+    readonly canvas: OffscreenCanvas_2;
+}
+export { OffscreenCanvasRenderingContext2D_2 as OffscreenCanvasRenderingContext2D }
 
 /**
  * Callback for the progress of a long-running action such as an HTTP

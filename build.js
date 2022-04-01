@@ -9,7 +9,17 @@ function copy(src, dst) {
   fs.writeFileSync(dst, buffer);
 }
 
-const apiIgnoreList = ['ae-forgotten-export', 'ae-unresolved-link'];
+const apiExtractorIgnoreList = [
+  'ae-missing-release-tag',
+  'tsdoc-param-tag-missing-hyphen',
+  'tsdoc-escape-right-brace',
+  'tsdoc-undefined-tag',
+  'tsdoc-escape-greater-than',
+  'ae-unresolved-link',
+  'ae-forgotten-export',
+  'tsdoc-malformed-inline-tag',
+  'tsdoc-unnecessary-backslash'
+];
 
 async function main() {
   // run production build
@@ -27,7 +37,7 @@ async function main() {
       msg.handled = true;
       if (msg.logLevel === 'none' || msg.logLevel === 'verbose' || msg.logLevel === 'info') return;
       if (msg.sourceFilePath?.includes('/node_modules/')) return;
-      if (apiIgnoreList.reduce((prev, curr) => prev || msg.messageId.includes(curr), false)) return;
+      // if (apiExtractorIgnoreList.reduce((prev, curr) => prev || msg.messageId.includes(curr), false)) return; // those are external issues outside of human control
       log.data('API', { level: msg.logLevel, category: msg.category, id: msg.messageId, file: msg.sourceFilePath, line: msg.sourceFileLine, text: msg.text });
     },
   });

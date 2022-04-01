@@ -6,7 +6,7 @@
     "outDir": "types",
     "baseUrl": "./",
     "paths": { "tslib": ["./node_modules/tslib/tslib.d.ts"] },
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom", "webworker"],
     "allowJs": true,
     "allowSyntheticDefaultImports": false,
     "allowUnreachableCode": false,

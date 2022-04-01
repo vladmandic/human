@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "mainEntryPointFilePath": "types/lib/src/human.d.ts",
-  "bundledPackages": ["@tensorflow/tfjs-core", "@tensorflow/tfjs-converter", "@types/offscreencanvas"],
+  "bundledPackages": ["@types/offscreencanvas", "@tensorflow/tfjs-core", "@tensorflow/tfjs-converter"],
   "compiler": {
     "skipLibCheck": false
   },
@@ -11,28 +11,18 @@
     "untrimmedFilePath": "types/human.d.ts"
   },
   "docModel": { "enabled": false },
-  "tsdocMetadata": {
-    "enabled": false
-  },
+  "tsdocMetadata": { "enabled": false },
   "apiReport": { "enabled": false },
   "messages": {
     "compilerMessageReporting": {
-      "default": {
-        "logLevel": "warning"
-      }
+      "default": { "logLevel": "warning" }
     },
     "extractorMessageReporting": {
-      "default": {
-        "logLevel": "warning"
-      },
-      "ae-missing-release-tag": {
-        "logLevel": "none"
-      }
+      "default": { "logLevel": "warning" },
+      "ae-missing-release-tag": { "logLevel": "none" }
     },
     "tsdocMessageReporting": {
-      "default": {
-        "logLevel": "warning"
-      }
+      "default": { "logLevel": "warning" }
     }
   }
 }

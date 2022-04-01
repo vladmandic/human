@@ -4,7 +4,276 @@
   author: <https://github.com/vladmandic>'
 */
 
-var Xr=Object.create;var et=Object.defineProperty;var Dr=Object.getOwnPropertyDescriptor;var qr=Object.getOwnPropertyNames;var Ur=Object.getPrototypeOf,Jr=Object.prototype.hasOwnProperty;var Yr=(e,t,o)=>t in e?et(e,t,{enumerable:!0,configurable:!0,writable:!0,value:o}):e[t]=o;var Kr=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),pt=(e,t)=>{for(var o in t)et(e,o,{get:t[o],enumerable:!0})},Vo=(e,t,o,A)=>{if(t&&typeof t=="object"||typeof t=="function")for(let n of qr(t))!Jr.call(e,n)&&n!==o&&et(e,n,{get:()=>t[n],enumerable:!(A=Dr(t,n))||A.enumerable});return e};var V=(e,t,o)=>(o=e!=null?Xr(Ur(e)):{},Vo(t||!e||!e.__esModule?et(o,"default",{value:e,enumerable:!0}):o,e)),Qr=e=>Vo(et({},"__esModule",{value:!0}),e);var w=(e,t,o)=>(Yr(e,typeof t!="symbol"?t+"":t,o),o),Zo=(e,t,o)=>{if(!t.has(e))throw TypeError("Cannot "+o)};var tt=(e,t,o)=>(Zo(e,t,"read from private field"),o?o.call(e):t.get(e)),ot=(e,t,o)=>{if(t.has(e))throw TypeError("Cannot add the same private member more than once");t instanceof WeakSet?t.add(e):t.set(e,o)},At=(e,t,o,A)=>(Zo(e,t,"write to private field"),A?A.call(e,o):t.set(e,o),o);var F=Kr((Bs,s5)=>{var Do=Object.defineProperty,_r=Object.getOwnPropertyDescriptor,$r=Object.getOwnPropertyNames,e2=Object.prototype.hasOwnProperty,r5=(e,t,o,A)=>{if(t&&typeof t=="object"||typeof t=="function")for(let n of $r(t))!e2.call(e,n)&&n!==o&&Do(e,n,{get:()=>t[n],enumerable:!(A=_r(t,n))||A.enumerable});return e},t2=(e,t,o)=>(r5(e,t,"default"),o&&r5(o,t,"default")),o2=e=>r5(Do({},"__esModule",{value:!0}),e),qo={};s5.exports=o2(qo);t2(qo,require("@tensorflow/tfjs-node"),s5.exports)});var Is={};pt(Is,{Human:()=>Zr,default:()=>Zr,defaults:()=>ye,env:()=>T});module.exports=Qr(Is);function b(...e){let t=new Date,o=`${t.getHours().toString().padStart(2,"0")}:${t.getMinutes().toString().padStart(2,"0")}:${t.getSeconds().toString().padStart(2,"0")}.${t.getMilliseconds().toString().padStart(3,"0")}`;e&&console.log(o,"Human:",...e)}function Xo(e,t){let o=e.endsWith("/")?"":"/",n=t.startsWith(".")||t.startsWith("/")||t.startsWith("http:")||t.startsWith("https:")||t.startsWith("file:")?`${t}`:`${e}${o}${t}`;if(!n.toLocaleLowerCase().includes(".json"))throw new Error(`modelpath error: expecting json file: ${n}`);return n}var g=()=>typeof performance!="undefined"?performance.now():parseInt((Number(process.hrtime.bigint())/1e3/1e3).toString());function n5(e,t,o="config",A=[]){for(let n of Object.keys(t))if(typeof t[n]=="object")n5(e[n],t[n],n,A);else{let r=e&&typeof e[n]!="undefined";r||A.push({reason:"unknown property",where:`${o}.${n} = ${t[n]}`});let s=e&&typeof e[n]==typeof t[n];r&&!s&&A.push({reason:"property type mismatch",where:`${o}.${n} = ${t[n]}`,expected:typeof e[n]})}return t.debug&&o==="config"&&A.length>0&&b("invalid configuration",A),A}function c0(...e){let t=o=>o&&typeof o=="object";return e.reduce((o,A)=>(Object.keys(A||{}).forEach(n=>{let r=o[n],s=A[n];Array.isArray(r)&&Array.isArray(s)?o[n]=r.concat(...s):t(r)&&t(s)?o[n]=c0(r,s):o[n]=s}),o),{})}var ye={backend:"",modelBasePath:"",cacheModels:!0,wasmPath:"",wasmPlatformFetch:!1,debug:!0,async:!0,warmup:"full",cacheSensitivity:.7,skipAllowed:!1,deallocate:!1,filter:{enabled:!0,equalization:!1,width:0,height:0,flip:!1,return:!0,brightness:0,contrast:0,sharpness:0,blur:0,saturation:0,hue:0,negative:!1,sepia:!1,vintage:!1,kodachrome:!1,technicolor:!1,polaroid:!1,pixelate:0},gesture:{enabled:!0},face:{enabled:!0,detector:{modelPath:"blazeface.json",rotation:!0,maxDetected:1,skipFrames:99,skipTime:2500,minConfidence:.2,iouThreshold:.1,mask:!1,return:!1},mesh:{enabled:!0,modelPath:"facemesh.json"},iris:{enabled:!0,modelPath:"iris.json"},emotion:{enabled:!0,minConfidence:.1,skipFrames:99,skipTime:1500,modelPath:"emotion.json"},description:{enabled:!0,modelPath:"faceres.json",skipFrames:99,skipTime:3e3,minConfidence:.1},antispoof:{enabled:!1,skipFrames:99,skipTime:4e3,modelPath:"antispoof.json"},liveness:{enabled:!1,skipFrames:99,skipTime:4e3,modelPath:"liveness.json"}},body:{enabled:!0,modelPath:"movenet-lightning.json",maxDetected:-1,minConfidence:.3,skipFrames:1,skipTime:200},hand:{enabled:!0,rotation:!0,skipFrames:99,skipTime:1e3,minConfidence:.5,iouThreshold:.2,maxDetected:-1,landmarks:!0,detector:{modelPath:"handtrack.json"},skeleton:{modelPath:"handlandmark-full.json"}},object:{enabled:!1,modelPath:"mb3-centernet.json",minConfidence:.2,iouThreshold:.4,maxDetected:10,skipFrames:99,skipTime:2e3},segmentation:{enabled:!1,modelPath:"selfie.json",blur:8}};var d0=V(F());var W=V(F());var Uo=`
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __commonJS = (cb, mod3) => function __require() {
+  return mod3 || (0, cb[__getOwnPropNames(cb)[0]])((mod3 = { exports: {} }).exports, mod3), mod3.exports;
+};
+var __export = (target, all2) => {
+  for (var name in all2)
+    __defProp(target, name, { get: all2[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod3, isNodeMode, target) => (target = mod3 != null ? __create(__getProtoOf(mod3)) : {}, __copyProps(isNodeMode || !mod3 || !mod3.__esModule ? __defProp(target, "default", { value: mod3, enumerable: true }) : target, mod3));
+var __toCommonJS = (mod3) => __copyProps(__defProp({}, "__esModule", { value: true }), mod3);
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+var __accessCheck = (obj, member, msg) => {
+  if (!member.has(obj))
+    throw TypeError("Cannot " + msg);
+};
+var __privateGet = (obj, member, getter) => {
+  __accessCheck(obj, member, "read from private field");
+  return getter ? getter.call(obj) : member.get(obj);
+};
+var __privateAdd = (obj, member, value) => {
+  if (member.has(obj))
+    throw TypeError("Cannot add the same private member more than once");
+  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+};
+var __privateSet = (obj, member, value, setter) => {
+  __accessCheck(obj, member, "write to private field");
+  setter ? setter.call(obj, value) : member.set(obj, value);
+  return value;
+};
+
+// dist/tfjs.esm.js
+var require_tfjs_esm = __commonJS({
+  "dist/tfjs.esm.js"(exports, module2) {
+    var __defProp2 = Object.defineProperty;
+    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames2 = Object.getOwnPropertyNames;
+    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+    var __copyProps2 = (to, from, except, desc) => {
+      if (from && typeof from === "object" || typeof from === "function") {
+        for (let key of __getOwnPropNames2(from))
+          if (!__hasOwnProp2.call(to, key) && key !== except)
+            __defProp2(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
+      }
+      return to;
+    };
+    var __reExport = (target, mod3, secondTarget) => (__copyProps2(target, mod3, "default"), secondTarget && __copyProps2(secondTarget, mod3, "default"));
+    var __toCommonJS2 = (mod3) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod3);
+    var tf_node_exports = {};
+    module2.exports = __toCommonJS2(tf_node_exports);
+    __reExport(tf_node_exports, require("@tensorflow/tfjs-node"), module2.exports);
+  }
+});
+
+// src/human.ts
+var human_exports = {};
+__export(human_exports, {
+  Human: () => Human,
+  default: () => Human,
+  defaults: () => config,
+  draw: () => draw_exports,
+  env: () => env,
+  match: () => match_exports,
+  models: () => models_exports
+});
+module.exports = __toCommonJS(human_exports);
+
+// src/util/util.ts
+function log(...msg) {
+  const dt = new Date();
+  const ts = `${dt.getHours().toString().padStart(2, "0")}:${dt.getMinutes().toString().padStart(2, "0")}:${dt.getSeconds().toString().padStart(2, "0")}.${dt.getMilliseconds().toString().padStart(3, "0")}`;
+  if (msg)
+    console.log(ts, "Human:", ...msg);
+}
+function join(folder, file) {
+  const separator = folder.endsWith("/") ? "" : "/";
+  const skipJoin = file.startsWith(".") || file.startsWith("/") || file.startsWith("http:") || file.startsWith("https:") || file.startsWith("file:");
+  const path = skipJoin ? `${file}` : `${folder}${separator}${file}`;
+  if (!path.toLocaleLowerCase().includes(".json"))
+    throw new Error(`modelpath error: expecting json file: ${path}`);
+  return path;
+}
+var now = () => {
+  if (typeof performance !== "undefined")
+    return performance.now();
+  return parseInt((Number(process.hrtime.bigint()) / 1e3 / 1e3).toString());
+};
+function validate(defaults, config3, parent = "config", msgs = []) {
+  for (const key of Object.keys(config3)) {
+    if (typeof config3[key] === "object") {
+      validate(defaults[key], config3[key], key, msgs);
+    } else {
+      const defined = defaults && typeof defaults[key] !== "undefined";
+      if (!defined)
+        msgs.push({ reason: "unknown property", where: `${parent}.${key} = ${config3[key]}` });
+      const same = defaults && typeof defaults[key] === typeof config3[key];
+      if (defined && !same)
+        msgs.push({ reason: "property type mismatch", where: `${parent}.${key} = ${config3[key]}`, expected: typeof defaults[key] });
+    }
+  }
+  if (config3.debug && parent === "config" && msgs.length > 0)
+    log("invalid configuration", msgs);
+  return msgs;
+}
+function mergeDeep(...objects) {
+  const isObject = (obj) => obj && typeof obj === "object";
+  return objects.reduce((prev, obj) => {
+    Object.keys(obj || {}).forEach((key) => {
+      const pVal = prev[key];
+      const oVal = obj[key];
+      if (Array.isArray(pVal) && Array.isArray(oVal))
+        prev[key] = pVal.concat(...oVal);
+      else if (isObject(pVal) && isObject(oVal))
+        prev[key] = mergeDeep(pVal, oVal);
+      else
+        prev[key] = oVal;
+    });
+    return prev;
+  }, {});
+}
+
+// src/config.ts
+var config = {
+  backend: "",
+  modelBasePath: "",
+  cacheModels: true,
+  wasmPath: "",
+  wasmPlatformFetch: false,
+  debug: true,
+  async: true,
+  warmup: "full",
+  cacheSensitivity: 0.7,
+  skipAllowed: false,
+  deallocate: false,
+  filter: {
+    enabled: true,
+    equalization: false,
+    width: 0,
+    height: 0,
+    flip: false,
+    return: true,
+    brightness: 0,
+    contrast: 0,
+    sharpness: 0,
+    blur: 0,
+    saturation: 0,
+    hue: 0,
+    negative: false,
+    sepia: false,
+    vintage: false,
+    kodachrome: false,
+    technicolor: false,
+    polaroid: false,
+    pixelate: 0
+  },
+  gesture: {
+    enabled: true
+  },
+  face: {
+    enabled: true,
+    detector: {
+      modelPath: "blazeface.json",
+      rotation: true,
+      maxDetected: 1,
+      skipFrames: 99,
+      skipTime: 2500,
+      minConfidence: 0.2,
+      iouThreshold: 0.1,
+      mask: false,
+      return: false
+    },
+    mesh: {
+      enabled: true,
+      modelPath: "facemesh.json"
+    },
+    iris: {
+      enabled: true,
+      modelPath: "iris.json"
+    },
+    emotion: {
+      enabled: true,
+      minConfidence: 0.1,
+      skipFrames: 99,
+      skipTime: 1500,
+      modelPath: "emotion.json"
+    },
+    description: {
+      enabled: true,
+      modelPath: "faceres.json",
+      skipFrames: 99,
+      skipTime: 3e3,
+      minConfidence: 0.1
+    },
+    antispoof: {
+      enabled: false,
+      skipFrames: 99,
+      skipTime: 4e3,
+      modelPath: "antispoof.json"
+    },
+    liveness: {
+      enabled: false,
+      skipFrames: 99,
+      skipTime: 4e3,
+      modelPath: "liveness.json"
+    }
+  },
+  body: {
+    enabled: true,
+    modelPath: "movenet-lightning.json",
+    maxDetected: -1,
+    minConfidence: 0.3,
+    skipFrames: 1,
+    skipTime: 200
+  },
+  hand: {
+    enabled: true,
+    rotation: true,
+    skipFrames: 99,
+    skipTime: 1e3,
+    minConfidence: 0.5,
+    iouThreshold: 0.2,
+    maxDetected: -1,
+    landmarks: true,
+    detector: {
+      modelPath: "handtrack.json"
+    },
+    skeleton: {
+      modelPath: "handlandmark-full.json"
+    }
+  },
+  object: {
+    enabled: false,
+    modelPath: "mb3-centernet.json",
+    minConfidence: 0.2,
+    iouThreshold: 0.4,
+    maxDetected: 10,
+    skipFrames: 99,
+    skipTime: 2e3
+  },
+  segmentation: {
+    enabled: false,
+    modelPath: "selfie.json",
+    blur: 8
+  }
+};
+
+// src/util/env.ts
+var tf3 = __toESM(require_tfjs_esm());
+
+// src/image/image.ts
+var tf2 = __toESM(require_tfjs_esm());
+
+// src/image/imagefxshaders.ts
+var vertexIdentity = `
   precision highp float;
   attribute vec2 pos;
   attribute vec2 uv;
@@ -14,7 +283,8 @@ var Xr=Object.create;var et=Object.defineProperty;var Dr=Object.getOwnPropertyDe
     vUv = uv;
     gl_Position = vec4(pos.x, pos.y*flipY, 0.0, 1.);
   }
-`;var Jo=`
+`;
+var colorMatrixWithAlpha = `
   precision highp float;
   varying vec2 vUv;
   uniform sampler2D texture;
@@ -26,7 +296,8 @@ var Xr=Object.create;var et=Object.defineProperty;var Dr=Object.getOwnPropertyDe
     gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[13] * c.a + m[14];
     gl_FragColor.a = m[15] * c.r + m[16] * c.g + m[17] * c.b + m[18] * c.a + m[19];
   }
-`,Yo=`
+`;
+var colorMatrixWithoutAlpha = `
   precision highp float;
   varying vec2 vUv;
   uniform sampler2D texture;
@@ -38,7 +309,8 @@ var Xr=Object.create;var et=Object.defineProperty;var Dr=Object.getOwnPropertyDe
     gl_FragColor.b = m[10] * c.r + m[11] * c.g + m[12] * c.b + m[14];
     gl_FragColor.a = c.a;
   }
-`,Ko=`
+`;
+var pixelate = `
   precision highp float;
   varying vec2 vUv;
   uniform vec2 size;
@@ -51,7 +323,8 @@ var Xr=Object.create;var et=Object.defineProperty;var Dr=Object.getOwnPropertyDe
     vec2 coord = pixelate(vUv, size);
     gl_FragColor += texture2D(texture, coord);
   }
-`,Qo=`
+`;
+var blur = `
   precision highp float;
   varying vec2 vUv;
   uniform sampler2D texture;
@@ -74,7 +347,8 @@ var Xr=Object.create;var et=Object.defineProperty;var Dr=Object.getOwnPropertyDe
     gl_FragColor += texture2D(texture, vUv + vec2( 6.0*px.x,  6.0*px.y))*0.00895781211794;
     gl_FragColor += texture2D(texture, vUv + vec2( 7.0*px.x,  7.0*px.y))*0.0044299121055113265;
   }
-`,_o=`
+`;
+var convolution = `
   precision highp float;
   varying vec2 vUv;
   uniform sampler2D texture;
@@ -96,19 +370,12203 @@ var Xr=Object.create;var et=Object.defineProperty;var Dr=Object.getOwnPropertyDe
     c31 * m[6] + c32 * m[7] + c33 * m[8];
     gl_FragColor.a = c22.a;
   }
-`;var a5=(e,t,o)=>{let A=new RegExp("\\b"+t+" \\w+ (\\w+)","ig");e.replace(A,(n,r)=>(o[r]=0,n))},$o=class{constructor(t,o,A){w(this,"uniform",{});w(this,"attribute",{});w(this,"gl");w(this,"id");w(this,"compile",(t,o)=>{let A=this.gl.createShader(o);return A?(this.gl.shaderSource(A,t),this.gl.compileShader(A),this.gl.getShaderParameter(A,this.gl.COMPILE_STATUS)?A:(b(`filter: gl compile failed: ${this.gl.getShaderInfoLog(A)}`),null)):(b("filter: could not create shader"),null)});this.gl=t;let n=this.compile(o,this.gl.VERTEX_SHADER),r=this.compile(A,this.gl.FRAGMENT_SHADER);if(this.id=this.gl.createProgram(),!(!n||!r)){if(!this.id){b("filter: could not create webgl program");return}if(this.gl.attachShader(this.id,n),this.gl.attachShader(this.id,r),this.gl.linkProgram(this.id),!this.gl.getProgramParameter(this.id,this.gl.LINK_STATUS)){b(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);return}this.gl.useProgram(this.id),a5(o,"attribute",this.attribute);for(let s in this.attribute)this.attribute[s]=this.gl.getAttribLocation(this.id,s);a5(o,"uniform",this.uniform),a5(A,"uniform",this.uniform);for(let s in this.uniform)this.uniform[s]=this.gl.getUniformLocation(this.id,s)}}};function eA(){let e=0,t=null,o=!1,A=-1,n=[null,null],r=[],s=null,a=null,y=h0(100,100),c={},i={INTERMEDIATE:1},l=y.getContext("webgl");if(this.gl=l,!l){b("filter: cannot get webgl context");return}function x(P,m){if(!(P===y.width&&m===y.height)){if(y.width=P,y.height=m,!s){let p=new Float32Array([-1,-1,0,1,1,-1,1,1,-1,1,0,0,-1,1,0,0,1,-1,1,1,1,1,1,0]);s=l.createBuffer(),l.bindBuffer(l.ARRAY_BUFFER,s),l.bufferData(l.ARRAY_BUFFER,p,l.STATIC_DRAW),l.pixelStorei(l.UNPACK_PREMULTIPLY_ALPHA_WEBGL,!0)}l.viewport(0,0,y.width,y.height),n=[null,null]}}function d(P,m){let p=l.createFramebuffer();l.bindFramebuffer(l.FRAMEBUFFER,p);let k=l.createRenderbuffer();l.bindRenderbuffer(l.RENDERBUFFER,k);let C=l.createTexture();return l.bindTexture(l.TEXTURE_2D,C),l.texImage2D(l.TEXTURE_2D,0,l.RGBA,P,m,0,l.RGBA,l.UNSIGNED_BYTE,null),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_MAG_FILTER,l.LINEAR),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_MIN_FILTER,l.LINEAR),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_WRAP_S,l.CLAMP_TO_EDGE),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_WRAP_T,l.CLAMP_TO_EDGE),l.framebufferTexture2D(l.FRAMEBUFFER,l.COLOR_ATTACHMENT0,l.TEXTURE_2D,C,0),l.bindTexture(l.TEXTURE_2D,null),l.bindFramebuffer(l.FRAMEBUFFER,null),{fbo:p,texture:C}}function u(P){return n[P]=n[P]||d(y.width,y.height),n[P]}function f(P=0){if(!a)return;let m=null,p=null,k=!1;e===0?m=t:m=u(A).texture||null,e++,o&&!(P&i.INTERMEDIATE)?(p=null,k=e%2===0):(A=(A+1)%2,p=u(A).fbo||null),l.bindTexture(l.TEXTURE_2D,m),l.bindFramebuffer(l.FRAMEBUFFER,p),l.uniform1f(a.uniform.flipY,k?-1:1),l.drawArrays(l.TRIANGLES,0,6)}function M(P){if(c[P])return a=c[P],l.useProgram((a?a.id:null)||null),a;if(a=new $o(l,Uo,P),!a)return b("filter: could not get webgl program"),null;let m=Float32Array.BYTES_PER_ELEMENT,p=4*m;return l.enableVertexAttribArray(a.attribute.pos),l.vertexAttribPointer(a.attribute.pos,2,l.FLOAT,!1,p,0*m),l.enableVertexAttribArray(a.attribute.uv),l.vertexAttribPointer(a.attribute.uv,2,l.FLOAT,!1,p,2*m),c[P]=a,a}let h={colorMatrix:P=>{let m=new Float32Array(P);m[4]/=255,m[9]/=255,m[14]/=255,m[19]/=255;let p=m[18]===1&&m[3]===0&&m[8]===0&&m[13]===0&&m[15]===0&&m[16]===0&&m[17]===0&&m[19]===0?Yo:Jo,k=M(p);!k||(l.uniform1fv(k.uniform.m,m),f())},brightness:P=>{let m=(P||0)+1;h.colorMatrix([m,0,0,0,0,0,m,0,0,0,0,0,m,0,0,0,0,0,1,0])},saturation:P=>{let m=(P||0)*2/3+1,p=(m-1)*-.5;h.colorMatrix([m,p,p,0,0,p,m,p,0,0,p,p,m,0,0,0,0,0,1,0])},desaturate:()=>{h.saturation(-1)},contrast:P=>{let m=(P||0)+1,p=-128*(m-1);h.colorMatrix([m,0,0,0,p,0,m,0,0,p,0,0,m,0,p,0,0,0,1,0])},negative:()=>{h.contrast(-2)},hue:P=>{P=(P||0)/180*Math.PI;let m=Math.cos(P),p=Math.sin(P),k=.213,C=.715,O=.072;h.colorMatrix([k+m*(1-k)+p*-k,C+m*-C+p*-C,O+m*-O+p*(1-O),0,0,k+m*-k+p*.143,C+m*(1-C)+p*.14,O+m*-O+p*-.283,0,0,k+m*-k+p*-(1-k),C+m*-C+p*C,O+m*(1-O)+p*O,0,0,0,0,0,1,0])},desaturateLuminance:()=>{h.colorMatrix([.2764723,.929708,.0938197,0,-37.1,.2764723,.929708,.0938197,0,-37.1,.2764723,.929708,.0938197,0,-37.1,0,0,0,1,0])},sepia:()=>{h.colorMatrix([.393,.7689999,.18899999,0,0,.349,.6859999,.16799999,0,0,.272,.5339999,.13099999,0,0,0,0,0,1,0])},brownie:()=>{h.colorMatrix([.5997023498159715,.34553243048391263,-.2708298674538042,0,47.43192855600873,-.037703249837783157,.8609577587992641,.15059552388459913,0,-36.96841498319127,.24113635128153335,-.07441037908422492,.44972182064877153,0,-7.562075277591283,0,0,0,1,0])},vintagePinhole:()=>{h.colorMatrix([.6279345635605994,.3202183420819367,-.03965408211312453,0,9.651285835294123,.02578397704808868,.6441188644374771,.03259127616149294,0,7.462829176470591,.0466055556782719,-.0851232987247891,.5241648018700465,0,5.159190588235296,0,0,0,1,0])},kodachrome:()=>{h.colorMatrix([1.1285582396593525,-.3967382283601348,-.03992559172921793,0,63.72958762196502,-.16404339962244616,1.0835251566291304,-.05498805115633132,0,24.732407896706203,-.16786010706155763,-.5603416277695248,1.6014850761964943,0,35.62982807460946,0,0,0,1,0])},technicolor:()=>{h.colorMatrix([1.9125277891456083,-.8545344976951645,-.09155508482755585,0,11.793603434377337,-.3087833385928097,1.7658908555458428,-.10601743074722245,0,-70.35205161461398,-.231103377548616,-.7501899197440212,1.847597816108189,0,30.950940869491138,0,0,0,1,0])},polaroid:()=>{h.colorMatrix([1.438,-.062,-.062,0,0,-.122,1.378,-.122,0,0,-.016,-.016,1.483,0,0,0,0,0,1,0])},shiftToBGR:()=>{h.colorMatrix([0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0])},convolution:P=>{let m=new Float32Array(P),p=1/y.width,k=1/y.height,C=M(_o);!C||(l.uniform1fv(C.uniform.m,m),l.uniform2f(C.uniform.px,p,k),f())},detectEdges:()=>{h.convolution.call(this,[0,1,0,1,-4,1,0,1,0])},sobelX:()=>{h.convolution.call(this,[-1,0,1,-2,0,2,-1,0,1])},sobelY:()=>{h.convolution.call(this,[-1,-2,-1,0,0,0,1,2,1])},sharpen:P=>{let m=P||1;h.convolution.call(this,[0,-1*m,0,-1*m,1+4*m,-1*m,0,-1*m,0])},emboss:P=>{let m=P||1;h.convolution.call(this,[-2*m,-1*m,0,-1*m,1,1*m,0,1*m,2*m])},blur:P=>{let m=P/7/y.width,p=P/7/y.height,k=M(Qo);!k||(l.uniform2f(k.uniform.px,0,p),f(i.INTERMEDIATE),l.uniform2f(k.uniform.px,m,0),f())},pixelate:P=>{let m=P/y.width,p=P/y.height,k=M(Ko);!k||(l.uniform2f(k.uniform.size,m,p),f())}};this.add=function(P){let m=Array.prototype.slice.call(arguments,1),p=h[P];r.push({func:p,args:m})},this.reset=function(){r=[]},this.get=function(){return r},this.apply=function(P){x(P.width,P.height),e=0,t||(t=l.createTexture()),l.bindTexture(l.TEXTURE_2D,t),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_WRAP_S,l.CLAMP_TO_EDGE),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_WRAP_T,l.CLAMP_TO_EDGE),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_MIN_FILTER,l.NEAREST),l.texParameteri(l.TEXTURE_2D,l.TEXTURE_MAG_FILTER,l.NEAREST),l.texImage2D(l.TEXTURE_2D,0,l.RGBA,l.RGBA,l.UNSIGNED_BYTE,P);for(let m=0;m<r.length;m++){o=m===r.length-1;let p=r[m];p.func.apply(this,p.args||[])}return y},this.draw=function(P){return this.add("brightness",0),this.apply(P)}}var X=V(F());async function ut(e){let t=e.shape.length===4?X.squeeze(e):e,o=X.split(t,3,2),A=[X.min(o[0]),X.min(o[1]),X.min(o[2])],n=[X.max(o[0]),X.max(o[1]),X.max(o[2])],r=await Promise.all(n.map(d=>d.data())),s=.99*Math.max(r[0][0],r[1][0],r[2][0]),a=[X.sub(o[0],A[0]),X.sub(o[1],A[1]),X.sub(o[2],A[2])],y=[X.sub(n[0],A[0]),X.sub(n[1],A[1]),X.sub(n[2],A[2])],c=[X.div(s,y[0]),X.div(s,y[1]),X.div(s,y[2])],i=[X.mul(a[0],c[0]),X.mul(a[1],c[1]),X.mul(a[2],c[2])],l=X.stack([i[0],i[1],i[2]],2),x=X.reshape(l,[1,t.shape[0],t.shape[1],3]);return X.dispose([...o,...A,...n,...a,...y,...c,...i,l,t]),x}var ht=2048,D=null,i0=null,We=null,_,Q0={inputSum:0,cacheDiff:1,sumMethod:0,inputTensor:void 0};function h0(e,t){let o;if(T.browser)if(T.worker){if(typeof OffscreenCanvas=="undefined")throw new Error("canvas error: attempted to run in web worker but OffscreenCanvas is not supported");o=new OffscreenCanvas(e,t)}else{if(typeof document=="undefined")throw new Error("canvas error: attempted to run in browser but DOM is not defined");o=document.createElement("canvas"),o.width=e,o.height=t}else typeof T.Canvas!="undefined"?o=new T.Canvas(e,t):typeof globalThis.Canvas!="undefined"&&(o=new globalThis.Canvas(e,t));return o}function i5(e,t){let o=t||h0(e.width,e.height);return o.getContext("2d").drawImage(e,0,0),o}async function Ce(e,t,o=!0){if(!e)return t.debug&&b("input error: input is missing"),{tensor:null,canvas:null};if(!(e instanceof W.Tensor)&&!(typeof Image!="undefined"&&e instanceof Image)&&!(typeof T.Canvas!="undefined"&&e instanceof T.Canvas)&&!(typeof globalThis.Canvas!="undefined"&&e instanceof globalThis.Canvas)&&!(typeof ImageData!="undefined"&&e instanceof ImageData)&&!(typeof ImageBitmap!="undefined"&&e instanceof ImageBitmap)&&!(typeof HTMLImageElement!="undefined"&&e instanceof HTMLImageElement)&&!(typeof HTMLMediaElement!="undefined"&&e instanceof HTMLMediaElement)&&!(typeof HTMLVideoElement!="undefined"&&e instanceof HTMLVideoElement)&&!(typeof HTMLCanvasElement!="undefined"&&e instanceof HTMLCanvasElement)&&!(typeof OffscreenCanvas!="undefined"&&e instanceof OffscreenCanvas))throw new Error("input error: type is not recognized");if(e instanceof W.Tensor){let A=null;if(e.isDisposedInternal)throw new Error("input error: attempted to use tensor but it is disposed");if(!e.shape)throw new Error("input error: attempted to use tensor without a shape");if(e.shape.length===3){if(e.shape[2]===3)A=W.expandDims(e,0);else if(e.shape[2]===4){let n=W.slice3d(e,[0,0,0],[-1,-1,3]);A=W.expandDims(n,0),W.dispose(n)}}else e.shape.length===4&&(e.shape[3]===3?A=W.clone(e):e.shape[3]===4&&(A=W.slice4d(e,[0,0,0,0],[-1,-1,-1,3])));if(A==null||A.shape.length!==4||A.shape[0]!==1||A.shape[3]!==3)throw new Error(`input error: attempted to use tensor with unrecognized shape: ${e.shape}`);if(A.dtype==="int32"){let n=W.cast(A,"float32");W.dispose(A),A=n}return{tensor:A,canvas:t.filter.return?i0:null}}else{if(typeof e.readyState!="undefined"&&e.readyState<=2)return t.debug&&b("input stream is not ready"),{tensor:null,canvas:D};let A=e.naturalWidth||e.videoWidth||e.width||e.shape&&e.shape[1]>0,n=e.naturalHeight||e.videoHeight||e.height||e.shape&&e.shape[2]>0;if(!A||!n)return t.debug&&b("cannot determine input dimensions"),{tensor:null,canvas:D};let r=A,s=n;if(r>ht&&(r=ht,s=Math.trunc(r*n/A)),s>ht&&(s=ht,r=Math.trunc(s*A/n)),(t.filter.width||0)>0?r=t.filter.width:(t.filter.height||0)>0&&(r=A*((t.filter.height||0)/n)),(t.filter.height||0)>0?s=t.filter.height:(t.filter.width||0)>0&&(s=n*((t.filter.width||0)/A)),!r||!s)throw new Error("input error: cannot determine dimension");(!D||(D==null?void 0:D.width)!==r||(D==null?void 0:D.height)!==s)&&(D=h0(r,s));let a=D.getContext("2d");if(typeof ImageData!="undefined"&&e instanceof ImageData?a.putImageData(e,0,0):t.filter.flip&&typeof a.translate!="undefined"?(a.translate(A,0),a.scale(-1,1),a.drawImage(e,0,0,A,n,0,0,D==null?void 0:D.width,D==null?void 0:D.height),a.setTransform(1,0,0,1,0,0)):a.drawImage(e,0,0,A,n,0,0,D==null?void 0:D.width,D==null?void 0:D.height),(!i0||D.width!==i0.width||(D==null?void 0:D.height)!==(i0==null?void 0:i0.height))&&(i0=h0(D.width,D.height)),t.filter.enabled&&T.webgl.supported){if(_||(_=T.browser?new eA:null),T.filter=!!_,!_||!_.add)return t.debug&&b("input process error: cannot initialize filters"),{tensor:null,canvas:D};_.reset(),t.filter.brightness!==0&&_.add("brightness",t.filter.brightness),t.filter.contrast!==0&&_.add("contrast",t.filter.contrast),t.filter.sharpness!==0&&_.add("sharpen",t.filter.sharpness),t.filter.blur!==0&&_.add("blur",t.filter.blur),t.filter.saturation!==0&&_.add("saturation",t.filter.saturation),t.filter.hue!==0&&_.add("hue",t.filter.hue),t.filter.negative&&_.add("negative"),t.filter.sepia&&_.add("sepia"),t.filter.vintage&&_.add("brownie"),t.filter.sepia&&_.add("sepia"),t.filter.kodachrome&&_.add("kodachrome"),t.filter.technicolor&&_.add("technicolor"),t.filter.polaroid&&_.add("polaroid"),t.filter.pixelate!==0&&_.add("pixelate",t.filter.pixelate),_.get()>0?i0=_.apply(D):i0=_.draw(D)}else i5(D,i0),_&&(_=null),T.filter=!!_;if(!o)return{tensor:null,canvas:i0};if(!i0)throw new Error("canvas error: cannot create output");let y,c=3;if(typeof ImageData!="undefined"&&e instanceof ImageData||e.data&&e.width&&e.height)if(T.browser&&W.browser)y=W.browser?W.browser.fromPixels(e):null;else{c=e.data.length/e.height/e.width;let x=new Uint8Array(e.data.buffer);y=W.tensor(x,[e.height,e.width,c],"int32")}else if((!We||i0.width!==We.width||i0.height!==We.height)&&(We=h0(i0.width,i0.height)),W.browser&&T.browser)t.backend==="webgl"||t.backend==="humangl"||t.backend==="webgpu"?y=W.browser.fromPixels(i0):(We=i5(i0),y=W.browser.fromPixels(We));else{let u=i5(i0).getContext("2d").getImageData(0,0,r,s);c=u.data.length/r/s;let f=new Uint8Array(u.data.buffer);y=W.tensor(f,[r,s,c])}if(c===4){let x=W.slice3d(y,[0,0,0],[-1,-1,3]);W.dispose(y),y=x}if(!y)throw new Error("input error: cannot create tensor");let i=W.cast(y,"float32"),l=t.filter.equalization?await ut(i):W.expandDims(i,0);return W.dispose([y,i]),{tensor:l,canvas:t.filter.return?i0:null}}}async function tA(e,t){let o=!1;if(e.cacheSensitivity===0||!t.shape||t.shape.length!==4||t.shape[1]>2048||t.shape[2]>2048)return o;if(!Q0.inputTensor)Q0.inputTensor=W.clone(t);else if(Q0.inputTensor.shape[1]!==t.shape[1]||Q0.inputTensor.shape[2]!==t.shape[2])W.dispose(Q0.inputTensor),Q0.inputTensor=W.clone(t);else{let A={};A.diff=W.sub(t,Q0.inputTensor),A.squared=W.mul(A.diff,A.diff),A.sum=W.sum(A.squared);let r=(await A.sum.data())[0]/(t.shape[1]||1)/(t.shape[2]||1)/255/3;W.dispose([Q0.inputTensor,A.diff,A.squared,A.sum]),Q0.inputTensor=W.clone(t),o=r<=(e.cacheSensitivity||0)}return o}async function oA(e,t,o){let A={};if(!t||!o||t.shape.length!==4||t.shape.length!==o.shape.length)return e.debug||b("invalid input tensor or tensor shapes do not match:",t.shape,o.shape),0;if(t.shape[0]!==1||o.shape[0]!==1||t.shape[3]!==3||o.shape[3]!==3)return e.debug||b("input tensors must be of shape [1, height, width, 3]:",t.shape,o.shape),0;A.input1=W.clone(t),A.input2=t.shape[1]!==o.shape[1]||t.shape[2]!==o.shape[2]?W.image.resizeBilinear(o,[t.shape[1],t.shape[2]]):W.clone(o),A.diff=W.sub(A.input1,A.input2),A.squared=W.mul(A.diff,A.diff),A.sum=W.sum(A.squared);let r=(await A.sum.data())[0]/(t.shape[1]||1)/(t.shape[2]||1)/255/3;return W.dispose([A.input1,A.input2,A.diff,A.squared,A.sum]),r}var AA=class{constructor(){w(this,"browser");w(this,"node");w(this,"worker");w(this,"platform","");w(this,"agent","");w(this,"backends",[]);w(this,"initial");w(this,"filter");w(this,"tfjs");w(this,"offscreen");w(this,"perfadd",!1);w(this,"wasm",{supported:void 0,backend:void 0,simd:void 0,multithread:void 0});w(this,"webgl",{supported:void 0,backend:void 0,version:void 0,renderer:void 0});w(this,"webgpu",{supported:void 0,backend:void 0,adapter:void 0});w(this,"cpu",{model:void 0,flags:[]});w(this,"kernels",[]);w(this,"Canvas");w(this,"Image");w(this,"ImageData");if(this.browser=typeof navigator!="undefined",this.node=typeof process!="undefined"&&typeof process.versions!="undefined"&&typeof process.versions.node!="undefined",this.tfjs={version:d0.version["tfjs-core"]},this.offscreen=typeof OffscreenCanvas!="undefined",this.initial=!0,this.worker=this.browser&&this.offscreen?typeof WorkerGlobalScope!="undefined":void 0,typeof navigator!="undefined"){let t=navigator.userAgent.match(/\(([^()]+)\)/g);if(t&&t[0]){let o=t[0].match(/\(([^()]+)\)/g);this.platform=o&&o[0]?o[0].replace(/\(|\)/g,""):"",this.agent=navigator.userAgent.replace(t[0],""),this.platform[1]&&(this.agent=this.agent.replace(t[1],"")),this.agent=this.agent.replace(/  /g," ")}}else typeof process!="undefined"&&(this.platform=`${process.platform} ${process.arch}`,this.agent=`NodeJS ${process.version}`)}async updateBackend(){this.backends=Object.keys(d0.engine().registryFactory),this.wasm.supported=typeof WebAssembly!="undefined",this.wasm.backend=this.backends.includes("wasm"),this.wasm.supported&&this.wasm.backend&&d0.getBackend()==="wasm"&&(this.wasm.simd=await d0.env().getAsync("WASM_HAS_SIMD_SUPPORT"),this.wasm.multithread=await d0.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT"));let t=h0(100,100),o=t?t.getContext("webgl2"):void 0;if(this.webgl.supported=typeof o!="undefined",this.webgl.backend=this.backends.includes("webgl"),this.webgl.supported&&this.webgl.backend&&(d0.getBackend()==="webgl"||d0.getBackend()==="humangl")){let A=d0.backend().gpgpu!=="undefined"?await d0.backend().getGPGPUContext().gl:null;A&&(this.webgl.version=A.getParameter(A.VERSION),this.webgl.renderer=A.getParameter(A.RENDERER))}this.webgpu.supported=this.browser&&typeof navigator.gpu!="undefined",this.webgpu.backend=this.backends.includes("webgpu");try{this.webgpu.supported&&(this.webgpu.adapter=(await navigator.gpu.requestAdapter()).name)}catch(A){this.webgpu.supported=!1}try{this.kernels=d0.getKernelsForBackend(d0.getBackend()).map(A=>A.kernelName.toLowerCase())}catch(A){}}async updateCPU(){let t={model:"",flags:[]};this.node&&this.platform.startsWith("linux"),this.cpu?this.cpu=t:Object.defineProperty(this,"cpu",{value:t})}},T=new AA;var bt=V(F()),_0={cacheModels:!1,verbose:!0,debug:!1,modelBasePath:""};async function s2(e,t){return _0.debug&&b("load model fetch:",e,t),fetch(e,t)}function nA(e){_0.cacheModels=e.cacheModels,_0.verbose=e.debug,_0.modelBasePath=e.modelBasePath}async function B(e){let t=Xo(_0.modelBasePath,e||""),o=t.split("/"),A="indexeddb://"+o[o.length-1].replace(".json",""),n=await bt.io.listModels(),r=_0.cacheModels&&Object.keys(n).includes(A),s=typeof fetch=="undefined"?{}:{fetchFunc:(y,c)=>s2(y,c)},a=new bt.GraphModel(r?A:t,s);try{a.findIOHandler(),_0.debug&&b("model load handler:",a.handler);let y=await a.handler.load();a.loadSync(y),_0.verbose&&b("load model:",a.modelUrl)}catch(y){b("error loading model:",t,y)}if(_0.cacheModels&&!r)try{let y=await a.save(A);b("model saved:",A,y)}catch(y){b("error saving model:",t,y)}return a}var D0=V(F());var l5="2.6.4";var s0=V(F());var gt=V(F());var I0,y5=[],l2=["white","black","asian","indian","other"],y2=[15,23,28,35.5,45.5,55.5,65],rA=0,sA=0,x5=Number.MAX_SAFE_INTEGER;async function aA(e){return T.initial&&(I0=null),I0?e.debug&&b("cached model:",I0.modelUrl):I0=await B(e.face.gear),I0}async function c5(e,t,o,A){var s,a;if(!I0)return{age:0,gender:"unknown",genderScore:0,race:[]};let n=x5<(((s=t.face.gear)==null?void 0:s.skipFrames)||0),r=(((a=t.face.gear)==null?void 0:a.skipTime)||0)>g()-sA;return t.skipAllowed&&r&&n&&rA===A&&y5[o]?(x5++,y5[o]):(x5=0,new Promise(async y=>{var h,P;if(!(I0!=null&&I0.inputs[0].shape))return;let c={},i=[[0,.1,.9,.9]];c.resize=gt.image.cropAndResize(e,i,[0],[I0.inputs[0].shape[2],I0.inputs[0].shape[1]]);let l={age:0,gender:"unknown",genderScore:0,race:[]};(h=t.face.gear)!=null&&h.enabled&&([c.age,c.gender,c.race]=I0.execute(c.resize,["age_output","gender_output","race_output"]));let x=await c.gender.data();l.gender=x[0]>x[1]?"male":"female",l.genderScore=Math.round(100*(x[0]>x[1]?x[0]:x[1]))/100;let d=await c.race.data();for(let m=0;m<d.length;m++)d[m]>(((P=t.face.gear)==null?void 0:P.minConfidence)||.2)&&l.race.push({score:Math.round(100*d[m])/100,race:l2[m]});l.race.sort((m,p)=>p.score-m.score);let f=Array.from(await c.age.data()).map((m,p)=>[y2[p],m]).sort((m,p)=>p[1]-m[1]),M=f[0][0];for(let m=1;m<f.length;m++)M+=f[m][1]*(f[m][0]-M);l.age=Math.round(10*M)/10,Object.keys(c).forEach(m=>gt.dispose(c[m])),y5[o]=l,rA=A,sA=g(),y(l)}))}var Oe=V(F());var xe=V(F()),H={tf255:255,tf1:1,tf2:2,tf05:.5,tf127:127.5,rgb:[.2989,.587,.114]};function lA(){H.tf255=xe.scalar(255,"float32"),H.tf1=xe.scalar(1,"float32"),H.tf2=xe.scalar(2,"float32"),H.tf05=xe.scalar(.5,"float32"),H.tf127=xe.scalar(127.5,"float32"),H.rgb=xe.tensor1d([.2989,.587,.114],"float32")}var T0,Pt=[],yA=0,xA=0,d5=Number.MAX_SAFE_INTEGER;async function cA(e){return T.initial&&(T0=null),T0?e.debug&&b("cached model:",T0.modelUrl):T0=await B(e.face.ssrnet.modelPathAge),T0}async function f5(e,t,o,A){var s,a,y,c;if(!T0)return{age:0};let n=d5<(((s=t.face.ssrnet)==null?void 0:s.skipFrames)||0),r=(((a=t.face.ssrnet)==null?void 0:a.skipTime)||0)>g()-xA;return t.skipAllowed&&n&&r&&yA===A&&((y=Pt[o])==null?void 0:y.age)&&((c=Pt[o])==null?void 0:c.age)>0?(d5++,Pt[o]):(d5=0,new Promise(async i=>{if(!(T0!=null&&T0.inputs)||!T0.inputs[0]||!T0.inputs[0].shape)return;let l={};l.resize=Oe.image.resizeBilinear(e,[T0.inputs[0].shape[2],T0.inputs[0].shape[1]],!1),l.enhance=Oe.mul(l.resize,H.tf255);let x={age:0};if(t.face.ssrnet.enabled&&(l.age=T0.execute(l.enhance)),l.age){let d=await l.age.data();x.age=Math.trunc(10*d[0])/10}Object.keys(l).forEach(d=>Oe.dispose(l[d])),Pt[o]=x,yA=A,xA=g(),i(x)}))}var f0=V(F());var N0,Mt=[],fA=0,mA=0,m5=Number.MAX_SAFE_INTEGER,p5=[.2989,.587,.114];async function pA(e){return T.initial&&(N0=null),N0?e.debug&&b("cached model:",N0.modelUrl):N0=await B(e.face.ssrnet.modelPathGender),N0}async function u5(e,t,o,A){var s,a,y,c;if(!N0)return{gender:"unknown",genderScore:0};let n=m5<(((s=t.face.ssrnet)==null?void 0:s.skipFrames)||0),r=(((a=t.face.ssrnet)==null?void 0:a.skipTime)||0)>g()-mA;return t.skipAllowed&&n&&r&&fA===A&&((y=Mt[o])==null?void 0:y.gender)&&((c=Mt[o])==null?void 0:c.genderScore)>0?(m5++,Mt[o]):(m5=0,new Promise(async i=>{if(!(N0!=null&&N0.inputs[0].shape))return;let l={};l.resize=f0.image.resizeBilinear(e,[N0.inputs[0].shape[2],N0.inputs[0].shape[1]],!1),l.enhance=f0.tidy(()=>{let[u,f,M]=f0.split(l.resize,3,3),h=f0.mul(u,p5[0]),P=f0.mul(f,p5[1]),m=f0.mul(M,p5[2]),p=f0.addN([h,P,m]);return f0.mul(f0.sub(p,H.tf05),2)});let x={gender:"unknown",genderScore:0};t.face.ssrnet.enabled&&(l.gender=N0.execute(l.enhance));let d=await l.gender.data();x.gender=d[0]>d[1]?"female":"male",x.genderScore=d[0]>d[1]?Math.trunc(100*d[0])/100:Math.trunc(100*d[1])/100,Object.keys(l).forEach(u=>f0.dispose(l[u])),Mt[o]=x,fA=A,mA=g(),i(x)}))}var Tt=V(F());var m0,vt=[],h5=Number.MAX_SAFE_INTEGER,hA=0,bA=0;async function gA(e){var t;return T.initial&&(m0=null),m0?e.debug&&b("cached model:",m0.modelUrl):m0=await B((t=e.face.antispoof)==null?void 0:t.modelPath),m0}async function b5(e,t,o,A){var s,a;if(!m0)return 0;let n=(((s=t.face.antispoof)==null?void 0:s.skipTime)||0)>g()-bA,r=h5<(((a=t.face.antispoof)==null?void 0:a.skipFrames)||0);return t.skipAllowed&&n&&r&&hA===A&&vt[o]?(h5++,vt[o]):(h5=0,new Promise(async y=>{let c=Tt.image.resizeBilinear(e,[m0!=null&&m0.inputs[0].shape?m0.inputs[0].shape[2]:0,m0!=null&&m0.inputs[0].shape?m0.inputs[0].shape[1]:0],!1),i=m0==null?void 0:m0.execute(c),l=(await i.data())[0];vt[o]=Math.round(100*l)/100,hA=A,bA=g(),Tt.dispose([c,i]),y(vt[o])}))}var N=V(F());var $0=V(F());var L0={silhouette:[10,338,297,332,284,251,389,356,454,323,361,288,397,365,379,378,400,377,152,148,176,149,150,136,172,58,132,93,234,127,162,21,54,103,67,109],lipsUpperOuter:[61,185,40,39,37,0,267,269,270,409,291],lipsLowerOuter:[146,91,181,84,17,314,405,321,375,291],lipsUpperInner:[78,191,80,81,82,13,312,311,310,415,308],lipsLowerInner:[78,95,88,178,87,14,317,402,318,324,308],rightEyeUpper0:[246,161,160,159,158,157,173],rightEyeLower0:[33,7,163,144,145,153,154,155,133],rightEyeUpper1:[247,30,29,27,28,56,190],rightEyeLower1:[130,25,110,24,23,22,26,112,243],rightEyeUpper2:[113,225,224,223,222,221,189],rightEyeLower2:[226,31,228,229,230,231,232,233,244],rightEyeLower3:[143,111,117,118,119,120,121,128,245],rightEyebrowUpper:[156,70,63,105,66,107,55,193],rightEyebrowLower:[35,124,46,53,52,65],rightEyeIris:[473,474,475,476,477],leftEyeUpper0:[466,388,387,386,385,384,398],leftEyeLower0:[263,249,390,373,374,380,381,382,362],leftEyeUpper1:[467,260,259,257,258,286,414],leftEyeLower1:[359,255,339,254,253,252,256,341,463],leftEyeUpper2:[342,445,444,443,442,441,413],leftEyeLower2:[446,261,448,449,450,451,452,453,464],leftEyeLower3:[372,340,346,347,348,349,350,357,465],leftEyebrowUpper:[383,300,293,334,296,336,285,417],leftEyebrowLower:[265,353,276,283,282,295],leftEyeIris:[468,469,470,471,472],midwayBetweenEyes:[168],noseTip:[1],noseBottom:[2],noseRightCorner:[98],noseLeftCorner:[327],rightCheek:[205],leftCheek:[425]},g5={count:468,mouth:13,symmetryLine:[13,L0.midwayBetweenEyes[0]]},rt={leftEye:0,rightEye:1,nose:2,mouth:3,leftEar:4,rightEar:5,symmetryLine:[3,2]},P5=[{key:"EyeUpper0",indices:[9,10,11,12,13,14,15]},{key:"EyeUpper1",indices:[25,26,27,28,29,30,31]},{key:"EyeUpper2",indices:[41,42,43,44,45,46,47]},{key:"EyeLower0",indices:[0,1,2,3,4,5,6,7,8]},{key:"EyeLower1",indices:[16,17,18,19,20,21,22,23,24]},{key:"EyeLower2",indices:[32,33,34,35,36,37,38,39,40]},{key:"EyeLower3",indices:[54,55,56,57,58,59,60,61,62]}],st=[[.499976992607117,.652534008026123],[.500025987625122,.547487020492554],[.499974012374878,.602371990680695],[.482113003730774,.471979022026062],[.500150978565216,.527155995368958],[.499909996986389,.498252987861633],[.499523013830185,.40106201171875],[.289712011814117,.380764007568359],[.499954998493195,.312398016452789],[.499987006187439,.269918978214264],[.500023007392883,.107050001621246],[.500023007392883,.666234016418457],[.5000159740448,.679224014282227],[.500023007392883,.692348003387451],[.499976992607117,.695277988910675],[.499976992607117,.70593398809433],[.499976992607117,.719385027885437],[.499976992607117,.737019002437592],[.499967992305756,.781370997428894],[.499816000461578,.562981009483337],[.473773002624512,.573909997940063],[.104906998574734,.254140973091125],[.365929991006851,.409575998783112],[.338757991790771,.41302502155304],[.311120003461838,.409460008144379],[.274657994508743,.389131009578705],[.393361985683441,.403706014156342],[.345234006643295,.344011008739471],[.370094001293182,.346076011657715],[.319321990013123,.347265005111694],[.297903001308441,.353591024875641],[.24779200553894,.410809993743896],[.396889001131058,.842755019664764],[.280097991228104,.375599980354309],[.106310002505779,.399955987930298],[.2099249958992,.391353011131287],[.355807989835739,.534406006336212],[.471751004457474,.65040397644043],[.474155008792877,.680191993713379],[.439785003662109,.657229006290436],[.414617002010345,.66654098033905],[.450374007225037,.680860996246338],[.428770989179611,.682690978050232],[.374971002340317,.727805018424988],[.486716985702515,.547628998756409],[.485300987958908,.527395009994507],[.257764995098114,.314490020275116],[.401223003864288,.455172002315521],[.429818987846375,.548614978790283],[.421351999044418,.533740997314453],[.276895999908447,.532056987285614],[.483370006084442,.499586999416351],[.33721199631691,.282882988452911],[.296391993761063,.293242990970612],[.169294998049736,.193813979625702],[.447580009698868,.302609980106354],[.392390012741089,.353887975215912],[.354490011930466,.696784019470215],[.067304998636246,.730105042457581],[.442739009857178,.572826027870178],[.457098007202148,.584792017936707],[.381974011659622,.694710969924927],[.392388999462128,.694203019142151],[.277076005935669,.271932005882263],[.422551989555359,.563233017921448],[.385919004678726,.281364023685455],[.383103013038635,.255840003490448],[.331431001424789,.119714021682739],[.229923993349075,.232002973556519],[.364500999450684,.189113974571228],[.229622006416321,.299540996551514],[.173287004232407,.278747975826263],[.472878992557526,.666198015213013],[.446828007698059,.668527007102966],[.422762006521225,.673889994621277],[.445307999849319,.580065965652466],[.388103008270264,.693961024284363],[.403039008378983,.706539988517761],[.403629004955292,.693953037261963],[.460041999816895,.557139039039612],[.431158006191254,.692366003990173],[.452181994915009,.692366003990173],[.475387006998062,.692366003990173],[.465828001499176,.779190003871918],[.472328990697861,.736225962638855],[.473087012767792,.717857003211975],[.473122000694275,.704625964164734],[.473033010959625,.695277988910675],[.427942007780075,.695277988910675],[.426479011774063,.703539967536926],[.423162013292313,.711845993995667],[.4183090031147,.720062971115112],[.390094995498657,.639572978019714],[.013953999616206,.560034036636353],[.499913990497589,.58014702796936],[.413199990987778,.69539999961853],[.409626007080078,.701822996139526],[.468080013990402,.601534962654114],[.422728985548019,.585985004901886],[.463079988956451,.593783974647522],[.37211999297142,.47341400384903],[.334562003612518,.496073007583618],[.411671012639999,.546965003013611],[.242175996303558,.14767599105835],[.290776997804642,.201445996761322],[.327338010072708,.256527006626129],[.399509996175766,.748921036720276],[.441727995872498,.261676013469696],[.429764986038208,.187834024429321],[.412198007106781,.108901023864746],[.288955003023148,.398952007293701],[.218936994671822,.435410976409912],[.41278201341629,.398970007896423],[.257135003805161,.355440020561218],[.427684992551804,.437960982322693],[.448339998722076,.536936044692993],[.178560003638268,.45755398273468],[.247308000922203,.457193970680237],[.286267012357712,.467674970626831],[.332827985286713,.460712015628815],[.368755996227264,.447206974029541],[.398963987827301,.432654976844788],[.476410001516342,.405806005001068],[.189241006970406,.523923993110657],[.228962004184723,.348950982093811],[.490725994110107,.562400996685028],[.404670000076294,.485132992267609],[.019469000399113,.401564002037048],[.426243007183075,.420431017875671],[.396993011236191,.548797011375427],[.266469985246658,.376977026462555],[.439121007919312,.51895797252655],[.032313998788595,.644356966018677],[.419054001569748,.387154996395111],[.462783008813858,.505746960639954],[.238978996872902,.779744982719421],[.198220998048782,.831938028335571],[.107550002634525,.540755033493042],[.183610007166862,.740257024765015],[.134409993886948,.333683013916016],[.385764002799988,.883153975009918],[.490967005491257,.579378008842468],[.382384985685349,.508572995662689],[.174399003386497,.397670984268188],[.318785011768341,.39623498916626],[.343364000320435,.400596976280212],[.396100014448166,.710216999053955],[.187885001301765,.588537991046906],[.430987000465393,.944064974784851],[.318993002176285,.898285031318665],[.266247987747192,.869701027870178],[.500023007392883,.190576016902924],[.499976992607117,.954452991485596],[.366169989109039,.398822009563446],[.393207013607025,.39553701877594],[.410373002290726,.391080021858215],[.194993004202843,.342101991176605],[.388664990663528,.362284004688263],[.365961998701096,.355970978736877],[.343364000320435,.355356991291046],[.318785011768341,.35834002494812],[.301414996385574,.363156020641327],[.058132998645306,.319076001644135],[.301414996385574,.387449026107788],[.499987989664078,.618434011936188],[.415838003158569,.624195992946625],[.445681989192963,.566076993942261],[.465844005346298,.620640993118286],[.49992299079895,.351523995399475],[.288718998432159,.819945991039276],[.335278987884521,.852819979190826],[.440512001514435,.902418971061707],[.128294005990028,.791940987110138],[.408771991729736,.373893976211548],[.455606997013092,.451801002025604],[.499877005815506,.908990025520325],[.375436991453171,.924192011356354],[.11421000212431,.615022003650665],[.448662012815475,.695277988910675],[.4480200111866,.704632043838501],[.447111994028091,.715808033943176],[.444831997156143,.730794012546539],[.430011987686157,.766808986663818],[.406787008047104,.685672998428345],[.400738000869751,.681069016456604],[.392399996519089,.677703022956848],[.367855995893478,.663918972015381],[.247923001646996,.601333022117615],[.452769994735718,.420849978923798],[.43639200925827,.359887003898621],[.416164010763168,.368713974952698],[.413385987281799,.692366003990173],[.228018000721931,.683571994304657],[.468268007040024,.352671027183533],[.411361992359161,.804327011108398],[.499989002943039,.469825029373169],[.479153990745544,.442654013633728],[.499974012374878,.439637005329132],[.432112008333206,.493588984012604],[.499886006116867,.866917014122009],[.49991300702095,.821729004383087],[.456548988819122,.819200992584229],[.344549000263214,.745438992977142],[.37890899181366,.574010014533997],[.374292999505997,.780184984207153],[.319687992334366,.570737957954407],[.357154995203018,.604269981384277],[.295284003019333,.621580958366394],[.447750002145767,.862477004528046],[.410986006259918,.508723020553589],[.31395098567009,.775308012962341],[.354128003120422,.812552988529205],[.324548006057739,.703992962837219],[.189096003770828,.646299958229065],[.279776990413666,.71465802192688],[.1338230073452,.682700991630554],[.336768001317978,.644733011722565],[.429883986711502,.466521978378296],[.455527991056442,.548622965812683],[.437114000320435,.558896005153656],[.467287987470627,.529924988746643],[.414712011814117,.335219979286194],[.37704598903656,.322777986526489],[.344107985496521,.320150971412659],[.312875986099243,.32233202457428],[.283526003360748,.333190023899078],[.241245999932289,.382785975933075],[.102986000478268,.468762993812561],[.267612010240555,.424560010433197],[.297879010438919,.433175981044769],[.333433985710144,.433878004550934],[.366427004337311,.426115989685059],[.396012008190155,.416696012020111],[.420121014118195,.41022801399231],[.007561000064015,.480777025222778],[.432949006557465,.569517970085144],[.458638995885849,.479089021682739],[.473466008901596,.545744001865387],[.476087987422943,.563830018043518],[.468472003936768,.555056989192963],[.433990985155106,.582361996173859],[.483518004417419,.562983989715576],[.482482999563217,.57784903049469],[.42645001411438,.389798998832703],[.438998997211456,.39649498462677],[.450067013502121,.400434017181396],[.289712011814117,.368252992630005],[.276670008897781,.363372981548309],[.517862021923065,.471948027610779],[.710287988185883,.380764007568359],[.526226997375488,.573909997940063],[.895093023777008,.254140973091125],[.634069979190826,.409575998783112],[.661242008209229,.41302502155304],[.688880026340485,.409460008144379],[.725341975688934,.389131009578705],[.606630027294159,.40370500087738],[.654766023159027,.344011008739471],[.629905998706818,.346076011657715],[.680678009986877,.347265005111694],[.702096998691559,.353591024875641],[.75221198797226,.410804986953735],[.602918028831482,.842862963676453],[.719901978969574,.375599980354309],[.893692970275879,.399959981441498],[.790081977844238,.391354024410248],[.643998026847839,.534487962722778],[.528249025344849,.65040397644043],[.525849997997284,.680191040039062],[.560214996337891,.657229006290436],[.585384011268616,.66654098033905],[.549625992774963,.680860996246338],[.57122802734375,.682691991329193],[.624852001667023,.72809898853302],[.513050019741058,.547281980514526],[.51509702205658,.527251958847046],[.742246985435486,.314507007598877],[.598631024360657,.454979002475739],[.570338010787964,.548575043678284],[.578631997108459,.533622980117798],[.723087012767792,.532054007053375],[.516445994377136,.499638974666595],[.662801027297974,.282917976379395],[.70362401008606,.293271005153656],[.830704987049103,.193813979625702],[.552385985851288,.302568018436432],[.607609987258911,.353887975215912],[.645429015159607,.696707010269165],[.932694971561432,.730105042457581],[.557260990142822,.572826027870178],[.542901992797852,.584792017936707],[.6180260181427,.694710969924927],[.607590973377228,.694203019142151],[.722943007946014,.271963000297546],[.577413976192474,.563166975975037],[.614082992076874,.281386971473694],[.616907000541687,.255886018276215],[.668509006500244,.119913995265961],[.770092010498047,.232020974159241],[.635536015033722,.189248979091644],[.77039098739624,.299556016921997],[.826722025871277,.278755009174347],[.527121007442474,.666198015213013],[.553171992301941,.668527007102966],[.577238023281097,.673889994621277],[.554691970348358,.580065965652466],[.611896991729736,.693961024284363],[.59696102142334,.706539988517761],[.596370995044708,.693953037261963],[.539958000183105,.557139039039612],[.568841993808746,.692366003990173],[.547818005084991,.692366003990173],[.52461302280426,.692366003990173],[.534089982509613,.779141008853912],[.527670979499817,.736225962638855],[.526912987232208,.717857003211975],[.526877999305725,.704625964164734],[.526966989040375,.695277988910675],[.572058022022247,.695277988910675],[.573521018028259,.703539967536926],[.57683801651001,.711845993995667],[.581691026687622,.720062971115112],[.609944999217987,.639909982681274],[.986046016216278,.560034036636353],[.5867999792099,.69539999961853],[.590372025966644,.701822996139526],[.531915009021759,.601536989212036],[.577268004417419,.585934996604919],[.536915004253387,.593786001205444],[.627542972564697,.473352015018463],[.665585994720459,.495950996875763],[.588353991508484,.546862006187439],[.757824003696442,.14767599105835],[.709249973297119,.201507985591888],[.672684013843536,.256581008434296],[.600408971309662,.74900496006012],[.55826598405838,.261672019958496],[.570303976535797,.187870979309082],[.588165998458862,.109044015407562],[.711045026779175,.398952007293701],[.781069993972778,.435405015945435],[.587247014045715,.398931980133057],[.742869973182678,.355445981025696],[.572156012058258,.437651991844177],[.55186802148819,.536570012569427],[.821442008018494,.457556009292603],[.752701997756958,.457181990146637],[.71375697851181,.467626988887787],[.66711300611496,.460672974586487],[.631101012229919,.447153985500336],[.6008620262146,.432473003864288],[.523481011390686,.405627012252808],[.810747981071472,.523926019668579],[.771045982837677,.348959028720856],[.509127020835876,.562718033790588],[.595292985439301,.485023975372314],[.980530977249146,.401564002037048],[.573499977588654,.420000016689301],[.602994978427887,.548687994480133],[.733529984951019,.376977026462555],[.560611009597778,.519016981124878],[.967685997486115,.644356966018677],[.580985009670258,.387160003185272],[.537728011608124,.505385041236877],[.760966002941132,.779752969741821],[.801778972148895,.831938028335571],[.892440974712372,.54076099395752],[.816350996494293,.740260004997253],[.865594983100891,.333687007427216],[.614073991775513,.883246004581451],[.508952975273132,.579437971115112],[.617941975593567,.508316040039062],[.825608015060425,.397674977779388],[.681214988231659,.39623498916626],[.656635999679565,.400596976280212],[.603900015354156,.710216999053955],[.81208598613739,.588539004325867],[.56801301240921,.944564998149872],[.681007981300354,.898285031318665],[.733752012252808,.869701027870178],[.633830010890961,.398822009563446],[.606792986392975,.39553701877594],[.589659988880157,.391062021255493],[.805015981197357,.342108011245728],[.611334979534149,.362284004688263],[.634037971496582,.355970978736877],[.656635999679565,.355356991291046],[.681214988231659,.35834002494812],[.698584973812103,.363156020641327],[.941866993904114,.319076001644135],[.698584973812103,.387449026107788],[.584177017211914,.624107003211975],[.554318010807037,.566076993942261],[.534153997898102,.62064003944397],[.711217999458313,.819975018501282],[.664629995822906,.852871000766754],[.559099972248077,.902631998062134],[.871706008911133,.791940987110138],[.591234028339386,.373893976211548],[.544341027736664,.451583981513977],[.624562978744507,.924192011356354],[.88577002286911,.615028977394104],[.551338016986847,.695277988910675],[.551980018615723,.704632043838501],[.552887976169586,.715808033943176],[.555167973041534,.730794012546539],[.569944024085999,.767035007476807],[.593203008174896,.685675978660583],[.599261999130249,.681069016456604],[.607599973678589,.677703022956848],[.631937980651855,.663500010967255],[.752032995223999,.601315021514893],[.547226011753082,.420395016670227],[.563543975353241,.359827995300293],[.583841025829315,.368713974952698],[.586614012718201,.692366003990173],[.771915018558502,.683578014373779],[.531597018241882,.352482974529266],[.588370978832245,.804440975189209],[.52079701423645,.442565023899078],[.567984998226166,.493479013442993],[.543282985687256,.819254994392395],[.655317008495331,.745514988899231],[.621008992195129,.574018001556396],[.625559985637665,.78031200170517],[.680198013782501,.570719003677368],[.64276397228241,.604337990283966],[.704662978649139,.621529996395111],[.552012026309967,.862591981887817],[.589071989059448,.508637011051178],[.685944974422455,.775357007980347],[.645735025405884,.812640011310577],[.675342977046967,.703978002071381],[.810858011245728,.646304965019226],[.72012197971344,.714666962623596],[.866151988506317,.682704985141754],[.663187026977539,.644596993923187],[.570082008838654,.466325998306274],[.544561982154846,.548375964164734],[.562758982181549,.558784961700439],[.531987011432648,.530140042304993],[.585271000862122,.335177004337311],[.622952997684479,.32277899980545],[.655896008014679,.320163011550903],[.687132000923157,.322345972061157],[.716481983661652,.333200991153717],[.758756995201111,.382786989212036],[.897013008594513,.468769013881683],[.732392013072968,.424547016620636],[.70211398601532,.433162987232208],[.66652500629425,.433866024017334],[.633504986763,.426087975502014],[.603875994682312,.416586995124817],[.579657971858978,.409945011138916],[.992439985275269,.480777025222778],[.567192018032074,.569419980049133],[.54136598110199,.478899002075195],[.526564002037048,.546118021011353],[.523913025856018,.563830018043518],[.531529009342194,.555056989192963],[.566035985946655,.582329034805298],[.51631098985672,.563053965568542],[.5174720287323,.577877044677734],[.573594987392426,.389806985855103],[.560697972774506,.395331978797913],[.549755990505219,.399751007556915],[.710287988185883,.368252992630005],[.723330020904541,.363372981548309]],Me=[127,34,139,11,0,37,232,231,120,72,37,39,128,121,47,232,121,128,104,69,67,175,171,148,157,154,155,118,50,101,73,39,40,9,151,108,48,115,131,194,204,211,74,40,185,80,42,183,40,92,186,230,229,118,202,212,214,83,18,17,76,61,146,160,29,30,56,157,173,106,204,194,135,214,192,203,165,98,21,71,68,51,45,4,144,24,23,77,146,91,205,50,187,201,200,18,91,106,182,90,91,181,85,84,17,206,203,36,148,171,140,92,40,39,193,189,244,159,158,28,247,246,161,236,3,196,54,68,104,193,168,8,117,228,31,189,193,55,98,97,99,126,47,100,166,79,218,155,154,26,209,49,131,135,136,150,47,126,217,223,52,53,45,51,134,211,170,140,67,69,108,43,106,91,230,119,120,226,130,247,63,53,52,238,20,242,46,70,156,78,62,96,46,53,63,143,34,227,173,155,133,123,117,111,44,125,19,236,134,51,216,206,205,154,153,22,39,37,167,200,201,208,36,142,100,57,212,202,20,60,99,28,158,157,35,226,113,160,159,27,204,202,210,113,225,46,43,202,204,62,76,77,137,123,116,41,38,72,203,129,142,64,98,240,49,102,64,41,73,74,212,216,207,42,74,184,169,170,211,170,149,176,105,66,69,122,6,168,123,147,187,96,77,90,65,55,107,89,90,180,101,100,120,63,105,104,93,137,227,15,86,85,129,102,49,14,87,86,55,8,9,100,47,121,145,23,22,88,89,179,6,122,196,88,95,96,138,172,136,215,58,172,115,48,219,42,80,81,195,3,51,43,146,61,171,175,199,81,82,38,53,46,225,144,163,110,246,33,7,52,65,66,229,228,117,34,127,234,107,108,69,109,108,151,48,64,235,62,78,191,129,209,126,111,35,143,163,161,246,117,123,50,222,65,52,19,125,141,221,55,65,3,195,197,25,7,33,220,237,44,70,71,139,122,193,245,247,130,33,71,21,162,153,158,159,170,169,150,188,174,196,216,186,92,144,160,161,2,97,167,141,125,241,164,167,37,72,38,12,145,159,160,38,82,13,63,68,71,226,35,111,158,153,154,101,50,205,206,92,165,209,198,217,165,167,97,220,115,218,133,112,243,239,238,241,214,135,169,190,173,133,171,208,32,125,44,237,86,87,178,85,86,179,84,85,180,83,84,181,201,83,182,137,93,132,76,62,183,61,76,184,57,61,185,212,57,186,214,207,187,34,143,156,79,239,237,123,137,177,44,1,4,201,194,32,64,102,129,213,215,138,59,166,219,242,99,97,2,94,141,75,59,235,24,110,228,25,130,226,23,24,229,22,23,230,26,22,231,112,26,232,189,190,243,221,56,190,28,56,221,27,28,222,29,27,223,30,29,224,247,30,225,238,79,20,166,59,75,60,75,240,147,177,215,20,79,166,187,147,213,112,233,244,233,128,245,128,114,188,114,217,174,131,115,220,217,198,236,198,131,134,177,132,58,143,35,124,110,163,7,228,110,25,356,389,368,11,302,267,452,350,349,302,303,269,357,343,277,452,453,357,333,332,297,175,152,377,384,398,382,347,348,330,303,304,270,9,336,337,278,279,360,418,262,431,304,408,409,310,415,407,270,409,410,450,348,347,422,430,434,313,314,17,306,307,375,387,388,260,286,414,398,335,406,418,364,367,416,423,358,327,251,284,298,281,5,4,373,374,253,307,320,321,425,427,411,421,313,18,321,405,406,320,404,405,315,16,17,426,425,266,377,400,369,322,391,269,417,465,464,386,257,258,466,260,388,456,399,419,284,332,333,417,285,8,346,340,261,413,441,285,327,460,328,355,371,329,392,439,438,382,341,256,429,420,360,364,394,379,277,343,437,443,444,283,275,440,363,431,262,369,297,338,337,273,375,321,450,451,349,446,342,467,293,334,282,458,461,462,276,353,383,308,324,325,276,300,293,372,345,447,382,398,362,352,345,340,274,1,19,456,248,281,436,427,425,381,256,252,269,391,393,200,199,428,266,330,329,287,273,422,250,462,328,258,286,384,265,353,342,387,259,257,424,431,430,342,353,276,273,335,424,292,325,307,366,447,345,271,303,302,423,266,371,294,455,460,279,278,294,271,272,304,432,434,427,272,407,408,394,430,431,395,369,400,334,333,299,351,417,168,352,280,411,325,319,320,295,296,336,319,403,404,330,348,349,293,298,333,323,454,447,15,16,315,358,429,279,14,15,316,285,336,9,329,349,350,374,380,252,318,402,403,6,197,419,318,319,325,367,364,365,435,367,397,344,438,439,272,271,311,195,5,281,273,287,291,396,428,199,311,271,268,283,444,445,373,254,339,263,466,249,282,334,296,449,347,346,264,447,454,336,296,299,338,10,151,278,439,455,292,407,415,358,371,355,340,345,372,390,249,466,346,347,280,442,443,282,19,94,370,441,442,295,248,419,197,263,255,359,440,275,274,300,383,368,351,412,465,263,467,466,301,368,389,380,374,386,395,378,379,412,351,419,436,426,322,373,390,388,2,164,393,370,462,461,164,0,267,302,11,12,374,373,387,268,12,13,293,300,301,446,261,340,385,384,381,330,266,425,426,423,391,429,355,437,391,327,326,440,457,438,341,382,362,459,457,461,434,430,394,414,463,362,396,369,262,354,461,457,316,403,402,315,404,403,314,405,404,313,406,405,421,418,406,366,401,361,306,408,407,291,409,408,287,410,409,432,436,410,434,416,411,264,368,383,309,438,457,352,376,401,274,275,4,421,428,262,294,327,358,433,416,367,289,455,439,462,370,326,2,326,370,305,460,455,254,449,448,255,261,446,253,450,449,252,451,450,256,452,451,341,453,452,413,464,463,441,413,414,258,442,441,257,443,442,259,444,443,260,445,444,467,342,445,459,458,250,289,392,290,290,328,460,376,433,435,250,290,392,411,416,433,341,463,464,453,464,465,357,465,412,343,412,399,360,363,440,437,399,456,420,456,363,401,435,288,372,383,353,339,255,249,448,261,255,133,243,190,133,155,112,33,246,247,33,130,25,398,384,286,362,398,414,362,463,341,263,359,467,263,249,255,466,467,260,75,60,166,238,239,79,162,127,139,72,11,37,121,232,120,73,72,39,114,128,47,233,232,128,103,104,67,152,175,148,173,157,155,119,118,101,74,73,40,107,9,108,49,48,131,32,194,211,184,74,185,191,80,183,185,40,186,119,230,118,210,202,214,84,83,17,77,76,146,161,160,30,190,56,173,182,106,194,138,135,192,129,203,98,54,21,68,5,51,4,145,144,23,90,77,91,207,205,187,83,201,18,181,91,182,180,90,181,16,85,17,205,206,36,176,148,140,165,92,39,245,193,244,27,159,28,30,247,161,174,236,196,103,54,104,55,193,8,111,117,31,221,189,55,240,98,99,142,126,100,219,166,218,112,155,26,198,209,131,169,135,150,114,47,217,224,223,53,220,45,134,32,211,140,109,67,108,146,43,91,231,230,120,113,226,247,105,63,52,241,238,242,124,46,156,95,78,96,70,46,63,116,143,227,116,123,111,1,44,19,3,236,51,207,216,205,26,154,22,165,39,167,199,200,208,101,36,100,43,57,202,242,20,99,56,28,157,124,35,113,29,160,27,211,204,210,124,113,46,106,43,204,96,62,77,227,137,116,73,41,72,36,203,142,235,64,240,48,49,64,42,41,74,214,212,207,183,42,184,210,169,211,140,170,176,104,105,69,193,122,168,50,123,187,89,96,90,66,65,107,179,89,180,119,101,120,68,63,104,234,93,227,16,15,85,209,129,49,15,14,86,107,55,9,120,100,121,153,145,22,178,88,179,197,6,196,89,88,96,135,138,136,138,215,172,218,115,219,41,42,81,5,195,51,57,43,61,208,171,199,41,81,38,224,53,225,24,144,110,105,52,66,118,229,117,227,34,234,66,107,69,10,109,151,219,48,235,183,62,191,142,129,126,116,111,143,7,163,246,118,117,50,223,222,52,94,19,141,222,221,65,196,3,197,45,220,44,156,70,139,188,122,245,139,71,162,145,153,159,149,170,150,122,188,196,206,216,92,163,144,161,164,2,167,242,141,241,0,164,37,11,72,12,144,145,160,12,38,13,70,63,71,31,226,111,157,158,154,36,101,205,203,206,165,126,209,217,98,165,97,237,220,218,237,239,241,210,214,169,140,171,32,241,125,237,179,86,178,180,85,179,181,84,180,182,83,181,194,201,182,177,137,132,184,76,183,185,61,184,186,57,185,216,212,186,192,214,187,139,34,156,218,79,237,147,123,177,45,44,4,208,201,32,98,64,129,192,213,138,235,59,219,141,242,97,97,2,141,240,75,235,229,24,228,31,25,226,230,23,229,231,22,230,232,26,231,233,112,232,244,189,243,189,221,190,222,28,221,223,27,222,224,29,223,225,30,224,113,247,225,99,60,240,213,147,215,60,20,166,192,187,213,243,112,244,244,233,245,245,128,188,188,114,174,134,131,220,174,217,236,236,198,134,215,177,58,156,143,124,25,110,7,31,228,25,264,356,368,0,11,267,451,452,349,267,302,269,350,357,277,350,452,357,299,333,297,396,175,377,381,384,382,280,347,330,269,303,270,151,9,337,344,278,360,424,418,431,270,304,409,272,310,407,322,270,410,449,450,347,432,422,434,18,313,17,291,306,375,259,387,260,424,335,418,434,364,416,391,423,327,301,251,298,275,281,4,254,373,253,375,307,321,280,425,411,200,421,18,335,321,406,321,320,405,314,315,17,423,426,266,396,377,369,270,322,269,413,417,464,385,386,258,248,456,419,298,284,333,168,417,8,448,346,261,417,413,285,326,327,328,277,355,329,309,392,438,381,382,256,279,429,360,365,364,379,355,277,437,282,443,283,281,275,363,395,431,369,299,297,337,335,273,321,348,450,349,359,446,467,283,293,282,250,458,462,300,276,383,292,308,325,283,276,293,264,372,447,346,352,340,354,274,19,363,456,281,426,436,425,380,381,252,267,269,393,421,200,428,371,266,329,432,287,422,290,250,328,385,258,384,446,265,342,386,387,257,422,424,430,445,342,276,422,273,424,306,292,307,352,366,345,268,271,302,358,423,371,327,294,460,331,279,294,303,271,304,436,432,427,304,272,408,395,394,431,378,395,400,296,334,299,6,351,168,376,352,411,307,325,320,285,295,336,320,319,404,329,330,349,334,293,333,366,323,447,316,15,315,331,358,279,317,14,316,8,285,9,277,329,350,253,374,252,319,318,403,351,6,419,324,318,325,397,367,365,288,435,397,278,344,439,310,272,311,248,195,281,375,273,291,175,396,199,312,311,268,276,283,445,390,373,339,295,282,296,448,449,346,356,264,454,337,336,299,337,338,151,294,278,455,308,292,415,429,358,355,265,340,372,388,390,466,352,346,280,295,442,282,354,19,370,285,441,295,195,248,197,457,440,274,301,300,368,417,351,465,251,301,389,385,380,386,394,395,379,399,412,419,410,436,322,387,373,388,326,2,393,354,370,461,393,164,267,268,302,12,386,374,387,312,268,13,298,293,301,265,446,340,380,385,381,280,330,425,322,426,391,420,429,437,393,391,326,344,440,438,458,459,461,364,434,394,428,396,262,274,354,457,317,316,402,316,315,403,315,314,404,314,313,405,313,421,406,323,366,361,292,306,407,306,291,408,291,287,409,287,432,410,427,434,411,372,264,383,459,309,457,366,352,401,1,274,4,418,421,262,331,294,358,435,433,367,392,289,439,328,462,326,94,2,370,289,305,455,339,254,448,359,255,446,254,253,449,253,252,450,252,256,451,256,341,452,414,413,463,286,441,414,286,258,441,258,257,442,257,259,443,259,260,444,260,467,445,309,459,250,305,289,290,305,290,460,401,376,435,309,250,392,376,411,433,453,341,464,357,453,465,343,357,412,437,343,399,344,360,440,420,437,456,360,420,363,361,401,288,265,372,353,390,339,249,339,448,255];var c2=[127,234,132,58,172,150,149,148,152,377,378,379,397,288,361,454,356,70,63,105,66,107,336,296,334,293,300,168,6,195,4,98,97,2,326,327,33,160,158,133,153,144,362,385,387,263,373,380,57,40,37,0,267,270,287,321,314,17,84,91,78,81,13,311,308,402,14,178],d2=[33,133,362,263,1,62,308,159,145,386,374,6,102,331,2,13,14,70,105,107,336,334,300,54,10,284,50,280,234,454,58,288,152],f2=[33,133,362,263,1,78,308],aa=c2.map(e=>st[e]),ia=d2.map(e=>st[e]),la=f2.map(e=>st[e]);var Ie=e=>[Math.abs(e.endPoint[0]-e.startPoint[0]),Math.abs(e.endPoint[1]-e.startPoint[1])],wt=e=>[e.startPoint[0]+(e.endPoint[0]-e.startPoint[0])/2,e.startPoint[1]+(e.endPoint[1]-e.startPoint[1])/2,1],w5=(e,t)=>e?[Math.trunc(Math.max(0,e.startPoint[0])),Math.trunc(Math.max(0,e.startPoint[1])),Math.trunc(Math.min(t.shape[2]||0,e.endPoint[0])-Math.max(0,e.startPoint[0])),Math.trunc(Math.min(t.shape[1]||0,e.endPoint[1])-Math.max(0,e.startPoint[1]))]:[0,0,0,0],R5=(e,t)=>e?[e.startPoint[0]/(t.shape[2]||0),e.startPoint[1]/(t.shape[1]||0),(e.endPoint[0]-e.startPoint[0])/(t.shape[2]||0),(e.endPoint[1]-e.startPoint[1])/(t.shape[1]||0)]:[0,0,0,0],TA=(e,t)=>{let o=[e.startPoint[0]*t[0],e.startPoint[1]*t[1]],A=[e.endPoint[0]*t[0],e.endPoint[1]*t[1]];return{startPoint:o,endPoint:A,landmarks:e.landmarks,confidence:e.confidence}},v5=(e,t,o)=>{let A=t.shape[1],n=t.shape[2],r=[e.startPoint[1]/A,e.startPoint[0]/n,e.endPoint[1]/A,e.endPoint[0]/n],s=$0.image.cropAndResize(t,[r],[0],o),a=$0.div(s,H.tf255);return $0.dispose(s),a},Rt=(e,t)=>{let o=wt(e),A=Ie(e),n=[t*A[0]/2,t*A[1]/2];return{startPoint:[o[0]-n[0],o[1]-n[1]],endPoint:[o[0]+n[0],o[1]+n[1]],landmarks:e.landmarks,confidence:e.confidence}},kt=e=>{let t=wt(e),o=Ie(e),A=Math.max(...o)/2;return{startPoint:[Math.round(t[0]-A),Math.round(t[1]-A)],endPoint:[Math.round(t[0]+A),Math.round(t[1]+A)],landmarks:e.landmarks,confidence:e.confidence}},wA=e=>{let t=e.map(A=>A[0]),o=e.map(A=>A[1]);return{startPoint:[Math.min(...t),Math.min(...o)],endPoint:[Math.max(...t),Math.max(...o)],landmarks:e}},T5=[[1,0,0],[0,1,0],[0,0,1]],m2=e=>e-2*Math.PI*Math.floor((e+Math.PI)/(2*Math.PI)),p2=(e,t)=>m2(Math.PI/2-Math.atan2(-(t[1]-e[1]),t[0]-e[0]));var MA=(e,t)=>[[1,0,e],[0,1,t],[0,0,1]],ve=(e,t)=>{let o=0;for(let A=0;A<e.length;A++)o+=e[A]*t[A];return o},u2=(e,t)=>{let o=[];for(let A=0;A<e.length;A++)o.push(e[A][t]);return o},vA=(e,t)=>{let o=[],A=e.length;for(let n=0;n<A;n++){o.push([]);for(let r=0;r<A;r++)o[n].push(ve(e[n],u2(t,r)))}return o},RA=(e,t)=>{let o=Math.cos(e),A=Math.sin(e),n=[[o,-A,0],[A,o,0],[0,0,1]],r=MA(t[0],t[1]),s=vA(r,n),a=MA(-t[0],-t[1]);return vA(s,a)},h2=e=>{let t=[[e[0][0],e[1][0]],[e[0][1],e[1][1]]],o=[e[0][2],e[1][2]],A=[-ve(t[0],o),-ve(t[1],o)];return[t[0].concat(A[0]),t[1].concat(A[1]),[0,0,1]]},b2=(e,t)=>[ve(e,t[0]),ve(e,t[1])];function kA(e){let t={strides:[e/16,e/8],anchors:[2,6]},o=[];for(let A=0;A<t.strides.length;A++){let n=t.strides[A],r=Math.floor((e+n-1)/n),s=Math.floor((e+n-1)/n),a=t.anchors[A];for(let y=0;y<r;y++){let c=n*(y+.5);for(let i=0;i<s;i++){let l=n*(i+.5);for(let x=0;x<a;x++)o.push([l,c])}}}return o}function EA(e,t,o,A,n){let r=Ie(t),s=e.map(d=>[r[0]/n*(d[0]-n/2),r[1]/n*(d[1]-n/2),d[2]||0]),a=o&&o!==0&&Math.abs(o)>.2,y=a?RA(o,[0,0]):T5,c=a?s.map(d=>[...b2(d,y),d[2]]):s,i=a?h2(A):T5,l=wt(t),x=[ve(l,i[0]),ve(l,i[1])];return c.map(d=>[Math.trunc(d[0]+x[0]),Math.trunc(d[1]+x[1]),Math.trunc(d[2]||0)])}function zA(e,t,o,A){let n=t.landmarks.length>=g5.count?g5.symmetryLine:rt.symmetryLine,r=0,s=T5,a;if(e&&T.kernels.includes("rotatewithoffset"))if(r=p2(t.landmarks[n[0]],t.landmarks[n[1]]),r&&r!==0&&Math.abs(r)>.2){let c=wt(t),i=[c[0]/o.shape[2],c[1]/o.shape[1]],l=$0.image.rotateWithOffset(o,r,0,i);s=RA(-r,c),a=v5(t,l,[A,A]),$0.dispose(l)}else a=v5(t,o,[A,A]);else a=v5(t,o,[A,A]);return[r,s,a]}var g2=e=>{let t=e.map(A=>A[0]),o=e.map(A=>A[1]);return[Math.min(...t)+(Math.max(...t)-Math.min(...t))/2,Math.min(...o)+(Math.max(...o)-Math.min(...o))/2]},jA=(e,t)=>{let o=g2(e),A=Ie(t);return{startPoint:[o[0]-A[0]/2,o[1]-A[1]/2],endPoint:[o[0]+A[0]/2,o[1]+A[1]/2]}};var SA=6,P2=1.2,q0,WA=null,ce=0,at=null,Et=()=>ce;async function CA(e){var t;return T.initial&&(q0=null),q0?e.debug&&b("cached model:",q0.modelUrl):q0=await B((t=e.face.detector)==null?void 0:t.modelPath),ce=q0.inputs[0].shape?q0.inputs[0].shape[2]:0,at=N.scalar(ce,"int32"),WA=N.tensor2d(kA(ce)),q0}function M2(e){let t={};t.boxStarts=N.slice(e,[0,1],[-1,2]),t.centers=N.add(t.boxStarts,WA),t.boxSizes=N.slice(e,[0,3],[-1,2]),t.boxSizesNormalized=N.div(t.boxSizes,at),t.centersNormalized=N.div(t.centers,at),t.halfBoxSize=N.div(t.boxSizesNormalized,H.tf2),t.starts=N.sub(t.centersNormalized,t.halfBoxSize),t.ends=N.add(t.centersNormalized,t.halfBoxSize),t.startNormalized=N.mul(t.starts,at),t.endNormalized=N.mul(t.ends,at);let o=N.concat2d([t.startNormalized,t.endNormalized],1);return Object.keys(t).forEach(A=>N.dispose(t[A])),o}async function OA(e,t){var a,y,c,i;if(!e||e.isDisposedInternal||e.shape.length!==4||e.shape[1]<1||e.shape[2]<1)return[];let o={};o.resized=N.image.resizeBilinear(e,[ce,ce]),o.div=N.div(o.resized,H.tf127),o.normalized=N.sub(o.div,H.tf05);let A=q0==null?void 0:q0.execute(o.normalized);if(Array.isArray(A)){let l=A.sort((x,d)=>x.size-d.size);o.concat384=N.concat([l[0],l[2]],2),o.concat512=N.concat([l[1],l[3]],2),o.concat=N.concat([o.concat512,o.concat384],1),o.batch=N.squeeze(o.concat,0)}else o.batch=N.squeeze(A);N.dispose(A),o.boxes=M2(o.batch),o.logits=N.slice(o.batch,[0,0],[-1,1]),o.sigmoid=N.sigmoid(o.logits),o.scores=N.squeeze(o.sigmoid),o.nms=await N.image.nonMaxSuppressionAsync(o.boxes,o.scores,((a=t.face.detector)==null?void 0:a.maxDetected)||0,((y=t.face.detector)==null?void 0:y.iouThreshold)||0,((c=t.face.detector)==null?void 0:c.minConfidence)||0);let n=await o.nms.array(),r=[],s=await o.scores.data();for(let l=0;l<n.length;l++){let x=s[n[l]];if(x>(((i=t.face.detector)==null?void 0:i.minConfidence)||0)){let d={};d.bbox=N.slice(o.boxes,[n[l],0],[1,-1]),d.slice=N.slice(o.batch,[n[l],SA-1],[1,-1]),d.squeeze=N.squeeze(d.slice),d.landmarks=N.reshape(d.squeeze,[SA,-1]);let u=await d.bbox.data(),f={startPoint:[u[0],u[1]],endPoint:[u[2],u[3]],landmarks:await d.landmarks.array(),confidence:x},M=TA(f,[(e.shape[2]||0)/ce,(e.shape[1]||0)/ce]),h=Rt(M,t.face.scale||P2),P=kt(h);r.push(P),Object.keys(d).forEach(m=>N.dispose(d[m]))}}return Object.keys(o).forEach(l=>N.dispose(o[l])),r}var k0=V(F());var zt={};pt(zt,{connected:()=>z5,kpt:()=>E5});var E5=["nose","leftEyeInside","leftEye","leftEyeOutside","rightEyeInside","rightEye","rightEyeOutside","leftEar","rightEar","leftMouth","rightMouth","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftPinky","rightPinky","leftIndex","rightIndex","leftThumb","rightThumb","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle","leftHeel","rightHeel","leftFoot","rightFoot","bodyCenter","bodyTop","leftPalm","leftHand","rightPalm","rightHand"],z5={shoulders:["leftShoulder","rightShoulder"],hips:["rightHip","leftHip"],mouth:["leftMouth","rightMouth"],leftLegUpper:["leftHip","leftKnee"],leftLegLower:["leftKnee","leftAnkle"],leftFoot:["leftAnkle","leftHeel","leftFoot"],leftTorso:["leftShoulder","leftHip"],leftArmUpper:["leftShoulder","leftElbow"],leftArmLower:["leftElbow","leftWrist"],leftHand:["leftWrist","leftPalm"],leftHandPinky:["leftPalm","leftPinky"],leftHandIndex:["leftPalm","leftIndex"],leftHandThumb:["leftPalm","leftThumb"],leftEyeOutline:["leftEyeInside","leftEyeOutside"],rightLegUpper:["rightHip","rightKnee"],rightLegLower:["rightKnee","rightAnkle"],rightFoot:["rightAnkle","rightHeel","rightFoot"],rightTorso:["rightShoulder","rightHip"],rightArmUpper:["rightShoulder","rightElbow"],rightArmLower:["rightElbow","rightWrist"],rightHand:["rightWrist","rightPalm"],rightHandPinky:["rightPalm","rightPinky"],rightHandIndex:["rightPalm","rightIndex"],rightHandThumb:["rightPalm","rightThumb"],rightEyeOutline:["rightEyeInside","rightEyeOutside"]};var w0=V(F()),NA=224,v2,T2=5,jt=[8,16,32,32,32];async function LA(){let e=[],t=0;for(;t<T2;){let o=0,A=t;for(;A<jt.length&&jt[A]===jt[t];)o+=2,A++;let n=jt[t],r=Math.ceil(NA/n),s=Math.ceil(NA/n);for(let a=0;a<r;++a)for(let y=0;y<s;++y)for(let c=0;c<o;++c)e.push({x:(y+.5)/s,y:(a+.5)/r});t=A}v2={x:w0.tensor1d(e.map(o=>o.x)),y:w0.tensor1d(e.map(o=>o.y))}}function ee(e,t=[1,1]){let o=[e.map(a=>a[0]),e.map(a=>a[1])],A=[Math.min(...o[0]),Math.min(...o[1])],n=[Math.max(...o[0]),Math.max(...o[1])],r=[A[0],A[1],n[0]-A[0],n[1]-A[1]],s=[r[0]/t[0],r[1]/t[1],r[2]/t[0],r[3]/t[1]];return{box:r,boxRaw:s}}function GA(e,t=[1,1]){let o=[e.map(c=>c[0]),e.map(c=>c[1])],A=[Math.min(...o[0]),Math.min(...o[1])],n=[Math.max(...o[0]),Math.max(...o[1])],r=[(A[0]+n[0])/2,(A[1]+n[1])/2],s=Math.max(r[0]-A[0],r[1]-A[1],-r[0]+n[0],-r[1]+n[1]),a=[Math.trunc(r[0]-s),Math.trunc(r[1]-s),Math.trunc(2*s),Math.trunc(2*s)],y=[a[0]/t[0],a[1]/t[1],a[2]/t[0],a[3]/t[1]];return{box:a,boxRaw:y}}function St(e,t){let o=[e[2]*t,e[3]*t];return[e[0]-(o[0]-e[2])/2,e[1]-(o[1]-e[3])/2,o[0],o[1]]}var FA={initial:!0},R0={detector:null,landmarks:null},Ne={detector:[224,224],landmarks:[256,256]},j5=Number.MAX_SAFE_INTEGER,R2={landmarks:["ld_3d","activation_segmentation","activation_heatmap","world_3d","output_poseflag"],detector:[]},Ct=null,it,de=[[0,0],[0,0],[0,0],[0,0]],BA=0,HA=e=>1-1/(1+Math.exp(e));async function VA(e){if(FA.initial&&(R0.detector=null),!R0.detector&&e.body.detector&&e.body.detector.modelPath){R0.detector=await B(e.body.detector.modelPath);let t=Object.values(R0.detector.modelSignature.inputs);Ne.detector[0]=Array.isArray(t)?parseInt(t[0].tensorShape.dim[1].size):0,Ne.detector[1]=Array.isArray(t)?parseInt(t[0].tensorShape.dim[2].size):0}else e.debug&&R0.detector&&b("cached model:",R0.detector.modelUrl);return await LA(),R0.detector}async function ZA(e){if(FA.initial&&(R0.landmarks=null),R0.landmarks)e.debug&&b("cached model:",R0.landmarks.modelUrl);else{R0.landmarks=await B(e.body.modelPath);let t=Object.values(R0.landmarks.modelSignature.inputs);Ne.landmarks[0]=Array.isArray(t)?parseInt(t[0].tensorShape.dim[1].size):0,Ne.landmarks[1]=Array.isArray(t)?parseInt(t[0].tensorShape.dim[2].size):0}return R0.landmarks}async function k2(e,t){let o={};if(!e.shape||!e.shape[1]||!e.shape[2])return e;let A;if(it&&(o.cropped=k0.image.cropAndResize(e,[it],[0],[e.shape[1],e.shape[2]])),e.shape[1]!==e.shape[2]){let n=[e.shape[2]>e.shape[1]?Math.trunc((e.shape[2]-e.shape[1])/2):0,e.shape[2]>e.shape[1]?Math.trunc((e.shape[2]-e.shape[1])/2):0],r=[e.shape[1]>e.shape[2]?Math.trunc((e.shape[1]-e.shape[2])/2):0,e.shape[1]>e.shape[2]?Math.trunc((e.shape[1]-e.shape[2])/2):0];de=[[0,0],n,r,[0,0]],o.pad=k0.pad(o.cropped||e,de),o.resize=k0.image.resizeBilinear(o.pad,[t,t]),A=k0.div(o.resize,H.tf255)}else e.shape[1]!==t?(o.resize=k0.image.resizeBilinear(o.cropped||e,[t,t]),A=k0.div(o.resize,H.tf255)):A=k0.div(o.cropped||e,H.tf255);return Object.keys(o).forEach(n=>k0.dispose(o[n])),A}function E2(e,t){for(let o of e)o.position=[Math.trunc(o.position[0]*(t[0]+de[2][0]+de[2][1])/t[0]-de[2][0]),Math.trunc(o.position[1]*(t[1]+de[1][0]+de[1][1])/t[1]-de[1][0]),o.position[2]],o.positionRaw=[o.position[0]/t[0],o.position[1]/t[1],2*o.position[2]/(t[0]+t[1])];if(it)for(let o of e)o.positionRaw=[o.positionRaw[0]+it[1],o.positionRaw[1]+it[0],o.positionRaw[2]],o.position=[Math.trunc(o.positionRaw[0]*t[0]),Math.trunc(o.positionRaw[1]*t[1]),o.positionRaw[2]];return e}async function z2(e){let t=e.find(a=>a.part==="leftPalm"),o=e.find(a=>a.part==="leftWrist"),A=e.find(a=>a.part==="leftIndex");t.position[2]=((o.position[2]||0)+(A.position[2]||0))/2;let n=e.find(a=>a.part==="rightPalm"),r=e.find(a=>a.part==="rightWrist"),s=e.find(a=>a.part==="rightIndex");n.position[2]=((r.position[2]||0)+(s.position[2]||0))/2}async function j2(e,t,o){var u;let A={};[A.ld,A.segmentation,A.heatmap,A.world,A.poseflag]=(u=R0.landmarks)==null?void 0:u.execute(e,R2.landmarks);let n=(await A.poseflag.data())[0],r=await A.ld.data(),s=await A.world.data();Object.keys(A).forEach(f=>k0.dispose(A[f]));let a=[],y=5;for(let f=0;f<r.length/y;f++){let M=HA(r[y*f+3]),h=HA(r[y*f+4]),P=Math.trunc(100*M*h*n)/100,m=[r[y*f+0]/Ne.landmarks[0],r[y*f+1]/Ne.landmarks[1],r[y*f+2]+0],p=[Math.trunc(o[0]*m[0]),Math.trunc(o[1]*m[1]),m[2]],k=[s[y*f+0],s[y*f+1],s[y*f+2]+0];a.push({part:E5[f],positionRaw:m,position:p,distance:k,score:P})}if(n<(t.body.minConfidence||0))return null;z2(a);let c=E2(a,o),i=c.map(f=>f.position),l=ee(i,[o[0],o[1]]),x={};for(let[f,M]of Object.entries(z5)){let h=[];for(let P=0;P<M.length-1;P++){let m=c.find(k=>k.part===M[P]),p=c.find(k=>k.part===M[P+1]);m&&p&&h.push([m.position,p.position])}x[f]=h}return{id:0,score:Math.trunc(100*n)/100,box:l.box,boxRaw:l.boxRaw,keypoints:c,annotations:x}}async function S5(e,t){let o=[e.shape[2]||0,e.shape[1]||0],A=(t.body.skipTime||0)>g()-BA,n=j5<(t.body.skipFrames||0);if(t.skipAllowed&&A&&n&&Ct!==null)j5++;else{let r={};r.landmarks=await k2(e,256),Ct=await j2(r.landmarks,t,o),Object.keys(r).forEach(s=>k0.dispose(r[s])),BA=g(),j5=0}return Ct?[Ct]:[]}var b0=V(F());var Le=[{class:1,label:"person"},{class:2,label:"bicycle"},{class:3,label:"car"},{class:4,label:"motorcycle"},{class:5,label:"airplane"},{class:6,label:"bus"},{class:7,label:"train"},{class:8,label:"truck"},{class:9,label:"boat"},{class:10,label:"traffic light"},{class:11,label:"fire hydrant"},{class:12,label:"stop sign"},{class:13,label:"parking meter"},{class:14,label:"bench"},{class:15,label:"bird"},{class:16,label:"cat"},{class:17,label:"dog"},{class:18,label:"horse"},{class:19,label:"sheep"},{class:20,label:"cow"},{class:21,label:"elephant"},{class:22,label:"bear"},{class:23,label:"zebra"},{class:24,label:"giraffe"},{class:25,label:"backpack"},{class:26,label:"umbrella"},{class:27,label:"handbag"},{class:28,label:"tie"},{class:29,label:"suitcase"},{class:30,label:"frisbee"},{class:31,label:"skis"},{class:32,label:"snowboard"},{class:33,label:"sports ball"},{class:34,label:"kite"},{class:35,label:"baseball bat"},{class:36,label:"baseball glove"},{class:37,label:"skateboard"},{class:38,label:"surfboard"},{class:39,label:"tennis racket"},{class:40,label:"bottle"},{class:41,label:"wine glass"},{class:42,label:"cup"},{class:43,label:"fork"},{class:44,label:"knife"},{class:45,label:"spoon"},{class:46,label:"bowl"},{class:47,label:"banana"},{class:48,label:"apple"},{class:49,label:"sandwich"},{class:50,label:"orange"},{class:51,label:"broccoli"},{class:52,label:"carrot"},{class:53,label:"hot dog"},{class:54,label:"pizza"},{class:55,label:"donut"},{class:56,label:"cake"},{class:57,label:"chair"},{class:58,label:"couch"},{class:59,label:"potted plant"},{class:60,label:"bed"},{class:61,label:"dining table"},{class:62,label:"toilet"},{class:63,label:"tv"},{class:64,label:"laptop"},{class:65,label:"mouse"},{class:66,label:"remote"},{class:67,label:"keyboard"},{class:68,label:"cell phone"},{class:69,label:"microwave"},{class:70,label:"oven"},{class:71,label:"toaster"},{class:72,label:"sink"},{class:73,label:"refrigerator"},{class:74,label:"book"},{class:75,label:"clock"},{class:76,label:"vase"},{class:77,label:"scissors"},{class:78,label:"teddy bear"},{class:79,label:"hair drier"},{class:80,label:"toothbrush"}];var te,Te=0,W5=[],DA=0,C5=Number.MAX_SAFE_INTEGER;async function qA(e){if(T.initial&&(te=null),te)e.debug&&b("cached model:",te.modelUrl);else{te=await B(e.object.modelPath);let t=Object.values(te.modelSignature.inputs);Te=Array.isArray(t)?parseInt(t[0].tensorShape.dim[2].size):0}return te}async function S2(e,t,o){if(!e)return[];let A={},n=[],r=await e.array();A.squeeze=b0.squeeze(e);let s=b0.split(A.squeeze,6,1);A.stack=b0.stack([s[1],s[0],s[3],s[2]],1),A.boxes=b0.squeeze(A.stack),A.scores=b0.squeeze(s[4]),A.classes=b0.squeeze(s[5]),b0.dispose([e,...s]),A.nms=await b0.image.nonMaxSuppressionAsync(A.boxes,A.scores,o.object.maxDetected,o.object.iouThreshold,o.object.minConfidence||0);let a=await A.nms.data(),y=0;for(let c of Array.from(a)){let i=Math.trunc(100*r[0][c][4])/100,l=r[0][c][5],x=Le[l].label,[d,u]=[r[0][c][0]/Te,r[0][c][1]/Te],f=[d,u,r[0][c][2]/Te-d,r[0][c][3]/Te-u],M=[Math.trunc(f[0]*t[0]),Math.trunc(f[1]*t[1]),Math.trunc(f[2]*t[0]),Math.trunc(f[3]*t[1])];n.push({id:y++,score:i,class:l,label:x,box:M,boxRaw:f})}return Object.keys(A).forEach(c=>b0.dispose(A[c])),n}async function O5(e,t){let o=(t.object.skipTime||0)>g()-DA,A=C5<(t.object.skipFrames||0);return t.skipAllowed&&o&&A&&W5.length>0?(C5++,W5):(C5=0,new Promise(async n=>{let r=[e.shape[2]||0,e.shape[1]||0],s=b0.image.resizeBilinear(e,[Te,Te]),a=t.object.enabled?te==null?void 0:te.execute(s,["tower_0/detections"]):null;DA=g(),b0.dispose(s);let y=await S2(a,r,t);W5=y,n(y)}))}var K=V(F());var Ot={};pt(Ot,{connected:()=>N5,kpt:()=>I5});var I5=["head","neck","rightShoulder","rightElbow","rightWrist","chest","leftShoulder","leftElbow","leftWrist","bodyCenter","rightHip","rightKnee","rightAnkle","leftHip","leftKnee","leftAnkle"],N5={leftLeg:["leftHip","leftKnee","leftAnkle"],rightLeg:["rightHip","rightKnee","rightAnkle"],torso:["leftShoulder","rightShoulder","rightHip","leftHip","leftShoulder"],leftArm:["leftShoulder","leftElbow","leftWrist"],rightArm:["rightShoulder","rightElbow","rightWrist"],head:[]};var p0,JA=0,g0={id:0,keypoints:[],box:[0,0,0,0],boxRaw:[0,0,0,0],score:0,annotations:{}},L5=Number.MAX_SAFE_INTEGER;async function YA(e){return T.initial&&(p0=null),p0?e.debug&&b("cached model:",p0.modelUrl):p0=await B(e.body.modelPath),p0}async function W2(e,t){let[o,A]=e.shape,n=K.reshape(e,[A*o]),r=K.max(n,0),s=(await r.data())[0];if(K.dispose([n,r]),s>t){let a=K.argMax(n,0),y=K.mod(a,o),c=(await y.data())[0],i=K.div(a,K.scalar(o,"int32")),l=(await i.data())[0];return K.dispose([y,i]),[c,l,s]}return[0,0,s]}async function G5(e,t){let o=(t.body.skipTime||0)>g()-JA,A=L5<(t.body.skipFrames||0);return t.skipAllowed&&o&&A&&Object.keys(g0.keypoints).length>0?(L5++,[g0]):(L5=0,new Promise(async n=>{var l;let r=K.tidy(()=>{if(!(p0!=null&&p0.inputs[0].shape))return null;let x=K.image.resizeBilinear(e,[p0.inputs[0].shape[2],p0.inputs[0].shape[1]],!1),d=K.mul(x,H.tf2);return K.sub(d,H.tf1)}),s;if(t.body.enabled&&(s=p0==null?void 0:p0.execute(r)),JA=g(),K.dispose(r),s){g0.keypoints.length=0;let x=s.squeeze();K.dispose(s);let d=x.unstack(2);K.dispose(x);for(let u=0;u<d.length;u++){let[f,M,h]=await W2(d[u],t.body.minConfidence);h>(((l=t.body)==null?void 0:l.minConfidence)||0)&&g0.keypoints.push({score:Math.round(100*h)/100,part:I5[u],positionRaw:[f/p0.inputs[0].shape[2],M/p0.inputs[0].shape[1]],position:[Math.round(e.shape[2]*f/p0.inputs[0].shape[2]),Math.round(e.shape[1]*M/p0.inputs[0].shape[1])]})}d.forEach(u=>K.dispose(u))}g0.score=g0.keypoints.reduce((x,d)=>d.score>x?d.score:x,0);let a=g0.keypoints.map(x=>x.position[0]),y=g0.keypoints.map(x=>x.position[1]);g0.box=[Math.min(...a),Math.min(...y),Math.max(...a)-Math.min(...a),Math.max(...y)-Math.min(...y)];let c=g0.keypoints.map(x=>x.positionRaw[0]),i=g0.keypoints.map(x=>x.positionRaw[1]);g0.boxRaw=[Math.min(...c),Math.min(...i),Math.max(...c)-Math.min(...c),Math.max(...i)-Math.min(...i)];for(let[x,d]of Object.entries(N5)){let u=[];for(let f=0;f<d.length-1;f++){let M=g0.keypoints.find(P=>P.part===d[f]),h=g0.keypoints.find(P=>P.part===d[f+1]);M&&h&&M.score>(t.body.minConfidence||0)&&h.score>(t.body.minConfidence||0)&&u.push([M.position,h.position])}g0.annotations[x]=u}n([g0])}))}var G0=V(F());var C2=["angry","disgust","fear","happy","sad","surprise","neutral"],O0,It=[],QA=0,_A=0,B5=Number.MAX_SAFE_INTEGER;async function $A(e){var t;return T.initial&&(O0=null),O0?e.debug&&b("cached model:",O0.modelUrl):O0=await B((t=e.face.emotion)==null?void 0:t.modelPath),O0}async function H5(e,t,o,A){var s,a;if(!O0)return[];let n=B5<(((s=t.face.emotion)==null?void 0:s.skipFrames)||0),r=(((a=t.face.emotion)==null?void 0:a.skipTime)||0)>g()-_A;return t.skipAllowed&&r&&n&&QA===A&&It[o]&&It[o].length>0?(B5++,It[o]):(B5=0,new Promise(async y=>{var i,l;let c=[];if((i=t.face.emotion)!=null&&i.enabled){let x={},d=O0!=null&&O0.inputs[0].shape?O0.inputs[0].shape[2]:0;x.resize=G0.image.resizeBilinear(e,[d,d],!1),x.channels=G0.mul(x.resize,H.rgb),x.grayscale=G0.sum(x.channels,3,!0),x.grayscaleSub=G0.sub(x.grayscale,H.tf05),x.grayscaleMul=G0.mul(x.grayscaleSub,H.tf2),x.emotion=O0==null?void 0:O0.execute(x.grayscaleMul),_A=g();let u=await x.emotion.data();for(let f=0;f<u.length;f++)u[f]>(((l=t.face.emotion)==null?void 0:l.minConfidence)||0)&&c.push({score:Math.min(.99,Math.trunc(100*u[f])/100),emotion:C2[f]});c.sort((f,M)=>M.score-f.score),Object.keys(x).forEach(f=>G0.dispose(x[f]))}It[o]=c,QA=A,y(c)}))}var nn=V(F());var E0,F5=[],tn=0,on=0,An=Number.MAX_SAFE_INTEGER;async function rn(e){return T.initial&&(E0=null),E0?e.debug&&b("cached model:",E0.modelUrl):E0=await B(e.face.mobilefacenet.modelPath),E0}async function V5(e,t,o,A){var s,a;if(!E0)return[];let n=An<(((s=t.face.embedding)==null?void 0:s.skipFrames)||0),r=(((a=t.face.embedding)==null?void 0:a.skipTime)||0)>g()-on;return t.skipAllowed&&r&&n&&tn===A&&F5[o]?(An++,F5[o]):new Promise(async y=>{var i;let c=[];if(((i=t.face.embedding)==null?void 0:i.enabled)&&(E0==null?void 0:E0.inputs[0].shape)){let l={};l.crop=nn.image.resizeBilinear(e,[E0.inputs[0].shape[2],E0.inputs[0].shape[1]],!1),l.data=E0==null?void 0:E0.execute(l.crop);let x=await l.data.data();c=Array.from(x)}F5[o]=c,tn=A,on=g(),y(c)})}var Fe=V(F());var B0=V(F());var oe,fe=0,O2=2.3,Z5=L0.leftEyeLower0,X5=L0.rightEyeLower0,Ge={leftBounds:[Z5[0],Z5[Z5.length-1]],rightBounds:[X5[0],X5[X5.length-1]]},Be={upperCenter:3,lowerCenter:4,index:71,numCoordinates:76};async function xn(e){var t;return T.initial&&(oe=null),oe?e.debug&&b("cached model:",oe.modelUrl):oe=await B((t=e.face.iris)==null?void 0:t.modelPath),fe=oe.inputs[0].shape?oe.inputs[0].shape[2]:0,fe===-1&&(fe=64),oe}function Nt(e,t,o,A){for(let n=0;n<P5.length;n++){let{key:r,indices:s}=P5[n],a=L0[`${o}${r}`];if(!A||A.includes(r))for(let y=0;y<s.length;y++){let c=s[y];e[a[y]]=[t[c][0],t[c][1],(t[c][2]+e[a[y]][2])/2]}}}var I2=e=>{let t=e[Ge.leftBounds[0]][2],o=e[Ge.rightBounds[0]][2];return t-o},an=(e,t,o,A,n,r=!1)=>{let s=kt(Rt(wA([e[o],e[A]]),O2)),a=Ie(s),y=B0.image.cropAndResize(t,[[s.startPoint[1]/n,s.startPoint[0]/n,s.endPoint[1]/n,s.endPoint[0]/n]],[0],[fe,fe]);if(r&&T.kernels.includes("flipleftright")){let c=B0.image.flipLeftRight(y);B0.dispose(y),y=c}return{box:s,boxSize:a,crop:y}},ln=(e,t,o,A=!1)=>{let n=[];for(let r=0;r<Be.numCoordinates;r++){let s=e[r*3],a=e[r*3+1],y=e[r*3+2];n.push([(A?1-s/fe:s/fe)*o[0]+t.startPoint[0],a/fe*o[1]+t.startPoint[1],y])}return{rawCoords:n,iris:n.slice(Be.index)}},yn=(e,t,o)=>{let A=e[L0[`${o}EyeUpper0`][Be.upperCenter]][2],n=e[L0[`${o}EyeLower0`][Be.lowerCenter]][2],r=(A+n)/2;return t.map((s,a)=>{let y=r;return a===2?y=A:a===4&&(y=n),[s[0],s[1],y]})};async function cn(e,t,o,A){if(!oe)return o.debug&&b("face mesh iris detection requested, but model is not loaded"),e;let{box:n,boxSize:r,crop:s}=an(e,t,Ge.leftBounds[0],Ge.leftBounds[1],A,!0),{box:a,boxSize:y,crop:c}=an(e,t,Ge.rightBounds[0],Ge.rightBounds[1],A,!0),i=B0.concat([s,c]);B0.dispose(s),B0.dispose(c);let l=oe.execute(i);B0.dispose(i);let x=await l.data();B0.dispose(l);let d=x.slice(0,Be.numCoordinates*3),{rawCoords:u,iris:f}=ln(d,n,r,!0),M=x.slice(Be.numCoordinates*3),{rawCoords:h,iris:P}=ln(M,a,y),m=I2(e);Math.abs(m)<30?(Nt(e,u,"left",null),Nt(e,h,"right",null)):m<1?Nt(e,u,"left",["EyeUpper0","EyeLower0"]):Nt(e,h,"right",["EyeUpper0","EyeLower0"]);let p=yn(e,f,"left"),k=yn(e,P,"right");return e.concat(p).concat(k)}var U0={boxes:[],skipped:Number.MAX_SAFE_INTEGER,timestamp:0},Ae=null,He=0;async function fn(e,t){var a,y,c,i,l,x,d,u,f;let o=(((a=t.face.detector)==null?void 0:a.skipTime)||0)>g()-U0.timestamp,A=U0.skipped<(((y=t.face.detector)==null?void 0:y.skipFrames)||0);!t.skipAllowed||!o||!A||U0.boxes.length===0?(U0.boxes=await OA(e,t),U0.timestamp=g(),U0.skipped=0):U0.skipped++;let n=[],r=[],s=0;for(let M=0;M<U0.boxes.length;M++){let h=U0.boxes[M],P=0,m,p={id:s++,mesh:[],meshRaw:[],box:[0,0,0,0],boxRaw:[0,0,0,0],score:0,boxScore:0,faceScore:0,annotations:{}};if([P,m,p.tensor]=zA((c=t.face.detector)==null?void 0:c.rotation,h,e,(i=t.face.mesh)!=null&&i.enabled?He:Et()),(l=t==null?void 0:t.filter)!=null&&l.equalization){let k=await ut(p.tensor);Fe.dispose(p.tensor),p.tensor=k}if(p.boxScore=Math.round(100*h.confidence)/100,(x=t.face.mesh)!=null&&x.enabled)if(!Ae)t.debug&&b("face mesh detection requested, but model is not loaded");else{let[k,C,O]=Ae.execute(p.tensor),j=await C.data();p.faceScore=Math.round(100*j[0])/100;let L=Fe.reshape(O,[-1,3]),J=await L.array();if(Fe.dispose([O,L,C,k]),p.faceScore<(((d=t.face.detector)==null?void 0:d.minConfidence)||1))h.confidence=p.faceScore;else{(u=t.face.iris)!=null&&u.enabled&&(J=await cn(J,p.tensor,t,He)),p.mesh=EA(J,h,P,m,He),p.meshRaw=p.mesh.map(q=>[q[0]/(e.shape[2]||0),q[1]/(e.shape[1]||0),(q[2]||0)/He]);for(let q of Object.keys(L0))p.annotations[q]=L0[q].map(x0=>p.mesh[x0]);p.score=p.faceScore;let Z={...jA(p.mesh,h),confidence:h.confidence,landmarks:h.landmarks};p.box=w5(Z,e),p.boxRaw=R5(Z,e),r.push(Z)}}else{p.box=w5(h,e),p.boxRaw=R5(h,e),p.score=p.boxScore,p.mesh=h.landmarks.map(k=>[(h.startPoint[0]+h.endPoint[0])/2+(h.endPoint[0]+h.startPoint[0])*k[0]/Et(),(h.startPoint[1]+h.endPoint[1])/2+(h.endPoint[1]+h.startPoint[1])*k[1]/Et()]),p.meshRaw=p.mesh.map(k=>[k[0]/(e.shape[2]||0),k[1]/(e.shape[1]||0),(k[2]||0)/He]);for(let k of Object.keys(rt))p.annotations[k]=[p.mesh[rt[k]]]}p.score>(((f=t.face.detector)==null?void 0:f.minConfidence)||1)?n.push(p):Fe.dispose(p.tensor)}return U0.boxes=r,n}async function mn(e){var t;return T.initial&&(Ae=null),Ae?e.debug&&b("cached model:",Ae.modelUrl):Ae=await B((t=e.face.mesh)==null?void 0:t.modelPath),He=Ae.inputs[0].shape?Ae.inputs[0].shape[2]:0,Ae}var pn=Me,un=st;var H0=V(F());var z0,Lt=[],hn=0,bn=0,q5=Number.MAX_SAFE_INTEGER;async function gn(e){var t;return T.initial&&(z0=null),z0?e.debug&&b("cached model:",z0.modelUrl):z0=await B((t=e.face.description)==null?void 0:t.modelPath),z0}function U5(e){let t=e.image||e.tensor||e;if(!(z0!=null&&z0.inputs[0].shape))return t;let o=H0.image.resizeBilinear(t,[z0.inputs[0].shape[2],z0.inputs[0].shape[1]],!1),A=H0.mul(o,H.tf255);return H0.dispose(o),A}async function J5(e,t,o,A){var s,a,y,c;if(!z0)return{age:0,gender:"unknown",genderScore:0,descriptor:[]};let n=q5<(((s=t.face.description)==null?void 0:s.skipFrames)||0),r=(((a=t.face.description)==null?void 0:a.skipTime)||0)>g()-hn;return t.skipAllowed&&n&&r&&bn===A&&((y=Lt[o])==null?void 0:y.age)&&((c=Lt[o])==null?void 0:c.age)>0?(q5++,Lt[o]):(q5=0,new Promise(async i=>{var x,d;let l={age:0,gender:"unknown",genderScore:0,descriptor:[]};if((x=t.face.description)!=null&&x.enabled){let u=U5(e),f=z0==null?void 0:z0.execute(u);hn=g(),H0.dispose(u);let h=await(await f.find(L=>L.shape[1]===1)).data(),P=Math.trunc(200*Math.abs(h[0]-.5))/100;P>(((d=t.face.description)==null?void 0:d.minConfidence)||0)&&(l.gender=h[0]<=.5?"female":"male",l.genderScore=Math.min(.99,P));let m=H0.argMax(f.find(L=>L.shape[1]===100),1),p=(await m.data())[0];H0.dispose(m);let C=await f.find(L=>L.shape[1]===100).data();l.age=Math.round(C[p-1]>C[p+1]?10*p-100*C[p-1]:10*p+100*C[p+1])/10;let O=f.find(L=>L.shape[1]===1024),j=O?await O.data():[];l.descriptor=Array.from(j),f.forEach(L=>H0.dispose(L))}Lt[o]=l,bn=A,i(l)}))}var G=V(F());var vn=V(F());function Gt(e){return[Math.abs(e.endPoint[0]-e.startPoint[0]),Math.abs(e.endPoint[1]-e.startPoint[1])]}function lt(e){return[e.startPoint[0]+(e.endPoint[0]-e.startPoint[0])/2,e.startPoint[1]+(e.endPoint[1]-e.startPoint[1])/2]}function Tn(e,t,o){let A=t.shape[1],n=t.shape[2],r=[[e.startPoint[1]/A,e.startPoint[0]/n,e.endPoint[1]/A,e.endPoint[0]/n]];return vn.image.cropAndResize(t,r,[0],o)}function wn(e,t){let o=[e.startPoint[0]*t[0],e.startPoint[1]*t[1]],A=[e.endPoint[0]*t[0],e.endPoint[1]*t[1]],n=e.palmLandmarks.map(r=>[r[0]*t[0],r[1]*t[1]]);return{startPoint:o,endPoint:A,palmLandmarks:n,confidence:e.confidence}}function Bt(e,t=1.5){let o=lt(e),A=Gt(e),n=[t*A[0]/2,t*A[1]/2],r=[o[0]-n[0],o[1]-n[1]],s=[o[0]+n[0],o[1]+n[1]];return{startPoint:r,endPoint:s,palmLandmarks:e.palmLandmarks}}function Ht(e){let t=lt(e),o=Gt(e),n=Math.max(...o)/2,r=[t[0]-n,t[1]-n],s=[t[0]+n,t[1]+n];return{startPoint:r,endPoint:s,palmLandmarks:e.palmLandmarks}}function N2(e){return e-2*Math.PI*Math.floor((e+Math.PI)/(2*Math.PI))}function Rn(e,t){let o=Math.PI/2-Math.atan2(-(t[1]-e[1]),t[0]-e[0]);return N2(o)}var Pn=(e,t)=>[[1,0,e],[0,1,t],[0,0,1]];function me(e,t){let o=0;for(let A=0;A<e.length;A++)o+=e[A]*t[A];return o}function L2(e,t){let o=[];for(let A=0;A<e.length;A++)o.push(e[A][t]);return o}function Mn(e,t){let o=[],A=e.length;for(let n=0;n<A;n++){o.push([]);for(let r=0;r<A;r++)o[n].push(me(e[n],L2(t,r)))}return o}function K5(e,t){let o=Math.cos(e),A=Math.sin(e),n=[[o,-A,0],[A,o,0],[0,0,1]],r=Pn(t[0],t[1]),s=Mn(r,n),a=Pn(-t[0],-t[1]);return Mn(s,a)}function kn(e){let t=[[e[0][0],e[1][0]],[e[0][1],e[1][1]]],o=[e[0][2],e[1][2]],A=[-me(t[0],o),-me(t[1],o)];return[t[0].concat(A[0]),t[1].concat(A[1]),[0,0,1]]}function Q5(e,t){return[me(e,t[0]),me(e,t[1])]}var zn=[{x:.015625,y:.015625},{x:.015625,y:.015625},{x:.046875,y:.015625},{x:.046875,y:.015625},{x:.078125,y:.015625},{x:.078125,y:.015625},{x:.109375,y:.015625},{x:.109375,y:.015625},{x:.140625,y:.015625},{x:.140625,y:.015625},{x:.171875,y:.015625},{x:.171875,y:.015625},{x:.203125,y:.015625},{x:.203125,y:.015625},{x:.234375,y:.015625},{x:.234375,y:.015625},{x:.265625,y:.015625},{x:.265625,y:.015625},{x:.296875,y:.015625},{x:.296875,y:.015625},{x:.328125,y:.015625},{x:.328125,y:.015625},{x:.359375,y:.015625},{x:.359375,y:.015625},{x:.390625,y:.015625},{x:.390625,y:.015625},{x:.421875,y:.015625},{x:.421875,y:.015625},{x:.453125,y:.015625},{x:.453125,y:.015625},{x:.484375,y:.015625},{x:.484375,y:.015625},{x:.515625,y:.015625},{x:.515625,y:.015625},{x:.546875,y:.015625},{x:.546875,y:.015625},{x:.578125,y:.015625},{x:.578125,y:.015625},{x:.609375,y:.015625},{x:.609375,y:.015625},{x:.640625,y:.015625},{x:.640625,y:.015625},{x:.671875,y:.015625},{x:.671875,y:.015625},{x:.703125,y:.015625},{x:.703125,y:.015625},{x:.734375,y:.015625},{x:.734375,y:.015625},{x:.765625,y:.015625},{x:.765625,y:.015625},{x:.796875,y:.015625},{x:.796875,y:.015625},{x:.828125,y:.015625},{x:.828125,y:.015625},{x:.859375,y:.015625},{x:.859375,y:.015625},{x:.890625,y:.015625},{x:.890625,y:.015625},{x:.921875,y:.015625},{x:.921875,y:.015625},{x:.953125,y:.015625},{x:.953125,y:.015625},{x:.984375,y:.015625},{x:.984375,y:.015625},{x:.015625,y:.046875},{x:.015625,y:.046875},{x:.046875,y:.046875},{x:.046875,y:.046875},{x:.078125,y:.046875},{x:.078125,y:.046875},{x:.109375,y:.046875},{x:.109375,y:.046875},{x:.140625,y:.046875},{x:.140625,y:.046875},{x:.171875,y:.046875},{x:.171875,y:.046875},{x:.203125,y:.046875},{x:.203125,y:.046875},{x:.234375,y:.046875},{x:.234375,y:.046875},{x:.265625,y:.046875},{x:.265625,y:.046875},{x:.296875,y:.046875},{x:.296875,y:.046875},{x:.328125,y:.046875},{x:.328125,y:.046875},{x:.359375,y:.046875},{x:.359375,y:.046875},{x:.390625,y:.046875},{x:.390625,y:.046875},{x:.421875,y:.046875},{x:.421875,y:.046875},{x:.453125,y:.046875},{x:.453125,y:.046875},{x:.484375,y:.046875},{x:.484375,y:.046875},{x:.515625,y:.046875},{x:.515625,y:.046875},{x:.546875,y:.046875},{x:.546875,y:.046875},{x:.578125,y:.046875},{x:.578125,y:.046875},{x:.609375,y:.046875},{x:.609375,y:.046875},{x:.640625,y:.046875},{x:.640625,y:.046875},{x:.671875,y:.046875},{x:.671875,y:.046875},{x:.703125,y:.046875},{x:.703125,y:.046875},{x:.734375,y:.046875},{x:.734375,y:.046875},{x:.765625,y:.046875},{x:.765625,y:.046875},{x:.796875,y:.046875},{x:.796875,y:.046875},{x:.828125,y:.046875},{x:.828125,y:.046875},{x:.859375,y:.046875},{x:.859375,y:.046875},{x:.890625,y:.046875},{x:.890625,y:.046875},{x:.921875,y:.046875},{x:.921875,y:.046875},{x:.953125,y:.046875},{x:.953125,y:.046875},{x:.984375,y:.046875},{x:.984375,y:.046875},{x:.015625,y:.078125},{x:.015625,y:.078125},{x:.046875,y:.078125},{x:.046875,y:.078125},{x:.078125,y:.078125},{x:.078125,y:.078125},{x:.109375,y:.078125},{x:.109375,y:.078125},{x:.140625,y:.078125},{x:.140625,y:.078125},{x:.171875,y:.078125},{x:.171875,y:.078125},{x:.203125,y:.078125},{x:.203125,y:.078125},{x:.234375,y:.078125},{x:.234375,y:.078125},{x:.265625,y:.078125},{x:.265625,y:.078125},{x:.296875,y:.078125},{x:.296875,y:.078125},{x:.328125,y:.078125},{x:.328125,y:.078125},{x:.359375,y:.078125},{x:.359375,y:.078125},{x:.390625,y:.078125},{x:.390625,y:.078125},{x:.421875,y:.078125},{x:.421875,y:.078125},{x:.453125,y:.078125},{x:.453125,y:.078125},{x:.484375,y:.078125},{x:.484375,y:.078125},{x:.515625,y:.078125},{x:.515625,y:.078125},{x:.546875,y:.078125},{x:.546875,y:.078125},{x:.578125,y:.078125},{x:.578125,y:.078125},{x:.609375,y:.078125},{x:.609375,y:.078125},{x:.640625,y:.078125},{x:.640625,y:.078125},{x:.671875,y:.078125},{x:.671875,y:.078125},{x:.703125,y:.078125},{x:.703125,y:.078125},{x:.734375,y:.078125},{x:.734375,y:.078125},{x:.765625,y:.078125},{x:.765625,y:.078125},{x:.796875,y:.078125},{x:.796875,y:.078125},{x:.828125,y:.078125},{x:.828125,y:.078125},{x:.859375,y:.078125},{x:.859375,y:.078125},{x:.890625,y:.078125},{x:.890625,y:.078125},{x:.921875,y:.078125},{x:.921875,y:.078125},{x:.953125,y:.078125},{x:.953125,y:.078125},{x:.984375,y:.078125},{x:.984375,y:.078125},{x:.015625,y:.109375},{x:.015625,y:.109375},{x:.046875,y:.109375},{x:.046875,y:.109375},{x:.078125,y:.109375},{x:.078125,y:.109375},{x:.109375,y:.109375},{x:.109375,y:.109375},{x:.140625,y:.109375},{x:.140625,y:.109375},{x:.171875,y:.109375},{x:.171875,y:.109375},{x:.203125,y:.109375},{x:.203125,y:.109375},{x:.234375,y:.109375},{x:.234375,y:.109375},{x:.265625,y:.109375},{x:.265625,y:.109375},{x:.296875,y:.109375},{x:.296875,y:.109375},{x:.328125,y:.109375},{x:.328125,y:.109375},{x:.359375,y:.109375},{x:.359375,y:.109375},{x:.390625,y:.109375},{x:.390625,y:.109375},{x:.421875,y:.109375},{x:.421875,y:.109375},{x:.453125,y:.109375},{x:.453125,y:.109375},{x:.484375,y:.109375},{x:.484375,y:.109375},{x:.515625,y:.109375},{x:.515625,y:.109375},{x:.546875,y:.109375},{x:.546875,y:.109375},{x:.578125,y:.109375},{x:.578125,y:.109375},{x:.609375,y:.109375},{x:.609375,y:.109375},{x:.640625,y:.109375},{x:.640625,y:.109375},{x:.671875,y:.109375},{x:.671875,y:.109375},{x:.703125,y:.109375},{x:.703125,y:.109375},{x:.734375,y:.109375},{x:.734375,y:.109375},{x:.765625,y:.109375},{x:.765625,y:.109375},{x:.796875,y:.109375},{x:.796875,y:.109375},{x:.828125,y:.109375},{x:.828125,y:.109375},{x:.859375,y:.109375},{x:.859375,y:.109375},{x:.890625,y:.109375},{x:.890625,y:.109375},{x:.921875,y:.109375},{x:.921875,y:.109375},{x:.953125,y:.109375},{x:.953125,y:.109375},{x:.984375,y:.109375},{x:.984375,y:.109375},{x:.015625,y:.140625},{x:.015625,y:.140625},{x:.046875,y:.140625},{x:.046875,y:.140625},{x:.078125,y:.140625},{x:.078125,y:.140625},{x:.109375,y:.140625},{x:.109375,y:.140625},{x:.140625,y:.140625},{x:.140625,y:.140625},{x:.171875,y:.140625},{x:.171875,y:.140625},{x:.203125,y:.140625},{x:.203125,y:.140625},{x:.234375,y:.140625},{x:.234375,y:.140625},{x:.265625,y:.140625},{x:.265625,y:.140625},{x:.296875,y:.140625},{x:.296875,y:.140625},{x:.328125,y:.140625},{x:.328125,y:.140625},{x:.359375,y:.140625},{x:.359375,y:.140625},{x:.390625,y:.140625},{x:.390625,y:.140625},{x:.421875,y:.140625},{x:.421875,y:.140625},{x:.453125,y:.140625},{x:.453125,y:.140625},{x:.484375,y:.140625},{x:.484375,y:.140625},{x:.515625,y:.140625},{x:.515625,y:.140625},{x:.546875,y:.140625},{x:.546875,y:.140625},{x:.578125,y:.140625},{x:.578125,y:.140625},{x:.609375,y:.140625},{x:.609375,y:.140625},{x:.640625,y:.140625},{x:.640625,y:.140625},{x:.671875,y:.140625},{x:.671875,y:.140625},{x:.703125,y:.140625},{x:.703125,y:.140625},{x:.734375,y:.140625},{x:.734375,y:.140625},{x:.765625,y:.140625},{x:.765625,y:.140625},{x:.796875,y:.140625},{x:.796875,y:.140625},{x:.828125,y:.140625},{x:.828125,y:.140625},{x:.859375,y:.140625},{x:.859375,y:.140625},{x:.890625,y:.140625},{x:.890625,y:.140625},{x:.921875,y:.140625},{x:.921875,y:.140625},{x:.953125,y:.140625},{x:.953125,y:.140625},{x:.984375,y:.140625},{x:.984375,y:.140625},{x:.015625,y:.171875},{x:.015625,y:.171875},{x:.046875,y:.171875},{x:.046875,y:.171875},{x:.078125,y:.171875},{x:.078125,y:.171875},{x:.109375,y:.171875},{x:.109375,y:.171875},{x:.140625,y:.171875},{x:.140625,y:.171875},{x:.171875,y:.171875},{x:.171875,y:.171875},{x:.203125,y:.171875},{x:.203125,y:.171875},{x:.234375,y:.171875},{x:.234375,y:.171875},{x:.265625,y:.171875},{x:.265625,y:.171875},{x:.296875,y:.171875},{x:.296875,y:.171875},{x:.328125,y:.171875},{x:.328125,y:.171875},{x:.359375,y:.171875},{x:.359375,y:.171875},{x:.390625,y:.171875},{x:.390625,y:.171875},{x:.421875,y:.171875},{x:.421875,y:.171875},{x:.453125,y:.171875},{x:.453125,y:.171875},{x:.484375,y:.171875},{x:.484375,y:.171875},{x:.515625,y:.171875},{x:.515625,y:.171875},{x:.546875,y:.171875},{x:.546875,y:.171875},{x:.578125,y:.171875},{x:.578125,y:.171875},{x:.609375,y:.171875},{x:.609375,y:.171875},{x:.640625,y:.171875},{x:.640625,y:.171875},{x:.671875,y:.171875},{x:.671875,y:.171875},{x:.703125,y:.171875},{x:.703125,y:.171875},{x:.734375,y:.171875},{x:.734375,y:.171875},{x:.765625,y:.171875},{x:.765625,y:.171875},{x:.796875,y:.171875},{x:.796875,y:.171875},{x:.828125,y:.171875},{x:.828125,y:.171875},{x:.859375,y:.171875},{x:.859375,y:.171875},{x:.890625,y:.171875},{x:.890625,y:.171875},{x:.921875,y:.171875},{x:.921875,y:.171875},{x:.953125,y:.171875},{x:.953125,y:.171875},{x:.984375,y:.171875},{x:.984375,y:.171875},{x:.015625,y:.203125},{x:.015625,y:.203125},{x:.046875,y:.203125},{x:.046875,y:.203125},{x:.078125,y:.203125},{x:.078125,y:.203125},{x:.109375,y:.203125},{x:.109375,y:.203125},{x:.140625,y:.203125},{x:.140625,y:.203125},{x:.171875,y:.203125},{x:.171875,y:.203125},{x:.203125,y:.203125},{x:.203125,y:.203125},{x:.234375,y:.203125},{x:.234375,y:.203125},{x:.265625,y:.203125},{x:.265625,y:.203125},{x:.296875,y:.203125},{x:.296875,y:.203125},{x:.328125,y:.203125},{x:.328125,y:.203125},{x:.359375,y:.203125},{x:.359375,y:.203125},{x:.390625,y:.203125},{x:.390625,y:.203125},{x:.421875,y:.203125},{x:.421875,y:.203125},{x:.453125,y:.203125},{x:.453125,y:.203125},{x:.484375,y:.203125},{x:.484375,y:.203125},{x:.515625,y:.203125},{x:.515625,y:.203125},{x:.546875,y:.203125},{x:.546875,y:.203125},{x:.578125,y:.203125},{x:.578125,y:.203125},{x:.609375,y:.203125},{x:.609375,y:.203125},{x:.640625,y:.203125},{x:.640625,y:.203125},{x:.671875,y:.203125},{x:.671875,y:.203125},{x:.703125,y:.203125},{x:.703125,y:.203125},{x:.734375,y:.203125},{x:.734375,y:.203125},{x:.765625,y:.203125},{x:.765625,y:.203125},{x:.796875,y:.203125},{x:.796875,y:.203125},{x:.828125,y:.203125},{x:.828125,y:.203125},{x:.859375,y:.203125},{x:.859375,y:.203125},{x:.890625,y:.203125},{x:.890625,y:.203125},{x:.921875,y:.203125},{x:.921875,y:.203125},{x:.953125,y:.203125},{x:.953125,y:.203125},{x:.984375,y:.203125},{x:.984375,y:.203125},{x:.015625,y:.234375},{x:.015625,y:.234375},{x:.046875,y:.234375},{x:.046875,y:.234375},{x:.078125,y:.234375},{x:.078125,y:.234375},{x:.109375,y:.234375},{x:.109375,y:.234375},{x:.140625,y:.234375},{x:.140625,y:.234375},{x:.171875,y:.234375},{x:.171875,y:.234375},{x:.203125,y:.234375},{x:.203125,y:.234375},{x:.234375,y:.234375},{x:.234375,y:.234375},{x:.265625,y:.234375},{x:.265625,y:.234375},{x:.296875,y:.234375},{x:.296875,y:.234375},{x:.328125,y:.234375},{x:.328125,y:.234375},{x:.359375,y:.234375},{x:.359375,y:.234375},{x:.390625,y:.234375},{x:.390625,y:.234375},{x:.421875,y:.234375},{x:.421875,y:.234375},{x:.453125,y:.234375},{x:.453125,y:.234375},{x:.484375,y:.234375},{x:.484375,y:.234375},{x:.515625,y:.234375},{x:.515625,y:.234375},{x:.546875,y:.234375},{x:.546875,y:.234375},{x:.578125,y:.234375},{x:.578125,y:.234375},{x:.609375,y:.234375},{x:.609375,y:.234375},{x:.640625,y:.234375},{x:.640625,y:.234375},{x:.671875,y:.234375},{x:.671875,y:.234375},{x:.703125,y:.234375},{x:.703125,y:.234375},{x:.734375,y:.234375},{x:.734375,y:.234375},{x:.765625,y:.234375},{x:.765625,y:.234375},{x:.796875,y:.234375},{x:.796875,y:.234375},{x:.828125,y:.234375},{x:.828125,y:.234375},{x:.859375,y:.234375},{x:.859375,y:.234375},{x:.890625,y:.234375},{x:.890625,y:.234375},{x:.921875,y:.234375},{x:.921875,y:.234375},{x:.953125,y:.234375},{x:.953125,y:.234375},{x:.984375,y:.234375},{x:.984375,y:.234375},{x:.015625,y:.265625},{x:.015625,y:.265625},{x:.046875,y:.265625},{x:.046875,y:.265625},{x:.078125,y:.265625},{x:.078125,y:.265625},{x:.109375,y:.265625},{x:.109375,y:.265625},{x:.140625,y:.265625},{x:.140625,y:.265625},{x:.171875,y:.265625},{x:.171875,y:.265625},{x:.203125,y:.265625},{x:.203125,y:.265625},{x:.234375,y:.265625},{x:.234375,y:.265625},{x:.265625,y:.265625},{x:.265625,y:.265625},{x:.296875,y:.265625},{x:.296875,y:.265625},{x:.328125,y:.265625},{x:.328125,y:.265625},{x:.359375,y:.265625},{x:.359375,y:.265625},{x:.390625,y:.265625},{x:.390625,y:.265625},{x:.421875,y:.265625},{x:.421875,y:.265625},{x:.453125,y:.265625},{x:.453125,y:.265625},{x:.484375,y:.265625},{x:.484375,y:.265625},{x:.515625,y:.265625},{x:.515625,y:.265625},{x:.546875,y:.265625},{x:.546875,y:.265625},{x:.578125,y:.265625},{x:.578125,y:.265625},{x:.609375,y:.265625},{x:.609375,y:.265625},{x:.640625,y:.265625},{x:.640625,y:.265625},{x:.671875,y:.265625},{x:.671875,y:.265625},{x:.703125,y:.265625},{x:.703125,y:.265625},{x:.734375,y:.265625},{x:.734375,y:.265625},{x:.765625,y:.265625},{x:.765625,y:.265625},{x:.796875,y:.265625},{x:.796875,y:.265625},{x:.828125,y:.265625},{x:.828125,y:.265625},{x:.859375,y:.265625},{x:.859375,y:.265625},{x:.890625,y:.265625},{x:.890625,y:.265625},{x:.921875,y:.265625},{x:.921875,y:.265625},{x:.953125,y:.265625},{x:.953125,y:.265625},{x:.984375,y:.265625},{x:.984375,y:.265625},{x:.015625,y:.296875},{x:.015625,y:.296875},{x:.046875,y:.296875},{x:.046875,y:.296875},{x:.078125,y:.296875},{x:.078125,y:.296875},{x:.109375,y:.296875},{x:.109375,y:.296875},{x:.140625,y:.296875},{x:.140625,y:.296875},{x:.171875,y:.296875},{x:.171875,y:.296875},{x:.203125,y:.296875},{x:.203125,y:.296875},{x:.234375,y:.296875},{x:.234375,y:.296875},{x:.265625,y:.296875},{x:.265625,y:.296875},{x:.296875,y:.296875},{x:.296875,y:.296875},{x:.328125,y:.296875},{x:.328125,y:.296875},{x:.359375,y:.296875},{x:.359375,y:.296875},{x:.390625,y:.296875},{x:.390625,y:.296875},{x:.421875,y:.296875},{x:.421875,y:.296875},{x:.453125,y:.296875},{x:.453125,y:.296875},{x:.484375,y:.296875},{x:.484375,y:.296875},{x:.515625,y:.296875},{x:.515625,y:.296875},{x:.546875,y:.296875},{x:.546875,y:.296875},{x:.578125,y:.296875},{x:.578125,y:.296875},{x:.609375,y:.296875},{x:.609375,y:.296875},{x:.640625,y:.296875},{x:.640625,y:.296875},{x:.671875,y:.296875},{x:.671875,y:.296875},{x:.703125,y:.296875},{x:.703125,y:.296875},{x:.734375,y:.296875},{x:.734375,y:.296875},{x:.765625,y:.296875},{x:.765625,y:.296875},{x:.796875,y:.296875},{x:.796875,y:.296875},{x:.828125,y:.296875},{x:.828125,y:.296875},{x:.859375,y:.296875},{x:.859375,y:.296875},{x:.890625,y:.296875},{x:.890625,y:.296875},{x:.921875,y:.296875},{x:.921875,y:.296875},{x:.953125,y:.296875},{x:.953125,y:.296875},{x:.984375,y:.296875},{x:.984375,y:.296875},{x:.015625,y:.328125},{x:.015625,y:.328125},{x:.046875,y:.328125},{x:.046875,y:.328125},{x:.078125,y:.328125},{x:.078125,y:.328125},{x:.109375,y:.328125},{x:.109375,y:.328125},{x:.140625,y:.328125},{x:.140625,y:.328125},{x:.171875,y:.328125},{x:.171875,y:.328125},{x:.203125,y:.328125},{x:.203125,y:.328125},{x:.234375,y:.328125},{x:.234375,y:.328125},{x:.265625,y:.328125},{x:.265625,y:.328125},{x:.296875,y:.328125},{x:.296875,y:.328125},{x:.328125,y:.328125},{x:.328125,y:.328125},{x:.359375,y:.328125},{x:.359375,y:.328125},{x:.390625,y:.328125},{x:.390625,y:.328125},{x:.421875,y:.328125},{x:.421875,y:.328125},{x:.453125,y:.328125},{x:.453125,y:.328125},{x:.484375,y:.328125},{x:.484375,y:.328125},{x:.515625,y:.328125},{x:.515625,y:.328125},{x:.546875,y:.328125},{x:.546875,y:.328125},{x:.578125,y:.328125},{x:.578125,y:.328125},{x:.609375,y:.328125},{x:.609375,y:.328125},{x:.640625,y:.328125},{x:.640625,y:.328125},{x:.671875,y:.328125},{x:.671875,y:.328125},{x:.703125,y:.328125},{x:.703125,y:.328125},{x:.734375,y:.328125},{x:.734375,y:.328125},{x:.765625,y:.328125},{x:.765625,y:.328125},{x:.796875,y:.328125},{x:.796875,y:.328125},{x:.828125,y:.328125},{x:.828125,y:.328125},{x:.859375,y:.328125},{x:.859375,y:.328125},{x:.890625,y:.328125},{x:.890625,y:.328125},{x:.921875,y:.328125},{x:.921875,y:.328125},{x:.953125,y:.328125},{x:.953125,y:.328125},{x:.984375,y:.328125},{x:.984375,y:.328125},{x:.015625,y:.359375},{x:.015625,y:.359375},{x:.046875,y:.359375},{x:.046875,y:.359375},{x:.078125,y:.359375},{x:.078125,y:.359375},{x:.109375,y:.359375},{x:.109375,y:.359375},{x:.140625,y:.359375},{x:.140625,y:.359375},{x:.171875,y:.359375},{x:.171875,y:.359375},{x:.203125,y:.359375},{x:.203125,y:.359375},{x:.234375,y:.359375},{x:.234375,y:.359375},{x:.265625,y:.359375},{x:.265625,y:.359375},{x:.296875,y:.359375},{x:.296875,y:.359375},{x:.328125,y:.359375},{x:.328125,y:.359375},{x:.359375,y:.359375},{x:.359375,y:.359375},{x:.390625,y:.359375},{x:.390625,y:.359375},{x:.421875,y:.359375},{x:.421875,y:.359375},{x:.453125,y:.359375},{x:.453125,y:.359375},{x:.484375,y:.359375},{x:.484375,y:.359375},{x:.515625,y:.359375},{x:.515625,y:.359375},{x:.546875,y:.359375},{x:.546875,y:.359375},{x:.578125,y:.359375},{x:.578125,y:.359375},{x:.609375,y:.359375},{x:.609375,y:.359375},{x:.640625,y:.359375},{x:.640625,y:.359375},{x:.671875,y:.359375},{x:.671875,y:.359375},{x:.703125,y:.359375},{x:.703125,y:.359375},{x:.734375,y:.359375},{x:.734375,y:.359375},{x:.765625,y:.359375},{x:.765625,y:.359375},{x:.796875,y:.359375},{x:.796875,y:.359375},{x:.828125,y:.359375},{x:.828125,y:.359375},{x:.859375,y:.359375},{x:.859375,y:.359375},{x:.890625,y:.359375},{x:.890625,y:.359375},{x:.921875,y:.359375},{x:.921875,y:.359375},{x:.953125,y:.359375},{x:.953125,y:.359375},{x:.984375,y:.359375},{x:.984375,y:.359375},{x:.015625,y:.390625},{x:.015625,y:.390625},{x:.046875,y:.390625},{x:.046875,y:.390625},{x:.078125,y:.390625},{x:.078125,y:.390625},{x:.109375,y:.390625},{x:.109375,y:.390625},{x:.140625,y:.390625},{x:.140625,y:.390625},{x:.171875,y:.390625},{x:.171875,y:.390625},{x:.203125,y:.390625},{x:.203125,y:.390625},{x:.234375,y:.390625},{x:.234375,y:.390625},{x:.265625,y:.390625},{x:.265625,y:.390625},{x:.296875,y:.390625},{x:.296875,y:.390625},{x:.328125,y:.390625},{x:.328125,y:.390625},{x:.359375,y:.390625},{x:.359375,y:.390625},{x:.390625,y:.390625},{x:.390625,y:.390625},{x:.421875,y:.390625},{x:.421875,y:.390625},{x:.453125,y:.390625},{x:.453125,y:.390625},{x:.484375,y:.390625},{x:.484375,y:.390625},{x:.515625,y:.390625},{x:.515625,y:.390625},{x:.546875,y:.390625},{x:.546875,y:.390625},{x:.578125,y:.390625},{x:.578125,y:.390625},{x:.609375,y:.390625},{x:.609375,y:.390625},{x:.640625,y:.390625},{x:.640625,y:.390625},{x:.671875,y:.390625},{x:.671875,y:.390625},{x:.703125,y:.390625},{x:.703125,y:.390625},{x:.734375,y:.390625},{x:.734375,y:.390625},{x:.765625,y:.390625},{x:.765625,y:.390625},{x:.796875,y:.390625},{x:.796875,y:.390625},{x:.828125,y:.390625},{x:.828125,y:.390625},{x:.859375,y:.390625},{x:.859375,y:.390625},{x:.890625,y:.390625},{x:.890625,y:.390625},{x:.921875,y:.390625},{x:.921875,y:.390625},{x:.953125,y:.390625},{x:.953125,y:.390625},{x:.984375,y:.390625},{x:.984375,y:.390625},{x:.015625,y:.421875},{x:.015625,y:.421875},{x:.046875,y:.421875},{x:.046875,y:.421875},{x:.078125,y:.421875},{x:.078125,y:.421875},{x:.109375,y:.421875},{x:.109375,y:.421875},{x:.140625,y:.421875},{x:.140625,y:.421875},{x:.171875,y:.421875},{x:.171875,y:.421875},{x:.203125,y:.421875},{x:.203125,y:.421875},{x:.234375,y:.421875},{x:.234375,y:.421875},{x:.265625,y:.421875},{x:.265625,y:.421875},{x:.296875,y:.421875},{x:.296875,y:.421875},{x:.328125,y:.421875},{x:.328125,y:.421875},{x:.359375,y:.421875},{x:.359375,y:.421875},{x:.390625,y:.421875},{x:.390625,y:.421875},{x:.421875,y:.421875},{x:.421875,y:.421875},{x:.453125,y:.421875},{x:.453125,y:.421875},{x:.484375,y:.421875},{x:.484375,y:.421875},{x:.515625,y:.421875},{x:.515625,y:.421875},{x:.546875,y:.421875},{x:.546875,y:.421875},{x:.578125,y:.421875},{x:.578125,y:.421875},{x:.609375,y:.421875},{x:.609375,y:.421875},{x:.640625,y:.421875},{x:.640625,y:.421875},{x:.671875,y:.421875},{x:.671875,y:.421875},{x:.703125,y:.421875},{x:.703125,y:.421875},{x:.734375,y:.421875},{x:.734375,y:.421875},{x:.765625,y:.421875},{x:.765625,y:.421875},{x:.796875,y:.421875},{x:.796875,y:.421875},{x:.828125,y:.421875},{x:.828125,y:.421875},{x:.859375,y:.421875},{x:.859375,y:.421875},{x:.890625,y:.421875},{x:.890625,y:.421875},{x:.921875,y:.421875},{x:.921875,y:.421875},{x:.953125,y:.421875},{x:.953125,y:.421875},{x:.984375,y:.421875},{x:.984375,y:.421875},{x:.015625,y:.453125},{x:.015625,y:.453125},{x:.046875,y:.453125},{x:.046875,y:.453125},{x:.078125,y:.453125},{x:.078125,y:.453125},{x:.109375,y:.453125},{x:.109375,y:.453125},{x:.140625,y:.453125},{x:.140625,y:.453125},{x:.171875,y:.453125},{x:.171875,y:.453125},{x:.203125,y:.453125},{x:.203125,y:.453125},{x:.234375,y:.453125},{x:.234375,y:.453125},{x:.265625,y:.453125},{x:.265625,y:.453125},{x:.296875,y:.453125},{x:.296875,y:.453125},{x:.328125,y:.453125},{x:.328125,y:.453125},{x:.359375,y:.453125},{x:.359375,y:.453125},{x:.390625,y:.453125},{x:.390625,y:.453125},{x:.421875,y:.453125},{x:.421875,y:.453125},{x:.453125,y:.453125},{x:.453125,y:.453125},{x:.484375,y:.453125},{x:.484375,y:.453125},{x:.515625,y:.453125},{x:.515625,y:.453125},{x:.546875,y:.453125},{x:.546875,y:.453125},{x:.578125,y:.453125},{x:.578125,y:.453125},{x:.609375,y:.453125},{x:.609375,y:.453125},{x:.640625,y:.453125},{x:.640625,y:.453125},{x:.671875,y:.453125},{x:.671875,y:.453125},{x:.703125,y:.453125},{x:.703125,y:.453125},{x:.734375,y:.453125},{x:.734375,y:.453125},{x:.765625,y:.453125},{x:.765625,y:.453125},{x:.796875,y:.453125},{x:.796875,y:.453125},{x:.828125,y:.453125},{x:.828125,y:.453125},{x:.859375,y:.453125},{x:.859375,y:.453125},{x:.890625,y:.453125},{x:.890625,y:.453125},{x:.921875,y:.453125},{x:.921875,y:.453125},{x:.953125,y:.453125},{x:.953125,y:.453125},{x:.984375,y:.453125},{x:.984375,y:.453125},{x:.015625,y:.484375},{x:.015625,y:.484375},{x:.046875,y:.484375},{x:.046875,y:.484375},{x:.078125,y:.484375},{x:.078125,y:.484375},{x:.109375,y:.484375},{x:.109375,y:.484375},{x:.140625,y:.484375},{x:.140625,y:.484375},{x:.171875,y:.484375},{x:.171875,y:.484375},{x:.203125,y:.484375},{x:.203125,y:.484375},{x:.234375,y:.484375},{x:.234375,y:.484375},{x:.265625,y:.484375},{x:.265625,y:.484375},{x:.296875,y:.484375},{x:.296875,y:.484375},{x:.328125,y:.484375},{x:.328125,y:.484375},{x:.359375,y:.484375},{x:.359375,y:.484375},{x:.390625,y:.484375},{x:.390625,y:.484375},{x:.421875,y:.484375},{x:.421875,y:.484375},{x:.453125,y:.484375},{x:.453125,y:.484375},{x:.484375,y:.484375},{x:.484375,y:.484375},{x:.515625,y:.484375},{x:.515625,y:.484375},{x:.546875,y:.484375},{x:.546875,y:.484375},{x:.578125,y:.484375},{x:.578125,y:.484375},{x:.609375,y:.484375},{x:.609375,y:.484375},{x:.640625,y:.484375},{x:.640625,y:.484375},{x:.671875,y:.484375},{x:.671875,y:.484375},{x:.703125,y:.484375},{x:.703125,y:.484375},{x:.734375,y:.484375},{x:.734375,y:.484375},{x:.765625,y:.484375},{x:.765625,y:.484375},{x:.796875,y:.484375},{x:.796875,y:.484375},{x:.828125,y:.484375},{x:.828125,y:.484375},{x:.859375,y:.484375},{x:.859375,y:.484375},{x:.890625,y:.484375},{x:.890625,y:.484375},{x:.921875,y:.484375},{x:.921875,y:.484375},{x:.953125,y:.484375},{x:.953125,y:.484375},{x:.984375,y:.484375},{x:.984375,y:.484375},{x:.015625,y:.515625},{x:.015625,y:.515625},{x:.046875,y:.515625},{x:.046875,y:.515625},{x:.078125,y:.515625},{x:.078125,y:.515625},{x:.109375,y:.515625},{x:.109375,y:.515625},{x:.140625,y:.515625},{x:.140625,y:.515625},{x:.171875,y:.515625},{x:.171875,y:.515625},{x:.203125,y:.515625},{x:.203125,y:.515625},{x:.234375,y:.515625},{x:.234375,y:.515625},{x:.265625,y:.515625},{x:.265625,y:.515625},{x:.296875,y:.515625},{x:.296875,y:.515625},{x:.328125,y:.515625},{x:.328125,y:.515625},{x:.359375,y:.515625},{x:.359375,y:.515625},{x:.390625,y:.515625},{x:.390625,y:.515625},{x:.421875,y:.515625},{x:.421875,y:.515625},{x:.453125,y:.515625},{x:.453125,y:.515625},{x:.484375,y:.515625},{x:.484375,y:.515625},{x:.515625,y:.515625},{x:.515625,y:.515625},{x:.546875,y:.515625},{x:.546875,y:.515625},{x:.578125,y:.515625},{x:.578125,y:.515625},{x:.609375,y:.515625},{x:.609375,y:.515625},{x:.640625,y:.515625},{x:.640625,y:.515625},{x:.671875,y:.515625},{x:.671875,y:.515625},{x:.703125,y:.515625},{x:.703125,y:.515625},{x:.734375,y:.515625},{x:.734375,y:.515625},{x:.765625,y:.515625},{x:.765625,y:.515625},{x:.796875,y:.515625},{x:.796875,y:.515625},{x:.828125,y:.515625},{x:.828125,y:.515625},{x:.859375,y:.515625},{x:.859375,y:.515625},{x:.890625,y:.515625},{x:.890625,y:.515625},{x:.921875,y:.515625},{x:.921875,y:.515625},{x:.953125,y:.515625},{x:.953125,y:.515625},{x:.984375,y:.515625},{x:.984375,y:.515625},{x:.015625,y:.546875},{x:.015625,y:.546875},{x:.046875,y:.546875},{x:.046875,y:.546875},{x:.078125,y:.546875},{x:.078125,y:.546875},{x:.109375,y:.546875},{x:.109375,y:.546875},{x:.140625,y:.546875},{x:.140625,y:.546875},{x:.171875,y:.546875},{x:.171875,y:.546875},{x:.203125,y:.546875},{x:.203125,y:.546875},{x:.234375,y:.546875},{x:.234375,y:.546875},{x:.265625,y:.546875},{x:.265625,y:.546875},{x:.296875,y:.546875},{x:.296875,y:.546875},{x:.328125,y:.546875},{x:.328125,y:.546875},{x:.359375,y:.546875},{x:.359375,y:.546875},{x:.390625,y:.546875},{x:.390625,y:.546875},{x:.421875,y:.546875},{x:.421875,y:.546875},{x:.453125,y:.546875},{x:.453125,y:.546875},{x:.484375,y:.546875},{x:.484375,y:.546875},{x:.515625,y:.546875},{x:.515625,y:.546875},{x:.546875,y:.546875},{x:.546875,y:.546875},{x:.578125,y:.546875},{x:.578125,y:.546875},{x:.609375,y:.546875},{x:.609375,y:.546875},{x:.640625,y:.546875},{x:.640625,y:.546875},{x:.671875,y:.546875},{x:.671875,y:.546875},{x:.703125,y:.546875},{x:.703125,y:.546875},{x:.734375,y:.546875},{x:.734375,y:.546875},{x:.765625,y:.546875},{x:.765625,y:.546875},{x:.796875,y:.546875},{x:.796875,y:.546875},{x:.828125,y:.546875},{x:.828125,y:.546875},{x:.859375,y:.546875},{x:.859375,y:.546875},{x:.890625,y:.546875},{x:.890625,y:.546875},{x:.921875,y:.546875},{x:.921875,y:.546875},{x:.953125,y:.546875},{x:.953125,y:.546875},{x:.984375,y:.546875},{x:.984375,y:.546875},{x:.015625,y:.578125},{x:.015625,y:.578125},{x:.046875,y:.578125},{x:.046875,y:.578125},{x:.078125,y:.578125},{x:.078125,y:.578125},{x:.109375,y:.578125},{x:.109375,y:.578125},{x:.140625,y:.578125},{x:.140625,y:.578125},{x:.171875,y:.578125},{x:.171875,y:.578125},{x:.203125,y:.578125},{x:.203125,y:.578125},{x:.234375,y:.578125},{x:.234375,y:.578125},{x:.265625,y:.578125},{x:.265625,y:.578125},{x:.296875,y:.578125},{x:.296875,y:.578125},{x:.328125,y:.578125},{x:.328125,y:.578125},{x:.359375,y:.578125},{x:.359375,y:.578125},{x:.390625,y:.578125},{x:.390625,y:.578125},{x:.421875,y:.578125},{x:.421875,y:.578125},{x:.453125,y:.578125},{x:.453125,y:.578125},{x:.484375,y:.578125},{x:.484375,y:.578125},{x:.515625,y:.578125},{x:.515625,y:.578125},{x:.546875,y:.578125},{x:.546875,y:.578125},{x:.578125,y:.578125},{x:.578125,y:.578125},{x:.609375,y:.578125},{x:.609375,y:.578125},{x:.640625,y:.578125},{x:.640625,y:.578125},{x:.671875,y:.578125},{x:.671875,y:.578125},{x:.703125,y:.578125},{x:.703125,y:.578125},{x:.734375,y:.578125},{x:.734375,y:.578125},{x:.765625,y:.578125},{x:.765625,y:.578125},{x:.796875,y:.578125},{x:.796875,y:.578125},{x:.828125,y:.578125},{x:.828125,y:.578125},{x:.859375,y:.578125},{x:.859375,y:.578125},{x:.890625,y:.578125},{x:.890625,y:.578125},{x:.921875,y:.578125},{x:.921875,y:.578125},{x:.953125,y:.578125},{x:.953125,y:.578125},{x:.984375,y:.578125},{x:.984375,y:.578125},{x:.015625,y:.609375},{x:.015625,y:.609375},{x:.046875,y:.609375},{x:.046875,y:.609375},{x:.078125,y:.609375},{x:.078125,y:.609375},{x:.109375,y:.609375},{x:.109375,y:.609375},{x:.140625,y:.609375},{x:.140625,y:.609375},{x:.171875,y:.609375},{x:.171875,y:.609375},{x:.203125,y:.609375},{x:.203125,y:.609375},{x:.234375,y:.609375},{x:.234375,y:.609375},{x:.265625,y:.609375},{x:.265625,y:.609375},{x:.296875,y:.609375},{x:.296875,y:.609375},{x:.328125,y:.609375},{x:.328125,y:.609375},{x:.359375,y:.609375},{x:.359375,y:.609375},{x:.390625,y:.609375},{x:.390625,y:.609375},{x:.421875,y:.609375},{x:.421875,y:.609375},{x:.453125,y:.609375},{x:.453125,y:.609375},{x:.484375,y:.609375},{x:.484375,y:.609375},{x:.515625,y:.609375},{x:.515625,y:.609375},{x:.546875,y:.609375},{x:.546875,y:.609375},{x:.578125,y:.609375},{x:.578125,y:.609375},{x:.609375,y:.609375},{x:.609375,y:.609375},{x:.640625,y:.609375},{x:.640625,y:.609375},{x:.671875,y:.609375},{x:.671875,y:.609375},{x:.703125,y:.609375},{x:.703125,y:.609375},{x:.734375,y:.609375},{x:.734375,y:.609375},{x:.765625,y:.609375},{x:.765625,y:.609375},{x:.796875,y:.609375},{x:.796875,y:.609375},{x:.828125,y:.609375},{x:.828125,y:.609375},{x:.859375,y:.609375},{x:.859375,y:.609375},{x:.890625,y:.609375},{x:.890625,y:.609375},{x:.921875,y:.609375},{x:.921875,y:.609375},{x:.953125,y:.609375},{x:.953125,y:.609375},{x:.984375,y:.609375},{x:.984375,y:.609375},{x:.015625,y:.640625},{x:.015625,y:.640625},{x:.046875,y:.640625},{x:.046875,y:.640625},{x:.078125,y:.640625},{x:.078125,y:.640625},{x:.109375,y:.640625},{x:.109375,y:.640625},{x:.140625,y:.640625},{x:.140625,y:.640625},{x:.171875,y:.640625},{x:.171875,y:.640625},{x:.203125,y:.640625},{x:.203125,y:.640625},{x:.234375,y:.640625},{x:.234375,y:.640625},{x:.265625,y:.640625},{x:.265625,y:.640625},{x:.296875,y:.640625},{x:.296875,y:.640625},{x:.328125,y:.640625},{x:.328125,y:.640625},{x:.359375,y:.640625},{x:.359375,y:.640625},{x:.390625,y:.640625},{x:.390625,y:.640625},{x:.421875,y:.640625},{x:.421875,y:.640625},{x:.453125,y:.640625},{x:.453125,y:.640625},{x:.484375,y:.640625},{x:.484375,y:.640625},{x:.515625,y:.640625},{x:.515625,y:.640625},{x:.546875,y:.640625},{x:.546875,y:.640625},{x:.578125,y:.640625},{x:.578125,y:.640625},{x:.609375,y:.640625},{x:.609375,y:.640625},{x:.640625,y:.640625},{x:.640625,y:.640625},{x:.671875,y:.640625},{x:.671875,y:.640625},{x:.703125,y:.640625},{x:.703125,y:.640625},{x:.734375,y:.640625},{x:.734375,y:.640625},{x:.765625,y:.640625},{x:.765625,y:.640625},{x:.796875,y:.640625},{x:.796875,y:.640625},{x:.828125,y:.640625},{x:.828125,y:.640625},{x:.859375,y:.640625},{x:.859375,y:.640625},{x:.890625,y:.640625},{x:.890625,y:.640625},{x:.921875,y:.640625},{x:.921875,y:.640625},{x:.953125,y:.640625},{x:.953125,y:.640625},{x:.984375,y:.640625},{x:.984375,y:.640625},{x:.015625,y:.671875},{x:.015625,y:.671875},{x:.046875,y:.671875},{x:.046875,y:.671875},{x:.078125,y:.671875},{x:.078125,y:.671875},{x:.109375,y:.671875},{x:.109375,y:.671875},{x:.140625,y:.671875},{x:.140625,y:.671875},{x:.171875,y:.671875},{x:.171875,y:.671875},{x:.203125,y:.671875},{x:.203125,y:.671875},{x:.234375,y:.671875},{x:.234375,y:.671875},{x:.265625,y:.671875},{x:.265625,y:.671875},{x:.296875,y:.671875},{x:.296875,y:.671875},{x:.328125,y:.671875},{x:.328125,y:.671875},{x:.359375,y:.671875},{x:.359375,y:.671875},{x:.390625,y:.671875},{x:.390625,y:.671875},{x:.421875,y:.671875},{x:.421875,y:.671875},{x:.453125,y:.671875},{x:.453125,y:.671875},{x:.484375,y:.671875},{x:.484375,y:.671875},{x:.515625,y:.671875},{x:.515625,y:.671875},{x:.546875,y:.671875},{x:.546875,y:.671875},{x:.578125,y:.671875},{x:.578125,y:.671875},{x:.609375,y:.671875},{x:.609375,y:.671875},{x:.640625,y:.671875},{x:.640625,y:.671875},{x:.671875,y:.671875},{x:.671875,y:.671875},{x:.703125,y:.671875},{x:.703125,y:.671875},{x:.734375,y:.671875},{x:.734375,y:.671875},{x:.765625,y:.671875},{x:.765625,y:.671875},{x:.796875,y:.671875},{x:.796875,y:.671875},{x:.828125,y:.671875},{x:.828125,y:.671875},{x:.859375,y:.671875},{x:.859375,y:.671875},{x:.890625,y:.671875},{x:.890625,y:.671875},{x:.921875,y:.671875},{x:.921875,y:.671875},{x:.953125,y:.671875},{x:.953125,y:.671875},{x:.984375,y:.671875},{x:.984375,y:.671875},{x:.015625,y:.703125},{x:.015625,y:.703125},{x:.046875,y:.703125},{x:.046875,y:.703125},{x:.078125,y:.703125},{x:.078125,y:.703125},{x:.109375,y:.703125},{x:.109375,y:.703125},{x:.140625,y:.703125},{x:.140625,y:.703125},{x:.171875,y:.703125},{x:.171875,y:.703125},{x:.203125,y:.703125},{x:.203125,y:.703125},{x:.234375,y:.703125},{x:.234375,y:.703125},{x:.265625,y:.703125},{x:.265625,y:.703125},{x:.296875,y:.703125},{x:.296875,y:.703125},{x:.328125,y:.703125},{x:.328125,y:.703125},{x:.359375,y:.703125},{x:.359375,y:.703125},{x:.390625,y:.703125},{x:.390625,y:.703125},{x:.421875,y:.703125},{x:.421875,y:.703125},{x:.453125,y:.703125},{x:.453125,y:.703125},{x:.484375,y:.703125},{x:.484375,y:.703125},{x:.515625,y:.703125},{x:.515625,y:.703125},{x:.546875,y:.703125},{x:.546875,y:.703125},{x:.578125,y:.703125},{x:.578125,y:.703125},{x:.609375,y:.703125},{x:.609375,y:.703125},{x:.640625,y:.703125},{x:.640625,y:.703125},{x:.671875,y:.703125},{x:.671875,y:.703125},{x:.703125,y:.703125},{x:.703125,y:.703125},{x:.734375,y:.703125},{x:.734375,y:.703125},{x:.765625,y:.703125},{x:.765625,y:.703125},{x:.796875,y:.703125},{x:.796875,y:.703125},{x:.828125,y:.703125},{x:.828125,y:.703125},{x:.859375,y:.703125},{x:.859375,y:.703125},{x:.890625,y:.703125},{x:.890625,y:.703125},{x:.921875,y:.703125},{x:.921875,y:.703125},{x:.953125,y:.703125},{x:.953125,y:.703125},{x:.984375,y:.703125},{x:.984375,y:.703125},{x:.015625,y:.734375},{x:.015625,y:.734375},{x:.046875,y:.734375},{x:.046875,y:.734375},{x:.078125,y:.734375},{x:.078125,y:.734375},{x:.109375,y:.734375},{x:.109375,y:.734375},{x:.140625,y:.734375},{x:.140625,y:.734375},{x:.171875,y:.734375},{x:.171875,y:.734375},{x:.203125,y:.734375},{x:.203125,y:.734375},{x:.234375,y:.734375},{x:.234375,y:.734375},{x:.265625,y:.734375},{x:.265625,y:.734375},{x:.296875,y:.734375},{x:.296875,y:.734375},{x:.328125,y:.734375},{x:.328125,y:.734375},{x:.359375,y:.734375},{x:.359375,y:.734375},{x:.390625,y:.734375},{x:.390625,y:.734375},{x:.421875,y:.734375},{x:.421875,y:.734375},{x:.453125,y:.734375},{x:.453125,y:.734375},{x:.484375,y:.734375},{x:.484375,y:.734375},{x:.515625,y:.734375},{x:.515625,y:.734375},{x:.546875,y:.734375},{x:.546875,y:.734375},{x:.578125,y:.734375},{x:.578125,y:.734375},{x:.609375,y:.734375},{x:.609375,y:.734375},{x:.640625,y:.734375},{x:.640625,y:.734375},{x:.671875,y:.734375},{x:.671875,y:.734375},{x:.703125,y:.734375},{x:.703125,y:.734375},{x:.734375,y:.734375},{x:.734375,y:.734375},{x:.765625,y:.734375},{x:.765625,y:.734375},{x:.796875,y:.734375},{x:.796875,y:.734375},{x:.828125,y:.734375},{x:.828125,y:.734375},{x:.859375,y:.734375},{x:.859375,y:.734375},{x:.890625,y:.734375},{x:.890625,y:.734375},{x:.921875,y:.734375},{x:.921875,y:.734375},{x:.953125,y:.734375},{x:.953125,y:.734375},{x:.984375,y:.734375},{x:.984375,y:.734375},{x:.015625,y:.765625},{x:.015625,y:.765625},{x:.046875,y:.765625},{x:.046875,y:.765625},{x:.078125,y:.765625},{x:.078125,y:.765625},{x:.109375,y:.765625},{x:.109375,y:.765625},{x:.140625,y:.765625},{x:.140625,y:.765625},{x:.171875,y:.765625},{x:.171875,y:.765625},{x:.203125,y:.765625},{x:.203125,y:.765625},{x:.234375,y:.765625},{x:.234375,y:.765625},{x:.265625,y:.765625},{x:.265625,y:.765625},{x:.296875,y:.765625},{x:.296875,y:.765625},{x:.328125,y:.765625},{x:.328125,y:.765625},{x:.359375,y:.765625},{x:.359375,y:.765625},{x:.390625,y:.765625},{x:.390625,y:.765625},{x:.421875,y:.765625},{x:.421875,y:.765625},{x:.453125,y:.765625},{x:.453125,y:.765625},{x:.484375,y:.765625},{x:.484375,y:.765625},{x:.515625,y:.765625},{x:.515625,y:.765625},{x:.546875,y:.765625},{x:.546875,y:.765625},{x:.578125,y:.765625},{x:.578125,y:.765625},{x:.609375,y:.765625},{x:.609375,y:.765625},{x:.640625,y:.765625},{x:.640625,y:.765625},{x:.671875,y:.765625},{x:.671875,y:.765625},{x:.703125,y:.765625},{x:.703125,y:.765625},{x:.734375,y:.765625},{x:.734375,y:.765625},{x:.765625,y:.765625},{x:.765625,y:.765625},{x:.796875,y:.765625},{x:.796875,y:.765625},{x:.828125,y:.765625},{x:.828125,y:.765625},{x:.859375,y:.765625},{x:.859375,y:.765625},{x:.890625,y:.765625},{x:.890625,y:.765625},{x:.921875,y:.765625},{x:.921875,y:.765625},{x:.953125,y:.765625},{x:.953125,y:.765625},{x:.984375,y:.765625},{x:.984375,y:.765625},{x:.015625,y:.796875},{x:.015625,y:.796875},{x:.046875,y:.796875},{x:.046875,y:.796875},{x:.078125,y:.796875},{x:.078125,y:.796875},{x:.109375,y:.796875},{x:.109375,y:.796875},{x:.140625,y:.796875},{x:.140625,y:.796875},{x:.171875,y:.796875},{x:.171875,y:.796875},{x:.203125,y:.796875},{x:.203125,y:.796875},{x:.234375,y:.796875},{x:.234375,y:.796875},{x:.265625,y:.796875},{x:.265625,y:.796875},{x:.296875,y:.796875},{x:.296875,y:.796875},{x:.328125,y:.796875},{x:.328125,y:.796875},{x:.359375,y:.796875},{x:.359375,y:.796875},{x:.390625,y:.796875},{x:.390625,y:.796875},{x:.421875,y:.796875},{x:.421875,y:.796875},{x:.453125,y:.796875},{x:.453125,y:.796875},{x:.484375,y:.796875},{x:.484375,y:.796875},{x:.515625,y:.796875},{x:.515625,y:.796875},{x:.546875,y:.796875},{x:.546875,y:.796875},{x:.578125,y:.796875},{x:.578125,y:.796875},{x:.609375,y:.796875},{x:.609375,y:.796875},{x:.640625,y:.796875},{x:.640625,y:.796875},{x:.671875,y:.796875},{x:.671875,y:.796875},{x:.703125,y:.796875},{x:.703125,y:.796875},{x:.734375,y:.796875},{x:.734375,y:.796875},{x:.765625,y:.796875},{x:.765625,y:.796875},{x:.796875,y:.796875},{x:.796875,y:.796875},{x:.828125,y:.796875},{x:.828125,y:.796875},{x:.859375,y:.796875},{x:.859375,y:.796875},{x:.890625,y:.796875},{x:.890625,y:.796875},{x:.921875,y:.796875},{x:.921875,y:.796875},{x:.953125,y:.796875},{x:.953125,y:.796875},{x:.984375,y:.796875},{x:.984375,y:.796875},{x:.015625,y:.828125},{x:.015625,y:.828125},{x:.046875,y:.828125},{x:.046875,y:.828125},{x:.078125,y:.828125},{x:.078125,y:.828125},{x:.109375,y:.828125},{x:.109375,y:.828125},{x:.140625,y:.828125},{x:.140625,y:.828125},{x:.171875,y:.828125},{x:.171875,y:.828125},{x:.203125,y:.828125},{x:.203125,y:.828125},{x:.234375,y:.828125},{x:.234375,y:.828125},{x:.265625,y:.828125},{x:.265625,y:.828125},{x:.296875,y:.828125},{x:.296875,y:.828125},{x:.328125,y:.828125},{x:.328125,y:.828125},{x:.359375,y:.828125},{x:.359375,y:.828125},{x:.390625,y:.828125},{x:.390625,y:.828125},{x:.421875,y:.828125},{x:.421875,y:.828125},{x:.453125,y:.828125},{x:.453125,y:.828125},{x:.484375,y:.828125},{x:.484375,y:.828125},{x:.515625,y:.828125},{x:.515625,y:.828125},{x:.546875,y:.828125},{x:.546875,y:.828125},{x:.578125,y:.828125},{x:.578125,y:.828125},{x:.609375,y:.828125},{x:.609375,y:.828125},{x:.640625,y:.828125},{x:.640625,y:.828125},{x:.671875,y:.828125},{x:.671875,y:.828125},{x:.703125,y:.828125},{x:.703125,y:.828125},{x:.734375,y:.828125},{x:.734375,y:.828125},{x:.765625,y:.828125},{x:.765625,y:.828125},{x:.796875,y:.828125},{x:.796875,y:.828125},{x:.828125,y:.828125},{x:.828125,y:.828125},{x:.859375,y:.828125},{x:.859375,y:.828125},{x:.890625,y:.828125},{x:.890625,y:.828125},{x:.921875,y:.828125},{x:.921875,y:.828125},{x:.953125,y:.828125},{x:.953125,y:.828125},{x:.984375,y:.828125},{x:.984375,y:.828125},{x:.015625,y:.859375},{x:.015625,y:.859375},{x:.046875,y:.859375},{x:.046875,y:.859375},{x:.078125,y:.859375},{x:.078125,y:.859375},{x:.109375,y:.859375},{x:.109375,y:.859375},{x:.140625,y:.859375},{x:.140625,y:.859375},{x:.171875,y:.859375},{x:.171875,y:.859375},{x:.203125,y:.859375},{x:.203125,y:.859375},{x:.234375,y:.859375},{x:.234375,y:.859375},{x:.265625,y:.859375},{x:.265625,y:.859375},{x:.296875,y:.859375},{x:.296875,y:.859375},{x:.328125,y:.859375},{x:.328125,y:.859375},{x:.359375,y:.859375},{x:.359375,y:.859375},{x:.390625,y:.859375},{x:.390625,y:.859375},{x:.421875,y:.859375},{x:.421875,y:.859375},{x:.453125,y:.859375},{x:.453125,y:.859375},{x:.484375,y:.859375},{x:.484375,y:.859375},{x:.515625,y:.859375},{x:.515625,y:.859375},{x:.546875,y:.859375},{x:.546875,y:.859375},{x:.578125,y:.859375},{x:.578125,y:.859375},{x:.609375,y:.859375},{x:.609375,y:.859375},{x:.640625,y:.859375},{x:.640625,y:.859375},{x:.671875,y:.859375},{x:.671875,y:.859375},{x:.703125,y:.859375},{x:.703125,y:.859375},{x:.734375,y:.859375},{x:.734375,y:.859375},{x:.765625,y:.859375},{x:.765625,y:.859375},{x:.796875,y:.859375},{x:.796875,y:.859375},{x:.828125,y:.859375},{x:.828125,y:.859375},{x:.859375,y:.859375},{x:.859375,y:.859375},{x:.890625,y:.859375},{x:.890625,y:.859375},{x:.921875,y:.859375},{x:.921875,y:.859375},{x:.953125,y:.859375},{x:.953125,y:.859375},{x:.984375,y:.859375},{x:.984375,y:.859375},{x:.015625,y:.890625},{x:.015625,y:.890625},{x:.046875,y:.890625},{x:.046875,y:.890625},{x:.078125,y:.890625},{x:.078125,y:.890625},{x:.109375,y:.890625},{x:.109375,y:.890625},{x:.140625,y:.890625},{x:.140625,y:.890625},{x:.171875,y:.890625},{x:.171875,y:.890625},{x:.203125,y:.890625},{x:.203125,y:.890625},{x:.234375,y:.890625},{x:.234375,y:.890625},{x:.265625,y:.890625},{x:.265625,y:.890625},{x:.296875,y:.890625},{x:.296875,y:.890625},{x:.328125,y:.890625},{x:.328125,y:.890625},{x:.359375,y:.890625},{x:.359375,y:.890625},{x:.390625,y:.890625},{x:.390625,y:.890625},{x:.421875,y:.890625},{x:.421875,y:.890625},{x:.453125,y:.890625},{x:.453125,y:.890625},{x:.484375,y:.890625},{x:.484375,y:.890625},{x:.515625,y:.890625},{x:.515625,y:.890625},{x:.546875,y:.890625},{x:.546875,y:.890625},{x:.578125,y:.890625},{x:.578125,y:.890625},{x:.609375,y:.890625},{x:.609375,y:.890625},{x:.640625,y:.890625},{x:.640625,y:.890625},{x:.671875,y:.890625},{x:.671875,y:.890625},{x:.703125,y:.890625},{x:.703125,y:.890625},{x:.734375,y:.890625},{x:.734375,y:.890625},{x:.765625,y:.890625},{x:.765625,y:.890625},{x:.796875,y:.890625},{x:.796875,y:.890625},{x:.828125,y:.890625},{x:.828125,y:.890625},{x:.859375,y:.890625},{x:.859375,y:.890625},{x:.890625,y:.890625},{x:.890625,y:.890625},{x:.921875,y:.890625},{x:.921875,y:.890625},{x:.953125,y:.890625},{x:.953125,y:.890625},{x:.984375,y:.890625},{x:.984375,y:.890625},{x:.015625,y:.921875},{x:.015625,y:.921875},{x:.046875,y:.921875},{x:.046875,y:.921875},{x:.078125,y:.921875},{x:.078125,y:.921875},{x:.109375,y:.921875},{x:.109375,y:.921875},{x:.140625,y:.921875},{x:.140625,y:.921875},{x:.171875,y:.921875},{x:.171875,y:.921875},{x:.203125,y:.921875},{x:.203125,y:.921875},{x:.234375,y:.921875},{x:.234375,y:.921875},{x:.265625,y:.921875},{x:.265625,y:.921875},{x:.296875,y:.921875},{x:.296875,y:.921875},{x:.328125,y:.921875},{x:.328125,y:.921875},{x:.359375,y:.921875},{x:.359375,y:.921875},{x:.390625,y:.921875},{x:.390625,y:.921875},{x:.421875,y:.921875},{x:.421875,y:.921875},{x:.453125,y:.921875},{x:.453125,y:.921875},{x:.484375,y:.921875},{x:.484375,y:.921875},{x:.515625,y:.921875},{x:.515625,y:.921875},{x:.546875,y:.921875},{x:.546875,y:.921875},{x:.578125,y:.921875},{x:.578125,y:.921875},{x:.609375,y:.921875},{x:.609375,y:.921875},{x:.640625,y:.921875},{x:.640625,y:.921875},{x:.671875,y:.921875},{x:.671875,y:.921875},{x:.703125,y:.921875},{x:.703125,y:.921875},{x:.734375,y:.921875},{x:.734375,y:.921875},{x:.765625,y:.921875},{x:.765625,y:.921875},{x:.796875,y:.921875},{x:.796875,y:.921875},{x:.828125,y:.921875},{x:.828125,y:.921875},{x:.859375,y:.921875},{x:.859375,y:.921875},{x:.890625,y:.921875},{x:.890625,y:.921875},{x:.921875,y:.921875},{x:.921875,y:.921875},{x:.953125,y:.921875},{x:.953125,y:.921875},{x:.984375,y:.921875},{x:.984375,y:.921875},{x:.015625,y:.953125},{x:.015625,y:.953125},{x:.046875,y:.953125},{x:.046875,y:.953125},{x:.078125,y:.953125},{x:.078125,y:.953125},{x:.109375,y:.953125},{x:.109375,y:.953125},{x:.140625,y:.953125},{x:.140625,y:.953125},{x:.171875,y:.953125},{x:.171875,y:.953125},{x:.203125,y:.953125},{x:.203125,y:.953125},{x:.234375,y:.953125},{x:.234375,y:.953125},{x:.265625,y:.953125},{x:.265625,y:.953125},{x:.296875,y:.953125},{x:.296875,y:.953125},{x:.328125,y:.953125},{x:.328125,y:.953125},{x:.359375,y:.953125},{x:.359375,y:.953125},{x:.390625,y:.953125},{x:.390625,y:.953125},{x:.421875,y:.953125},{x:.421875,y:.953125},{x:.453125,y:.953125},{x:.453125,y:.953125},{x:.484375,y:.953125},{x:.484375,y:.953125},{x:.515625,y:.953125},{x:.515625,y:.953125},{x:.546875,y:.953125},{x:.546875,y:.953125},{x:.578125,y:.953125},{x:.578125,y:.953125},{x:.609375,y:.953125},{x:.609375,y:.953125},{x:.640625,y:.953125},{x:.640625,y:.953125},{x:.671875,y:.953125},{x:.671875,y:.953125},{x:.703125,y:.953125},{x:.703125,y:.953125},{x:.734375,y:.953125},{x:.734375,y:.953125},{x:.765625,y:.953125},{x:.765625,y:.953125},{x:.796875,y:.953125},{x:.796875,y:.953125},{x:.828125,y:.953125},{x:.828125,y:.953125},{x:.859375,y:.953125},{x:.859375,y:.953125},{x:.890625,y:.953125},{x:.890625,y:.953125},{x:.921875,y:.953125},{x:.921875,y:.953125},{x:.953125,y:.953125},{x:.953125,y:.953125},{x:.984375,y:.953125},{x:.984375,y:.953125},{x:.015625,y:.984375},{x:.015625,y:.984375},{x:.046875,y:.984375},{x:.046875,y:.984375},{x:.078125,y:.984375},{x:.078125,y:.984375},{x:.109375,y:.984375},{x:.109375,y:.984375},{x:.140625,y:.984375},{x:.140625,y:.984375},{x:.171875,y:.984375},{x:.171875,y:.984375},{x:.203125,y:.984375},{x:.203125,y:.984375},{x:.234375,y:.984375},{x:.234375,y:.984375},{x:.265625,y:.984375},{x:.265625,y:.984375},{x:.296875,y:.984375},{x:.296875,y:.984375},{x:.328125,y:.984375},{x:.328125,y:.984375},{x:.359375,y:.984375},{x:.359375,y:.984375},{x:.390625,y:.984375},{x:.390625,y:.984375},{x:.421875,y:.984375},{x:.421875,y:.984375},{x:.453125,y:.984375},{x:.453125,y:.984375},{x:.484375,y:.984375},{x:.484375,y:.984375},{x:.515625,y:.984375},{x:.515625,y:.984375},{x:.546875,y:.984375},{x:.546875,y:.984375},{x:.578125,y:.984375},{x:.578125,y:.984375},{x:.609375,y:.984375},{x:.609375,y:.984375},{x:.640625,y:.984375},{x:.640625,y:.984375},{x:.671875,y:.984375},{x:.671875,y:.984375},{x:.703125,y:.984375},{x:.703125,y:.984375},{x:.734375,y:.984375},{x:.734375,y:.984375},{x:.765625,y:.984375},{x:.765625,y:.984375},{x:.796875,y:.984375},{x:.796875,y:.984375},{x:.828125,y:.984375},{x:.828125,y:.984375},{x:.859375,y:.984375},{x:.859375,y:.984375},{x:.890625,y:.984375},{x:.890625,y:.984375},{x:.921875,y:.984375},{x:.921875,y:.984375},{x:.953125,y:.984375},{x:.953125,y:.984375},{x:.984375,y:.984375},{x:.984375,y:.984375},{x:.03125,y:.03125},{x:.03125,y:.03125},{x:.09375,y:.03125},{x:.09375,y:.03125},{x:.15625,y:.03125},{x:.15625,y:.03125},{x:.21875,y:.03125},{x:.21875,y:.03125},{x:.28125,y:.03125},{x:.28125,y:.03125},{x:.34375,y:.03125},{x:.34375,y:.03125},{x:.40625,y:.03125},{x:.40625,y:.03125},{x:.46875,y:.03125},{x:.46875,y:.03125},{x:.53125,y:.03125},{x:.53125,y:.03125},{x:.59375,y:.03125},{x:.59375,y:.03125},{x:.65625,y:.03125},{x:.65625,y:.03125},{x:.71875,y:.03125},{x:.71875,y:.03125},{x:.78125,y:.03125},{x:.78125,y:.03125},{x:.84375,y:.03125},{x:.84375,y:.03125},{x:.90625,y:.03125},{x:.90625,y:.03125},{x:.96875,y:.03125},{x:.96875,y:.03125},{x:.03125,y:.09375},{x:.03125,y:.09375},{x:.09375,y:.09375},{x:.09375,y:.09375},{x:.15625,y:.09375},{x:.15625,y:.09375},{x:.21875,y:.09375},{x:.21875,y:.09375},{x:.28125,y:.09375},{x:.28125,y:.09375},{x:.34375,y:.09375},{x:.34375,y:.09375},{x:.40625,y:.09375},{x:.40625,y:.09375},{x:.46875,y:.09375},{x:.46875,y:.09375},{x:.53125,y:.09375},{x:.53125,y:.09375},{x:.59375,y:.09375},{x:.59375,y:.09375},{x:.65625,y:.09375},{x:.65625,y:.09375},{x:.71875,y:.09375},{x:.71875,y:.09375},{x:.78125,y:.09375},{x:.78125,y:.09375},{x:.84375,y:.09375},{x:.84375,y:.09375},{x:.90625,y:.09375},{x:.90625,y:.09375},{x:.96875,y:.09375},{x:.96875,y:.09375},{x:.03125,y:.15625},{x:.03125,y:.15625},{x:.09375,y:.15625},{x:.09375,y:.15625},{x:.15625,y:.15625},{x:.15625,y:.15625},{x:.21875,y:.15625},{x:.21875,y:.15625},{x:.28125,y:.15625},{x:.28125,y:.15625},{x:.34375,y:.15625},{x:.34375,y:.15625},{x:.40625,y:.15625},{x:.40625,y:.15625},{x:.46875,y:.15625},{x:.46875,y:.15625},{x:.53125,y:.15625},{x:.53125,y:.15625},{x:.59375,y:.15625},{x:.59375,y:.15625},{x:.65625,y:.15625},{x:.65625,y:.15625},{x:.71875,y:.15625},{x:.71875,y:.15625},{x:.78125,y:.15625},{x:.78125,y:.15625},{x:.84375,y:.15625},{x:.84375,y:.15625},{x:.90625,y:.15625},{x:.90625,y:.15625},{x:.96875,y:.15625},{x:.96875,y:.15625},{x:.03125,y:.21875},{x:.03125,y:.21875},{x:.09375,y:.21875},{x:.09375,y:.21875},{x:.15625,y:.21875},{x:.15625,y:.21875},{x:.21875,y:.21875},{x:.21875,y:.21875},{x:.28125,y:.21875},{x:.28125,y:.21875},{x:.34375,y:.21875},{x:.34375,y:.21875},{x:.40625,y:.21875},{x:.40625,y:.21875},{x:.46875,y:.21875},{x:.46875,y:.21875},{x:.53125,y:.21875},{x:.53125,y:.21875},{x:.59375,y:.21875},{x:.59375,y:.21875},{x:.65625,y:.21875},{x:.65625,y:.21875},{x:.71875,y:.21875},{x:.71875,y:.21875},{x:.78125,y:.21875},{x:.78125,y:.21875},{x:.84375,y:.21875},{x:.84375,y:.21875},{x:.90625,y:.21875},{x:.90625,y:.21875},{x:.96875,y:.21875},{x:.96875,y:.21875},{x:.03125,y:.28125},{x:.03125,y:.28125},{x:.09375,y:.28125},{x:.09375,y:.28125},{x:.15625,y:.28125},{x:.15625,y:.28125},{x:.21875,y:.28125},{x:.21875,y:.28125},{x:.28125,y:.28125},{x:.28125,y:.28125},{x:.34375,y:.28125},{x:.34375,y:.28125},{x:.40625,y:.28125},{x:.40625,y:.28125},{x:.46875,y:.28125},{x:.46875,y:.28125},{x:.53125,y:.28125},{x:.53125,y:.28125},{x:.59375,y:.28125},{x:.59375,y:.28125},{x:.65625,y:.28125},{x:.65625,y:.28125},{x:.71875,y:.28125},{x:.71875,y:.28125},{x:.78125,y:.28125},{x:.78125,y:.28125},{x:.84375,y:.28125},{x:.84375,y:.28125},{x:.90625,y:.28125},{x:.90625,y:.28125},{x:.96875,y:.28125},{x:.96875,y:.28125},{x:.03125,y:.34375},{x:.03125,y:.34375},{x:.09375,y:.34375},{x:.09375,y:.34375},{x:.15625,y:.34375},{x:.15625,y:.34375},{x:.21875,y:.34375},{x:.21875,y:.34375},{x:.28125,y:.34375},{x:.28125,y:.34375},{x:.34375,y:.34375},{x:.34375,y:.34375},{x:.40625,y:.34375},{x:.40625,y:.34375},{x:.46875,y:.34375},{x:.46875,y:.34375},{x:.53125,y:.34375},{x:.53125,y:.34375},{x:.59375,y:.34375},{x:.59375,y:.34375},{x:.65625,y:.34375},{x:.65625,y:.34375},{x:.71875,y:.34375},{x:.71875,y:.34375},{x:.78125,y:.34375},{x:.78125,y:.34375},{x:.84375,y:.34375},{x:.84375,y:.34375},{x:.90625,y:.34375},{x:.90625,y:.34375},{x:.96875,y:.34375},{x:.96875,y:.34375},{x:.03125,y:.40625},{x:.03125,y:.40625},{x:.09375,y:.40625},{x:.09375,y:.40625},{x:.15625,y:.40625},{x:.15625,y:.40625},{x:.21875,y:.40625},{x:.21875,y:.40625},{x:.28125,y:.40625},{x:.28125,y:.40625},{x:.34375,y:.40625},{x:.34375,y:.40625},{x:.40625,y:.40625},{x:.40625,y:.40625},{x:.46875,y:.40625},{x:.46875,y:.40625},{x:.53125,y:.40625},{x:.53125,y:.40625},{x:.59375,y:.40625},{x:.59375,y:.40625},{x:.65625,y:.40625},{x:.65625,y:.40625},{x:.71875,y:.40625},{x:.71875,y:.40625},{x:.78125,y:.40625},{x:.78125,y:.40625},{x:.84375,y:.40625},{x:.84375,y:.40625},{x:.90625,y:.40625},{x:.90625,y:.40625},{x:.96875,y:.40625},{x:.96875,y:.40625},{x:.03125,y:.46875},{x:.03125,y:.46875},{x:.09375,y:.46875},{x:.09375,y:.46875},{x:.15625,y:.46875},{x:.15625,y:.46875},{x:.21875,y:.46875},{x:.21875,y:.46875},{x:.28125,y:.46875},{x:.28125,y:.46875},{x:.34375,y:.46875},{x:.34375,y:.46875},{x:.40625,y:.46875},{x:.40625,y:.46875},{x:.46875,y:.46875},{x:.46875,y:.46875},{x:.53125,y:.46875},{x:.53125,y:.46875},{x:.59375,y:.46875},{x:.59375,y:.46875},{x:.65625,y:.46875},{x:.65625,y:.46875},{x:.71875,y:.46875},{x:.71875,y:.46875},{x:.78125,y:.46875},{x:.78125,y:.46875},{x:.84375,y:.46875},{x:.84375,y:.46875},{x:.90625,y:.46875},{x:.90625,y:.46875},{x:.96875,y:.46875},{x:.96875,y:.46875},{x:.03125,y:.53125},{x:.03125,y:.53125},{x:.09375,y:.53125},{x:.09375,y:.53125},{x:.15625,y:.53125},{x:.15625,y:.53125},{x:.21875,y:.53125},{x:.21875,y:.53125},{x:.28125,y:.53125},{x:.28125,y:.53125},{x:.34375,y:.53125},{x:.34375,y:.53125},{x:.40625,y:.53125},{x:.40625,y:.53125},{x:.46875,y:.53125},{x:.46875,y:.53125},{x:.53125,y:.53125},{x:.53125,y:.53125},{x:.59375,y:.53125},{x:.59375,y:.53125},{x:.65625,y:.53125},{x:.65625,y:.53125},{x:.71875,y:.53125},{x:.71875,y:.53125},{x:.78125,y:.53125},{x:.78125,y:.53125},{x:.84375,y:.53125},{x:.84375,y:.53125},{x:.90625,y:.53125},{x:.90625,y:.53125},{x:.96875,y:.53125},{x:.96875,y:.53125},{x:.03125,y:.59375},{x:.03125,y:.59375},{x:.09375,y:.59375},{x:.09375,y:.59375},{x:.15625,y:.59375},{x:.15625,y:.59375},{x:.21875,y:.59375},{x:.21875,y:.59375},{x:.28125,y:.59375},{x:.28125,y:.59375},{x:.34375,y:.59375},{x:.34375,y:.59375},{x:.40625,y:.59375},{x:.40625,y:.59375},{x:.46875,y:.59375},{x:.46875,y:.59375},{x:.53125,y:.59375},{x:.53125,y:.59375},{x:.59375,y:.59375},{x:.59375,y:.59375},{x:.65625,y:.59375},{x:.65625,y:.59375},{x:.71875,y:.59375},{x:.71875,y:.59375},{x:.78125,y:.59375},{x:.78125,y:.59375},{x:.84375,y:.59375},{x:.84375,y:.59375},{x:.90625,y:.59375},{x:.90625,y:.59375},{x:.96875,y:.59375},{x:.96875,y:.59375},{x:.03125,y:.65625},{x:.03125,y:.65625},{x:.09375,y:.65625},{x:.09375,y:.65625},{x:.15625,y:.65625},{x:.15625,y:.65625},{x:.21875,y:.65625},{x:.21875,y:.65625},{x:.28125,y:.65625},{x:.28125,y:.65625},{x:.34375,y:.65625},{x:.34375,y:.65625},{x:.40625,y:.65625},{x:.40625,y:.65625},{x:.46875,y:.65625},{x:.46875,y:.65625},{x:.53125,y:.65625},{x:.53125,y:.65625},{x:.59375,y:.65625},{x:.59375,y:.65625},{x:.65625,y:.65625},{x:.65625,y:.65625},{x:.71875,y:.65625},{x:.71875,y:.65625},{x:.78125,y:.65625},{x:.78125,y:.65625},{x:.84375,y:.65625},{x:.84375,y:.65625},{x:.90625,y:.65625},{x:.90625,y:.65625},{x:.96875,y:.65625},{x:.96875,y:.65625},{x:.03125,y:.71875},{x:.03125,y:.71875},{x:.09375,y:.71875},{x:.09375,y:.71875},{x:.15625,y:.71875},{x:.15625,y:.71875},{x:.21875,y:.71875},{x:.21875,y:.71875},{x:.28125,y:.71875},{x:.28125,y:.71875},{x:.34375,y:.71875},{x:.34375,y:.71875},{x:.40625,y:.71875},{x:.40625,y:.71875},{x:.46875,y:.71875},{x:.46875,y:.71875},{x:.53125,y:.71875},{x:.53125,y:.71875},{x:.59375,y:.71875},{x:.59375,y:.71875},{x:.65625,y:.71875},{x:.65625,y:.71875},{x:.71875,y:.71875},{x:.71875,y:.71875},{x:.78125,y:.71875},{x:.78125,y:.71875},{x:.84375,y:.71875},{x:.84375,y:.71875},{x:.90625,y:.71875},{x:.90625,y:.71875},{x:.96875,y:.71875},{x:.96875,y:.71875},{x:.03125,y:.78125},{x:.03125,y:.78125},{x:.09375,y:.78125},{x:.09375,y:.78125},{x:.15625,y:.78125},{x:.15625,y:.78125},{x:.21875,y:.78125},{x:.21875,y:.78125},{x:.28125,y:.78125},{x:.28125,y:.78125},{x:.34375,y:.78125},{x:.34375,y:.78125},{x:.40625,y:.78125},{x:.40625,y:.78125},{x:.46875,y:.78125},{x:.46875,y:.78125},{x:.53125,y:.78125},{x:.53125,y:.78125},{x:.59375,y:.78125},{x:.59375,y:.78125},{x:.65625,y:.78125},{x:.65625,y:.78125},{x:.71875,y:.78125},{x:.71875,y:.78125},{x:.78125,y:.78125},{x:.78125,y:.78125},{x:.84375,y:.78125},{x:.84375,y:.78125},{x:.90625,y:.78125},{x:.90625,y:.78125},{x:.96875,y:.78125},{x:.96875,y:.78125},{x:.03125,y:.84375},{x:.03125,y:.84375},{x:.09375,y:.84375},{x:.09375,y:.84375},{x:.15625,y:.84375},{x:.15625,y:.84375},{x:.21875,y:.84375},{x:.21875,y:.84375},{x:.28125,y:.84375},{x:.28125,y:.84375},{x:.34375,y:.84375},{x:.34375,y:.84375},{x:.40625,y:.84375},{x:.40625,y:.84375},{x:.46875,y:.84375},{x:.46875,y:.84375},{x:.53125,y:.84375},{x:.53125,y:.84375},{x:.59375,y:.84375},{x:.59375,y:.84375},{x:.65625,y:.84375},{x:.65625,y:.84375},{x:.71875,y:.84375},{x:.71875,y:.84375},{x:.78125,y:.84375},{x:.78125,y:.84375},{x:.84375,y:.84375},{x:.84375,y:.84375},{x:.90625,y:.84375},{x:.90625,y:.84375},{x:.96875,y:.84375},{x:.96875,y:.84375},{x:.03125,y:.90625},{x:.03125,y:.90625},{x:.09375,y:.90625},{x:.09375,y:.90625},{x:.15625,y:.90625},{x:.15625,y:.90625},{x:.21875,y:.90625},{x:.21875,y:.90625},{x:.28125,y:.90625},{x:.28125,y:.90625},{x:.34375,y:.90625},{x:.34375,y:.90625},{x:.40625,y:.90625},{x:.40625,y:.90625},{x:.46875,y:.90625},{x:.46875,y:.90625},{x:.53125,y:.90625},{x:.53125,y:.90625},{x:.59375,y:.90625},{x:.59375,y:.90625},{x:.65625,y:.90625},{x:.65625,y:.90625},{x:.71875,y:.90625},{x:.71875,y:.90625},{x:.78125,y:.90625},{x:.78125,y:.90625},{x:.84375,y:.90625},{x:.84375,y:.90625},{x:.90625,y:.90625},{x:.90625,y:.90625},{x:.96875,y:.90625},{x:.96875,y:.90625},{x:.03125,y:.96875},{x:.03125,y:.96875},{x:.09375,y:.96875},{x:.09375,y:.96875},{x:.15625,y:.96875},{x:.15625,y:.96875},{x:.21875,y:.96875},{x:.21875,y:.96875},{x:.28125,y:.96875},{x:.28125,y:.96875},{x:.34375,y:.96875},{x:.34375,y:.96875},{x:.40625,y:.96875},{x:.40625,y:.96875},{x:.46875,y:.96875},{x:.46875,y:.96875},{x:.53125,y:.96875},{x:.53125,y:.96875},{x:.59375,y:.96875},{x:.59375,y:.96875},{x:.65625,y:.96875},{x:.65625,y:.96875},{x:.71875,y:.96875},{x:.71875,y:.96875},{x:.78125,y:.96875},{x:.78125,y:.96875},{x:.84375,y:.96875},{x:.84375,y:.96875},{x:.90625,y:.96875},{x:.90625,y:.96875},{x:.96875,y:.96875},{x:.96875,y:.96875},{x:.0625,y:.0625},{x:.0625,y:.0625},{x:.0625,y:.0625},{x:.0625,y:.0625},{x:.0625,y:.0625},{x:.0625,y:.0625},{x:.1875,y:.0625},{x:.1875,y:.0625},{x:.1875,y:.0625},{x:.1875,y:.0625},{x:.1875,y:.0625},{x:.1875,y:.0625},{x:.3125,y:.0625},{x:.3125,y:.0625},{x:.3125,y:.0625},{x:.3125,y:.0625},{x:.3125,y:.0625},{x:.3125,y:.0625},{x:.4375,y:.0625},{x:.4375,y:.0625},{x:.4375,y:.0625},{x:.4375,y:.0625},{x:.4375,y:.0625},{x:.4375,y:.0625},{x:.5625,y:.0625},{x:.5625,y:.0625},{x:.5625,y:.0625},{x:.5625,y:.0625},{x:.5625,y:.0625},{x:.5625,y:.0625},{x:.6875,y:.0625},{x:.6875,y:.0625},{x:.6875,y:.0625},{x:.6875,y:.0625},{x:.6875,y:.0625},{x:.6875,y:.0625},{x:.8125,y:.0625},{x:.8125,y:.0625},{x:.8125,y:.0625},{x:.8125,y:.0625},{x:.8125,y:.0625},{x:.8125,y:.0625},{x:.9375,y:.0625},{x:.9375,y:.0625},{x:.9375,y:.0625},{x:.9375,y:.0625},{x:.9375,y:.0625},{x:.9375,y:.0625},{x:.0625,y:.1875},{x:.0625,y:.1875},{x:.0625,y:.1875},{x:.0625,y:.1875},{x:.0625,y:.1875},{x:.0625,y:.1875},{x:.1875,y:.1875},{x:.1875,y:.1875},{x:.1875,y:.1875},{x:.1875,y:.1875},{x:.1875,y:.1875},{x:.1875,y:.1875},{x:.3125,y:.1875},{x:.3125,y:.1875},{x:.3125,y:.1875},{x:.3125,y:.1875},{x:.3125,y:.1875},{x:.3125,y:.1875},{x:.4375,y:.1875},{x:.4375,y:.1875},{x:.4375,y:.1875},{x:.4375,y:.1875},{x:.4375,y:.1875},{x:.4375,y:.1875},{x:.5625,y:.1875},{x:.5625,y:.1875},{x:.5625,y:.1875},{x:.5625,y:.1875},{x:.5625,y:.1875},{x:.5625,y:.1875},{x:.6875,y:.1875},{x:.6875,y:.1875},{x:.6875,y:.1875},{x:.6875,y:.1875},{x:.6875,y:.1875},{x:.6875,y:.1875},{x:.8125,y:.1875},{x:.8125,y:.1875},{x:.8125,y:.1875},{x:.8125,y:.1875},{x:.8125,y:.1875},{x:.8125,y:.1875},{x:.9375,y:.1875},{x:.9375,y:.1875},{x:.9375,y:.1875},{x:.9375,y:.1875},{x:.9375,y:.1875},{x:.9375,y:.1875},{x:.0625,y:.3125},{x:.0625,y:.3125},{x:.0625,y:.3125},{x:.0625,y:.3125},{x:.0625,y:.3125},{x:.0625,y:.3125},{x:.1875,y:.3125},{x:.1875,y:.3125},{x:.1875,y:.3125},{x:.1875,y:.3125},{x:.1875,y:.3125},{x:.1875,y:.3125},{x:.3125,y:.3125},{x:.3125,y:.3125},{x:.3125,y:.3125},{x:.3125,y:.3125},{x:.3125,y:.3125},{x:.3125,y:.3125},{x:.4375,y:.3125},{x:.4375,y:.3125},{x:.4375,y:.3125},{x:.4375,y:.3125},{x:.4375,y:.3125},{x:.4375,y:.3125},{x:.5625,y:.3125},{x:.5625,y:.3125},{x:.5625,y:.3125},{x:.5625,y:.3125},{x:.5625,y:.3125},{x:.5625,y:.3125},{x:.6875,y:.3125},{x:.6875,y:.3125},{x:.6875,y:.3125},{x:.6875,y:.3125},{x:.6875,y:.3125},{x:.6875,y:.3125},{x:.8125,y:.3125},{x:.8125,y:.3125},{x:.8125,y:.3125},{x:.8125,y:.3125},{x:.8125,y:.3125},{x:.8125,y:.3125},{x:.9375,y:.3125},{x:.9375,y:.3125},{x:.9375,y:.3125},{x:.9375,y:.3125},{x:.9375,y:.3125},{x:.9375,y:.3125},{x:.0625,y:.4375},{x:.0625,y:.4375},{x:.0625,y:.4375},{x:.0625,y:.4375},{x:.0625,y:.4375},{x:.0625,y:.4375},{x:.1875,y:.4375},{x:.1875,y:.4375},{x:.1875,y:.4375},{x:.1875,y:.4375},{x:.1875,y:.4375},{x:.1875,y:.4375},{x:.3125,y:.4375},{x:.3125,y:.4375},{x:.3125,y:.4375},{x:.3125,y:.4375},{x:.3125,y:.4375},{x:.3125,y:.4375},{x:.4375,y:.4375},{x:.4375,y:.4375},{x:.4375,y:.4375},{x:.4375,y:.4375},{x:.4375,y:.4375},{x:.4375,y:.4375},{x:.5625,y:.4375},{x:.5625,y:.4375},{x:.5625,y:.4375},{x:.5625,y:.4375},{x:.5625,y:.4375},{x:.5625,y:.4375},{x:.6875,y:.4375},{x:.6875,y:.4375},{x:.6875,y:.4375},{x:.6875,y:.4375},{x:.6875,y:.4375},{x:.6875,y:.4375},{x:.8125,y:.4375},{x:.8125,y:.4375},{x:.8125,y:.4375},{x:.8125,y:.4375},{x:.8125,y:.4375},{x:.8125,y:.4375},{x:.9375,y:.4375},{x:.9375,y:.4375},{x:.9375,y:.4375},{x:.9375,y:.4375},{x:.9375,y:.4375},{x:.9375,y:.4375},{x:.0625,y:.5625},{x:.0625,y:.5625},{x:.0625,y:.5625},{x:.0625,y:.5625},{x:.0625,y:.5625},{x:.0625,y:.5625},{x:.1875,y:.5625},{x:.1875,y:.5625},{x:.1875,y:.5625},{x:.1875,y:.5625},{x:.1875,y:.5625},{x:.1875,y:.5625},{x:.3125,y:.5625},{x:.3125,y:.5625},{x:.3125,y:.5625},{x:.3125,y:.5625},{x:.3125,y:.5625},{x:.3125,y:.5625},{x:.4375,y:.5625},{x:.4375,y:.5625},{x:.4375,y:.5625},{x:.4375,y:.5625},{x:.4375,y:.5625},{x:.4375,y:.5625},{x:.5625,y:.5625},{x:.5625,y:.5625},{x:.5625,y:.5625},{x:.5625,y:.5625},{x:.5625,y:.5625},{x:.5625,y:.5625},{x:.6875,y:.5625},{x:.6875,y:.5625},{x:.6875,y:.5625},{x:.6875,y:.5625},{x:.6875,y:.5625},{x:.6875,y:.5625},{x:.8125,y:.5625},{x:.8125,y:.5625},{x:.8125,y:.5625},{x:.8125,y:.5625},{x:.8125,y:.5625},{x:.8125,y:.5625},{x:.9375,y:.5625},{x:.9375,y:.5625},{x:.9375,y:.5625},{x:.9375,y:.5625},{x:.9375,y:.5625},{x:.9375,y:.5625},{x:.0625,y:.6875},{x:.0625,y:.6875},{x:.0625,y:.6875},{x:.0625,y:.6875},{x:.0625,y:.6875},{x:.0625,y:.6875},{x:.1875,y:.6875},{x:.1875,y:.6875},{x:.1875,y:.6875},{x:.1875,y:.6875},{x:.1875,y:.6875},{x:.1875,y:.6875},{x:.3125,y:.6875},{x:.3125,y:.6875},{x:.3125,y:.6875},{x:.3125,y:.6875},{x:.3125,y:.6875},{x:.3125,y:.6875},{x:.4375,y:.6875},{x:.4375,y:.6875},{x:.4375,y:.6875},{x:.4375,y:.6875},{x:.4375,y:.6875},{x:.4375,y:.6875},{x:.5625,y:.6875},{x:.5625,y:.6875},{x:.5625,y:.6875},{x:.5625,y:.6875},{x:.5625,y:.6875},{x:.5625,y:.6875},{x:.6875,y:.6875},{x:.6875,y:.6875},{x:.6875,y:.6875},{x:.6875,y:.6875},{x:.6875,y:.6875},{x:.6875,y:.6875},{x:.8125,y:.6875},{x:.8125,y:.6875},{x:.8125,y:.6875},{x:.8125,y:.6875},{x:.8125,y:.6875},{x:.8125,y:.6875},{x:.9375,y:.6875},{x:.9375,y:.6875},{x:.9375,y:.6875},{x:.9375,y:.6875},{x:.9375,y:.6875},{x:.9375,y:.6875},{x:.0625,y:.8125},{x:.0625,y:.8125},{x:.0625,y:.8125},{x:.0625,y:.8125},{x:.0625,y:.8125},{x:.0625,y:.8125},{x:.1875,y:.8125},{x:.1875,y:.8125},{x:.1875,y:.8125},{x:.1875,y:.8125},{x:.1875,y:.8125},{x:.1875,y:.8125},{x:.3125,y:.8125},{x:.3125,y:.8125},{x:.3125,y:.8125},{x:.3125,y:.8125},{x:.3125,y:.8125},{x:.3125,y:.8125},{x:.4375,y:.8125},{x:.4375,y:.8125},{x:.4375,y:.8125},{x:.4375,y:.8125},{x:.4375,y:.8125},{x:.4375,y:.8125},{x:.5625,y:.8125},{x:.5625,y:.8125},{x:.5625,y:.8125},{x:.5625,y:.8125},{x:.5625,y:.8125},{x:.5625,y:.8125},{x:.6875,y:.8125},{x:.6875,y:.8125},{x:.6875,y:.8125},{x:.6875,y:.8125},{x:.6875,y:.8125},{x:.6875,y:.8125},{x:.8125,y:.8125},{x:.8125,y:.8125},{x:.8125,y:.8125},{x:.8125,y:.8125},{x:.8125,y:.8125},{x:.8125,y:.8125},{x:.9375,y:.8125},{x:.9375,y:.8125},{x:.9375,y:.8125},{x:.9375,y:.8125},{x:.9375,y:.8125},{x:.9375,y:.8125},{x:.0625,y:.9375},{x:.0625,y:.9375},{x:.0625,y:.9375},{x:.0625,y:.9375},{x:.0625,y:.9375},{x:.0625,y:.9375},{x:.1875,y:.9375},{x:.1875,y:.9375},{x:.1875,y:.9375},{x:.1875,y:.9375},{x:.1875,y:.9375},{x:.1875,y:.9375},{x:.3125,y:.9375},{x:.3125,y:.9375},{x:.3125,y:.9375},{x:.3125,y:.9375},{x:.3125,y:.9375},{x:.3125,y:.9375},{x:.4375,y:.9375},{x:.4375,y:.9375},{x:.4375,y:.9375},{x:.4375,y:.9375},{x:.4375,y:.9375},{x:.4375,y:.9375},{x:.5625,y:.9375},{x:.5625,y:.9375},{x:.5625,y:.9375},{x:.5625,y:.9375},{x:.5625,y:.9375},{x:.5625,y:.9375},{x:.6875,y:.9375},{x:.6875,y:.9375},{x:.6875,y:.9375},{x:.6875,y:.9375},{x:.6875,y:.9375},{x:.6875,y:.9375},{x:.8125,y:.9375},{x:.8125,y:.9375},{x:.8125,y:.9375},{x:.8125,y:.9375},{x:.8125,y:.9375},{x:.8125,y:.9375},{x:.9375,y:.9375},{x:.9375,y:.9375},{x:.9375,y:.9375},{x:.9375,y:.9375},{x:.9375,y:.9375},{x:.9375,y:.9375}];var _5=class{constructor(t){w(this,"model");w(this,"anchors");w(this,"anchorsTensor");w(this,"inputSize");w(this,"inputSizeTensor");w(this,"doubleInputSizeTensor");this.model=t,this.anchors=zn.map(o=>[o.x,o.y]),this.anchorsTensor=G.tensor2d(this.anchors),this.inputSize=this.model&&this.model.inputs&&this.model.inputs[0].shape?this.model.inputs[0].shape[2]:0,this.inputSizeTensor=G.tensor1d([this.inputSize,this.inputSize]),this.doubleInputSizeTensor=G.tensor1d([this.inputSize*2,this.inputSize*2])}normalizeBoxes(t){let o={};o.boxOffsets=G.slice(t,[0,0],[-1,2]),o.boxSizes=G.slice(t,[0,2],[-1,2]),o.div=G.div(o.boxOffsets,this.inputSizeTensor),o.boxCenterPoints=G.add(o.div,this.anchorsTensor),o.halfBoxSizes=G.div(o.boxSizes,this.doubleInputSizeTensor),o.sub=G.sub(o.boxCenterPoints,o.halfBoxSizes),o.startPoints=G.mul(o.sub,this.inputSizeTensor),o.add=G.add(o.boxCenterPoints,o.halfBoxSizes),o.endPoints=G.mul(o.add,this.inputSizeTensor);let A=G.concat2d([o.startPoints,o.endPoints],1);return Object.keys(o).forEach(n=>G.dispose(o[n])),A}normalizeLandmarks(t,o){let A={};A.reshape=G.reshape(t,[-1,7,2]),A.div=G.div(A.reshape,this.inputSizeTensor),A.landmarks=G.add(A.div,this.anchors[o]);let n=G.mul(A.landmarks,this.inputSizeTensor);return Object.keys(A).forEach(r=>G.dispose(A[r])),n}async predict(t,o){let A={};A.resize=G.image.resizeBilinear(t,[this.inputSize,this.inputSize]),A.div=G.div(A.resize,H.tf127),A.image=G.sub(A.div,H.tf1),A.batched=this.model.execute(A.image),A.predictions=G.squeeze(A.batched),A.slice=G.slice(A.predictions,[0,0],[-1,1]),A.sigmoid=G.sigmoid(A.slice),A.scores=G.squeeze(A.sigmoid);let n=await A.scores.data();A.boxes=G.slice(A.predictions,[0,1],[-1,4]),A.norm=this.normalizeBoxes(A.boxes),A.nms=await G.image.nonMaxSuppressionAsync(A.norm,A.scores,3*o.hand.maxDetected,o.hand.iouThreshold,o.hand.minConfidence);let r=await A.nms.array(),s=[];for(let a of r){let y={};y.box=G.slice(A.norm,[a,0],[1,-1]),y.slice=G.slice(A.predictions,[a,5],[1,14]),y.norm=this.normalizeLandmarks(y.slice,a),y.palmLandmarks=G.reshape(y.norm,[-1,2]);let c=await y.box.data(),i=c.slice(0,2),l=c.slice(2,4),x=await y.palmLandmarks.array(),d={startPoint:i,endPoint:l,palmLandmarks:x,confidence:n[a]},u=wn(d,[t.shape[2]/this.inputSize,t.shape[1]/this.inputSize]);s.push(u),Object.keys(y).forEach(f=>G.dispose(y[f]))}return Object.keys(A).forEach(a=>G.dispose(A[a])),s}};var j0=V(F());var H2=5,jn=1.65,Sn=[0,5,9,13,17,1,2],F2=0,V2=2,Wn=0,$5=class{constructor(t,o){w(this,"handDetector");w(this,"handPoseModel");w(this,"inputSize");w(this,"storedBoxes");w(this,"skipped");w(this,"detectedHands");this.handDetector=t,this.handPoseModel=o,this.inputSize=this.handPoseModel&&this.handPoseModel.inputs[0].shape?this.handPoseModel.inputs[0].shape[2]:0,this.storedBoxes=[],this.skipped=Number.MAX_SAFE_INTEGER,this.detectedHands=0}calculateLandmarksBoundingBox(t){let o=t.map(s=>s[0]),A=t.map(s=>s[1]),n=[Math.min(...o),Math.min(...A)],r=[Math.max(...o),Math.max(...A)];return{startPoint:n,endPoint:r}}getBoxForPalmLandmarks(t,o){let A=t.map(r=>Q5([...r,1],o)),n=this.calculateLandmarksBoundingBox(A);return Bt(Ht(n),H2)}getBoxForHandLandmarks(t){let o=this.calculateLandmarksBoundingBox(t),A=Bt(Ht(o),jn);A.palmLandmarks=[];for(let n=0;n<Sn.length;n++)A.palmLandmarks.push(t[Sn[n]].slice(0,2));return A}transformRawCoords(t,o,A,n){let r=Gt(o),s=[r[0]/this.inputSize,r[1]/this.inputSize,(r[0]+r[1])/this.inputSize/2],a=t.map(d=>[s[0]*(d[0]-this.inputSize/2),s[1]*(d[1]-this.inputSize/2),s[2]*d[2]]),y=K5(A,[0,0]),c=a.map(d=>[...Q5(d,y),d[2]]),i=kn(n),l=[...lt(o),1],x=[me(l,i[0]),me(l,i[1])];return c.map(d=>[Math.trunc(d[0]+x[0]),Math.trunc(d[1]+x[1]),Math.trunc(d[2])])}async estimateHands(t,o){let A=!1,n,r=(o.hand.skipTime||0)>g()-Wn,s=this.skipped<(o.hand.skipFrames||0);o.skipAllowed&&r&&s&&(n=await this.handDetector.predict(t,o),this.skipped=0),o.skipAllowed&&this.skipped++,n&&n.length>0&&(n.length!==this.detectedHands&&this.detectedHands!==o.hand.maxDetected||!o.hand.landmarks)&&(this.detectedHands=0,this.storedBoxes=[...n],this.storedBoxes.length>0&&(A=!0));let a=[];for(let y=0;y<this.storedBoxes.length;y++){let c=this.storedBoxes[y];if(!!c)if(o.hand.landmarks){let i=o.hand.rotation?Rn(c.palmLandmarks[F2],c.palmLandmarks[V2]):0,l=lt(c),x=[l[0]/t.shape[2],l[1]/t.shape[1]],d=o.hand.rotation&&T.kernels.includes("rotatewithoffset")?j0.image.rotateWithOffset(t,i,0,x):t.clone(),u=K5(-i,l),f=A?this.getBoxForPalmLandmarks(c.palmLandmarks,u):c,M=Tn(f,d,[this.inputSize,this.inputSize]),h=j0.div(M,H.tf255);j0.dispose(M),j0.dispose(d);let[P,m]=this.handPoseModel.execute(h);Wn=g(),j0.dispose(h);let p=(await P.data())[0];if(j0.dispose(P),p>=o.hand.minConfidence/4){let k=j0.reshape(m,[-1,3]),C=await k.array();j0.dispose(m),j0.dispose(k);let O=this.transformRawCoords(C,f,i,u),j=this.getBoxForHandLandmarks(O);this.storedBoxes[y]={...j,confidence:p};let L={landmarks:O,confidence:p,boxConfidence:c.confidence,fingerConfidence:p,box:{topLeft:j.startPoint,bottomRight:j.endPoint}};a.push(L)}else this.storedBoxes[y]=null;j0.dispose(m)}else{let i=Bt(Ht(c),jn),l={confidence:c.confidence,boxConfidence:c.confidence,fingerConfidence:0,box:{topLeft:i.startPoint,bottomRight:i.endPoint},landmarks:[]};a.push(l)}}return this.storedBoxes=this.storedBoxes.filter(y=>y!==null),this.detectedHands=a.length,a.length>o.hand.maxDetected&&(a.length=o.hand.maxDetected),a}};var P0={thumb:0,index:1,middle:2,ring:3,pinky:4,all:[0,1,2,3,4],nameMapping:{0:"thumb",1:"index",2:"middle",3:"ring",4:"pinky"},pointsMapping:{0:[[0,1],[1,2],[2,3],[3,4]],1:[[0,5],[5,6],[6,7],[7,8]],2:[[0,9],[9,10],[10,11],[11,12]],3:[[0,13],[13,14],[14,15],[15,16]],4:[[0,17],[17,18],[18,19],[19,20]]},getName:e=>P0.nameMapping[e],getPoints:e=>P0.pointsMapping[e]},pe={none:0,half:1,full:2,nameMapping:{0:"none",1:"half",2:"full"},getName:e=>pe.nameMapping[e]},e0={verticalUp:0,verticalDown:1,horizontalLeft:2,horizontalRight:3,diagonalUpRight:4,diagonalUpLeft:5,diagonalDownRight:6,diagonalDownLeft:7,nameMapping:{0:"verticalUp",1:"verticalDown",2:"horizontalLeft",3:"horizontalRight",4:"diagonalUpRight",5:"diagonalUpLeft",6:"diagonalDownRight",7:"diagonalDownLeft"},getName:e=>e0.nameMapping[e]},we=class{constructor(t){w(this,"name");w(this,"curls");w(this,"directions");w(this,"weights");w(this,"weightsRelative");this.name=t,this.curls={},this.directions={},this.weights=[1,1,1,1,1],this.weightsRelative=[1,1,1,1,1]}curl(t,o,A){typeof this.curls[t]=="undefined"&&(this.curls[t]=[]),this.curls[t].push([o,A])}direction(t,o,A){this.directions[t]||(this.directions[t]=[]),this.directions[t].push([o,A])}weight(t,o){this.weights[t]=o;let A=this.weights.reduce((n,r)=>n+r,0);this.weightsRelative=this.weights.map(n=>n*5/A)}matchAgainst(t,o){let A=0;for(let n in t){let r=t[n],s=this.curls[n];if(typeof s=="undefined"){A+=this.weightsRelative[n];continue}for(let[a,y]of s)if(r===a){A+=y*this.weightsRelative[n];break}}for(let n in o){let r=o[n],s=this.directions[n];if(typeof s=="undefined"){A+=this.weightsRelative[n];continue}for(let[a,y]of s)if(r===a){A+=y*this.weightsRelative[n];break}}return A/10}};var{thumb:F0,index:ne,middle:re,ring:Re,pinky:ke}=P0,{none:V0,half:X2,full:Z0}=pe,{verticalUp:Ve,verticalDown:_a,horizontalLeft:eo,horizontalRight:D2,diagonalUpRight:q2,diagonalUpLeft:Ze,diagonalDownRight:$a,diagonalDownLeft:e1}=e0,ue=new we("thumbs up");ue.curl(F0,V0,1);ue.direction(F0,Ve,1);ue.direction(F0,Ze,.25);ue.direction(F0,q2,.25);for(let e of[P0.index,P0.middle,P0.ring,P0.pinky])ue.curl(e,Z0,1),ue.direction(e,eo,1),ue.direction(e,D2,1);var r0=new we("victory");r0.curl(F0,X2,.5);r0.curl(F0,V0,.5);r0.direction(F0,Ve,1);r0.direction(F0,Ze,1);r0.curl(ne,V0,1);r0.direction(ne,Ve,.75);r0.direction(ne,Ze,1);r0.curl(re,V0,1);r0.direction(re,Ve,1);r0.direction(re,Ze,.75);r0.curl(Re,Z0,1);r0.direction(Re,Ve,.2);r0.direction(Re,Ze,1);r0.direction(Re,eo,.2);r0.curl(ke,Z0,1);r0.direction(ke,Ve,.2);r0.direction(ke,Ze,1);r0.direction(ke,eo,.2);r0.weight(ne,2);r0.weight(re,2);var he=new we("point");he.curl(F0,Z0,1);he.curl(ne,V0,.5);he.curl(re,Z0,.5);he.curl(Re,Z0,.5);he.curl(ke,Z0,.5);he.weight(ne,2);he.weight(re,2);var be=new we("middle finger");be.curl(F0,V0,1);be.curl(ne,Z0,.5);be.curl(re,Z0,.5);be.curl(Re,Z0,.5);be.curl(ke,Z0,.5);be.weight(ne,2);be.weight(re,2);var Xe=new we("open palm");Xe.curl(F0,V0,.75);Xe.curl(ne,V0,.75);Xe.curl(re,V0,.75);Xe.curl(Re,V0,.75);Xe.curl(ke,V0,.75);var Cn=[ue,r0,he,be,Xe];var U2=.7,Ee={HALF_CURL_START_LIMIT:60,NO_CURL_START_LIMIT:130,DISTANCE_VOTE_POWER:1.1,SINGLE_ANGLE_VOTE_POWER:.9,TOTAL_ANGLE_VOTE_POWER:1.6};function On(e,t,o,A){let n=(t-A)/(e-o),r=Math.atan(n)*180/Math.PI;return r<=0?r=-r:r>0&&(r=180-r),r}function Nn(e,t){if(!e||!t)return[0,0];let o=On(e[0],e[1],t[0],t[1]);if(e.length===2)return o;let A=On(e[1],e[2],t[1],t[2]);return[o,A]}function In(e,t=1){let o=0,A=0,n=0;return e>=75&&e<=105?o=1*t:e>=25&&e<=155?A=1*t:n=1*t,[o,A,n]}function J2(e,t,o){let A=e[0]-t[0],n=e[0]-o[0],r=t[0]-o[0],s=e[1]-t[1],a=e[1]-o[1],y=t[1]-o[1],c=e[2]-t[2],i=e[2]-o[2],l=t[2]-o[2],x=Math.sqrt(A*A+s*s+c*c),d=Math.sqrt(n*n+a*a+i*i),u=Math.sqrt(r*r+y*y+l*l),f=(u*u+x*x-d*d)/(2*u*x);f>1?f=1:f<-1&&(f=-1);let M=Math.acos(f);M=57.2958*M%180;let h;return M>Ee.NO_CURL_START_LIMIT?h=pe.none:M>Ee.HALF_CURL_START_LIMIT?h=pe.half:h=pe.full,h}function Ln(e,t,o,A){let n;return A===Math.abs(e)?e>0?n=e0.horizontalLeft:n=e0.horizontalRight:A===Math.abs(t)?t>0?n=e0.horizontalLeft:n=e0.horizontalRight:o>0?n=e0.horizontalLeft:n=e0.horizontalRight,n}function Gn(e,t,o,A){let n;return A===Math.abs(e)?e<0?n=e0.verticalDown:n=e0.verticalUp:A===Math.abs(t)?t<0?n=e0.verticalDown:n=e0.verticalUp:o<0?n=e0.verticalDown:n=e0.verticalUp,n}function Y2(e,t,o,A,n,r,s,a){let y,c=Gn(e,t,o,A),i=Ln(n,r,s,a);return c===e0.verticalUp?i===e0.horizontalLeft?y=e0.diagonalUpLeft:y=e0.diagonalUpRight:i===e0.horizontalLeft?y=e0.diagonalDownLeft:y=e0.diagonalDownRight,y}function K2(e,t,o,A){let n=e[0]-t[0],r=e[0]-o[0],s=t[0]-o[0],a=e[1]-t[1],y=e[1]-o[1],c=t[1]-o[1],i=Math.max(Math.abs(n),Math.abs(r),Math.abs(s)),l=Math.max(Math.abs(a),Math.abs(y),Math.abs(c)),x=0,d=0,u=0,f=l/(i+1e-5);f>1.5?x+=Ee.DISTANCE_VOTE_POWER:f>.66?d+=Ee.DISTANCE_VOTE_POWER:u+=Ee.DISTANCE_VOTE_POWER;let M=Math.sqrt(n*n+a*a),h=Math.sqrt(r*r+y*y),P=Math.sqrt(s*s+c*c),m=Math.max(M,h,P),p=e[0],k=e[1],C=o[0],O=o[1];m===M?(C=o[0],O=o[1]):m===P&&(p=t[0],k=t[1]);let J=Nn([p,k],[C,O]),Z=In(J,Ee.TOTAL_ANGLE_VOTE_POWER);x+=Z[0],d+=Z[1],u+=Z[2];for(let x0 of A){let E=In(x0,Ee.SINGLE_ANGLE_VOTE_POWER);x+=E[0],d+=E[1],u+=E[2]}let q;return x===Math.max(x,d,u)?q=Gn(y,a,c,l):u===Math.max(d,u)?q=Ln(r,n,s,i):q=Y2(y,a,c,l,r,n,s,i),q}function Bn(e){let t=[],o=[],A=[],n=[];if(!e)return{curls:A,directions:n};for(let r of P0.all){let s=P0.getPoints(r),a=[],y=[];for(let c of s){let i=e[c[0]],l=e[c[1]],x=Nn(i,l),d=x[0],u=x[1];a.push(d),y.push(u)}t.push(a),o.push(y)}for(let r of P0.all){let s=r===P0.thumb?1:0,a=P0.getPoints(r),y=e[a[s][0]],c=e[a[s+1][1]],i=e[a[3][1]],l=J2(y,c,i),x=K2(y,c,i,t[r].slice(s));A[r]=l,n[r]=x}return{curls:A,directions:n}}function Ft(e){if(!e||e.length===0)return null;let t=Bn(e),o={};for(let A of P0.all)o[P0.getName(A)]={curl:pe.getName(t.curls[A]),direction:e0.getName(t.directions[A])};return o}function Hn(e){let t=[];if(!e||e.length===0)return t;let o=Bn(e);for(let A of Cn){let n=A.matchAgainst(o.curls,o.directions);n>=U2&&t.push({name:A.name,confidence:n})}return t}var Fn={thumb:[1,2,3,4],index:[5,6,7,8],middle:[9,10,11,12],ring:[13,14,15,16],pinky:[17,18,19,20],palm:[0]},De,qe,Vn;async function oo(e,t){let o=await Vn.estimateHands(e,t);if(!o)return[];let A=[];for(let n=0;n<o.length;n++){let r={};if(o[n].landmarks)for(let i of Object.keys(Fn))r[i]=Fn[i].map(l=>o[n].landmarks[l]);let s=o[n].landmarks,a=[Number.MAX_SAFE_INTEGER,Number.MAX_SAFE_INTEGER,0,0],y=[0,0,0,0];if(s&&s.length>0){for(let i of s)i[0]<a[0]&&(a[0]=i[0]),i[1]<a[1]&&(a[1]=i[1]),i[0]>a[2]&&(a[2]=i[0]),i[1]>a[3]&&(a[3]=i[1]);a[2]-=a[0],a[3]-=a[1],y=[a[0]/(e.shape[2]||0),a[1]/(e.shape[1]||0),a[2]/(e.shape[2]||0),a[3]/(e.shape[1]||0)]}else a=o[n].box?[Math.trunc(Math.max(0,o[n].box.topLeft[0])),Math.trunc(Math.max(0,o[n].box.topLeft[1])),Math.trunc(Math.min(e.shape[2]||0,o[n].box.bottomRight[0])-Math.max(0,o[n].box.topLeft[0])),Math.trunc(Math.min(e.shape[1]||0,o[n].box.bottomRight[1])-Math.max(0,o[n].box.topLeft[1]))]:[0,0,0,0],y=[o[n].box.topLeft[0]/(e.shape[2]||0),o[n].box.topLeft[1]/(e.shape[1]||0),(o[n].box.bottomRight[0]-o[n].box.topLeft[0])/(e.shape[2]||0),(o[n].box.bottomRight[1]-o[n].box.topLeft[1])/(e.shape[1]||0)];let c=Ft(s);A.push({id:n,score:Math.round(100*o[n].confidence)/100,boxScore:Math.round(100*o[n].boxConfidence)/100,fingerScore:Math.round(100*o[n].fingerConfidence)/100,label:"hand",box:a,boxRaw:y,keypoints:s,annotations:r,landmarks:c})}return A}async function Ao(e){var o,A;T.initial&&(De=null,qe=null),!De||!qe?[De,qe]=await Promise.all([e.hand.enabled?B((o=e.hand.detector)==null?void 0:o.modelPath):null,e.hand.landmarks?B((A=e.hand.skeleton)==null?void 0:A.modelPath):null]):(e.debug&&b("cached model:",De.modelUrl),e.debug&&b("cached model:",qe.modelUrl));let t=new _5(De);return Vn=new $5(t,qe),[De,qe]}var Y=V(F());var l0=[null,null],Q2=["StatefulPartitionedCall/Postprocessor/Slice","StatefulPartitionedCall/Postprocessor/ExpandDims_1"],ge=[[0,0],[0,0]],_2=["hand","fist","pinch","point","face","tip","pinchtip"],Xn=4,Dn=1.6,$2=512,es=1.4,Vt=Number.MAX_SAFE_INTEGER,no=0,se=[0,0],o0={boxes:[],hands:[]},qn={thumb:[1,2,3,4],index:[5,6,7,8],middle:[9,10,11,12],ring:[13,14,15,16],pinky:[17,18,19,20],base:[0],palm:[0,17,13,9,5,1,0]};async function Un(e){var t;if(T.initial&&(l0[0]=null),l0[0])e.debug&&b("cached model:",l0[0].modelUrl);else{Zt(["tensorlistreserve","enter","tensorlistfromtensor","merge","loopcond","switch","exit","tensorliststack","nextiteration","tensorlistsetitem","tensorlistgetitem","reciprocal","shape","split","where"],e),l0[0]=await B((t=e.hand.detector)==null?void 0:t.modelPath);let o=Object.values(l0[0].modelSignature.inputs);ge[0][0]=Array.isArray(o)?parseInt(o[0].tensorShape.dim[1].size):0,ge[0][1]=Array.isArray(o)?parseInt(o[0].tensorShape.dim[2].size):0}return l0[0]}async function Jn(e){var t;if(T.initial&&(l0[1]=null),l0[1])e.debug&&b("cached model:",l0[1].modelUrl);else{l0[1]=await B((t=e.hand.skeleton)==null?void 0:t.modelPath);let o=Object.values(l0[1].modelSignature.inputs);ge[1][0]=Array.isArray(o)?parseInt(o[0].tensorShape.dim[1].size):0,ge[1][1]=Array.isArray(o)?parseInt(o[0].tensorShape.dim[2].size):0}return l0[1]}async function ts(e,t){let o=[];if(!e||!l0[0])return o;let A={},n=(e.shape[2]||1)/(e.shape[1]||1),r=Math.min(Math.round((e.shape[1]||0)/8)*8,$2),s=Math.round(r*n/8)*8;A.resize=Y.image.resizeBilinear(e,[r,s]),A.cast=Y.cast(A.resize,"int32"),[A.rawScores,A.rawBoxes]=await l0[0].executeAsync(A.cast,Q2),A.boxes=Y.squeeze(A.rawBoxes,[0,2]),A.scores=Y.squeeze(A.rawScores,[0]);let a=Y.unstack(A.scores,1);Y.dispose(a[Xn]),a.splice(Xn,1),A.filtered=Y.stack(a,1),Y.dispose(a),A.max=Y.max(A.filtered,1),A.argmax=Y.argMax(A.filtered,1);let y=0;A.nms=await Y.image.nonMaxSuppressionAsync(A.boxes,A.max,(t.hand.maxDetected||0)+1,t.hand.iouThreshold||0,t.hand.minConfidence||1);let c=await A.nms.data(),i=await A.max.data(),l=await A.argmax.data();for(let x of Array.from(c)){let d=Y.slice(A.boxes,x,1),u=await d.data();Y.dispose(d);let f=[u[1],u[0],u[3]-u[1],u[2]-u[0]],M=St(f,es),h=[Math.trunc(f[0]*se[0]),Math.trunc(f[1]*se[1]),Math.trunc(f[2]*se[0]),Math.trunc(f[3]*se[1])],P=i[x],m=_2[l[x]],p={id:y++,score:P,box:h,boxRaw:M,label:m};o.push(p)}return Object.keys(A).forEach(x=>Y.dispose(A[x])),o.sort((x,d)=>d.score-x.score),o.length>(t.hand.maxDetected||1)&&(o.length=t.hand.maxDetected||1),o}async function ro(e,t,o){let A={id:t.id,score:Math.round(100*t.score)/100,boxScore:Math.round(100*t.score)/100,fingerScore:0,box:t.box,boxRaw:t.boxRaw,label:t.label,keypoints:[],landmarks:{},annotations:{}};if(e&&l0[1]&&o.hand.landmarks&&t.score>(o.hand.minConfidence||0)){let n={},r=[t.boxRaw[1],t.boxRaw[0],t.boxRaw[3]+t.boxRaw[1],t.boxRaw[2]+t.boxRaw[0]];n.crop=Y.image.cropAndResize(e,[r],[0],[ge[1][0],ge[1][1]],"bilinear"),n.div=Y.div(n.crop,H.tf255),[n.score,n.keypoints]=l0[1].execute(n.div,["Identity_1","Identity"]);let s=(await n.score.data())[0],a=(100-Math.trunc(100/(1+Math.exp(s))))/100;if(a>=(o.hand.minConfidence||0)){A.fingerScore=a,n.reshaped=Y.reshape(n.keypoints,[-1,3]);let i=(await n.reshaped.array()).map(l=>[l[0]/ge[1][1],l[1]/ge[1][0],l[2]||0]).map(l=>[l[0]*t.boxRaw[2],l[1]*t.boxRaw[3],l[2]||0]);A.keypoints=i.map(l=>[se[0]*(l[0]+t.boxRaw[0]),se[1]*(l[1]+t.boxRaw[1]),l[2]||0]),A.landmarks=Ft(A.keypoints);for(let l of Object.keys(qn))A.annotations[l]=qn[l].map(x=>A.landmarks&&A.keypoints[x]?A.keypoints[x]:null)}Object.keys(n).forEach(y=>Y.dispose(n[y]))}return A}async function so(e,t){var n,r;if(!l0[0]||!l0[1]||!((n=l0[0])!=null&&n.inputs[0].shape)||!((r=l0[1])!=null&&r.inputs[0].shape))return[];se=[e.shape[2]||0,e.shape[1]||0],Vt++;let o=(t.hand.skipTime||0)>g()-no,A=Vt<(t.hand.skipFrames||0);return t.skipAllowed&&o&&A?o0.hands:new Promise(async s=>{let a=3*(t.hand.skipTime||0)>g()-no,y=Vt<3*(t.hand.skipFrames||0);t.skipAllowed&&o0.hands.length===t.hand.maxDetected?o0.hands=await Promise.all(o0.boxes.map(i=>ro(e,i,t))):t.skipAllowed&&a&&y&&o0.hands.length>0?o0.hands=await Promise.all(o0.boxes.map(i=>ro(e,i,t))):(o0.boxes=await ts(e,t),no=g(),o0.hands=await Promise.all(o0.boxes.map(i=>ro(e,i,t))),Vt=0);let c=[...o0.boxes];if(o0.boxes.length=0,t.cacheSensitivity>0)for(let i=0;i<o0.hands.length;i++){let l=GA(o0.hands[i].keypoints,se);if(l.box[2]/(e.shape[2]||1)>.05&&l.box[3]/(e.shape[1]||1)>.05&&o0.hands[i].fingerScore&&o0.hands[i].fingerScore>(t.hand.minConfidence||0)){let x=St(l.box,Dn),d=St(l.boxRaw,Dn);o0.boxes.push({...c[i],box:x,boxRaw:d})}}for(let i=0;i<o0.hands.length;i++){let l=ee(o0.hands[i].keypoints,se);o0.hands[i].box=l.box,o0.hands[i].boxRaw=l.boxRaw}s(o0.hands)})}var Dt=V(F());var u0,Xt=[],ao=Number.MAX_SAFE_INTEGER,Kn=0,Qn=0;async function _n(e){var t;return T.initial&&(u0=null),u0?e.debug&&b("cached model:",u0.modelUrl):u0=await B((t=e.face.liveness)==null?void 0:t.modelPath),u0}async function io(e,t,o,A){var s,a;if(!u0)return 0;let n=(((s=t.face.liveness)==null?void 0:s.skipTime)||0)>g()-Qn,r=ao<(((a=t.face.liveness)==null?void 0:a.skipFrames)||0);return t.skipAllowed&&n&&r&&Kn===A&&Xt[o]?(ao++,Xt[o]):(ao=0,new Promise(async y=>{let c=Dt.image.resizeBilinear(e,[u0!=null&&u0.inputs[0].shape?u0.inputs[0].shape[2]:0,u0!=null&&u0.inputs[0].shape?u0.inputs[0].shape[1]:0],!1),i=u0==null?void 0:u0.execute(c),l=(await i.data())[0];Xt[o]=Math.round(100*l)/100,Kn=A,Qn=g(),Dt.dispose([c,i]),y(Xt[o])}))}var nr=V(F());var yt={};pt(yt,{connected:()=>Ut,horizontal:()=>lo,kpt:()=>qt,relative:()=>xo,vertical:()=>yo});var qt=["nose","leftEye","rightEye","leftEar","rightEar","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"],lo=[["leftEye","rightEye"],["leftEar","rightEar"],["leftShoulder","rightShoulder"],["leftElbow","rightElbow"],["leftWrist","rightWrist"],["leftHip","rightHip"],["leftKnee","rightKnee"],["leftAnkle","rightAnkle"]],yo=[["leftKnee","leftShoulder"],["rightKnee","rightShoulder"],["leftAnkle","leftKnee"],["rightAnkle","rightKnee"]],xo=[[["leftHip","rightHip"],["leftShoulder","rightShoulder"]],[["leftElbow","rightElbow"],["leftShoulder","rightShoulder"]]],Ut={leftLeg:["leftHip","leftKnee","leftAnkle"],rightLeg:["rightHip","rightKnee","rightAnkle"],torso:["leftShoulder","rightShoulder","rightHip","leftHip","leftShoulder"],leftArm:["leftShoulder","leftElbow","leftWrist"],rightArm:["rightShoulder","rightElbow","rightWrist"],head:[]};var Pe=V(F()),er=.005,S0={keypoints:[],padding:[[0,0],[0,0],[0,0],[0,0]]};function co(e){for(let t of lo){let o=e.keypoints.findIndex(n=>n.part===t[0]),A=e.keypoints.findIndex(n=>n.part===t[1]);if(e.keypoints[o]&&e.keypoints[A]&&e.keypoints[o].position[0]<e.keypoints[A].position[0]){let n=e.keypoints[o];e.keypoints[o]=e.keypoints[A],e.keypoints[A]=n}}for(let t of yo){let o=e.keypoints.findIndex(n=>n&&n.part===t[0]),A=e.keypoints.findIndex(n=>n&&n.part===t[1]);e.keypoints[o]&&e.keypoints[A]&&e.keypoints[o].position[1]<e.keypoints[A].position[1]&&e.keypoints.splice(o,1)}for(let[t,o]of xo){let A=e.keypoints.findIndex(c=>c&&c.part===t[0]),n=e.keypoints.findIndex(c=>c&&c.part===t[1]),r=e.keypoints.findIndex(c=>c&&c.part===o[0]),s=e.keypoints.findIndex(c=>c&&c.part===o[1]);if(!e.keypoints[r]||!e.keypoints[s])continue;let a=e.keypoints[A]?[Math.abs(e.keypoints[r].position[0]-e.keypoints[A].position[0]),Math.abs(e.keypoints[s].position[0]-e.keypoints[A].position[0])]:[0,0],y=e.keypoints[n]?[Math.abs(e.keypoints[s].position[0]-e.keypoints[n].position[0]),Math.abs(e.keypoints[r].position[0]-e.keypoints[n].position[0])]:[0,0];if(a[0]>a[1]||y[0]>y[1]){let c=e.keypoints[A];e.keypoints[A]=e.keypoints[n],e.keypoints[n]=c}}}function tr(e){for(let t=0;t<e.length;t++)if(e[t]&&S0.keypoints[t]){let o=[Math.abs(e[t].positionRaw[0]-S0.keypoints[t].positionRaw[0]),Math.abs(e[t].positionRaw[1]-S0.keypoints[t].positionRaw[1])];o[0]<er&&o[1]<er?e[t]=S0.keypoints[t]:S0.keypoints[t]=e[t]}else S0.keypoints[t]=e[t];return e}function or(e,t){let o={};if(!e.shape||!e.shape[1]||!e.shape[2])return e;S0.padding=[[0,0],[e.shape[2]>e.shape[1]?Math.trunc((e.shape[2]-e.shape[1])/2):0,e.shape[2]>e.shape[1]?Math.trunc((e.shape[2]-e.shape[1])/2):0],[e.shape[1]>e.shape[2]?Math.trunc((e.shape[1]-e.shape[2])/2):0,e.shape[1]>e.shape[2]?Math.trunc((e.shape[1]-e.shape[2])/2):0],[0,0]],o.pad=Pe.pad(e,S0.padding),o.resize=Pe.image.resizeBilinear(o.pad,[t,t]);let A=Pe.cast(o.resize,"int32");return Object.keys(o).forEach(n=>Pe.dispose(o[n])),A}function Ar(e,t){e.keypoints=e.keypoints.filter(A=>A&&A.position);for(let A of e.keypoints)A.position=[A.position[0]*(t[0]+S0.padding[2][0]+S0.padding[2][1])/t[0]-S0.padding[2][0],A.position[1]*(t[1]+S0.padding[1][0]+S0.padding[1][1])/t[1]-S0.padding[1][0]],A.positionRaw=[A.position[0]/t[0],A.position[1]/t[1]];let o=ee(e.keypoints.map(A=>A.position),t);return e.box=o.box,e.boxRaw=o.boxRaw,e}var W0,Jt=0,fo=Number.MAX_SAFE_INTEGER,ze={boxes:[],bodies:[],last:0};async function rr(e){return T.initial&&(W0=null),W0?e.debug&&b("cached model:",W0.modelUrl):(Zt(["size"],e),W0=await B(e.body.modelPath)),Jt=W0.inputs[0].shape?W0.inputs[0].shape[2]:0,Jt<64&&(Jt=256),W0}async function As(e,t,o){let A=e[0][0],n=[],r=0;for(let i=0;i<A.length;i++)if(r=A[i][2],r>t.body.minConfidence){let l=[A[i][1],A[i][0]];n.push({score:Math.round(100*r)/100,part:qt[i],positionRaw:l,position:[Math.round((o.shape[2]||0)*l[0]),Math.round((o.shape[1]||0)*l[1])]})}r=n.reduce((i,l)=>l.score>i?l.score:i,0);let s=[],a=ee(n.map(i=>i.position),[o.shape[2],o.shape[1]]),y={};for(let[i,l]of Object.entries(Ut)){let x=[];for(let d=0;d<l.length-1;d++){let u=n.find(M=>M.part===l[d]),f=n.find(M=>M.part===l[d+1]);u&&f&&u.score>(t.body.minConfidence||0)&&f.score>(t.body.minConfidence||0)&&x.push([u.position,f.position])}y[i]=x}let c={id:0,score:r,box:a.box,boxRaw:a.boxRaw,keypoints:n,annotations:y};return co(c),s.push(c),s}async function ns(e,t,o){let A=[];for(let n=0;n<e[0].length;n++){let r=e[0][n],s=Math.round(100*r[51+4])/100;if(s>t.body.minConfidence){let a=[];for(let l=0;l<17;l++){let x=r[3*l+2];if(x>t.body.minConfidence){let d=[r[3*l+1],r[3*l+0]];a.push({part:qt[l],score:Math.round(100*x)/100,positionRaw:d,position:[Math.round((o.shape[2]||0)*d[0]),Math.round((o.shape[1]||0)*d[1])]})}}let y=ee(a.map(l=>l.position),[o.shape[2],o.shape[1]]),c={};for(let[l,x]of Object.entries(Ut)){let d=[];for(let u=0;u<x.length-1;u++){let f=a.find(h=>h.part===x[u]),M=a.find(h=>h.part===x[u+1]);f&&M&&f.score>(t.body.minConfidence||0)&&M.score>(t.body.minConfidence||0)&&d.push([f.position,M.position])}c[l]=d}let i={id:n,score:s,box:y.box,boxRaw:y.boxRaw,keypoints:[...a],annotations:c};co(i),A.push(i)}}return A.sort((n,r)=>r.score-n.score),A.length>t.body.maxDetected&&(A.length=t.body.maxDetected),A}async function mo(e,t){if(!W0||!(W0!=null&&W0.inputs[0].shape))return[];t.skipAllowed||(ze.boxes.length=0),fo++;let o=(t.body.skipTime||0)>g()-ze.last,A=fo<(t.body.skipFrames||0);return t.skipAllowed&&o&&A?ze.bodies:new Promise(async n=>{let r={};fo=0,r.input=or(e,Jt),r.res=W0==null?void 0:W0.execute(r.input),ze.last=g();let s=await r.res.array();ze.bodies=r.res.shape[2]===17?await As(s,t,e):await ns(s,t,e);for(let a of ze.bodies)Ar(a,[e.shape[2]||1,e.shape[1]||1]),tr(a.keypoints);Object.keys(r).forEach(a=>nr.dispose(r[a])),n(ze.bodies)})}var M0=V(F());var Ue,Yt=[],ar=0,po=Number.MAX_SAFE_INTEGER,Qt=0,Kt=2.5;async function ir(e){if(!Ue||T.initial){Ue=await B(e.object.modelPath);let t=Object.values(Ue.modelSignature.inputs);Qt=Array.isArray(t)?parseInt(t[0].tensorShape.dim[2].size):0}else e.debug&&b("cached model:",Ue.modelUrl);return Ue}async function rs(e,t,o){let A=0,n=[];for(let y of[1,2,4])M0.tidy(async()=>{let c=y*13,i=M0.squeeze(e.find(f=>f.shape[1]===c**2&&(f.shape[2]||0)===Le.length)),l=M0.squeeze(e.find(f=>f.shape[1]===c**2&&(f.shape[2]||0)<Le.length)),d=await l.reshape([-1,4,l.shape[1]/4]).argMax(2).array(),u=await i.array();for(let f=0;f<i.shape[0];f++)for(let M=0;M<i.shape[1];M++){let h=u[f][M];if(h>(o.object.minConfidence||0)&&M!==61){let P=(.5+Math.trunc(f%c))/c,m=(.5+Math.trunc(f/c))/c,p=d[f].map(q=>q*(c/y/Qt)),[k,C]=[P-Kt/y*p[0],m-Kt/y*p[1]],[O,j]=[P+Kt/y*p[2]-k,m+Kt/y*p[3]-C],L=[k,C,O,j];L=L.map(q=>Math.max(0,Math.min(q,1)));let J=[L[0]*t[0],L[1]*t[1],L[2]*t[0],L[3]*t[1]],Z={id:A++,score:Math.round(100*h)/100,class:M+1,label:Le[M].label,box:J.map(q=>Math.trunc(q)),boxRaw:L};n.push(Z)}}});e.forEach(y=>M0.dispose(y));let r=n.map(y=>[y.boxRaw[1],y.boxRaw[0],y.boxRaw[3],y.boxRaw[2]]),s=n.map(y=>y.score),a=[];if(r&&r.length>0){let y=await M0.image.nonMaxSuppressionAsync(r,s,o.object.maxDetected,o.object.iouThreshold,o.object.minConfidence);a=await y.data(),M0.dispose(y)}return n=n.filter((y,c)=>a.includes(c)).sort((y,c)=>c.score-y.score),n}async function uo(e,t){let o=(t.object.skipTime||0)>g()-ar,A=po<(t.object.skipFrames||0);return t.skipAllowed&&o&&A&&Yt.length>0?(po++,Yt):(po=0,!T.kernels.includes("mod")||!T.kernels.includes("sparsetodense")?Yt:new Promise(async n=>{let r=[e.shape[2]||0,e.shape[1]||0],s=M0.image.resizeBilinear(e,[Qt,Qt],!1),a=M0.div(s,H.tf255),y=a.transpose([0,3,1,2]);M0.dispose(a),M0.dispose(s);let c;t.object.enabled&&(c=Ue.execute(y)),ar=g(),M0.dispose(y);let i=await rs(c,r,t);Yt=i,n(i)}))}var v0=V(F());var ct=["nose","leftEye","rightEye","leftEar","rightEar","leftShoulder","rightShoulder","leftElbow","rightElbow","leftWrist","rightWrist","leftHip","rightHip","leftKnee","rightKnee","leftAnkle","rightAnkle"],ss=ct.length,xt=ct.reduce((e,t,o)=>(e[t]=o,e),{}),as=[["leftHip","leftShoulder"],["leftElbow","leftShoulder"],["leftElbow","leftWrist"],["leftHip","leftKnee"],["leftKnee","leftAnkle"],["rightHip","rightShoulder"],["rightElbow","rightShoulder"],["rightElbow","rightWrist"],["rightHip","rightKnee"],["rightKnee","rightAnkle"],["leftShoulder","rightShoulder"],["leftHip","rightHip"]],T1=as.map(([e,t])=>[xt[e],xt[t]]),yr=[["nose","leftEye"],["leftEye","leftEar"],["nose","rightEye"],["rightEye","rightEar"],["nose","leftShoulder"],["leftShoulder","leftElbow"],["leftElbow","leftWrist"],["leftShoulder","leftHip"],["leftHip","leftKnee"],["leftKnee","leftAnkle"],["nose","rightShoulder"],["rightShoulder","rightElbow"],["rightElbow","rightWrist"],["rightShoulder","rightHip"],["rightHip","rightKnee"],["rightKnee","rightAnkle"]];function xr(e){let t=e.reduce(({maxX:o,maxY:A,minX:n,minY:r},{position:{x:s,y:a}})=>({maxX:Math.max(o,s),maxY:Math.max(A,a),minX:Math.min(n,s),minY:Math.min(r,a)}),{maxX:Number.NEGATIVE_INFINITY,maxY:Number.NEGATIVE_INFINITY,minX:Number.POSITIVE_INFINITY,minY:Number.POSITIVE_INFINITY});return[t.minX,t.minY,t.maxX-t.minX,t.maxY-t.minY]}function cr(e,[t,o],[A,n]){let r=t/A,s=o/n,a=(c,i)=>({id:i,score:c.score,boxRaw:[c.box[0]/n,c.box[1]/A,c.box[2]/n,c.box[3]/A],box:[Math.trunc(c.box[0]*s),Math.trunc(c.box[1]*r),Math.trunc(c.box[2]*s),Math.trunc(c.box[3]*r)],keypoints:c.keypoints.map(({score:l,part:x,position:d})=>({score:l,part:x,position:[Math.trunc(d.x*s),Math.trunc(d.y*r)],positionRaw:[d.x/A,d.y/A]})),annotations:{}});return e.map((c,i)=>a(c,i))}var ho=class{constructor(t,o){w(this,"priorityQueue");w(this,"numberOfElements");w(this,"getElementValue");this.priorityQueue=new Array(t),this.numberOfElements=-1,this.getElementValue=o}enqueue(t){this.priorityQueue[++this.numberOfElements]=t,this.swim(this.numberOfElements)}dequeue(){let t=this.priorityQueue[0];return this.exchange(0,this.numberOfElements--),this.sink(0),this.priorityQueue[this.numberOfElements+1]=null,t}empty(){return this.numberOfElements===-1}size(){return this.numberOfElements+1}all(){return this.priorityQueue.slice(0,this.numberOfElements+1)}max(){return this.priorityQueue[0]}swim(t){for(;t>0&&this.less(Math.floor(t/2),t);)this.exchange(t,Math.floor(t/2)),t=Math.floor(t/2)}sink(t){for(;2*t<=this.numberOfElements;){let o=2*t;if(o<this.numberOfElements&&this.less(o,o+1)&&o++,!this.less(t,o))break;this.exchange(t,o),t=o}}getValueAt(t){return this.getElementValue(this.priorityQueue[t])}less(t,o){return this.getValueAt(t)<this.getValueAt(o)}exchange(t,o){let A=this.priorityQueue[t];this.priorityQueue[t]=this.priorityQueue[o],this.priorityQueue[o]=A}};function bo(e,t,o,A){return{y:A.get(e,t,o),x:A.get(e,t,o+ss)}}function go(e,t,o){let{heatmapY:A,heatmapX:n,id:r}=e,{y:s,x:a}=bo(A,n,r,o);return{x:e.heatmapX*t+a,y:e.heatmapY*t+s}}function Po(e,t,o){return e<t?t:e>o?o:e}function dr(e,t,o,A){let n=o-e,r=A-t;return n*n+r*r}function Mo(e,t){return{x:e.x+t.x,y:e.y+t.y}}var X0,ls=["MobilenetV1/offset_2/BiasAdd","MobilenetV1/heatmap_2/BiasAdd","MobilenetV1/displacement_fwd_2/BiasAdd","MobilenetV1/displacement_bwd_2/BiasAdd"],_t=1,Je=16,ys=50**2;function fr(e,t,o,A,n,r,s=2){let a=h=>({y:r.get(h.y,h.x,e),x:r.get(h.y,h.x,r.shape[2]/2+e)}),y=(h,P,m)=>({y:Po(Math.round(h.y/Je),0,P-1),x:Po(Math.round(h.x/Je),0,m-1)}),[c,i]=A.shape,l=y(t.position,c,i),x=a(l),u=Mo(t.position,x);for(let h=0;h<s;h++){let P=y(u,c,i),m=bo(P.y,P.x,o,n);u=Mo({x:P.x*Je,y:P.y*Je},{x:m.x,y:m.y})}let f=y(u,c,i),M=A.get(f.y,f.x,o);return{position:u,part:ct[o],score:M}}function xs(e,t,o,A,n){let r=yr.map(([x,d])=>[xt[x],xt[d]]),s=r.map(([,x])=>x),a=r.map(([x])=>x),y=t.shape[2],c=s.length,i=new Array(y),l=go(e.part,Je,o);i[e.part.id]={score:e.score,part:ct[e.part.id],position:l};for(let x=c-1;x>=0;--x){let d=s[x],u=a[x];i[d]&&!i[u]&&(i[u]=fr(x,i[d],u,t,o,n))}for(let x=0;x<c;++x){let d=a[x],u=s[x];i[d]&&!i[u]&&(i[u]=fr(x,i[d],u,t,o,A))}return i}function cs(e,t,o,A,n){let[r,s]=n.shape,a=!0,y=Math.max(o-_t,0),c=Math.min(o+_t+1,r);for(let i=y;i<c;++i){let l=Math.max(A-_t,0),x=Math.min(A+_t+1,s);for(let d=l;d<x;++d)if(n.get(i,d,e)>t){a=!1;break}if(!a)break}return a}function ds(e,t){let[o,A,n]=t.shape,r=new ho(o*A*n,({score:s})=>s);for(let s=0;s<o;++s)for(let a=0;a<A;++a)for(let y=0;y<n;++y){let c=t.get(s,a,y);c<e||cs(y,c,s,a,t)&&r.enqueue({score:c,part:{heatmapY:s,heatmapX:a,id:y}})}return r}function mr(e,{x:t,y:o},A){return e.some(({keypoints:n})=>{var s;let r=(s=n[A])==null?void 0:s.position;return r?dr(o,t,r.y,r.x)<=ys:!1})}function fs(e,t){return t.reduce((A,{position:n,score:r},s)=>(mr(e,n,s)||(A+=r),A),0)/t.length}function ms(e,t,o,A,n,r){let s=[],a=ds(r,t);for(;s.length<n&&!a.empty();){let y=a.dequeue(),c=go(y.part,Je,e);if(mr(s,c,y.part.id))continue;let i=xs(y,t,e,o,A);i=i.filter(d=>d.score>r);let l=fs(s,i),x=xr(i);l>r&&s.push({keypoints:i,box:x,score:Math.round(100*l)/100})}return s}async function vo(e,t){let o=v0.tidy(()=>{if(!X0.inputs[0].shape)return[];let s=v0.image.resizeBilinear(e,[X0.inputs[0].shape[2],X0.inputs[0].shape[1]]),a=v0.sub(v0.div(v0.cast(s,"float32"),127.5),1),c=X0.execute(a,ls).map(i=>v0.squeeze(i,[0]));return c[1]=v0.sigmoid(c[1]),c}),A=await Promise.all(o.map(s=>s.buffer()));for(let s of o)v0.dispose(s);let n=await ms(A[0],A[1],A[2],A[3],t.body.maxDetected,t.body.minConfidence);return X0.inputs[0].shape?cr(n,[e.shape[1],e.shape[2]],[X0.inputs[0].shape[2],X0.inputs[0].shape[1]]):[]}async function pr(e){return!X0||T.initial?X0=await B(e.body.modelPath):e.debug&&b("cached model:",X0.modelUrl),X0}var t0=V(F());var J0,To=!1;async function wo(e){return!J0||T.initial?J0=await B(e.segmentation.modelPath):e.debug&&b("cached model:",J0.modelUrl),J0}async function hr(e,t,o){var f,M;if(To)return{data:[],canvas:null,alpha:null};To=!0,J0||await wo(o);let A=await Ce(e,o),n=((f=A.tensor)==null?void 0:f.shape[2])||0,r=((M=A.tensor)==null?void 0:M.shape[1])||0;if(!A.tensor)return{data:[],canvas:null,alpha:null};let s={};s.resize=t0.image.resizeBilinear(A.tensor,[J0.inputs[0].shape?J0.inputs[0].shape[1]:0,J0.inputs[0].shape?J0.inputs[0].shape[2]:0],!1),t0.dispose(A.tensor),s.norm=t0.div(s.resize,H.tf255),s.res=J0.execute(s.norm),s.squeeze=t0.squeeze(s.res,0),s.squeeze.shape[2]===2?(s.softmax=t0.softmax(s.squeeze),[s.bg,s.fg]=t0.unstack(s.softmax,2),s.expand=t0.expandDims(s.fg,2),s.pad=t0.expandDims(s.expand,0),s.crop=t0.image.cropAndResize(s.pad,[[0,0,.5,.5]],[0],[n,r]),s.data=t0.squeeze(s.crop,0)):s.data=t0.image.resizeBilinear(s.squeeze,[r,n]);let a=Array.from(await s.data.data());if(T.node&&!T.Canvas&&typeof ImageData=="undefined")return o.debug&&b("canvas support missing"),Object.keys(s).forEach(h=>t0.dispose(s[h])),{data:a,canvas:null,alpha:null};let y=h0(n,r);t0.browser&&await t0.browser.toPixels(s.data,y);let c=y.getContext("2d");o.segmentation.blur&&o.segmentation.blur>0&&(c.filter=`blur(${o.segmentation.blur}px)`);let i=c.getImageData(0,0,n,r),l=h0(n,r),x=l.getContext("2d");A.canvas&&x.drawImage(A.canvas,0,0),x.globalCompositeOperation="darken",o.segmentation.blur&&o.segmentation.blur>0&&(x.filter=`blur(${o.segmentation.blur}px)`),x.drawImage(y,0,0),x.globalCompositeOperation="source-over",x.filter="none";let d=x.getImageData(0,0,n,r);for(let h=0;h<n*r;h++)d.data[4*h+3]=i.data[4*h+0];x.putImageData(d,0,0);let u=null;if(t&&l){u=h0(n,r);let h=await Ce(t,o);t0.dispose(h.tensor);let P=u.getContext("2d");P.drawImage(h.canvas,0,0,u.width,u.height),P.drawImage(l,0,0)}return Object.keys(s).forEach(h=>t0.dispose(s[h])),To=!1,{data:a,canvas:l,alpha:y}}var Ro=class{constructor(){w(this,"ssrnetage",null);w(this,"gear",null);w(this,"blazeposedetect",null);w(this,"blazepose",null);w(this,"centernet",null);w(this,"efficientpose",null);w(this,"mobilefacenet",null);w(this,"emotion",null);w(this,"facedetect",null);w(this,"faceiris",null);w(this,"facemesh",null);w(this,"faceres",null);w(this,"ssrnetgender",null);w(this,"handpose",null);w(this,"handskeleton",null);w(this,"handtrack",null);w(this,"liveness",null);w(this,"movenet",null);w(this,"nanodet",null);w(this,"posenet",null);w(this,"segmentation",null);w(this,"antispoof",null)}};function ko(e){for(let t of Object.keys(e.models))e.models[t]=null}async function gr(e){var t,o,A,n,r,s,a,y,c,i,l,x,d,u,f,M,h,P,m,p,k,C,O,j,L,J,Z,q,x0,E;T.initial&&ko(e),e.config.hand.enabled&&(!e.models.handpose&&((o=(t=e.config.hand.detector)==null?void 0:t.modelPath)==null?void 0:o.includes("handdetect"))&&([e.models.handpose,e.models.handskeleton]=await Ao(e.config)),!e.models.handskeleton&&e.config.hand.landmarks&&((n=(A=e.config.hand.detector)==null?void 0:A.modelPath)==null?void 0:n.includes("handdetect"))&&([e.models.handpose,e.models.handskeleton]=await Ao(e.config))),e.config.body.enabled&&!e.models.blazepose&&((s=(r=e.config.body)==null?void 0:r.modelPath)==null?void 0:s.includes("blazepose"))&&(e.models.blazepose=ZA(e.config)),e.config.body.enabled&&!e.models.blazeposedetect&&e.config.body.detector&&e.config.body.detector.modelPath&&(e.models.blazeposedetect=VA(e.config)),e.config.body.enabled&&!e.models.efficientpose&&((y=(a=e.config.body)==null?void 0:a.modelPath)==null?void 0:y.includes("efficientpose"))&&(e.models.efficientpose=YA(e.config)),e.config.body.enabled&&!e.models.movenet&&((i=(c=e.config.body)==null?void 0:c.modelPath)==null?void 0:i.includes("movenet"))&&(e.models.movenet=rr(e.config)),e.config.body.enabled&&!e.models.posenet&&((x=(l=e.config.body)==null?void 0:l.modelPath)==null?void 0:x.includes("posenet"))&&(e.models.posenet=pr(e.config)),e.config.face.enabled&&!e.models.facedetect&&(e.models.facedetect=CA(e.config)),e.config.face.enabled&&((d=e.config.face.antispoof)==null?void 0:d.enabled)&&!e.models.antispoof&&(e.models.antispoof=gA(e.config)),e.config.face.enabled&&((u=e.config.face.liveness)==null?void 0:u.enabled)&&!e.models.liveness&&(e.models.liveness=_n(e.config)),e.config.face.enabled&&((f=e.config.face.description)==null?void 0:f.enabled)&&!e.models.faceres&&(e.models.faceres=gn(e.config)),e.config.face.enabled&&((M=e.config.face.emotion)==null?void 0:M.enabled)&&!e.models.emotion&&(e.models.emotion=$A(e.config)),e.config.face.enabled&&((h=e.config.face.iris)==null?void 0:h.enabled)&&!e.models.faceiris&&(e.models.faceiris=xn(e.config)),e.config.face.enabled&&((P=e.config.face.mesh)==null?void 0:P.enabled)&&!e.models.facemesh&&(e.models.facemesh=mn(e.config)),e.config.face.enabled&&((m=e.config.face.gear)==null?void 0:m.enabled)&&!e.models.gear&&(e.models.gear=aA(e.config)),e.config.face.enabled&&((p=e.config.face.ssrnet)==null?void 0:p.enabled)&&!e.models.ssrnetage&&(e.models.ssrnetage=cA(e.config)),e.config.face.enabled&&((k=e.config.face.ssrnet)==null?void 0:k.enabled)&&!e.models.ssrnetgender&&(e.models.ssrnetgender=pA(e.config)),e.config.face.enabled&&((C=e.config.face.mobilefacenet)==null?void 0:C.enabled)&&!e.models.mobilefacenet&&(e.models.mobilefacenet=rn(e.config)),e.config.hand.enabled&&!e.models.handtrack&&((j=(O=e.config.hand.detector)==null?void 0:O.modelPath)==null?void 0:j.includes("handtrack"))&&(e.models.handtrack=Un(e.config)),e.config.hand.enabled&&e.config.hand.landmarks&&!e.models.handskeleton&&((J=(L=e.config.hand.detector)==null?void 0:L.modelPath)==null?void 0:J.includes("handtrack"))&&(e.models.handskeleton=Jn(e.config)),e.config.object.enabled&&!e.models.centernet&&((q=(Z=e.config.object)==null?void 0:Z.modelPath)==null?void 0:q.includes("centernet"))&&(e.models.centernet=qA(e.config)),e.config.object.enabled&&!e.models.nanodet&&((E=(x0=e.config.object)==null?void 0:x0.modelPath)==null?void 0:E.includes("nanodet"))&&(e.models.nanodet=ir(e.config)),e.config.segmentation.enabled&&!e.models.segmentation&&(e.models.segmentation=wo(e.config));for await(let C0 of Object.keys(e.models))e.models[C0]&&typeof e.models[C0]!="undefined"&&(e.models[C0]=await e.models[C0])}async function Pr(e){let t=["const","placeholder","noop","pad","squeeze","add","sub","mul","div"];for(let o of Object.keys(e.models)){let A=e.models[o];if(!A)continue;let n=[],r=A==null?void 0:A.executor;if(r&&r.graph.nodes)for(let a of Object.values(r.graph.nodes)){let y=a.op.toLowerCase();n.includes(y)||n.push(y)}else!r&&e.config.debug&&b("model signature not determined:",o);let s=[];for(let a of n)!t.includes(a)&&!e.env.kernels.includes(a)&&!e.env.kernels.includes(a.replace("_",""))&&!e.env.kernels.includes(a.replace("native",""))&&!e.env.kernels.includes(a.replace("v2",""))&&s.push(a);e.config.debug&&s.length>0&&b("model validation failed:",o,s)}}var $={name:"humangl",priority:999,canvas:null,gl:null,extensions:[],webGLattr:{alpha:!1,antialias:!1,premultipliedAlpha:!1,preserveDrawingBuffer:!1,depth:!1,stencil:!1,failIfMajorPerformanceCaveat:!1,desynchronized:!0}};function ps(){let e=$.gl;!e||($.extensions=e.getSupportedExtensions())}async function vr(e){var t;if(e.config.backend==="humangl"&&($.name in s0.engine().registry&&(!$.gl||!$.gl.getParameter($.gl.VERSION))&&(b("error: humangl backend invalid context"),ko(e)),!s0.findBackend($.name))){try{$.canvas=await h0(100,100)}catch(A){b("error: cannot create canvas:",A);return}try{if($.gl=(t=$.canvas)==null?void 0:t.getContext("webgl2",$.webGLattr),!$.gl.getParameter($.gl.VERSION).includes("2.0")){b("override: using fallback webgl backend as webgl 2.0 is not detected"),e.config.backend="webgl";return}$.canvas&&($.canvas.addEventListener("webglcontextlost",async n=>{throw b("error: humangl:",n.type),b("possible browser memory leak using webgl or conflict with multiple backend registrations"),e.emit("error"),new Error("backend error: webgl context lost")}),$.canvas.addEventListener("webglcontextrestored",n=>{b("error: humangl context restored:",n)}),$.canvas.addEventListener("webglcontextcreationerror",n=>{b("error: humangl context create:",n)}))}catch(A){b("error: cannot get WebGL context:",A);return}try{s0.setWebGLContext(2,$.gl)}catch(A){b("error: cannot set WebGL context:",A);return}try{let A=new s0.GPGPUContext($.gl);s0.registerBackend($.name,()=>new s0.MathBackendWebGL(A),$.priority)}catch(A){b("error: cannot register WebGL backend:",A);return}try{s0.getKernelsForBackend("webgl").forEach(n=>{let r={...n,backendName:$.name};s0.registerKernel(r)})}catch(A){b("error: cannot update WebGL backend registration:",A);return}let o=s0.backend().getGPGPUContext?s0.backend().getGPGPUContext().gl:null;if(o)b(`humangl webgl version:${o.getParameter(o.VERSION)} renderer:${o.getParameter(o.RENDERER)}`);else{b("error: no current gl context:",o,$.gl);return}try{s0.ENV.set("WEBGL_VERSION",2)}catch(A){b("error: cannot set WebGL backend flags:",A);return}ps(),b("backend registered:",$.name)}}var S=V(F());function us(){if(!T.kernels.includes("mod")){let e={kernelName:"Mod",backendName:S.getBackend(),kernelFunc:t=>S.tidy(()=>S.sub(t.inputs.a,S.mul(S.div(t.inputs.a,t.inputs.b),t.inputs.b)))};S.registerKernel(e),T.kernels.push("mod")}if(!T.kernels.includes("floormod")){let e={kernelName:"FloorMod",backendName:S.getBackend(),kernelFunc:t=>S.tidy(()=>S.floorDiv(t.inputs.a/t.inputs.b)*t.inputs.b+S.mod(t.inputs.a,t.inputs.b))};S.registerKernel(e),T.kernels.push("floormod")}}async function $t(e,t=!1){if(e.state="backend",t||T.initial||e.config.backend&&e.config.backend.length>0&&S.getBackend()!==e.config.backend){let o=g();if(e.config.backend&&e.config.backend.length>0){if(typeof window=="undefined"&&typeof WorkerGlobalScope!="undefined"&&e.config.debug&&e.config.debug&&b("running inside web worker"),T.browser&&e.config.backend==="tensorflow"&&(e.config.debug&&b("override: backend set to tensorflow while running in browser"),e.config.backend="humangl"),T.node&&(e.config.backend==="webgl"||e.config.backend==="humangl")&&(e.config.debug&&b(`override: backend set to ${e.config.backend} while running in nodejs`),e.config.backend="tensorflow"),T.browser&&e.config.backend==="webgpu")if(typeof navigator=="undefined"||typeof navigator.gpu=="undefined")b("override: backend set to webgpu but browser does not support webgpu"),e.config.backend="humangl";else{let n=await navigator.gpu.requestAdapter();e.config.debug&&b("enumerated webgpu adapter:",n)}e.config.backend==="humangl"&&await vr(e);let A=Object.keys(S.engine().registryFactory);if(e.config.debug&&b("available backends:",A),A.includes(e.config.backend)||(b(`error: backend ${e.config.backend} not found in registry`),e.config.backend=T.node?"tensorflow":"webgl",e.config.debug&&b(`override: setting backend ${e.config.backend}`)),e.config.debug&&b("setting backend:",e.config.backend),e.config.backend==="wasm"){if(e.config.debug&&b("wasm path:",e.config.wasmPath),typeof(S==null?void 0:S.setWasmPaths)!="undefined")await S.setWasmPaths(e.config.wasmPath,e.config.wasmPlatformFetch);else throw new Error("backend error: attempting to use wasm backend but wasm path is not set");let n=await S.env().getAsync("WASM_HAS_SIMD_SUPPORT"),r=await S.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");e.config.debug&&b(`wasm execution: ${n?"SIMD":"no SIMD"} ${r?"multithreaded":"singlethreaded"}`),e.config.debug&&!n&&b("warning: wasm simd support is not enabled")}try{await S.setBackend(e.config.backend),await S.ready(),lA()}catch(n){return b("error: cannot set backend:",e.config.backend,n),!1}}if(S.getBackend()==="humangl"&&(S.ENV.set("CHECK_COMPUTATION_FOR_ERRORS",!1),S.ENV.set("WEBGL_CPU_FORWARD",!0),S.ENV.set("WEBGL_USE_SHAPES_UNIFORMS",!0),S.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD",256),typeof e.config.deallocate!="undefined"&&e.config.deallocate&&(b("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:",!0),S.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD",0)),S.backend().getGPGPUContext)){let A=await S.backend().getGPGPUContext().gl;e.config.debug&&b(`gl version:${A.getParameter(A.VERSION)} renderer:${A.getParameter(A.RENDERER)}`)}S.getBackend(),S.enableProdMode(),await S.ready(),e.performance.initBackend=Math.trunc(g()-o),e.config.backend=S.getBackend(),await T.updateBackend(),us()}return!0}function Zt(e,t){for(let o of e){let A={kernelName:o,backendName:t.backend,kernelFunc:()=>{t.debug&&b("kernelFunc",o,t.backend)}};S.registerKernel(A)}T.kernels=S.getKernelsForBackend(S.getBackend()).map(o=>o.kernelName.toLowerCase())}var ae={color:"rgba(173, 216, 230, 0.6)",labelColor:"rgba(173, 216, 230, 1)",shadowColor:"black",font:'small-caps 16px "Segoe UI"',lineHeight:18,lineWidth:4,pointSize:2,roundRect:8,drawPoints:!1,drawLabels:!0,drawBoxes:!0,drawGestures:!0,drawPolygons:!0,drawGaze:!0,fillPolygons:!1,useDepth:!0,useCurves:!1},Eo=0,je=e=>{if(!e)b("draw error: invalid canvas");else if(!e.getContext)b("draw error: canvas context not defined");else{let t=e.getContext("2d");if(!t)b("draw error: cannot get canvas context");else return t}return null},Ye=e=>Math.round(e*180/Math.PI);function zo(e,t,o,A,n){A=A||0,e.fillStyle=n.useDepth&&A?`rgba(${127.5+2*A}, ${127.5-2*A}, 255, 0.3)`:n.color,e.beginPath(),e.arc(t,o,n.pointSize,0,2*Math.PI),e.fill()}function dt(e,t,o,A,n,r){if(e.beginPath(),e.lineWidth=r.lineWidth,r.useCurves){let s=(t+t+A)/2,a=(o+o+n)/2;e.ellipse(s,a,A/2,n/2,0,0,2*Math.PI)}else e.moveTo(t+r.roundRect,o),e.lineTo(t+A-r.roundRect,o),e.quadraticCurveTo(t+A,o,t+A,o+r.roundRect),e.lineTo(t+A,o+n-r.roundRect),e.quadraticCurveTo(t+A,o+n,t+A-r.roundRect,o+n),e.lineTo(t+r.roundRect,o+n),e.quadraticCurveTo(t,o+n,t,o+n-r.roundRect),e.lineTo(t,o+r.roundRect),e.quadraticCurveTo(t,o,t+r.roundRect,o),e.closePath();e.stroke()}function Rr(e,t,o){if(!(t.length<2)){e.beginPath(),e.moveTo(t[0][0],t[0][1]);for(let A of t){let n=A[2]||0;e.strokeStyle=o.useDepth&&n!==0?`rgba(${127.5+2*n}, ${127.5-2*n}, 255, 0.3)`:o.color,e.fillStyle=o.useDepth&&n!==0?`rgba(${127.5+2*n}, ${127.5-2*n}, 255, 0.3)`:o.color,e.lineTo(A[0],Math.round(A[1]))}e.stroke(),o.fillPolygons&&(e.closePath(),e.fill())}}function bs(e,t,o){if(!(t.length<2)){if(e.lineWidth=o.lineWidth,!o.useCurves||t.length<=2){Rr(e,t,o);return}e.moveTo(t[0][0],t[0][1]);for(let A=0;A<t.length-2;A++){let n=(t[A][0]+t[A+1][0])/2,r=(t[A][1]+t[A+1][1])/2;e.quadraticCurveTo(t[A][0],t[A][1],n,r)}e.quadraticCurveTo(t[t.length-2][0],t[t.length-2][1],t[t.length-1][0],t[t.length-1][1]),e.stroke(),o.fillPolygons&&(e.closePath(),e.fill())}}function wr(e,t,o,A=5){let n,r,s;e.beginPath(),e.moveTo(t[0],t[1]),e.lineTo(o[0],o[1]),n=Math.atan2(o[1]-t[1],o[0]-t[0]),r=A*Math.cos(n)+o[0],s=A*Math.sin(n)+o[1],e.moveTo(r,s),n+=1/3*(2*Math.PI),r=A*Math.cos(n)+o[0],s=A*Math.sin(n)+o[1],e.lineTo(r,s),n+=1/3*(2*Math.PI),r=A*Math.cos(n)+o[0],s=A*Math.sin(n)+o[1],e.lineTo(r,s),e.closePath(),e.stroke(),e.fill()}async function jo(e,t,o){let A=c0(ae,o);if(!(!t||!e)&&A.drawGestures){let n=je(e);if(!n)return;n.font=A.font,n.fillStyle=A.color;let r=1;for(let s=0;s<t.length;s++){let a=[],y=[];if([a,y]=Object.entries(t[s]),y.length>1&&y[1].length>0){let c=a[1]>0?`#${a[1]}`:"",i=`${a[0]} ${c}: ${y[1]}`;A.shadowColor&&A.shadowColor!==""&&(n.fillStyle=A.shadowColor,n.fillText(i,8,2+r*A.lineHeight)),n.fillStyle=A.labelColor,n.fillText(i,6,0+r*A.lineHeight),r+=1}}}}async function So(e,t,o){var r,s,a,y,c;let A=c0(ae,o);if(!t||!e)return;let n=je(e);if(!!n)for(let i of t){if(n.font=A.font,n.strokeStyle=A.color,n.fillStyle=A.color,A.drawBoxes&&dt(n,i.box[0],i.box[1],i.box[2],i.box[3],A),A.drawLabels){let l=[];if(l.push(`face: ${Math.trunc(100*i.score)}%`),i.genderScore&&l.push(`${i.gender||""} ${Math.trunc(100*i.genderScore)}%`),i.age&&l.push(`age: ${i.age||""}`),i.iris&&l.push(`distance: ${i.iris}`),i.real&&l.push(`real: ${Math.trunc(100*i.real)}%`),i.live&&l.push(`live: ${Math.trunc(100*i.live)}%`),i.emotion&&i.emotion.length>0){let x=i.emotion.map(d=>`${Math.trunc(100*d.score)}% ${d.emotion}`);x.length>3&&(x.length=3),l.push(x.join(" "))}i.rotation&&i.rotation.angle&&i.rotation.gaze&&(i.rotation.angle.roll&&l.push(`roll: ${Ye(i.rotation.angle.roll)}\xB0 yaw:${Ye(i.rotation.angle.yaw)}\xB0 pitch:${Ye(i.rotation.angle.pitch)}\xB0`),i.rotation.gaze.bearing&&l.push(`gaze: ${Ye(i.rotation.gaze.bearing)}\xB0`)),l.length===0&&l.push("face"),n.fillStyle=A.color;for(let x=l.length-1;x>=0;x--){let d=Math.max(i.box[0],0),u=x*A.lineHeight+i.box[1];A.shadowColor&&A.shadowColor!==""&&(n.fillStyle=A.shadowColor,n.fillText(l[x],d+5,u+16)),n.fillStyle=A.labelColor,n.fillText(l[x],d+4,u+15)}}if(n.lineWidth=2,i.mesh&&i.mesh.length>0){if(A.drawPoints)for(let l of i.mesh)zo(n,l[0],l[1],l[2],A);if(A.drawPolygons){if(i.mesh.length>450)for(let l=0;l<Me.length/3;l++){let x=[Me[l*3+0],Me[l*3+1],Me[l*3+2]].map(d=>i.mesh[d]);Rr(n,x,A)}if(i.annotations&&i.annotations.leftEyeIris&&i.annotations.leftEyeIris[0]){n.strokeStyle=A.useDepth?"rgba(255, 200, 255, 0.3)":A.color,n.beginPath();let l=Math.abs(i.annotations.leftEyeIris[3][0]-i.annotations.leftEyeIris[1][0])/2,x=Math.abs(i.annotations.leftEyeIris[4][1]-i.annotations.leftEyeIris[2][1])/2;n.ellipse(i.annotations.leftEyeIris[0][0],i.annotations.leftEyeIris[0][1],l,x,0,0,2*Math.PI),n.stroke(),A.fillPolygons&&(n.fillStyle=A.useDepth?"rgba(255, 255, 200, 0.3)":A.color,n.fill())}if(i.annotations&&i.annotations.rightEyeIris&&i.annotations.rightEyeIris[0]){n.strokeStyle=A.useDepth?"rgba(255, 200, 255, 0.3)":A.color,n.beginPath();let l=Math.abs(i.annotations.rightEyeIris[3][0]-i.annotations.rightEyeIris[1][0])/2,x=Math.abs(i.annotations.rightEyeIris[4][1]-i.annotations.rightEyeIris[2][1])/2;n.ellipse(i.annotations.rightEyeIris[0][0],i.annotations.rightEyeIris[0][1],l,x,0,0,2*Math.PI),n.stroke(),A.fillPolygons&&(n.fillStyle=A.useDepth?"rgba(255, 255, 200, 0.3)":A.color,n.fill())}if(A.drawGaze&&((r=i.rotation)==null?void 0:r.angle)&&typeof Path2D!="undefined"){n.strokeStyle="pink";let l=i.box[0]+i.box[2]/2-i.box[3]*Ye(i.rotation.angle.yaw)/90,x=i.box[1]+i.box[3]/2+i.box[2]*Ye(i.rotation.angle.pitch)/90,d=new Path2D(`
-            M ${i.box[0]+i.box[2]/2} ${i.box[1]}
+`;
+
+// src/image/imagefx.ts
+var collect = (source, prefix, collection) => {
+  const r = new RegExp("\\b" + prefix + " \\w+ (\\w+)", "ig");
+  source.replace(r, (match3, name) => {
+    collection[name] = 0;
+    return match3;
+  });
+};
+var GLProgram = class {
+  constructor(gl, vertexSource, fragmentSource) {
+    __publicField(this, "uniform", {});
+    __publicField(this, "attribute", {});
+    __publicField(this, "gl");
+    __publicField(this, "id");
+    __publicField(this, "compile", (source, type) => {
+      const shader = this.gl.createShader(type);
+      if (!shader) {
+        log("filter: could not create shader");
+        return null;
+      }
+      this.gl.shaderSource(shader, source);
+      this.gl.compileShader(shader);
+      if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+        log(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
+        return null;
+      }
+      return shader;
+    });
+    this.gl = gl;
+    const vertexShader = this.compile(vertexSource, this.gl.VERTEX_SHADER);
+    const fragmentShader = this.compile(fragmentSource, this.gl.FRAGMENT_SHADER);
+    this.id = this.gl.createProgram();
+    if (!vertexShader || !fragmentShader)
+      return;
+    if (!this.id) {
+      log("filter: could not create webgl program");
+      return;
+    }
+    this.gl.attachShader(this.id, vertexShader);
+    this.gl.attachShader(this.id, fragmentShader);
+    this.gl.linkProgram(this.id);
+    if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS)) {
+      log(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
+      return;
+    }
+    this.gl.useProgram(this.id);
+    collect(vertexSource, "attribute", this.attribute);
+    for (const a in this.attribute)
+      this.attribute[a] = this.gl.getAttribLocation(this.id, a);
+    collect(vertexSource, "uniform", this.uniform);
+    collect(fragmentSource, "uniform", this.uniform);
+    for (const u in this.uniform)
+      this.uniform[u] = this.gl.getUniformLocation(this.id, u);
+  }
+};
+function GLImageFilter() {
+  let drawCount = 0;
+  let sourceTexture = null;
+  let lastInChain = false;
+  let currentFramebufferIndex = -1;
+  let tempFramebuffers = [null, null];
+  let filterChain = [];
+  let vertexBuffer = null;
+  let currentProgram = null;
+  const fxcanvas = canvas(100, 100);
+  const shaderProgramCache = {};
+  const DRAW = { INTERMEDIATE: 1 };
+  const gl = fxcanvas.getContext("webgl");
+  this.gl = gl;
+  if (!gl) {
+    log("filter: cannot get webgl context");
+    return;
+  }
+  function resize(width, height) {
+    if (width === fxcanvas.width && height === fxcanvas.height)
+      return;
+    fxcanvas.width = width;
+    fxcanvas.height = height;
+    if (!vertexBuffer) {
+      const vertices = new Float32Array([-1, -1, 0, 1, 1, -1, 1, 1, -1, 1, 0, 0, -1, 1, 0, 0, 1, -1, 1, 1, 1, 1, 1, 0]);
+      vertexBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    }
+    gl.viewport(0, 0, fxcanvas.width, fxcanvas.height);
+    tempFramebuffers = [null, null];
+  }
+  function createFramebufferTexture(width, height) {
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    const renderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return { fbo, texture };
+  }
+  function getTempFramebuffer(index2) {
+    tempFramebuffers[index2] = tempFramebuffers[index2] || createFramebufferTexture(fxcanvas.width, fxcanvas.height);
+    return tempFramebuffers[index2];
+  }
+  function draw(flags = 0) {
+    if (!currentProgram)
+      return;
+    let source = null;
+    let target = null;
+    let flipY = false;
+    if (drawCount === 0)
+      source = sourceTexture;
+    else
+      source = getTempFramebuffer(currentFramebufferIndex).texture || null;
+    drawCount++;
+    if (lastInChain && !(flags & DRAW.INTERMEDIATE)) {
+      target = null;
+      flipY = drawCount % 2 === 0;
+    } else {
+      currentFramebufferIndex = (currentFramebufferIndex + 1) % 2;
+      target = getTempFramebuffer(currentFramebufferIndex).fbo || null;
+    }
+    gl.bindTexture(gl.TEXTURE_2D, source);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target);
+    gl.uniform1f(currentProgram.uniform["flipY"], flipY ? -1 : 1);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+  function compileShader(fragmentSource) {
+    if (shaderProgramCache[fragmentSource]) {
+      currentProgram = shaderProgramCache[fragmentSource];
+      gl.useProgram((currentProgram ? currentProgram.id : null) || null);
+      return currentProgram;
+    }
+    currentProgram = new GLProgram(gl, vertexIdentity, fragmentSource);
+    if (!currentProgram) {
+      log("filter: could not get webgl program");
+      return null;
+    }
+    const floatSize = Float32Array.BYTES_PER_ELEMENT;
+    const vertSize = 4 * floatSize;
+    gl.enableVertexAttribArray(currentProgram.attribute["pos"]);
+    gl.vertexAttribPointer(currentProgram.attribute["pos"], 2, gl.FLOAT, false, vertSize, 0 * floatSize);
+    gl.enableVertexAttribArray(currentProgram.attribute["uv"]);
+    gl.vertexAttribPointer(currentProgram.attribute["uv"], 2, gl.FLOAT, false, vertSize, 2 * floatSize);
+    shaderProgramCache[fragmentSource] = currentProgram;
+    return currentProgram;
+  }
+  const filter = {
+    colorMatrix: (matrix) => {
+      const m = new Float32Array(matrix);
+      m[4] /= 255;
+      m[9] /= 255;
+      m[14] /= 255;
+      m[19] /= 255;
+      const shader = m[18] === 1 && m[3] === 0 && m[8] === 0 && m[13] === 0 && m[15] === 0 && m[16] === 0 && m[17] === 0 && m[19] === 0 ? colorMatrixWithoutAlpha : colorMatrixWithAlpha;
+      const program = compileShader(shader);
+      if (!program)
+        return;
+      gl.uniform1fv(program.uniform["m"], m);
+      draw();
+    },
+    brightness: (brightness) => {
+      const b = (brightness || 0) + 1;
+      filter.colorMatrix([
+        b,
+        0,
+        0,
+        0,
+        0,
+        0,
+        b,
+        0,
+        0,
+        0,
+        0,
+        0,
+        b,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    saturation: (amount) => {
+      const x = (amount || 0) * 2 / 3 + 1;
+      const y = (x - 1) * -0.5;
+      filter.colorMatrix([
+        x,
+        y,
+        y,
+        0,
+        0,
+        y,
+        x,
+        y,
+        0,
+        0,
+        y,
+        y,
+        x,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    desaturate: () => {
+      filter.saturation(-1);
+    },
+    contrast: (amount) => {
+      const v = (amount || 0) + 1;
+      const o = -128 * (v - 1);
+      filter.colorMatrix([
+        v,
+        0,
+        0,
+        0,
+        o,
+        0,
+        v,
+        0,
+        0,
+        o,
+        0,
+        0,
+        v,
+        0,
+        o,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    negative: () => {
+      filter.contrast(-2);
+    },
+    hue: (rotation) => {
+      rotation = (rotation || 0) / 180 * Math.PI;
+      const cos = Math.cos(rotation);
+      const sin = Math.sin(rotation);
+      const lumR = 0.213;
+      const lumG = 0.715;
+      const lumB = 0.072;
+      filter.colorMatrix([
+        lumR + cos * (1 - lumR) + sin * -lumR,
+        lumG + cos * -lumG + sin * -lumG,
+        lumB + cos * -lumB + sin * (1 - lumB),
+        0,
+        0,
+        lumR + cos * -lumR + sin * 0.143,
+        lumG + cos * (1 - lumG) + sin * 0.14,
+        lumB + cos * -lumB + sin * -0.283,
+        0,
+        0,
+        lumR + cos * -lumR + sin * -(1 - lumR),
+        lumG + cos * -lumG + sin * lumG,
+        lumB + cos * (1 - lumB) + sin * lumB,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    desaturateLuminance: () => {
+      filter.colorMatrix([
+        0.2764723,
+        0.929708,
+        0.0938197,
+        0,
+        -37.1,
+        0.2764723,
+        0.929708,
+        0.0938197,
+        0,
+        -37.1,
+        0.2764723,
+        0.929708,
+        0.0938197,
+        0,
+        -37.1,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    sepia: () => {
+      filter.colorMatrix([
+        0.393,
+        0.7689999,
+        0.18899999,
+        0,
+        0,
+        0.349,
+        0.6859999,
+        0.16799999,
+        0,
+        0,
+        0.272,
+        0.5339999,
+        0.13099999,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    brownie: () => {
+      filter.colorMatrix([
+        0.5997023498159715,
+        0.34553243048391263,
+        -0.2708298674538042,
+        0,
+        47.43192855600873,
+        -0.037703249837783157,
+        0.8609577587992641,
+        0.15059552388459913,
+        0,
+        -36.96841498319127,
+        0.24113635128153335,
+        -0.07441037908422492,
+        0.44972182064877153,
+        0,
+        -7.562075277591283,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    vintagePinhole: () => {
+      filter.colorMatrix([
+        0.6279345635605994,
+        0.3202183420819367,
+        -0.03965408211312453,
+        0,
+        9.651285835294123,
+        0.02578397704808868,
+        0.6441188644374771,
+        0.03259127616149294,
+        0,
+        7.462829176470591,
+        0.0466055556782719,
+        -0.0851232987247891,
+        0.5241648018700465,
+        0,
+        5.159190588235296,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    kodachrome: () => {
+      filter.colorMatrix([
+        1.1285582396593525,
+        -0.3967382283601348,
+        -0.03992559172921793,
+        0,
+        63.72958762196502,
+        -0.16404339962244616,
+        1.0835251566291304,
+        -0.05498805115633132,
+        0,
+        24.732407896706203,
+        -0.16786010706155763,
+        -0.5603416277695248,
+        1.6014850761964943,
+        0,
+        35.62982807460946,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    technicolor: () => {
+      filter.colorMatrix([
+        1.9125277891456083,
+        -0.8545344976951645,
+        -0.09155508482755585,
+        0,
+        11.793603434377337,
+        -0.3087833385928097,
+        1.7658908555458428,
+        -0.10601743074722245,
+        0,
+        -70.35205161461398,
+        -0.231103377548616,
+        -0.7501899197440212,
+        1.847597816108189,
+        0,
+        30.950940869491138,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    polaroid: () => {
+      filter.colorMatrix([
+        1.438,
+        -0.062,
+        -0.062,
+        0,
+        0,
+        -0.122,
+        1.378,
+        -0.122,
+        0,
+        0,
+        -0.016,
+        -0.016,
+        1.483,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    shiftToBGR: () => {
+      filter.colorMatrix([
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]);
+    },
+    convolution: (matrix) => {
+      const m = new Float32Array(matrix);
+      const pixelSizeX = 1 / fxcanvas.width;
+      const pixelSizeY = 1 / fxcanvas.height;
+      const program = compileShader(convolution);
+      if (!program)
+        return;
+      gl.uniform1fv(program.uniform["m"], m);
+      gl.uniform2f(program.uniform["px"], pixelSizeX, pixelSizeY);
+      draw();
+    },
+    detectEdges: () => {
+      filter.convolution.call(this, [
+        0,
+        1,
+        0,
+        1,
+        -4,
+        1,
+        0,
+        1,
+        0
+      ]);
+    },
+    sobelX: () => {
+      filter.convolution.call(this, [
+        -1,
+        0,
+        1,
+        -2,
+        0,
+        2,
+        -1,
+        0,
+        1
+      ]);
+    },
+    sobelY: () => {
+      filter.convolution.call(this, [
+        -1,
+        -2,
+        -1,
+        0,
+        0,
+        0,
+        1,
+        2,
+        1
+      ]);
+    },
+    sharpen: (amount) => {
+      const a = amount || 1;
+      filter.convolution.call(this, [
+        0,
+        -1 * a,
+        0,
+        -1 * a,
+        1 + 4 * a,
+        -1 * a,
+        0,
+        -1 * a,
+        0
+      ]);
+    },
+    emboss: (size2) => {
+      const s = size2 || 1;
+      filter.convolution.call(this, [
+        -2 * s,
+        -1 * s,
+        0,
+        -1 * s,
+        1,
+        1 * s,
+        0,
+        1 * s,
+        2 * s
+      ]);
+    },
+    blur: (size2) => {
+      const blurSizeX = size2 / 7 / fxcanvas.width;
+      const blurSizeY = size2 / 7 / fxcanvas.height;
+      const program = compileShader(blur);
+      if (!program)
+        return;
+      gl.uniform2f(program.uniform["px"], 0, blurSizeY);
+      draw(DRAW.INTERMEDIATE);
+      gl.uniform2f(program.uniform["px"], blurSizeX, 0);
+      draw();
+    },
+    pixelate: (size2) => {
+      const blurSizeX = size2 / fxcanvas.width;
+      const blurSizeY = size2 / fxcanvas.height;
+      const program = compileShader(pixelate);
+      if (!program)
+        return;
+      gl.uniform2f(program.uniform["size"], blurSizeX, blurSizeY);
+      draw();
+    }
+  };
+  this.add = function(name) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    const func = filter[name];
+    filterChain.push({ func, args });
+  };
+  this.reset = function() {
+    filterChain = [];
+  };
+  this.get = function() {
+    return filterChain;
+  };
+  this.apply = function(image24) {
+    resize(image24.width, image24.height);
+    drawCount = 0;
+    if (!sourceTexture)
+      sourceTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, sourceTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image24);
+    for (let i = 0; i < filterChain.length; i++) {
+      lastInChain = i === filterChain.length - 1;
+      const f = filterChain[i];
+      f.func.apply(this, f.args || []);
+    }
+    return fxcanvas;
+  };
+  this.draw = function(image24) {
+    this.add("brightness", 0);
+    return this.apply(image24);
+  };
+}
+
+// src/image/enhance.ts
+var tf = __toESM(require_tfjs_esm());
+async function histogramEqualization(inputImage) {
+  const squeeze11 = inputImage.shape.length === 4 ? tf.squeeze(inputImage) : inputImage;
+  const channels = tf.split(squeeze11, 3, 2);
+  const min2 = [tf.min(channels[0]), tf.min(channels[1]), tf.min(channels[2])];
+  const max4 = [tf.max(channels[0]), tf.max(channels[1]), tf.max(channels[2])];
+  const absMax = await Promise.all(max4.map((channel) => channel.data()));
+  const maxValue = 0.99 * Math.max(absMax[0][0], absMax[1][0], absMax[2][0]);
+  const sub11 = [tf.sub(channels[0], min2[0]), tf.sub(channels[1], min2[1]), tf.sub(channels[2], min2[2])];
+  const range = [tf.sub(max4[0], min2[0]), tf.sub(max4[1], min2[1]), tf.sub(max4[2], min2[2])];
+  const fact = [tf.div(maxValue, range[0]), tf.div(maxValue, range[1]), tf.div(maxValue, range[2])];
+  const enh = [tf.mul(sub11[0], fact[0]), tf.mul(sub11[1], fact[1]), tf.mul(sub11[2], fact[2])];
+  const rgb2 = tf.stack([enh[0], enh[1], enh[2]], 2);
+  const reshape8 = tf.reshape(rgb2, [1, squeeze11.shape[0], squeeze11.shape[1], 3]);
+  tf.dispose([...channels, ...min2, ...max4, ...sub11, ...range, ...fact, ...enh, rgb2, squeeze11]);
+  return reshape8;
+}
+
+// src/image/image.ts
+var maxSize = 2048;
+var inCanvas = null;
+var outCanvas = null;
+var tmpCanvas = null;
+var fx;
+var last = {
+  inputSum: 0,
+  cacheDiff: 1,
+  sumMethod: 0,
+  inputTensor: void 0
+};
+function canvas(width, height) {
+  let c;
+  if (env.browser) {
+    if (env.worker) {
+      if (typeof OffscreenCanvas === "undefined")
+        throw new Error("canvas error: attempted to run in web worker but OffscreenCanvas is not supported");
+      c = new OffscreenCanvas(width, height);
+    } else {
+      if (typeof document === "undefined")
+        throw new Error("canvas error: attempted to run in browser but DOM is not defined");
+      c = document.createElement("canvas");
+      c.width = width;
+      c.height = height;
+    }
+  } else {
+    if (typeof env.Canvas !== "undefined")
+      c = new env.Canvas(width, height);
+    else if (typeof globalThis.Canvas !== "undefined")
+      c = new globalThis.Canvas(width, height);
+  }
+  return c;
+}
+function copy(input, output) {
+  const outputCanvas = output || canvas(input.width, input.height);
+  const ctx = outputCanvas.getContext("2d");
+  ctx.drawImage(input, 0, 0);
+  return outputCanvas;
+}
+async function process2(input, config3, getTensor = true) {
+  if (!input) {
+    if (config3.debug)
+      log("input error: input is missing");
+    return { tensor: null, canvas: null };
+  }
+  if (!(input instanceof tf2.Tensor) && !(typeof Image !== "undefined" && input instanceof Image) && !(typeof env.Canvas !== "undefined" && input instanceof env.Canvas) && !(typeof globalThis.Canvas !== "undefined" && input instanceof globalThis.Canvas) && !(typeof ImageData !== "undefined" && input instanceof ImageData) && !(typeof ImageBitmap !== "undefined" && input instanceof ImageBitmap) && !(typeof HTMLImageElement !== "undefined" && input instanceof HTMLImageElement) && !(typeof HTMLMediaElement !== "undefined" && input instanceof HTMLMediaElement) && !(typeof HTMLVideoElement !== "undefined" && input instanceof HTMLVideoElement) && !(typeof HTMLCanvasElement !== "undefined" && input instanceof HTMLCanvasElement) && !(typeof OffscreenCanvas !== "undefined" && input instanceof OffscreenCanvas)) {
+    throw new Error("input error: type is not recognized");
+  }
+  if (input instanceof tf2.Tensor) {
+    let tensor3 = null;
+    if (input["isDisposedInternal"])
+      throw new Error("input error: attempted to use tensor but it is disposed");
+    if (!input["shape"])
+      throw new Error("input error: attempted to use tensor without a shape");
+    if (input.shape.length === 3) {
+      if (input.shape[2] === 3) {
+        tensor3 = tf2.expandDims(input, 0);
+      } else if (input.shape[2] === 4) {
+        const rgb2 = tf2.slice3d(input, [0, 0, 0], [-1, -1, 3]);
+        tensor3 = tf2.expandDims(rgb2, 0);
+        tf2.dispose(rgb2);
+      }
+    } else if (input.shape.length === 4) {
+      if (input.shape[3] === 3) {
+        tensor3 = tf2.clone(input);
+      } else if (input.shape[3] === 4) {
+        tensor3 = tf2.slice4d(input, [0, 0, 0, 0], [-1, -1, -1, 3]);
+      }
+    }
+    if (tensor3 == null || tensor3.shape.length !== 4 || tensor3.shape[0] !== 1 || tensor3.shape[3] !== 3)
+      throw new Error(`input error: attempted to use tensor with unrecognized shape: ${input["shape"]}`);
+    if (tensor3.dtype === "int32") {
+      const cast5 = tf2.cast(tensor3, "float32");
+      tf2.dispose(tensor3);
+      tensor3 = cast5;
+    }
+    return { tensor: tensor3, canvas: config3.filter.return ? outCanvas : null };
+  } else {
+    if (typeof input["readyState"] !== "undefined" && input["readyState"] <= 2) {
+      if (config3.debug)
+        log("input stream is not ready");
+      return { tensor: null, canvas: inCanvas };
+    }
+    const originalWidth = input["naturalWidth"] || input["videoWidth"] || input["width"] || input["shape"] && input["shape"][1] > 0;
+    const originalHeight = input["naturalHeight"] || input["videoHeight"] || input["height"] || input["shape"] && input["shape"][2] > 0;
+    if (!originalWidth || !originalHeight) {
+      if (config3.debug)
+        log("cannot determine input dimensions");
+      return { tensor: null, canvas: inCanvas };
+    }
+    let targetWidth = originalWidth;
+    let targetHeight = originalHeight;
+    if (targetWidth > maxSize) {
+      targetWidth = maxSize;
+      targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
+    }
+    if (targetHeight > maxSize) {
+      targetHeight = maxSize;
+      targetWidth = Math.trunc(targetHeight * originalWidth / originalHeight);
+    }
+    if ((config3.filter.width || 0) > 0)
+      targetWidth = config3.filter.width;
+    else if ((config3.filter.height || 0) > 0)
+      targetWidth = originalWidth * ((config3.filter.height || 0) / originalHeight);
+    if ((config3.filter.height || 0) > 0)
+      targetHeight = config3.filter.height;
+    else if ((config3.filter.width || 0) > 0)
+      targetHeight = originalHeight * ((config3.filter.width || 0) / originalWidth);
+    if (!targetWidth || !targetHeight)
+      throw new Error("input error: cannot determine dimension");
+    if (!inCanvas || (inCanvas == null ? void 0 : inCanvas.width) !== targetWidth || (inCanvas == null ? void 0 : inCanvas.height) !== targetHeight)
+      inCanvas = canvas(targetWidth, targetHeight);
+    const inCtx = inCanvas.getContext("2d");
+    if (typeof ImageData !== "undefined" && input instanceof ImageData) {
+      inCtx.putImageData(input, 0, 0);
+    } else {
+      if (config3.filter.flip && typeof inCtx.translate !== "undefined") {
+        inCtx.translate(originalWidth, 0);
+        inCtx.scale(-1, 1);
+        inCtx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+        inCtx.setTransform(1, 0, 0, 1, 0, 0);
+      } else {
+        inCtx.drawImage(input, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas == null ? void 0 : inCanvas.width, inCanvas == null ? void 0 : inCanvas.height);
+      }
+    }
+    if (!outCanvas || inCanvas.width !== outCanvas.width || (inCanvas == null ? void 0 : inCanvas.height) !== (outCanvas == null ? void 0 : outCanvas.height))
+      outCanvas = canvas(inCanvas.width, inCanvas.height);
+    if (config3.filter.enabled && env.webgl.supported) {
+      if (!fx)
+        fx = env.browser ? new GLImageFilter() : null;
+      env.filter = !!fx;
+      if (!fx || !fx.add) {
+        if (config3.debug)
+          log("input process error: cannot initialize filters");
+        return { tensor: null, canvas: inCanvas };
+      }
+      fx.reset();
+      if (config3.filter.brightness !== 0)
+        fx.add("brightness", config3.filter.brightness);
+      if (config3.filter.contrast !== 0)
+        fx.add("contrast", config3.filter.contrast);
+      if (config3.filter.sharpness !== 0)
+        fx.add("sharpen", config3.filter.sharpness);
+      if (config3.filter.blur !== 0)
+        fx.add("blur", config3.filter.blur);
+      if (config3.filter.saturation !== 0)
+        fx.add("saturation", config3.filter.saturation);
+      if (config3.filter.hue !== 0)
+        fx.add("hue", config3.filter.hue);
+      if (config3.filter.negative)
+        fx.add("negative");
+      if (config3.filter.sepia)
+        fx.add("sepia");
+      if (config3.filter.vintage)
+        fx.add("brownie");
+      if (config3.filter.sepia)
+        fx.add("sepia");
+      if (config3.filter.kodachrome)
+        fx.add("kodachrome");
+      if (config3.filter.technicolor)
+        fx.add("technicolor");
+      if (config3.filter.polaroid)
+        fx.add("polaroid");
+      if (config3.filter.pixelate !== 0)
+        fx.add("pixelate", config3.filter.pixelate);
+      if (fx.get() > 0)
+        outCanvas = fx.apply(inCanvas);
+      else
+        outCanvas = fx.draw(inCanvas);
+    } else {
+      copy(inCanvas, outCanvas);
+      if (fx)
+        fx = null;
+      env.filter = !!fx;
+    }
+    if (!getTensor)
+      return { tensor: null, canvas: outCanvas };
+    if (!outCanvas)
+      throw new Error("canvas error: cannot create output");
+    let pixels;
+    let depth = 3;
+    if (typeof ImageData !== "undefined" && input instanceof ImageData || input["data"] && input["width"] && input["height"]) {
+      if (env.browser && tf2.browser) {
+        pixels = tf2.browser ? tf2.browser.fromPixels(input) : null;
+      } else {
+        depth = input["data"].length / input["height"] / input["width"];
+        const arr = new Uint8Array(input["data"]["buffer"]);
+        pixels = tf2.tensor(arr, [input["height"], input["width"], depth], "int32");
+      }
+    } else {
+      if (!tmpCanvas || outCanvas.width !== tmpCanvas.width || outCanvas.height !== tmpCanvas.height)
+        tmpCanvas = canvas(outCanvas.width, outCanvas.height);
+      if (tf2.browser && env.browser) {
+        if (config3.backend === "webgl" || config3.backend === "humangl" || config3.backend === "webgpu") {
+          pixels = tf2.browser.fromPixels(outCanvas);
+        } else {
+          tmpCanvas = copy(outCanvas);
+          pixels = tf2.browser.fromPixels(tmpCanvas);
+        }
+      } else {
+        const tempCanvas = copy(outCanvas);
+        const tempCtx = tempCanvas.getContext("2d");
+        const tempData = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+        depth = tempData.data.length / targetWidth / targetHeight;
+        const arr = new Uint8Array(tempData.data.buffer);
+        pixels = tf2.tensor(arr, [targetWidth, targetHeight, depth]);
+      }
+    }
+    if (depth === 4) {
+      const rgb2 = tf2.slice3d(pixels, [0, 0, 0], [-1, -1, 3]);
+      tf2.dispose(pixels);
+      pixels = rgb2;
+    }
+    if (!pixels)
+      throw new Error("input error: cannot create tensor");
+    const casted = tf2.cast(pixels, "float32");
+    const tensor3 = config3.filter.equalization ? await histogramEqualization(casted) : tf2.expandDims(casted, 0);
+    tf2.dispose([pixels, casted]);
+    return { tensor: tensor3, canvas: config3.filter.return ? outCanvas : null };
+  }
+}
+async function skip(config3, input) {
+  let skipFrame = false;
+  if (config3.cacheSensitivity === 0 || !input.shape || input.shape.length !== 4 || input.shape[1] > 2048 || input.shape[2] > 2048)
+    return skipFrame;
+  if (!last.inputTensor) {
+    last.inputTensor = tf2.clone(input);
+  } else if (last.inputTensor.shape[1] !== input.shape[1] || last.inputTensor.shape[2] !== input.shape[2]) {
+    tf2.dispose(last.inputTensor);
+    last.inputTensor = tf2.clone(input);
+  } else {
+    const t = {};
+    t.diff = tf2.sub(input, last.inputTensor);
+    t.squared = tf2.mul(t.diff, t.diff);
+    t.sum = tf2.sum(t.squared);
+    const diffSum = await t.sum.data();
+    const diffRelative = diffSum[0] / (input.shape[1] || 1) / (input.shape[2] || 1) / 255 / 3;
+    tf2.dispose([last.inputTensor, t.diff, t.squared, t.sum]);
+    last.inputTensor = tf2.clone(input);
+    skipFrame = diffRelative <= (config3.cacheSensitivity || 0);
+  }
+  return skipFrame;
+}
+async function compare(config3, input1, input2) {
+  const t = {};
+  if (!input1 || !input2 || input1.shape.length !== 4 || input1.shape.length !== input2.shape.length) {
+    if (!config3.debug)
+      log("invalid input tensor or tensor shapes do not match:", input1.shape, input2.shape);
+    return 0;
+  }
+  if (input1.shape[0] !== 1 || input2.shape[0] !== 1 || input1.shape[3] !== 3 || input2.shape[3] !== 3) {
+    if (!config3.debug)
+      log("input tensors must be of shape [1, height, width, 3]:", input1.shape, input2.shape);
+    return 0;
+  }
+  t.input1 = tf2.clone(input1);
+  t.input2 = input1.shape[1] !== input2.shape[1] || input1.shape[2] !== input2.shape[2] ? tf2.image.resizeBilinear(input2, [input1.shape[1], input1.shape[2]]) : tf2.clone(input2);
+  t.diff = tf2.sub(t.input1, t.input2);
+  t.squared = tf2.mul(t.diff, t.diff);
+  t.sum = tf2.sum(t.squared);
+  const diffSum = await t.sum.data();
+  const diffRelative = diffSum[0] / (input1.shape[1] || 1) / (input1.shape[2] || 1) / 255 / 3;
+  tf2.dispose([t.input1, t.input2, t.diff, t.squared, t.sum]);
+  return diffRelative;
+}
+
+// src/util/env.ts
+var Env = class {
+  constructor() {
+    __publicField(this, "browser");
+    __publicField(this, "node");
+    __publicField(this, "worker");
+    __publicField(this, "platform", "");
+    __publicField(this, "agent", "");
+    __publicField(this, "backends", []);
+    __publicField(this, "initial");
+    __publicField(this, "filter");
+    __publicField(this, "tfjs");
+    __publicField(this, "offscreen");
+    __publicField(this, "perfadd", false);
+    __publicField(this, "wasm", {
+      supported: void 0,
+      backend: void 0,
+      simd: void 0,
+      multithread: void 0
+    });
+    __publicField(this, "webgl", {
+      supported: void 0,
+      backend: void 0,
+      version: void 0,
+      renderer: void 0
+    });
+    __publicField(this, "webgpu", {
+      supported: void 0,
+      backend: void 0,
+      adapter: void 0
+    });
+    __publicField(this, "cpu", {
+      model: void 0,
+      flags: []
+    });
+    __publicField(this, "kernels", []);
+    __publicField(this, "Canvas");
+    __publicField(this, "Image");
+    __publicField(this, "ImageData");
+    this.browser = typeof navigator !== "undefined";
+    this.node = typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined";
+    this.tfjs = { version: tf3.version["tfjs-core"] };
+    this.offscreen = typeof OffscreenCanvas !== "undefined";
+    this.initial = true;
+    this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
+    if (typeof navigator !== "undefined") {
+      const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+      if (raw && raw[0]) {
+        const platformMatch = raw[0].match(/\(([^()]+)\)/g);
+        this.platform = platformMatch && platformMatch[0] ? platformMatch[0].replace(/\(|\)/g, "") : "";
+        this.agent = navigator.userAgent.replace(raw[0], "");
+        if (this.platform[1])
+          this.agent = this.agent.replace(raw[1], "");
+        this.agent = this.agent.replace(/  /g, " ");
+      }
+    } else if (typeof process !== "undefined") {
+      this.platform = `${process.platform} ${process.arch}`;
+      this.agent = `NodeJS ${process.version}`;
+    }
+  }
+  async updateBackend() {
+    this.backends = Object.keys(tf3.engine().registryFactory);
+    this.wasm.supported = typeof WebAssembly !== "undefined";
+    this.wasm.backend = this.backends.includes("wasm");
+    if (this.wasm.supported && this.wasm.backend && tf3.getBackend() === "wasm") {
+      this.wasm.simd = await tf3.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+      this.wasm.multithread = await tf3.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+    }
+    const c = canvas(100, 100);
+    const ctx = c ? c.getContext("webgl2") : void 0;
+    this.webgl.supported = typeof ctx !== "undefined";
+    this.webgl.backend = this.backends.includes("webgl");
+    if (this.webgl.supported && this.webgl.backend && (tf3.getBackend() === "webgl" || tf3.getBackend() === "humangl")) {
+      const gl = tf3.backend().gpgpu !== "undefined" ? await tf3.backend().getGPGPUContext().gl : null;
+      if (gl) {
+        this.webgl.version = gl.getParameter(gl.VERSION);
+        this.webgl.renderer = gl.getParameter(gl.RENDERER);
+      }
+    }
+    this.webgpu.supported = this.browser && typeof navigator["gpu"] !== "undefined";
+    this.webgpu.backend = this.backends.includes("webgpu");
+    try {
+      if (this.webgpu.supported)
+        this.webgpu.adapter = (await navigator["gpu"].requestAdapter()).name;
+    } catch (e) {
+      this.webgpu.supported = false;
+    }
+    try {
+      this.kernels = tf3.getKernelsForBackend(tf3.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+    } catch (e) {
+    }
+  }
+  async updateCPU() {
+    const cpu = { model: "", flags: [] };
+    if (this.node && this.platform.startsWith("linux")) {
+    }
+    if (!this["cpu"])
+      Object.defineProperty(this, "cpu", { value: cpu });
+    else
+      this["cpu"] = cpu;
+  }
+};
+var env = new Env();
+
+// src/tfjs/load.ts
+var tf4 = __toESM(require_tfjs_esm());
+var options = {
+  cacheModels: false,
+  verbose: true,
+  debug: false,
+  modelBasePath: ""
+};
+async function httpHandler(url, init2) {
+  if (options.debug)
+    log("load model fetch:", url, init2);
+  return fetch(url, init2);
+}
+function setModelLoadOptions(config3) {
+  options.cacheModels = config3.cacheModels;
+  options.verbose = config3.debug;
+  options.modelBasePath = config3.modelBasePath;
+}
+async function loadModel(modelPath) {
+  const modelUrl = join(options.modelBasePath, modelPath || "");
+  const modelPathSegments = modelUrl.split("/");
+  const cachedModelName = "indexeddb://" + modelPathSegments[modelPathSegments.length - 1].replace(".json", "");
+  const cachedModels = await tf4.io.listModels();
+  const modelCached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName);
+  const tfLoadOptions = typeof fetch === "undefined" ? {} : { fetchFunc: (url, init2) => httpHandler(url, init2) };
+  const model18 = new tf4.GraphModel(modelCached ? cachedModelName : modelUrl, tfLoadOptions);
+  try {
+    model18.findIOHandler();
+    if (options.debug)
+      log("model load handler:", model18.handler);
+    const artifacts = await model18.handler.load();
+    model18.loadSync(artifacts);
+    if (options.verbose)
+      log("load model:", model18["modelUrl"]);
+  } catch (err) {
+    log("error loading model:", modelUrl, err);
+  }
+  if (options.cacheModels && !modelCached) {
+    try {
+      const saveResult = await model18.save(cachedModelName);
+      log("model saved:", cachedModelName, saveResult);
+    } catch (err) {
+      log("error saving model:", modelUrl, err);
+    }
+  }
+  return model18;
+}
+
+// src/human.ts
+var tf36 = __toESM(require_tfjs_esm());
+
+// package.json
+var version2 = "2.6.4";
+
+// src/tfjs/humangl.ts
+var tf31 = __toESM(require_tfjs_esm());
+
+// src/models.ts
+var models_exports = {};
+__export(models_exports, {
+  Models: () => Models,
+  load: () => load19,
+  reset: () => reset,
+  validate: () => validate2
+});
+
+// src/gear/gear.ts
+var tf5 = __toESM(require_tfjs_esm());
+var model;
+var last2 = [];
+var raceNames = ["white", "black", "asian", "indian", "other"];
+var ageWeights = [15, 23, 28, 35.5, 45.5, 55.5, 65];
+var lastCount = 0;
+var lastTime = 0;
+var skipped = Number.MAX_SAFE_INTEGER;
+async function load(config3) {
+  if (env.initial)
+    model = null;
+  if (!model)
+    model = await loadModel(config3.face["gear"]);
+  else if (config3.debug)
+    log("cached model:", model["modelUrl"]);
+  return model;
+}
+async function predict(image24, config3, idx, count2) {
+  var _a, _b;
+  if (!model)
+    return { age: 0, gender: "unknown", genderScore: 0, race: [] };
+  const skipFrame = skipped < (((_a = config3.face["gear"]) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face["gear"]) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime;
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount === count2 && last2[idx]) {
+    skipped++;
+    return last2[idx];
+  }
+  skipped = 0;
+  return new Promise(async (resolve) => {
+    var _a2, _b2;
+    if (!(model == null ? void 0 : model.inputs[0].shape))
+      return;
+    const t = {};
+    const box = [[0, 0.1, 0.9, 0.9]];
+    t.resize = tf5.image.cropAndResize(image24, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+    const obj = { age: 0, gender: "unknown", genderScore: 0, race: [] };
+    if ((_a2 = config3.face["gear"]) == null ? void 0 : _a2.enabled)
+      [t.age, t.gender, t.race] = model.execute(t.resize, ["age_output", "gender_output", "race_output"]);
+    const gender = await t.gender.data();
+    obj.gender = gender[0] > gender[1] ? "male" : "female";
+    obj.genderScore = Math.round(100 * (gender[0] > gender[1] ? gender[0] : gender[1])) / 100;
+    const race = await t.race.data();
+    for (let i = 0; i < race.length; i++) {
+      if (race[i] > (((_b2 = config3.face["gear"]) == null ? void 0 : _b2.minConfidence) || 0.2))
+        obj.race.push({ score: Math.round(100 * race[i]) / 100, race: raceNames[i] });
+    }
+    obj.race.sort((a, b) => b.score - a.score);
+    const ageDistribution = Array.from(await t.age.data());
+    const ageSorted = ageDistribution.map((a, i) => [ageWeights[i], a]).sort((a, b) => b[1] - a[1]);
+    let age = ageSorted[0][0];
+    for (let i = 1; i < ageSorted.length; i++)
+      age += ageSorted[i][1] * (ageSorted[i][0] - age);
+    obj.age = Math.round(10 * age) / 10;
+    Object.keys(t).forEach((tensor3) => tf5.dispose(t[tensor3]));
+    last2[idx] = obj;
+    lastCount = count2;
+    lastTime = now();
+    resolve(obj);
+  });
+}
+
+// src/gear/ssrnet-age.ts
+var tf7 = __toESM(require_tfjs_esm());
+
+// src/tfjs/constants.ts
+var tf6 = __toESM(require_tfjs_esm());
+var constants = {
+  tf255: 255,
+  tf1: 1,
+  tf2: 2,
+  tf05: 0.5,
+  tf127: 127.5,
+  rgb: [0.2989, 0.587, 0.114]
+};
+function init() {
+  constants.tf255 = tf6.scalar(255, "float32");
+  constants.tf1 = tf6.scalar(1, "float32");
+  constants.tf2 = tf6.scalar(2, "float32");
+  constants.tf05 = tf6.scalar(0.5, "float32");
+  constants.tf127 = tf6.scalar(127.5, "float32");
+  constants.rgb = tf6.tensor1d([0.2989, 0.587, 0.114], "float32");
+}
+
+// src/gear/ssrnet-age.ts
+var model2;
+var last3 = [];
+var lastCount2 = 0;
+var lastTime2 = 0;
+var skipped2 = Number.MAX_SAFE_INTEGER;
+async function load2(config3) {
+  if (env.initial)
+    model2 = null;
+  if (!model2)
+    model2 = await loadModel(config3.face["ssrnet"].modelPathAge);
+  else if (config3.debug)
+    log("cached model:", model2["modelUrl"]);
+  return model2;
+}
+async function predict2(image24, config3, idx, count2) {
+  var _a, _b, _c, _d;
+  if (!model2)
+    return { age: 0 };
+  const skipFrame = skipped2 < (((_a = config3.face["ssrnet"]) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face["ssrnet"]) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime2;
+  if (config3.skipAllowed && skipFrame && skipTime && lastCount2 === count2 && ((_c = last3[idx]) == null ? void 0 : _c.age) && ((_d = last3[idx]) == null ? void 0 : _d.age) > 0) {
+    skipped2++;
+    return last3[idx];
+  }
+  skipped2 = 0;
+  return new Promise(async (resolve) => {
+    if (!(model2 == null ? void 0 : model2.inputs) || !model2.inputs[0] || !model2.inputs[0].shape)
+      return;
+    const t = {};
+    t.resize = tf7.image.resizeBilinear(image24, [model2.inputs[0].shape[2], model2.inputs[0].shape[1]], false);
+    t.enhance = tf7.mul(t.resize, constants.tf255);
+    const obj = { age: 0 };
+    if (config3.face["ssrnet"].enabled)
+      t.age = model2.execute(t.enhance);
+    if (t.age) {
+      const data = await t.age.data();
+      obj.age = Math.trunc(10 * data[0]) / 10;
+    }
+    Object.keys(t).forEach((tensor3) => tf7.dispose(t[tensor3]));
+    last3[idx] = obj;
+    lastCount2 = count2;
+    lastTime2 = now();
+    resolve(obj);
+  });
+}
+
+// src/gear/ssrnet-gender.ts
+var tf8 = __toESM(require_tfjs_esm());
+var model3;
+var last4 = [];
+var lastCount3 = 0;
+var lastTime3 = 0;
+var skipped3 = Number.MAX_SAFE_INTEGER;
+var rgb = [0.2989, 0.587, 0.114];
+async function load3(config3) {
+  if (env.initial)
+    model3 = null;
+  if (!model3)
+    model3 = await loadModel(config3.face["ssrnet"].modelPathGender);
+  else if (config3.debug)
+    log("cached model:", model3["modelUrl"]);
+  return model3;
+}
+async function predict3(image24, config3, idx, count2) {
+  var _a, _b, _c, _d;
+  if (!model3)
+    return { gender: "unknown", genderScore: 0 };
+  const skipFrame = skipped3 < (((_a = config3.face["ssrnet"]) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face["ssrnet"]) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime3;
+  if (config3.skipAllowed && skipFrame && skipTime && lastCount3 === count2 && ((_c = last4[idx]) == null ? void 0 : _c.gender) && ((_d = last4[idx]) == null ? void 0 : _d.genderScore) > 0) {
+    skipped3++;
+    return last4[idx];
+  }
+  skipped3 = 0;
+  return new Promise(async (resolve) => {
+    if (!(model3 == null ? void 0 : model3.inputs[0].shape))
+      return;
+    const t = {};
+    t.resize = tf8.image.resizeBilinear(image24, [model3.inputs[0].shape[2], model3.inputs[0].shape[1]], false);
+    t.enhance = tf8.tidy(() => {
+      const [red, green, blue] = tf8.split(t.resize, 3, 3);
+      const redNorm = tf8.mul(red, rgb[0]);
+      const greenNorm = tf8.mul(green, rgb[1]);
+      const blueNorm = tf8.mul(blue, rgb[2]);
+      const grayscale = tf8.addN([redNorm, greenNorm, blueNorm]);
+      const normalize = tf8.mul(tf8.sub(grayscale, constants.tf05), 2);
+      return normalize;
+    });
+    const obj = { gender: "unknown", genderScore: 0 };
+    if (config3.face["ssrnet"].enabled)
+      t.gender = model3.execute(t.enhance);
+    const data = await t.gender.data();
+    obj.gender = data[0] > data[1] ? "female" : "male";
+    obj.genderScore = data[0] > data[1] ? Math.trunc(100 * data[0]) / 100 : Math.trunc(100 * data[1]) / 100;
+    Object.keys(t).forEach((tensor3) => tf8.dispose(t[tensor3]));
+    last4[idx] = obj;
+    lastCount3 = count2;
+    lastTime3 = now();
+    resolve(obj);
+  });
+}
+
+// src/face/antispoof.ts
+var tf9 = __toESM(require_tfjs_esm());
+var model4;
+var cached = [];
+var skipped4 = Number.MAX_SAFE_INTEGER;
+var lastCount4 = 0;
+var lastTime4 = 0;
+async function load4(config3) {
+  var _a;
+  if (env.initial)
+    model4 = null;
+  if (!model4)
+    model4 = await loadModel((_a = config3.face.antispoof) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model4["modelUrl"]);
+  return model4;
+}
+async function predict4(image24, config3, idx, count2) {
+  var _a, _b;
+  if (!model4)
+    return 0;
+  const skipTime = (((_a = config3.face.antispoof) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime4;
+  const skipFrame = skipped4 < (((_b = config3.face.antispoof) == null ? void 0 : _b.skipFrames) || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount4 === count2 && cached[idx]) {
+    skipped4++;
+    return cached[idx];
+  }
+  skipped4 = 0;
+  return new Promise(async (resolve) => {
+    const resize = tf9.image.resizeBilinear(image24, [(model4 == null ? void 0 : model4.inputs[0].shape) ? model4.inputs[0].shape[2] : 0, (model4 == null ? void 0 : model4.inputs[0].shape) ? model4.inputs[0].shape[1] : 0], false);
+    const res = model4 == null ? void 0 : model4.execute(resize);
+    const num = (await res.data())[0];
+    cached[idx] = Math.round(100 * num) / 100;
+    lastCount4 = count2;
+    lastTime4 = now();
+    tf9.dispose([resize, res]);
+    resolve(cached[idx]);
+  });
+}
+
+// src/face/blazeface.ts
+var tf11 = __toESM(require_tfjs_esm());
+
+// src/face/facemeshutil.ts
+var tf10 = __toESM(require_tfjs_esm());
+
+// src/face/facemeshcoords.ts
+var meshAnnotations = {
+  silhouette: [
+    10,
+    338,
+    297,
+    332,
+    284,
+    251,
+    389,
+    356,
+    454,
+    323,
+    361,
+    288,
+    397,
+    365,
+    379,
+    378,
+    400,
+    377,
+    152,
+    148,
+    176,
+    149,
+    150,
+    136,
+    172,
+    58,
+    132,
+    93,
+    234,
+    127,
+    162,
+    21,
+    54,
+    103,
+    67,
+    109
+  ],
+  lipsUpperOuter: [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291],
+  lipsLowerOuter: [146, 91, 181, 84, 17, 314, 405, 321, 375, 291],
+  lipsUpperInner: [78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308],
+  lipsLowerInner: [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308],
+  rightEyeUpper0: [246, 161, 160, 159, 158, 157, 173],
+  rightEyeLower0: [33, 7, 163, 144, 145, 153, 154, 155, 133],
+  rightEyeUpper1: [247, 30, 29, 27, 28, 56, 190],
+  rightEyeLower1: [130, 25, 110, 24, 23, 22, 26, 112, 243],
+  rightEyeUpper2: [113, 225, 224, 223, 222, 221, 189],
+  rightEyeLower2: [226, 31, 228, 229, 230, 231, 232, 233, 244],
+  rightEyeLower3: [143, 111, 117, 118, 119, 120, 121, 128, 245],
+  rightEyebrowUpper: [156, 70, 63, 105, 66, 107, 55, 193],
+  rightEyebrowLower: [35, 124, 46, 53, 52, 65],
+  rightEyeIris: [473, 474, 475, 476, 477],
+  leftEyeUpper0: [466, 388, 387, 386, 385, 384, 398],
+  leftEyeLower0: [263, 249, 390, 373, 374, 380, 381, 382, 362],
+  leftEyeUpper1: [467, 260, 259, 257, 258, 286, 414],
+  leftEyeLower1: [359, 255, 339, 254, 253, 252, 256, 341, 463],
+  leftEyeUpper2: [342, 445, 444, 443, 442, 441, 413],
+  leftEyeLower2: [446, 261, 448, 449, 450, 451, 452, 453, 464],
+  leftEyeLower3: [372, 340, 346, 347, 348, 349, 350, 357, 465],
+  leftEyebrowUpper: [383, 300, 293, 334, 296, 336, 285, 417],
+  leftEyebrowLower: [265, 353, 276, 283, 282, 295],
+  leftEyeIris: [468, 469, 470, 471, 472],
+  midwayBetweenEyes: [168],
+  noseTip: [1],
+  noseBottom: [2],
+  noseRightCorner: [98],
+  noseLeftCorner: [327],
+  rightCheek: [205],
+  leftCheek: [425]
+};
+var meshLandmarks = {
+  count: 468,
+  mouth: 13,
+  symmetryLine: [13, meshAnnotations["midwayBetweenEyes"][0]]
+};
+var blazeFaceLandmarks = {
+  leftEye: 0,
+  rightEye: 1,
+  nose: 2,
+  mouth: 3,
+  leftEar: 4,
+  rightEar: 5,
+  symmetryLine: [3, 2]
+};
+var MESH_TO_IRIS_INDICES_MAP = [
+  { key: "EyeUpper0", indices: [9, 10, 11, 12, 13, 14, 15] },
+  { key: "EyeUpper1", indices: [25, 26, 27, 28, 29, 30, 31] },
+  { key: "EyeUpper2", indices: [41, 42, 43, 44, 45, 46, 47] },
+  { key: "EyeLower0", indices: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+  { key: "EyeLower1", indices: [16, 17, 18, 19, 20, 21, 22, 23, 24] },
+  { key: "EyeLower2", indices: [32, 33, 34, 35, 36, 37, 38, 39, 40] },
+  { key: "EyeLower3", indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] }
+];
+var UV468 = [
+  [0.499976992607117, 0.652534008026123],
+  [0.500025987625122, 0.547487020492554],
+  [0.499974012374878, 0.602371990680695],
+  [0.482113003730774, 0.471979022026062],
+  [0.500150978565216, 0.527155995368958],
+  [0.499909996986389, 0.498252987861633],
+  [0.499523013830185, 0.40106201171875],
+  [0.289712011814117, 0.380764007568359],
+  [0.499954998493195, 0.312398016452789],
+  [0.499987006187439, 0.269918978214264],
+  [0.500023007392883, 0.107050001621246],
+  [0.500023007392883, 0.666234016418457],
+  [0.5000159740448, 0.679224014282227],
+  [0.500023007392883, 0.692348003387451],
+  [0.499976992607117, 0.695277988910675],
+  [0.499976992607117, 0.70593398809433],
+  [0.499976992607117, 0.719385027885437],
+  [0.499976992607117, 0.737019002437592],
+  [0.499967992305756, 0.781370997428894],
+  [0.499816000461578, 0.562981009483337],
+  [0.473773002624512, 0.573909997940063],
+  [0.104906998574734, 0.254140973091125],
+  [0.365929991006851, 0.409575998783112],
+  [0.338757991790771, 0.41302502155304],
+  [0.311120003461838, 0.409460008144379],
+  [0.274657994508743, 0.389131009578705],
+  [0.393361985683441, 0.403706014156342],
+  [0.345234006643295, 0.344011008739471],
+  [0.370094001293182, 0.346076011657715],
+  [0.319321990013123, 0.347265005111694],
+  [0.297903001308441, 0.353591024875641],
+  [0.24779200553894, 0.410809993743896],
+  [0.396889001131058, 0.842755019664764],
+  [0.280097991228104, 0.375599980354309],
+  [0.106310002505779, 0.399955987930298],
+  [0.2099249958992, 0.391353011131287],
+  [0.355807989835739, 0.534406006336212],
+  [0.471751004457474, 0.65040397644043],
+  [0.474155008792877, 0.680191993713379],
+  [0.439785003662109, 0.657229006290436],
+  [0.414617002010345, 0.66654098033905],
+  [0.450374007225037, 0.680860996246338],
+  [0.428770989179611, 0.682690978050232],
+  [0.374971002340317, 0.727805018424988],
+  [0.486716985702515, 0.547628998756409],
+  [0.485300987958908, 0.527395009994507],
+  [0.257764995098114, 0.314490020275116],
+  [0.401223003864288, 0.455172002315521],
+  [0.429818987846375, 0.548614978790283],
+  [0.421351999044418, 0.533740997314453],
+  [0.276895999908447, 0.532056987285614],
+  [0.483370006084442, 0.499586999416351],
+  [0.33721199631691, 0.282882988452911],
+  [0.296391993761063, 0.293242990970612],
+  [0.169294998049736, 0.193813979625702],
+  [0.447580009698868, 0.302609980106354],
+  [0.392390012741089, 0.353887975215912],
+  [0.354490011930466, 0.696784019470215],
+  [0.067304998636246, 0.730105042457581],
+  [0.442739009857178, 0.572826027870178],
+  [0.457098007202148, 0.584792017936707],
+  [0.381974011659622, 0.694710969924927],
+  [0.392388999462128, 0.694203019142151],
+  [0.277076005935669, 0.271932005882263],
+  [0.422551989555359, 0.563233017921448],
+  [0.385919004678726, 0.281364023685455],
+  [0.383103013038635, 0.255840003490448],
+  [0.331431001424789, 0.119714021682739],
+  [0.229923993349075, 0.232002973556519],
+  [0.364500999450684, 0.189113974571228],
+  [0.229622006416321, 0.299540996551514],
+  [0.173287004232407, 0.278747975826263],
+  [0.472878992557526, 0.666198015213013],
+  [0.446828007698059, 0.668527007102966],
+  [0.422762006521225, 0.673889994621277],
+  [0.445307999849319, 0.580065965652466],
+  [0.388103008270264, 0.693961024284363],
+  [0.403039008378983, 0.706539988517761],
+  [0.403629004955292, 0.693953037261963],
+  [0.460041999816895, 0.557139039039612],
+  [0.431158006191254, 0.692366003990173],
+  [0.452181994915009, 0.692366003990173],
+  [0.475387006998062, 0.692366003990173],
+  [0.465828001499176, 0.779190003871918],
+  [0.472328990697861, 0.736225962638855],
+  [0.473087012767792, 0.717857003211975],
+  [0.473122000694275, 0.704625964164734],
+  [0.473033010959625, 0.695277988910675],
+  [0.427942007780075, 0.695277988910675],
+  [0.426479011774063, 0.703539967536926],
+  [0.423162013292313, 0.711845993995667],
+  [0.4183090031147, 0.720062971115112],
+  [0.390094995498657, 0.639572978019714],
+  [0.013953999616206, 0.560034036636353],
+  [0.499913990497589, 0.58014702796936],
+  [0.413199990987778, 0.69539999961853],
+  [0.409626007080078, 0.701822996139526],
+  [0.468080013990402, 0.601534962654114],
+  [0.422728985548019, 0.585985004901886],
+  [0.463079988956451, 0.593783974647522],
+  [0.37211999297142, 0.47341400384903],
+  [0.334562003612518, 0.496073007583618],
+  [0.411671012639999, 0.546965003013611],
+  [0.242175996303558, 0.14767599105835],
+  [0.290776997804642, 0.201445996761322],
+  [0.327338010072708, 0.256527006626129],
+  [0.399509996175766, 0.748921036720276],
+  [0.441727995872498, 0.261676013469696],
+  [0.429764986038208, 0.187834024429321],
+  [0.412198007106781, 0.108901023864746],
+  [0.288955003023148, 0.398952007293701],
+  [0.218936994671822, 0.435410976409912],
+  [0.41278201341629, 0.398970007896423],
+  [0.257135003805161, 0.355440020561218],
+  [0.427684992551804, 0.437960982322693],
+  [0.448339998722076, 0.536936044692993],
+  [0.178560003638268, 0.45755398273468],
+  [0.247308000922203, 0.457193970680237],
+  [0.286267012357712, 0.467674970626831],
+  [0.332827985286713, 0.460712015628815],
+  [0.368755996227264, 0.447206974029541],
+  [0.398963987827301, 0.432654976844788],
+  [0.476410001516342, 0.405806005001068],
+  [0.189241006970406, 0.523923993110657],
+  [0.228962004184723, 0.348950982093811],
+  [0.490725994110107, 0.562400996685028],
+  [0.404670000076294, 0.485132992267609],
+  [0.019469000399113, 0.401564002037048],
+  [0.426243007183075, 0.420431017875671],
+  [0.396993011236191, 0.548797011375427],
+  [0.266469985246658, 0.376977026462555],
+  [0.439121007919312, 0.51895797252655],
+  [0.032313998788595, 0.644356966018677],
+  [0.419054001569748, 0.387154996395111],
+  [0.462783008813858, 0.505746960639954],
+  [0.238978996872902, 0.779744982719421],
+  [0.198220998048782, 0.831938028335571],
+  [0.107550002634525, 0.540755033493042],
+  [0.183610007166862, 0.740257024765015],
+  [0.134409993886948, 0.333683013916016],
+  [0.385764002799988, 0.883153975009918],
+  [0.490967005491257, 0.579378008842468],
+  [0.382384985685349, 0.508572995662689],
+  [0.174399003386497, 0.397670984268188],
+  [0.318785011768341, 0.39623498916626],
+  [0.343364000320435, 0.400596976280212],
+  [0.396100014448166, 0.710216999053955],
+  [0.187885001301765, 0.588537991046906],
+  [0.430987000465393, 0.944064974784851],
+  [0.318993002176285, 0.898285031318665],
+  [0.266247987747192, 0.869701027870178],
+  [0.500023007392883, 0.190576016902924],
+  [0.499976992607117, 0.954452991485596],
+  [0.366169989109039, 0.398822009563446],
+  [0.393207013607025, 0.39553701877594],
+  [0.410373002290726, 0.391080021858215],
+  [0.194993004202843, 0.342101991176605],
+  [0.388664990663528, 0.362284004688263],
+  [0.365961998701096, 0.355970978736877],
+  [0.343364000320435, 0.355356991291046],
+  [0.318785011768341, 0.35834002494812],
+  [0.301414996385574, 0.363156020641327],
+  [0.058132998645306, 0.319076001644135],
+  [0.301414996385574, 0.387449026107788],
+  [0.499987989664078, 0.618434011936188],
+  [0.415838003158569, 0.624195992946625],
+  [0.445681989192963, 0.566076993942261],
+  [0.465844005346298, 0.620640993118286],
+  [0.49992299079895, 0.351523995399475],
+  [0.288718998432159, 0.819945991039276],
+  [0.335278987884521, 0.852819979190826],
+  [0.440512001514435, 0.902418971061707],
+  [0.128294005990028, 0.791940987110138],
+  [0.408771991729736, 0.373893976211548],
+  [0.455606997013092, 0.451801002025604],
+  [0.499877005815506, 0.908990025520325],
+  [0.375436991453171, 0.924192011356354],
+  [0.11421000212431, 0.615022003650665],
+  [0.448662012815475, 0.695277988910675],
+  [0.4480200111866, 0.704632043838501],
+  [0.447111994028091, 0.715808033943176],
+  [0.444831997156143, 0.730794012546539],
+  [0.430011987686157, 0.766808986663818],
+  [0.406787008047104, 0.685672998428345],
+  [0.400738000869751, 0.681069016456604],
+  [0.392399996519089, 0.677703022956848],
+  [0.367855995893478, 0.663918972015381],
+  [0.247923001646996, 0.601333022117615],
+  [0.452769994735718, 0.420849978923798],
+  [0.43639200925827, 0.359887003898621],
+  [0.416164010763168, 0.368713974952698],
+  [0.413385987281799, 0.692366003990173],
+  [0.228018000721931, 0.683571994304657],
+  [0.468268007040024, 0.352671027183533],
+  [0.411361992359161, 0.804327011108398],
+  [0.499989002943039, 0.469825029373169],
+  [0.479153990745544, 0.442654013633728],
+  [0.499974012374878, 0.439637005329132],
+  [0.432112008333206, 0.493588984012604],
+  [0.499886006116867, 0.866917014122009],
+  [0.49991300702095, 0.821729004383087],
+  [0.456548988819122, 0.819200992584229],
+  [0.344549000263214, 0.745438992977142],
+  [0.37890899181366, 0.574010014533997],
+  [0.374292999505997, 0.780184984207153],
+  [0.319687992334366, 0.570737957954407],
+  [0.357154995203018, 0.604269981384277],
+  [0.295284003019333, 0.621580958366394],
+  [0.447750002145767, 0.862477004528046],
+  [0.410986006259918, 0.508723020553589],
+  [0.31395098567009, 0.775308012962341],
+  [0.354128003120422, 0.812552988529205],
+  [0.324548006057739, 0.703992962837219],
+  [0.189096003770828, 0.646299958229065],
+  [0.279776990413666, 0.71465802192688],
+  [0.1338230073452, 0.682700991630554],
+  [0.336768001317978, 0.644733011722565],
+  [0.429883986711502, 0.466521978378296],
+  [0.455527991056442, 0.548622965812683],
+  [0.437114000320435, 0.558896005153656],
+  [0.467287987470627, 0.529924988746643],
+  [0.414712011814117, 0.335219979286194],
+  [0.37704598903656, 0.322777986526489],
+  [0.344107985496521, 0.320150971412659],
+  [0.312875986099243, 0.32233202457428],
+  [0.283526003360748, 0.333190023899078],
+  [0.241245999932289, 0.382785975933075],
+  [0.102986000478268, 0.468762993812561],
+  [0.267612010240555, 0.424560010433197],
+  [0.297879010438919, 0.433175981044769],
+  [0.333433985710144, 0.433878004550934],
+  [0.366427004337311, 0.426115989685059],
+  [0.396012008190155, 0.416696012020111],
+  [0.420121014118195, 0.41022801399231],
+  [0.007561000064015, 0.480777025222778],
+  [0.432949006557465, 0.569517970085144],
+  [0.458638995885849, 0.479089021682739],
+  [0.473466008901596, 0.545744001865387],
+  [0.476087987422943, 0.563830018043518],
+  [0.468472003936768, 0.555056989192963],
+  [0.433990985155106, 0.582361996173859],
+  [0.483518004417419, 0.562983989715576],
+  [0.482482999563217, 0.57784903049469],
+  [0.42645001411438, 0.389798998832703],
+  [0.438998997211456, 0.39649498462677],
+  [0.450067013502121, 0.400434017181396],
+  [0.289712011814117, 0.368252992630005],
+  [0.276670008897781, 0.363372981548309],
+  [0.517862021923065, 0.471948027610779],
+  [0.710287988185883, 0.380764007568359],
+  [0.526226997375488, 0.573909997940063],
+  [0.895093023777008, 0.254140973091125],
+  [0.634069979190826, 0.409575998783112],
+  [0.661242008209229, 0.41302502155304],
+  [0.688880026340485, 0.409460008144379],
+  [0.725341975688934, 0.389131009578705],
+  [0.606630027294159, 0.40370500087738],
+  [0.654766023159027, 0.344011008739471],
+  [0.629905998706818, 0.346076011657715],
+  [0.680678009986877, 0.347265005111694],
+  [0.702096998691559, 0.353591024875641],
+  [0.75221198797226, 0.410804986953735],
+  [0.602918028831482, 0.842862963676453],
+  [0.719901978969574, 0.375599980354309],
+  [0.893692970275879, 0.399959981441498],
+  [0.790081977844238, 0.391354024410248],
+  [0.643998026847839, 0.534487962722778],
+  [0.528249025344849, 0.65040397644043],
+  [0.525849997997284, 0.680191040039062],
+  [0.560214996337891, 0.657229006290436],
+  [0.585384011268616, 0.66654098033905],
+  [0.549625992774963, 0.680860996246338],
+  [0.57122802734375, 0.682691991329193],
+  [0.624852001667023, 0.72809898853302],
+  [0.513050019741058, 0.547281980514526],
+  [0.51509702205658, 0.527251958847046],
+  [0.742246985435486, 0.314507007598877],
+  [0.598631024360657, 0.454979002475739],
+  [0.570338010787964, 0.548575043678284],
+  [0.578631997108459, 0.533622980117798],
+  [0.723087012767792, 0.532054007053375],
+  [0.516445994377136, 0.499638974666595],
+  [0.662801027297974, 0.282917976379395],
+  [0.70362401008606, 0.293271005153656],
+  [0.830704987049103, 0.193813979625702],
+  [0.552385985851288, 0.302568018436432],
+  [0.607609987258911, 0.353887975215912],
+  [0.645429015159607, 0.696707010269165],
+  [0.932694971561432, 0.730105042457581],
+  [0.557260990142822, 0.572826027870178],
+  [0.542901992797852, 0.584792017936707],
+  [0.6180260181427, 0.694710969924927],
+  [0.607590973377228, 0.694203019142151],
+  [0.722943007946014, 0.271963000297546],
+  [0.577413976192474, 0.563166975975037],
+  [0.614082992076874, 0.281386971473694],
+  [0.616907000541687, 0.255886018276215],
+  [0.668509006500244, 0.119913995265961],
+  [0.770092010498047, 0.232020974159241],
+  [0.635536015033722, 0.189248979091644],
+  [0.77039098739624, 0.299556016921997],
+  [0.826722025871277, 0.278755009174347],
+  [0.527121007442474, 0.666198015213013],
+  [0.553171992301941, 0.668527007102966],
+  [0.577238023281097, 0.673889994621277],
+  [0.554691970348358, 0.580065965652466],
+  [0.611896991729736, 0.693961024284363],
+  [0.59696102142334, 0.706539988517761],
+  [0.596370995044708, 0.693953037261963],
+  [0.539958000183105, 0.557139039039612],
+  [0.568841993808746, 0.692366003990173],
+  [0.547818005084991, 0.692366003990173],
+  [0.52461302280426, 0.692366003990173],
+  [0.534089982509613, 0.779141008853912],
+  [0.527670979499817, 0.736225962638855],
+  [0.526912987232208, 0.717857003211975],
+  [0.526877999305725, 0.704625964164734],
+  [0.526966989040375, 0.695277988910675],
+  [0.572058022022247, 0.695277988910675],
+  [0.573521018028259, 0.703539967536926],
+  [0.57683801651001, 0.711845993995667],
+  [0.581691026687622, 0.720062971115112],
+  [0.609944999217987, 0.639909982681274],
+  [0.986046016216278, 0.560034036636353],
+  [0.5867999792099, 0.69539999961853],
+  [0.590372025966644, 0.701822996139526],
+  [0.531915009021759, 0.601536989212036],
+  [0.577268004417419, 0.585934996604919],
+  [0.536915004253387, 0.593786001205444],
+  [0.627542972564697, 0.473352015018463],
+  [0.665585994720459, 0.495950996875763],
+  [0.588353991508484, 0.546862006187439],
+  [0.757824003696442, 0.14767599105835],
+  [0.709249973297119, 0.201507985591888],
+  [0.672684013843536, 0.256581008434296],
+  [0.600408971309662, 0.74900496006012],
+  [0.55826598405838, 0.261672019958496],
+  [0.570303976535797, 0.187870979309082],
+  [0.588165998458862, 0.109044015407562],
+  [0.711045026779175, 0.398952007293701],
+  [0.781069993972778, 0.435405015945435],
+  [0.587247014045715, 0.398931980133057],
+  [0.742869973182678, 0.355445981025696],
+  [0.572156012058258, 0.437651991844177],
+  [0.55186802148819, 0.536570012569427],
+  [0.821442008018494, 0.457556009292603],
+  [0.752701997756958, 0.457181990146637],
+  [0.71375697851181, 0.467626988887787],
+  [0.66711300611496, 0.460672974586487],
+  [0.631101012229919, 0.447153985500336],
+  [0.6008620262146, 0.432473003864288],
+  [0.523481011390686, 0.405627012252808],
+  [0.810747981071472, 0.523926019668579],
+  [0.771045982837677, 0.348959028720856],
+  [0.509127020835876, 0.562718033790588],
+  [0.595292985439301, 0.485023975372314],
+  [0.980530977249146, 0.401564002037048],
+  [0.573499977588654, 0.420000016689301],
+  [0.602994978427887, 0.548687994480133],
+  [0.733529984951019, 0.376977026462555],
+  [0.560611009597778, 0.519016981124878],
+  [0.967685997486115, 0.644356966018677],
+  [0.580985009670258, 0.387160003185272],
+  [0.537728011608124, 0.505385041236877],
+  [0.760966002941132, 0.779752969741821],
+  [0.801778972148895, 0.831938028335571],
+  [0.892440974712372, 0.54076099395752],
+  [0.816350996494293, 0.740260004997253],
+  [0.865594983100891, 0.333687007427216],
+  [0.614073991775513, 0.883246004581451],
+  [0.508952975273132, 0.579437971115112],
+  [0.617941975593567, 0.508316040039062],
+  [0.825608015060425, 0.397674977779388],
+  [0.681214988231659, 0.39623498916626],
+  [0.656635999679565, 0.400596976280212],
+  [0.603900015354156, 0.710216999053955],
+  [0.81208598613739, 0.588539004325867],
+  [0.56801301240921, 0.944564998149872],
+  [0.681007981300354, 0.898285031318665],
+  [0.733752012252808, 0.869701027870178],
+  [0.633830010890961, 0.398822009563446],
+  [0.606792986392975, 0.39553701877594],
+  [0.589659988880157, 0.391062021255493],
+  [0.805015981197357, 0.342108011245728],
+  [0.611334979534149, 0.362284004688263],
+  [0.634037971496582, 0.355970978736877],
+  [0.656635999679565, 0.355356991291046],
+  [0.681214988231659, 0.35834002494812],
+  [0.698584973812103, 0.363156020641327],
+  [0.941866993904114, 0.319076001644135],
+  [0.698584973812103, 0.387449026107788],
+  [0.584177017211914, 0.624107003211975],
+  [0.554318010807037, 0.566076993942261],
+  [0.534153997898102, 0.62064003944397],
+  [0.711217999458313, 0.819975018501282],
+  [0.664629995822906, 0.852871000766754],
+  [0.559099972248077, 0.902631998062134],
+  [0.871706008911133, 0.791940987110138],
+  [0.591234028339386, 0.373893976211548],
+  [0.544341027736664, 0.451583981513977],
+  [0.624562978744507, 0.924192011356354],
+  [0.88577002286911, 0.615028977394104],
+  [0.551338016986847, 0.695277988910675],
+  [0.551980018615723, 0.704632043838501],
+  [0.552887976169586, 0.715808033943176],
+  [0.555167973041534, 0.730794012546539],
+  [0.569944024085999, 0.767035007476807],
+  [0.593203008174896, 0.685675978660583],
+  [0.599261999130249, 0.681069016456604],
+  [0.607599973678589, 0.677703022956848],
+  [0.631937980651855, 0.663500010967255],
+  [0.752032995223999, 0.601315021514893],
+  [0.547226011753082, 0.420395016670227],
+  [0.563543975353241, 0.359827995300293],
+  [0.583841025829315, 0.368713974952698],
+  [0.586614012718201, 0.692366003990173],
+  [0.771915018558502, 0.683578014373779],
+  [0.531597018241882, 0.352482974529266],
+  [0.588370978832245, 0.804440975189209],
+  [0.52079701423645, 0.442565023899078],
+  [0.567984998226166, 0.493479013442993],
+  [0.543282985687256, 0.819254994392395],
+  [0.655317008495331, 0.745514988899231],
+  [0.621008992195129, 0.574018001556396],
+  [0.625559985637665, 0.78031200170517],
+  [0.680198013782501, 0.570719003677368],
+  [0.64276397228241, 0.604337990283966],
+  [0.704662978649139, 0.621529996395111],
+  [0.552012026309967, 0.862591981887817],
+  [0.589071989059448, 0.508637011051178],
+  [0.685944974422455, 0.775357007980347],
+  [0.645735025405884, 0.812640011310577],
+  [0.675342977046967, 0.703978002071381],
+  [0.810858011245728, 0.646304965019226],
+  [0.72012197971344, 0.714666962623596],
+  [0.866151988506317, 0.682704985141754],
+  [0.663187026977539, 0.644596993923187],
+  [0.570082008838654, 0.466325998306274],
+  [0.544561982154846, 0.548375964164734],
+  [0.562758982181549, 0.558784961700439],
+  [0.531987011432648, 0.530140042304993],
+  [0.585271000862122, 0.335177004337311],
+  [0.622952997684479, 0.32277899980545],
+  [0.655896008014679, 0.320163011550903],
+  [0.687132000923157, 0.322345972061157],
+  [0.716481983661652, 0.333200991153717],
+  [0.758756995201111, 0.382786989212036],
+  [0.897013008594513, 0.468769013881683],
+  [0.732392013072968, 0.424547016620636],
+  [0.70211398601532, 0.433162987232208],
+  [0.66652500629425, 0.433866024017334],
+  [0.633504986763, 0.426087975502014],
+  [0.603875994682312, 0.416586995124817],
+  [0.579657971858978, 0.409945011138916],
+  [0.992439985275269, 0.480777025222778],
+  [0.567192018032074, 0.569419980049133],
+  [0.54136598110199, 0.478899002075195],
+  [0.526564002037048, 0.546118021011353],
+  [0.523913025856018, 0.563830018043518],
+  [0.531529009342194, 0.555056989192963],
+  [0.566035985946655, 0.582329034805298],
+  [0.51631098985672, 0.563053965568542],
+  [0.5174720287323, 0.577877044677734],
+  [0.573594987392426, 0.389806985855103],
+  [0.560697972774506, 0.395331978797913],
+  [0.549755990505219, 0.399751007556915],
+  [0.710287988185883, 0.368252992630005],
+  [0.723330020904541, 0.363372981548309]
+];
+var TRI468 = [
+  127,
+  34,
+  139,
+  11,
+  0,
+  37,
+  232,
+  231,
+  120,
+  72,
+  37,
+  39,
+  128,
+  121,
+  47,
+  232,
+  121,
+  128,
+  104,
+  69,
+  67,
+  175,
+  171,
+  148,
+  157,
+  154,
+  155,
+  118,
+  50,
+  101,
+  73,
+  39,
+  40,
+  9,
+  151,
+  108,
+  48,
+  115,
+  131,
+  194,
+  204,
+  211,
+  74,
+  40,
+  185,
+  80,
+  42,
+  183,
+  40,
+  92,
+  186,
+  230,
+  229,
+  118,
+  202,
+  212,
+  214,
+  83,
+  18,
+  17,
+  76,
+  61,
+  146,
+  160,
+  29,
+  30,
+  56,
+  157,
+  173,
+  106,
+  204,
+  194,
+  135,
+  214,
+  192,
+  203,
+  165,
+  98,
+  21,
+  71,
+  68,
+  51,
+  45,
+  4,
+  144,
+  24,
+  23,
+  77,
+  146,
+  91,
+  205,
+  50,
+  187,
+  201,
+  200,
+  18,
+  91,
+  106,
+  182,
+  90,
+  91,
+  181,
+  85,
+  84,
+  17,
+  206,
+  203,
+  36,
+  148,
+  171,
+  140,
+  92,
+  40,
+  39,
+  193,
+  189,
+  244,
+  159,
+  158,
+  28,
+  247,
+  246,
+  161,
+  236,
+  3,
+  196,
+  54,
+  68,
+  104,
+  193,
+  168,
+  8,
+  117,
+  228,
+  31,
+  189,
+  193,
+  55,
+  98,
+  97,
+  99,
+  126,
+  47,
+  100,
+  166,
+  79,
+  218,
+  155,
+  154,
+  26,
+  209,
+  49,
+  131,
+  135,
+  136,
+  150,
+  47,
+  126,
+  217,
+  223,
+  52,
+  53,
+  45,
+  51,
+  134,
+  211,
+  170,
+  140,
+  67,
+  69,
+  108,
+  43,
+  106,
+  91,
+  230,
+  119,
+  120,
+  226,
+  130,
+  247,
+  63,
+  53,
+  52,
+  238,
+  20,
+  242,
+  46,
+  70,
+  156,
+  78,
+  62,
+  96,
+  46,
+  53,
+  63,
+  143,
+  34,
+  227,
+  173,
+  155,
+  133,
+  123,
+  117,
+  111,
+  44,
+  125,
+  19,
+  236,
+  134,
+  51,
+  216,
+  206,
+  205,
+  154,
+  153,
+  22,
+  39,
+  37,
+  167,
+  200,
+  201,
+  208,
+  36,
+  142,
+  100,
+  57,
+  212,
+  202,
+  20,
+  60,
+  99,
+  28,
+  158,
+  157,
+  35,
+  226,
+  113,
+  160,
+  159,
+  27,
+  204,
+  202,
+  210,
+  113,
+  225,
+  46,
+  43,
+  202,
+  204,
+  62,
+  76,
+  77,
+  137,
+  123,
+  116,
+  41,
+  38,
+  72,
+  203,
+  129,
+  142,
+  64,
+  98,
+  240,
+  49,
+  102,
+  64,
+  41,
+  73,
+  74,
+  212,
+  216,
+  207,
+  42,
+  74,
+  184,
+  169,
+  170,
+  211,
+  170,
+  149,
+  176,
+  105,
+  66,
+  69,
+  122,
+  6,
+  168,
+  123,
+  147,
+  187,
+  96,
+  77,
+  90,
+  65,
+  55,
+  107,
+  89,
+  90,
+  180,
+  101,
+  100,
+  120,
+  63,
+  105,
+  104,
+  93,
+  137,
+  227,
+  15,
+  86,
+  85,
+  129,
+  102,
+  49,
+  14,
+  87,
+  86,
+  55,
+  8,
+  9,
+  100,
+  47,
+  121,
+  145,
+  23,
+  22,
+  88,
+  89,
+  179,
+  6,
+  122,
+  196,
+  88,
+  95,
+  96,
+  138,
+  172,
+  136,
+  215,
+  58,
+  172,
+  115,
+  48,
+  219,
+  42,
+  80,
+  81,
+  195,
+  3,
+  51,
+  43,
+  146,
+  61,
+  171,
+  175,
+  199,
+  81,
+  82,
+  38,
+  53,
+  46,
+  225,
+  144,
+  163,
+  110,
+  246,
+  33,
+  7,
+  52,
+  65,
+  66,
+  229,
+  228,
+  117,
+  34,
+  127,
+  234,
+  107,
+  108,
+  69,
+  109,
+  108,
+  151,
+  48,
+  64,
+  235,
+  62,
+  78,
+  191,
+  129,
+  209,
+  126,
+  111,
+  35,
+  143,
+  163,
+  161,
+  246,
+  117,
+  123,
+  50,
+  222,
+  65,
+  52,
+  19,
+  125,
+  141,
+  221,
+  55,
+  65,
+  3,
+  195,
+  197,
+  25,
+  7,
+  33,
+  220,
+  237,
+  44,
+  70,
+  71,
+  139,
+  122,
+  193,
+  245,
+  247,
+  130,
+  33,
+  71,
+  21,
+  162,
+  153,
+  158,
+  159,
+  170,
+  169,
+  150,
+  188,
+  174,
+  196,
+  216,
+  186,
+  92,
+  144,
+  160,
+  161,
+  2,
+  97,
+  167,
+  141,
+  125,
+  241,
+  164,
+  167,
+  37,
+  72,
+  38,
+  12,
+  145,
+  159,
+  160,
+  38,
+  82,
+  13,
+  63,
+  68,
+  71,
+  226,
+  35,
+  111,
+  158,
+  153,
+  154,
+  101,
+  50,
+  205,
+  206,
+  92,
+  165,
+  209,
+  198,
+  217,
+  165,
+  167,
+  97,
+  220,
+  115,
+  218,
+  133,
+  112,
+  243,
+  239,
+  238,
+  241,
+  214,
+  135,
+  169,
+  190,
+  173,
+  133,
+  171,
+  208,
+  32,
+  125,
+  44,
+  237,
+  86,
+  87,
+  178,
+  85,
+  86,
+  179,
+  84,
+  85,
+  180,
+  83,
+  84,
+  181,
+  201,
+  83,
+  182,
+  137,
+  93,
+  132,
+  76,
+  62,
+  183,
+  61,
+  76,
+  184,
+  57,
+  61,
+  185,
+  212,
+  57,
+  186,
+  214,
+  207,
+  187,
+  34,
+  143,
+  156,
+  79,
+  239,
+  237,
+  123,
+  137,
+  177,
+  44,
+  1,
+  4,
+  201,
+  194,
+  32,
+  64,
+  102,
+  129,
+  213,
+  215,
+  138,
+  59,
+  166,
+  219,
+  242,
+  99,
+  97,
+  2,
+  94,
+  141,
+  75,
+  59,
+  235,
+  24,
+  110,
+  228,
+  25,
+  130,
+  226,
+  23,
+  24,
+  229,
+  22,
+  23,
+  230,
+  26,
+  22,
+  231,
+  112,
+  26,
+  232,
+  189,
+  190,
+  243,
+  221,
+  56,
+  190,
+  28,
+  56,
+  221,
+  27,
+  28,
+  222,
+  29,
+  27,
+  223,
+  30,
+  29,
+  224,
+  247,
+  30,
+  225,
+  238,
+  79,
+  20,
+  166,
+  59,
+  75,
+  60,
+  75,
+  240,
+  147,
+  177,
+  215,
+  20,
+  79,
+  166,
+  187,
+  147,
+  213,
+  112,
+  233,
+  244,
+  233,
+  128,
+  245,
+  128,
+  114,
+  188,
+  114,
+  217,
+  174,
+  131,
+  115,
+  220,
+  217,
+  198,
+  236,
+  198,
+  131,
+  134,
+  177,
+  132,
+  58,
+  143,
+  35,
+  124,
+  110,
+  163,
+  7,
+  228,
+  110,
+  25,
+  356,
+  389,
+  368,
+  11,
+  302,
+  267,
+  452,
+  350,
+  349,
+  302,
+  303,
+  269,
+  357,
+  343,
+  277,
+  452,
+  453,
+  357,
+  333,
+  332,
+  297,
+  175,
+  152,
+  377,
+  384,
+  398,
+  382,
+  347,
+  348,
+  330,
+  303,
+  304,
+  270,
+  9,
+  336,
+  337,
+  278,
+  279,
+  360,
+  418,
+  262,
+  431,
+  304,
+  408,
+  409,
+  310,
+  415,
+  407,
+  270,
+  409,
+  410,
+  450,
+  348,
+  347,
+  422,
+  430,
+  434,
+  313,
+  314,
+  17,
+  306,
+  307,
+  375,
+  387,
+  388,
+  260,
+  286,
+  414,
+  398,
+  335,
+  406,
+  418,
+  364,
+  367,
+  416,
+  423,
+  358,
+  327,
+  251,
+  284,
+  298,
+  281,
+  5,
+  4,
+  373,
+  374,
+  253,
+  307,
+  320,
+  321,
+  425,
+  427,
+  411,
+  421,
+  313,
+  18,
+  321,
+  405,
+  406,
+  320,
+  404,
+  405,
+  315,
+  16,
+  17,
+  426,
+  425,
+  266,
+  377,
+  400,
+  369,
+  322,
+  391,
+  269,
+  417,
+  465,
+  464,
+  386,
+  257,
+  258,
+  466,
+  260,
+  388,
+  456,
+  399,
+  419,
+  284,
+  332,
+  333,
+  417,
+  285,
+  8,
+  346,
+  340,
+  261,
+  413,
+  441,
+  285,
+  327,
+  460,
+  328,
+  355,
+  371,
+  329,
+  392,
+  439,
+  438,
+  382,
+  341,
+  256,
+  429,
+  420,
+  360,
+  364,
+  394,
+  379,
+  277,
+  343,
+  437,
+  443,
+  444,
+  283,
+  275,
+  440,
+  363,
+  431,
+  262,
+  369,
+  297,
+  338,
+  337,
+  273,
+  375,
+  321,
+  450,
+  451,
+  349,
+  446,
+  342,
+  467,
+  293,
+  334,
+  282,
+  458,
+  461,
+  462,
+  276,
+  353,
+  383,
+  308,
+  324,
+  325,
+  276,
+  300,
+  293,
+  372,
+  345,
+  447,
+  382,
+  398,
+  362,
+  352,
+  345,
+  340,
+  274,
+  1,
+  19,
+  456,
+  248,
+  281,
+  436,
+  427,
+  425,
+  381,
+  256,
+  252,
+  269,
+  391,
+  393,
+  200,
+  199,
+  428,
+  266,
+  330,
+  329,
+  287,
+  273,
+  422,
+  250,
+  462,
+  328,
+  258,
+  286,
+  384,
+  265,
+  353,
+  342,
+  387,
+  259,
+  257,
+  424,
+  431,
+  430,
+  342,
+  353,
+  276,
+  273,
+  335,
+  424,
+  292,
+  325,
+  307,
+  366,
+  447,
+  345,
+  271,
+  303,
+  302,
+  423,
+  266,
+  371,
+  294,
+  455,
+  460,
+  279,
+  278,
+  294,
+  271,
+  272,
+  304,
+  432,
+  434,
+  427,
+  272,
+  407,
+  408,
+  394,
+  430,
+  431,
+  395,
+  369,
+  400,
+  334,
+  333,
+  299,
+  351,
+  417,
+  168,
+  352,
+  280,
+  411,
+  325,
+  319,
+  320,
+  295,
+  296,
+  336,
+  319,
+  403,
+  404,
+  330,
+  348,
+  349,
+  293,
+  298,
+  333,
+  323,
+  454,
+  447,
+  15,
+  16,
+  315,
+  358,
+  429,
+  279,
+  14,
+  15,
+  316,
+  285,
+  336,
+  9,
+  329,
+  349,
+  350,
+  374,
+  380,
+  252,
+  318,
+  402,
+  403,
+  6,
+  197,
+  419,
+  318,
+  319,
+  325,
+  367,
+  364,
+  365,
+  435,
+  367,
+  397,
+  344,
+  438,
+  439,
+  272,
+  271,
+  311,
+  195,
+  5,
+  281,
+  273,
+  287,
+  291,
+  396,
+  428,
+  199,
+  311,
+  271,
+  268,
+  283,
+  444,
+  445,
+  373,
+  254,
+  339,
+  263,
+  466,
+  249,
+  282,
+  334,
+  296,
+  449,
+  347,
+  346,
+  264,
+  447,
+  454,
+  336,
+  296,
+  299,
+  338,
+  10,
+  151,
+  278,
+  439,
+  455,
+  292,
+  407,
+  415,
+  358,
+  371,
+  355,
+  340,
+  345,
+  372,
+  390,
+  249,
+  466,
+  346,
+  347,
+  280,
+  442,
+  443,
+  282,
+  19,
+  94,
+  370,
+  441,
+  442,
+  295,
+  248,
+  419,
+  197,
+  263,
+  255,
+  359,
+  440,
+  275,
+  274,
+  300,
+  383,
+  368,
+  351,
+  412,
+  465,
+  263,
+  467,
+  466,
+  301,
+  368,
+  389,
+  380,
+  374,
+  386,
+  395,
+  378,
+  379,
+  412,
+  351,
+  419,
+  436,
+  426,
+  322,
+  373,
+  390,
+  388,
+  2,
+  164,
+  393,
+  370,
+  462,
+  461,
+  164,
+  0,
+  267,
+  302,
+  11,
+  12,
+  374,
+  373,
+  387,
+  268,
+  12,
+  13,
+  293,
+  300,
+  301,
+  446,
+  261,
+  340,
+  385,
+  384,
+  381,
+  330,
+  266,
+  425,
+  426,
+  423,
+  391,
+  429,
+  355,
+  437,
+  391,
+  327,
+  326,
+  440,
+  457,
+  438,
+  341,
+  382,
+  362,
+  459,
+  457,
+  461,
+  434,
+  430,
+  394,
+  414,
+  463,
+  362,
+  396,
+  369,
+  262,
+  354,
+  461,
+  457,
+  316,
+  403,
+  402,
+  315,
+  404,
+  403,
+  314,
+  405,
+  404,
+  313,
+  406,
+  405,
+  421,
+  418,
+  406,
+  366,
+  401,
+  361,
+  306,
+  408,
+  407,
+  291,
+  409,
+  408,
+  287,
+  410,
+  409,
+  432,
+  436,
+  410,
+  434,
+  416,
+  411,
+  264,
+  368,
+  383,
+  309,
+  438,
+  457,
+  352,
+  376,
+  401,
+  274,
+  275,
+  4,
+  421,
+  428,
+  262,
+  294,
+  327,
+  358,
+  433,
+  416,
+  367,
+  289,
+  455,
+  439,
+  462,
+  370,
+  326,
+  2,
+  326,
+  370,
+  305,
+  460,
+  455,
+  254,
+  449,
+  448,
+  255,
+  261,
+  446,
+  253,
+  450,
+  449,
+  252,
+  451,
+  450,
+  256,
+  452,
+  451,
+  341,
+  453,
+  452,
+  413,
+  464,
+  463,
+  441,
+  413,
+  414,
+  258,
+  442,
+  441,
+  257,
+  443,
+  442,
+  259,
+  444,
+  443,
+  260,
+  445,
+  444,
+  467,
+  342,
+  445,
+  459,
+  458,
+  250,
+  289,
+  392,
+  290,
+  290,
+  328,
+  460,
+  376,
+  433,
+  435,
+  250,
+  290,
+  392,
+  411,
+  416,
+  433,
+  341,
+  463,
+  464,
+  453,
+  464,
+  465,
+  357,
+  465,
+  412,
+  343,
+  412,
+  399,
+  360,
+  363,
+  440,
+  437,
+  399,
+  456,
+  420,
+  456,
+  363,
+  401,
+  435,
+  288,
+  372,
+  383,
+  353,
+  339,
+  255,
+  249,
+  448,
+  261,
+  255,
+  133,
+  243,
+  190,
+  133,
+  155,
+  112,
+  33,
+  246,
+  247,
+  33,
+  130,
+  25,
+  398,
+  384,
+  286,
+  362,
+  398,
+  414,
+  362,
+  463,
+  341,
+  263,
+  359,
+  467,
+  263,
+  249,
+  255,
+  466,
+  467,
+  260,
+  75,
+  60,
+  166,
+  238,
+  239,
+  79,
+  162,
+  127,
+  139,
+  72,
+  11,
+  37,
+  121,
+  232,
+  120,
+  73,
+  72,
+  39,
+  114,
+  128,
+  47,
+  233,
+  232,
+  128,
+  103,
+  104,
+  67,
+  152,
+  175,
+  148,
+  173,
+  157,
+  155,
+  119,
+  118,
+  101,
+  74,
+  73,
+  40,
+  107,
+  9,
+  108,
+  49,
+  48,
+  131,
+  32,
+  194,
+  211,
+  184,
+  74,
+  185,
+  191,
+  80,
+  183,
+  185,
+  40,
+  186,
+  119,
+  230,
+  118,
+  210,
+  202,
+  214,
+  84,
+  83,
+  17,
+  77,
+  76,
+  146,
+  161,
+  160,
+  30,
+  190,
+  56,
+  173,
+  182,
+  106,
+  194,
+  138,
+  135,
+  192,
+  129,
+  203,
+  98,
+  54,
+  21,
+  68,
+  5,
+  51,
+  4,
+  145,
+  144,
+  23,
+  90,
+  77,
+  91,
+  207,
+  205,
+  187,
+  83,
+  201,
+  18,
+  181,
+  91,
+  182,
+  180,
+  90,
+  181,
+  16,
+  85,
+  17,
+  205,
+  206,
+  36,
+  176,
+  148,
+  140,
+  165,
+  92,
+  39,
+  245,
+  193,
+  244,
+  27,
+  159,
+  28,
+  30,
+  247,
+  161,
+  174,
+  236,
+  196,
+  103,
+  54,
+  104,
+  55,
+  193,
+  8,
+  111,
+  117,
+  31,
+  221,
+  189,
+  55,
+  240,
+  98,
+  99,
+  142,
+  126,
+  100,
+  219,
+  166,
+  218,
+  112,
+  155,
+  26,
+  198,
+  209,
+  131,
+  169,
+  135,
+  150,
+  114,
+  47,
+  217,
+  224,
+  223,
+  53,
+  220,
+  45,
+  134,
+  32,
+  211,
+  140,
+  109,
+  67,
+  108,
+  146,
+  43,
+  91,
+  231,
+  230,
+  120,
+  113,
+  226,
+  247,
+  105,
+  63,
+  52,
+  241,
+  238,
+  242,
+  124,
+  46,
+  156,
+  95,
+  78,
+  96,
+  70,
+  46,
+  63,
+  116,
+  143,
+  227,
+  116,
+  123,
+  111,
+  1,
+  44,
+  19,
+  3,
+  236,
+  51,
+  207,
+  216,
+  205,
+  26,
+  154,
+  22,
+  165,
+  39,
+  167,
+  199,
+  200,
+  208,
+  101,
+  36,
+  100,
+  43,
+  57,
+  202,
+  242,
+  20,
+  99,
+  56,
+  28,
+  157,
+  124,
+  35,
+  113,
+  29,
+  160,
+  27,
+  211,
+  204,
+  210,
+  124,
+  113,
+  46,
+  106,
+  43,
+  204,
+  96,
+  62,
+  77,
+  227,
+  137,
+  116,
+  73,
+  41,
+  72,
+  36,
+  203,
+  142,
+  235,
+  64,
+  240,
+  48,
+  49,
+  64,
+  42,
+  41,
+  74,
+  214,
+  212,
+  207,
+  183,
+  42,
+  184,
+  210,
+  169,
+  211,
+  140,
+  170,
+  176,
+  104,
+  105,
+  69,
+  193,
+  122,
+  168,
+  50,
+  123,
+  187,
+  89,
+  96,
+  90,
+  66,
+  65,
+  107,
+  179,
+  89,
+  180,
+  119,
+  101,
+  120,
+  68,
+  63,
+  104,
+  234,
+  93,
+  227,
+  16,
+  15,
+  85,
+  209,
+  129,
+  49,
+  15,
+  14,
+  86,
+  107,
+  55,
+  9,
+  120,
+  100,
+  121,
+  153,
+  145,
+  22,
+  178,
+  88,
+  179,
+  197,
+  6,
+  196,
+  89,
+  88,
+  96,
+  135,
+  138,
+  136,
+  138,
+  215,
+  172,
+  218,
+  115,
+  219,
+  41,
+  42,
+  81,
+  5,
+  195,
+  51,
+  57,
+  43,
+  61,
+  208,
+  171,
+  199,
+  41,
+  81,
+  38,
+  224,
+  53,
+  225,
+  24,
+  144,
+  110,
+  105,
+  52,
+  66,
+  118,
+  229,
+  117,
+  227,
+  34,
+  234,
+  66,
+  107,
+  69,
+  10,
+  109,
+  151,
+  219,
+  48,
+  235,
+  183,
+  62,
+  191,
+  142,
+  129,
+  126,
+  116,
+  111,
+  143,
+  7,
+  163,
+  246,
+  118,
+  117,
+  50,
+  223,
+  222,
+  52,
+  94,
+  19,
+  141,
+  222,
+  221,
+  65,
+  196,
+  3,
+  197,
+  45,
+  220,
+  44,
+  156,
+  70,
+  139,
+  188,
+  122,
+  245,
+  139,
+  71,
+  162,
+  145,
+  153,
+  159,
+  149,
+  170,
+  150,
+  122,
+  188,
+  196,
+  206,
+  216,
+  92,
+  163,
+  144,
+  161,
+  164,
+  2,
+  167,
+  242,
+  141,
+  241,
+  0,
+  164,
+  37,
+  11,
+  72,
+  12,
+  144,
+  145,
+  160,
+  12,
+  38,
+  13,
+  70,
+  63,
+  71,
+  31,
+  226,
+  111,
+  157,
+  158,
+  154,
+  36,
+  101,
+  205,
+  203,
+  206,
+  165,
+  126,
+  209,
+  217,
+  98,
+  165,
+  97,
+  237,
+  220,
+  218,
+  237,
+  239,
+  241,
+  210,
+  214,
+  169,
+  140,
+  171,
+  32,
+  241,
+  125,
+  237,
+  179,
+  86,
+  178,
+  180,
+  85,
+  179,
+  181,
+  84,
+  180,
+  182,
+  83,
+  181,
+  194,
+  201,
+  182,
+  177,
+  137,
+  132,
+  184,
+  76,
+  183,
+  185,
+  61,
+  184,
+  186,
+  57,
+  185,
+  216,
+  212,
+  186,
+  192,
+  214,
+  187,
+  139,
+  34,
+  156,
+  218,
+  79,
+  237,
+  147,
+  123,
+  177,
+  45,
+  44,
+  4,
+  208,
+  201,
+  32,
+  98,
+  64,
+  129,
+  192,
+  213,
+  138,
+  235,
+  59,
+  219,
+  141,
+  242,
+  97,
+  97,
+  2,
+  141,
+  240,
+  75,
+  235,
+  229,
+  24,
+  228,
+  31,
+  25,
+  226,
+  230,
+  23,
+  229,
+  231,
+  22,
+  230,
+  232,
+  26,
+  231,
+  233,
+  112,
+  232,
+  244,
+  189,
+  243,
+  189,
+  221,
+  190,
+  222,
+  28,
+  221,
+  223,
+  27,
+  222,
+  224,
+  29,
+  223,
+  225,
+  30,
+  224,
+  113,
+  247,
+  225,
+  99,
+  60,
+  240,
+  213,
+  147,
+  215,
+  60,
+  20,
+  166,
+  192,
+  187,
+  213,
+  243,
+  112,
+  244,
+  244,
+  233,
+  245,
+  245,
+  128,
+  188,
+  188,
+  114,
+  174,
+  134,
+  131,
+  220,
+  174,
+  217,
+  236,
+  236,
+  198,
+  134,
+  215,
+  177,
+  58,
+  156,
+  143,
+  124,
+  25,
+  110,
+  7,
+  31,
+  228,
+  25,
+  264,
+  356,
+  368,
+  0,
+  11,
+  267,
+  451,
+  452,
+  349,
+  267,
+  302,
+  269,
+  350,
+  357,
+  277,
+  350,
+  452,
+  357,
+  299,
+  333,
+  297,
+  396,
+  175,
+  377,
+  381,
+  384,
+  382,
+  280,
+  347,
+  330,
+  269,
+  303,
+  270,
+  151,
+  9,
+  337,
+  344,
+  278,
+  360,
+  424,
+  418,
+  431,
+  270,
+  304,
+  409,
+  272,
+  310,
+  407,
+  322,
+  270,
+  410,
+  449,
+  450,
+  347,
+  432,
+  422,
+  434,
+  18,
+  313,
+  17,
+  291,
+  306,
+  375,
+  259,
+  387,
+  260,
+  424,
+  335,
+  418,
+  434,
+  364,
+  416,
+  391,
+  423,
+  327,
+  301,
+  251,
+  298,
+  275,
+  281,
+  4,
+  254,
+  373,
+  253,
+  375,
+  307,
+  321,
+  280,
+  425,
+  411,
+  200,
+  421,
+  18,
+  335,
+  321,
+  406,
+  321,
+  320,
+  405,
+  314,
+  315,
+  17,
+  423,
+  426,
+  266,
+  396,
+  377,
+  369,
+  270,
+  322,
+  269,
+  413,
+  417,
+  464,
+  385,
+  386,
+  258,
+  248,
+  456,
+  419,
+  298,
+  284,
+  333,
+  168,
+  417,
+  8,
+  448,
+  346,
+  261,
+  417,
+  413,
+  285,
+  326,
+  327,
+  328,
+  277,
+  355,
+  329,
+  309,
+  392,
+  438,
+  381,
+  382,
+  256,
+  279,
+  429,
+  360,
+  365,
+  364,
+  379,
+  355,
+  277,
+  437,
+  282,
+  443,
+  283,
+  281,
+  275,
+  363,
+  395,
+  431,
+  369,
+  299,
+  297,
+  337,
+  335,
+  273,
+  321,
+  348,
+  450,
+  349,
+  359,
+  446,
+  467,
+  283,
+  293,
+  282,
+  250,
+  458,
+  462,
+  300,
+  276,
+  383,
+  292,
+  308,
+  325,
+  283,
+  276,
+  293,
+  264,
+  372,
+  447,
+  346,
+  352,
+  340,
+  354,
+  274,
+  19,
+  363,
+  456,
+  281,
+  426,
+  436,
+  425,
+  380,
+  381,
+  252,
+  267,
+  269,
+  393,
+  421,
+  200,
+  428,
+  371,
+  266,
+  329,
+  432,
+  287,
+  422,
+  290,
+  250,
+  328,
+  385,
+  258,
+  384,
+  446,
+  265,
+  342,
+  386,
+  387,
+  257,
+  422,
+  424,
+  430,
+  445,
+  342,
+  276,
+  422,
+  273,
+  424,
+  306,
+  292,
+  307,
+  352,
+  366,
+  345,
+  268,
+  271,
+  302,
+  358,
+  423,
+  371,
+  327,
+  294,
+  460,
+  331,
+  279,
+  294,
+  303,
+  271,
+  304,
+  436,
+  432,
+  427,
+  304,
+  272,
+  408,
+  395,
+  394,
+  431,
+  378,
+  395,
+  400,
+  296,
+  334,
+  299,
+  6,
+  351,
+  168,
+  376,
+  352,
+  411,
+  307,
+  325,
+  320,
+  285,
+  295,
+  336,
+  320,
+  319,
+  404,
+  329,
+  330,
+  349,
+  334,
+  293,
+  333,
+  366,
+  323,
+  447,
+  316,
+  15,
+  315,
+  331,
+  358,
+  279,
+  317,
+  14,
+  316,
+  8,
+  285,
+  9,
+  277,
+  329,
+  350,
+  253,
+  374,
+  252,
+  319,
+  318,
+  403,
+  351,
+  6,
+  419,
+  324,
+  318,
+  325,
+  397,
+  367,
+  365,
+  288,
+  435,
+  397,
+  278,
+  344,
+  439,
+  310,
+  272,
+  311,
+  248,
+  195,
+  281,
+  375,
+  273,
+  291,
+  175,
+  396,
+  199,
+  312,
+  311,
+  268,
+  276,
+  283,
+  445,
+  390,
+  373,
+  339,
+  295,
+  282,
+  296,
+  448,
+  449,
+  346,
+  356,
+  264,
+  454,
+  337,
+  336,
+  299,
+  337,
+  338,
+  151,
+  294,
+  278,
+  455,
+  308,
+  292,
+  415,
+  429,
+  358,
+  355,
+  265,
+  340,
+  372,
+  388,
+  390,
+  466,
+  352,
+  346,
+  280,
+  295,
+  442,
+  282,
+  354,
+  19,
+  370,
+  285,
+  441,
+  295,
+  195,
+  248,
+  197,
+  457,
+  440,
+  274,
+  301,
+  300,
+  368,
+  417,
+  351,
+  465,
+  251,
+  301,
+  389,
+  385,
+  380,
+  386,
+  394,
+  395,
+  379,
+  399,
+  412,
+  419,
+  410,
+  436,
+  322,
+  387,
+  373,
+  388,
+  326,
+  2,
+  393,
+  354,
+  370,
+  461,
+  393,
+  164,
+  267,
+  268,
+  302,
+  12,
+  386,
+  374,
+  387,
+  312,
+  268,
+  13,
+  298,
+  293,
+  301,
+  265,
+  446,
+  340,
+  380,
+  385,
+  381,
+  280,
+  330,
+  425,
+  322,
+  426,
+  391,
+  420,
+  429,
+  437,
+  393,
+  391,
+  326,
+  344,
+  440,
+  438,
+  458,
+  459,
+  461,
+  364,
+  434,
+  394,
+  428,
+  396,
+  262,
+  274,
+  354,
+  457,
+  317,
+  316,
+  402,
+  316,
+  315,
+  403,
+  315,
+  314,
+  404,
+  314,
+  313,
+  405,
+  313,
+  421,
+  406,
+  323,
+  366,
+  361,
+  292,
+  306,
+  407,
+  306,
+  291,
+  408,
+  291,
+  287,
+  409,
+  287,
+  432,
+  410,
+  427,
+  434,
+  411,
+  372,
+  264,
+  383,
+  459,
+  309,
+  457,
+  366,
+  352,
+  401,
+  1,
+  274,
+  4,
+  418,
+  421,
+  262,
+  331,
+  294,
+  358,
+  435,
+  433,
+  367,
+  392,
+  289,
+  439,
+  328,
+  462,
+  326,
+  94,
+  2,
+  370,
+  289,
+  305,
+  455,
+  339,
+  254,
+  448,
+  359,
+  255,
+  446,
+  254,
+  253,
+  449,
+  253,
+  252,
+  450,
+  252,
+  256,
+  451,
+  256,
+  341,
+  452,
+  414,
+  413,
+  463,
+  286,
+  441,
+  414,
+  286,
+  258,
+  441,
+  258,
+  257,
+  442,
+  257,
+  259,
+  443,
+  259,
+  260,
+  444,
+  260,
+  467,
+  445,
+  309,
+  459,
+  250,
+  305,
+  289,
+  290,
+  305,
+  290,
+  460,
+  401,
+  376,
+  435,
+  309,
+  250,
+  392,
+  376,
+  411,
+  433,
+  453,
+  341,
+  464,
+  357,
+  453,
+  465,
+  343,
+  357,
+  412,
+  437,
+  343,
+  399,
+  344,
+  360,
+  440,
+  420,
+  437,
+  456,
+  360,
+  420,
+  363,
+  361,
+  401,
+  288,
+  265,
+  372,
+  353,
+  390,
+  339,
+  249,
+  339,
+  448,
+  255
+];
+var VTX68 = [
+  127,
+  234,
+  132,
+  58,
+  172,
+  150,
+  149,
+  148,
+  152,
+  377,
+  378,
+  379,
+  397,
+  288,
+  361,
+  454,
+  356,
+  70,
+  63,
+  105,
+  66,
+  107,
+  336,
+  296,
+  334,
+  293,
+  300,
+  168,
+  6,
+  195,
+  4,
+  98,
+  97,
+  2,
+  326,
+  327,
+  33,
+  160,
+  158,
+  133,
+  153,
+  144,
+  362,
+  385,
+  387,
+  263,
+  373,
+  380,
+  57,
+  40,
+  37,
+  0,
+  267,
+  270,
+  287,
+  321,
+  314,
+  17,
+  84,
+  91,
+  78,
+  81,
+  13,
+  311,
+  308,
+  402,
+  14,
+  178
+];
+var VTX33 = [33, 133, 362, 263, 1, 62, 308, 159, 145, 386, 374, 6, 102, 331, 2, 13, 14, 70, 105, 107, 336, 334, 300, 54, 10, 284, 50, 280, 234, 454, 58, 288, 152];
+var VTX7 = [33, 133, 362, 263, 1, 78, 308];
+var UV68 = VTX68.map((x) => UV468[x]);
+var UV33 = VTX33.map((x) => UV468[x]);
+var UV7 = VTX7.map((x) => UV468[x]);
+
+// src/face/facemeshutil.ts
+var getBoxSize = (box) => [Math.abs(box.endPoint[0] - box.startPoint[0]), Math.abs(box.endPoint[1] - box.startPoint[1])];
+var getBoxCenter = (box) => [box.startPoint[0] + (box.endPoint[0] - box.startPoint[0]) / 2, box.startPoint[1] + (box.endPoint[1] - box.startPoint[1]) / 2, 1];
+var clampBox = (box, input) => box ? [
+  Math.trunc(Math.max(0, box.startPoint[0])),
+  Math.trunc(Math.max(0, box.startPoint[1])),
+  Math.trunc(Math.min(input.shape[2] || 0, box.endPoint[0]) - Math.max(0, box.startPoint[0])),
+  Math.trunc(Math.min(input.shape[1] || 0, box.endPoint[1]) - Math.max(0, box.startPoint[1]))
+] : [0, 0, 0, 0];
+var getRawBox = (box, input) => box ? [
+  box.startPoint[0] / (input.shape[2] || 0),
+  box.startPoint[1] / (input.shape[1] || 0),
+  (box.endPoint[0] - box.startPoint[0]) / (input.shape[2] || 0),
+  (box.endPoint[1] - box.startPoint[1]) / (input.shape[1] || 0)
+] : [0, 0, 0, 0];
+var scaleBoxCoordinates = (box, factor) => {
+  const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
+  const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
+  return { startPoint, endPoint, landmarks: box.landmarks, confidence: box.confidence };
+};
+var cutAndResize = (box, image24, cropSize) => {
+  const h = image24.shape[1];
+  const w = image24.shape[2];
+  const cutBox = [box.startPoint[1] / h, box.startPoint[0] / w, box.endPoint[1] / h, box.endPoint[0] / w];
+  const crop = tf10.image.cropAndResize(image24, [cutBox], [0], cropSize);
+  const norm = tf10.div(crop, constants.tf255);
+  tf10.dispose(crop);
+  return norm;
+};
+var enlargeBox = (box, factor) => {
+  const center = getBoxCenter(box);
+  const size2 = getBoxSize(box);
+  const halfSize = [factor * size2[0] / 2, factor * size2[1] / 2];
+  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]], endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]], landmarks: box.landmarks, confidence: box.confidence };
+};
+var squarifyBox = (box) => {
+  const centers = getBoxCenter(box);
+  const size2 = getBoxSize(box);
+  const halfSize = Math.max(...size2) / 2;
+  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)], endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)], landmarks: box.landmarks, confidence: box.confidence };
+};
+var calculateLandmarksBoundingBox = (landmarks) => {
+  const x = landmarks.map((d) => d[0]);
+  const y = landmarks.map((d) => d[1]);
+  return { startPoint: [Math.min(...x), Math.min(...y)], endPoint: [Math.max(...x), Math.max(...y)], landmarks };
+};
+var fixedRotationMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+var normalizeRadians = (angle) => angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
+var computeRotation = (point1, point2) => normalizeRadians(Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]));
+var buildTranslationMatrix = (x, y) => [[1, 0, x], [0, 1, y], [0, 0, 1]];
+var dot = (v1, v2) => {
+  let product = 0;
+  for (let i = 0; i < v1.length; i++)
+    product += v1[i] * v2[i];
+  return product;
+};
+var getColumnFrom2DArr = (arr, columnIndex) => {
+  const column = [];
+  for (let i = 0; i < arr.length; i++)
+    column.push(arr[i][columnIndex]);
+  return column;
+};
+var multiplyTransformMatrices = (mat1, mat2) => {
+  const product = [];
+  const size2 = mat1.length;
+  for (let row = 0; row < size2; row++) {
+    product.push([]);
+    for (let col = 0; col < size2; col++)
+      product[row].push(dot(mat1[row], getColumnFrom2DArr(mat2, col)));
+  }
+  return product;
+};
+var buildRotationMatrix = (rotation, center) => {
+  const cosA = Math.cos(rotation);
+  const sinA = Math.sin(rotation);
+  const rotationMatrix = [[cosA, -sinA, 0], [sinA, cosA, 0], [0, 0, 1]];
+  const translationMatrix = buildTranslationMatrix(center[0], center[1]);
+  const translationTimesRotation = multiplyTransformMatrices(translationMatrix, rotationMatrix);
+  const negativeTranslationMatrix = buildTranslationMatrix(-center[0], -center[1]);
+  return multiplyTransformMatrices(translationTimesRotation, negativeTranslationMatrix);
+};
+var invertTransformMatrix = (matrix) => {
+  const rotationComponent = [[matrix[0][0], matrix[1][0]], [matrix[0][1], matrix[1][1]]];
+  const translationComponent = [matrix[0][2], matrix[1][2]];
+  const invertedTranslation = [-dot(rotationComponent[0], translationComponent), -dot(rotationComponent[1], translationComponent)];
+  return [rotationComponent[0].concat(invertedTranslation[0]), rotationComponent[1].concat(invertedTranslation[1]), [0, 0, 1]];
+};
+var rotatePoint = (homogeneousCoordinate, rotationMatrix) => [dot(homogeneousCoordinate, rotationMatrix[0]), dot(homogeneousCoordinate, rotationMatrix[1])];
+function generateAnchors(inputSize10) {
+  const spec = { strides: [inputSize10 / 16, inputSize10 / 8], anchors: [2, 6] };
+  const anchors3 = [];
+  for (let i = 0; i < spec.strides.length; i++) {
+    const stride = spec.strides[i];
+    const gridRows = Math.floor((inputSize10 + stride - 1) / stride);
+    const gridCols = Math.floor((inputSize10 + stride - 1) / stride);
+    const anchorsNum = spec.anchors[i];
+    for (let gridY = 0; gridY < gridRows; gridY++) {
+      const anchorY = stride * (gridY + 0.5);
+      for (let gridX = 0; gridX < gridCols; gridX++) {
+        const anchorX = stride * (gridX + 0.5);
+        for (let n = 0; n < anchorsNum; n++)
+          anchors3.push([anchorX, anchorY]);
+      }
+    }
+  }
+  return anchors3;
+}
+function transformRawCoords(coordsRaw, box, angle, rotationMatrix, inputSize10) {
+  const boxSize = getBoxSize(box);
+  const coordsScaled = coordsRaw.map((coord) => [
+    boxSize[0] / inputSize10 * (coord[0] - inputSize10 / 2),
+    boxSize[1] / inputSize10 * (coord[1] - inputSize10 / 2),
+    coord[2] || 0
+  ]);
+  const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
+  const coordsRotationMatrix = largeAngle ? buildRotationMatrix(angle, [0, 0]) : fixedRotationMatrix;
+  const coordsRotated = largeAngle ? coordsScaled.map((coord) => [...rotatePoint(coord, coordsRotationMatrix), coord[2]]) : coordsScaled;
+  const inverseRotationMatrix = largeAngle ? invertTransformMatrix(rotationMatrix) : fixedRotationMatrix;
+  const boxCenter = getBoxCenter(box);
+  const offsets = [dot(boxCenter, inverseRotationMatrix[0]), dot(boxCenter, inverseRotationMatrix[1])];
+  return coordsRotated.map((coord) => [
+    Math.trunc(coord[0] + offsets[0]),
+    Math.trunc(coord[1] + offsets[1]),
+    Math.trunc(coord[2] || 0)
+  ]);
+}
+function correctFaceRotation(rotate, box, input, inputSize10) {
+  const symmetryLine = box.landmarks.length >= meshLandmarks.count ? meshLandmarks.symmetryLine : blazeFaceLandmarks.symmetryLine;
+  let angle = 0;
+  let rotationMatrix = fixedRotationMatrix;
+  let face4;
+  if (rotate && env.kernels.includes("rotatewithoffset")) {
+    angle = computeRotation(box.landmarks[symmetryLine[0]], box.landmarks[symmetryLine[1]]);
+    const largeAngle = angle && angle !== 0 && Math.abs(angle) > 0.2;
+    if (largeAngle) {
+      const center = getBoxCenter(box);
+      const centerRaw = [center[0] / input.shape[2], center[1] / input.shape[1]];
+      const rotated = tf10.image.rotateWithOffset(input, angle, 0, centerRaw);
+      rotationMatrix = buildRotationMatrix(-angle, center);
+      face4 = cutAndResize(box, rotated, [inputSize10, inputSize10]);
+      tf10.dispose(rotated);
+    } else {
+      face4 = cutAndResize(box, input, [inputSize10, inputSize10]);
+    }
+  } else {
+    face4 = cutAndResize(box, input, [inputSize10, inputSize10]);
+  }
+  return [angle, rotationMatrix, face4];
+}
+var findFaceCenter = (mesh) => {
+  const x = mesh.map((m) => m[0]);
+  const y = mesh.map((m) => m[1]);
+  return [Math.min(...x) + (Math.max(...x) - Math.min(...x)) / 2, Math.min(...y) + (Math.max(...y) - Math.min(...y)) / 2];
+};
+var calculateFaceBox = (mesh, previousBox) => {
+  const center = findFaceCenter(mesh);
+  const boxSize = getBoxSize(previousBox);
+  const calculatedBox = {
+    startPoint: [center[0] - boxSize[0] / 2, center[1] - boxSize[1] / 2],
+    endPoint: [center[0] + boxSize[0] / 2, center[1] + boxSize[1] / 2]
+  };
+  return calculatedBox;
+};
+
+// src/face/blazeface.ts
+var keypointsCount = 6;
+var faceBoxScaleFactor = 1.2;
+var model5;
+var anchors = null;
+var inputSize = 0;
+var inputSizeT = null;
+var size = () => inputSize;
+async function load5(config3) {
+  var _a;
+  if (env.initial)
+    model5 = null;
+  if (!model5)
+    model5 = await loadModel((_a = config3.face.detector) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model5["modelUrl"]);
+  inputSize = model5.inputs[0].shape ? model5.inputs[0].shape[2] : 0;
+  inputSizeT = tf11.scalar(inputSize, "int32");
+  anchors = tf11.tensor2d(generateAnchors(inputSize));
+  return model5;
+}
+function decodeBounds(boxOutputs) {
+  const t = {};
+  t.boxStarts = tf11.slice(boxOutputs, [0, 1], [-1, 2]);
+  t.centers = tf11.add(t.boxStarts, anchors);
+  t.boxSizes = tf11.slice(boxOutputs, [0, 3], [-1, 2]);
+  t.boxSizesNormalized = tf11.div(t.boxSizes, inputSizeT);
+  t.centersNormalized = tf11.div(t.centers, inputSizeT);
+  t.halfBoxSize = tf11.div(t.boxSizesNormalized, constants.tf2);
+  t.starts = tf11.sub(t.centersNormalized, t.halfBoxSize);
+  t.ends = tf11.add(t.centersNormalized, t.halfBoxSize);
+  t.startNormalized = tf11.mul(t.starts, inputSizeT);
+  t.endNormalized = tf11.mul(t.ends, inputSizeT);
+  const boxes = tf11.concat2d([t.startNormalized, t.endNormalized], 1);
+  Object.keys(t).forEach((tensor3) => tf11.dispose(t[tensor3]));
+  return boxes;
+}
+async function getBoxes(inputImage, config3) {
+  var _a, _b, _c, _d;
+  if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
+    return [];
+  const t = {};
+  t.resized = tf11.image.resizeBilinear(inputImage, [inputSize, inputSize]);
+  t.div = tf11.div(t.resized, constants.tf127);
+  t.normalized = tf11.sub(t.div, constants.tf05);
+  const res = model5 == null ? void 0 : model5.execute(t.normalized);
+  if (Array.isArray(res)) {
+    const sorted = res.sort((a, b) => a.size - b.size);
+    t.concat384 = tf11.concat([sorted[0], sorted[2]], 2);
+    t.concat512 = tf11.concat([sorted[1], sorted[3]], 2);
+    t.concat = tf11.concat([t.concat512, t.concat384], 1);
+    t.batch = tf11.squeeze(t.concat, 0);
+  } else {
+    t.batch = tf11.squeeze(res);
+  }
+  tf11.dispose(res);
+  t.boxes = decodeBounds(t.batch);
+  t.logits = tf11.slice(t.batch, [0, 0], [-1, 1]);
+  t.sigmoid = tf11.sigmoid(t.logits);
+  t.scores = tf11.squeeze(t.sigmoid);
+  t.nms = await tf11.image.nonMaxSuppressionAsync(t.boxes, t.scores, ((_a = config3.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = config3.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = config3.face.detector) == null ? void 0 : _c.minConfidence) || 0);
+  const nms = await t.nms.array();
+  const boxes = [];
+  const scores = await t.scores.data();
+  for (let i = 0; i < nms.length; i++) {
+    const confidence = scores[nms[i]];
+    if (confidence > (((_d = config3.face.detector) == null ? void 0 : _d.minConfidence) || 0)) {
+      const b = {};
+      b.bbox = tf11.slice(t.boxes, [nms[i], 0], [1, -1]);
+      b.slice = tf11.slice(t.batch, [nms[i], keypointsCount - 1], [1, -1]);
+      b.squeeze = tf11.squeeze(b.slice);
+      b.landmarks = tf11.reshape(b.squeeze, [keypointsCount, -1]);
+      const points = await b.bbox.data();
+      const rawBox = {
+        startPoint: [points[0], points[1]],
+        endPoint: [points[2], points[3]],
+        landmarks: await b.landmarks.array(),
+        confidence
+      };
+      const scaledBox = scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize]);
+      const enlargedBox = enlargeBox(scaledBox, config3.face["scale"] || faceBoxScaleFactor);
+      const squaredBox = squarifyBox(enlargedBox);
+      boxes.push(squaredBox);
+      Object.keys(b).forEach((tensor3) => tf11.dispose(b[tensor3]));
+    }
+  }
+  Object.keys(t).forEach((tensor3) => tf11.dispose(t[tensor3]));
+  return boxes;
+}
+
+// src/body/blazepose.ts
+var tf13 = __toESM(require_tfjs_esm());
+
+// src/body/blazeposecoords.ts
+var blazeposecoords_exports = {};
+__export(blazeposecoords_exports, {
+  connected: () => connected,
+  kpt: () => kpt
+});
+var kpt = [
+  "nose",
+  "leftEyeInside",
+  "leftEye",
+  "leftEyeOutside",
+  "rightEyeInside",
+  "rightEye",
+  "rightEyeOutside",
+  "leftEar",
+  "rightEar",
+  "leftMouth",
+  "rightMouth",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "leftWrist",
+  "rightWrist",
+  "leftPinky",
+  "rightPinky",
+  "leftIndex",
+  "rightIndex",
+  "leftThumb",
+  "rightThumb",
+  "leftHip",
+  "rightHip",
+  "leftKnee",
+  "rightKnee",
+  "leftAnkle",
+  "rightAnkle",
+  "leftHeel",
+  "rightHeel",
+  "leftFoot",
+  "rightFoot",
+  "bodyCenter",
+  "bodyTop",
+  "leftPalm",
+  "leftHand",
+  "rightPalm",
+  "rightHand"
+];
+var connected = {
+  shoulders: ["leftShoulder", "rightShoulder"],
+  hips: ["rightHip", "leftHip"],
+  mouth: ["leftMouth", "rightMouth"],
+  leftLegUpper: ["leftHip", "leftKnee"],
+  leftLegLower: ["leftKnee", "leftAnkle"],
+  leftFoot: ["leftAnkle", "leftHeel", "leftFoot"],
+  leftTorso: ["leftShoulder", "leftHip"],
+  leftArmUpper: ["leftShoulder", "leftElbow"],
+  leftArmLower: ["leftElbow", "leftWrist"],
+  leftHand: ["leftWrist", "leftPalm"],
+  leftHandPinky: ["leftPalm", "leftPinky"],
+  leftHandIndex: ["leftPalm", "leftIndex"],
+  leftHandThumb: ["leftPalm", "leftThumb"],
+  leftEyeOutline: ["leftEyeInside", "leftEyeOutside"],
+  rightLegUpper: ["rightHip", "rightKnee"],
+  rightLegLower: ["rightKnee", "rightAnkle"],
+  rightFoot: ["rightAnkle", "rightHeel", "rightFoot"],
+  rightTorso: ["rightShoulder", "rightHip"],
+  rightArmUpper: ["rightShoulder", "rightElbow"],
+  rightArmLower: ["rightElbow", "rightWrist"],
+  rightHand: ["rightWrist", "rightPalm"],
+  rightHandPinky: ["rightPalm", "rightPinky"],
+  rightHandIndex: ["rightPalm", "rightIndex"],
+  rightHandThumb: ["rightPalm", "rightThumb"],
+  rightEyeOutline: ["rightEyeInside", "rightEyeOutside"]
+};
+
+// src/body/blazeposedetector.ts
+var tf12 = __toESM(require_tfjs_esm());
+var inputSize2 = 224;
+var anchorTensor;
+var numLayers = 5;
+var strides = [8, 16, 32, 32, 32];
+async function createAnchors() {
+  const anchors3 = [];
+  let layerId = 0;
+  while (layerId < numLayers) {
+    let anchorCount = 0;
+    let lastSameStrideLayer = layerId;
+    while (lastSameStrideLayer < strides.length && strides[lastSameStrideLayer] === strides[layerId]) {
+      anchorCount += 2;
+      lastSameStrideLayer++;
+    }
+    const stride = strides[layerId];
+    const featureMapHeight = Math.ceil(inputSize2 / stride);
+    const featureMapWidth = Math.ceil(inputSize2 / stride);
+    for (let y = 0; y < featureMapHeight; ++y) {
+      for (let x = 0; x < featureMapWidth; ++x) {
+        for (let anchorId = 0; anchorId < anchorCount; ++anchorId) {
+          anchors3.push({ x: (x + 0.5) / featureMapWidth, y: (y + 0.5) / featureMapHeight });
+        }
+      }
+    }
+    layerId = lastSameStrideLayer;
+  }
+  anchorTensor = { x: tf12.tensor1d(anchors3.map((a) => a.x)), y: tf12.tensor1d(anchors3.map((a) => a.y)) };
+}
+
+// src/util/box.ts
+function calc(keypoints, outputSize2 = [1, 1]) {
+  const coords = [keypoints.map((pt) => pt[0]), keypoints.map((pt) => pt[1])];
+  const min2 = [Math.min(...coords[0]), Math.min(...coords[1])];
+  const max4 = [Math.max(...coords[0]), Math.max(...coords[1])];
+  const box = [min2[0], min2[1], max4[0] - min2[0], max4[1] - min2[1]];
+  const boxRaw = [box[0] / outputSize2[0], box[1] / outputSize2[1], box[2] / outputSize2[0], box[3] / outputSize2[1]];
+  return { box, boxRaw };
+}
+function square(keypoints, outputSize2 = [1, 1]) {
+  const coords = [keypoints.map((pt) => pt[0]), keypoints.map((pt) => pt[1])];
+  const min2 = [Math.min(...coords[0]), Math.min(...coords[1])];
+  const max4 = [Math.max(...coords[0]), Math.max(...coords[1])];
+  const center = [(min2[0] + max4[0]) / 2, (min2[1] + max4[1]) / 2];
+  const dist = Math.max(center[0] - min2[0], center[1] - min2[1], -center[0] + max4[0], -center[1] + max4[1]);
+  const box = [Math.trunc(center[0] - dist), Math.trunc(center[1] - dist), Math.trunc(2 * dist), Math.trunc(2 * dist)];
+  const boxRaw = [box[0] / outputSize2[0], box[1] / outputSize2[1], box[2] / outputSize2[0], box[3] / outputSize2[1]];
+  return { box, boxRaw };
+}
+function scale(box, scaleFact) {
+  const dist = [box[2] * scaleFact, box[3] * scaleFact];
+  const newBox = [
+    box[0] - (dist[0] - box[2]) / 2,
+    box[1] - (dist[1] - box[3]) / 2,
+    dist[0],
+    dist[1]
+  ];
+  return newBox;
+}
+
+// src/body/blazepose.ts
+var env3 = { initial: true };
+var models = { detector: null, landmarks: null };
+var inputSize3 = { detector: [224, 224], landmarks: [256, 256] };
+var skipped5 = Number.MAX_SAFE_INTEGER;
+var outputNodes = {
+  landmarks: ["ld_3d", "activation_segmentation", "activation_heatmap", "world_3d", "output_poseflag"],
+  detector: []
+};
+var cache = null;
+var cropBox;
+var padding = [[0, 0], [0, 0], [0, 0], [0, 0]];
+var lastTime5 = 0;
+var sigmoid3 = (x) => 1 - 1 / (1 + Math.exp(x));
+async function loadDetect(config3) {
+  if (env3.initial)
+    models.detector = null;
+  if (!models.detector && config3.body["detector"] && config3.body["detector"]["modelPath"] || "") {
+    models.detector = await loadModel(config3.body["detector"]["modelPath"]);
+    const inputs = Object.values(models.detector.modelSignature["inputs"]);
+    inputSize3.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize3.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+  } else if (config3.debug && models.detector)
+    log("cached model:", models.detector["modelUrl"]);
+  await createAnchors();
+  return models.detector;
+}
+async function loadPose(config3) {
+  if (env3.initial)
+    models.landmarks = null;
+  if (!models.landmarks) {
+    models.landmarks = await loadModel(config3.body.modelPath);
+    const inputs = Object.values(models.landmarks.modelSignature["inputs"]);
+    inputSize3.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize3.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+  } else if (config3.debug)
+    log("cached model:", models.landmarks["modelUrl"]);
+  return models.landmarks;
+}
+async function prepareImage(input, size2) {
+  const t = {};
+  if (!input.shape || !input.shape[1] || !input.shape[2])
+    return input;
+  let final;
+  if (cropBox) {
+    t.cropped = tf13.image.cropAndResize(input, [cropBox], [0], [input.shape[1], input.shape[2]]);
+  }
+  if (input.shape[1] !== input.shape[2]) {
+    const height = [
+      input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0,
+      input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0
+    ];
+    const width = [
+      input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0,
+      input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0
+    ];
+    padding = [
+      [0, 0],
+      height,
+      width,
+      [0, 0]
+    ];
+    t.pad = tf13.pad(t.cropped || input, padding);
+    t.resize = tf13.image.resizeBilinear(t.pad, [size2, size2]);
+    final = tf13.div(t.resize, constants.tf255);
+  } else if (input.shape[1] !== size2) {
+    t.resize = tf13.image.resizeBilinear(t.cropped || input, [size2, size2]);
+    final = tf13.div(t.resize, constants.tf255);
+  } else {
+    final = tf13.div(t.cropped || input, constants.tf255);
+  }
+  Object.keys(t).forEach((tensor3) => tf13.dispose(t[tensor3]));
+  return final;
+}
+function rescaleKeypoints(keypoints, outputSize2) {
+  for (const kpt4 of keypoints) {
+    kpt4.position = [
+      Math.trunc(kpt4.position[0] * (outputSize2[0] + padding[2][0] + padding[2][1]) / outputSize2[0] - padding[2][0]),
+      Math.trunc(kpt4.position[1] * (outputSize2[1] + padding[1][0] + padding[1][1]) / outputSize2[1] - padding[1][0]),
+      kpt4.position[2]
+    ];
+    kpt4.positionRaw = [kpt4.position[0] / outputSize2[0], kpt4.position[1] / outputSize2[1], 2 * kpt4.position[2] / (outputSize2[0] + outputSize2[1])];
+  }
+  if (cropBox) {
+    for (const kpt4 of keypoints) {
+      kpt4.positionRaw = [
+        kpt4.positionRaw[0] + cropBox[1],
+        kpt4.positionRaw[1] + cropBox[0],
+        kpt4.positionRaw[2]
+      ];
+      kpt4.position = [
+        Math.trunc(kpt4.positionRaw[0] * outputSize2[0]),
+        Math.trunc(kpt4.positionRaw[1] * outputSize2[1]),
+        kpt4.positionRaw[2]
+      ];
+    }
+  }
+  return keypoints;
+}
+async function fixKeypoints(keypoints) {
+  const leftPalm = keypoints.find((k) => k.part === "leftPalm");
+  const leftWrist = keypoints.find((k) => k.part === "leftWrist");
+  const leftIndex = keypoints.find((k) => k.part === "leftIndex");
+  leftPalm.position[2] = ((leftWrist.position[2] || 0) + (leftIndex.position[2] || 0)) / 2;
+  const rightPalm = keypoints.find((k) => k.part === "rightPalm");
+  const rightWrist = keypoints.find((k) => k.part === "rightWrist");
+  const rightIndex = keypoints.find((k) => k.part === "rightIndex");
+  rightPalm.position[2] = ((rightWrist.position[2] || 0) + (rightIndex.position[2] || 0)) / 2;
+}
+async function detectLandmarks(input, config3, outputSize2) {
+  var _a;
+  const t = {};
+  [t.ld, t.segmentation, t.heatmap, t.world, t.poseflag] = (_a = models.landmarks) == null ? void 0 : _a.execute(input, outputNodes.landmarks);
+  const poseScore = (await t.poseflag.data())[0];
+  const points = await t.ld.data();
+  const distances = await t.world.data();
+  Object.keys(t).forEach((tensor3) => tf13.dispose(t[tensor3]));
+  const keypointsRelative = [];
+  const depth = 5;
+  for (let i = 0; i < points.length / depth; i++) {
+    const score = sigmoid3(points[depth * i + 3]);
+    const presence = sigmoid3(points[depth * i + 4]);
+    const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
+    const positionRaw = [points[depth * i + 0] / inputSize3.landmarks[0], points[depth * i + 1] / inputSize3.landmarks[1], points[depth * i + 2] + 0];
+    const position = [Math.trunc(outputSize2[0] * positionRaw[0]), Math.trunc(outputSize2[1] * positionRaw[1]), positionRaw[2]];
+    const distance2 = [distances[depth * i + 0], distances[depth * i + 1], distances[depth * i + 2] + 0];
+    keypointsRelative.push({ part: kpt[i], positionRaw, position, distance: distance2, score: adjScore });
+  }
+  if (poseScore < (config3.body.minConfidence || 0))
+    return null;
+  fixKeypoints(keypointsRelative);
+  const keypoints = rescaleKeypoints(keypointsRelative, outputSize2);
+  const kpts = keypoints.map((k) => k.position);
+  const boxes = calc(kpts, [outputSize2[0], outputSize2[1]]);
+  const annotations2 = {};
+  for (const [name, indexes] of Object.entries(connected)) {
+    const pt = [];
+    for (let i = 0; i < indexes.length - 1; i++) {
+      const pt0 = keypoints.find((kpt4) => kpt4.part === indexes[i]);
+      const pt1 = keypoints.find((kpt4) => kpt4.part === indexes[i + 1]);
+      if (pt0 && pt1)
+        pt.push([pt0.position, pt1.position]);
+    }
+    annotations2[name] = pt;
+  }
+  const body4 = { id: 0, score: Math.trunc(100 * poseScore) / 100, box: boxes.box, boxRaw: boxes.boxRaw, keypoints, annotations: annotations2 };
+  return body4;
+}
+async function predict5(input, config3) {
+  const outputSize2 = [input.shape[2] || 0, input.shape[1] || 0];
+  const skipTime = (config3.body.skipTime || 0) > now() - lastTime5;
+  const skipFrame = skipped5 < (config3.body.skipFrames || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && cache !== null) {
+    skipped5++;
+  } else {
+    const t = {};
+    t.landmarks = await prepareImage(input, 256);
+    cache = await detectLandmarks(t.landmarks, config3, outputSize2);
+    Object.keys(t).forEach((tensor3) => tf13.dispose(t[tensor3]));
+    lastTime5 = now();
+    skipped5 = 0;
+  }
+  return cache ? [cache] : [];
+}
+
+// src/object/centernet.ts
+var tf14 = __toESM(require_tfjs_esm());
+
+// src/object/labels.ts
+var labels = [
+  { class: 1, label: "person" },
+  { class: 2, label: "bicycle" },
+  { class: 3, label: "car" },
+  { class: 4, label: "motorcycle" },
+  { class: 5, label: "airplane" },
+  { class: 6, label: "bus" },
+  { class: 7, label: "train" },
+  { class: 8, label: "truck" },
+  { class: 9, label: "boat" },
+  { class: 10, label: "traffic light" },
+  { class: 11, label: "fire hydrant" },
+  { class: 12, label: "stop sign" },
+  { class: 13, label: "parking meter" },
+  { class: 14, label: "bench" },
+  { class: 15, label: "bird" },
+  { class: 16, label: "cat" },
+  { class: 17, label: "dog" },
+  { class: 18, label: "horse" },
+  { class: 19, label: "sheep" },
+  { class: 20, label: "cow" },
+  { class: 21, label: "elephant" },
+  { class: 22, label: "bear" },
+  { class: 23, label: "zebra" },
+  { class: 24, label: "giraffe" },
+  { class: 25, label: "backpack" },
+  { class: 26, label: "umbrella" },
+  { class: 27, label: "handbag" },
+  { class: 28, label: "tie" },
+  { class: 29, label: "suitcase" },
+  { class: 30, label: "frisbee" },
+  { class: 31, label: "skis" },
+  { class: 32, label: "snowboard" },
+  { class: 33, label: "sports ball" },
+  { class: 34, label: "kite" },
+  { class: 35, label: "baseball bat" },
+  { class: 36, label: "baseball glove" },
+  { class: 37, label: "skateboard" },
+  { class: 38, label: "surfboard" },
+  { class: 39, label: "tennis racket" },
+  { class: 40, label: "bottle" },
+  { class: 41, label: "wine glass" },
+  { class: 42, label: "cup" },
+  { class: 43, label: "fork" },
+  { class: 44, label: "knife" },
+  { class: 45, label: "spoon" },
+  { class: 46, label: "bowl" },
+  { class: 47, label: "banana" },
+  { class: 48, label: "apple" },
+  { class: 49, label: "sandwich" },
+  { class: 50, label: "orange" },
+  { class: 51, label: "broccoli" },
+  { class: 52, label: "carrot" },
+  { class: 53, label: "hot dog" },
+  { class: 54, label: "pizza" },
+  { class: 55, label: "donut" },
+  { class: 56, label: "cake" },
+  { class: 57, label: "chair" },
+  { class: 58, label: "couch" },
+  { class: 59, label: "potted plant" },
+  { class: 60, label: "bed" },
+  { class: 61, label: "dining table" },
+  { class: 62, label: "toilet" },
+  { class: 63, label: "tv" },
+  { class: 64, label: "laptop" },
+  { class: 65, label: "mouse" },
+  { class: 66, label: "remote" },
+  { class: 67, label: "keyboard" },
+  { class: 68, label: "cell phone" },
+  { class: 69, label: "microwave" },
+  { class: 70, label: "oven" },
+  { class: 71, label: "toaster" },
+  { class: 72, label: "sink" },
+  { class: 73, label: "refrigerator" },
+  { class: 74, label: "book" },
+  { class: 75, label: "clock" },
+  { class: 76, label: "vase" },
+  { class: 77, label: "scissors" },
+  { class: 78, label: "teddy bear" },
+  { class: 79, label: "hair drier" },
+  { class: 80, label: "toothbrush" }
+];
+
+// src/object/centernet.ts
+var model6;
+var inputSize4 = 0;
+var last5 = [];
+var lastTime6 = 0;
+var skipped6 = Number.MAX_SAFE_INTEGER;
+async function load6(config3) {
+  if (env.initial)
+    model6 = null;
+  if (!model6) {
+    model6 = await loadModel(config3.object.modelPath);
+    const inputs = Object.values(model6.modelSignature["inputs"]);
+    inputSize4 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+  } else if (config3.debug)
+    log("cached model:", model6["modelUrl"]);
+  return model6;
+}
+async function process3(res, outputShape, config3) {
+  if (!res)
+    return [];
+  const t = {};
+  const results = [];
+  const detections = await res.array();
+  t.squeeze = tf14.squeeze(res);
+  const arr = tf14.split(t.squeeze, 6, 1);
+  t.stack = tf14.stack([arr[1], arr[0], arr[3], arr[2]], 1);
+  t.boxes = tf14.squeeze(t.stack);
+  t.scores = tf14.squeeze(arr[4]);
+  t.classes = tf14.squeeze(arr[5]);
+  tf14.dispose([res, ...arr]);
+  t.nms = await tf14.image.nonMaxSuppressionAsync(t.boxes, t.scores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence || 0);
+  const nms = await t.nms.data();
+  let i = 0;
+  for (const id of Array.from(nms)) {
+    const score = Math.trunc(100 * detections[0][id][4]) / 100;
+    const classVal = detections[0][id][5];
+    const label = labels[classVal].label;
+    const [x, y] = [
+      detections[0][id][0] / inputSize4,
+      detections[0][id][1] / inputSize4
+    ];
+    const boxRaw = [
+      x,
+      y,
+      detections[0][id][2] / inputSize4 - x,
+      detections[0][id][3] / inputSize4 - y
+    ];
+    const box = [
+      Math.trunc(boxRaw[0] * outputShape[0]),
+      Math.trunc(boxRaw[1] * outputShape[1]),
+      Math.trunc(boxRaw[2] * outputShape[0]),
+      Math.trunc(boxRaw[3] * outputShape[1])
+    ];
+    results.push({ id: i++, score, class: classVal, label, box, boxRaw });
+  }
+  Object.keys(t).forEach((tensor3) => tf14.dispose(t[tensor3]));
+  return results;
+}
+async function predict6(input, config3) {
+  const skipTime = (config3.object.skipTime || 0) > now() - lastTime6;
+  const skipFrame = skipped6 < (config3.object.skipFrames || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && last5.length > 0) {
+    skipped6++;
+    return last5;
+  }
+  skipped6 = 0;
+  return new Promise(async (resolve) => {
+    const outputSize2 = [input.shape[2] || 0, input.shape[1] || 0];
+    const resize = tf14.image.resizeBilinear(input, [inputSize4, inputSize4]);
+    const objectT = config3.object.enabled ? model6 == null ? void 0 : model6.execute(resize, ["tower_0/detections"]) : null;
+    lastTime6 = now();
+    tf14.dispose(resize);
+    const obj = await process3(objectT, outputSize2, config3);
+    last5 = obj;
+    resolve(obj);
+  });
+}
+
+// src/body/efficientpose.ts
+var tf15 = __toESM(require_tfjs_esm());
+
+// src/body/efficientposecoords.ts
+var efficientposecoords_exports = {};
+__export(efficientposecoords_exports, {
+  connected: () => connected2,
+  kpt: () => kpt2
+});
+var kpt2 = [
+  "head",
+  "neck",
+  "rightShoulder",
+  "rightElbow",
+  "rightWrist",
+  "chest",
+  "leftShoulder",
+  "leftElbow",
+  "leftWrist",
+  "bodyCenter",
+  "rightHip",
+  "rightKnee",
+  "rightAnkle",
+  "leftHip",
+  "leftKnee",
+  "leftAnkle"
+];
+var connected2 = {
+  leftLeg: ["leftHip", "leftKnee", "leftAnkle"],
+  rightLeg: ["rightHip", "rightKnee", "rightAnkle"],
+  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
+  leftArm: ["leftShoulder", "leftElbow", "leftWrist"],
+  rightArm: ["rightShoulder", "rightElbow", "rightWrist"],
+  head: []
+};
+
+// src/body/efficientpose.ts
+var model7;
+var lastTime7 = 0;
+var cache2 = { id: 0, keypoints: [], box: [0, 0, 0, 0], boxRaw: [0, 0, 0, 0], score: 0, annotations: {} };
+var skipped7 = Number.MAX_SAFE_INTEGER;
+async function load7(config3) {
+  if (env.initial)
+    model7 = null;
+  if (!model7)
+    model7 = await loadModel(config3.body.modelPath);
+  else if (config3.debug)
+    log("cached model:", model7["modelUrl"]);
+  return model7;
+}
+async function max2d(inputs, minScore) {
+  const [width, height] = inputs.shape;
+  const reshaped = tf15.reshape(inputs, [height * width]);
+  const max4 = tf15.max(reshaped, 0);
+  const newScore = (await max4.data())[0];
+  tf15.dispose([reshaped, max4]);
+  if (newScore > minScore) {
+    const coordinates = tf15.argMax(reshaped, 0);
+    const mod3 = tf15.mod(coordinates, width);
+    const x = (await mod3.data())[0];
+    const div14 = tf15.div(coordinates, tf15.scalar(width, "int32"));
+    const y = (await div14.data())[0];
+    tf15.dispose([mod3, div14]);
+    return [x, y, newScore];
+  }
+  return [0, 0, newScore];
+}
+async function predict7(image24, config3) {
+  const skipTime = (config3.body.skipTime || 0) > now() - lastTime7;
+  const skipFrame = skipped7 < (config3.body.skipFrames || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && Object.keys(cache2.keypoints).length > 0) {
+    skipped7++;
+    return [cache2];
+  }
+  skipped7 = 0;
+  return new Promise(async (resolve) => {
+    var _a;
+    const tensor3 = tf15.tidy(() => {
+      if (!(model7 == null ? void 0 : model7.inputs[0].shape))
+        return null;
+      const resize = tf15.image.resizeBilinear(image24, [model7.inputs[0].shape[2], model7.inputs[0].shape[1]], false);
+      const enhance2 = tf15.mul(resize, constants.tf2);
+      const norm = tf15.sub(enhance2, constants.tf1);
+      return norm;
+    });
+    let resT;
+    if (config3.body.enabled)
+      resT = model7 == null ? void 0 : model7.execute(tensor3);
+    lastTime7 = now();
+    tf15.dispose(tensor3);
+    if (resT) {
+      cache2.keypoints.length = 0;
+      const squeeze11 = resT.squeeze();
+      tf15.dispose(resT);
+      const stack5 = squeeze11.unstack(2);
+      tf15.dispose(squeeze11);
+      for (let id = 0; id < stack5.length; id++) {
+        const [x2, y2, partScore] = await max2d(stack5[id], config3.body.minConfidence);
+        if (partScore > (((_a = config3.body) == null ? void 0 : _a.minConfidence) || 0)) {
+          cache2.keypoints.push({
+            score: Math.round(100 * partScore) / 100,
+            part: kpt2[id],
+            positionRaw: [
+              x2 / model7.inputs[0].shape[2],
+              y2 / model7.inputs[0].shape[1]
+            ],
+            position: [
+              Math.round(image24.shape[2] * x2 / model7.inputs[0].shape[2]),
+              Math.round(image24.shape[1] * y2 / model7.inputs[0].shape[1])
+            ]
+          });
+        }
+      }
+      stack5.forEach((s) => tf15.dispose(s));
+    }
+    cache2.score = cache2.keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+    const x = cache2.keypoints.map((a) => a.position[0]);
+    const y = cache2.keypoints.map((a) => a.position[1]);
+    cache2.box = [
+      Math.min(...x),
+      Math.min(...y),
+      Math.max(...x) - Math.min(...x),
+      Math.max(...y) - Math.min(...y)
+    ];
+    const xRaw = cache2.keypoints.map((a) => a.positionRaw[0]);
+    const yRaw = cache2.keypoints.map((a) => a.positionRaw[1]);
+    cache2.boxRaw = [
+      Math.min(...xRaw),
+      Math.min(...yRaw),
+      Math.max(...xRaw) - Math.min(...xRaw),
+      Math.max(...yRaw) - Math.min(...yRaw)
+    ];
+    for (const [name, indexes] of Object.entries(connected2)) {
+      const pt = [];
+      for (let i = 0; i < indexes.length - 1; i++) {
+        const pt0 = cache2.keypoints.find((kpt4) => kpt4.part === indexes[i]);
+        const pt1 = cache2.keypoints.find((kpt4) => kpt4.part === indexes[i + 1]);
+        if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+          pt.push([pt0.position, pt1.position]);
+      }
+      cache2.annotations[name] = pt;
+    }
+    resolve([cache2]);
+  });
+}
+
+// src/gear/emotion.ts
+var tf16 = __toESM(require_tfjs_esm());
+var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
+var model8;
+var last6 = [];
+var lastCount5 = 0;
+var lastTime8 = 0;
+var skipped8 = Number.MAX_SAFE_INTEGER;
+async function load8(config3) {
+  var _a;
+  if (env.initial)
+    model8 = null;
+  if (!model8)
+    model8 = await loadModel((_a = config3.face.emotion) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model8["modelUrl"]);
+  return model8;
+}
+async function predict8(image24, config3, idx, count2) {
+  var _a, _b;
+  if (!model8)
+    return [];
+  const skipFrame = skipped8 < (((_a = config3.face.emotion) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face.emotion) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime8;
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount5 === count2 && last6[idx] && last6[idx].length > 0) {
+    skipped8++;
+    return last6[idx];
+  }
+  skipped8 = 0;
+  return new Promise(async (resolve) => {
+    var _a2, _b2;
+    const obj = [];
+    if ((_a2 = config3.face.emotion) == null ? void 0 : _a2.enabled) {
+      const t = {};
+      const inputSize10 = (model8 == null ? void 0 : model8.inputs[0].shape) ? model8.inputs[0].shape[2] : 0;
+      t.resize = tf16.image.resizeBilinear(image24, [inputSize10, inputSize10], false);
+      t.channels = tf16.mul(t.resize, constants.rgb);
+      t.grayscale = tf16.sum(t.channels, 3, true);
+      t.grayscaleSub = tf16.sub(t.grayscale, constants.tf05);
+      t.grayscaleMul = tf16.mul(t.grayscaleSub, constants.tf2);
+      t.emotion = model8 == null ? void 0 : model8.execute(t.grayscaleMul);
+      lastTime8 = now();
+      const data = await t.emotion.data();
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] > (((_b2 = config3.face.emotion) == null ? void 0 : _b2.minConfidence) || 0))
+          obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
+      }
+      obj.sort((a, b) => b.score - a.score);
+      Object.keys(t).forEach((tensor3) => tf16.dispose(t[tensor3]));
+    }
+    last6[idx] = obj;
+    lastCount5 = count2;
+    resolve(obj);
+  });
+}
+
+// src/face/mobilefacenet.ts
+var tf17 = __toESM(require_tfjs_esm());
+var model9;
+var last7 = [];
+var lastCount6 = 0;
+var lastTime9 = 0;
+var skipped9 = Number.MAX_SAFE_INTEGER;
+async function load9(config3) {
+  if (env.initial)
+    model9 = null;
+  if (!model9)
+    model9 = await loadModel(config3.face["mobilefacenet"].modelPath);
+  else if (config3.debug)
+    log("cached model:", model9["modelUrl"]);
+  return model9;
+}
+async function predict9(input, config3, idx, count2) {
+  var _a, _b;
+  if (!model9)
+    return [];
+  const skipFrame = skipped9 < (((_a = config3.face["embedding"]) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face["embedding"]) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime9;
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount6 === count2 && last7[idx]) {
+    skipped9++;
+    return last7[idx];
+  }
+  return new Promise(async (resolve) => {
+    var _a2;
+    let data = [];
+    if (((_a2 = config3.face["embedding"]) == null ? void 0 : _a2.enabled) && (model9 == null ? void 0 : model9.inputs[0].shape)) {
+      const t = {};
+      t.crop = tf17.image.resizeBilinear(input, [model9.inputs[0].shape[2], model9.inputs[0].shape[1]], false);
+      t.data = model9 == null ? void 0 : model9.execute(t.crop);
+      const output = await t.data.data();
+      data = Array.from(output);
+    }
+    last7[idx] = data;
+    lastCount6 = count2;
+    lastTime9 = now();
+    resolve(data);
+  });
+}
+
+// src/face/facemesh.ts
+var tf19 = __toESM(require_tfjs_esm());
+
+// src/face/iris.ts
+var tf18 = __toESM(require_tfjs_esm());
+var model10;
+var inputSize5 = 0;
+var irisEnlarge = 2.3;
+var leftOutline = meshAnnotations["leftEyeLower0"];
+var rightOutline = meshAnnotations["rightEyeLower0"];
+var eyeLandmarks = {
+  leftBounds: [leftOutline[0], leftOutline[leftOutline.length - 1]],
+  rightBounds: [rightOutline[0], rightOutline[rightOutline.length - 1]]
+};
+var irisLandmarks = {
+  upperCenter: 3,
+  lowerCenter: 4,
+  index: 71,
+  numCoordinates: 76
+};
+async function load10(config3) {
+  var _a;
+  if (env.initial)
+    model10 = null;
+  if (!model10)
+    model10 = await loadModel((_a = config3.face.iris) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model10["modelUrl"]);
+  inputSize5 = model10.inputs[0].shape ? model10.inputs[0].shape[2] : 0;
+  if (inputSize5 === -1)
+    inputSize5 = 64;
+  return model10;
+}
+function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
+  for (let i = 0; i < MESH_TO_IRIS_INDICES_MAP.length; i++) {
+    const { key, indices } = MESH_TO_IRIS_INDICES_MAP[i];
+    const originalIndices = meshAnnotations[`${prefix}${key}`];
+    if (!keys || keys.includes(key)) {
+      for (let j = 0; j < indices.length; j++) {
+        const index2 = indices[j];
+        rawCoords[originalIndices[j]] = [
+          newCoords[index2][0],
+          newCoords[index2][1],
+          (newCoords[index2][2] + rawCoords[originalIndices[j]][2]) / 2
+        ];
+      }
+    }
+  }
+}
+var getLeftToRightEyeDepthDifference = (rawCoords) => {
+  const leftEyeZ = rawCoords[eyeLandmarks.leftBounds[0]][2];
+  const rightEyeZ = rawCoords[eyeLandmarks.rightBounds[0]][2];
+  return leftEyeZ - rightEyeZ;
+};
+var getEyeBox = (rawCoords, face4, eyeInnerCornerIndex, eyeOuterCornerIndex, meshSize, flip = false) => {
+  const box = squarifyBox(enlargeBox(calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), irisEnlarge));
+  const boxSize = getBoxSize(box);
+  let crop = tf18.image.cropAndResize(face4, [[
+    box.startPoint[1] / meshSize,
+    box.startPoint[0] / meshSize,
+    box.endPoint[1] / meshSize,
+    box.endPoint[0] / meshSize
+  ]], [0], [inputSize5, inputSize5]);
+  if (flip && env.kernels.includes("flipleftright")) {
+    const flipped = tf18.image.flipLeftRight(crop);
+    tf18.dispose(crop);
+    crop = flipped;
+  }
+  return { box, boxSize, crop };
+};
+var getEyeCoords = (eyeData, eyeBox, eyeBoxSize, flip = false) => {
+  const eyeRawCoords = [];
+  for (let i = 0; i < irisLandmarks.numCoordinates; i++) {
+    const x = eyeData[i * 3];
+    const y = eyeData[i * 3 + 1];
+    const z = eyeData[i * 3 + 2];
+    eyeRawCoords.push([
+      (flip ? 1 - x / inputSize5 : x / inputSize5) * eyeBoxSize[0] + eyeBox.startPoint[0],
+      y / inputSize5 * eyeBoxSize[1] + eyeBox.startPoint[1],
+      z
+    ]);
+  }
+  return { rawCoords: eyeRawCoords, iris: eyeRawCoords.slice(irisLandmarks.index) };
+};
+var getAdjustedIrisCoords = (rawCoords, irisCoords, direction) => {
+  const upperCenterZ = rawCoords[meshAnnotations[`${direction}EyeUpper0`][irisLandmarks.upperCenter]][2];
+  const lowerCenterZ = rawCoords[meshAnnotations[`${direction}EyeLower0`][irisLandmarks.lowerCenter]][2];
+  const averageZ = (upperCenterZ + lowerCenterZ) / 2;
+  return irisCoords.map((coord, i) => {
+    let z = averageZ;
+    if (i === 2) {
+      z = upperCenterZ;
+    } else if (i === 4) {
+      z = lowerCenterZ;
+    }
+    return [coord[0], coord[1], z];
+  });
+};
+async function augmentIris(rawCoords, face4, config3, meshSize) {
+  if (!model10) {
+    if (config3.debug)
+      log("face mesh iris detection requested, but model is not loaded");
+    return rawCoords;
+  }
+  const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face4, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], meshSize, true);
+  const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face4, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], meshSize, true);
+  const combined = tf18.concat([leftEyeCrop, rightEyeCrop]);
+  tf18.dispose(leftEyeCrop);
+  tf18.dispose(rightEyeCrop);
+  const eyePredictions = model10.execute(combined);
+  tf18.dispose(combined);
+  const eyePredictionsData = await eyePredictions.data();
+  tf18.dispose(eyePredictions);
+  const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
+  const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
+  const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
+  const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
+  const leftToRightEyeDepthDifference = getLeftToRightEyeDepthDifference(rawCoords);
+  if (Math.abs(leftToRightEyeDepthDifference) < 30) {
+    replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", null);
+    replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", null);
+  } else if (leftToRightEyeDepthDifference < 1) {
+    replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", ["EyeUpper0", "EyeLower0"]);
+  } else {
+    replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", ["EyeUpper0", "EyeLower0"]);
+  }
+  const adjustedLeftIrisCoords = getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, "left");
+  const adjustedRightIrisCoords = getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, "right");
+  const newCoords = rawCoords.concat(adjustedLeftIrisCoords).concat(adjustedRightIrisCoords);
+  return newCoords;
+}
+
+// src/face/facemesh.ts
+var cache3 = {
+  boxes: [],
+  skipped: Number.MAX_SAFE_INTEGER,
+  timestamp: 0
+};
+var model11 = null;
+var inputSize6 = 0;
+async function predict10(input, config3) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i;
+  const skipTime = (((_a = config3.face.detector) == null ? void 0 : _a.skipTime) || 0) > now() - cache3.timestamp;
+  const skipFrame = cache3.skipped < (((_b = config3.face.detector) == null ? void 0 : _b.skipFrames) || 0);
+  if (!config3.skipAllowed || !skipTime || !skipFrame || cache3.boxes.length === 0) {
+    cache3.boxes = await getBoxes(input, config3);
+    cache3.timestamp = now();
+    cache3.skipped = 0;
+  } else {
+    cache3.skipped++;
+  }
+  const faces = [];
+  const newCache = [];
+  let id = 0;
+  for (let i = 0; i < cache3.boxes.length; i++) {
+    const box = cache3.boxes[i];
+    let angle = 0;
+    let rotationMatrix;
+    const face4 = {
+      id: id++,
+      mesh: [],
+      meshRaw: [],
+      box: [0, 0, 0, 0],
+      boxRaw: [0, 0, 0, 0],
+      score: 0,
+      boxScore: 0,
+      faceScore: 0,
+      annotations: {}
+    };
+    [angle, rotationMatrix, face4.tensor] = correctFaceRotation((_c = config3.face.detector) == null ? void 0 : _c.rotation, box, input, ((_d = config3.face.mesh) == null ? void 0 : _d.enabled) ? inputSize6 : size());
+    if ((_e = config3 == null ? void 0 : config3.filter) == null ? void 0 : _e.equalization) {
+      const equilized = await histogramEqualization(face4.tensor);
+      tf19.dispose(face4.tensor);
+      face4.tensor = equilized;
+    }
+    face4.boxScore = Math.round(100 * box.confidence) / 100;
+    if (!((_f = config3.face.mesh) == null ? void 0 : _f.enabled)) {
+      face4.box = clampBox(box, input);
+      face4.boxRaw = getRawBox(box, input);
+      face4.score = face4.boxScore;
+      face4.mesh = box.landmarks.map((pt) => [
+        (box.startPoint[0] + box.endPoint[0]) / 2 + (box.endPoint[0] + box.startPoint[0]) * pt[0] / size(),
+        (box.startPoint[1] + box.endPoint[1]) / 2 + (box.endPoint[1] + box.startPoint[1]) * pt[1] / size()
+      ]);
+      face4.meshRaw = face4.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize6]);
+      for (const key of Object.keys(blazeFaceLandmarks))
+        face4.annotations[key] = [face4.mesh[blazeFaceLandmarks[key]]];
+    } else if (!model11) {
+      if (config3.debug)
+        log("face mesh detection requested, but model is not loaded");
+    } else {
+      const [contours, confidence, contourCoords] = model11.execute(face4.tensor);
+      const faceConfidence = await confidence.data();
+      face4.faceScore = Math.round(100 * faceConfidence[0]) / 100;
+      const coordsReshaped = tf19.reshape(contourCoords, [-1, 3]);
+      let rawCoords = await coordsReshaped.array();
+      tf19.dispose([contourCoords, coordsReshaped, confidence, contours]);
+      if (face4.faceScore < (((_g = config3.face.detector) == null ? void 0 : _g.minConfidence) || 1)) {
+        box.confidence = face4.faceScore;
+      } else {
+        if ((_h = config3.face.iris) == null ? void 0 : _h.enabled)
+          rawCoords = await augmentIris(rawCoords, face4.tensor, config3, inputSize6);
+        face4.mesh = transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize6);
+        face4.meshRaw = face4.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize6]);
+        for (const key of Object.keys(meshAnnotations))
+          face4.annotations[key] = meshAnnotations[key].map((index2) => face4.mesh[index2]);
+        face4.score = face4.faceScore;
+        const calculatedBox = { ...calculateFaceBox(face4.mesh, box), confidence: box.confidence, landmarks: box.landmarks };
+        face4.box = clampBox(calculatedBox, input);
+        face4.boxRaw = getRawBox(calculatedBox, input);
+        newCache.push(calculatedBox);
+      }
+    }
+    if (face4.score > (((_i = config3.face.detector) == null ? void 0 : _i.minConfidence) || 1))
+      faces.push(face4);
+    else
+      tf19.dispose(face4.tensor);
+  }
+  cache3.boxes = newCache;
+  return faces;
+}
+async function load11(config3) {
+  var _a;
+  if (env.initial)
+    model11 = null;
+  if (!model11)
+    model11 = await loadModel((_a = config3.face.mesh) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model11["modelUrl"]);
+  inputSize6 = model11.inputs[0].shape ? model11.inputs[0].shape[2] : 0;
+  return model11;
+}
+var triangulation = TRI468;
+var uvmap = UV468;
+
+// src/face/faceres.ts
+var tf20 = __toESM(require_tfjs_esm());
+var model12;
+var last8 = [];
+var lastTime10 = 0;
+var lastCount7 = 0;
+var skipped10 = Number.MAX_SAFE_INTEGER;
+async function load12(config3) {
+  var _a;
+  if (env.initial)
+    model12 = null;
+  if (!model12)
+    model12 = await loadModel((_a = config3.face.description) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model12["modelUrl"]);
+  return model12;
+}
+function enhance(input) {
+  const tensor3 = input.image || input.tensor || input;
+  if (!(model12 == null ? void 0 : model12.inputs[0].shape))
+    return tensor3;
+  const crop = tf20.image.resizeBilinear(tensor3, [model12.inputs[0].shape[2], model12.inputs[0].shape[1]], false);
+  const norm = tf20.mul(crop, constants.tf255);
+  tf20.dispose(crop);
+  return norm;
+}
+async function predict11(image24, config3, idx, count2) {
+  var _a, _b, _c, _d;
+  if (!model12)
+    return { age: 0, gender: "unknown", genderScore: 0, descriptor: [] };
+  const skipFrame = skipped10 < (((_a = config3.face.description) == null ? void 0 : _a.skipFrames) || 0);
+  const skipTime = (((_b = config3.face.description) == null ? void 0 : _b.skipTime) || 0) > now() - lastTime10;
+  if (config3.skipAllowed && skipFrame && skipTime && lastCount7 === count2 && ((_c = last8[idx]) == null ? void 0 : _c.age) && ((_d = last8[idx]) == null ? void 0 : _d.age) > 0) {
+    skipped10++;
+    return last8[idx];
+  }
+  skipped10 = 0;
+  return new Promise(async (resolve) => {
+    var _a2, _b2;
+    const obj = {
+      age: 0,
+      gender: "unknown",
+      genderScore: 0,
+      descriptor: []
+    };
+    if ((_a2 = config3.face.description) == null ? void 0 : _a2.enabled) {
+      const enhanced = enhance(image24);
+      const resT = model12 == null ? void 0 : model12.execute(enhanced);
+      lastTime10 = now();
+      tf20.dispose(enhanced);
+      const genderT = await resT.find((t) => t.shape[1] === 1);
+      const gender = await genderT.data();
+      const confidence = Math.trunc(200 * Math.abs(gender[0] - 0.5)) / 100;
+      if (confidence > (((_b2 = config3.face.description) == null ? void 0 : _b2.minConfidence) || 0)) {
+        obj.gender = gender[0] <= 0.5 ? "female" : "male";
+        obj.genderScore = Math.min(0.99, confidence);
+      }
+      const argmax = tf20.argMax(resT.find((t) => t.shape[1] === 100), 1);
+      const age = (await argmax.data())[0];
+      tf20.dispose(argmax);
+      const ageT = resT.find((t) => t.shape[1] === 100);
+      const all2 = await ageT.data();
+      obj.age = Math.round(all2[age - 1] > all2[age + 1] ? 10 * age - 100 * all2[age - 1] : 10 * age + 100 * all2[age + 1]) / 10;
+      const desc = resT.find((t) => t.shape[1] === 1024);
+      const descriptor = desc ? await desc.data() : [];
+      obj.descriptor = Array.from(descriptor);
+      resT.forEach((t) => tf20.dispose(t));
+    }
+    last8[idx] = obj;
+    lastCount7 = count2;
+    resolve(obj);
+  });
+}
+
+// src/hand/handposedetector.ts
+var tf22 = __toESM(require_tfjs_esm());
+
+// src/hand/handposeutil.ts
+var tf21 = __toESM(require_tfjs_esm());
+function getBoxSize2(box) {
+  return [
+    Math.abs(box.endPoint[0] - box.startPoint[0]),
+    Math.abs(box.endPoint[1] - box.startPoint[1])
+  ];
+}
+function getBoxCenter2(box) {
+  return [
+    box.startPoint[0] + (box.endPoint[0] - box.startPoint[0]) / 2,
+    box.startPoint[1] + (box.endPoint[1] - box.startPoint[1]) / 2
+  ];
+}
+function cutBoxFromImageAndResize(box, image24, cropSize) {
+  const h = image24.shape[1];
+  const w = image24.shape[2];
+  const boxes = [[
+    box.startPoint[1] / h,
+    box.startPoint[0] / w,
+    box.endPoint[1] / h,
+    box.endPoint[0] / w
+  ]];
+  return tf21.image.cropAndResize(image24, boxes, [0], cropSize);
+}
+function scaleBoxCoordinates2(box, factor) {
+  const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
+  const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
+  const palmLandmarks = box.palmLandmarks.map((coord) => {
+    const scaledCoord = [coord[0] * factor[0], coord[1] * factor[1]];
+    return scaledCoord;
+  });
+  return { startPoint, endPoint, palmLandmarks, confidence: box.confidence };
+}
+function enlargeBox2(box, factor = 1.5) {
+  const center = getBoxCenter2(box);
+  const size2 = getBoxSize2(box);
+  const newHalfSize = [factor * size2[0] / 2, factor * size2[1] / 2];
+  const startPoint = [center[0] - newHalfSize[0], center[1] - newHalfSize[1]];
+  const endPoint = [center[0] + newHalfSize[0], center[1] + newHalfSize[1]];
+  return { startPoint, endPoint, palmLandmarks: box.palmLandmarks };
+}
+function squarifyBox2(box) {
+  const centers = getBoxCenter2(box);
+  const size2 = getBoxSize2(box);
+  const maxEdge = Math.max(...size2);
+  const halfSize = maxEdge / 2;
+  const startPoint = [centers[0] - halfSize, centers[1] - halfSize];
+  const endPoint = [centers[0] + halfSize, centers[1] + halfSize];
+  return { startPoint, endPoint, palmLandmarks: box.palmLandmarks };
+}
+function normalizeRadians2(angle) {
+  return angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
+}
+function computeRotation2(point1, point2) {
+  const radians = Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]);
+  return normalizeRadians2(radians);
+}
+var buildTranslationMatrix2 = (x, y) => [[1, 0, x], [0, 1, y], [0, 0, 1]];
+function dot2(v1, v2) {
+  let product = 0;
+  for (let i = 0; i < v1.length; i++) {
+    product += v1[i] * v2[i];
+  }
+  return product;
+}
+function getColumnFrom2DArr2(arr, columnIndex) {
+  const column = [];
+  for (let i = 0; i < arr.length; i++) {
+    column.push(arr[i][columnIndex]);
+  }
+  return column;
+}
+function multiplyTransformMatrices2(mat1, mat2) {
+  const product = [];
+  const size2 = mat1.length;
+  for (let row = 0; row < size2; row++) {
+    product.push([]);
+    for (let col = 0; col < size2; col++) {
+      product[row].push(dot2(mat1[row], getColumnFrom2DArr2(mat2, col)));
+    }
+  }
+  return product;
+}
+function buildRotationMatrix2(rotation, center) {
+  const cosA = Math.cos(rotation);
+  const sinA = Math.sin(rotation);
+  const rotationMatrix = [[cosA, -sinA, 0], [sinA, cosA, 0], [0, 0, 1]];
+  const translationMatrix = buildTranslationMatrix2(center[0], center[1]);
+  const translationTimesRotation = multiplyTransformMatrices2(translationMatrix, rotationMatrix);
+  const negativeTranslationMatrix = buildTranslationMatrix2(-center[0], -center[1]);
+  return multiplyTransformMatrices2(translationTimesRotation, negativeTranslationMatrix);
+}
+function invertTransformMatrix2(matrix) {
+  const rotationComponent = [[matrix[0][0], matrix[1][0]], [matrix[0][1], matrix[1][1]]];
+  const translationComponent = [matrix[0][2], matrix[1][2]];
+  const invertedTranslation = [
+    -dot2(rotationComponent[0], translationComponent),
+    -dot2(rotationComponent[1], translationComponent)
+  ];
+  return [
+    rotationComponent[0].concat(invertedTranslation[0]),
+    rotationComponent[1].concat(invertedTranslation[1]),
+    [0, 0, 1]
+  ];
+}
+function rotatePoint2(homogeneousCoordinate, rotationMatrix) {
+  return [
+    dot2(homogeneousCoordinate, rotationMatrix[0]),
+    dot2(homogeneousCoordinate, rotationMatrix[1])
+  ];
+}
+
+// src/hand/handposeanchors.ts
+var anchors2 = [
+  { x: 0.015625, y: 0.015625 },
+  { x: 0.015625, y: 0.015625 },
+  { x: 0.046875, y: 0.015625 },
+  { x: 0.046875, y: 0.015625 },
+  { x: 0.078125, y: 0.015625 },
+  { x: 0.078125, y: 0.015625 },
+  { x: 0.109375, y: 0.015625 },
+  { x: 0.109375, y: 0.015625 },
+  { x: 0.140625, y: 0.015625 },
+  { x: 0.140625, y: 0.015625 },
+  { x: 0.171875, y: 0.015625 },
+  { x: 0.171875, y: 0.015625 },
+  { x: 0.203125, y: 0.015625 },
+  { x: 0.203125, y: 0.015625 },
+  { x: 0.234375, y: 0.015625 },
+  { x: 0.234375, y: 0.015625 },
+  { x: 0.265625, y: 0.015625 },
+  { x: 0.265625, y: 0.015625 },
+  { x: 0.296875, y: 0.015625 },
+  { x: 0.296875, y: 0.015625 },
+  { x: 0.328125, y: 0.015625 },
+  { x: 0.328125, y: 0.015625 },
+  { x: 0.359375, y: 0.015625 },
+  { x: 0.359375, y: 0.015625 },
+  { x: 0.390625, y: 0.015625 },
+  { x: 0.390625, y: 0.015625 },
+  { x: 0.421875, y: 0.015625 },
+  { x: 0.421875, y: 0.015625 },
+  { x: 0.453125, y: 0.015625 },
+  { x: 0.453125, y: 0.015625 },
+  { x: 0.484375, y: 0.015625 },
+  { x: 0.484375, y: 0.015625 },
+  { x: 0.515625, y: 0.015625 },
+  { x: 0.515625, y: 0.015625 },
+  { x: 0.546875, y: 0.015625 },
+  { x: 0.546875, y: 0.015625 },
+  { x: 0.578125, y: 0.015625 },
+  { x: 0.578125, y: 0.015625 },
+  { x: 0.609375, y: 0.015625 },
+  { x: 0.609375, y: 0.015625 },
+  { x: 0.640625, y: 0.015625 },
+  { x: 0.640625, y: 0.015625 },
+  { x: 0.671875, y: 0.015625 },
+  { x: 0.671875, y: 0.015625 },
+  { x: 0.703125, y: 0.015625 },
+  { x: 0.703125, y: 0.015625 },
+  { x: 0.734375, y: 0.015625 },
+  { x: 0.734375, y: 0.015625 },
+  { x: 0.765625, y: 0.015625 },
+  { x: 0.765625, y: 0.015625 },
+  { x: 0.796875, y: 0.015625 },
+  { x: 0.796875, y: 0.015625 },
+  { x: 0.828125, y: 0.015625 },
+  { x: 0.828125, y: 0.015625 },
+  { x: 0.859375, y: 0.015625 },
+  { x: 0.859375, y: 0.015625 },
+  { x: 0.890625, y: 0.015625 },
+  { x: 0.890625, y: 0.015625 },
+  { x: 0.921875, y: 0.015625 },
+  { x: 0.921875, y: 0.015625 },
+  { x: 0.953125, y: 0.015625 },
+  { x: 0.953125, y: 0.015625 },
+  { x: 0.984375, y: 0.015625 },
+  { x: 0.984375, y: 0.015625 },
+  { x: 0.015625, y: 0.046875 },
+  { x: 0.015625, y: 0.046875 },
+  { x: 0.046875, y: 0.046875 },
+  { x: 0.046875, y: 0.046875 },
+  { x: 0.078125, y: 0.046875 },
+  { x: 0.078125, y: 0.046875 },
+  { x: 0.109375, y: 0.046875 },
+  { x: 0.109375, y: 0.046875 },
+  { x: 0.140625, y: 0.046875 },
+  { x: 0.140625, y: 0.046875 },
+  { x: 0.171875, y: 0.046875 },
+  { x: 0.171875, y: 0.046875 },
+  { x: 0.203125, y: 0.046875 },
+  { x: 0.203125, y: 0.046875 },
+  { x: 0.234375, y: 0.046875 },
+  { x: 0.234375, y: 0.046875 },
+  { x: 0.265625, y: 0.046875 },
+  { x: 0.265625, y: 0.046875 },
+  { x: 0.296875, y: 0.046875 },
+  { x: 0.296875, y: 0.046875 },
+  { x: 0.328125, y: 0.046875 },
+  { x: 0.328125, y: 0.046875 },
+  { x: 0.359375, y: 0.046875 },
+  { x: 0.359375, y: 0.046875 },
+  { x: 0.390625, y: 0.046875 },
+  { x: 0.390625, y: 0.046875 },
+  { x: 0.421875, y: 0.046875 },
+  { x: 0.421875, y: 0.046875 },
+  { x: 0.453125, y: 0.046875 },
+  { x: 0.453125, y: 0.046875 },
+  { x: 0.484375, y: 0.046875 },
+  { x: 0.484375, y: 0.046875 },
+  { x: 0.515625, y: 0.046875 },
+  { x: 0.515625, y: 0.046875 },
+  { x: 0.546875, y: 0.046875 },
+  { x: 0.546875, y: 0.046875 },
+  { x: 0.578125, y: 0.046875 },
+  { x: 0.578125, y: 0.046875 },
+  { x: 0.609375, y: 0.046875 },
+  { x: 0.609375, y: 0.046875 },
+  { x: 0.640625, y: 0.046875 },
+  { x: 0.640625, y: 0.046875 },
+  { x: 0.671875, y: 0.046875 },
+  { x: 0.671875, y: 0.046875 },
+  { x: 0.703125, y: 0.046875 },
+  { x: 0.703125, y: 0.046875 },
+  { x: 0.734375, y: 0.046875 },
+  { x: 0.734375, y: 0.046875 },
+  { x: 0.765625, y: 0.046875 },
+  { x: 0.765625, y: 0.046875 },
+  { x: 0.796875, y: 0.046875 },
+  { x: 0.796875, y: 0.046875 },
+  { x: 0.828125, y: 0.046875 },
+  { x: 0.828125, y: 0.046875 },
+  { x: 0.859375, y: 0.046875 },
+  { x: 0.859375, y: 0.046875 },
+  { x: 0.890625, y: 0.046875 },
+  { x: 0.890625, y: 0.046875 },
+  { x: 0.921875, y: 0.046875 },
+  { x: 0.921875, y: 0.046875 },
+  { x: 0.953125, y: 0.046875 },
+  { x: 0.953125, y: 0.046875 },
+  { x: 0.984375, y: 0.046875 },
+  { x: 0.984375, y: 0.046875 },
+  { x: 0.015625, y: 0.078125 },
+  { x: 0.015625, y: 0.078125 },
+  { x: 0.046875, y: 0.078125 },
+  { x: 0.046875, y: 0.078125 },
+  { x: 0.078125, y: 0.078125 },
+  { x: 0.078125, y: 0.078125 },
+  { x: 0.109375, y: 0.078125 },
+  { x: 0.109375, y: 0.078125 },
+  { x: 0.140625, y: 0.078125 },
+  { x: 0.140625, y: 0.078125 },
+  { x: 0.171875, y: 0.078125 },
+  { x: 0.171875, y: 0.078125 },
+  { x: 0.203125, y: 0.078125 },
+  { x: 0.203125, y: 0.078125 },
+  { x: 0.234375, y: 0.078125 },
+  { x: 0.234375, y: 0.078125 },
+  { x: 0.265625, y: 0.078125 },
+  { x: 0.265625, y: 0.078125 },
+  { x: 0.296875, y: 0.078125 },
+  { x: 0.296875, y: 0.078125 },
+  { x: 0.328125, y: 0.078125 },
+  { x: 0.328125, y: 0.078125 },
+  { x: 0.359375, y: 0.078125 },
+  { x: 0.359375, y: 0.078125 },
+  { x: 0.390625, y: 0.078125 },
+  { x: 0.390625, y: 0.078125 },
+  { x: 0.421875, y: 0.078125 },
+  { x: 0.421875, y: 0.078125 },
+  { x: 0.453125, y: 0.078125 },
+  { x: 0.453125, y: 0.078125 },
+  { x: 0.484375, y: 0.078125 },
+  { x: 0.484375, y: 0.078125 },
+  { x: 0.515625, y: 0.078125 },
+  { x: 0.515625, y: 0.078125 },
+  { x: 0.546875, y: 0.078125 },
+  { x: 0.546875, y: 0.078125 },
+  { x: 0.578125, y: 0.078125 },
+  { x: 0.578125, y: 0.078125 },
+  { x: 0.609375, y: 0.078125 },
+  { x: 0.609375, y: 0.078125 },
+  { x: 0.640625, y: 0.078125 },
+  { x: 0.640625, y: 0.078125 },
+  { x: 0.671875, y: 0.078125 },
+  { x: 0.671875, y: 0.078125 },
+  { x: 0.703125, y: 0.078125 },
+  { x: 0.703125, y: 0.078125 },
+  { x: 0.734375, y: 0.078125 },
+  { x: 0.734375, y: 0.078125 },
+  { x: 0.765625, y: 0.078125 },
+  { x: 0.765625, y: 0.078125 },
+  { x: 0.796875, y: 0.078125 },
+  { x: 0.796875, y: 0.078125 },
+  { x: 0.828125, y: 0.078125 },
+  { x: 0.828125, y: 0.078125 },
+  { x: 0.859375, y: 0.078125 },
+  { x: 0.859375, y: 0.078125 },
+  { x: 0.890625, y: 0.078125 },
+  { x: 0.890625, y: 0.078125 },
+  { x: 0.921875, y: 0.078125 },
+  { x: 0.921875, y: 0.078125 },
+  { x: 0.953125, y: 0.078125 },
+  { x: 0.953125, y: 0.078125 },
+  { x: 0.984375, y: 0.078125 },
+  { x: 0.984375, y: 0.078125 },
+  { x: 0.015625, y: 0.109375 },
+  { x: 0.015625, y: 0.109375 },
+  { x: 0.046875, y: 0.109375 },
+  { x: 0.046875, y: 0.109375 },
+  { x: 0.078125, y: 0.109375 },
+  { x: 0.078125, y: 0.109375 },
+  { x: 0.109375, y: 0.109375 },
+  { x: 0.109375, y: 0.109375 },
+  { x: 0.140625, y: 0.109375 },
+  { x: 0.140625, y: 0.109375 },
+  { x: 0.171875, y: 0.109375 },
+  { x: 0.171875, y: 0.109375 },
+  { x: 0.203125, y: 0.109375 },
+  { x: 0.203125, y: 0.109375 },
+  { x: 0.234375, y: 0.109375 },
+  { x: 0.234375, y: 0.109375 },
+  { x: 0.265625, y: 0.109375 },
+  { x: 0.265625, y: 0.109375 },
+  { x: 0.296875, y: 0.109375 },
+  { x: 0.296875, y: 0.109375 },
+  { x: 0.328125, y: 0.109375 },
+  { x: 0.328125, y: 0.109375 },
+  { x: 0.359375, y: 0.109375 },
+  { x: 0.359375, y: 0.109375 },
+  { x: 0.390625, y: 0.109375 },
+  { x: 0.390625, y: 0.109375 },
+  { x: 0.421875, y: 0.109375 },
+  { x: 0.421875, y: 0.109375 },
+  { x: 0.453125, y: 0.109375 },
+  { x: 0.453125, y: 0.109375 },
+  { x: 0.484375, y: 0.109375 },
+  { x: 0.484375, y: 0.109375 },
+  { x: 0.515625, y: 0.109375 },
+  { x: 0.515625, y: 0.109375 },
+  { x: 0.546875, y: 0.109375 },
+  { x: 0.546875, y: 0.109375 },
+  { x: 0.578125, y: 0.109375 },
+  { x: 0.578125, y: 0.109375 },
+  { x: 0.609375, y: 0.109375 },
+  { x: 0.609375, y: 0.109375 },
+  { x: 0.640625, y: 0.109375 },
+  { x: 0.640625, y: 0.109375 },
+  { x: 0.671875, y: 0.109375 },
+  { x: 0.671875, y: 0.109375 },
+  { x: 0.703125, y: 0.109375 },
+  { x: 0.703125, y: 0.109375 },
+  { x: 0.734375, y: 0.109375 },
+  { x: 0.734375, y: 0.109375 },
+  { x: 0.765625, y: 0.109375 },
+  { x: 0.765625, y: 0.109375 },
+  { x: 0.796875, y: 0.109375 },
+  { x: 0.796875, y: 0.109375 },
+  { x: 0.828125, y: 0.109375 },
+  { x: 0.828125, y: 0.109375 },
+  { x: 0.859375, y: 0.109375 },
+  { x: 0.859375, y: 0.109375 },
+  { x: 0.890625, y: 0.109375 },
+  { x: 0.890625, y: 0.109375 },
+  { x: 0.921875, y: 0.109375 },
+  { x: 0.921875, y: 0.109375 },
+  { x: 0.953125, y: 0.109375 },
+  { x: 0.953125, y: 0.109375 },
+  { x: 0.984375, y: 0.109375 },
+  { x: 0.984375, y: 0.109375 },
+  { x: 0.015625, y: 0.140625 },
+  { x: 0.015625, y: 0.140625 },
+  { x: 0.046875, y: 0.140625 },
+  { x: 0.046875, y: 0.140625 },
+  { x: 0.078125, y: 0.140625 },
+  { x: 0.078125, y: 0.140625 },
+  { x: 0.109375, y: 0.140625 },
+  { x: 0.109375, y: 0.140625 },
+  { x: 0.140625, y: 0.140625 },
+  { x: 0.140625, y: 0.140625 },
+  { x: 0.171875, y: 0.140625 },
+  { x: 0.171875, y: 0.140625 },
+  { x: 0.203125, y: 0.140625 },
+  { x: 0.203125, y: 0.140625 },
+  { x: 0.234375, y: 0.140625 },
+  { x: 0.234375, y: 0.140625 },
+  { x: 0.265625, y: 0.140625 },
+  { x: 0.265625, y: 0.140625 },
+  { x: 0.296875, y: 0.140625 },
+  { x: 0.296875, y: 0.140625 },
+  { x: 0.328125, y: 0.140625 },
+  { x: 0.328125, y: 0.140625 },
+  { x: 0.359375, y: 0.140625 },
+  { x: 0.359375, y: 0.140625 },
+  { x: 0.390625, y: 0.140625 },
+  { x: 0.390625, y: 0.140625 },
+  { x: 0.421875, y: 0.140625 },
+  { x: 0.421875, y: 0.140625 },
+  { x: 0.453125, y: 0.140625 },
+  { x: 0.453125, y: 0.140625 },
+  { x: 0.484375, y: 0.140625 },
+  { x: 0.484375, y: 0.140625 },
+  { x: 0.515625, y: 0.140625 },
+  { x: 0.515625, y: 0.140625 },
+  { x: 0.546875, y: 0.140625 },
+  { x: 0.546875, y: 0.140625 },
+  { x: 0.578125, y: 0.140625 },
+  { x: 0.578125, y: 0.140625 },
+  { x: 0.609375, y: 0.140625 },
+  { x: 0.609375, y: 0.140625 },
+  { x: 0.640625, y: 0.140625 },
+  { x: 0.640625, y: 0.140625 },
+  { x: 0.671875, y: 0.140625 },
+  { x: 0.671875, y: 0.140625 },
+  { x: 0.703125, y: 0.140625 },
+  { x: 0.703125, y: 0.140625 },
+  { x: 0.734375, y: 0.140625 },
+  { x: 0.734375, y: 0.140625 },
+  { x: 0.765625, y: 0.140625 },
+  { x: 0.765625, y: 0.140625 },
+  { x: 0.796875, y: 0.140625 },
+  { x: 0.796875, y: 0.140625 },
+  { x: 0.828125, y: 0.140625 },
+  { x: 0.828125, y: 0.140625 },
+  { x: 0.859375, y: 0.140625 },
+  { x: 0.859375, y: 0.140625 },
+  { x: 0.890625, y: 0.140625 },
+  { x: 0.890625, y: 0.140625 },
+  { x: 0.921875, y: 0.140625 },
+  { x: 0.921875, y: 0.140625 },
+  { x: 0.953125, y: 0.140625 },
+  { x: 0.953125, y: 0.140625 },
+  { x: 0.984375, y: 0.140625 },
+  { x: 0.984375, y: 0.140625 },
+  { x: 0.015625, y: 0.171875 },
+  { x: 0.015625, y: 0.171875 },
+  { x: 0.046875, y: 0.171875 },
+  { x: 0.046875, y: 0.171875 },
+  { x: 0.078125, y: 0.171875 },
+  { x: 0.078125, y: 0.171875 },
+  { x: 0.109375, y: 0.171875 },
+  { x: 0.109375, y: 0.171875 },
+  { x: 0.140625, y: 0.171875 },
+  { x: 0.140625, y: 0.171875 },
+  { x: 0.171875, y: 0.171875 },
+  { x: 0.171875, y: 0.171875 },
+  { x: 0.203125, y: 0.171875 },
+  { x: 0.203125, y: 0.171875 },
+  { x: 0.234375, y: 0.171875 },
+  { x: 0.234375, y: 0.171875 },
+  { x: 0.265625, y: 0.171875 },
+  { x: 0.265625, y: 0.171875 },
+  { x: 0.296875, y: 0.171875 },
+  { x: 0.296875, y: 0.171875 },
+  { x: 0.328125, y: 0.171875 },
+  { x: 0.328125, y: 0.171875 },
+  { x: 0.359375, y: 0.171875 },
+  { x: 0.359375, y: 0.171875 },
+  { x: 0.390625, y: 0.171875 },
+  { x: 0.390625, y: 0.171875 },
+  { x: 0.421875, y: 0.171875 },
+  { x: 0.421875, y: 0.171875 },
+  { x: 0.453125, y: 0.171875 },
+  { x: 0.453125, y: 0.171875 },
+  { x: 0.484375, y: 0.171875 },
+  { x: 0.484375, y: 0.171875 },
+  { x: 0.515625, y: 0.171875 },
+  { x: 0.515625, y: 0.171875 },
+  { x: 0.546875, y: 0.171875 },
+  { x: 0.546875, y: 0.171875 },
+  { x: 0.578125, y: 0.171875 },
+  { x: 0.578125, y: 0.171875 },
+  { x: 0.609375, y: 0.171875 },
+  { x: 0.609375, y: 0.171875 },
+  { x: 0.640625, y: 0.171875 },
+  { x: 0.640625, y: 0.171875 },
+  { x: 0.671875, y: 0.171875 },
+  { x: 0.671875, y: 0.171875 },
+  { x: 0.703125, y: 0.171875 },
+  { x: 0.703125, y: 0.171875 },
+  { x: 0.734375, y: 0.171875 },
+  { x: 0.734375, y: 0.171875 },
+  { x: 0.765625, y: 0.171875 },
+  { x: 0.765625, y: 0.171875 },
+  { x: 0.796875, y: 0.171875 },
+  { x: 0.796875, y: 0.171875 },
+  { x: 0.828125, y: 0.171875 },
+  { x: 0.828125, y: 0.171875 },
+  { x: 0.859375, y: 0.171875 },
+  { x: 0.859375, y: 0.171875 },
+  { x: 0.890625, y: 0.171875 },
+  { x: 0.890625, y: 0.171875 },
+  { x: 0.921875, y: 0.171875 },
+  { x: 0.921875, y: 0.171875 },
+  { x: 0.953125, y: 0.171875 },
+  { x: 0.953125, y: 0.171875 },
+  { x: 0.984375, y: 0.171875 },
+  { x: 0.984375, y: 0.171875 },
+  { x: 0.015625, y: 0.203125 },
+  { x: 0.015625, y: 0.203125 },
+  { x: 0.046875, y: 0.203125 },
+  { x: 0.046875, y: 0.203125 },
+  { x: 0.078125, y: 0.203125 },
+  { x: 0.078125, y: 0.203125 },
+  { x: 0.109375, y: 0.203125 },
+  { x: 0.109375, y: 0.203125 },
+  { x: 0.140625, y: 0.203125 },
+  { x: 0.140625, y: 0.203125 },
+  { x: 0.171875, y: 0.203125 },
+  { x: 0.171875, y: 0.203125 },
+  { x: 0.203125, y: 0.203125 },
+  { x: 0.203125, y: 0.203125 },
+  { x: 0.234375, y: 0.203125 },
+  { x: 0.234375, y: 0.203125 },
+  { x: 0.265625, y: 0.203125 },
+  { x: 0.265625, y: 0.203125 },
+  { x: 0.296875, y: 0.203125 },
+  { x: 0.296875, y: 0.203125 },
+  { x: 0.328125, y: 0.203125 },
+  { x: 0.328125, y: 0.203125 },
+  { x: 0.359375, y: 0.203125 },
+  { x: 0.359375, y: 0.203125 },
+  { x: 0.390625, y: 0.203125 },
+  { x: 0.390625, y: 0.203125 },
+  { x: 0.421875, y: 0.203125 },
+  { x: 0.421875, y: 0.203125 },
+  { x: 0.453125, y: 0.203125 },
+  { x: 0.453125, y: 0.203125 },
+  { x: 0.484375, y: 0.203125 },
+  { x: 0.484375, y: 0.203125 },
+  { x: 0.515625, y: 0.203125 },
+  { x: 0.515625, y: 0.203125 },
+  { x: 0.546875, y: 0.203125 },
+  { x: 0.546875, y: 0.203125 },
+  { x: 0.578125, y: 0.203125 },
+  { x: 0.578125, y: 0.203125 },
+  { x: 0.609375, y: 0.203125 },
+  { x: 0.609375, y: 0.203125 },
+  { x: 0.640625, y: 0.203125 },
+  { x: 0.640625, y: 0.203125 },
+  { x: 0.671875, y: 0.203125 },
+  { x: 0.671875, y: 0.203125 },
+  { x: 0.703125, y: 0.203125 },
+  { x: 0.703125, y: 0.203125 },
+  { x: 0.734375, y: 0.203125 },
+  { x: 0.734375, y: 0.203125 },
+  { x: 0.765625, y: 0.203125 },
+  { x: 0.765625, y: 0.203125 },
+  { x: 0.796875, y: 0.203125 },
+  { x: 0.796875, y: 0.203125 },
+  { x: 0.828125, y: 0.203125 },
+  { x: 0.828125, y: 0.203125 },
+  { x: 0.859375, y: 0.203125 },
+  { x: 0.859375, y: 0.203125 },
+  { x: 0.890625, y: 0.203125 },
+  { x: 0.890625, y: 0.203125 },
+  { x: 0.921875, y: 0.203125 },
+  { x: 0.921875, y: 0.203125 },
+  { x: 0.953125, y: 0.203125 },
+  { x: 0.953125, y: 0.203125 },
+  { x: 0.984375, y: 0.203125 },
+  { x: 0.984375, y: 0.203125 },
+  { x: 0.015625, y: 0.234375 },
+  { x: 0.015625, y: 0.234375 },
+  { x: 0.046875, y: 0.234375 },
+  { x: 0.046875, y: 0.234375 },
+  { x: 0.078125, y: 0.234375 },
+  { x: 0.078125, y: 0.234375 },
+  { x: 0.109375, y: 0.234375 },
+  { x: 0.109375, y: 0.234375 },
+  { x: 0.140625, y: 0.234375 },
+  { x: 0.140625, y: 0.234375 },
+  { x: 0.171875, y: 0.234375 },
+  { x: 0.171875, y: 0.234375 },
+  { x: 0.203125, y: 0.234375 },
+  { x: 0.203125, y: 0.234375 },
+  { x: 0.234375, y: 0.234375 },
+  { x: 0.234375, y: 0.234375 },
+  { x: 0.265625, y: 0.234375 },
+  { x: 0.265625, y: 0.234375 },
+  { x: 0.296875, y: 0.234375 },
+  { x: 0.296875, y: 0.234375 },
+  { x: 0.328125, y: 0.234375 },
+  { x: 0.328125, y: 0.234375 },
+  { x: 0.359375, y: 0.234375 },
+  { x: 0.359375, y: 0.234375 },
+  { x: 0.390625, y: 0.234375 },
+  { x: 0.390625, y: 0.234375 },
+  { x: 0.421875, y: 0.234375 },
+  { x: 0.421875, y: 0.234375 },
+  { x: 0.453125, y: 0.234375 },
+  { x: 0.453125, y: 0.234375 },
+  { x: 0.484375, y: 0.234375 },
+  { x: 0.484375, y: 0.234375 },
+  { x: 0.515625, y: 0.234375 },
+  { x: 0.515625, y: 0.234375 },
+  { x: 0.546875, y: 0.234375 },
+  { x: 0.546875, y: 0.234375 },
+  { x: 0.578125, y: 0.234375 },
+  { x: 0.578125, y: 0.234375 },
+  { x: 0.609375, y: 0.234375 },
+  { x: 0.609375, y: 0.234375 },
+  { x: 0.640625, y: 0.234375 },
+  { x: 0.640625, y: 0.234375 },
+  { x: 0.671875, y: 0.234375 },
+  { x: 0.671875, y: 0.234375 },
+  { x: 0.703125, y: 0.234375 },
+  { x: 0.703125, y: 0.234375 },
+  { x: 0.734375, y: 0.234375 },
+  { x: 0.734375, y: 0.234375 },
+  { x: 0.765625, y: 0.234375 },
+  { x: 0.765625, y: 0.234375 },
+  { x: 0.796875, y: 0.234375 },
+  { x: 0.796875, y: 0.234375 },
+  { x: 0.828125, y: 0.234375 },
+  { x: 0.828125, y: 0.234375 },
+  { x: 0.859375, y: 0.234375 },
+  { x: 0.859375, y: 0.234375 },
+  { x: 0.890625, y: 0.234375 },
+  { x: 0.890625, y: 0.234375 },
+  { x: 0.921875, y: 0.234375 },
+  { x: 0.921875, y: 0.234375 },
+  { x: 0.953125, y: 0.234375 },
+  { x: 0.953125, y: 0.234375 },
+  { x: 0.984375, y: 0.234375 },
+  { x: 0.984375, y: 0.234375 },
+  { x: 0.015625, y: 0.265625 },
+  { x: 0.015625, y: 0.265625 },
+  { x: 0.046875, y: 0.265625 },
+  { x: 0.046875, y: 0.265625 },
+  { x: 0.078125, y: 0.265625 },
+  { x: 0.078125, y: 0.265625 },
+  { x: 0.109375, y: 0.265625 },
+  { x: 0.109375, y: 0.265625 },
+  { x: 0.140625, y: 0.265625 },
+  { x: 0.140625, y: 0.265625 },
+  { x: 0.171875, y: 0.265625 },
+  { x: 0.171875, y: 0.265625 },
+  { x: 0.203125, y: 0.265625 },
+  { x: 0.203125, y: 0.265625 },
+  { x: 0.234375, y: 0.265625 },
+  { x: 0.234375, y: 0.265625 },
+  { x: 0.265625, y: 0.265625 },
+  { x: 0.265625, y: 0.265625 },
+  { x: 0.296875, y: 0.265625 },
+  { x: 0.296875, y: 0.265625 },
+  { x: 0.328125, y: 0.265625 },
+  { x: 0.328125, y: 0.265625 },
+  { x: 0.359375, y: 0.265625 },
+  { x: 0.359375, y: 0.265625 },
+  { x: 0.390625, y: 0.265625 },
+  { x: 0.390625, y: 0.265625 },
+  { x: 0.421875, y: 0.265625 },
+  { x: 0.421875, y: 0.265625 },
+  { x: 0.453125, y: 0.265625 },
+  { x: 0.453125, y: 0.265625 },
+  { x: 0.484375, y: 0.265625 },
+  { x: 0.484375, y: 0.265625 },
+  { x: 0.515625, y: 0.265625 },
+  { x: 0.515625, y: 0.265625 },
+  { x: 0.546875, y: 0.265625 },
+  { x: 0.546875, y: 0.265625 },
+  { x: 0.578125, y: 0.265625 },
+  { x: 0.578125, y: 0.265625 },
+  { x: 0.609375, y: 0.265625 },
+  { x: 0.609375, y: 0.265625 },
+  { x: 0.640625, y: 0.265625 },
+  { x: 0.640625, y: 0.265625 },
+  { x: 0.671875, y: 0.265625 },
+  { x: 0.671875, y: 0.265625 },
+  { x: 0.703125, y: 0.265625 },
+  { x: 0.703125, y: 0.265625 },
+  { x: 0.734375, y: 0.265625 },
+  { x: 0.734375, y: 0.265625 },
+  { x: 0.765625, y: 0.265625 },
+  { x: 0.765625, y: 0.265625 },
+  { x: 0.796875, y: 0.265625 },
+  { x: 0.796875, y: 0.265625 },
+  { x: 0.828125, y: 0.265625 },
+  { x: 0.828125, y: 0.265625 },
+  { x: 0.859375, y: 0.265625 },
+  { x: 0.859375, y: 0.265625 },
+  { x: 0.890625, y: 0.265625 },
+  { x: 0.890625, y: 0.265625 },
+  { x: 0.921875, y: 0.265625 },
+  { x: 0.921875, y: 0.265625 },
+  { x: 0.953125, y: 0.265625 },
+  { x: 0.953125, y: 0.265625 },
+  { x: 0.984375, y: 0.265625 },
+  { x: 0.984375, y: 0.265625 },
+  { x: 0.015625, y: 0.296875 },
+  { x: 0.015625, y: 0.296875 },
+  { x: 0.046875, y: 0.296875 },
+  { x: 0.046875, y: 0.296875 },
+  { x: 0.078125, y: 0.296875 },
+  { x: 0.078125, y: 0.296875 },
+  { x: 0.109375, y: 0.296875 },
+  { x: 0.109375, y: 0.296875 },
+  { x: 0.140625, y: 0.296875 },
+  { x: 0.140625, y: 0.296875 },
+  { x: 0.171875, y: 0.296875 },
+  { x: 0.171875, y: 0.296875 },
+  { x: 0.203125, y: 0.296875 },
+  { x: 0.203125, y: 0.296875 },
+  { x: 0.234375, y: 0.296875 },
+  { x: 0.234375, y: 0.296875 },
+  { x: 0.265625, y: 0.296875 },
+  { x: 0.265625, y: 0.296875 },
+  { x: 0.296875, y: 0.296875 },
+  { x: 0.296875, y: 0.296875 },
+  { x: 0.328125, y: 0.296875 },
+  { x: 0.328125, y: 0.296875 },
+  { x: 0.359375, y: 0.296875 },
+  { x: 0.359375, y: 0.296875 },
+  { x: 0.390625, y: 0.296875 },
+  { x: 0.390625, y: 0.296875 },
+  { x: 0.421875, y: 0.296875 },
+  { x: 0.421875, y: 0.296875 },
+  { x: 0.453125, y: 0.296875 },
+  { x: 0.453125, y: 0.296875 },
+  { x: 0.484375, y: 0.296875 },
+  { x: 0.484375, y: 0.296875 },
+  { x: 0.515625, y: 0.296875 },
+  { x: 0.515625, y: 0.296875 },
+  { x: 0.546875, y: 0.296875 },
+  { x: 0.546875, y: 0.296875 },
+  { x: 0.578125, y: 0.296875 },
+  { x: 0.578125, y: 0.296875 },
+  { x: 0.609375, y: 0.296875 },
+  { x: 0.609375, y: 0.296875 },
+  { x: 0.640625, y: 0.296875 },
+  { x: 0.640625, y: 0.296875 },
+  { x: 0.671875, y: 0.296875 },
+  { x: 0.671875, y: 0.296875 },
+  { x: 0.703125, y: 0.296875 },
+  { x: 0.703125, y: 0.296875 },
+  { x: 0.734375, y: 0.296875 },
+  { x: 0.734375, y: 0.296875 },
+  { x: 0.765625, y: 0.296875 },
+  { x: 0.765625, y: 0.296875 },
+  { x: 0.796875, y: 0.296875 },
+  { x: 0.796875, y: 0.296875 },
+  { x: 0.828125, y: 0.296875 },
+  { x: 0.828125, y: 0.296875 },
+  { x: 0.859375, y: 0.296875 },
+  { x: 0.859375, y: 0.296875 },
+  { x: 0.890625, y: 0.296875 },
+  { x: 0.890625, y: 0.296875 },
+  { x: 0.921875, y: 0.296875 },
+  { x: 0.921875, y: 0.296875 },
+  { x: 0.953125, y: 0.296875 },
+  { x: 0.953125, y: 0.296875 },
+  { x: 0.984375, y: 0.296875 },
+  { x: 0.984375, y: 0.296875 },
+  { x: 0.015625, y: 0.328125 },
+  { x: 0.015625, y: 0.328125 },
+  { x: 0.046875, y: 0.328125 },
+  { x: 0.046875, y: 0.328125 },
+  { x: 0.078125, y: 0.328125 },
+  { x: 0.078125, y: 0.328125 },
+  { x: 0.109375, y: 0.328125 },
+  { x: 0.109375, y: 0.328125 },
+  { x: 0.140625, y: 0.328125 },
+  { x: 0.140625, y: 0.328125 },
+  { x: 0.171875, y: 0.328125 },
+  { x: 0.171875, y: 0.328125 },
+  { x: 0.203125, y: 0.328125 },
+  { x: 0.203125, y: 0.328125 },
+  { x: 0.234375, y: 0.328125 },
+  { x: 0.234375, y: 0.328125 },
+  { x: 0.265625, y: 0.328125 },
+  { x: 0.265625, y: 0.328125 },
+  { x: 0.296875, y: 0.328125 },
+  { x: 0.296875, y: 0.328125 },
+  { x: 0.328125, y: 0.328125 },
+  { x: 0.328125, y: 0.328125 },
+  { x: 0.359375, y: 0.328125 },
+  { x: 0.359375, y: 0.328125 },
+  { x: 0.390625, y: 0.328125 },
+  { x: 0.390625, y: 0.328125 },
+  { x: 0.421875, y: 0.328125 },
+  { x: 0.421875, y: 0.328125 },
+  { x: 0.453125, y: 0.328125 },
+  { x: 0.453125, y: 0.328125 },
+  { x: 0.484375, y: 0.328125 },
+  { x: 0.484375, y: 0.328125 },
+  { x: 0.515625, y: 0.328125 },
+  { x: 0.515625, y: 0.328125 },
+  { x: 0.546875, y: 0.328125 },
+  { x: 0.546875, y: 0.328125 },
+  { x: 0.578125, y: 0.328125 },
+  { x: 0.578125, y: 0.328125 },
+  { x: 0.609375, y: 0.328125 },
+  { x: 0.609375, y: 0.328125 },
+  { x: 0.640625, y: 0.328125 },
+  { x: 0.640625, y: 0.328125 },
+  { x: 0.671875, y: 0.328125 },
+  { x: 0.671875, y: 0.328125 },
+  { x: 0.703125, y: 0.328125 },
+  { x: 0.703125, y: 0.328125 },
+  { x: 0.734375, y: 0.328125 },
+  { x: 0.734375, y: 0.328125 },
+  { x: 0.765625, y: 0.328125 },
+  { x: 0.765625, y: 0.328125 },
+  { x: 0.796875, y: 0.328125 },
+  { x: 0.796875, y: 0.328125 },
+  { x: 0.828125, y: 0.328125 },
+  { x: 0.828125, y: 0.328125 },
+  { x: 0.859375, y: 0.328125 },
+  { x: 0.859375, y: 0.328125 },
+  { x: 0.890625, y: 0.328125 },
+  { x: 0.890625, y: 0.328125 },
+  { x: 0.921875, y: 0.328125 },
+  { x: 0.921875, y: 0.328125 },
+  { x: 0.953125, y: 0.328125 },
+  { x: 0.953125, y: 0.328125 },
+  { x: 0.984375, y: 0.328125 },
+  { x: 0.984375, y: 0.328125 },
+  { x: 0.015625, y: 0.359375 },
+  { x: 0.015625, y: 0.359375 },
+  { x: 0.046875, y: 0.359375 },
+  { x: 0.046875, y: 0.359375 },
+  { x: 0.078125, y: 0.359375 },
+  { x: 0.078125, y: 0.359375 },
+  { x: 0.109375, y: 0.359375 },
+  { x: 0.109375, y: 0.359375 },
+  { x: 0.140625, y: 0.359375 },
+  { x: 0.140625, y: 0.359375 },
+  { x: 0.171875, y: 0.359375 },
+  { x: 0.171875, y: 0.359375 },
+  { x: 0.203125, y: 0.359375 },
+  { x: 0.203125, y: 0.359375 },
+  { x: 0.234375, y: 0.359375 },
+  { x: 0.234375, y: 0.359375 },
+  { x: 0.265625, y: 0.359375 },
+  { x: 0.265625, y: 0.359375 },
+  { x: 0.296875, y: 0.359375 },
+  { x: 0.296875, y: 0.359375 },
+  { x: 0.328125, y: 0.359375 },
+  { x: 0.328125, y: 0.359375 },
+  { x: 0.359375, y: 0.359375 },
+  { x: 0.359375, y: 0.359375 },
+  { x: 0.390625, y: 0.359375 },
+  { x: 0.390625, y: 0.359375 },
+  { x: 0.421875, y: 0.359375 },
+  { x: 0.421875, y: 0.359375 },
+  { x: 0.453125, y: 0.359375 },
+  { x: 0.453125, y: 0.359375 },
+  { x: 0.484375, y: 0.359375 },
+  { x: 0.484375, y: 0.359375 },
+  { x: 0.515625, y: 0.359375 },
+  { x: 0.515625, y: 0.359375 },
+  { x: 0.546875, y: 0.359375 },
+  { x: 0.546875, y: 0.359375 },
+  { x: 0.578125, y: 0.359375 },
+  { x: 0.578125, y: 0.359375 },
+  { x: 0.609375, y: 0.359375 },
+  { x: 0.609375, y: 0.359375 },
+  { x: 0.640625, y: 0.359375 },
+  { x: 0.640625, y: 0.359375 },
+  { x: 0.671875, y: 0.359375 },
+  { x: 0.671875, y: 0.359375 },
+  { x: 0.703125, y: 0.359375 },
+  { x: 0.703125, y: 0.359375 },
+  { x: 0.734375, y: 0.359375 },
+  { x: 0.734375, y: 0.359375 },
+  { x: 0.765625, y: 0.359375 },
+  { x: 0.765625, y: 0.359375 },
+  { x: 0.796875, y: 0.359375 },
+  { x: 0.796875, y: 0.359375 },
+  { x: 0.828125, y: 0.359375 },
+  { x: 0.828125, y: 0.359375 },
+  { x: 0.859375, y: 0.359375 },
+  { x: 0.859375, y: 0.359375 },
+  { x: 0.890625, y: 0.359375 },
+  { x: 0.890625, y: 0.359375 },
+  { x: 0.921875, y: 0.359375 },
+  { x: 0.921875, y: 0.359375 },
+  { x: 0.953125, y: 0.359375 },
+  { x: 0.953125, y: 0.359375 },
+  { x: 0.984375, y: 0.359375 },
+  { x: 0.984375, y: 0.359375 },
+  { x: 0.015625, y: 0.390625 },
+  { x: 0.015625, y: 0.390625 },
+  { x: 0.046875, y: 0.390625 },
+  { x: 0.046875, y: 0.390625 },
+  { x: 0.078125, y: 0.390625 },
+  { x: 0.078125, y: 0.390625 },
+  { x: 0.109375, y: 0.390625 },
+  { x: 0.109375, y: 0.390625 },
+  { x: 0.140625, y: 0.390625 },
+  { x: 0.140625, y: 0.390625 },
+  { x: 0.171875, y: 0.390625 },
+  { x: 0.171875, y: 0.390625 },
+  { x: 0.203125, y: 0.390625 },
+  { x: 0.203125, y: 0.390625 },
+  { x: 0.234375, y: 0.390625 },
+  { x: 0.234375, y: 0.390625 },
+  { x: 0.265625, y: 0.390625 },
+  { x: 0.265625, y: 0.390625 },
+  { x: 0.296875, y: 0.390625 },
+  { x: 0.296875, y: 0.390625 },
+  { x: 0.328125, y: 0.390625 },
+  { x: 0.328125, y: 0.390625 },
+  { x: 0.359375, y: 0.390625 },
+  { x: 0.359375, y: 0.390625 },
+  { x: 0.390625, y: 0.390625 },
+  { x: 0.390625, y: 0.390625 },
+  { x: 0.421875, y: 0.390625 },
+  { x: 0.421875, y: 0.390625 },
+  { x: 0.453125, y: 0.390625 },
+  { x: 0.453125, y: 0.390625 },
+  { x: 0.484375, y: 0.390625 },
+  { x: 0.484375, y: 0.390625 },
+  { x: 0.515625, y: 0.390625 },
+  { x: 0.515625, y: 0.390625 },
+  { x: 0.546875, y: 0.390625 },
+  { x: 0.546875, y: 0.390625 },
+  { x: 0.578125, y: 0.390625 },
+  { x: 0.578125, y: 0.390625 },
+  { x: 0.609375, y: 0.390625 },
+  { x: 0.609375, y: 0.390625 },
+  { x: 0.640625, y: 0.390625 },
+  { x: 0.640625, y: 0.390625 },
+  { x: 0.671875, y: 0.390625 },
+  { x: 0.671875, y: 0.390625 },
+  { x: 0.703125, y: 0.390625 },
+  { x: 0.703125, y: 0.390625 },
+  { x: 0.734375, y: 0.390625 },
+  { x: 0.734375, y: 0.390625 },
+  { x: 0.765625, y: 0.390625 },
+  { x: 0.765625, y: 0.390625 },
+  { x: 0.796875, y: 0.390625 },
+  { x: 0.796875, y: 0.390625 },
+  { x: 0.828125, y: 0.390625 },
+  { x: 0.828125, y: 0.390625 },
+  { x: 0.859375, y: 0.390625 },
+  { x: 0.859375, y: 0.390625 },
+  { x: 0.890625, y: 0.390625 },
+  { x: 0.890625, y: 0.390625 },
+  { x: 0.921875, y: 0.390625 },
+  { x: 0.921875, y: 0.390625 },
+  { x: 0.953125, y: 0.390625 },
+  { x: 0.953125, y: 0.390625 },
+  { x: 0.984375, y: 0.390625 },
+  { x: 0.984375, y: 0.390625 },
+  { x: 0.015625, y: 0.421875 },
+  { x: 0.015625, y: 0.421875 },
+  { x: 0.046875, y: 0.421875 },
+  { x: 0.046875, y: 0.421875 },
+  { x: 0.078125, y: 0.421875 },
+  { x: 0.078125, y: 0.421875 },
+  { x: 0.109375, y: 0.421875 },
+  { x: 0.109375, y: 0.421875 },
+  { x: 0.140625, y: 0.421875 },
+  { x: 0.140625, y: 0.421875 },
+  { x: 0.171875, y: 0.421875 },
+  { x: 0.171875, y: 0.421875 },
+  { x: 0.203125, y: 0.421875 },
+  { x: 0.203125, y: 0.421875 },
+  { x: 0.234375, y: 0.421875 },
+  { x: 0.234375, y: 0.421875 },
+  { x: 0.265625, y: 0.421875 },
+  { x: 0.265625, y: 0.421875 },
+  { x: 0.296875, y: 0.421875 },
+  { x: 0.296875, y: 0.421875 },
+  { x: 0.328125, y: 0.421875 },
+  { x: 0.328125, y: 0.421875 },
+  { x: 0.359375, y: 0.421875 },
+  { x: 0.359375, y: 0.421875 },
+  { x: 0.390625, y: 0.421875 },
+  { x: 0.390625, y: 0.421875 },
+  { x: 0.421875, y: 0.421875 },
+  { x: 0.421875, y: 0.421875 },
+  { x: 0.453125, y: 0.421875 },
+  { x: 0.453125, y: 0.421875 },
+  { x: 0.484375, y: 0.421875 },
+  { x: 0.484375, y: 0.421875 },
+  { x: 0.515625, y: 0.421875 },
+  { x: 0.515625, y: 0.421875 },
+  { x: 0.546875, y: 0.421875 },
+  { x: 0.546875, y: 0.421875 },
+  { x: 0.578125, y: 0.421875 },
+  { x: 0.578125, y: 0.421875 },
+  { x: 0.609375, y: 0.421875 },
+  { x: 0.609375, y: 0.421875 },
+  { x: 0.640625, y: 0.421875 },
+  { x: 0.640625, y: 0.421875 },
+  { x: 0.671875, y: 0.421875 },
+  { x: 0.671875, y: 0.421875 },
+  { x: 0.703125, y: 0.421875 },
+  { x: 0.703125, y: 0.421875 },
+  { x: 0.734375, y: 0.421875 },
+  { x: 0.734375, y: 0.421875 },
+  { x: 0.765625, y: 0.421875 },
+  { x: 0.765625, y: 0.421875 },
+  { x: 0.796875, y: 0.421875 },
+  { x: 0.796875, y: 0.421875 },
+  { x: 0.828125, y: 0.421875 },
+  { x: 0.828125, y: 0.421875 },
+  { x: 0.859375, y: 0.421875 },
+  { x: 0.859375, y: 0.421875 },
+  { x: 0.890625, y: 0.421875 },
+  { x: 0.890625, y: 0.421875 },
+  { x: 0.921875, y: 0.421875 },
+  { x: 0.921875, y: 0.421875 },
+  { x: 0.953125, y: 0.421875 },
+  { x: 0.953125, y: 0.421875 },
+  { x: 0.984375, y: 0.421875 },
+  { x: 0.984375, y: 0.421875 },
+  { x: 0.015625, y: 0.453125 },
+  { x: 0.015625, y: 0.453125 },
+  { x: 0.046875, y: 0.453125 },
+  { x: 0.046875, y: 0.453125 },
+  { x: 0.078125, y: 0.453125 },
+  { x: 0.078125, y: 0.453125 },
+  { x: 0.109375, y: 0.453125 },
+  { x: 0.109375, y: 0.453125 },
+  { x: 0.140625, y: 0.453125 },
+  { x: 0.140625, y: 0.453125 },
+  { x: 0.171875, y: 0.453125 },
+  { x: 0.171875, y: 0.453125 },
+  { x: 0.203125, y: 0.453125 },
+  { x: 0.203125, y: 0.453125 },
+  { x: 0.234375, y: 0.453125 },
+  { x: 0.234375, y: 0.453125 },
+  { x: 0.265625, y: 0.453125 },
+  { x: 0.265625, y: 0.453125 },
+  { x: 0.296875, y: 0.453125 },
+  { x: 0.296875, y: 0.453125 },
+  { x: 0.328125, y: 0.453125 },
+  { x: 0.328125, y: 0.453125 },
+  { x: 0.359375, y: 0.453125 },
+  { x: 0.359375, y: 0.453125 },
+  { x: 0.390625, y: 0.453125 },
+  { x: 0.390625, y: 0.453125 },
+  { x: 0.421875, y: 0.453125 },
+  { x: 0.421875, y: 0.453125 },
+  { x: 0.453125, y: 0.453125 },
+  { x: 0.453125, y: 0.453125 },
+  { x: 0.484375, y: 0.453125 },
+  { x: 0.484375, y: 0.453125 },
+  { x: 0.515625, y: 0.453125 },
+  { x: 0.515625, y: 0.453125 },
+  { x: 0.546875, y: 0.453125 },
+  { x: 0.546875, y: 0.453125 },
+  { x: 0.578125, y: 0.453125 },
+  { x: 0.578125, y: 0.453125 },
+  { x: 0.609375, y: 0.453125 },
+  { x: 0.609375, y: 0.453125 },
+  { x: 0.640625, y: 0.453125 },
+  { x: 0.640625, y: 0.453125 },
+  { x: 0.671875, y: 0.453125 },
+  { x: 0.671875, y: 0.453125 },
+  { x: 0.703125, y: 0.453125 },
+  { x: 0.703125, y: 0.453125 },
+  { x: 0.734375, y: 0.453125 },
+  { x: 0.734375, y: 0.453125 },
+  { x: 0.765625, y: 0.453125 },
+  { x: 0.765625, y: 0.453125 },
+  { x: 0.796875, y: 0.453125 },
+  { x: 0.796875, y: 0.453125 },
+  { x: 0.828125, y: 0.453125 },
+  { x: 0.828125, y: 0.453125 },
+  { x: 0.859375, y: 0.453125 },
+  { x: 0.859375, y: 0.453125 },
+  { x: 0.890625, y: 0.453125 },
+  { x: 0.890625, y: 0.453125 },
+  { x: 0.921875, y: 0.453125 },
+  { x: 0.921875, y: 0.453125 },
+  { x: 0.953125, y: 0.453125 },
+  { x: 0.953125, y: 0.453125 },
+  { x: 0.984375, y: 0.453125 },
+  { x: 0.984375, y: 0.453125 },
+  { x: 0.015625, y: 0.484375 },
+  { x: 0.015625, y: 0.484375 },
+  { x: 0.046875, y: 0.484375 },
+  { x: 0.046875, y: 0.484375 },
+  { x: 0.078125, y: 0.484375 },
+  { x: 0.078125, y: 0.484375 },
+  { x: 0.109375, y: 0.484375 },
+  { x: 0.109375, y: 0.484375 },
+  { x: 0.140625, y: 0.484375 },
+  { x: 0.140625, y: 0.484375 },
+  { x: 0.171875, y: 0.484375 },
+  { x: 0.171875, y: 0.484375 },
+  { x: 0.203125, y: 0.484375 },
+  { x: 0.203125, y: 0.484375 },
+  { x: 0.234375, y: 0.484375 },
+  { x: 0.234375, y: 0.484375 },
+  { x: 0.265625, y: 0.484375 },
+  { x: 0.265625, y: 0.484375 },
+  { x: 0.296875, y: 0.484375 },
+  { x: 0.296875, y: 0.484375 },
+  { x: 0.328125, y: 0.484375 },
+  { x: 0.328125, y: 0.484375 },
+  { x: 0.359375, y: 0.484375 },
+  { x: 0.359375, y: 0.484375 },
+  { x: 0.390625, y: 0.484375 },
+  { x: 0.390625, y: 0.484375 },
+  { x: 0.421875, y: 0.484375 },
+  { x: 0.421875, y: 0.484375 },
+  { x: 0.453125, y: 0.484375 },
+  { x: 0.453125, y: 0.484375 },
+  { x: 0.484375, y: 0.484375 },
+  { x: 0.484375, y: 0.484375 },
+  { x: 0.515625, y: 0.484375 },
+  { x: 0.515625, y: 0.484375 },
+  { x: 0.546875, y: 0.484375 },
+  { x: 0.546875, y: 0.484375 },
+  { x: 0.578125, y: 0.484375 },
+  { x: 0.578125, y: 0.484375 },
+  { x: 0.609375, y: 0.484375 },
+  { x: 0.609375, y: 0.484375 },
+  { x: 0.640625, y: 0.484375 },
+  { x: 0.640625, y: 0.484375 },
+  { x: 0.671875, y: 0.484375 },
+  { x: 0.671875, y: 0.484375 },
+  { x: 0.703125, y: 0.484375 },
+  { x: 0.703125, y: 0.484375 },
+  { x: 0.734375, y: 0.484375 },
+  { x: 0.734375, y: 0.484375 },
+  { x: 0.765625, y: 0.484375 },
+  { x: 0.765625, y: 0.484375 },
+  { x: 0.796875, y: 0.484375 },
+  { x: 0.796875, y: 0.484375 },
+  { x: 0.828125, y: 0.484375 },
+  { x: 0.828125, y: 0.484375 },
+  { x: 0.859375, y: 0.484375 },
+  { x: 0.859375, y: 0.484375 },
+  { x: 0.890625, y: 0.484375 },
+  { x: 0.890625, y: 0.484375 },
+  { x: 0.921875, y: 0.484375 },
+  { x: 0.921875, y: 0.484375 },
+  { x: 0.953125, y: 0.484375 },
+  { x: 0.953125, y: 0.484375 },
+  { x: 0.984375, y: 0.484375 },
+  { x: 0.984375, y: 0.484375 },
+  { x: 0.015625, y: 0.515625 },
+  { x: 0.015625, y: 0.515625 },
+  { x: 0.046875, y: 0.515625 },
+  { x: 0.046875, y: 0.515625 },
+  { x: 0.078125, y: 0.515625 },
+  { x: 0.078125, y: 0.515625 },
+  { x: 0.109375, y: 0.515625 },
+  { x: 0.109375, y: 0.515625 },
+  { x: 0.140625, y: 0.515625 },
+  { x: 0.140625, y: 0.515625 },
+  { x: 0.171875, y: 0.515625 },
+  { x: 0.171875, y: 0.515625 },
+  { x: 0.203125, y: 0.515625 },
+  { x: 0.203125, y: 0.515625 },
+  { x: 0.234375, y: 0.515625 },
+  { x: 0.234375, y: 0.515625 },
+  { x: 0.265625, y: 0.515625 },
+  { x: 0.265625, y: 0.515625 },
+  { x: 0.296875, y: 0.515625 },
+  { x: 0.296875, y: 0.515625 },
+  { x: 0.328125, y: 0.515625 },
+  { x: 0.328125, y: 0.515625 },
+  { x: 0.359375, y: 0.515625 },
+  { x: 0.359375, y: 0.515625 },
+  { x: 0.390625, y: 0.515625 },
+  { x: 0.390625, y: 0.515625 },
+  { x: 0.421875, y: 0.515625 },
+  { x: 0.421875, y: 0.515625 },
+  { x: 0.453125, y: 0.515625 },
+  { x: 0.453125, y: 0.515625 },
+  { x: 0.484375, y: 0.515625 },
+  { x: 0.484375, y: 0.515625 },
+  { x: 0.515625, y: 0.515625 },
+  { x: 0.515625, y: 0.515625 },
+  { x: 0.546875, y: 0.515625 },
+  { x: 0.546875, y: 0.515625 },
+  { x: 0.578125, y: 0.515625 },
+  { x: 0.578125, y: 0.515625 },
+  { x: 0.609375, y: 0.515625 },
+  { x: 0.609375, y: 0.515625 },
+  { x: 0.640625, y: 0.515625 },
+  { x: 0.640625, y: 0.515625 },
+  { x: 0.671875, y: 0.515625 },
+  { x: 0.671875, y: 0.515625 },
+  { x: 0.703125, y: 0.515625 },
+  { x: 0.703125, y: 0.515625 },
+  { x: 0.734375, y: 0.515625 },
+  { x: 0.734375, y: 0.515625 },
+  { x: 0.765625, y: 0.515625 },
+  { x: 0.765625, y: 0.515625 },
+  { x: 0.796875, y: 0.515625 },
+  { x: 0.796875, y: 0.515625 },
+  { x: 0.828125, y: 0.515625 },
+  { x: 0.828125, y: 0.515625 },
+  { x: 0.859375, y: 0.515625 },
+  { x: 0.859375, y: 0.515625 },
+  { x: 0.890625, y: 0.515625 },
+  { x: 0.890625, y: 0.515625 },
+  { x: 0.921875, y: 0.515625 },
+  { x: 0.921875, y: 0.515625 },
+  { x: 0.953125, y: 0.515625 },
+  { x: 0.953125, y: 0.515625 },
+  { x: 0.984375, y: 0.515625 },
+  { x: 0.984375, y: 0.515625 },
+  { x: 0.015625, y: 0.546875 },
+  { x: 0.015625, y: 0.546875 },
+  { x: 0.046875, y: 0.546875 },
+  { x: 0.046875, y: 0.546875 },
+  { x: 0.078125, y: 0.546875 },
+  { x: 0.078125, y: 0.546875 },
+  { x: 0.109375, y: 0.546875 },
+  { x: 0.109375, y: 0.546875 },
+  { x: 0.140625, y: 0.546875 },
+  { x: 0.140625, y: 0.546875 },
+  { x: 0.171875, y: 0.546875 },
+  { x: 0.171875, y: 0.546875 },
+  { x: 0.203125, y: 0.546875 },
+  { x: 0.203125, y: 0.546875 },
+  { x: 0.234375, y: 0.546875 },
+  { x: 0.234375, y: 0.546875 },
+  { x: 0.265625, y: 0.546875 },
+  { x: 0.265625, y: 0.546875 },
+  { x: 0.296875, y: 0.546875 },
+  { x: 0.296875, y: 0.546875 },
+  { x: 0.328125, y: 0.546875 },
+  { x: 0.328125, y: 0.546875 },
+  { x: 0.359375, y: 0.546875 },
+  { x: 0.359375, y: 0.546875 },
+  { x: 0.390625, y: 0.546875 },
+  { x: 0.390625, y: 0.546875 },
+  { x: 0.421875, y: 0.546875 },
+  { x: 0.421875, y: 0.546875 },
+  { x: 0.453125, y: 0.546875 },
+  { x: 0.453125, y: 0.546875 },
+  { x: 0.484375, y: 0.546875 },
+  { x: 0.484375, y: 0.546875 },
+  { x: 0.515625, y: 0.546875 },
+  { x: 0.515625, y: 0.546875 },
+  { x: 0.546875, y: 0.546875 },
+  { x: 0.546875, y: 0.546875 },
+  { x: 0.578125, y: 0.546875 },
+  { x: 0.578125, y: 0.546875 },
+  { x: 0.609375, y: 0.546875 },
+  { x: 0.609375, y: 0.546875 },
+  { x: 0.640625, y: 0.546875 },
+  { x: 0.640625, y: 0.546875 },
+  { x: 0.671875, y: 0.546875 },
+  { x: 0.671875, y: 0.546875 },
+  { x: 0.703125, y: 0.546875 },
+  { x: 0.703125, y: 0.546875 },
+  { x: 0.734375, y: 0.546875 },
+  { x: 0.734375, y: 0.546875 },
+  { x: 0.765625, y: 0.546875 },
+  { x: 0.765625, y: 0.546875 },
+  { x: 0.796875, y: 0.546875 },
+  { x: 0.796875, y: 0.546875 },
+  { x: 0.828125, y: 0.546875 },
+  { x: 0.828125, y: 0.546875 },
+  { x: 0.859375, y: 0.546875 },
+  { x: 0.859375, y: 0.546875 },
+  { x: 0.890625, y: 0.546875 },
+  { x: 0.890625, y: 0.546875 },
+  { x: 0.921875, y: 0.546875 },
+  { x: 0.921875, y: 0.546875 },
+  { x: 0.953125, y: 0.546875 },
+  { x: 0.953125, y: 0.546875 },
+  { x: 0.984375, y: 0.546875 },
+  { x: 0.984375, y: 0.546875 },
+  { x: 0.015625, y: 0.578125 },
+  { x: 0.015625, y: 0.578125 },
+  { x: 0.046875, y: 0.578125 },
+  { x: 0.046875, y: 0.578125 },
+  { x: 0.078125, y: 0.578125 },
+  { x: 0.078125, y: 0.578125 },
+  { x: 0.109375, y: 0.578125 },
+  { x: 0.109375, y: 0.578125 },
+  { x: 0.140625, y: 0.578125 },
+  { x: 0.140625, y: 0.578125 },
+  { x: 0.171875, y: 0.578125 },
+  { x: 0.171875, y: 0.578125 },
+  { x: 0.203125, y: 0.578125 },
+  { x: 0.203125, y: 0.578125 },
+  { x: 0.234375, y: 0.578125 },
+  { x: 0.234375, y: 0.578125 },
+  { x: 0.265625, y: 0.578125 },
+  { x: 0.265625, y: 0.578125 },
+  { x: 0.296875, y: 0.578125 },
+  { x: 0.296875, y: 0.578125 },
+  { x: 0.328125, y: 0.578125 },
+  { x: 0.328125, y: 0.578125 },
+  { x: 0.359375, y: 0.578125 },
+  { x: 0.359375, y: 0.578125 },
+  { x: 0.390625, y: 0.578125 },
+  { x: 0.390625, y: 0.578125 },
+  { x: 0.421875, y: 0.578125 },
+  { x: 0.421875, y: 0.578125 },
+  { x: 0.453125, y: 0.578125 },
+  { x: 0.453125, y: 0.578125 },
+  { x: 0.484375, y: 0.578125 },
+  { x: 0.484375, y: 0.578125 },
+  { x: 0.515625, y: 0.578125 },
+  { x: 0.515625, y: 0.578125 },
+  { x: 0.546875, y: 0.578125 },
+  { x: 0.546875, y: 0.578125 },
+  { x: 0.578125, y: 0.578125 },
+  { x: 0.578125, y: 0.578125 },
+  { x: 0.609375, y: 0.578125 },
+  { x: 0.609375, y: 0.578125 },
+  { x: 0.640625, y: 0.578125 },
+  { x: 0.640625, y: 0.578125 },
+  { x: 0.671875, y: 0.578125 },
+  { x: 0.671875, y: 0.578125 },
+  { x: 0.703125, y: 0.578125 },
+  { x: 0.703125, y: 0.578125 },
+  { x: 0.734375, y: 0.578125 },
+  { x: 0.734375, y: 0.578125 },
+  { x: 0.765625, y: 0.578125 },
+  { x: 0.765625, y: 0.578125 },
+  { x: 0.796875, y: 0.578125 },
+  { x: 0.796875, y: 0.578125 },
+  { x: 0.828125, y: 0.578125 },
+  { x: 0.828125, y: 0.578125 },
+  { x: 0.859375, y: 0.578125 },
+  { x: 0.859375, y: 0.578125 },
+  { x: 0.890625, y: 0.578125 },
+  { x: 0.890625, y: 0.578125 },
+  { x: 0.921875, y: 0.578125 },
+  { x: 0.921875, y: 0.578125 },
+  { x: 0.953125, y: 0.578125 },
+  { x: 0.953125, y: 0.578125 },
+  { x: 0.984375, y: 0.578125 },
+  { x: 0.984375, y: 0.578125 },
+  { x: 0.015625, y: 0.609375 },
+  { x: 0.015625, y: 0.609375 },
+  { x: 0.046875, y: 0.609375 },
+  { x: 0.046875, y: 0.609375 },
+  { x: 0.078125, y: 0.609375 },
+  { x: 0.078125, y: 0.609375 },
+  { x: 0.109375, y: 0.609375 },
+  { x: 0.109375, y: 0.609375 },
+  { x: 0.140625, y: 0.609375 },
+  { x: 0.140625, y: 0.609375 },
+  { x: 0.171875, y: 0.609375 },
+  { x: 0.171875, y: 0.609375 },
+  { x: 0.203125, y: 0.609375 },
+  { x: 0.203125, y: 0.609375 },
+  { x: 0.234375, y: 0.609375 },
+  { x: 0.234375, y: 0.609375 },
+  { x: 0.265625, y: 0.609375 },
+  { x: 0.265625, y: 0.609375 },
+  { x: 0.296875, y: 0.609375 },
+  { x: 0.296875, y: 0.609375 },
+  { x: 0.328125, y: 0.609375 },
+  { x: 0.328125, y: 0.609375 },
+  { x: 0.359375, y: 0.609375 },
+  { x: 0.359375, y: 0.609375 },
+  { x: 0.390625, y: 0.609375 },
+  { x: 0.390625, y: 0.609375 },
+  { x: 0.421875, y: 0.609375 },
+  { x: 0.421875, y: 0.609375 },
+  { x: 0.453125, y: 0.609375 },
+  { x: 0.453125, y: 0.609375 },
+  { x: 0.484375, y: 0.609375 },
+  { x: 0.484375, y: 0.609375 },
+  { x: 0.515625, y: 0.609375 },
+  { x: 0.515625, y: 0.609375 },
+  { x: 0.546875, y: 0.609375 },
+  { x: 0.546875, y: 0.609375 },
+  { x: 0.578125, y: 0.609375 },
+  { x: 0.578125, y: 0.609375 },
+  { x: 0.609375, y: 0.609375 },
+  { x: 0.609375, y: 0.609375 },
+  { x: 0.640625, y: 0.609375 },
+  { x: 0.640625, y: 0.609375 },
+  { x: 0.671875, y: 0.609375 },
+  { x: 0.671875, y: 0.609375 },
+  { x: 0.703125, y: 0.609375 },
+  { x: 0.703125, y: 0.609375 },
+  { x: 0.734375, y: 0.609375 },
+  { x: 0.734375, y: 0.609375 },
+  { x: 0.765625, y: 0.609375 },
+  { x: 0.765625, y: 0.609375 },
+  { x: 0.796875, y: 0.609375 },
+  { x: 0.796875, y: 0.609375 },
+  { x: 0.828125, y: 0.609375 },
+  { x: 0.828125, y: 0.609375 },
+  { x: 0.859375, y: 0.609375 },
+  { x: 0.859375, y: 0.609375 },
+  { x: 0.890625, y: 0.609375 },
+  { x: 0.890625, y: 0.609375 },
+  { x: 0.921875, y: 0.609375 },
+  { x: 0.921875, y: 0.609375 },
+  { x: 0.953125, y: 0.609375 },
+  { x: 0.953125, y: 0.609375 },
+  { x: 0.984375, y: 0.609375 },
+  { x: 0.984375, y: 0.609375 },
+  { x: 0.015625, y: 0.640625 },
+  { x: 0.015625, y: 0.640625 },
+  { x: 0.046875, y: 0.640625 },
+  { x: 0.046875, y: 0.640625 },
+  { x: 0.078125, y: 0.640625 },
+  { x: 0.078125, y: 0.640625 },
+  { x: 0.109375, y: 0.640625 },
+  { x: 0.109375, y: 0.640625 },
+  { x: 0.140625, y: 0.640625 },
+  { x: 0.140625, y: 0.640625 },
+  { x: 0.171875, y: 0.640625 },
+  { x: 0.171875, y: 0.640625 },
+  { x: 0.203125, y: 0.640625 },
+  { x: 0.203125, y: 0.640625 },
+  { x: 0.234375, y: 0.640625 },
+  { x: 0.234375, y: 0.640625 },
+  { x: 0.265625, y: 0.640625 },
+  { x: 0.265625, y: 0.640625 },
+  { x: 0.296875, y: 0.640625 },
+  { x: 0.296875, y: 0.640625 },
+  { x: 0.328125, y: 0.640625 },
+  { x: 0.328125, y: 0.640625 },
+  { x: 0.359375, y: 0.640625 },
+  { x: 0.359375, y: 0.640625 },
+  { x: 0.390625, y: 0.640625 },
+  { x: 0.390625, y: 0.640625 },
+  { x: 0.421875, y: 0.640625 },
+  { x: 0.421875, y: 0.640625 },
+  { x: 0.453125, y: 0.640625 },
+  { x: 0.453125, y: 0.640625 },
+  { x: 0.484375, y: 0.640625 },
+  { x: 0.484375, y: 0.640625 },
+  { x: 0.515625, y: 0.640625 },
+  { x: 0.515625, y: 0.640625 },
+  { x: 0.546875, y: 0.640625 },
+  { x: 0.546875, y: 0.640625 },
+  { x: 0.578125, y: 0.640625 },
+  { x: 0.578125, y: 0.640625 },
+  { x: 0.609375, y: 0.640625 },
+  { x: 0.609375, y: 0.640625 },
+  { x: 0.640625, y: 0.640625 },
+  { x: 0.640625, y: 0.640625 },
+  { x: 0.671875, y: 0.640625 },
+  { x: 0.671875, y: 0.640625 },
+  { x: 0.703125, y: 0.640625 },
+  { x: 0.703125, y: 0.640625 },
+  { x: 0.734375, y: 0.640625 },
+  { x: 0.734375, y: 0.640625 },
+  { x: 0.765625, y: 0.640625 },
+  { x: 0.765625, y: 0.640625 },
+  { x: 0.796875, y: 0.640625 },
+  { x: 0.796875, y: 0.640625 },
+  { x: 0.828125, y: 0.640625 },
+  { x: 0.828125, y: 0.640625 },
+  { x: 0.859375, y: 0.640625 },
+  { x: 0.859375, y: 0.640625 },
+  { x: 0.890625, y: 0.640625 },
+  { x: 0.890625, y: 0.640625 },
+  { x: 0.921875, y: 0.640625 },
+  { x: 0.921875, y: 0.640625 },
+  { x: 0.953125, y: 0.640625 },
+  { x: 0.953125, y: 0.640625 },
+  { x: 0.984375, y: 0.640625 },
+  { x: 0.984375, y: 0.640625 },
+  { x: 0.015625, y: 0.671875 },
+  { x: 0.015625, y: 0.671875 },
+  { x: 0.046875, y: 0.671875 },
+  { x: 0.046875, y: 0.671875 },
+  { x: 0.078125, y: 0.671875 },
+  { x: 0.078125, y: 0.671875 },
+  { x: 0.109375, y: 0.671875 },
+  { x: 0.109375, y: 0.671875 },
+  { x: 0.140625, y: 0.671875 },
+  { x: 0.140625, y: 0.671875 },
+  { x: 0.171875, y: 0.671875 },
+  { x: 0.171875, y: 0.671875 },
+  { x: 0.203125, y: 0.671875 },
+  { x: 0.203125, y: 0.671875 },
+  { x: 0.234375, y: 0.671875 },
+  { x: 0.234375, y: 0.671875 },
+  { x: 0.265625, y: 0.671875 },
+  { x: 0.265625, y: 0.671875 },
+  { x: 0.296875, y: 0.671875 },
+  { x: 0.296875, y: 0.671875 },
+  { x: 0.328125, y: 0.671875 },
+  { x: 0.328125, y: 0.671875 },
+  { x: 0.359375, y: 0.671875 },
+  { x: 0.359375, y: 0.671875 },
+  { x: 0.390625, y: 0.671875 },
+  { x: 0.390625, y: 0.671875 },
+  { x: 0.421875, y: 0.671875 },
+  { x: 0.421875, y: 0.671875 },
+  { x: 0.453125, y: 0.671875 },
+  { x: 0.453125, y: 0.671875 },
+  { x: 0.484375, y: 0.671875 },
+  { x: 0.484375, y: 0.671875 },
+  { x: 0.515625, y: 0.671875 },
+  { x: 0.515625, y: 0.671875 },
+  { x: 0.546875, y: 0.671875 },
+  { x: 0.546875, y: 0.671875 },
+  { x: 0.578125, y: 0.671875 },
+  { x: 0.578125, y: 0.671875 },
+  { x: 0.609375, y: 0.671875 },
+  { x: 0.609375, y: 0.671875 },
+  { x: 0.640625, y: 0.671875 },
+  { x: 0.640625, y: 0.671875 },
+  { x: 0.671875, y: 0.671875 },
+  { x: 0.671875, y: 0.671875 },
+  { x: 0.703125, y: 0.671875 },
+  { x: 0.703125, y: 0.671875 },
+  { x: 0.734375, y: 0.671875 },
+  { x: 0.734375, y: 0.671875 },
+  { x: 0.765625, y: 0.671875 },
+  { x: 0.765625, y: 0.671875 },
+  { x: 0.796875, y: 0.671875 },
+  { x: 0.796875, y: 0.671875 },
+  { x: 0.828125, y: 0.671875 },
+  { x: 0.828125, y: 0.671875 },
+  { x: 0.859375, y: 0.671875 },
+  { x: 0.859375, y: 0.671875 },
+  { x: 0.890625, y: 0.671875 },
+  { x: 0.890625, y: 0.671875 },
+  { x: 0.921875, y: 0.671875 },
+  { x: 0.921875, y: 0.671875 },
+  { x: 0.953125, y: 0.671875 },
+  { x: 0.953125, y: 0.671875 },
+  { x: 0.984375, y: 0.671875 },
+  { x: 0.984375, y: 0.671875 },
+  { x: 0.015625, y: 0.703125 },
+  { x: 0.015625, y: 0.703125 },
+  { x: 0.046875, y: 0.703125 },
+  { x: 0.046875, y: 0.703125 },
+  { x: 0.078125, y: 0.703125 },
+  { x: 0.078125, y: 0.703125 },
+  { x: 0.109375, y: 0.703125 },
+  { x: 0.109375, y: 0.703125 },
+  { x: 0.140625, y: 0.703125 },
+  { x: 0.140625, y: 0.703125 },
+  { x: 0.171875, y: 0.703125 },
+  { x: 0.171875, y: 0.703125 },
+  { x: 0.203125, y: 0.703125 },
+  { x: 0.203125, y: 0.703125 },
+  { x: 0.234375, y: 0.703125 },
+  { x: 0.234375, y: 0.703125 },
+  { x: 0.265625, y: 0.703125 },
+  { x: 0.265625, y: 0.703125 },
+  { x: 0.296875, y: 0.703125 },
+  { x: 0.296875, y: 0.703125 },
+  { x: 0.328125, y: 0.703125 },
+  { x: 0.328125, y: 0.703125 },
+  { x: 0.359375, y: 0.703125 },
+  { x: 0.359375, y: 0.703125 },
+  { x: 0.390625, y: 0.703125 },
+  { x: 0.390625, y: 0.703125 },
+  { x: 0.421875, y: 0.703125 },
+  { x: 0.421875, y: 0.703125 },
+  { x: 0.453125, y: 0.703125 },
+  { x: 0.453125, y: 0.703125 },
+  { x: 0.484375, y: 0.703125 },
+  { x: 0.484375, y: 0.703125 },
+  { x: 0.515625, y: 0.703125 },
+  { x: 0.515625, y: 0.703125 },
+  { x: 0.546875, y: 0.703125 },
+  { x: 0.546875, y: 0.703125 },
+  { x: 0.578125, y: 0.703125 },
+  { x: 0.578125, y: 0.703125 },
+  { x: 0.609375, y: 0.703125 },
+  { x: 0.609375, y: 0.703125 },
+  { x: 0.640625, y: 0.703125 },
+  { x: 0.640625, y: 0.703125 },
+  { x: 0.671875, y: 0.703125 },
+  { x: 0.671875, y: 0.703125 },
+  { x: 0.703125, y: 0.703125 },
+  { x: 0.703125, y: 0.703125 },
+  { x: 0.734375, y: 0.703125 },
+  { x: 0.734375, y: 0.703125 },
+  { x: 0.765625, y: 0.703125 },
+  { x: 0.765625, y: 0.703125 },
+  { x: 0.796875, y: 0.703125 },
+  { x: 0.796875, y: 0.703125 },
+  { x: 0.828125, y: 0.703125 },
+  { x: 0.828125, y: 0.703125 },
+  { x: 0.859375, y: 0.703125 },
+  { x: 0.859375, y: 0.703125 },
+  { x: 0.890625, y: 0.703125 },
+  { x: 0.890625, y: 0.703125 },
+  { x: 0.921875, y: 0.703125 },
+  { x: 0.921875, y: 0.703125 },
+  { x: 0.953125, y: 0.703125 },
+  { x: 0.953125, y: 0.703125 },
+  { x: 0.984375, y: 0.703125 },
+  { x: 0.984375, y: 0.703125 },
+  { x: 0.015625, y: 0.734375 },
+  { x: 0.015625, y: 0.734375 },
+  { x: 0.046875, y: 0.734375 },
+  { x: 0.046875, y: 0.734375 },
+  { x: 0.078125, y: 0.734375 },
+  { x: 0.078125, y: 0.734375 },
+  { x: 0.109375, y: 0.734375 },
+  { x: 0.109375, y: 0.734375 },
+  { x: 0.140625, y: 0.734375 },
+  { x: 0.140625, y: 0.734375 },
+  { x: 0.171875, y: 0.734375 },
+  { x: 0.171875, y: 0.734375 },
+  { x: 0.203125, y: 0.734375 },
+  { x: 0.203125, y: 0.734375 },
+  { x: 0.234375, y: 0.734375 },
+  { x: 0.234375, y: 0.734375 },
+  { x: 0.265625, y: 0.734375 },
+  { x: 0.265625, y: 0.734375 },
+  { x: 0.296875, y: 0.734375 },
+  { x: 0.296875, y: 0.734375 },
+  { x: 0.328125, y: 0.734375 },
+  { x: 0.328125, y: 0.734375 },
+  { x: 0.359375, y: 0.734375 },
+  { x: 0.359375, y: 0.734375 },
+  { x: 0.390625, y: 0.734375 },
+  { x: 0.390625, y: 0.734375 },
+  { x: 0.421875, y: 0.734375 },
+  { x: 0.421875, y: 0.734375 },
+  { x: 0.453125, y: 0.734375 },
+  { x: 0.453125, y: 0.734375 },
+  { x: 0.484375, y: 0.734375 },
+  { x: 0.484375, y: 0.734375 },
+  { x: 0.515625, y: 0.734375 },
+  { x: 0.515625, y: 0.734375 },
+  { x: 0.546875, y: 0.734375 },
+  { x: 0.546875, y: 0.734375 },
+  { x: 0.578125, y: 0.734375 },
+  { x: 0.578125, y: 0.734375 },
+  { x: 0.609375, y: 0.734375 },
+  { x: 0.609375, y: 0.734375 },
+  { x: 0.640625, y: 0.734375 },
+  { x: 0.640625, y: 0.734375 },
+  { x: 0.671875, y: 0.734375 },
+  { x: 0.671875, y: 0.734375 },
+  { x: 0.703125, y: 0.734375 },
+  { x: 0.703125, y: 0.734375 },
+  { x: 0.734375, y: 0.734375 },
+  { x: 0.734375, y: 0.734375 },
+  { x: 0.765625, y: 0.734375 },
+  { x: 0.765625, y: 0.734375 },
+  { x: 0.796875, y: 0.734375 },
+  { x: 0.796875, y: 0.734375 },
+  { x: 0.828125, y: 0.734375 },
+  { x: 0.828125, y: 0.734375 },
+  { x: 0.859375, y: 0.734375 },
+  { x: 0.859375, y: 0.734375 },
+  { x: 0.890625, y: 0.734375 },
+  { x: 0.890625, y: 0.734375 },
+  { x: 0.921875, y: 0.734375 },
+  { x: 0.921875, y: 0.734375 },
+  { x: 0.953125, y: 0.734375 },
+  { x: 0.953125, y: 0.734375 },
+  { x: 0.984375, y: 0.734375 },
+  { x: 0.984375, y: 0.734375 },
+  { x: 0.015625, y: 0.765625 },
+  { x: 0.015625, y: 0.765625 },
+  { x: 0.046875, y: 0.765625 },
+  { x: 0.046875, y: 0.765625 },
+  { x: 0.078125, y: 0.765625 },
+  { x: 0.078125, y: 0.765625 },
+  { x: 0.109375, y: 0.765625 },
+  { x: 0.109375, y: 0.765625 },
+  { x: 0.140625, y: 0.765625 },
+  { x: 0.140625, y: 0.765625 },
+  { x: 0.171875, y: 0.765625 },
+  { x: 0.171875, y: 0.765625 },
+  { x: 0.203125, y: 0.765625 },
+  { x: 0.203125, y: 0.765625 },
+  { x: 0.234375, y: 0.765625 },
+  { x: 0.234375, y: 0.765625 },
+  { x: 0.265625, y: 0.765625 },
+  { x: 0.265625, y: 0.765625 },
+  { x: 0.296875, y: 0.765625 },
+  { x: 0.296875, y: 0.765625 },
+  { x: 0.328125, y: 0.765625 },
+  { x: 0.328125, y: 0.765625 },
+  { x: 0.359375, y: 0.765625 },
+  { x: 0.359375, y: 0.765625 },
+  { x: 0.390625, y: 0.765625 },
+  { x: 0.390625, y: 0.765625 },
+  { x: 0.421875, y: 0.765625 },
+  { x: 0.421875, y: 0.765625 },
+  { x: 0.453125, y: 0.765625 },
+  { x: 0.453125, y: 0.765625 },
+  { x: 0.484375, y: 0.765625 },
+  { x: 0.484375, y: 0.765625 },
+  { x: 0.515625, y: 0.765625 },
+  { x: 0.515625, y: 0.765625 },
+  { x: 0.546875, y: 0.765625 },
+  { x: 0.546875, y: 0.765625 },
+  { x: 0.578125, y: 0.765625 },
+  { x: 0.578125, y: 0.765625 },
+  { x: 0.609375, y: 0.765625 },
+  { x: 0.609375, y: 0.765625 },
+  { x: 0.640625, y: 0.765625 },
+  { x: 0.640625, y: 0.765625 },
+  { x: 0.671875, y: 0.765625 },
+  { x: 0.671875, y: 0.765625 },
+  { x: 0.703125, y: 0.765625 },
+  { x: 0.703125, y: 0.765625 },
+  { x: 0.734375, y: 0.765625 },
+  { x: 0.734375, y: 0.765625 },
+  { x: 0.765625, y: 0.765625 },
+  { x: 0.765625, y: 0.765625 },
+  { x: 0.796875, y: 0.765625 },
+  { x: 0.796875, y: 0.765625 },
+  { x: 0.828125, y: 0.765625 },
+  { x: 0.828125, y: 0.765625 },
+  { x: 0.859375, y: 0.765625 },
+  { x: 0.859375, y: 0.765625 },
+  { x: 0.890625, y: 0.765625 },
+  { x: 0.890625, y: 0.765625 },
+  { x: 0.921875, y: 0.765625 },
+  { x: 0.921875, y: 0.765625 },
+  { x: 0.953125, y: 0.765625 },
+  { x: 0.953125, y: 0.765625 },
+  { x: 0.984375, y: 0.765625 },
+  { x: 0.984375, y: 0.765625 },
+  { x: 0.015625, y: 0.796875 },
+  { x: 0.015625, y: 0.796875 },
+  { x: 0.046875, y: 0.796875 },
+  { x: 0.046875, y: 0.796875 },
+  { x: 0.078125, y: 0.796875 },
+  { x: 0.078125, y: 0.796875 },
+  { x: 0.109375, y: 0.796875 },
+  { x: 0.109375, y: 0.796875 },
+  { x: 0.140625, y: 0.796875 },
+  { x: 0.140625, y: 0.796875 },
+  { x: 0.171875, y: 0.796875 },
+  { x: 0.171875, y: 0.796875 },
+  { x: 0.203125, y: 0.796875 },
+  { x: 0.203125, y: 0.796875 },
+  { x: 0.234375, y: 0.796875 },
+  { x: 0.234375, y: 0.796875 },
+  { x: 0.265625, y: 0.796875 },
+  { x: 0.265625, y: 0.796875 },
+  { x: 0.296875, y: 0.796875 },
+  { x: 0.296875, y: 0.796875 },
+  { x: 0.328125, y: 0.796875 },
+  { x: 0.328125, y: 0.796875 },
+  { x: 0.359375, y: 0.796875 },
+  { x: 0.359375, y: 0.796875 },
+  { x: 0.390625, y: 0.796875 },
+  { x: 0.390625, y: 0.796875 },
+  { x: 0.421875, y: 0.796875 },
+  { x: 0.421875, y: 0.796875 },
+  { x: 0.453125, y: 0.796875 },
+  { x: 0.453125, y: 0.796875 },
+  { x: 0.484375, y: 0.796875 },
+  { x: 0.484375, y: 0.796875 },
+  { x: 0.515625, y: 0.796875 },
+  { x: 0.515625, y: 0.796875 },
+  { x: 0.546875, y: 0.796875 },
+  { x: 0.546875, y: 0.796875 },
+  { x: 0.578125, y: 0.796875 },
+  { x: 0.578125, y: 0.796875 },
+  { x: 0.609375, y: 0.796875 },
+  { x: 0.609375, y: 0.796875 },
+  { x: 0.640625, y: 0.796875 },
+  { x: 0.640625, y: 0.796875 },
+  { x: 0.671875, y: 0.796875 },
+  { x: 0.671875, y: 0.796875 },
+  { x: 0.703125, y: 0.796875 },
+  { x: 0.703125, y: 0.796875 },
+  { x: 0.734375, y: 0.796875 },
+  { x: 0.734375, y: 0.796875 },
+  { x: 0.765625, y: 0.796875 },
+  { x: 0.765625, y: 0.796875 },
+  { x: 0.796875, y: 0.796875 },
+  { x: 0.796875, y: 0.796875 },
+  { x: 0.828125, y: 0.796875 },
+  { x: 0.828125, y: 0.796875 },
+  { x: 0.859375, y: 0.796875 },
+  { x: 0.859375, y: 0.796875 },
+  { x: 0.890625, y: 0.796875 },
+  { x: 0.890625, y: 0.796875 },
+  { x: 0.921875, y: 0.796875 },
+  { x: 0.921875, y: 0.796875 },
+  { x: 0.953125, y: 0.796875 },
+  { x: 0.953125, y: 0.796875 },
+  { x: 0.984375, y: 0.796875 },
+  { x: 0.984375, y: 0.796875 },
+  { x: 0.015625, y: 0.828125 },
+  { x: 0.015625, y: 0.828125 },
+  { x: 0.046875, y: 0.828125 },
+  { x: 0.046875, y: 0.828125 },
+  { x: 0.078125, y: 0.828125 },
+  { x: 0.078125, y: 0.828125 },
+  { x: 0.109375, y: 0.828125 },
+  { x: 0.109375, y: 0.828125 },
+  { x: 0.140625, y: 0.828125 },
+  { x: 0.140625, y: 0.828125 },
+  { x: 0.171875, y: 0.828125 },
+  { x: 0.171875, y: 0.828125 },
+  { x: 0.203125, y: 0.828125 },
+  { x: 0.203125, y: 0.828125 },
+  { x: 0.234375, y: 0.828125 },
+  { x: 0.234375, y: 0.828125 },
+  { x: 0.265625, y: 0.828125 },
+  { x: 0.265625, y: 0.828125 },
+  { x: 0.296875, y: 0.828125 },
+  { x: 0.296875, y: 0.828125 },
+  { x: 0.328125, y: 0.828125 },
+  { x: 0.328125, y: 0.828125 },
+  { x: 0.359375, y: 0.828125 },
+  { x: 0.359375, y: 0.828125 },
+  { x: 0.390625, y: 0.828125 },
+  { x: 0.390625, y: 0.828125 },
+  { x: 0.421875, y: 0.828125 },
+  { x: 0.421875, y: 0.828125 },
+  { x: 0.453125, y: 0.828125 },
+  { x: 0.453125, y: 0.828125 },
+  { x: 0.484375, y: 0.828125 },
+  { x: 0.484375, y: 0.828125 },
+  { x: 0.515625, y: 0.828125 },
+  { x: 0.515625, y: 0.828125 },
+  { x: 0.546875, y: 0.828125 },
+  { x: 0.546875, y: 0.828125 },
+  { x: 0.578125, y: 0.828125 },
+  { x: 0.578125, y: 0.828125 },
+  { x: 0.609375, y: 0.828125 },
+  { x: 0.609375, y: 0.828125 },
+  { x: 0.640625, y: 0.828125 },
+  { x: 0.640625, y: 0.828125 },
+  { x: 0.671875, y: 0.828125 },
+  { x: 0.671875, y: 0.828125 },
+  { x: 0.703125, y: 0.828125 },
+  { x: 0.703125, y: 0.828125 },
+  { x: 0.734375, y: 0.828125 },
+  { x: 0.734375, y: 0.828125 },
+  { x: 0.765625, y: 0.828125 },
+  { x: 0.765625, y: 0.828125 },
+  { x: 0.796875, y: 0.828125 },
+  { x: 0.796875, y: 0.828125 },
+  { x: 0.828125, y: 0.828125 },
+  { x: 0.828125, y: 0.828125 },
+  { x: 0.859375, y: 0.828125 },
+  { x: 0.859375, y: 0.828125 },
+  { x: 0.890625, y: 0.828125 },
+  { x: 0.890625, y: 0.828125 },
+  { x: 0.921875, y: 0.828125 },
+  { x: 0.921875, y: 0.828125 },
+  { x: 0.953125, y: 0.828125 },
+  { x: 0.953125, y: 0.828125 },
+  { x: 0.984375, y: 0.828125 },
+  { x: 0.984375, y: 0.828125 },
+  { x: 0.015625, y: 0.859375 },
+  { x: 0.015625, y: 0.859375 },
+  { x: 0.046875, y: 0.859375 },
+  { x: 0.046875, y: 0.859375 },
+  { x: 0.078125, y: 0.859375 },
+  { x: 0.078125, y: 0.859375 },
+  { x: 0.109375, y: 0.859375 },
+  { x: 0.109375, y: 0.859375 },
+  { x: 0.140625, y: 0.859375 },
+  { x: 0.140625, y: 0.859375 },
+  { x: 0.171875, y: 0.859375 },
+  { x: 0.171875, y: 0.859375 },
+  { x: 0.203125, y: 0.859375 },
+  { x: 0.203125, y: 0.859375 },
+  { x: 0.234375, y: 0.859375 },
+  { x: 0.234375, y: 0.859375 },
+  { x: 0.265625, y: 0.859375 },
+  { x: 0.265625, y: 0.859375 },
+  { x: 0.296875, y: 0.859375 },
+  { x: 0.296875, y: 0.859375 },
+  { x: 0.328125, y: 0.859375 },
+  { x: 0.328125, y: 0.859375 },
+  { x: 0.359375, y: 0.859375 },
+  { x: 0.359375, y: 0.859375 },
+  { x: 0.390625, y: 0.859375 },
+  { x: 0.390625, y: 0.859375 },
+  { x: 0.421875, y: 0.859375 },
+  { x: 0.421875, y: 0.859375 },
+  { x: 0.453125, y: 0.859375 },
+  { x: 0.453125, y: 0.859375 },
+  { x: 0.484375, y: 0.859375 },
+  { x: 0.484375, y: 0.859375 },
+  { x: 0.515625, y: 0.859375 },
+  { x: 0.515625, y: 0.859375 },
+  { x: 0.546875, y: 0.859375 },
+  { x: 0.546875, y: 0.859375 },
+  { x: 0.578125, y: 0.859375 },
+  { x: 0.578125, y: 0.859375 },
+  { x: 0.609375, y: 0.859375 },
+  { x: 0.609375, y: 0.859375 },
+  { x: 0.640625, y: 0.859375 },
+  { x: 0.640625, y: 0.859375 },
+  { x: 0.671875, y: 0.859375 },
+  { x: 0.671875, y: 0.859375 },
+  { x: 0.703125, y: 0.859375 },
+  { x: 0.703125, y: 0.859375 },
+  { x: 0.734375, y: 0.859375 },
+  { x: 0.734375, y: 0.859375 },
+  { x: 0.765625, y: 0.859375 },
+  { x: 0.765625, y: 0.859375 },
+  { x: 0.796875, y: 0.859375 },
+  { x: 0.796875, y: 0.859375 },
+  { x: 0.828125, y: 0.859375 },
+  { x: 0.828125, y: 0.859375 },
+  { x: 0.859375, y: 0.859375 },
+  { x: 0.859375, y: 0.859375 },
+  { x: 0.890625, y: 0.859375 },
+  { x: 0.890625, y: 0.859375 },
+  { x: 0.921875, y: 0.859375 },
+  { x: 0.921875, y: 0.859375 },
+  { x: 0.953125, y: 0.859375 },
+  { x: 0.953125, y: 0.859375 },
+  { x: 0.984375, y: 0.859375 },
+  { x: 0.984375, y: 0.859375 },
+  { x: 0.015625, y: 0.890625 },
+  { x: 0.015625, y: 0.890625 },
+  { x: 0.046875, y: 0.890625 },
+  { x: 0.046875, y: 0.890625 },
+  { x: 0.078125, y: 0.890625 },
+  { x: 0.078125, y: 0.890625 },
+  { x: 0.109375, y: 0.890625 },
+  { x: 0.109375, y: 0.890625 },
+  { x: 0.140625, y: 0.890625 },
+  { x: 0.140625, y: 0.890625 },
+  { x: 0.171875, y: 0.890625 },
+  { x: 0.171875, y: 0.890625 },
+  { x: 0.203125, y: 0.890625 },
+  { x: 0.203125, y: 0.890625 },
+  { x: 0.234375, y: 0.890625 },
+  { x: 0.234375, y: 0.890625 },
+  { x: 0.265625, y: 0.890625 },
+  { x: 0.265625, y: 0.890625 },
+  { x: 0.296875, y: 0.890625 },
+  { x: 0.296875, y: 0.890625 },
+  { x: 0.328125, y: 0.890625 },
+  { x: 0.328125, y: 0.890625 },
+  { x: 0.359375, y: 0.890625 },
+  { x: 0.359375, y: 0.890625 },
+  { x: 0.390625, y: 0.890625 },
+  { x: 0.390625, y: 0.890625 },
+  { x: 0.421875, y: 0.890625 },
+  { x: 0.421875, y: 0.890625 },
+  { x: 0.453125, y: 0.890625 },
+  { x: 0.453125, y: 0.890625 },
+  { x: 0.484375, y: 0.890625 },
+  { x: 0.484375, y: 0.890625 },
+  { x: 0.515625, y: 0.890625 },
+  { x: 0.515625, y: 0.890625 },
+  { x: 0.546875, y: 0.890625 },
+  { x: 0.546875, y: 0.890625 },
+  { x: 0.578125, y: 0.890625 },
+  { x: 0.578125, y: 0.890625 },
+  { x: 0.609375, y: 0.890625 },
+  { x: 0.609375, y: 0.890625 },
+  { x: 0.640625, y: 0.890625 },
+  { x: 0.640625, y: 0.890625 },
+  { x: 0.671875, y: 0.890625 },
+  { x: 0.671875, y: 0.890625 },
+  { x: 0.703125, y: 0.890625 },
+  { x: 0.703125, y: 0.890625 },
+  { x: 0.734375, y: 0.890625 },
+  { x: 0.734375, y: 0.890625 },
+  { x: 0.765625, y: 0.890625 },
+  { x: 0.765625, y: 0.890625 },
+  { x: 0.796875, y: 0.890625 },
+  { x: 0.796875, y: 0.890625 },
+  { x: 0.828125, y: 0.890625 },
+  { x: 0.828125, y: 0.890625 },
+  { x: 0.859375, y: 0.890625 },
+  { x: 0.859375, y: 0.890625 },
+  { x: 0.890625, y: 0.890625 },
+  { x: 0.890625, y: 0.890625 },
+  { x: 0.921875, y: 0.890625 },
+  { x: 0.921875, y: 0.890625 },
+  { x: 0.953125, y: 0.890625 },
+  { x: 0.953125, y: 0.890625 },
+  { x: 0.984375, y: 0.890625 },
+  { x: 0.984375, y: 0.890625 },
+  { x: 0.015625, y: 0.921875 },
+  { x: 0.015625, y: 0.921875 },
+  { x: 0.046875, y: 0.921875 },
+  { x: 0.046875, y: 0.921875 },
+  { x: 0.078125, y: 0.921875 },
+  { x: 0.078125, y: 0.921875 },
+  { x: 0.109375, y: 0.921875 },
+  { x: 0.109375, y: 0.921875 },
+  { x: 0.140625, y: 0.921875 },
+  { x: 0.140625, y: 0.921875 },
+  { x: 0.171875, y: 0.921875 },
+  { x: 0.171875, y: 0.921875 },
+  { x: 0.203125, y: 0.921875 },
+  { x: 0.203125, y: 0.921875 },
+  { x: 0.234375, y: 0.921875 },
+  { x: 0.234375, y: 0.921875 },
+  { x: 0.265625, y: 0.921875 },
+  { x: 0.265625, y: 0.921875 },
+  { x: 0.296875, y: 0.921875 },
+  { x: 0.296875, y: 0.921875 },
+  { x: 0.328125, y: 0.921875 },
+  { x: 0.328125, y: 0.921875 },
+  { x: 0.359375, y: 0.921875 },
+  { x: 0.359375, y: 0.921875 },
+  { x: 0.390625, y: 0.921875 },
+  { x: 0.390625, y: 0.921875 },
+  { x: 0.421875, y: 0.921875 },
+  { x: 0.421875, y: 0.921875 },
+  { x: 0.453125, y: 0.921875 },
+  { x: 0.453125, y: 0.921875 },
+  { x: 0.484375, y: 0.921875 },
+  { x: 0.484375, y: 0.921875 },
+  { x: 0.515625, y: 0.921875 },
+  { x: 0.515625, y: 0.921875 },
+  { x: 0.546875, y: 0.921875 },
+  { x: 0.546875, y: 0.921875 },
+  { x: 0.578125, y: 0.921875 },
+  { x: 0.578125, y: 0.921875 },
+  { x: 0.609375, y: 0.921875 },
+  { x: 0.609375, y: 0.921875 },
+  { x: 0.640625, y: 0.921875 },
+  { x: 0.640625, y: 0.921875 },
+  { x: 0.671875, y: 0.921875 },
+  { x: 0.671875, y: 0.921875 },
+  { x: 0.703125, y: 0.921875 },
+  { x: 0.703125, y: 0.921875 },
+  { x: 0.734375, y: 0.921875 },
+  { x: 0.734375, y: 0.921875 },
+  { x: 0.765625, y: 0.921875 },
+  { x: 0.765625, y: 0.921875 },
+  { x: 0.796875, y: 0.921875 },
+  { x: 0.796875, y: 0.921875 },
+  { x: 0.828125, y: 0.921875 },
+  { x: 0.828125, y: 0.921875 },
+  { x: 0.859375, y: 0.921875 },
+  { x: 0.859375, y: 0.921875 },
+  { x: 0.890625, y: 0.921875 },
+  { x: 0.890625, y: 0.921875 },
+  { x: 0.921875, y: 0.921875 },
+  { x: 0.921875, y: 0.921875 },
+  { x: 0.953125, y: 0.921875 },
+  { x: 0.953125, y: 0.921875 },
+  { x: 0.984375, y: 0.921875 },
+  { x: 0.984375, y: 0.921875 },
+  { x: 0.015625, y: 0.953125 },
+  { x: 0.015625, y: 0.953125 },
+  { x: 0.046875, y: 0.953125 },
+  { x: 0.046875, y: 0.953125 },
+  { x: 0.078125, y: 0.953125 },
+  { x: 0.078125, y: 0.953125 },
+  { x: 0.109375, y: 0.953125 },
+  { x: 0.109375, y: 0.953125 },
+  { x: 0.140625, y: 0.953125 },
+  { x: 0.140625, y: 0.953125 },
+  { x: 0.171875, y: 0.953125 },
+  { x: 0.171875, y: 0.953125 },
+  { x: 0.203125, y: 0.953125 },
+  { x: 0.203125, y: 0.953125 },
+  { x: 0.234375, y: 0.953125 },
+  { x: 0.234375, y: 0.953125 },
+  { x: 0.265625, y: 0.953125 },
+  { x: 0.265625, y: 0.953125 },
+  { x: 0.296875, y: 0.953125 },
+  { x: 0.296875, y: 0.953125 },
+  { x: 0.328125, y: 0.953125 },
+  { x: 0.328125, y: 0.953125 },
+  { x: 0.359375, y: 0.953125 },
+  { x: 0.359375, y: 0.953125 },
+  { x: 0.390625, y: 0.953125 },
+  { x: 0.390625, y: 0.953125 },
+  { x: 0.421875, y: 0.953125 },
+  { x: 0.421875, y: 0.953125 },
+  { x: 0.453125, y: 0.953125 },
+  { x: 0.453125, y: 0.953125 },
+  { x: 0.484375, y: 0.953125 },
+  { x: 0.484375, y: 0.953125 },
+  { x: 0.515625, y: 0.953125 },
+  { x: 0.515625, y: 0.953125 },
+  { x: 0.546875, y: 0.953125 },
+  { x: 0.546875, y: 0.953125 },
+  { x: 0.578125, y: 0.953125 },
+  { x: 0.578125, y: 0.953125 },
+  { x: 0.609375, y: 0.953125 },
+  { x: 0.609375, y: 0.953125 },
+  { x: 0.640625, y: 0.953125 },
+  { x: 0.640625, y: 0.953125 },
+  { x: 0.671875, y: 0.953125 },
+  { x: 0.671875, y: 0.953125 },
+  { x: 0.703125, y: 0.953125 },
+  { x: 0.703125, y: 0.953125 },
+  { x: 0.734375, y: 0.953125 },
+  { x: 0.734375, y: 0.953125 },
+  { x: 0.765625, y: 0.953125 },
+  { x: 0.765625, y: 0.953125 },
+  { x: 0.796875, y: 0.953125 },
+  { x: 0.796875, y: 0.953125 },
+  { x: 0.828125, y: 0.953125 },
+  { x: 0.828125, y: 0.953125 },
+  { x: 0.859375, y: 0.953125 },
+  { x: 0.859375, y: 0.953125 },
+  { x: 0.890625, y: 0.953125 },
+  { x: 0.890625, y: 0.953125 },
+  { x: 0.921875, y: 0.953125 },
+  { x: 0.921875, y: 0.953125 },
+  { x: 0.953125, y: 0.953125 },
+  { x: 0.953125, y: 0.953125 },
+  { x: 0.984375, y: 0.953125 },
+  { x: 0.984375, y: 0.953125 },
+  { x: 0.015625, y: 0.984375 },
+  { x: 0.015625, y: 0.984375 },
+  { x: 0.046875, y: 0.984375 },
+  { x: 0.046875, y: 0.984375 },
+  { x: 0.078125, y: 0.984375 },
+  { x: 0.078125, y: 0.984375 },
+  { x: 0.109375, y: 0.984375 },
+  { x: 0.109375, y: 0.984375 },
+  { x: 0.140625, y: 0.984375 },
+  { x: 0.140625, y: 0.984375 },
+  { x: 0.171875, y: 0.984375 },
+  { x: 0.171875, y: 0.984375 },
+  { x: 0.203125, y: 0.984375 },
+  { x: 0.203125, y: 0.984375 },
+  { x: 0.234375, y: 0.984375 },
+  { x: 0.234375, y: 0.984375 },
+  { x: 0.265625, y: 0.984375 },
+  { x: 0.265625, y: 0.984375 },
+  { x: 0.296875, y: 0.984375 },
+  { x: 0.296875, y: 0.984375 },
+  { x: 0.328125, y: 0.984375 },
+  { x: 0.328125, y: 0.984375 },
+  { x: 0.359375, y: 0.984375 },
+  { x: 0.359375, y: 0.984375 },
+  { x: 0.390625, y: 0.984375 },
+  { x: 0.390625, y: 0.984375 },
+  { x: 0.421875, y: 0.984375 },
+  { x: 0.421875, y: 0.984375 },
+  { x: 0.453125, y: 0.984375 },
+  { x: 0.453125, y: 0.984375 },
+  { x: 0.484375, y: 0.984375 },
+  { x: 0.484375, y: 0.984375 },
+  { x: 0.515625, y: 0.984375 },
+  { x: 0.515625, y: 0.984375 },
+  { x: 0.546875, y: 0.984375 },
+  { x: 0.546875, y: 0.984375 },
+  { x: 0.578125, y: 0.984375 },
+  { x: 0.578125, y: 0.984375 },
+  { x: 0.609375, y: 0.984375 },
+  { x: 0.609375, y: 0.984375 },
+  { x: 0.640625, y: 0.984375 },
+  { x: 0.640625, y: 0.984375 },
+  { x: 0.671875, y: 0.984375 },
+  { x: 0.671875, y: 0.984375 },
+  { x: 0.703125, y: 0.984375 },
+  { x: 0.703125, y: 0.984375 },
+  { x: 0.734375, y: 0.984375 },
+  { x: 0.734375, y: 0.984375 },
+  { x: 0.765625, y: 0.984375 },
+  { x: 0.765625, y: 0.984375 },
+  { x: 0.796875, y: 0.984375 },
+  { x: 0.796875, y: 0.984375 },
+  { x: 0.828125, y: 0.984375 },
+  { x: 0.828125, y: 0.984375 },
+  { x: 0.859375, y: 0.984375 },
+  { x: 0.859375, y: 0.984375 },
+  { x: 0.890625, y: 0.984375 },
+  { x: 0.890625, y: 0.984375 },
+  { x: 0.921875, y: 0.984375 },
+  { x: 0.921875, y: 0.984375 },
+  { x: 0.953125, y: 0.984375 },
+  { x: 0.953125, y: 0.984375 },
+  { x: 0.984375, y: 0.984375 },
+  { x: 0.984375, y: 0.984375 },
+  { x: 0.03125, y: 0.03125 },
+  { x: 0.03125, y: 0.03125 },
+  { x: 0.09375, y: 0.03125 },
+  { x: 0.09375, y: 0.03125 },
+  { x: 0.15625, y: 0.03125 },
+  { x: 0.15625, y: 0.03125 },
+  { x: 0.21875, y: 0.03125 },
+  { x: 0.21875, y: 0.03125 },
+  { x: 0.28125, y: 0.03125 },
+  { x: 0.28125, y: 0.03125 },
+  { x: 0.34375, y: 0.03125 },
+  { x: 0.34375, y: 0.03125 },
+  { x: 0.40625, y: 0.03125 },
+  { x: 0.40625, y: 0.03125 },
+  { x: 0.46875, y: 0.03125 },
+  { x: 0.46875, y: 0.03125 },
+  { x: 0.53125, y: 0.03125 },
+  { x: 0.53125, y: 0.03125 },
+  { x: 0.59375, y: 0.03125 },
+  { x: 0.59375, y: 0.03125 },
+  { x: 0.65625, y: 0.03125 },
+  { x: 0.65625, y: 0.03125 },
+  { x: 0.71875, y: 0.03125 },
+  { x: 0.71875, y: 0.03125 },
+  { x: 0.78125, y: 0.03125 },
+  { x: 0.78125, y: 0.03125 },
+  { x: 0.84375, y: 0.03125 },
+  { x: 0.84375, y: 0.03125 },
+  { x: 0.90625, y: 0.03125 },
+  { x: 0.90625, y: 0.03125 },
+  { x: 0.96875, y: 0.03125 },
+  { x: 0.96875, y: 0.03125 },
+  { x: 0.03125, y: 0.09375 },
+  { x: 0.03125, y: 0.09375 },
+  { x: 0.09375, y: 0.09375 },
+  { x: 0.09375, y: 0.09375 },
+  { x: 0.15625, y: 0.09375 },
+  { x: 0.15625, y: 0.09375 },
+  { x: 0.21875, y: 0.09375 },
+  { x: 0.21875, y: 0.09375 },
+  { x: 0.28125, y: 0.09375 },
+  { x: 0.28125, y: 0.09375 },
+  { x: 0.34375, y: 0.09375 },
+  { x: 0.34375, y: 0.09375 },
+  { x: 0.40625, y: 0.09375 },
+  { x: 0.40625, y: 0.09375 },
+  { x: 0.46875, y: 0.09375 },
+  { x: 0.46875, y: 0.09375 },
+  { x: 0.53125, y: 0.09375 },
+  { x: 0.53125, y: 0.09375 },
+  { x: 0.59375, y: 0.09375 },
+  { x: 0.59375, y: 0.09375 },
+  { x: 0.65625, y: 0.09375 },
+  { x: 0.65625, y: 0.09375 },
+  { x: 0.71875, y: 0.09375 },
+  { x: 0.71875, y: 0.09375 },
+  { x: 0.78125, y: 0.09375 },
+  { x: 0.78125, y: 0.09375 },
+  { x: 0.84375, y: 0.09375 },
+  { x: 0.84375, y: 0.09375 },
+  { x: 0.90625, y: 0.09375 },
+  { x: 0.90625, y: 0.09375 },
+  { x: 0.96875, y: 0.09375 },
+  { x: 0.96875, y: 0.09375 },
+  { x: 0.03125, y: 0.15625 },
+  { x: 0.03125, y: 0.15625 },
+  { x: 0.09375, y: 0.15625 },
+  { x: 0.09375, y: 0.15625 },
+  { x: 0.15625, y: 0.15625 },
+  { x: 0.15625, y: 0.15625 },
+  { x: 0.21875, y: 0.15625 },
+  { x: 0.21875, y: 0.15625 },
+  { x: 0.28125, y: 0.15625 },
+  { x: 0.28125, y: 0.15625 },
+  { x: 0.34375, y: 0.15625 },
+  { x: 0.34375, y: 0.15625 },
+  { x: 0.40625, y: 0.15625 },
+  { x: 0.40625, y: 0.15625 },
+  { x: 0.46875, y: 0.15625 },
+  { x: 0.46875, y: 0.15625 },
+  { x: 0.53125, y: 0.15625 },
+  { x: 0.53125, y: 0.15625 },
+  { x: 0.59375, y: 0.15625 },
+  { x: 0.59375, y: 0.15625 },
+  { x: 0.65625, y: 0.15625 },
+  { x: 0.65625, y: 0.15625 },
+  { x: 0.71875, y: 0.15625 },
+  { x: 0.71875, y: 0.15625 },
+  { x: 0.78125, y: 0.15625 },
+  { x: 0.78125, y: 0.15625 },
+  { x: 0.84375, y: 0.15625 },
+  { x: 0.84375, y: 0.15625 },
+  { x: 0.90625, y: 0.15625 },
+  { x: 0.90625, y: 0.15625 },
+  { x: 0.96875, y: 0.15625 },
+  { x: 0.96875, y: 0.15625 },
+  { x: 0.03125, y: 0.21875 },
+  { x: 0.03125, y: 0.21875 },
+  { x: 0.09375, y: 0.21875 },
+  { x: 0.09375, y: 0.21875 },
+  { x: 0.15625, y: 0.21875 },
+  { x: 0.15625, y: 0.21875 },
+  { x: 0.21875, y: 0.21875 },
+  { x: 0.21875, y: 0.21875 },
+  { x: 0.28125, y: 0.21875 },
+  { x: 0.28125, y: 0.21875 },
+  { x: 0.34375, y: 0.21875 },
+  { x: 0.34375, y: 0.21875 },
+  { x: 0.40625, y: 0.21875 },
+  { x: 0.40625, y: 0.21875 },
+  { x: 0.46875, y: 0.21875 },
+  { x: 0.46875, y: 0.21875 },
+  { x: 0.53125, y: 0.21875 },
+  { x: 0.53125, y: 0.21875 },
+  { x: 0.59375, y: 0.21875 },
+  { x: 0.59375, y: 0.21875 },
+  { x: 0.65625, y: 0.21875 },
+  { x: 0.65625, y: 0.21875 },
+  { x: 0.71875, y: 0.21875 },
+  { x: 0.71875, y: 0.21875 },
+  { x: 0.78125, y: 0.21875 },
+  { x: 0.78125, y: 0.21875 },
+  { x: 0.84375, y: 0.21875 },
+  { x: 0.84375, y: 0.21875 },
+  { x: 0.90625, y: 0.21875 },
+  { x: 0.90625, y: 0.21875 },
+  { x: 0.96875, y: 0.21875 },
+  { x: 0.96875, y: 0.21875 },
+  { x: 0.03125, y: 0.28125 },
+  { x: 0.03125, y: 0.28125 },
+  { x: 0.09375, y: 0.28125 },
+  { x: 0.09375, y: 0.28125 },
+  { x: 0.15625, y: 0.28125 },
+  { x: 0.15625, y: 0.28125 },
+  { x: 0.21875, y: 0.28125 },
+  { x: 0.21875, y: 0.28125 },
+  { x: 0.28125, y: 0.28125 },
+  { x: 0.28125, y: 0.28125 },
+  { x: 0.34375, y: 0.28125 },
+  { x: 0.34375, y: 0.28125 },
+  { x: 0.40625, y: 0.28125 },
+  { x: 0.40625, y: 0.28125 },
+  { x: 0.46875, y: 0.28125 },
+  { x: 0.46875, y: 0.28125 },
+  { x: 0.53125, y: 0.28125 },
+  { x: 0.53125, y: 0.28125 },
+  { x: 0.59375, y: 0.28125 },
+  { x: 0.59375, y: 0.28125 },
+  { x: 0.65625, y: 0.28125 },
+  { x: 0.65625, y: 0.28125 },
+  { x: 0.71875, y: 0.28125 },
+  { x: 0.71875, y: 0.28125 },
+  { x: 0.78125, y: 0.28125 },
+  { x: 0.78125, y: 0.28125 },
+  { x: 0.84375, y: 0.28125 },
+  { x: 0.84375, y: 0.28125 },
+  { x: 0.90625, y: 0.28125 },
+  { x: 0.90625, y: 0.28125 },
+  { x: 0.96875, y: 0.28125 },
+  { x: 0.96875, y: 0.28125 },
+  { x: 0.03125, y: 0.34375 },
+  { x: 0.03125, y: 0.34375 },
+  { x: 0.09375, y: 0.34375 },
+  { x: 0.09375, y: 0.34375 },
+  { x: 0.15625, y: 0.34375 },
+  { x: 0.15625, y: 0.34375 },
+  { x: 0.21875, y: 0.34375 },
+  { x: 0.21875, y: 0.34375 },
+  { x: 0.28125, y: 0.34375 },
+  { x: 0.28125, y: 0.34375 },
+  { x: 0.34375, y: 0.34375 },
+  { x: 0.34375, y: 0.34375 },
+  { x: 0.40625, y: 0.34375 },
+  { x: 0.40625, y: 0.34375 },
+  { x: 0.46875, y: 0.34375 },
+  { x: 0.46875, y: 0.34375 },
+  { x: 0.53125, y: 0.34375 },
+  { x: 0.53125, y: 0.34375 },
+  { x: 0.59375, y: 0.34375 },
+  { x: 0.59375, y: 0.34375 },
+  { x: 0.65625, y: 0.34375 },
+  { x: 0.65625, y: 0.34375 },
+  { x: 0.71875, y: 0.34375 },
+  { x: 0.71875, y: 0.34375 },
+  { x: 0.78125, y: 0.34375 },
+  { x: 0.78125, y: 0.34375 },
+  { x: 0.84375, y: 0.34375 },
+  { x: 0.84375, y: 0.34375 },
+  { x: 0.90625, y: 0.34375 },
+  { x: 0.90625, y: 0.34375 },
+  { x: 0.96875, y: 0.34375 },
+  { x: 0.96875, y: 0.34375 },
+  { x: 0.03125, y: 0.40625 },
+  { x: 0.03125, y: 0.40625 },
+  { x: 0.09375, y: 0.40625 },
+  { x: 0.09375, y: 0.40625 },
+  { x: 0.15625, y: 0.40625 },
+  { x: 0.15625, y: 0.40625 },
+  { x: 0.21875, y: 0.40625 },
+  { x: 0.21875, y: 0.40625 },
+  { x: 0.28125, y: 0.40625 },
+  { x: 0.28125, y: 0.40625 },
+  { x: 0.34375, y: 0.40625 },
+  { x: 0.34375, y: 0.40625 },
+  { x: 0.40625, y: 0.40625 },
+  { x: 0.40625, y: 0.40625 },
+  { x: 0.46875, y: 0.40625 },
+  { x: 0.46875, y: 0.40625 },
+  { x: 0.53125, y: 0.40625 },
+  { x: 0.53125, y: 0.40625 },
+  { x: 0.59375, y: 0.40625 },
+  { x: 0.59375, y: 0.40625 },
+  { x: 0.65625, y: 0.40625 },
+  { x: 0.65625, y: 0.40625 },
+  { x: 0.71875, y: 0.40625 },
+  { x: 0.71875, y: 0.40625 },
+  { x: 0.78125, y: 0.40625 },
+  { x: 0.78125, y: 0.40625 },
+  { x: 0.84375, y: 0.40625 },
+  { x: 0.84375, y: 0.40625 },
+  { x: 0.90625, y: 0.40625 },
+  { x: 0.90625, y: 0.40625 },
+  { x: 0.96875, y: 0.40625 },
+  { x: 0.96875, y: 0.40625 },
+  { x: 0.03125, y: 0.46875 },
+  { x: 0.03125, y: 0.46875 },
+  { x: 0.09375, y: 0.46875 },
+  { x: 0.09375, y: 0.46875 },
+  { x: 0.15625, y: 0.46875 },
+  { x: 0.15625, y: 0.46875 },
+  { x: 0.21875, y: 0.46875 },
+  { x: 0.21875, y: 0.46875 },
+  { x: 0.28125, y: 0.46875 },
+  { x: 0.28125, y: 0.46875 },
+  { x: 0.34375, y: 0.46875 },
+  { x: 0.34375, y: 0.46875 },
+  { x: 0.40625, y: 0.46875 },
+  { x: 0.40625, y: 0.46875 },
+  { x: 0.46875, y: 0.46875 },
+  { x: 0.46875, y: 0.46875 },
+  { x: 0.53125, y: 0.46875 },
+  { x: 0.53125, y: 0.46875 },
+  { x: 0.59375, y: 0.46875 },
+  { x: 0.59375, y: 0.46875 },
+  { x: 0.65625, y: 0.46875 },
+  { x: 0.65625, y: 0.46875 },
+  { x: 0.71875, y: 0.46875 },
+  { x: 0.71875, y: 0.46875 },
+  { x: 0.78125, y: 0.46875 },
+  { x: 0.78125, y: 0.46875 },
+  { x: 0.84375, y: 0.46875 },
+  { x: 0.84375, y: 0.46875 },
+  { x: 0.90625, y: 0.46875 },
+  { x: 0.90625, y: 0.46875 },
+  { x: 0.96875, y: 0.46875 },
+  { x: 0.96875, y: 0.46875 },
+  { x: 0.03125, y: 0.53125 },
+  { x: 0.03125, y: 0.53125 },
+  { x: 0.09375, y: 0.53125 },
+  { x: 0.09375, y: 0.53125 },
+  { x: 0.15625, y: 0.53125 },
+  { x: 0.15625, y: 0.53125 },
+  { x: 0.21875, y: 0.53125 },
+  { x: 0.21875, y: 0.53125 },
+  { x: 0.28125, y: 0.53125 },
+  { x: 0.28125, y: 0.53125 },
+  { x: 0.34375, y: 0.53125 },
+  { x: 0.34375, y: 0.53125 },
+  { x: 0.40625, y: 0.53125 },
+  { x: 0.40625, y: 0.53125 },
+  { x: 0.46875, y: 0.53125 },
+  { x: 0.46875, y: 0.53125 },
+  { x: 0.53125, y: 0.53125 },
+  { x: 0.53125, y: 0.53125 },
+  { x: 0.59375, y: 0.53125 },
+  { x: 0.59375, y: 0.53125 },
+  { x: 0.65625, y: 0.53125 },
+  { x: 0.65625, y: 0.53125 },
+  { x: 0.71875, y: 0.53125 },
+  { x: 0.71875, y: 0.53125 },
+  { x: 0.78125, y: 0.53125 },
+  { x: 0.78125, y: 0.53125 },
+  { x: 0.84375, y: 0.53125 },
+  { x: 0.84375, y: 0.53125 },
+  { x: 0.90625, y: 0.53125 },
+  { x: 0.90625, y: 0.53125 },
+  { x: 0.96875, y: 0.53125 },
+  { x: 0.96875, y: 0.53125 },
+  { x: 0.03125, y: 0.59375 },
+  { x: 0.03125, y: 0.59375 },
+  { x: 0.09375, y: 0.59375 },
+  { x: 0.09375, y: 0.59375 },
+  { x: 0.15625, y: 0.59375 },
+  { x: 0.15625, y: 0.59375 },
+  { x: 0.21875, y: 0.59375 },
+  { x: 0.21875, y: 0.59375 },
+  { x: 0.28125, y: 0.59375 },
+  { x: 0.28125, y: 0.59375 },
+  { x: 0.34375, y: 0.59375 },
+  { x: 0.34375, y: 0.59375 },
+  { x: 0.40625, y: 0.59375 },
+  { x: 0.40625, y: 0.59375 },
+  { x: 0.46875, y: 0.59375 },
+  { x: 0.46875, y: 0.59375 },
+  { x: 0.53125, y: 0.59375 },
+  { x: 0.53125, y: 0.59375 },
+  { x: 0.59375, y: 0.59375 },
+  { x: 0.59375, y: 0.59375 },
+  { x: 0.65625, y: 0.59375 },
+  { x: 0.65625, y: 0.59375 },
+  { x: 0.71875, y: 0.59375 },
+  { x: 0.71875, y: 0.59375 },
+  { x: 0.78125, y: 0.59375 },
+  { x: 0.78125, y: 0.59375 },
+  { x: 0.84375, y: 0.59375 },
+  { x: 0.84375, y: 0.59375 },
+  { x: 0.90625, y: 0.59375 },
+  { x: 0.90625, y: 0.59375 },
+  { x: 0.96875, y: 0.59375 },
+  { x: 0.96875, y: 0.59375 },
+  { x: 0.03125, y: 0.65625 },
+  { x: 0.03125, y: 0.65625 },
+  { x: 0.09375, y: 0.65625 },
+  { x: 0.09375, y: 0.65625 },
+  { x: 0.15625, y: 0.65625 },
+  { x: 0.15625, y: 0.65625 },
+  { x: 0.21875, y: 0.65625 },
+  { x: 0.21875, y: 0.65625 },
+  { x: 0.28125, y: 0.65625 },
+  { x: 0.28125, y: 0.65625 },
+  { x: 0.34375, y: 0.65625 },
+  { x: 0.34375, y: 0.65625 },
+  { x: 0.40625, y: 0.65625 },
+  { x: 0.40625, y: 0.65625 },
+  { x: 0.46875, y: 0.65625 },
+  { x: 0.46875, y: 0.65625 },
+  { x: 0.53125, y: 0.65625 },
+  { x: 0.53125, y: 0.65625 },
+  { x: 0.59375, y: 0.65625 },
+  { x: 0.59375, y: 0.65625 },
+  { x: 0.65625, y: 0.65625 },
+  { x: 0.65625, y: 0.65625 },
+  { x: 0.71875, y: 0.65625 },
+  { x: 0.71875, y: 0.65625 },
+  { x: 0.78125, y: 0.65625 },
+  { x: 0.78125, y: 0.65625 },
+  { x: 0.84375, y: 0.65625 },
+  { x: 0.84375, y: 0.65625 },
+  { x: 0.90625, y: 0.65625 },
+  { x: 0.90625, y: 0.65625 },
+  { x: 0.96875, y: 0.65625 },
+  { x: 0.96875, y: 0.65625 },
+  { x: 0.03125, y: 0.71875 },
+  { x: 0.03125, y: 0.71875 },
+  { x: 0.09375, y: 0.71875 },
+  { x: 0.09375, y: 0.71875 },
+  { x: 0.15625, y: 0.71875 },
+  { x: 0.15625, y: 0.71875 },
+  { x: 0.21875, y: 0.71875 },
+  { x: 0.21875, y: 0.71875 },
+  { x: 0.28125, y: 0.71875 },
+  { x: 0.28125, y: 0.71875 },
+  { x: 0.34375, y: 0.71875 },
+  { x: 0.34375, y: 0.71875 },
+  { x: 0.40625, y: 0.71875 },
+  { x: 0.40625, y: 0.71875 },
+  { x: 0.46875, y: 0.71875 },
+  { x: 0.46875, y: 0.71875 },
+  { x: 0.53125, y: 0.71875 },
+  { x: 0.53125, y: 0.71875 },
+  { x: 0.59375, y: 0.71875 },
+  { x: 0.59375, y: 0.71875 },
+  { x: 0.65625, y: 0.71875 },
+  { x: 0.65625, y: 0.71875 },
+  { x: 0.71875, y: 0.71875 },
+  { x: 0.71875, y: 0.71875 },
+  { x: 0.78125, y: 0.71875 },
+  { x: 0.78125, y: 0.71875 },
+  { x: 0.84375, y: 0.71875 },
+  { x: 0.84375, y: 0.71875 },
+  { x: 0.90625, y: 0.71875 },
+  { x: 0.90625, y: 0.71875 },
+  { x: 0.96875, y: 0.71875 },
+  { x: 0.96875, y: 0.71875 },
+  { x: 0.03125, y: 0.78125 },
+  { x: 0.03125, y: 0.78125 },
+  { x: 0.09375, y: 0.78125 },
+  { x: 0.09375, y: 0.78125 },
+  { x: 0.15625, y: 0.78125 },
+  { x: 0.15625, y: 0.78125 },
+  { x: 0.21875, y: 0.78125 },
+  { x: 0.21875, y: 0.78125 },
+  { x: 0.28125, y: 0.78125 },
+  { x: 0.28125, y: 0.78125 },
+  { x: 0.34375, y: 0.78125 },
+  { x: 0.34375, y: 0.78125 },
+  { x: 0.40625, y: 0.78125 },
+  { x: 0.40625, y: 0.78125 },
+  { x: 0.46875, y: 0.78125 },
+  { x: 0.46875, y: 0.78125 },
+  { x: 0.53125, y: 0.78125 },
+  { x: 0.53125, y: 0.78125 },
+  { x: 0.59375, y: 0.78125 },
+  { x: 0.59375, y: 0.78125 },
+  { x: 0.65625, y: 0.78125 },
+  { x: 0.65625, y: 0.78125 },
+  { x: 0.71875, y: 0.78125 },
+  { x: 0.71875, y: 0.78125 },
+  { x: 0.78125, y: 0.78125 },
+  { x: 0.78125, y: 0.78125 },
+  { x: 0.84375, y: 0.78125 },
+  { x: 0.84375, y: 0.78125 },
+  { x: 0.90625, y: 0.78125 },
+  { x: 0.90625, y: 0.78125 },
+  { x: 0.96875, y: 0.78125 },
+  { x: 0.96875, y: 0.78125 },
+  { x: 0.03125, y: 0.84375 },
+  { x: 0.03125, y: 0.84375 },
+  { x: 0.09375, y: 0.84375 },
+  { x: 0.09375, y: 0.84375 },
+  { x: 0.15625, y: 0.84375 },
+  { x: 0.15625, y: 0.84375 },
+  { x: 0.21875, y: 0.84375 },
+  { x: 0.21875, y: 0.84375 },
+  { x: 0.28125, y: 0.84375 },
+  { x: 0.28125, y: 0.84375 },
+  { x: 0.34375, y: 0.84375 },
+  { x: 0.34375, y: 0.84375 },
+  { x: 0.40625, y: 0.84375 },
+  { x: 0.40625, y: 0.84375 },
+  { x: 0.46875, y: 0.84375 },
+  { x: 0.46875, y: 0.84375 },
+  { x: 0.53125, y: 0.84375 },
+  { x: 0.53125, y: 0.84375 },
+  { x: 0.59375, y: 0.84375 },
+  { x: 0.59375, y: 0.84375 },
+  { x: 0.65625, y: 0.84375 },
+  { x: 0.65625, y: 0.84375 },
+  { x: 0.71875, y: 0.84375 },
+  { x: 0.71875, y: 0.84375 },
+  { x: 0.78125, y: 0.84375 },
+  { x: 0.78125, y: 0.84375 },
+  { x: 0.84375, y: 0.84375 },
+  { x: 0.84375, y: 0.84375 },
+  { x: 0.90625, y: 0.84375 },
+  { x: 0.90625, y: 0.84375 },
+  { x: 0.96875, y: 0.84375 },
+  { x: 0.96875, y: 0.84375 },
+  { x: 0.03125, y: 0.90625 },
+  { x: 0.03125, y: 0.90625 },
+  { x: 0.09375, y: 0.90625 },
+  { x: 0.09375, y: 0.90625 },
+  { x: 0.15625, y: 0.90625 },
+  { x: 0.15625, y: 0.90625 },
+  { x: 0.21875, y: 0.90625 },
+  { x: 0.21875, y: 0.90625 },
+  { x: 0.28125, y: 0.90625 },
+  { x: 0.28125, y: 0.90625 },
+  { x: 0.34375, y: 0.90625 },
+  { x: 0.34375, y: 0.90625 },
+  { x: 0.40625, y: 0.90625 },
+  { x: 0.40625, y: 0.90625 },
+  { x: 0.46875, y: 0.90625 },
+  { x: 0.46875, y: 0.90625 },
+  { x: 0.53125, y: 0.90625 },
+  { x: 0.53125, y: 0.90625 },
+  { x: 0.59375, y: 0.90625 },
+  { x: 0.59375, y: 0.90625 },
+  { x: 0.65625, y: 0.90625 },
+  { x: 0.65625, y: 0.90625 },
+  { x: 0.71875, y: 0.90625 },
+  { x: 0.71875, y: 0.90625 },
+  { x: 0.78125, y: 0.90625 },
+  { x: 0.78125, y: 0.90625 },
+  { x: 0.84375, y: 0.90625 },
+  { x: 0.84375, y: 0.90625 },
+  { x: 0.90625, y: 0.90625 },
+  { x: 0.90625, y: 0.90625 },
+  { x: 0.96875, y: 0.90625 },
+  { x: 0.96875, y: 0.90625 },
+  { x: 0.03125, y: 0.96875 },
+  { x: 0.03125, y: 0.96875 },
+  { x: 0.09375, y: 0.96875 },
+  { x: 0.09375, y: 0.96875 },
+  { x: 0.15625, y: 0.96875 },
+  { x: 0.15625, y: 0.96875 },
+  { x: 0.21875, y: 0.96875 },
+  { x: 0.21875, y: 0.96875 },
+  { x: 0.28125, y: 0.96875 },
+  { x: 0.28125, y: 0.96875 },
+  { x: 0.34375, y: 0.96875 },
+  { x: 0.34375, y: 0.96875 },
+  { x: 0.40625, y: 0.96875 },
+  { x: 0.40625, y: 0.96875 },
+  { x: 0.46875, y: 0.96875 },
+  { x: 0.46875, y: 0.96875 },
+  { x: 0.53125, y: 0.96875 },
+  { x: 0.53125, y: 0.96875 },
+  { x: 0.59375, y: 0.96875 },
+  { x: 0.59375, y: 0.96875 },
+  { x: 0.65625, y: 0.96875 },
+  { x: 0.65625, y: 0.96875 },
+  { x: 0.71875, y: 0.96875 },
+  { x: 0.71875, y: 0.96875 },
+  { x: 0.78125, y: 0.96875 },
+  { x: 0.78125, y: 0.96875 },
+  { x: 0.84375, y: 0.96875 },
+  { x: 0.84375, y: 0.96875 },
+  { x: 0.90625, y: 0.96875 },
+  { x: 0.90625, y: 0.96875 },
+  { x: 0.96875, y: 0.96875 },
+  { x: 0.96875, y: 0.96875 },
+  { x: 0.0625, y: 0.0625 },
+  { x: 0.0625, y: 0.0625 },
+  { x: 0.0625, y: 0.0625 },
+  { x: 0.0625, y: 0.0625 },
+  { x: 0.0625, y: 0.0625 },
+  { x: 0.0625, y: 0.0625 },
+  { x: 0.1875, y: 0.0625 },
+  { x: 0.1875, y: 0.0625 },
+  { x: 0.1875, y: 0.0625 },
+  { x: 0.1875, y: 0.0625 },
+  { x: 0.1875, y: 0.0625 },
+  { x: 0.1875, y: 0.0625 },
+  { x: 0.3125, y: 0.0625 },
+  { x: 0.3125, y: 0.0625 },
+  { x: 0.3125, y: 0.0625 },
+  { x: 0.3125, y: 0.0625 },
+  { x: 0.3125, y: 0.0625 },
+  { x: 0.3125, y: 0.0625 },
+  { x: 0.4375, y: 0.0625 },
+  { x: 0.4375, y: 0.0625 },
+  { x: 0.4375, y: 0.0625 },
+  { x: 0.4375, y: 0.0625 },
+  { x: 0.4375, y: 0.0625 },
+  { x: 0.4375, y: 0.0625 },
+  { x: 0.5625, y: 0.0625 },
+  { x: 0.5625, y: 0.0625 },
+  { x: 0.5625, y: 0.0625 },
+  { x: 0.5625, y: 0.0625 },
+  { x: 0.5625, y: 0.0625 },
+  { x: 0.5625, y: 0.0625 },
+  { x: 0.6875, y: 0.0625 },
+  { x: 0.6875, y: 0.0625 },
+  { x: 0.6875, y: 0.0625 },
+  { x: 0.6875, y: 0.0625 },
+  { x: 0.6875, y: 0.0625 },
+  { x: 0.6875, y: 0.0625 },
+  { x: 0.8125, y: 0.0625 },
+  { x: 0.8125, y: 0.0625 },
+  { x: 0.8125, y: 0.0625 },
+  { x: 0.8125, y: 0.0625 },
+  { x: 0.8125, y: 0.0625 },
+  { x: 0.8125, y: 0.0625 },
+  { x: 0.9375, y: 0.0625 },
+  { x: 0.9375, y: 0.0625 },
+  { x: 0.9375, y: 0.0625 },
+  { x: 0.9375, y: 0.0625 },
+  { x: 0.9375, y: 0.0625 },
+  { x: 0.9375, y: 0.0625 },
+  { x: 0.0625, y: 0.1875 },
+  { x: 0.0625, y: 0.1875 },
+  { x: 0.0625, y: 0.1875 },
+  { x: 0.0625, y: 0.1875 },
+  { x: 0.0625, y: 0.1875 },
+  { x: 0.0625, y: 0.1875 },
+  { x: 0.1875, y: 0.1875 },
+  { x: 0.1875, y: 0.1875 },
+  { x: 0.1875, y: 0.1875 },
+  { x: 0.1875, y: 0.1875 },
+  { x: 0.1875, y: 0.1875 },
+  { x: 0.1875, y: 0.1875 },
+  { x: 0.3125, y: 0.1875 },
+  { x: 0.3125, y: 0.1875 },
+  { x: 0.3125, y: 0.1875 },
+  { x: 0.3125, y: 0.1875 },
+  { x: 0.3125, y: 0.1875 },
+  { x: 0.3125, y: 0.1875 },
+  { x: 0.4375, y: 0.1875 },
+  { x: 0.4375, y: 0.1875 },
+  { x: 0.4375, y: 0.1875 },
+  { x: 0.4375, y: 0.1875 },
+  { x: 0.4375, y: 0.1875 },
+  { x: 0.4375, y: 0.1875 },
+  { x: 0.5625, y: 0.1875 },
+  { x: 0.5625, y: 0.1875 },
+  { x: 0.5625, y: 0.1875 },
+  { x: 0.5625, y: 0.1875 },
+  { x: 0.5625, y: 0.1875 },
+  { x: 0.5625, y: 0.1875 },
+  { x: 0.6875, y: 0.1875 },
+  { x: 0.6875, y: 0.1875 },
+  { x: 0.6875, y: 0.1875 },
+  { x: 0.6875, y: 0.1875 },
+  { x: 0.6875, y: 0.1875 },
+  { x: 0.6875, y: 0.1875 },
+  { x: 0.8125, y: 0.1875 },
+  { x: 0.8125, y: 0.1875 },
+  { x: 0.8125, y: 0.1875 },
+  { x: 0.8125, y: 0.1875 },
+  { x: 0.8125, y: 0.1875 },
+  { x: 0.8125, y: 0.1875 },
+  { x: 0.9375, y: 0.1875 },
+  { x: 0.9375, y: 0.1875 },
+  { x: 0.9375, y: 0.1875 },
+  { x: 0.9375, y: 0.1875 },
+  { x: 0.9375, y: 0.1875 },
+  { x: 0.9375, y: 0.1875 },
+  { x: 0.0625, y: 0.3125 },
+  { x: 0.0625, y: 0.3125 },
+  { x: 0.0625, y: 0.3125 },
+  { x: 0.0625, y: 0.3125 },
+  { x: 0.0625, y: 0.3125 },
+  { x: 0.0625, y: 0.3125 },
+  { x: 0.1875, y: 0.3125 },
+  { x: 0.1875, y: 0.3125 },
+  { x: 0.1875, y: 0.3125 },
+  { x: 0.1875, y: 0.3125 },
+  { x: 0.1875, y: 0.3125 },
+  { x: 0.1875, y: 0.3125 },
+  { x: 0.3125, y: 0.3125 },
+  { x: 0.3125, y: 0.3125 },
+  { x: 0.3125, y: 0.3125 },
+  { x: 0.3125, y: 0.3125 },
+  { x: 0.3125, y: 0.3125 },
+  { x: 0.3125, y: 0.3125 },
+  { x: 0.4375, y: 0.3125 },
+  { x: 0.4375, y: 0.3125 },
+  { x: 0.4375, y: 0.3125 },
+  { x: 0.4375, y: 0.3125 },
+  { x: 0.4375, y: 0.3125 },
+  { x: 0.4375, y: 0.3125 },
+  { x: 0.5625, y: 0.3125 },
+  { x: 0.5625, y: 0.3125 },
+  { x: 0.5625, y: 0.3125 },
+  { x: 0.5625, y: 0.3125 },
+  { x: 0.5625, y: 0.3125 },
+  { x: 0.5625, y: 0.3125 },
+  { x: 0.6875, y: 0.3125 },
+  { x: 0.6875, y: 0.3125 },
+  { x: 0.6875, y: 0.3125 },
+  { x: 0.6875, y: 0.3125 },
+  { x: 0.6875, y: 0.3125 },
+  { x: 0.6875, y: 0.3125 },
+  { x: 0.8125, y: 0.3125 },
+  { x: 0.8125, y: 0.3125 },
+  { x: 0.8125, y: 0.3125 },
+  { x: 0.8125, y: 0.3125 },
+  { x: 0.8125, y: 0.3125 },
+  { x: 0.8125, y: 0.3125 },
+  { x: 0.9375, y: 0.3125 },
+  { x: 0.9375, y: 0.3125 },
+  { x: 0.9375, y: 0.3125 },
+  { x: 0.9375, y: 0.3125 },
+  { x: 0.9375, y: 0.3125 },
+  { x: 0.9375, y: 0.3125 },
+  { x: 0.0625, y: 0.4375 },
+  { x: 0.0625, y: 0.4375 },
+  { x: 0.0625, y: 0.4375 },
+  { x: 0.0625, y: 0.4375 },
+  { x: 0.0625, y: 0.4375 },
+  { x: 0.0625, y: 0.4375 },
+  { x: 0.1875, y: 0.4375 },
+  { x: 0.1875, y: 0.4375 },
+  { x: 0.1875, y: 0.4375 },
+  { x: 0.1875, y: 0.4375 },
+  { x: 0.1875, y: 0.4375 },
+  { x: 0.1875, y: 0.4375 },
+  { x: 0.3125, y: 0.4375 },
+  { x: 0.3125, y: 0.4375 },
+  { x: 0.3125, y: 0.4375 },
+  { x: 0.3125, y: 0.4375 },
+  { x: 0.3125, y: 0.4375 },
+  { x: 0.3125, y: 0.4375 },
+  { x: 0.4375, y: 0.4375 },
+  { x: 0.4375, y: 0.4375 },
+  { x: 0.4375, y: 0.4375 },
+  { x: 0.4375, y: 0.4375 },
+  { x: 0.4375, y: 0.4375 },
+  { x: 0.4375, y: 0.4375 },
+  { x: 0.5625, y: 0.4375 },
+  { x: 0.5625, y: 0.4375 },
+  { x: 0.5625, y: 0.4375 },
+  { x: 0.5625, y: 0.4375 },
+  { x: 0.5625, y: 0.4375 },
+  { x: 0.5625, y: 0.4375 },
+  { x: 0.6875, y: 0.4375 },
+  { x: 0.6875, y: 0.4375 },
+  { x: 0.6875, y: 0.4375 },
+  { x: 0.6875, y: 0.4375 },
+  { x: 0.6875, y: 0.4375 },
+  { x: 0.6875, y: 0.4375 },
+  { x: 0.8125, y: 0.4375 },
+  { x: 0.8125, y: 0.4375 },
+  { x: 0.8125, y: 0.4375 },
+  { x: 0.8125, y: 0.4375 },
+  { x: 0.8125, y: 0.4375 },
+  { x: 0.8125, y: 0.4375 },
+  { x: 0.9375, y: 0.4375 },
+  { x: 0.9375, y: 0.4375 },
+  { x: 0.9375, y: 0.4375 },
+  { x: 0.9375, y: 0.4375 },
+  { x: 0.9375, y: 0.4375 },
+  { x: 0.9375, y: 0.4375 },
+  { x: 0.0625, y: 0.5625 },
+  { x: 0.0625, y: 0.5625 },
+  { x: 0.0625, y: 0.5625 },
+  { x: 0.0625, y: 0.5625 },
+  { x: 0.0625, y: 0.5625 },
+  { x: 0.0625, y: 0.5625 },
+  { x: 0.1875, y: 0.5625 },
+  { x: 0.1875, y: 0.5625 },
+  { x: 0.1875, y: 0.5625 },
+  { x: 0.1875, y: 0.5625 },
+  { x: 0.1875, y: 0.5625 },
+  { x: 0.1875, y: 0.5625 },
+  { x: 0.3125, y: 0.5625 },
+  { x: 0.3125, y: 0.5625 },
+  { x: 0.3125, y: 0.5625 },
+  { x: 0.3125, y: 0.5625 },
+  { x: 0.3125, y: 0.5625 },
+  { x: 0.3125, y: 0.5625 },
+  { x: 0.4375, y: 0.5625 },
+  { x: 0.4375, y: 0.5625 },
+  { x: 0.4375, y: 0.5625 },
+  { x: 0.4375, y: 0.5625 },
+  { x: 0.4375, y: 0.5625 },
+  { x: 0.4375, y: 0.5625 },
+  { x: 0.5625, y: 0.5625 },
+  { x: 0.5625, y: 0.5625 },
+  { x: 0.5625, y: 0.5625 },
+  { x: 0.5625, y: 0.5625 },
+  { x: 0.5625, y: 0.5625 },
+  { x: 0.5625, y: 0.5625 },
+  { x: 0.6875, y: 0.5625 },
+  { x: 0.6875, y: 0.5625 },
+  { x: 0.6875, y: 0.5625 },
+  { x: 0.6875, y: 0.5625 },
+  { x: 0.6875, y: 0.5625 },
+  { x: 0.6875, y: 0.5625 },
+  { x: 0.8125, y: 0.5625 },
+  { x: 0.8125, y: 0.5625 },
+  { x: 0.8125, y: 0.5625 },
+  { x: 0.8125, y: 0.5625 },
+  { x: 0.8125, y: 0.5625 },
+  { x: 0.8125, y: 0.5625 },
+  { x: 0.9375, y: 0.5625 },
+  { x: 0.9375, y: 0.5625 },
+  { x: 0.9375, y: 0.5625 },
+  { x: 0.9375, y: 0.5625 },
+  { x: 0.9375, y: 0.5625 },
+  { x: 0.9375, y: 0.5625 },
+  { x: 0.0625, y: 0.6875 },
+  { x: 0.0625, y: 0.6875 },
+  { x: 0.0625, y: 0.6875 },
+  { x: 0.0625, y: 0.6875 },
+  { x: 0.0625, y: 0.6875 },
+  { x: 0.0625, y: 0.6875 },
+  { x: 0.1875, y: 0.6875 },
+  { x: 0.1875, y: 0.6875 },
+  { x: 0.1875, y: 0.6875 },
+  { x: 0.1875, y: 0.6875 },
+  { x: 0.1875, y: 0.6875 },
+  { x: 0.1875, y: 0.6875 },
+  { x: 0.3125, y: 0.6875 },
+  { x: 0.3125, y: 0.6875 },
+  { x: 0.3125, y: 0.6875 },
+  { x: 0.3125, y: 0.6875 },
+  { x: 0.3125, y: 0.6875 },
+  { x: 0.3125, y: 0.6875 },
+  { x: 0.4375, y: 0.6875 },
+  { x: 0.4375, y: 0.6875 },
+  { x: 0.4375, y: 0.6875 },
+  { x: 0.4375, y: 0.6875 },
+  { x: 0.4375, y: 0.6875 },
+  { x: 0.4375, y: 0.6875 },
+  { x: 0.5625, y: 0.6875 },
+  { x: 0.5625, y: 0.6875 },
+  { x: 0.5625, y: 0.6875 },
+  { x: 0.5625, y: 0.6875 },
+  { x: 0.5625, y: 0.6875 },
+  { x: 0.5625, y: 0.6875 },
+  { x: 0.6875, y: 0.6875 },
+  { x: 0.6875, y: 0.6875 },
+  { x: 0.6875, y: 0.6875 },
+  { x: 0.6875, y: 0.6875 },
+  { x: 0.6875, y: 0.6875 },
+  { x: 0.6875, y: 0.6875 },
+  { x: 0.8125, y: 0.6875 },
+  { x: 0.8125, y: 0.6875 },
+  { x: 0.8125, y: 0.6875 },
+  { x: 0.8125, y: 0.6875 },
+  { x: 0.8125, y: 0.6875 },
+  { x: 0.8125, y: 0.6875 },
+  { x: 0.9375, y: 0.6875 },
+  { x: 0.9375, y: 0.6875 },
+  { x: 0.9375, y: 0.6875 },
+  { x: 0.9375, y: 0.6875 },
+  { x: 0.9375, y: 0.6875 },
+  { x: 0.9375, y: 0.6875 },
+  { x: 0.0625, y: 0.8125 },
+  { x: 0.0625, y: 0.8125 },
+  { x: 0.0625, y: 0.8125 },
+  { x: 0.0625, y: 0.8125 },
+  { x: 0.0625, y: 0.8125 },
+  { x: 0.0625, y: 0.8125 },
+  { x: 0.1875, y: 0.8125 },
+  { x: 0.1875, y: 0.8125 },
+  { x: 0.1875, y: 0.8125 },
+  { x: 0.1875, y: 0.8125 },
+  { x: 0.1875, y: 0.8125 },
+  { x: 0.1875, y: 0.8125 },
+  { x: 0.3125, y: 0.8125 },
+  { x: 0.3125, y: 0.8125 },
+  { x: 0.3125, y: 0.8125 },
+  { x: 0.3125, y: 0.8125 },
+  { x: 0.3125, y: 0.8125 },
+  { x: 0.3125, y: 0.8125 },
+  { x: 0.4375, y: 0.8125 },
+  { x: 0.4375, y: 0.8125 },
+  { x: 0.4375, y: 0.8125 },
+  { x: 0.4375, y: 0.8125 },
+  { x: 0.4375, y: 0.8125 },
+  { x: 0.4375, y: 0.8125 },
+  { x: 0.5625, y: 0.8125 },
+  { x: 0.5625, y: 0.8125 },
+  { x: 0.5625, y: 0.8125 },
+  { x: 0.5625, y: 0.8125 },
+  { x: 0.5625, y: 0.8125 },
+  { x: 0.5625, y: 0.8125 },
+  { x: 0.6875, y: 0.8125 },
+  { x: 0.6875, y: 0.8125 },
+  { x: 0.6875, y: 0.8125 },
+  { x: 0.6875, y: 0.8125 },
+  { x: 0.6875, y: 0.8125 },
+  { x: 0.6875, y: 0.8125 },
+  { x: 0.8125, y: 0.8125 },
+  { x: 0.8125, y: 0.8125 },
+  { x: 0.8125, y: 0.8125 },
+  { x: 0.8125, y: 0.8125 },
+  { x: 0.8125, y: 0.8125 },
+  { x: 0.8125, y: 0.8125 },
+  { x: 0.9375, y: 0.8125 },
+  { x: 0.9375, y: 0.8125 },
+  { x: 0.9375, y: 0.8125 },
+  { x: 0.9375, y: 0.8125 },
+  { x: 0.9375, y: 0.8125 },
+  { x: 0.9375, y: 0.8125 },
+  { x: 0.0625, y: 0.9375 },
+  { x: 0.0625, y: 0.9375 },
+  { x: 0.0625, y: 0.9375 },
+  { x: 0.0625, y: 0.9375 },
+  { x: 0.0625, y: 0.9375 },
+  { x: 0.0625, y: 0.9375 },
+  { x: 0.1875, y: 0.9375 },
+  { x: 0.1875, y: 0.9375 },
+  { x: 0.1875, y: 0.9375 },
+  { x: 0.1875, y: 0.9375 },
+  { x: 0.1875, y: 0.9375 },
+  { x: 0.1875, y: 0.9375 },
+  { x: 0.3125, y: 0.9375 },
+  { x: 0.3125, y: 0.9375 },
+  { x: 0.3125, y: 0.9375 },
+  { x: 0.3125, y: 0.9375 },
+  { x: 0.3125, y: 0.9375 },
+  { x: 0.3125, y: 0.9375 },
+  { x: 0.4375, y: 0.9375 },
+  { x: 0.4375, y: 0.9375 },
+  { x: 0.4375, y: 0.9375 },
+  { x: 0.4375, y: 0.9375 },
+  { x: 0.4375, y: 0.9375 },
+  { x: 0.4375, y: 0.9375 },
+  { x: 0.5625, y: 0.9375 },
+  { x: 0.5625, y: 0.9375 },
+  { x: 0.5625, y: 0.9375 },
+  { x: 0.5625, y: 0.9375 },
+  { x: 0.5625, y: 0.9375 },
+  { x: 0.5625, y: 0.9375 },
+  { x: 0.6875, y: 0.9375 },
+  { x: 0.6875, y: 0.9375 },
+  { x: 0.6875, y: 0.9375 },
+  { x: 0.6875, y: 0.9375 },
+  { x: 0.6875, y: 0.9375 },
+  { x: 0.6875, y: 0.9375 },
+  { x: 0.8125, y: 0.9375 },
+  { x: 0.8125, y: 0.9375 },
+  { x: 0.8125, y: 0.9375 },
+  { x: 0.8125, y: 0.9375 },
+  { x: 0.8125, y: 0.9375 },
+  { x: 0.8125, y: 0.9375 },
+  { x: 0.9375, y: 0.9375 },
+  { x: 0.9375, y: 0.9375 },
+  { x: 0.9375, y: 0.9375 },
+  { x: 0.9375, y: 0.9375 },
+  { x: 0.9375, y: 0.9375 },
+  { x: 0.9375, y: 0.9375 }
+];
+
+// src/hand/handposedetector.ts
+var HandDetector = class {
+  constructor(model18) {
+    __publicField(this, "model");
+    __publicField(this, "anchors");
+    __publicField(this, "anchorsTensor");
+    __publicField(this, "inputSize");
+    __publicField(this, "inputSizeTensor");
+    __publicField(this, "doubleInputSizeTensor");
+    this.model = model18;
+    this.anchors = anchors2.map((anchor) => [anchor.x, anchor.y]);
+    this.anchorsTensor = tf22.tensor2d(this.anchors);
+    this.inputSize = this.model && this.model.inputs && this.model.inputs[0].shape ? this.model.inputs[0].shape[2] : 0;
+    this.inputSizeTensor = tf22.tensor1d([this.inputSize, this.inputSize]);
+    this.doubleInputSizeTensor = tf22.tensor1d([this.inputSize * 2, this.inputSize * 2]);
+  }
+  normalizeBoxes(boxes) {
+    const t = {};
+    t.boxOffsets = tf22.slice(boxes, [0, 0], [-1, 2]);
+    t.boxSizes = tf22.slice(boxes, [0, 2], [-1, 2]);
+    t.div = tf22.div(t.boxOffsets, this.inputSizeTensor);
+    t.boxCenterPoints = tf22.add(t.div, this.anchorsTensor);
+    t.halfBoxSizes = tf22.div(t.boxSizes, this.doubleInputSizeTensor);
+    t.sub = tf22.sub(t.boxCenterPoints, t.halfBoxSizes);
+    t.startPoints = tf22.mul(t.sub, this.inputSizeTensor);
+    t.add = tf22.add(t.boxCenterPoints, t.halfBoxSizes);
+    t.endPoints = tf22.mul(t.add, this.inputSizeTensor);
+    const res = tf22.concat2d([t.startPoints, t.endPoints], 1);
+    Object.keys(t).forEach((tensor3) => tf22.dispose(t[tensor3]));
+    return res;
+  }
+  normalizeLandmarks(rawPalmLandmarks, index2) {
+    const t = {};
+    t.reshape = tf22.reshape(rawPalmLandmarks, [-1, 7, 2]);
+    t.div = tf22.div(t.reshape, this.inputSizeTensor);
+    t.landmarks = tf22.add(t.div, this.anchors[index2]);
+    const res = tf22.mul(t.landmarks, this.inputSizeTensor);
+    Object.keys(t).forEach((tensor3) => tf22.dispose(t[tensor3]));
+    return res;
+  }
+  async predict(input, config3) {
+    const t = {};
+    t.resize = tf22.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
+    t.div = tf22.div(t.resize, constants.tf127);
+    t.image = tf22.sub(t.div, constants.tf1);
+    t.batched = this.model.execute(t.image);
+    t.predictions = tf22.squeeze(t.batched);
+    t.slice = tf22.slice(t.predictions, [0, 0], [-1, 1]);
+    t.sigmoid = tf22.sigmoid(t.slice);
+    t.scores = tf22.squeeze(t.sigmoid);
+    const scores = await t.scores.data();
+    t.boxes = tf22.slice(t.predictions, [0, 1], [-1, 4]);
+    t.norm = this.normalizeBoxes(t.boxes);
+    t.nms = await tf22.image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
+    const nms = await t.nms.array();
+    const hands = [];
+    for (const index2 of nms) {
+      const p = {};
+      p.box = tf22.slice(t.norm, [index2, 0], [1, -1]);
+      p.slice = tf22.slice(t.predictions, [index2, 5], [1, 14]);
+      p.norm = this.normalizeLandmarks(p.slice, index2);
+      p.palmLandmarks = tf22.reshape(p.norm, [-1, 2]);
+      const box = await p.box.data();
+      const startPoint = box.slice(0, 2);
+      const endPoint = box.slice(2, 4);
+      const palmLandmarks = await p.palmLandmarks.array();
+      const hand3 = { startPoint, endPoint, palmLandmarks, confidence: scores[index2] };
+      const scaled = scaleBoxCoordinates2(hand3, [input.shape[2] / this.inputSize, input.shape[1] / this.inputSize]);
+      hands.push(scaled);
+      Object.keys(p).forEach((tensor3) => tf22.dispose(p[tensor3]));
+    }
+    Object.keys(t).forEach((tensor3) => tf22.dispose(t[tensor3]));
+    return hands;
+  }
+};
+
+// src/hand/handposepipeline.ts
+var tf23 = __toESM(require_tfjs_esm());
+var palmBoxEnlargeFactor = 5;
+var handBoxEnlargeFactor = 1.65;
+var palmLandmarkIds = [0, 5, 9, 13, 17, 1, 2];
+var palmLandmarksPalmBase = 0;
+var palmLandmarksMiddleFingerBase = 2;
+var lastTime11 = 0;
+var HandPipeline = class {
+  constructor(handDetector, handPoseModel2) {
+    __publicField(this, "handDetector");
+    __publicField(this, "handPoseModel");
+    __publicField(this, "inputSize");
+    __publicField(this, "storedBoxes");
+    __publicField(this, "skipped");
+    __publicField(this, "detectedHands");
+    this.handDetector = handDetector;
+    this.handPoseModel = handPoseModel2;
+    this.inputSize = this.handPoseModel && this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
+    this.storedBoxes = [];
+    this.skipped = Number.MAX_SAFE_INTEGER;
+    this.detectedHands = 0;
+  }
+  calculateLandmarksBoundingBox(landmarks) {
+    const xs = landmarks.map((d) => d[0]);
+    const ys = landmarks.map((d) => d[1]);
+    const startPoint = [Math.min(...xs), Math.min(...ys)];
+    const endPoint = [Math.max(...xs), Math.max(...ys)];
+    return { startPoint, endPoint };
+  }
+  getBoxForPalmLandmarks(palmLandmarks, rotationMatrix) {
+    const rotatedPalmLandmarks = palmLandmarks.map((coord) => rotatePoint2([...coord, 1], rotationMatrix));
+    const boxAroundPalm = this.calculateLandmarksBoundingBox(rotatedPalmLandmarks);
+    return enlargeBox2(squarifyBox2(boxAroundPalm), palmBoxEnlargeFactor);
+  }
+  getBoxForHandLandmarks(landmarks) {
+    const boundingBox = this.calculateLandmarksBoundingBox(landmarks);
+    const boxAroundHand = enlargeBox2(squarifyBox2(boundingBox), handBoxEnlargeFactor);
+    boxAroundHand.palmLandmarks = [];
+    for (let i = 0; i < palmLandmarkIds.length; i++) {
+      boxAroundHand.palmLandmarks.push(landmarks[palmLandmarkIds[i]].slice(0, 2));
+    }
+    return boxAroundHand;
+  }
+  transformRawCoords(rawCoords, box2, angle, rotationMatrix) {
+    const boxSize = getBoxSize2(box2);
+    const scaleFactor = [boxSize[0] / this.inputSize, boxSize[1] / this.inputSize, (boxSize[0] + boxSize[1]) / this.inputSize / 2];
+    const coordsScaled = rawCoords.map((coord) => [
+      scaleFactor[0] * (coord[0] - this.inputSize / 2),
+      scaleFactor[1] * (coord[1] - this.inputSize / 2),
+      scaleFactor[2] * coord[2]
+    ]);
+    const coordsRotationMatrix = buildRotationMatrix2(angle, [0, 0]);
+    const coordsRotated = coordsScaled.map((coord) => {
+      const rotated = rotatePoint2(coord, coordsRotationMatrix);
+      return [...rotated, coord[2]];
+    });
+    const inverseRotationMatrix = invertTransformMatrix2(rotationMatrix);
+    const boxCenter = [...getBoxCenter2(box2), 1];
+    const originalBoxCenter = [
+      dot2(boxCenter, inverseRotationMatrix[0]),
+      dot2(boxCenter, inverseRotationMatrix[1])
+    ];
+    return coordsRotated.map((coord) => [
+      Math.trunc(coord[0] + originalBoxCenter[0]),
+      Math.trunc(coord[1] + originalBoxCenter[1]),
+      Math.trunc(coord[2])
+    ]);
+  }
+  async estimateHands(image24, config3) {
+    let useFreshBox = false;
+    let boxes;
+    const skipTime = (config3.hand.skipTime || 0) > now() - lastTime11;
+    const skipFrame = this.skipped < (config3.hand.skipFrames || 0);
+    if (config3.skipAllowed && skipTime && skipFrame) {
+      boxes = await this.handDetector.predict(image24, config3);
+      this.skipped = 0;
+    }
+    if (config3.skipAllowed)
+      this.skipped++;
+    if (boxes && boxes.length > 0 && (boxes.length !== this.detectedHands && this.detectedHands !== config3.hand.maxDetected || !config3.hand.landmarks)) {
+      this.detectedHands = 0;
+      this.storedBoxes = [...boxes];
+      if (this.storedBoxes.length > 0)
+        useFreshBox = true;
+    }
+    const hands = [];
+    for (let i = 0; i < this.storedBoxes.length; i++) {
+      const currentBox = this.storedBoxes[i];
+      if (!currentBox)
+        continue;
+      if (config3.hand.landmarks) {
+        const angle = config3.hand.rotation ? computeRotation2(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
+        const palmCenter = getBoxCenter2(currentBox);
+        const palmCenterNormalized = [palmCenter[0] / image24.shape[2], palmCenter[1] / image24.shape[1]];
+        const rotatedImage = config3.hand.rotation && env.kernels.includes("rotatewithoffset") ? tf23.image.rotateWithOffset(image24, angle, 0, palmCenterNormalized) : image24.clone();
+        const rotationMatrix = buildRotationMatrix2(-angle, palmCenter);
+        const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;
+        const croppedInput = cutBoxFromImageAndResize(newBox, rotatedImage, [this.inputSize, this.inputSize]);
+        const handImage = tf23.div(croppedInput, constants.tf255);
+        tf23.dispose(croppedInput);
+        tf23.dispose(rotatedImage);
+        const [confidenceT, keypoints] = this.handPoseModel.execute(handImage);
+        lastTime11 = now();
+        tf23.dispose(handImage);
+        const confidence = (await confidenceT.data())[0];
+        tf23.dispose(confidenceT);
+        if (confidence >= config3.hand.minConfidence / 4) {
+          const keypointsReshaped = tf23.reshape(keypoints, [-1, 3]);
+          const rawCoords = await keypointsReshaped.array();
+          tf23.dispose(keypoints);
+          tf23.dispose(keypointsReshaped);
+          const coords = this.transformRawCoords(rawCoords, newBox, angle, rotationMatrix);
+          const nextBoundingBox = this.getBoxForHandLandmarks(coords);
+          this.storedBoxes[i] = { ...nextBoundingBox, confidence };
+          const result = {
+            landmarks: coords,
+            confidence,
+            boxConfidence: currentBox.confidence,
+            fingerConfidence: confidence,
+            box: { topLeft: nextBoundingBox.startPoint, bottomRight: nextBoundingBox.endPoint }
+          };
+          hands.push(result);
+        } else {
+          this.storedBoxes[i] = null;
+        }
+        tf23.dispose(keypoints);
+      } else {
+        const enlarged = enlargeBox2(squarifyBox2(currentBox), handBoxEnlargeFactor);
+        const result = {
+          confidence: currentBox.confidence,
+          boxConfidence: currentBox.confidence,
+          fingerConfidence: 0,
+          box: { topLeft: enlarged.startPoint, bottomRight: enlarged.endPoint },
+          landmarks: []
+        };
+        hands.push(result);
+      }
+    }
+    this.storedBoxes = this.storedBoxes.filter((a) => a !== null);
+    this.detectedHands = hands.length;
+    if (hands.length > config3.hand.maxDetected)
+      hands.length = config3.hand.maxDetected;
+    return hands;
+  }
+};
+
+// src/hand/fingerdef.ts
+var Finger = {
+  thumb: 0,
+  index: 1,
+  middle: 2,
+  ring: 3,
+  pinky: 4,
+  all: [0, 1, 2, 3, 4],
+  nameMapping: { 0: "thumb", 1: "index", 2: "middle", 3: "ring", 4: "pinky" },
+  pointsMapping: {
+    0: [[0, 1], [1, 2], [2, 3], [3, 4]],
+    1: [[0, 5], [5, 6], [6, 7], [7, 8]],
+    2: [[0, 9], [9, 10], [10, 11], [11, 12]],
+    3: [[0, 13], [13, 14], [14, 15], [15, 16]],
+    4: [[0, 17], [17, 18], [18, 19], [19, 20]]
+  },
+  getName: (value) => Finger.nameMapping[value],
+  getPoints: (value) => Finger.pointsMapping[value]
+};
+var FingerCurl = {
+  none: 0,
+  half: 1,
+  full: 2,
+  nameMapping: { 0: "none", 1: "half", 2: "full" },
+  getName: (value) => FingerCurl.nameMapping[value]
+};
+var FingerDirection = {
+  verticalUp: 0,
+  verticalDown: 1,
+  horizontalLeft: 2,
+  horizontalRight: 3,
+  diagonalUpRight: 4,
+  diagonalUpLeft: 5,
+  diagonalDownRight: 6,
+  diagonalDownLeft: 7,
+  nameMapping: { 0: "verticalUp", 1: "verticalDown", 2: "horizontalLeft", 3: "horizontalRight", 4: "diagonalUpRight", 5: "diagonalUpLeft", 6: "diagonalDownRight", 7: "diagonalDownLeft" },
+  getName: (value) => FingerDirection.nameMapping[value]
+};
+var FingerGesture = class {
+  constructor(name) {
+    __publicField(this, "name");
+    __publicField(this, "curls");
+    __publicField(this, "directions");
+    __publicField(this, "weights");
+    __publicField(this, "weightsRelative");
+    this.name = name;
+    this.curls = {};
+    this.directions = {};
+    this.weights = [1, 1, 1, 1, 1];
+    this.weightsRelative = [1, 1, 1, 1, 1];
+  }
+  curl(finger, curl, confidence) {
+    if (typeof this.curls[finger] === "undefined")
+      this.curls[finger] = [];
+    this.curls[finger].push([curl, confidence]);
+  }
+  direction(finger, position, confidence) {
+    if (!this.directions[finger])
+      this.directions[finger] = [];
+    this.directions[finger].push([position, confidence]);
+  }
+  weight(finger, weight) {
+    this.weights[finger] = weight;
+    const total = this.weights.reduce((a, b) => a + b, 0);
+    this.weightsRelative = this.weights.map((el) => el * 5 / total);
+  }
+  matchAgainst(detectedCurls, detectedDirections) {
+    let confidence = 0;
+    for (const fingerIdx in detectedCurls) {
+      const detectedCurl = detectedCurls[fingerIdx];
+      const expectedCurls = this.curls[fingerIdx];
+      if (typeof expectedCurls === "undefined") {
+        confidence += this.weightsRelative[fingerIdx];
+        continue;
+      }
+      for (const [expectedCurl, score] of expectedCurls) {
+        if (detectedCurl === expectedCurl) {
+          confidence += score * this.weightsRelative[fingerIdx];
+          break;
+        }
+      }
+    }
+    for (const fingerIdx in detectedDirections) {
+      const detectedDirection = detectedDirections[fingerIdx];
+      const expectedDirections = this.directions[fingerIdx];
+      if (typeof expectedDirections === "undefined") {
+        confidence += this.weightsRelative[fingerIdx];
+        continue;
+      }
+      for (const [expectedDirection, score] of expectedDirections) {
+        if (detectedDirection === expectedDirection) {
+          confidence += score * this.weightsRelative[fingerIdx];
+          break;
+        }
+      }
+    }
+    return confidence / 10;
+  }
+};
+
+// src/hand/fingergesture.ts
+var { thumb, index, middle, ring, pinky } = Finger;
+var { none, half, full } = FingerCurl;
+var { verticalUp, verticalDown, horizontalLeft, horizontalRight, diagonalUpRight, diagonalUpLeft, diagonalDownRight, diagonalDownLeft } = FingerDirection;
+var ThumbsUp = new FingerGesture("thumbs up");
+ThumbsUp.curl(thumb, none, 1);
+ThumbsUp.direction(thumb, verticalUp, 1);
+ThumbsUp.direction(thumb, diagonalUpLeft, 0.25);
+ThumbsUp.direction(thumb, diagonalUpRight, 0.25);
+for (const finger of [Finger.index, Finger.middle, Finger.ring, Finger.pinky]) {
+  ThumbsUp.curl(finger, full, 1);
+  ThumbsUp.direction(finger, horizontalLeft, 1);
+  ThumbsUp.direction(finger, horizontalRight, 1);
+}
+var Victory = new FingerGesture("victory");
+Victory.curl(thumb, half, 0.5);
+Victory.curl(thumb, none, 0.5);
+Victory.direction(thumb, verticalUp, 1);
+Victory.direction(thumb, diagonalUpLeft, 1);
+Victory.curl(index, none, 1);
+Victory.direction(index, verticalUp, 0.75);
+Victory.direction(index, diagonalUpLeft, 1);
+Victory.curl(middle, none, 1);
+Victory.direction(middle, verticalUp, 1);
+Victory.direction(middle, diagonalUpLeft, 0.75);
+Victory.curl(ring, full, 1);
+Victory.direction(ring, verticalUp, 0.2);
+Victory.direction(ring, diagonalUpLeft, 1);
+Victory.direction(ring, horizontalLeft, 0.2);
+Victory.curl(pinky, full, 1);
+Victory.direction(pinky, verticalUp, 0.2);
+Victory.direction(pinky, diagonalUpLeft, 1);
+Victory.direction(pinky, horizontalLeft, 0.2);
+Victory.weight(index, 2);
+Victory.weight(middle, 2);
+var Point = new FingerGesture("point");
+Point.curl(thumb, full, 1);
+Point.curl(index, none, 0.5);
+Point.curl(middle, full, 0.5);
+Point.curl(ring, full, 0.5);
+Point.curl(pinky, full, 0.5);
+Point.weight(index, 2);
+Point.weight(middle, 2);
+var MiddleFinger = new FingerGesture("middle finger");
+MiddleFinger.curl(thumb, none, 1);
+MiddleFinger.curl(index, full, 0.5);
+MiddleFinger.curl(middle, full, 0.5);
+MiddleFinger.curl(ring, full, 0.5);
+MiddleFinger.curl(pinky, full, 0.5);
+MiddleFinger.weight(index, 2);
+MiddleFinger.weight(middle, 2);
+var OpenPalm = new FingerGesture("open palm");
+OpenPalm.curl(thumb, none, 0.75);
+OpenPalm.curl(index, none, 0.75);
+OpenPalm.curl(middle, none, 0.75);
+OpenPalm.curl(ring, none, 0.75);
+OpenPalm.curl(pinky, none, 0.75);
+var fingergesture_default = [ThumbsUp, Victory, Point, MiddleFinger, OpenPalm];
+
+// src/hand/fingerpose.ts
+var minConfidence = 0.7;
+var options2 = {
+  HALF_CURL_START_LIMIT: 60,
+  NO_CURL_START_LIMIT: 130,
+  DISTANCE_VOTE_POWER: 1.1,
+  SINGLE_ANGLE_VOTE_POWER: 0.9,
+  TOTAL_ANGLE_VOTE_POWER: 1.6
+};
+function calculateSlope(point1x, point1y, point2x, point2y) {
+  const value = (point1y - point2y) / (point1x - point2x);
+  let slope = Math.atan(value) * 180 / Math.PI;
+  if (slope <= 0)
+    slope = -slope;
+  else if (slope > 0)
+    slope = 180 - slope;
+  return slope;
+}
+function getSlopes(point1, point2) {
+  if (!point1 || !point2)
+    return [0, 0];
+  const slopeXY = calculateSlope(point1[0], point1[1], point2[0], point2[1]);
+  if (point1.length === 2)
+    return slopeXY;
+  const slopeYZ = calculateSlope(point1[1], point1[2], point2[1], point2[2]);
+  return [slopeXY, slopeYZ];
+}
+function angleOrientationAt(angle, weightageAt = 1) {
+  let isVertical = 0;
+  let isDiagonal = 0;
+  let isHorizontal = 0;
+  if (angle >= 75 && angle <= 105)
+    isVertical = 1 * weightageAt;
+  else if (angle >= 25 && angle <= 155)
+    isDiagonal = 1 * weightageAt;
+  else
+    isHorizontal = 1 * weightageAt;
+  return [isVertical, isDiagonal, isHorizontal];
+}
+function estimateFingerCurl(startPoint, midPoint, endPoint) {
+  const start_mid_x_dist = startPoint[0] - midPoint[0];
+  const start_end_x_dist = startPoint[0] - endPoint[0];
+  const mid_end_x_dist = midPoint[0] - endPoint[0];
+  const start_mid_y_dist = startPoint[1] - midPoint[1];
+  const start_end_y_dist = startPoint[1] - endPoint[1];
+  const mid_end_y_dist = midPoint[1] - endPoint[1];
+  const start_mid_z_dist = startPoint[2] - midPoint[2];
+  const start_end_z_dist = startPoint[2] - endPoint[2];
+  const mid_end_z_dist = midPoint[2] - endPoint[2];
+  const start_mid_dist = Math.sqrt(start_mid_x_dist * start_mid_x_dist + start_mid_y_dist * start_mid_y_dist + start_mid_z_dist * start_mid_z_dist);
+  const start_end_dist = Math.sqrt(start_end_x_dist * start_end_x_dist + start_end_y_dist * start_end_y_dist + start_end_z_dist * start_end_z_dist);
+  const mid_end_dist = Math.sqrt(mid_end_x_dist * mid_end_x_dist + mid_end_y_dist * mid_end_y_dist + mid_end_z_dist * mid_end_z_dist);
+  let cos_in = (mid_end_dist * mid_end_dist + start_mid_dist * start_mid_dist - start_end_dist * start_end_dist) / (2 * mid_end_dist * start_mid_dist);
+  if (cos_in > 1)
+    cos_in = 1;
+  else if (cos_in < -1)
+    cos_in = -1;
+  let angleOfCurve = Math.acos(cos_in);
+  angleOfCurve = 57.2958 * angleOfCurve % 180;
+  let fingerCurl;
+  if (angleOfCurve > options2.NO_CURL_START_LIMIT)
+    fingerCurl = FingerCurl.none;
+  else if (angleOfCurve > options2.HALF_CURL_START_LIMIT)
+    fingerCurl = FingerCurl.half;
+  else
+    fingerCurl = FingerCurl.full;
+  return fingerCurl;
+}
+function estimateHorizontalDirection(start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x) {
+  let estimatedDirection;
+  if (max_dist_x === Math.abs(start_end_x_dist)) {
+    if (start_end_x_dist > 0)
+      estimatedDirection = FingerDirection.horizontalLeft;
+    else
+      estimatedDirection = FingerDirection.horizontalRight;
+  } else if (max_dist_x === Math.abs(start_mid_x_dist)) {
+    if (start_mid_x_dist > 0)
+      estimatedDirection = FingerDirection.horizontalLeft;
+    else
+      estimatedDirection = FingerDirection.horizontalRight;
+  } else {
+    if (mid_end_x_dist > 0)
+      estimatedDirection = FingerDirection.horizontalLeft;
+    else
+      estimatedDirection = FingerDirection.horizontalRight;
+  }
+  return estimatedDirection;
+}
+function estimateVerticalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y) {
+  let estimatedDirection;
+  if (max_dist_y === Math.abs(start_end_y_dist)) {
+    if (start_end_y_dist < 0)
+      estimatedDirection = FingerDirection.verticalDown;
+    else
+      estimatedDirection = FingerDirection.verticalUp;
+  } else if (max_dist_y === Math.abs(start_mid_y_dist)) {
+    if (start_mid_y_dist < 0)
+      estimatedDirection = FingerDirection.verticalDown;
+    else
+      estimatedDirection = FingerDirection.verticalUp;
+  } else {
+    if (mid_end_y_dist < 0)
+      estimatedDirection = FingerDirection.verticalDown;
+    else
+      estimatedDirection = FingerDirection.verticalUp;
+  }
+  return estimatedDirection;
+}
+function estimateDiagonalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y, start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x) {
+  let estimatedDirection;
+  const reqd_vertical_direction = estimateVerticalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y);
+  const reqd_horizontal_direction = estimateHorizontalDirection(start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x);
+  if (reqd_vertical_direction === FingerDirection.verticalUp) {
+    if (reqd_horizontal_direction === FingerDirection.horizontalLeft)
+      estimatedDirection = FingerDirection.diagonalUpLeft;
+    else
+      estimatedDirection = FingerDirection.diagonalUpRight;
+  } else {
+    if (reqd_horizontal_direction === FingerDirection.horizontalLeft)
+      estimatedDirection = FingerDirection.diagonalDownLeft;
+    else
+      estimatedDirection = FingerDirection.diagonalDownRight;
+  }
+  return estimatedDirection;
+}
+function calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) {
+  const start_mid_x_dist = startPoint[0] - midPoint[0];
+  const start_end_x_dist = startPoint[0] - endPoint[0];
+  const mid_end_x_dist = midPoint[0] - endPoint[0];
+  const start_mid_y_dist = startPoint[1] - midPoint[1];
+  const start_end_y_dist = startPoint[1] - endPoint[1];
+  const mid_end_y_dist = midPoint[1] - endPoint[1];
+  const max_dist_x = Math.max(Math.abs(start_mid_x_dist), Math.abs(start_end_x_dist), Math.abs(mid_end_x_dist));
+  const max_dist_y = Math.max(Math.abs(start_mid_y_dist), Math.abs(start_end_y_dist), Math.abs(mid_end_y_dist));
+  let voteVertical = 0;
+  let voteDiagonal = 0;
+  let voteHorizontal = 0;
+  const start_end_x_y_dist_ratio = max_dist_y / (max_dist_x + 1e-5);
+  if (start_end_x_y_dist_ratio > 1.5)
+    voteVertical += options2.DISTANCE_VOTE_POWER;
+  else if (start_end_x_y_dist_ratio > 0.66)
+    voteDiagonal += options2.DISTANCE_VOTE_POWER;
+  else
+    voteHorizontal += options2.DISTANCE_VOTE_POWER;
+  const start_mid_dist = Math.sqrt(start_mid_x_dist * start_mid_x_dist + start_mid_y_dist * start_mid_y_dist);
+  const start_end_dist = Math.sqrt(start_end_x_dist * start_end_x_dist + start_end_y_dist * start_end_y_dist);
+  const mid_end_dist = Math.sqrt(mid_end_x_dist * mid_end_x_dist + mid_end_y_dist * mid_end_y_dist);
+  const max_dist = Math.max(start_mid_dist, start_end_dist, mid_end_dist);
+  let calc_start_point_x = startPoint[0];
+  let calc_start_point_y = startPoint[1];
+  let calc_end_point_x = endPoint[0];
+  let calc_end_point_y = endPoint[1];
+  if (max_dist === start_mid_dist) {
+    calc_end_point_x = endPoint[0];
+    calc_end_point_y = endPoint[1];
+  } else if (max_dist === mid_end_dist) {
+    calc_start_point_x = midPoint[0];
+    calc_start_point_y = midPoint[1];
+  }
+  const calcStartPoint = [calc_start_point_x, calc_start_point_y];
+  const calcEndPoint = [calc_end_point_x, calc_end_point_y];
+  const totalAngle = getSlopes(calcStartPoint, calcEndPoint);
+  const votes = angleOrientationAt(totalAngle, options2.TOTAL_ANGLE_VOTE_POWER);
+  voteVertical += votes[0];
+  voteDiagonal += votes[1];
+  voteHorizontal += votes[2];
+  for (const fingerSlope of fingerSlopes) {
+    const fingerVotes = angleOrientationAt(fingerSlope, options2.SINGLE_ANGLE_VOTE_POWER);
+    voteVertical += fingerVotes[0];
+    voteDiagonal += fingerVotes[1];
+    voteHorizontal += fingerVotes[2];
+  }
+  let estimatedDirection;
+  if (voteVertical === Math.max(voteVertical, voteDiagonal, voteHorizontal)) {
+    estimatedDirection = estimateVerticalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y);
+  } else if (voteHorizontal === Math.max(voteDiagonal, voteHorizontal)) {
+    estimatedDirection = estimateHorizontalDirection(start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x);
+  } else {
+    estimatedDirection = estimateDiagonalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y, start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x);
+  }
+  return estimatedDirection;
+}
+function estimate(landmarks) {
+  const slopesXY = [];
+  const slopesYZ = [];
+  const fingerCurls = [];
+  const fingerDirections = [];
+  if (!landmarks)
+    return { curls: fingerCurls, directions: fingerDirections };
+  for (const finger of Finger.all) {
+    const points = Finger.getPoints(finger);
+    const slopeAtXY = [];
+    const slopeAtYZ = [];
+    for (const point2 of points) {
+      const point1 = landmarks[point2[0]];
+      const point22 = landmarks[point2[1]];
+      const slopes = getSlopes(point1, point22);
+      const slopeXY = slopes[0];
+      const slopeYZ = slopes[1];
+      slopeAtXY.push(slopeXY);
+      slopeAtYZ.push(slopeYZ);
+    }
+    slopesXY.push(slopeAtXY);
+    slopesYZ.push(slopeAtYZ);
+  }
+  for (const finger of Finger.all) {
+    const pointIndexAt = finger === Finger.thumb ? 1 : 0;
+    const fingerPointsAt = Finger.getPoints(finger);
+    const startPoint = landmarks[fingerPointsAt[pointIndexAt][0]];
+    const midPoint = landmarks[fingerPointsAt[pointIndexAt + 1][1]];
+    const endPoint = landmarks[fingerPointsAt[3][1]];
+    const fingerCurled = estimateFingerCurl(startPoint, midPoint, endPoint);
+    const fingerPosition = calculateFingerDirection(startPoint, midPoint, endPoint, slopesXY[finger].slice(pointIndexAt));
+    fingerCurls[finger] = fingerCurled;
+    fingerDirections[finger] = fingerPosition;
+  }
+  return { curls: fingerCurls, directions: fingerDirections };
+}
+function analyze(keypoints) {
+  if (!keypoints || keypoints.length === 0)
+    return null;
+  const estimatorRes = estimate(keypoints);
+  const landmarks = {};
+  for (const fingerIdx of Finger.all) {
+    landmarks[Finger.getName(fingerIdx)] = {
+      curl: FingerCurl.getName(estimatorRes.curls[fingerIdx]),
+      direction: FingerDirection.getName(estimatorRes.directions[fingerIdx])
+    };
+  }
+  return landmarks;
+}
+function match(keypoints) {
+  const poses = [];
+  if (!keypoints || keypoints.length === 0)
+    return poses;
+  const estimatorRes = estimate(keypoints);
+  for (const gesture2 of fingergesture_default) {
+    const confidence = gesture2.matchAgainst(estimatorRes.curls, estimatorRes.directions);
+    if (confidence >= minConfidence)
+      poses.push({ name: gesture2.name, confidence });
+  }
+  return poses;
+}
+
+// src/hand/handpose.ts
+var meshAnnotations2 = {
+  thumb: [1, 2, 3, 4],
+  index: [5, 6, 7, 8],
+  middle: [9, 10, 11, 12],
+  ring: [13, 14, 15, 16],
+  pinky: [17, 18, 19, 20],
+  palm: [0]
+};
+var handDetectorModel;
+var handPoseModel;
+var handPipeline;
+async function predict12(input, config3) {
+  const predictions = await handPipeline.estimateHands(input, config3);
+  if (!predictions)
+    return [];
+  const hands = [];
+  for (let i = 0; i < predictions.length; i++) {
+    const annotations2 = {};
+    if (predictions[i].landmarks) {
+      for (const key of Object.keys(meshAnnotations2)) {
+        annotations2[key] = meshAnnotations2[key].map((index2) => predictions[i].landmarks[index2]);
+      }
+    }
+    const keypoints = predictions[i].landmarks;
+    let box = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0];
+    let boxRaw = [0, 0, 0, 0];
+    if (keypoints && keypoints.length > 0) {
+      for (const pt of keypoints) {
+        if (pt[0] < box[0])
+          box[0] = pt[0];
+        if (pt[1] < box[1])
+          box[1] = pt[1];
+        if (pt[0] > box[2])
+          box[2] = pt[0];
+        if (pt[1] > box[3])
+          box[3] = pt[1];
+      }
+      box[2] -= box[0];
+      box[3] -= box[1];
+      boxRaw = [box[0] / (input.shape[2] || 0), box[1] / (input.shape[1] || 0), box[2] / (input.shape[2] || 0), box[3] / (input.shape[1] || 0)];
+    } else {
+      box = predictions[i].box ? [
+        Math.trunc(Math.max(0, predictions[i].box.topLeft[0])),
+        Math.trunc(Math.max(0, predictions[i].box.topLeft[1])),
+        Math.trunc(Math.min(input.shape[2] || 0, predictions[i].box.bottomRight[0]) - Math.max(0, predictions[i].box.topLeft[0])),
+        Math.trunc(Math.min(input.shape[1] || 0, predictions[i].box.bottomRight[1]) - Math.max(0, predictions[i].box.topLeft[1]))
+      ] : [0, 0, 0, 0];
+      boxRaw = [
+        predictions[i].box.topLeft[0] / (input.shape[2] || 0),
+        predictions[i].box.topLeft[1] / (input.shape[1] || 0),
+        (predictions[i].box.bottomRight[0] - predictions[i].box.topLeft[0]) / (input.shape[2] || 0),
+        (predictions[i].box.bottomRight[1] - predictions[i].box.topLeft[1]) / (input.shape[1] || 0)
+      ];
+    }
+    const landmarks = analyze(keypoints);
+    hands.push({
+      id: i,
+      score: Math.round(100 * predictions[i].confidence) / 100,
+      boxScore: Math.round(100 * predictions[i].boxConfidence) / 100,
+      fingerScore: Math.round(100 * predictions[i].fingerConfidence) / 100,
+      label: "hand",
+      box,
+      boxRaw,
+      keypoints,
+      annotations: annotations2,
+      landmarks
+    });
+  }
+  return hands;
+}
+async function load13(config3) {
+  var _a, _b;
+  if (env.initial) {
+    handDetectorModel = null;
+    handPoseModel = null;
+  }
+  if (!handDetectorModel || !handPoseModel) {
+    [handDetectorModel, handPoseModel] = await Promise.all([
+      config3.hand.enabled ? loadModel((_a = config3.hand.detector) == null ? void 0 : _a.modelPath) : null,
+      config3.hand.landmarks ? loadModel((_b = config3.hand.skeleton) == null ? void 0 : _b.modelPath) : null
+    ]);
+  } else {
+    if (config3.debug)
+      log("cached model:", handDetectorModel["modelUrl"]);
+    if (config3.debug)
+      log("cached model:", handPoseModel["modelUrl"]);
+  }
+  const handDetector = new HandDetector(handDetectorModel);
+  handPipeline = new HandPipeline(handDetector, handPoseModel);
+  return [handDetectorModel, handPoseModel];
+}
+
+// src/hand/handtrack.ts
+var tf24 = __toESM(require_tfjs_esm());
+var models2 = [null, null];
+var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
+var inputSize7 = [[0, 0], [0, 0]];
+var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
+var faceIndex = 4;
+var boxExpandFact = 1.6;
+var maxDetectorResolution = 512;
+var detectorExpandFact = 1.4;
+var skipped11 = Number.MAX_SAFE_INTEGER;
+var lastTime12 = 0;
+var outputSize = [0, 0];
+var cache4 = {
+  boxes: [],
+  hands: []
+};
+var fingerMap = {
+  thumb: [1, 2, 3, 4],
+  index: [5, 6, 7, 8],
+  middle: [9, 10, 11, 12],
+  ring: [13, 14, 15, 16],
+  pinky: [17, 18, 19, 20],
+  base: [0],
+  palm: [0, 17, 13, 9, 5, 1, 0]
+};
+async function loadDetect2(config3) {
+  var _a;
+  if (env.initial)
+    models2[0] = null;
+  if (!models2[0]) {
+    fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
+    models2[0] = await loadModel((_a = config3.hand.detector) == null ? void 0 : _a.modelPath);
+    const inputs = Object.values(models2[0].modelSignature["inputs"]);
+    inputSize7[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize7[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+  } else if (config3.debug)
+    log("cached model:", models2[0]["modelUrl"]);
+  return models2[0];
+}
+async function loadSkeleton(config3) {
+  var _a;
+  if (env.initial)
+    models2[1] = null;
+  if (!models2[1]) {
+    models2[1] = await loadModel((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath);
+    const inputs = Object.values(models2[1].modelSignature["inputs"]);
+    inputSize7[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    inputSize7[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+  } else if (config3.debug)
+    log("cached model:", models2[1]["modelUrl"]);
+  return models2[1];
+}
+async function detectHands(input, config3) {
+  const hands = [];
+  if (!input || !models2[0])
+    return hands;
+  const t = {};
+  const ratio = (input.shape[2] || 1) / (input.shape[1] || 1);
+  const height = Math.min(Math.round((input.shape[1] || 0) / 8) * 8, maxDetectorResolution);
+  const width = Math.round(height * ratio / 8) * 8;
+  t.resize = tf24.image.resizeBilinear(input, [height, width]);
+  t.cast = tf24.cast(t.resize, "int32");
+  [t.rawScores, t.rawBoxes] = await models2[0].executeAsync(t.cast, modelOutputNodes);
+  t.boxes = tf24.squeeze(t.rawBoxes, [0, 2]);
+  t.scores = tf24.squeeze(t.rawScores, [0]);
+  const classScores = tf24.unstack(t.scores, 1);
+  tf24.dispose(classScores[faceIndex]);
+  classScores.splice(faceIndex, 1);
+  t.filtered = tf24.stack(classScores, 1);
+  tf24.dispose(classScores);
+  t.max = tf24.max(t.filtered, 1);
+  t.argmax = tf24.argMax(t.filtered, 1);
+  let id = 0;
+  t.nms = await tf24.image.nonMaxSuppressionAsync(t.boxes, t.max, (config3.hand.maxDetected || 0) + 1, config3.hand.iouThreshold || 0, config3.hand.minConfidence || 1);
+  const nms = await t.nms.data();
+  const scores = await t.max.data();
+  const classNum = await t.argmax.data();
+  for (const nmsIndex of Array.from(nms)) {
+    const boxSlice = tf24.slice(t.boxes, nmsIndex, 1);
+    const boxYX = await boxSlice.data();
+    tf24.dispose(boxSlice);
+    const boxData = [boxYX[1], boxYX[0], boxYX[3] - boxYX[1], boxYX[2] - boxYX[0]];
+    const boxRaw = scale(boxData, detectorExpandFact);
+    const boxFull = [Math.trunc(boxData[0] * outputSize[0]), Math.trunc(boxData[1] * outputSize[1]), Math.trunc(boxData[2] * outputSize[0]), Math.trunc(boxData[3] * outputSize[1])];
+    const score = scores[nmsIndex];
+    const label = classes[classNum[nmsIndex]];
+    const hand3 = { id: id++, score, box: boxFull, boxRaw, label };
+    hands.push(hand3);
+  }
+  Object.keys(t).forEach((tensor3) => tf24.dispose(t[tensor3]));
+  hands.sort((a, b) => b.score - a.score);
+  if (hands.length > (config3.hand.maxDetected || 1))
+    hands.length = config3.hand.maxDetected || 1;
+  return hands;
+}
+async function detectFingers(input, h, config3) {
+  const hand3 = {
+    id: h.id,
+    score: Math.round(100 * h.score) / 100,
+    boxScore: Math.round(100 * h.score) / 100,
+    fingerScore: 0,
+    box: h.box,
+    boxRaw: h.boxRaw,
+    label: h.label,
+    keypoints: [],
+    landmarks: {},
+    annotations: {}
+  };
+  if (input && models2[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
+    const t = {};
+    const boxCrop = [h.boxRaw[1], h.boxRaw[0], h.boxRaw[3] + h.boxRaw[1], h.boxRaw[2] + h.boxRaw[0]];
+    t.crop = tf24.image.cropAndResize(input, [boxCrop], [0], [inputSize7[1][0], inputSize7[1][1]], "bilinear");
+    t.div = tf24.div(t.crop, constants.tf255);
+    [t.score, t.keypoints] = models2[1].execute(t.div, ["Identity_1", "Identity"]);
+    const rawScore = (await t.score.data())[0];
+    const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
+    if (score >= (config3.hand.minConfidence || 0)) {
+      hand3.fingerScore = score;
+      t.reshaped = tf24.reshape(t.keypoints, [-1, 3]);
+      const coordsData = await t.reshaped.array();
+      const coordsRaw = coordsData.map((kpt4) => [kpt4[0] / inputSize7[1][1], kpt4[1] / inputSize7[1][0], kpt4[2] || 0]);
+      const coordsNorm = coordsRaw.map((kpt4) => [kpt4[0] * h.boxRaw[2], kpt4[1] * h.boxRaw[3], kpt4[2] || 0]);
+      hand3.keypoints = coordsNorm.map((kpt4) => [outputSize[0] * (kpt4[0] + h.boxRaw[0]), outputSize[1] * (kpt4[1] + h.boxRaw[1]), kpt4[2] || 0]);
+      hand3.landmarks = analyze(hand3.keypoints);
+      for (const key of Object.keys(fingerMap)) {
+        hand3.annotations[key] = fingerMap[key].map((index2) => hand3.landmarks && hand3.keypoints[index2] ? hand3.keypoints[index2] : null);
+      }
+    }
+    Object.keys(t).forEach((tensor3) => tf24.dispose(t[tensor3]));
+  }
+  return hand3;
+}
+async function predict13(input, config3) {
+  var _a, _b;
+  if (!models2[0] || !models2[1] || !((_a = models2[0]) == null ? void 0 : _a.inputs[0].shape) || !((_b = models2[1]) == null ? void 0 : _b.inputs[0].shape))
+    return [];
+  outputSize = [input.shape[2] || 0, input.shape[1] || 0];
+  skipped11++;
+  const skipTime = (config3.hand.skipTime || 0) > now() - lastTime12;
+  const skipFrame = skipped11 < (config3.hand.skipFrames || 0);
+  if (config3.skipAllowed && skipTime && skipFrame) {
+    return cache4.hands;
+  }
+  return new Promise(async (resolve) => {
+    const skipTimeExtended = 3 * (config3.hand.skipTime || 0) > now() - lastTime12;
+    const skipFrameExtended = skipped11 < 3 * (config3.hand.skipFrames || 0);
+    if (config3.skipAllowed && cache4.hands.length === config3.hand.maxDetected) {
+      cache4.hands = await Promise.all(cache4.boxes.map((handBox) => detectFingers(input, handBox, config3)));
+    } else if (config3.skipAllowed && skipTimeExtended && skipFrameExtended && cache4.hands.length > 0) {
+      cache4.hands = await Promise.all(cache4.boxes.map((handBox) => detectFingers(input, handBox, config3)));
+    } else {
+      cache4.boxes = await detectHands(input, config3);
+      lastTime12 = now();
+      cache4.hands = await Promise.all(cache4.boxes.map((handBox) => detectFingers(input, handBox, config3)));
+      skipped11 = 0;
+    }
+    const oldCache = [...cache4.boxes];
+    cache4.boxes.length = 0;
+    if (config3.cacheSensitivity > 0) {
+      for (let i = 0; i < cache4.hands.length; i++) {
+        const boxKpt = square(cache4.hands[i].keypoints, outputSize);
+        if (boxKpt.box[2] / (input.shape[2] || 1) > 0.05 && boxKpt.box[3] / (input.shape[1] || 1) > 0.05 && cache4.hands[i].fingerScore && cache4.hands[i].fingerScore > (config3.hand.minConfidence || 0)) {
+          const boxScale = scale(boxKpt.box, boxExpandFact);
+          const boxScaleRaw = scale(boxKpt.boxRaw, boxExpandFact);
+          cache4.boxes.push({ ...oldCache[i], box: boxScale, boxRaw: boxScaleRaw });
+        }
+      }
+    }
+    for (let i = 0; i < cache4.hands.length; i++) {
+      const bbox = calc(cache4.hands[i].keypoints, outputSize);
+      cache4.hands[i].box = bbox.box;
+      cache4.hands[i].boxRaw = bbox.boxRaw;
+    }
+    resolve(cache4.hands);
+  });
+}
+
+// src/face/liveness.ts
+var tf25 = __toESM(require_tfjs_esm());
+var model13;
+var cached2 = [];
+var skipped12 = Number.MAX_SAFE_INTEGER;
+var lastCount8 = 0;
+var lastTime13 = 0;
+async function load14(config3) {
+  var _a;
+  if (env.initial)
+    model13 = null;
+  if (!model13)
+    model13 = await loadModel((_a = config3.face.liveness) == null ? void 0 : _a.modelPath);
+  else if (config3.debug)
+    log("cached model:", model13["modelUrl"]);
+  return model13;
+}
+async function predict14(image24, config3, idx, count2) {
+  var _a, _b;
+  if (!model13)
+    return 0;
+  const skipTime = (((_a = config3.face.liveness) == null ? void 0 : _a.skipTime) || 0) > now() - lastTime13;
+  const skipFrame = skipped12 < (((_b = config3.face.liveness) == null ? void 0 : _b.skipFrames) || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && lastCount8 === count2 && cached2[idx]) {
+    skipped12++;
+    return cached2[idx];
+  }
+  skipped12 = 0;
+  return new Promise(async (resolve) => {
+    const resize = tf25.image.resizeBilinear(image24, [(model13 == null ? void 0 : model13.inputs[0].shape) ? model13.inputs[0].shape[2] : 0, (model13 == null ? void 0 : model13.inputs[0].shape) ? model13.inputs[0].shape[1] : 0], false);
+    const res = model13 == null ? void 0 : model13.execute(resize);
+    const num = (await res.data())[0];
+    cached2[idx] = Math.round(100 * num) / 100;
+    lastCount8 = count2;
+    lastTime13 = now();
+    tf25.dispose([resize, res]);
+    resolve(cached2[idx]);
+  });
+}
+
+// src/body/movenet.ts
+var tf27 = __toESM(require_tfjs_esm());
+
+// src/body/movenetcoords.ts
+var movenetcoords_exports = {};
+__export(movenetcoords_exports, {
+  connected: () => connected3,
+  horizontal: () => horizontal,
+  kpt: () => kpt3,
+  relative: () => relative,
+  vertical: () => vertical
+});
+var kpt3 = [
+  "nose",
+  "leftEye",
+  "rightEye",
+  "leftEar",
+  "rightEar",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "leftWrist",
+  "rightWrist",
+  "leftHip",
+  "rightHip",
+  "leftKnee",
+  "rightKnee",
+  "leftAnkle",
+  "rightAnkle"
+];
+var horizontal = [
+  ["leftEye", "rightEye"],
+  ["leftEar", "rightEar"],
+  ["leftShoulder", "rightShoulder"],
+  ["leftElbow", "rightElbow"],
+  ["leftWrist", "rightWrist"],
+  ["leftHip", "rightHip"],
+  ["leftKnee", "rightKnee"],
+  ["leftAnkle", "rightAnkle"]
+];
+var vertical = [
+  ["leftKnee", "leftShoulder"],
+  ["rightKnee", "rightShoulder"],
+  ["leftAnkle", "leftKnee"],
+  ["rightAnkle", "rightKnee"]
+];
+var relative = [
+  [["leftHip", "rightHip"], ["leftShoulder", "rightShoulder"]],
+  [["leftElbow", "rightElbow"], ["leftShoulder", "rightShoulder"]]
+];
+var connected3 = {
+  leftLeg: ["leftHip", "leftKnee", "leftAnkle"],
+  rightLeg: ["rightHip", "rightKnee", "rightAnkle"],
+  torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
+  leftArm: ["leftShoulder", "leftElbow", "leftWrist"],
+  rightArm: ["rightShoulder", "rightElbow", "rightWrist"],
+  head: []
+};
+
+// src/body/movenetfix.ts
+var tf26 = __toESM(require_tfjs_esm());
+var maxJitter = 5e-3;
+var cache5 = {
+  keypoints: [],
+  padding: [[0, 0], [0, 0], [0, 0], [0, 0]]
+};
+function bodyParts(body4) {
+  for (const pair of horizontal) {
+    const left = body4.keypoints.findIndex((kp) => kp.part === pair[0]);
+    const right = body4.keypoints.findIndex((kp) => kp.part === pair[1]);
+    if (body4.keypoints[left] && body4.keypoints[right]) {
+      if (body4.keypoints[left].position[0] < body4.keypoints[right].position[0]) {
+        const tmp = body4.keypoints[left];
+        body4.keypoints[left] = body4.keypoints[right];
+        body4.keypoints[right] = tmp;
+      }
+    }
+  }
+  for (const pair of vertical) {
+    const lower = body4.keypoints.findIndex((kp) => kp && kp.part === pair[0]);
+    const higher = body4.keypoints.findIndex((kp) => kp && kp.part === pair[1]);
+    if (body4.keypoints[lower] && body4.keypoints[higher]) {
+      if (body4.keypoints[lower].position[1] < body4.keypoints[higher].position[1]) {
+        body4.keypoints.splice(lower, 1);
+      }
+    }
+  }
+  for (const [pair, compare2] of relative) {
+    const left = body4.keypoints.findIndex((kp) => kp && kp.part === pair[0]);
+    const right = body4.keypoints.findIndex((kp) => kp && kp.part === pair[1]);
+    const leftTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare2[0]);
+    const rightTo = body4.keypoints.findIndex((kp) => kp && kp.part === compare2[1]);
+    if (!body4.keypoints[leftTo] || !body4.keypoints[rightTo])
+      continue;
+    const distanceLeft = body4.keypoints[left] ? [
+      Math.abs(body4.keypoints[leftTo].position[0] - body4.keypoints[left].position[0]),
+      Math.abs(body4.keypoints[rightTo].position[0] - body4.keypoints[left].position[0])
+    ] : [0, 0];
+    const distanceRight = body4.keypoints[right] ? [
+      Math.abs(body4.keypoints[rightTo].position[0] - body4.keypoints[right].position[0]),
+      Math.abs(body4.keypoints[leftTo].position[0] - body4.keypoints[right].position[0])
+    ] : [0, 0];
+    if (distanceLeft[0] > distanceLeft[1] || distanceRight[0] > distanceRight[1]) {
+      const tmp = body4.keypoints[left];
+      body4.keypoints[left] = body4.keypoints[right];
+      body4.keypoints[right] = tmp;
+    }
+  }
+}
+function jitter(keypoints) {
+  for (let i = 0; i < keypoints.length; i++) {
+    if (keypoints[i] && cache5.keypoints[i]) {
+      const diff = [Math.abs(keypoints[i].positionRaw[0] - cache5.keypoints[i].positionRaw[0]), Math.abs(keypoints[i].positionRaw[1] - cache5.keypoints[i].positionRaw[1])];
+      if (diff[0] < maxJitter && diff[1] < maxJitter) {
+        keypoints[i] = cache5.keypoints[i];
+      } else {
+        cache5.keypoints[i] = keypoints[i];
+      }
+    } else {
+      cache5.keypoints[i] = keypoints[i];
+    }
+  }
+  return keypoints;
+}
+function padInput(input, inputSize10) {
+  const t = {};
+  if (!input.shape || !input.shape[1] || !input.shape[2])
+    return input;
+  cache5.padding = [
+    [0, 0],
+    [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0],
+    [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0],
+    [0, 0]
+  ];
+  t.pad = tf26.pad(input, cache5.padding);
+  t.resize = tf26.image.resizeBilinear(t.pad, [inputSize10, inputSize10]);
+  const final = tf26.cast(t.resize, "int32");
+  Object.keys(t).forEach((tensor3) => tf26.dispose(t[tensor3]));
+  return final;
+}
+function rescaleBody(body4, outputSize2) {
+  body4.keypoints = body4.keypoints.filter((kpt4) => kpt4 && kpt4.position);
+  for (const kpt4 of body4.keypoints) {
+    kpt4.position = [
+      kpt4.position[0] * (outputSize2[0] + cache5.padding[2][0] + cache5.padding[2][1]) / outputSize2[0] - cache5.padding[2][0],
+      kpt4.position[1] * (outputSize2[1] + cache5.padding[1][0] + cache5.padding[1][1]) / outputSize2[1] - cache5.padding[1][0]
+    ];
+    kpt4.positionRaw = [
+      kpt4.position[0] / outputSize2[0],
+      kpt4.position[1] / outputSize2[1]
+    ];
+  }
+  const rescaledBoxes = calc(body4.keypoints.map((pt) => pt.position), outputSize2);
+  body4.box = rescaledBoxes.box;
+  body4.boxRaw = rescaledBoxes.boxRaw;
+  return body4;
+}
+
+// src/body/movenet.ts
+var model14;
+var inputSize8 = 0;
+var skipped13 = Number.MAX_SAFE_INTEGER;
+var cache6 = {
+  boxes: [],
+  bodies: [],
+  last: 0
+};
+async function load15(config3) {
+  if (env.initial)
+    model14 = null;
+  if (!model14) {
+    fakeOps(["size"], config3);
+    model14 = await loadModel(config3.body.modelPath);
+  } else if (config3.debug)
+    log("cached model:", model14["modelUrl"]);
+  inputSize8 = model14.inputs[0].shape ? model14.inputs[0].shape[2] : 0;
+  if (inputSize8 < 64)
+    inputSize8 = 256;
+  return model14;
+}
+async function parseSinglePose(res, config3, image24) {
+  const kpt4 = res[0][0];
+  const keypoints = [];
+  let score = 0;
+  for (let id = 0; id < kpt4.length; id++) {
+    score = kpt4[id][2];
+    if (score > config3.body.minConfidence) {
+      const positionRaw = [kpt4[id][1], kpt4[id][0]];
+      keypoints.push({
+        score: Math.round(100 * score) / 100,
+        part: kpt3[id],
+        positionRaw,
+        position: [
+          Math.round((image24.shape[2] || 0) * positionRaw[0]),
+          Math.round((image24.shape[1] || 0) * positionRaw[1])
+        ]
+      });
+    }
+  }
+  score = keypoints.reduce((prev, curr) => curr.score > prev ? curr.score : prev, 0);
+  const bodies = [];
+  const newBox = calc(keypoints.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
+  const annotations2 = {};
+  for (const [name, indexes] of Object.entries(connected3)) {
+    const pt = [];
+    for (let i = 0; i < indexes.length - 1; i++) {
+      const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
+      const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
+      if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+        pt.push([pt0.position, pt1.position]);
+    }
+    annotations2[name] = pt;
+  }
+  const body4 = { id: 0, score, box: newBox.box, boxRaw: newBox.boxRaw, keypoints, annotations: annotations2 };
+  bodyParts(body4);
+  bodies.push(body4);
+  return bodies;
+}
+async function parseMultiPose(res, config3, image24) {
+  const bodies = [];
+  for (let id = 0; id < res[0].length; id++) {
+    const kpt4 = res[0][id];
+    const totalScore = Math.round(100 * kpt4[51 + 4]) / 100;
+    if (totalScore > config3.body.minConfidence) {
+      const keypoints = [];
+      for (let i = 0; i < 17; i++) {
+        const score = kpt4[3 * i + 2];
+        if (score > config3.body.minConfidence) {
+          const positionRaw = [kpt4[3 * i + 1], kpt4[3 * i + 0]];
+          keypoints.push({
+            part: kpt3[i],
+            score: Math.round(100 * score) / 100,
+            positionRaw,
+            position: [Math.round((image24.shape[2] || 0) * positionRaw[0]), Math.round((image24.shape[1] || 0) * positionRaw[1])]
+          });
+        }
+      }
+      const newBox = calc(keypoints.map((pt) => pt.position), [image24.shape[2], image24.shape[1]]);
+      const annotations2 = {};
+      for (const [name, indexes] of Object.entries(connected3)) {
+        const pt = [];
+        for (let i = 0; i < indexes.length - 1; i++) {
+          const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
+          const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
+          if (pt0 && pt1 && pt0.score > (config3.body.minConfidence || 0) && pt1.score > (config3.body.minConfidence || 0))
+            pt.push([pt0.position, pt1.position]);
+        }
+        annotations2[name] = pt;
+      }
+      const body4 = { id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations: annotations2 };
+      bodyParts(body4);
+      bodies.push(body4);
+    }
+  }
+  bodies.sort((a, b) => b.score - a.score);
+  if (bodies.length > config3.body.maxDetected)
+    bodies.length = config3.body.maxDetected;
+  return bodies;
+}
+async function predict15(input, config3) {
+  if (!model14 || !(model14 == null ? void 0 : model14.inputs[0].shape))
+    return [];
+  if (!config3.skipAllowed)
+    cache6.boxes.length = 0;
+  skipped13++;
+  const skipTime = (config3.body.skipTime || 0) > now() - cache6.last;
+  const skipFrame = skipped13 < (config3.body.skipFrames || 0);
+  if (config3.skipAllowed && skipTime && skipFrame) {
+    return cache6.bodies;
+  }
+  return new Promise(async (resolve) => {
+    const t = {};
+    skipped13 = 0;
+    t.input = padInput(input, inputSize8);
+    t.res = model14 == null ? void 0 : model14.execute(t.input);
+    cache6.last = now();
+    const res = await t.res.array();
+    cache6.bodies = t.res.shape[2] === 17 ? await parseSinglePose(res, config3, input) : await parseMultiPose(res, config3, input);
+    for (const body4 of cache6.bodies) {
+      rescaleBody(body4, [input.shape[2] || 1, input.shape[1] || 1]);
+      jitter(body4.keypoints);
+    }
+    Object.keys(t).forEach((tensor3) => tf27.dispose(t[tensor3]));
+    resolve(cache6.bodies);
+  });
+}
+
+// src/object/nanodet.ts
+var tf28 = __toESM(require_tfjs_esm());
+var model15;
+var last9 = [];
+var lastTime14 = 0;
+var skipped14 = Number.MAX_SAFE_INTEGER;
+var inputSize9 = 0;
+var scaleBox = 2.5;
+async function load16(config3) {
+  if (!model15 || env.initial) {
+    model15 = await loadModel(config3.object.modelPath);
+    const inputs = Object.values(model15.modelSignature["inputs"]);
+    inputSize9 = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
+  } else if (config3.debug)
+    log("cached model:", model15["modelUrl"]);
+  return model15;
+}
+async function process4(res, outputShape, config3) {
+  let id = 0;
+  let results = [];
+  for (const strideSize of [1, 2, 4]) {
+    tf28.tidy(async () => {
+      const baseSize = strideSize * 13;
+      const scoresT = tf28.squeeze(res.find((a) => a.shape[1] === baseSize ** 2 && (a.shape[2] || 0) === labels.length));
+      const featuresT = tf28.squeeze(res.find((a) => a.shape[1] === baseSize ** 2 && (a.shape[2] || 0) < labels.length));
+      const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]);
+      const boxIdx = await boxesMax.argMax(2).array();
+      const scores = await scoresT.array();
+      for (let i = 0; i < scoresT.shape[0]; i++) {
+        for (let j = 0; j < scoresT.shape[1]; j++) {
+          const score = scores[i][j];
+          if (score > (config3.object.minConfidence || 0) && j !== 61) {
+            const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize;
+            const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize;
+            const boxOffset = boxIdx[i].map((a) => a * (baseSize / strideSize / inputSize9));
+            const [x, y] = [
+              cx - scaleBox / strideSize * boxOffset[0],
+              cy - scaleBox / strideSize * boxOffset[1]
+            ];
+            const [w, h] = [
+              cx + scaleBox / strideSize * boxOffset[2] - x,
+              cy + scaleBox / strideSize * boxOffset[3] - y
+            ];
+            let boxRaw = [x, y, w, h];
+            boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1)));
+            const box = [
+              boxRaw[0] * outputShape[0],
+              boxRaw[1] * outputShape[1],
+              boxRaw[2] * outputShape[0],
+              boxRaw[3] * outputShape[1]
+            ];
+            const result = {
+              id: id++,
+              score: Math.round(100 * score) / 100,
+              class: j + 1,
+              label: labels[j].label,
+              box: box.map((a) => Math.trunc(a)),
+              boxRaw
+            };
+            results.push(result);
+          }
+        }
+      }
+    });
+  }
+  res.forEach((t) => tf28.dispose(t));
+  const nmsBoxes = results.map((a) => [a.boxRaw[1], a.boxRaw[0], a.boxRaw[3], a.boxRaw[2]]);
+  const nmsScores = results.map((a) => a.score);
+  let nmsIdx = [];
+  if (nmsBoxes && nmsBoxes.length > 0) {
+    const nms = await tf28.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
+    nmsIdx = await nms.data();
+    tf28.dispose(nms);
+  }
+  results = results.filter((_val, idx) => nmsIdx.includes(idx)).sort((a, b) => b.score - a.score);
+  return results;
+}
+async function predict16(image24, config3) {
+  const skipTime = (config3.object.skipTime || 0) > now() - lastTime14;
+  const skipFrame = skipped14 < (config3.object.skipFrames || 0);
+  if (config3.skipAllowed && skipTime && skipFrame && last9.length > 0) {
+    skipped14++;
+    return last9;
+  }
+  skipped14 = 0;
+  if (!env.kernels.includes("mod") || !env.kernels.includes("sparsetodense"))
+    return last9;
+  return new Promise(async (resolve) => {
+    const outputSize2 = [image24.shape[2] || 0, image24.shape[1] || 0];
+    const resize = tf28.image.resizeBilinear(image24, [inputSize9, inputSize9], false);
+    const norm = tf28.div(resize, constants.tf255);
+    const transpose = norm.transpose([0, 3, 1, 2]);
+    tf28.dispose(norm);
+    tf28.dispose(resize);
+    let objectT;
+    if (config3.object.enabled)
+      objectT = model15.execute(transpose);
+    lastTime14 = now();
+    tf28.dispose(transpose);
+    const obj = await process4(objectT, outputSize2, config3);
+    last9 = obj;
+    resolve(obj);
+  });
+}
+
+// src/body/posenet.ts
+var tf29 = __toESM(require_tfjs_esm());
+
+// src/body/posenetutils.ts
+var partNames = [
+  "nose",
+  "leftEye",
+  "rightEye",
+  "leftEar",
+  "rightEar",
+  "leftShoulder",
+  "rightShoulder",
+  "leftElbow",
+  "rightElbow",
+  "leftWrist",
+  "rightWrist",
+  "leftHip",
+  "rightHip",
+  "leftKnee",
+  "rightKnee",
+  "leftAnkle",
+  "rightAnkle"
+];
+var count = partNames.length;
+var partIds = partNames.reduce((result, jointName, i) => {
+  result[jointName] = i;
+  return result;
+}, {});
+var connectedPartNames = [
+  ["leftHip", "leftShoulder"],
+  ["leftElbow", "leftShoulder"],
+  ["leftElbow", "leftWrist"],
+  ["leftHip", "leftKnee"],
+  ["leftKnee", "leftAnkle"],
+  ["rightHip", "rightShoulder"],
+  ["rightElbow", "rightShoulder"],
+  ["rightElbow", "rightWrist"],
+  ["rightHip", "rightKnee"],
+  ["rightKnee", "rightAnkle"],
+  ["leftShoulder", "rightShoulder"],
+  ["leftHip", "rightHip"]
+];
+var connectedPartIndices = connectedPartNames.map(([jointNameA, jointNameB]) => [partIds[jointNameA], partIds[jointNameB]]);
+var poseChain = [
+  ["nose", "leftEye"],
+  ["leftEye", "leftEar"],
+  ["nose", "rightEye"],
+  ["rightEye", "rightEar"],
+  ["nose", "leftShoulder"],
+  ["leftShoulder", "leftElbow"],
+  ["leftElbow", "leftWrist"],
+  ["leftShoulder", "leftHip"],
+  ["leftHip", "leftKnee"],
+  ["leftKnee", "leftAnkle"],
+  ["nose", "rightShoulder"],
+  ["rightShoulder", "rightElbow"],
+  ["rightElbow", "rightWrist"],
+  ["rightShoulder", "rightHip"],
+  ["rightHip", "rightKnee"],
+  ["rightKnee", "rightAnkle"]
+];
+function getBoundingBox(keypoints) {
+  const coord = keypoints.reduce(({ maxX, maxY, minX, minY }, { position: { x, y } }) => ({
+    maxX: Math.max(maxX, x),
+    maxY: Math.max(maxY, y),
+    minX: Math.min(minX, x),
+    minY: Math.min(minY, y)
+  }), {
+    maxX: Number.NEGATIVE_INFINITY,
+    maxY: Number.NEGATIVE_INFINITY,
+    minX: Number.POSITIVE_INFINITY,
+    minY: Number.POSITIVE_INFINITY
+  });
+  return [coord.minX, coord.minY, coord.maxX - coord.minX, coord.maxY - coord.minY];
+}
+function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]) {
+  const scaleY = height / inputResolutionHeight;
+  const scaleX = width / inputResolutionWidth;
+  const scalePose = (pose, i) => ({
+    id: i,
+    score: pose.score,
+    boxRaw: [pose.box[0] / inputResolutionWidth, pose.box[1] / inputResolutionHeight, pose.box[2] / inputResolutionWidth, pose.box[3] / inputResolutionHeight],
+    box: [Math.trunc(pose.box[0] * scaleX), Math.trunc(pose.box[1] * scaleY), Math.trunc(pose.box[2] * scaleX), Math.trunc(pose.box[3] * scaleY)],
+    keypoints: pose.keypoints.map(({ score, part, position }) => ({
+      score,
+      part,
+      position: [Math.trunc(position.x * scaleX), Math.trunc(position.y * scaleY)],
+      positionRaw: [position.x / inputResolutionHeight, position.y / inputResolutionHeight]
+    })),
+    annotations: {}
+  });
+  const scaledPoses = poses.map((pose, i) => scalePose(pose, i));
+  return scaledPoses;
+}
+var MaxHeap = class {
+  constructor(maxSize2, getElementValue) {
+    __publicField(this, "priorityQueue");
+    __publicField(this, "numberOfElements");
+    __publicField(this, "getElementValue");
+    this.priorityQueue = new Array(maxSize2);
+    this.numberOfElements = -1;
+    this.getElementValue = getElementValue;
+  }
+  enqueue(x) {
+    this.priorityQueue[++this.numberOfElements] = x;
+    this.swim(this.numberOfElements);
+  }
+  dequeue() {
+    const max4 = this.priorityQueue[0];
+    this.exchange(0, this.numberOfElements--);
+    this.sink(0);
+    this.priorityQueue[this.numberOfElements + 1] = null;
+    return max4;
+  }
+  empty() {
+    return this.numberOfElements === -1;
+  }
+  size() {
+    return this.numberOfElements + 1;
+  }
+  all() {
+    return this.priorityQueue.slice(0, this.numberOfElements + 1);
+  }
+  max() {
+    return this.priorityQueue[0];
+  }
+  swim(k) {
+    while (k > 0 && this.less(Math.floor(k / 2), k)) {
+      this.exchange(k, Math.floor(k / 2));
+      k = Math.floor(k / 2);
+    }
+  }
+  sink(k) {
+    while (2 * k <= this.numberOfElements) {
+      let j = 2 * k;
+      if (j < this.numberOfElements && this.less(j, j + 1))
+        j++;
+      if (!this.less(k, j))
+        break;
+      this.exchange(k, j);
+      k = j;
+    }
+  }
+  getValueAt(i) {
+    return this.getElementValue(this.priorityQueue[i]);
+  }
+  less(i, j) {
+    return this.getValueAt(i) < this.getValueAt(j);
+  }
+  exchange(i, j) {
+    const t = this.priorityQueue[i];
+    this.priorityQueue[i] = this.priorityQueue[j];
+    this.priorityQueue[j] = t;
+  }
+};
+function getOffsetPoint(y, x, keypoint, offsets) {
+  return {
+    y: offsets.get(y, x, keypoint),
+    x: offsets.get(y, x, keypoint + count)
+  };
+}
+function getImageCoords(part, outputStride2, offsets) {
+  const { heatmapY, heatmapX, id: keypoint } = part;
+  const { y, x } = getOffsetPoint(heatmapY, heatmapX, keypoint, offsets);
+  return {
+    x: part.heatmapX * outputStride2 + x,
+    y: part.heatmapY * outputStride2 + y
+  };
+}
+function clamp(a, min2, max4) {
+  if (a < min2)
+    return min2;
+  if (a > max4)
+    return max4;
+  return a;
+}
+function squaredDistance(y1, x1, y2, x2) {
+  const dy = y2 - y1;
+  const dx = x2 - x1;
+  return dy * dy + dx * dx;
+}
+function addVectors(a, b) {
+  return { x: a.x + b.x, y: a.y + b.y };
+}
+
+// src/body/posenet.ts
+var model16;
+var poseNetOutputs = ["MobilenetV1/offset_2/BiasAdd", "MobilenetV1/heatmap_2/BiasAdd", "MobilenetV1/displacement_fwd_2/BiasAdd", "MobilenetV1/displacement_bwd_2/BiasAdd"];
+var localMaximumRadius = 1;
+var outputStride = 16;
+var squaredNmsRadius = 50 ** 2;
+function traverse(edgeId, sourceKeypoint, targetId, scores, offsets, displacements, offsetRefineStep = 2) {
+  const getDisplacement = (point2) => ({
+    y: displacements.get(point2.y, point2.x, edgeId),
+    x: displacements.get(point2.y, point2.x, displacements.shape[2] / 2 + edgeId)
+  });
+  const getStridedIndexNearPoint = (point2, height2, width2) => ({
+    y: clamp(Math.round(point2.y / outputStride), 0, height2 - 1),
+    x: clamp(Math.round(point2.x / outputStride), 0, width2 - 1)
+  });
+  const [height, width] = scores.shape;
+  const sourceKeypointIndices = getStridedIndexNearPoint(sourceKeypoint.position, height, width);
+  const displacement = getDisplacement(sourceKeypointIndices);
+  const displacedPoint = addVectors(sourceKeypoint.position, displacement);
+  let targetKeypoint = displacedPoint;
+  for (let i = 0; i < offsetRefineStep; i++) {
+    const targetKeypointIndices = getStridedIndexNearPoint(targetKeypoint, height, width);
+    const offsetPoint = getOffsetPoint(targetKeypointIndices.y, targetKeypointIndices.x, targetId, offsets);
+    targetKeypoint = addVectors({ x: targetKeypointIndices.x * outputStride, y: targetKeypointIndices.y * outputStride }, { x: offsetPoint.x, y: offsetPoint.y });
+  }
+  const targetKeyPointIndices = getStridedIndexNearPoint(targetKeypoint, height, width);
+  const score = scores.get(targetKeyPointIndices.y, targetKeyPointIndices.x, targetId);
+  return { position: targetKeypoint, part: partNames[targetId], score };
+}
+function decodePose(root, scores, offsets, displacementsFwd, displacementsBwd) {
+  const tuples = poseChain.map(([parentJoinName, childJoinName]) => [partIds[parentJoinName], partIds[childJoinName]]);
+  const edgesFwd = tuples.map(([, childJointId]) => childJointId);
+  const edgesBwd = tuples.map(([parentJointId]) => parentJointId);
+  const numParts = scores.shape[2];
+  const numEdges = edgesFwd.length;
+  const keypoints = new Array(numParts);
+  const rootPoint = getImageCoords(root.part, outputStride, offsets);
+  keypoints[root.part.id] = {
+    score: root.score,
+    part: partNames[root.part.id],
+    position: rootPoint
+  };
+  for (let edge = numEdges - 1; edge >= 0; --edge) {
+    const sourceId = edgesFwd[edge];
+    const targetId = edgesBwd[edge];
+    if (keypoints[sourceId] && !keypoints[targetId]) {
+      keypoints[targetId] = traverse(edge, keypoints[sourceId], targetId, scores, offsets, displacementsBwd);
+    }
+  }
+  for (let edge = 0; edge < numEdges; ++edge) {
+    const sourceId = edgesBwd[edge];
+    const targetId = edgesFwd[edge];
+    if (keypoints[sourceId] && !keypoints[targetId]) {
+      keypoints[targetId] = traverse(edge, keypoints[sourceId], targetId, scores, offsets, displacementsFwd);
+    }
+  }
+  return keypoints;
+}
+function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scores) {
+  const [height, width] = scores.shape;
+  let localMaximum = true;
+  const yStart = Math.max(heatmapY - localMaximumRadius, 0);
+  const yEnd = Math.min(heatmapY + localMaximumRadius + 1, height);
+  for (let yCurrent = yStart; yCurrent < yEnd; ++yCurrent) {
+    const xStart = Math.max(heatmapX - localMaximumRadius, 0);
+    const xEnd = Math.min(heatmapX + localMaximumRadius + 1, width);
+    for (let xCurrent = xStart; xCurrent < xEnd; ++xCurrent) {
+      if (scores.get(yCurrent, xCurrent, keypointId) > score) {
+        localMaximum = false;
+        break;
+      }
+    }
+    if (!localMaximum)
+      break;
+  }
+  return localMaximum;
+}
+function buildPartWithScoreQueue(minConfidence2, scores) {
+  const [height, width, numKeypoints] = scores.shape;
+  const queue = new MaxHeap(height * width * numKeypoints, ({ score }) => score);
+  for (let heatmapY = 0; heatmapY < height; ++heatmapY) {
+    for (let heatmapX = 0; heatmapX < width; ++heatmapX) {
+      for (let keypointId = 0; keypointId < numKeypoints; ++keypointId) {
+        const score = scores.get(heatmapY, heatmapX, keypointId);
+        if (score < minConfidence2)
+          continue;
+        if (scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scores))
+          queue.enqueue({ score, part: { heatmapY, heatmapX, id: keypointId } });
+      }
+    }
+  }
+  return queue;
+}
+function withinRadius(poses, { x, y }, keypointId) {
+  return poses.some(({ keypoints }) => {
+    var _a;
+    const correspondingKeypoint = (_a = keypoints[keypointId]) == null ? void 0 : _a.position;
+    if (!correspondingKeypoint)
+      return false;
+    return squaredDistance(y, x, correspondingKeypoint.y, correspondingKeypoint.x) <= squaredNmsRadius;
+  });
+}
+function getInstanceScore(existingPoses, keypoints) {
+  const notOverlappedKeypointScores = keypoints.reduce((result, { position, score }, keypointId) => {
+    if (!withinRadius(existingPoses, position, keypointId))
+      result += score;
+    return result;
+  }, 0);
+  return notOverlappedKeypointScores / keypoints.length;
+}
+function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence2) {
+  const poses = [];
+  const queue = buildPartWithScoreQueue(minConfidence2, scores);
+  while (poses.length < maxDetected && !queue.empty()) {
+    const root = queue.dequeue();
+    const rootImageCoords = getImageCoords(root.part, outputStride, offsets);
+    if (withinRadius(poses, rootImageCoords, root.part.id))
+      continue;
+    let keypoints = decodePose(root, scores, offsets, displacementsFwd, displacementsBwd);
+    keypoints = keypoints.filter((a) => a.score > minConfidence2);
+    const score = getInstanceScore(poses, keypoints);
+    const box = getBoundingBox(keypoints);
+    if (score > minConfidence2)
+      poses.push({ keypoints, box, score: Math.round(100 * score) / 100 });
+  }
+  return poses;
+}
+async function predict17(input, config3) {
+  const res = tf29.tidy(() => {
+    if (!model16.inputs[0].shape)
+      return [];
+    const resized = tf29.image.resizeBilinear(input, [model16.inputs[0].shape[2], model16.inputs[0].shape[1]]);
+    const normalized = tf29.sub(tf29.div(tf29.cast(resized, "float32"), 127.5), 1);
+    const results = model16.execute(normalized, poseNetOutputs);
+    const results3d = results.map((y) => tf29.squeeze(y, [0]));
+    results3d[1] = tf29.sigmoid(results3d[1]);
+    return results3d;
+  });
+  const buffers = await Promise.all(res.map((tensor3) => tensor3.buffer()));
+  for (const t of res)
+    tf29.dispose(t);
+  const decoded = await decode(buffers[0], buffers[1], buffers[2], buffers[3], config3.body.maxDetected, config3.body.minConfidence);
+  if (!model16.inputs[0].shape)
+    return [];
+  const scaled = scalePoses(decoded, [input.shape[1], input.shape[2]], [model16.inputs[0].shape[2], model16.inputs[0].shape[1]]);
+  return scaled;
+}
+async function load17(config3) {
+  if (!model16 || env.initial)
+    model16 = await loadModel(config3.body.modelPath);
+  else if (config3.debug)
+    log("cached model:", model16["modelUrl"]);
+  return model16;
+}
+
+// src/segmentation/segmentation.ts
+var tf30 = __toESM(require_tfjs_esm());
+var model17;
+var busy = false;
+async function load18(config3) {
+  if (!model17 || env.initial)
+    model17 = await loadModel(config3.segmentation.modelPath);
+  else if (config3.debug)
+    log("cached model:", model17["modelUrl"]);
+  return model17;
+}
+async function process5(input, background, config3) {
+  var _a, _b;
+  if (busy)
+    return { data: [], canvas: null, alpha: null };
+  busy = true;
+  if (!model17)
+    await load18(config3);
+  const inputImage = await process2(input, config3);
+  const width = ((_a = inputImage.tensor) == null ? void 0 : _a.shape[2]) || 0;
+  const height = ((_b = inputImage.tensor) == null ? void 0 : _b.shape[1]) || 0;
+  if (!inputImage.tensor)
+    return { data: [], canvas: null, alpha: null };
+  const t = {};
+  t.resize = tf30.image.resizeBilinear(inputImage.tensor, [model17.inputs[0].shape ? model17.inputs[0].shape[1] : 0, model17.inputs[0].shape ? model17.inputs[0].shape[2] : 0], false);
+  tf30.dispose(inputImage.tensor);
+  t.norm = tf30.div(t.resize, constants.tf255);
+  t.res = model17.execute(t.norm);
+  t.squeeze = tf30.squeeze(t.res, 0);
+  if (t.squeeze.shape[2] === 2) {
+    t.softmax = tf30.softmax(t.squeeze);
+    [t.bg, t.fg] = tf30.unstack(t.softmax, 2);
+    t.expand = tf30.expandDims(t.fg, 2);
+    t.pad = tf30.expandDims(t.expand, 0);
+    t.crop = tf30.image.cropAndResize(t.pad, [[0, 0, 0.5, 0.5]], [0], [width, height]);
+    t.data = tf30.squeeze(t.crop, 0);
+  } else {
+    t.data = tf30.image.resizeBilinear(t.squeeze, [height, width]);
+  }
+  const data = Array.from(await t.data.data());
+  if (env.node && !env.Canvas && typeof ImageData === "undefined") {
+    if (config3.debug)
+      log("canvas support missing");
+    Object.keys(t).forEach((tensor3) => tf30.dispose(t[tensor3]));
+    return { data, canvas: null, alpha: null };
+  }
+  const alphaCanvas = canvas(width, height);
+  if (tf30.browser)
+    await tf30.browser.toPixels(t.data, alphaCanvas);
+  const alphaCtx = alphaCanvas.getContext("2d");
+  if (config3.segmentation.blur && config3.segmentation.blur > 0)
+    alphaCtx.filter = `blur(${config3.segmentation.blur}px)`;
+  const alphaData = alphaCtx.getImageData(0, 0, width, height);
+  const compositeCanvas = canvas(width, height);
+  const compositeCtx = compositeCanvas.getContext("2d");
+  if (inputImage.canvas)
+    compositeCtx.drawImage(inputImage.canvas, 0, 0);
+  compositeCtx.globalCompositeOperation = "darken";
+  if (config3.segmentation.blur && config3.segmentation.blur > 0)
+    compositeCtx.filter = `blur(${config3.segmentation.blur}px)`;
+  compositeCtx.drawImage(alphaCanvas, 0, 0);
+  compositeCtx.globalCompositeOperation = "source-over";
+  compositeCtx.filter = "none";
+  const compositeData = compositeCtx.getImageData(0, 0, width, height);
+  for (let i = 0; i < width * height; i++)
+    compositeData.data[4 * i + 3] = alphaData.data[4 * i + 0];
+  compositeCtx.putImageData(compositeData, 0, 0);
+  let mergedCanvas = null;
+  if (background && compositeCanvas) {
+    mergedCanvas = canvas(width, height);
+    const bgImage = await process2(background, config3);
+    tf30.dispose(bgImage.tensor);
+    const ctxMerge = mergedCanvas.getContext("2d");
+    ctxMerge.drawImage(bgImage.canvas, 0, 0, mergedCanvas.width, mergedCanvas.height);
+    ctxMerge.drawImage(compositeCanvas, 0, 0);
+  }
+  Object.keys(t).forEach((tensor3) => tf30.dispose(t[tensor3]));
+  busy = false;
+  return { data, canvas: compositeCanvas, alpha: alphaCanvas };
+}
+
+// src/models.ts
+var Models = class {
+  constructor() {
+    __publicField(this, "ssrnetage", null);
+    __publicField(this, "gear", null);
+    __publicField(this, "blazeposedetect", null);
+    __publicField(this, "blazepose", null);
+    __publicField(this, "centernet", null);
+    __publicField(this, "efficientpose", null);
+    __publicField(this, "mobilefacenet", null);
+    __publicField(this, "emotion", null);
+    __publicField(this, "facedetect", null);
+    __publicField(this, "faceiris", null);
+    __publicField(this, "facemesh", null);
+    __publicField(this, "faceres", null);
+    __publicField(this, "ssrnetgender", null);
+    __publicField(this, "handpose", null);
+    __publicField(this, "handskeleton", null);
+    __publicField(this, "handtrack", null);
+    __publicField(this, "liveness", null);
+    __publicField(this, "movenet", null);
+    __publicField(this, "nanodet", null);
+    __publicField(this, "posenet", null);
+    __publicField(this, "segmentation", null);
+    __publicField(this, "antispoof", null);
+  }
+};
+function reset(instance) {
+  for (const model18 of Object.keys(instance.models))
+    instance.models[model18] = null;
+}
+async function load19(instance) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A, _B, _C, _D;
+  if (env.initial)
+    reset(instance);
+  if (instance.config.hand.enabled) {
+    if (!instance.models.handpose && ((_b = (_a = instance.config.hand.detector) == null ? void 0 : _a.modelPath) == null ? void 0 : _b.includes("handdetect")))
+      [instance.models.handpose, instance.models.handskeleton] = await load13(instance.config);
+    if (!instance.models.handskeleton && instance.config.hand.landmarks && ((_d = (_c = instance.config.hand.detector) == null ? void 0 : _c.modelPath) == null ? void 0 : _d.includes("handdetect")))
+      [instance.models.handpose, instance.models.handskeleton] = await load13(instance.config);
+  }
+  if (instance.config.body.enabled && !instance.models.blazepose && ((_f = (_e = instance.config.body) == null ? void 0 : _e.modelPath) == null ? void 0 : _f.includes("blazepose")))
+    instance.models.blazepose = loadPose(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body["detector"] && instance.config.body["detector"]["modelPath"])
+    instance.models.blazeposedetect = loadDetect(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && ((_h = (_g = instance.config.body) == null ? void 0 : _g.modelPath) == null ? void 0 : _h.includes("efficientpose")))
+    instance.models.efficientpose = load7(instance.config);
+  if (instance.config.body.enabled && !instance.models.movenet && ((_j = (_i = instance.config.body) == null ? void 0 : _i.modelPath) == null ? void 0 : _j.includes("movenet")))
+    instance.models.movenet = load15(instance.config);
+  if (instance.config.body.enabled && !instance.models.posenet && ((_l = (_k = instance.config.body) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("posenet")))
+    instance.models.posenet = load17(instance.config);
+  if (instance.config.face.enabled && !instance.models.facedetect)
+    instance.models.facedetect = load5(instance.config);
+  if (instance.config.face.enabled && ((_m = instance.config.face.antispoof) == null ? void 0 : _m.enabled) && !instance.models.antispoof)
+    instance.models.antispoof = load4(instance.config);
+  if (instance.config.face.enabled && ((_n = instance.config.face.liveness) == null ? void 0 : _n.enabled) && !instance.models.liveness)
+    instance.models.liveness = load14(instance.config);
+  if (instance.config.face.enabled && ((_o = instance.config.face.description) == null ? void 0 : _o.enabled) && !instance.models.faceres)
+    instance.models.faceres = load12(instance.config);
+  if (instance.config.face.enabled && ((_p = instance.config.face.emotion) == null ? void 0 : _p.enabled) && !instance.models.emotion)
+    instance.models.emotion = load8(instance.config);
+  if (instance.config.face.enabled && ((_q = instance.config.face.iris) == null ? void 0 : _q.enabled) && !instance.models.faceiris)
+    instance.models.faceiris = load10(instance.config);
+  if (instance.config.face.enabled && ((_r = instance.config.face.mesh) == null ? void 0 : _r.enabled) && !instance.models.facemesh)
+    instance.models.facemesh = load11(instance.config);
+  if (instance.config.face.enabled && ((_s = instance.config.face["gear"]) == null ? void 0 : _s.enabled) && !instance.models.gear)
+    instance.models.gear = load(instance.config);
+  if (instance.config.face.enabled && ((_t = instance.config.face["ssrnet"]) == null ? void 0 : _t.enabled) && !instance.models.ssrnetage)
+    instance.models.ssrnetage = load2(instance.config);
+  if (instance.config.face.enabled && ((_u = instance.config.face["ssrnet"]) == null ? void 0 : _u.enabled) && !instance.models.ssrnetgender)
+    instance.models.ssrnetgender = load3(instance.config);
+  if (instance.config.face.enabled && ((_v = instance.config.face["mobilefacenet"]) == null ? void 0 : _v.enabled) && !instance.models.mobilefacenet)
+    instance.models.mobilefacenet = load9(instance.config);
+  if (instance.config.hand.enabled && !instance.models.handtrack && ((_x = (_w = instance.config.hand.detector) == null ? void 0 : _w.modelPath) == null ? void 0 : _x.includes("handtrack")))
+    instance.models.handtrack = loadDetect2(instance.config);
+  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_z = (_y = instance.config.hand.detector) == null ? void 0 : _y.modelPath) == null ? void 0 : _z.includes("handtrack")))
+    instance.models.handskeleton = loadSkeleton(instance.config);
+  if (instance.config.object.enabled && !instance.models.centernet && ((_B = (_A = instance.config.object) == null ? void 0 : _A.modelPath) == null ? void 0 : _B.includes("centernet")))
+    instance.models.centernet = load6(instance.config);
+  if (instance.config.object.enabled && !instance.models.nanodet && ((_D = (_C = instance.config.object) == null ? void 0 : _C.modelPath) == null ? void 0 : _D.includes("nanodet")))
+    instance.models.nanodet = load16(instance.config);
+  if (instance.config.segmentation.enabled && !instance.models.segmentation)
+    instance.models.segmentation = load18(instance.config);
+  for await (const model18 of Object.keys(instance.models)) {
+    if (instance.models[model18] && typeof instance.models[model18] !== "undefined")
+      instance.models[model18] = await instance.models[model18];
+  }
+}
+async function validate2(instance) {
+  const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
+  for (const defined of Object.keys(instance.models)) {
+    const model18 = instance.models[defined];
+    if (!model18)
+      continue;
+    const ops = [];
+    const executor = model18 == null ? void 0 : model18.executor;
+    if (executor && executor.graph.nodes) {
+      for (const kernel of Object.values(executor.graph.nodes)) {
+        const op = kernel.op.toLowerCase();
+        if (!ops.includes(op))
+          ops.push(op);
+      }
+    } else {
+      if (!executor && instance.config.debug)
+        log("model signature not determined:", defined);
+    }
+    const missing = [];
+    for (const op of ops) {
+      if (!simpleOps.includes(op) && !instance.env.kernels.includes(op) && !instance.env.kernels.includes(op.replace("_", "")) && !instance.env.kernels.includes(op.replace("native", "")) && !instance.env.kernels.includes(op.replace("v2", ""))) {
+        missing.push(op);
+      }
+    }
+    if (instance.config.debug && missing.length > 0)
+      log("model validation failed:", defined, missing);
+  }
+}
+
+// src/tfjs/humangl.ts
+var config2 = {
+  name: "humangl",
+  priority: 999,
+  canvas: null,
+  gl: null,
+  extensions: [],
+  webGLattr: {
+    alpha: false,
+    antialias: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    depth: false,
+    stencil: false,
+    failIfMajorPerformanceCaveat: false,
+    desynchronized: true
+  }
+};
+function extensions() {
+  const gl = config2.gl;
+  if (!gl)
+    return;
+  config2.extensions = gl.getSupportedExtensions();
+}
+async function register(instance) {
+  var _a;
+  if (instance.config.backend !== "humangl")
+    return;
+  if (config2.name in tf31.engine().registry && (!config2.gl || !config2.gl.getParameter(config2.gl.VERSION))) {
+    log("error: humangl backend invalid context");
+    reset(instance);
+  }
+  if (!tf31.findBackend(config2.name)) {
+    try {
+      config2.canvas = await canvas(100, 100);
+    } catch (err) {
+      log("error: cannot create canvas:", err);
+      return;
+    }
+    try {
+      config2.gl = (_a = config2.canvas) == null ? void 0 : _a.getContext("webgl2", config2.webGLattr);
+      const glv2 = config2.gl.getParameter(config2.gl.VERSION).includes("2.0");
+      if (!glv2) {
+        log("override: using fallback webgl backend as webgl 2.0 is not detected");
+        instance.config.backend = "webgl";
+        return;
+      }
+      if (config2.canvas) {
+        config2.canvas.addEventListener("webglcontextlost", async (e) => {
+          log("error: humangl:", e.type);
+          log("possible browser memory leak using webgl or conflict with multiple backend registrations");
+          instance.emit("error");
+          throw new Error("backend error: webgl context lost");
+        });
+        config2.canvas.addEventListener("webglcontextrestored", (e) => {
+          log("error: humangl context restored:", e);
+        });
+        config2.canvas.addEventListener("webglcontextcreationerror", (e) => {
+          log("error: humangl context create:", e);
+        });
+      }
+    } catch (err) {
+      log("error: cannot get WebGL context:", err);
+      return;
+    }
+    try {
+      tf31.setWebGLContext(2, config2.gl);
+    } catch (err) {
+      log("error: cannot set WebGL context:", err);
+      return;
+    }
+    try {
+      const ctx = new tf31.GPGPUContext(config2.gl);
+      tf31.registerBackend(config2.name, () => new tf31.MathBackendWebGL(ctx), config2.priority);
+    } catch (err) {
+      log("error: cannot register WebGL backend:", err);
+      return;
+    }
+    try {
+      const kernels = tf31.getKernelsForBackend("webgl");
+      kernels.forEach((kernelConfig) => {
+        const newKernelConfig = { ...kernelConfig, backendName: config2.name };
+        tf31.registerKernel(newKernelConfig);
+      });
+    } catch (err) {
+      log("error: cannot update WebGL backend registration:", err);
+      return;
+    }
+    const current = tf31.backend().getGPGPUContext ? tf31.backend().getGPGPUContext().gl : null;
+    if (current) {
+      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+    } else {
+      log("error: no current gl context:", current, config2.gl);
+      return;
+    }
+    try {
+      tf31.ENV.set("WEBGL_VERSION", 2);
+    } catch (err) {
+      log("error: cannot set WebGL backend flags:", err);
+      return;
+    }
+    extensions();
+    log("backend registered:", config2.name);
+  }
+}
+
+// src/tfjs/backend.ts
+var tf32 = __toESM(require_tfjs_esm());
+function registerCustomOps() {
+  if (!env.kernels.includes("mod")) {
+    const kernelMod = {
+      kernelName: "Mod",
+      backendName: tf32.getBackend(),
+      kernelFunc: (op) => tf32.tidy(() => tf32.sub(op.inputs.a, tf32.mul(tf32.div(op.inputs.a, op.inputs.b), op.inputs.b)))
+    };
+    tf32.registerKernel(kernelMod);
+    env.kernels.push("mod");
+  }
+  if (!env.kernels.includes("floormod")) {
+    const kernelMod = {
+      kernelName: "FloorMod",
+      backendName: tf32.getBackend(),
+      kernelFunc: (op) => tf32.tidy(() => tf32.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tf32.mod(op.inputs.a, op.inputs.b))
+    };
+    tf32.registerKernel(kernelMod);
+    env.kernels.push("floormod");
+  }
+}
+async function check(instance, force = false) {
+  instance.state = "backend";
+  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && tf32.getBackend() !== instance.config.backend) {
+    const timeStamp = now();
+    if (instance.config.backend && instance.config.backend.length > 0) {
+      if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
+        if (instance.config.debug)
+          log("running inside web worker");
+      }
+      if (env.browser && instance.config.backend === "tensorflow") {
+        if (instance.config.debug)
+          log("override: backend set to tensorflow while running in browser");
+        instance.config.backend = "humangl";
+      }
+      if (env.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
+        if (instance.config.debug)
+          log(`override: backend set to ${instance.config.backend} while running in nodejs`);
+        instance.config.backend = "tensorflow";
+      }
+      if (env.browser && instance.config.backend === "webgpu") {
+        if (typeof navigator === "undefined" || typeof navigator["gpu"] === "undefined") {
+          log("override: backend set to webgpu but browser does not support webgpu");
+          instance.config.backend = "humangl";
+        } else {
+          const adapter = await navigator["gpu"].requestAdapter();
+          if (instance.config.debug)
+            log("enumerated webgpu adapter:", adapter);
+        }
+      }
+      if (instance.config.backend === "humangl")
+        await register(instance);
+      const available = Object.keys(tf32.engine().registryFactory);
+      if (instance.config.debug)
+        log("available backends:", available);
+      if (!available.includes(instance.config.backend)) {
+        log(`error: backend ${instance.config.backend} not found in registry`);
+        instance.config.backend = env.node ? "tensorflow" : "webgl";
+        if (instance.config.debug)
+          log(`override: setting backend ${instance.config.backend}`);
+      }
+      if (instance.config.debug)
+        log("setting backend:", instance.config.backend);
+      if (instance.config.backend === "wasm") {
+        if (instance.config.debug)
+          log("wasm path:", instance.config.wasmPath);
+        if (typeof (tf32 == null ? void 0 : tf32.setWasmPaths) !== "undefined")
+          await tf32.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
+        else
+          throw new Error("backend error: attempting to use wasm backend but wasm path is not set");
+        const simd = await tf32.env().getAsync("WASM_HAS_SIMD_SUPPORT");
+        const mt = await tf32.env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+        if (instance.config.debug)
+          log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
+        if (instance.config.debug && !simd)
+          log("warning: wasm simd support is not enabled");
+      }
+      try {
+        await tf32.setBackend(instance.config.backend);
+        await tf32.ready();
+        init();
+      } catch (err) {
+        log("error: cannot set backend:", instance.config.backend, err);
+        return false;
+      }
+    }
+    if (tf32.getBackend() === "humangl") {
+      tf32.ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
+      tf32.ENV.set("WEBGL_CPU_FORWARD", true);
+      tf32.ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
+      tf32.ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
+      if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
+        log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
+        tf32.ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
+      }
+      if (tf32.backend().getGPGPUContext) {
+        const gl = await tf32.backend().getGPGPUContext().gl;
+        if (instance.config.debug)
+          log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+      }
+    }
+    if (tf32.getBackend() === "webgpu") {
+    }
+    tf32.enableProdMode();
+    await tf32.ready();
+    instance.performance.initBackend = Math.trunc(now() - timeStamp);
+    instance.config.backend = tf32.getBackend();
+    await env.updateBackend();
+    registerCustomOps();
+  }
+  return true;
+}
+function fakeOps(kernelNames, config3) {
+  for (const kernelName of kernelNames) {
+    const kernelConfig = {
+      kernelName,
+      backendName: config3.backend,
+      kernelFunc: () => {
+        if (config3.debug)
+          log("kernelFunc", kernelName, config3.backend);
+      }
+    };
+    tf32.registerKernel(kernelConfig);
+  }
+  env.kernels = tf32.getKernelsForBackend(tf32.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+}
+
+// src/util/draw.ts
+var draw_exports = {};
+__export(draw_exports, {
+  all: () => all,
+  body: () => body,
+  canvas: () => canvas2,
+  face: () => face,
+  gesture: () => gesture,
+  hand: () => hand,
+  object: () => object,
+  options: () => options3,
+  person: () => person
+});
+var options3 = {
+  color: "rgba(173, 216, 230, 0.6)",
+  labelColor: "rgba(173, 216, 230, 1)",
+  shadowColor: "black",
+  font: 'small-caps 16px "Segoe UI"',
+  lineHeight: 18,
+  lineWidth: 4,
+  pointSize: 2,
+  roundRect: 8,
+  drawPoints: false,
+  drawLabels: true,
+  drawBoxes: true,
+  drawGestures: true,
+  drawPolygons: true,
+  drawGaze: true,
+  fillPolygons: false,
+  useDepth: true,
+  useCurves: false
+};
+var drawTime = 0;
+var getCanvasContext = (input) => {
+  if (!input)
+    log("draw error: invalid canvas");
+  else if (!input.getContext)
+    log("draw error: canvas context not defined");
+  else {
+    const ctx = input.getContext("2d");
+    if (!ctx)
+      log("draw error: cannot get canvas context");
+    else
+      return ctx;
+  }
+  return null;
+};
+var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
+function point(ctx, x, y, z, localOptions) {
+  z = z || 0;
+  ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+  ctx.beginPath();
+  ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
+  ctx.fill();
+}
+function rect(ctx, x, y, width, height, localOptions) {
+  ctx.beginPath();
+  ctx.lineWidth = localOptions.lineWidth;
+  if (localOptions.useCurves) {
+    const cx = (x + x + width) / 2;
+    const cy = (y + y + height) / 2;
+    ctx.ellipse(cx, cy, width / 2, height / 2, 0, 0, 2 * Math.PI);
+  } else {
+    ctx.moveTo(x + localOptions.roundRect, y);
+    ctx.lineTo(x + width - localOptions.roundRect, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + localOptions.roundRect);
+    ctx.lineTo(x + width, y + height - localOptions.roundRect);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - localOptions.roundRect, y + height);
+    ctx.lineTo(x + localOptions.roundRect, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - localOptions.roundRect);
+    ctx.lineTo(x, y + localOptions.roundRect);
+    ctx.quadraticCurveTo(x, y, x + localOptions.roundRect, y);
+    ctx.closePath();
+  }
+  ctx.stroke();
+}
+function lines(ctx, points, localOptions) {
+  if (points.length < 2)
+    return;
+  ctx.beginPath();
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (const pt of points) {
+    const z = pt[2] || 0;
+    ctx.strokeStyle = localOptions.useDepth && z !== 0 ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && z !== 0 ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+    ctx.lineTo(pt[0], Math.round(pt[1]));
+  }
+  ctx.stroke();
+  if (localOptions.fillPolygons) {
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+function curves(ctx, points, localOptions) {
+  if (points.length < 2)
+    return;
+  ctx.lineWidth = localOptions.lineWidth;
+  if (!localOptions.useCurves || points.length <= 2) {
+    lines(ctx, points, localOptions);
+    return;
+  }
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (let i = 0; i < points.length - 2; i++) {
+    const xc = (points[i][0] + points[i + 1][0]) / 2;
+    const yc = (points[i][1] + points[i + 1][1]) / 2;
+    ctx.quadraticCurveTo(points[i][0], points[i][1], xc, yc);
+  }
+  ctx.quadraticCurveTo(points[points.length - 2][0], points[points.length - 2][1], points[points.length - 1][0], points[points.length - 1][1]);
+  ctx.stroke();
+  if (localOptions.fillPolygons) {
+    ctx.closePath();
+    ctx.fill();
+  }
+}
+function arrow(ctx, from, to, radius = 5) {
+  let angle;
+  let x;
+  let y;
+  ctx.beginPath();
+  ctx.moveTo(from[0], from[1]);
+  ctx.lineTo(to[0], to[1]);
+  angle = Math.atan2(to[1] - from[1], to[0] - from[0]);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.moveTo(x, y);
+  angle += 1 / 3 * (2 * Math.PI);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.lineTo(x, y);
+  angle += 1 / 3 * (2 * Math.PI);
+  x = radius * Math.cos(angle) + to[0];
+  y = radius * Math.sin(angle) + to[1];
+  ctx.lineTo(x, y);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
+}
+async function gesture(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options3, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (localOptions.drawGestures) {
+    const ctx = getCanvasContext(inCanvas2);
+    if (!ctx)
+      return;
+    ctx.font = localOptions.font;
+    ctx.fillStyle = localOptions.color;
+    let i = 1;
+    for (let j = 0; j < result.length; j++) {
+      let where = [];
+      let what = [];
+      [where, what] = Object.entries(result[j]);
+      if (what.length > 1 && what[1].length > 0) {
+        const who = where[1] > 0 ? `#${where[1]}` : "";
+        const label = `${where[0]} ${who}: ${what[1]}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
+        i += 1;
+      }
+    }
+  }
+}
+async function face(inCanvas2, result, drawOptions) {
+  var _a, _b, _c, _d, _e;
+  const localOptions = mergeDeep(options3, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
+  for (const f of result) {
+    ctx.font = localOptions.font;
+    ctx.strokeStyle = localOptions.color;
+    ctx.fillStyle = localOptions.color;
+    if (localOptions.drawBoxes)
+      rect(ctx, f.box[0], f.box[1], f.box[2], f.box[3], localOptions);
+    if (localOptions.drawLabels) {
+      const labels2 = [];
+      labels2.push(`face: ${Math.trunc(100 * f.score)}%`);
+      if (f.genderScore)
+        labels2.push(`${f.gender || ""} ${Math.trunc(100 * f.genderScore)}%`);
+      if (f.age)
+        labels2.push(`age: ${f.age || ""}`);
+      if (f.iris)
+        labels2.push(`distance: ${f.iris}`);
+      if (f.real)
+        labels2.push(`real: ${Math.trunc(100 * f.real)}%`);
+      if (f.live)
+        labels2.push(`live: ${Math.trunc(100 * f.live)}%`);
+      if (f.emotion && f.emotion.length > 0) {
+        const emotion = f.emotion.map((a) => `${Math.trunc(100 * a.score)}% ${a.emotion}`);
+        if (emotion.length > 3)
+          emotion.length = 3;
+        labels2.push(emotion.join(" "));
+      }
+      if (f.rotation && f.rotation.angle && f.rotation.gaze) {
+        if (f.rotation.angle.roll)
+          labels2.push(`roll: ${rad2deg(f.rotation.angle.roll)}\xB0 yaw:${rad2deg(f.rotation.angle.yaw)}\xB0 pitch:${rad2deg(f.rotation.angle.pitch)}\xB0`);
+        if (f.rotation.gaze.bearing)
+          labels2.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}\xB0`);
+      }
+      if (labels2.length === 0)
+        labels2.push("face");
+      ctx.fillStyle = localOptions.color;
+      for (let i = labels2.length - 1; i >= 0; i--) {
+        const x = Math.max(f.box[0], 0);
+        const y = i * localOptions.lineHeight + f.box[1];
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(labels2[i], x + 5, y + 16);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(labels2[i], x + 4, y + 15);
+      }
+    }
+    ctx.lineWidth = 2;
+    if (f.mesh && f.mesh.length > 0) {
+      if (localOptions.drawPoints) {
+        for (const pt of f.mesh)
+          point(ctx, pt[0], pt[1], pt[2], localOptions);
+      }
+      if (localOptions.drawPolygons) {
+        if (f.mesh.length > 450) {
+          for (let i = 0; i < TRI468.length / 3; i++) {
+            const points = [
+              TRI468[i * 3 + 0],
+              TRI468[i * 3 + 1],
+              TRI468[i * 3 + 2]
+            ].map((index2) => f.mesh[index2]);
+            lines(ctx, points, localOptions);
+          }
+        }
+        if (f.annotations && f.annotations["leftEyeIris"] && f.annotations["leftEyeIris"][0]) {
+          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
+          ctx.beginPath();
+          const sizeX = Math.abs(f.annotations["leftEyeIris"][3][0] - f.annotations["leftEyeIris"][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations["leftEyeIris"][4][1] - f.annotations["leftEyeIris"][2][1]) / 2;
+          ctx.ellipse(f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
+            ctx.fill();
+          }
+        }
+        if (f.annotations && f.annotations["rightEyeIris"] && f.annotations["rightEyeIris"][0]) {
+          ctx.strokeStyle = localOptions.useDepth ? "rgba(255, 200, 255, 0.3)" : localOptions.color;
+          ctx.beginPath();
+          const sizeX = Math.abs(f.annotations["rightEyeIris"][3][0] - f.annotations["rightEyeIris"][1][0]) / 2;
+          const sizeY = Math.abs(f.annotations["rightEyeIris"][4][1] - f.annotations["rightEyeIris"][2][1]) / 2;
+          ctx.ellipse(f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+          ctx.stroke();
+          if (localOptions.fillPolygons) {
+            ctx.fillStyle = localOptions.useDepth ? "rgba(255, 255, 200, 0.3)" : localOptions.color;
+            ctx.fill();
+          }
+        }
+        if (localOptions.drawGaze && ((_a = f.rotation) == null ? void 0 : _a.angle) && typeof Path2D !== "undefined") {
+          ctx.strokeStyle = "pink";
+          const valX = f.box[0] + f.box[2] / 2 - f.box[3] * rad2deg(f.rotation.angle.yaw) / 90;
+          const valY = f.box[1] + f.box[3] / 2 + f.box[2] * rad2deg(f.rotation.angle.pitch) / 90;
+          const pathV = new Path2D(`
+            M ${f.box[0] + f.box[2] / 2} ${f.box[1]}
             C
-              ${l} ${i.box[1]},
-              ${l} ${i.box[1]+i.box[3]},
-              ${i.box[0]+i.box[2]/2} ${i.box[1]+i.box[3]}
-          `),u=new Path2D(`
-            M ${i.box[0]} ${i.box[1]+i.box[3]/2}
+              ${valX} ${f.box[1]},
+              ${valX} ${f.box[1] + f.box[3]},
+              ${f.box[0] + f.box[2] / 2} ${f.box[1] + f.box[3]}
+          `);
+          const pathH = new Path2D(`
+            M ${f.box[0]} ${f.box[1] + f.box[3] / 2}
             C 
-              ${i.box[0]} ${x},
-              ${i.box[0]+i.box[2]} ${x},
-              ${i.box[0]+i.box[2]} ${i.box[1]+i.box[3]/2}
-          `);n.stroke(u),n.stroke(d)}if(A.drawGaze&&((a=(s=i.rotation)==null?void 0:s.gaze)==null?void 0:a.strength)&&((c=(y=i.rotation)==null?void 0:y.gaze)==null?void 0:c.bearing)&&i.annotations.leftEyeIris&&i.annotations.rightEyeIris&&i.annotations.leftEyeIris[0]&&i.annotations.rightEyeIris[0]){n.strokeStyle="pink",n.fillStyle="pink";let l=[i.annotations.leftEyeIris[0][0]+Math.sin(i.rotation.gaze.bearing)*i.rotation.gaze.strength*i.box[3],i.annotations.leftEyeIris[0][1]+Math.cos(i.rotation.gaze.bearing)*i.rotation.gaze.strength*i.box[2]];wr(n,[i.annotations.leftEyeIris[0][0],i.annotations.leftEyeIris[0][1]],[l[0],l[1]],4);let x=[i.annotations.rightEyeIris[0][0]+Math.sin(i.rotation.gaze.bearing)*i.rotation.gaze.strength*i.box[3],i.annotations.rightEyeIris[0][1]+Math.cos(i.rotation.gaze.bearing)*i.rotation.gaze.strength*i.box[2]];wr(n,[i.annotations.rightEyeIris[0][0],i.annotations.rightEyeIris[0][1]],[x[0],x[1]],4)}}}}}async function Wo(e,t,o){var r;let A=c0(ae,o);if(!t||!e)return;let n=je(e);if(!!n){n.lineJoin="round";for(let s=0;s<t.length;s++){if(n.strokeStyle=A.color,n.fillStyle=A.color,n.lineWidth=A.lineWidth,n.font=A.font,A.drawBoxes&&t[s].box&&((r=t[s].box)==null?void 0:r.length)===4&&(dt(n,t[s].box[0],t[s].box[1],t[s].box[2],t[s].box[3],A),A.drawLabels&&(A.shadowColor&&A.shadowColor!==""&&(n.fillStyle=A.shadowColor,n.fillText(`body ${100*t[s].score}%`,t[s].box[0]+3,1+t[s].box[1]+A.lineHeight,t[s].box[2])),n.fillStyle=A.labelColor,n.fillText(`body ${100*t[s].score}%`,t[s].box[0]+2,0+t[s].box[1]+A.lineHeight,t[s].box[2]))),A.drawPoints&&t[s].keypoints)for(let a=0;a<t[s].keypoints.length;a++)!t[s].keypoints[a].score||t[s].keypoints[a].score===0||(n.fillStyle=A.useDepth&&t[s].keypoints[a].position[2]?`rgba(${127.5+2*(t[s].keypoints[a].position[2]||0)}, ${127.5-2*(t[s].keypoints[a].position[2]||0)}, 255, 0.5)`:A.color,zo(n,t[s].keypoints[a].position[0],t[s].keypoints[a].position[1],0,A));if(A.drawLabels&&t[s].keypoints){n.font=A.font;for(let a of t[s].keypoints)!a.score||a.score===0||(n.fillStyle=A.useDepth&&a.position[2]?`rgba(${127.5+2*a.position[2]}, ${127.5-2*a.position[2]}, 255, 0.5)`:A.color,n.fillText(`${a.part} ${Math.trunc(100*a.score)}%`,a.position[0]+4,a.position[1]+4))}if(A.drawPolygons&&t[s].keypoints&&t[s].annotations)for(let a of Object.values(t[s].annotations))for(let y of a)bs(n,y,A)}}}async function Co(e,t,o){let A=c0(ae,o);if(!t||!e)return;let n=je(e);if(!!n){n.lineJoin="round",n.font=A.font;for(let r of t){if(A.drawBoxes&&(n.strokeStyle=A.color,n.fillStyle=A.color,dt(n,r.box[0],r.box[1],r.box[2],r.box[3],A),A.drawLabels&&(A.shadowColor&&A.shadowColor!==""&&(n.fillStyle=A.shadowColor,n.fillText(`hand:${Math.trunc(100*r.score)}%`,r.box[0]+3,1+r.box[1]+A.lineHeight,r.box[2])),n.fillStyle=A.labelColor,n.fillText(`hand:${Math.trunc(100*r.score)}%`,r.box[0]+2,0+r.box[1]+A.lineHeight,r.box[2])),n.stroke()),A.drawPoints&&r.keypoints&&r.keypoints.length>0)for(let s of r.keypoints)n.fillStyle=A.useDepth?`rgba(${127.5+2*(s[2]||0)}, ${127.5-2*(s[2]||0)}, 255, 0.5)`:A.color,zo(n,s[0],s[1],0,A);if(A.drawLabels&&r.annotations){let s=(a,y)=>{if(!a||a.length===0||!a[0])return;let c=a[a.length-1][2]||0;n.fillStyle=A.useDepth?`rgba(${127.5+2*c}, ${127.5-2*c}, 255, 0.5)`:A.color,n.fillText(y,a[a.length-1][0]+4,a[a.length-1][1]+4)};n.font=A.font,s(r.annotations.index,"index"),s(r.annotations.middle,"middle"),s(r.annotations.ring,"ring"),s(r.annotations.pinky,"pinky"),s(r.annotations.thumb,"thumb"),s(r.annotations.palm,"palm")}if(A.drawPolygons&&r.annotations){let s=a=>{if(!(!a||a.length===0||!a[0]))for(let y=0;y<a.length;y++){n.beginPath();let c=a[y][2]||0;n.strokeStyle=A.useDepth?`rgba(${127.5+y*c}, ${127.5-y*c}, 255, 0.5)`:A.color,n.moveTo(a[y>0?y-1:0][0],a[y>0?y-1:0][1]),n.lineTo(a[y][0],a[y][1]),n.stroke()}};n.lineWidth=A.lineWidth,s(r.annotations.index),s(r.annotations.middle),s(r.annotations.ring),s(r.annotations.pinky),s(r.annotations.thumb)}}}}async function Oo(e,t,o){let A=c0(ae,o);if(!t||!e)return;let n=je(e);if(!!n){n.lineJoin="round",n.font=A.font;for(let r of t)if(A.drawBoxes){if(n.strokeStyle=A.color,n.fillStyle=A.color,dt(n,r.box[0],r.box[1],r.box[2],r.box[3],A),A.drawLabels){let s=`${r.label} ${Math.round(100*r.score)}%`;A.shadowColor&&A.shadowColor!==""&&(n.fillStyle=A.shadowColor,n.fillText(s,r.box[0]+3,1+r.box[1]+A.lineHeight,r.box[2])),n.fillStyle=A.labelColor,n.fillText(s,r.box[0]+2,0+r.box[1]+A.lineHeight,r.box[2])}n.stroke()}}}async function kr(e,t,o){let A=c0(ae,o);if(!t||!e)return;let n=je(e);if(!!n){n.lineJoin="round",n.font=A.font;for(let r=0;r<t.length;r++)if(A.drawBoxes){if(n.strokeStyle=A.color,n.fillStyle=A.color,dt(n,t[r].box[0],t[r].box[1],t[r].box[2],t[r].box[3],A),A.drawLabels){let s=`person #${r}`;A.shadowColor&&A.shadowColor!==""&&(n.fillStyle=A.shadowColor,n.fillText(s,t[r].box[0]+3,1+t[r].box[1]+A.lineHeight,t[r].box[2])),n.fillStyle=A.labelColor,n.fillText(s,t[r].box[0]+2,0+t[r].box[1]+A.lineHeight,t[r].box[2])}n.stroke()}}}async function Er(e,t){if(!e||!t)return;let o=je(t);!o||o.drawImage(e,0,0)}async function zr(e,t,o){if(!t||!t.performance||!t||!e)return null;let A=g(),n=c0(ae,o),r=Promise.all([So(e,t.face,n),Wo(e,t.body,n),Co(e,t.hand,n),Oo(e,t.object,n),jo(e,t.gesture,n)]);return Eo=T.perfadd?Eo+Math.round(g()-A):Math.round(g()-A),t.performance.draw=Eo,r}var A0=V(F());var jr=V(F());var Ke=.1,Io=.5;function Ps(e,t,o){let A=!1,n=o.length-1;for(let r=0;r<o.length;n=r++)o[r].y>t!=o[n].y>t&&e<(o[n].x-o[r].x)*(t-o[r].y)/(o[n].y-o[r].y)+o[r].x&&(A=!A);return A}async function Sr(e){if(!e.tensor||!e.mesh||e.mesh.length<100)return e.tensor;let t=e.tensor.shape[2]||0,o=e.tensor.shape[1]||0,A=await e.tensor.buffer(),n=[];for(let s of L0.silhouette)n.push({x:(e.mesh[s][0]-e.box[0])/e.box[2],y:(e.mesh[s][1]-e.box[1])/e.box[3]});Ke&&Ke>0&&(n=n.map(s=>({x:s.x>.5?s.x+Ke:s.x-Ke,y:s.y>.5?s.y+Ke:s.y-Ke})));for(let s=0;s<t;s++)for(let a=0;a<o;a++)Ps(s/t,a/t,n)||(A.set(Io*A.get(0,a,s,0),0,a,s,0),A.set(Io*A.get(0,a,s,1),0,a,s,1),A.set(Io*A.get(0,a,s,2),0,a,s,2));let r=A.toTensor();return jr.dispose(A),r}var vs=e=>{let t=(l,x)=>Math.atan2(l[1]-x[1],l[0]-x[0]);if(!e.annotations.rightEyeIris||!e.annotations.leftEyeIris)return{bearing:0,strength:0};let o=[0,-.1],A=1,n=(e.mesh[33][2]||0)>(e.mesh[263][2]||0),r=n?e.mesh[473]:e.mesh[468],s=n?[(e.mesh[133][0]+e.mesh[33][0])/2,(e.mesh[133][1]+e.mesh[33][1])/2]:[(e.mesh[263][0]+e.mesh[362][0])/2,(e.mesh[263][1]+e.mesh[362][1])/2],a=n?[e.mesh[133][0]-e.mesh[33][0],e.mesh[23][1]-e.mesh[27][1]]:[e.mesh[263][0]-e.mesh[362][0],e.mesh[253][1]-e.mesh[257][1]],y=[(s[0]-r[0])/a[0]-o[0],A*(r[1]-s[1])/a[1]-o[1]],c=Math.sqrt(y[0]*y[0]+y[1]*y[1]);return c=Math.min(c,e.boxRaw[2]/2,e.boxRaw[3]/2),{bearing:(t([0,0],y)+Math.PI/2)%Math.PI,strength:c}},Wr=(e,t)=>{let o=f=>{let M=Math.sqrt(f[0]*f[0]+f[1]*f[1]+f[2]*f[2]);return f[0]/=M,f[1]/=M,f[2]/=M,f},A=(f,M)=>{let h=f[0]-M[0],P=f[1]-M[1],m=f[2]-M[2];return[h,P,m]},n=(f,M)=>{let h=f[1]*M[2]-f[2]*M[1],P=f[2]*M[0]-f[0]*M[2],m=f[0]*M[1]-f[1]*M[0];return[h,P,m]},r=f=>{let[M,h,P,m,p,k,C,O,j]=f,L,J,Z;return m<1?m>-1?(Z=Math.asin(m),J=Math.atan2(-C,M),L=Math.atan2(-k,p)):(Z=-Math.PI/2,J=-Math.atan2(O,j),L=0):(Z=Math.PI/2,J=Math.atan2(O,j),L=0),isNaN(L)&&(L=0),isNaN(J)&&(J=0),isNaN(Z)&&(Z=0),{pitch:2*-L,yaw:2*-J,roll:2*-Z}},s=e.meshRaw;if(!s||s.length<300)return{angle:{pitch:0,yaw:0,roll:0},matrix:[1,0,0,0,1,0,0,0,1],gaze:{bearing:0,strength:0}};let a=Math.max(e.boxRaw[2]*t[0],e.boxRaw[3]*t[1])/1.5,y=[s[10],s[152],s[234],s[454]].map(f=>[f[0]*t[0]/a,f[1]*t[1]/a,f[2]]),c=o(A(y[1],y[0])),i=o(A(y[3],y[2])),l=o(n(i,c));i=n(c,l);let x=[i[0],i[1],i[2],c[0],c[1],c[2],l[0],l[1],l[2]],d=r(x),u=s.length===478?vs(e):{bearing:0,strength:0};return{angle:d,matrix:x,gaze:u}};var No=async(e,t)=>{var d,u,f,M,h,P,m,p,k,C,O,j,L,J,Z,q,x0,E,C0,le,v,a0;let o=g(),A,n,r,s,a,y,c,i,l=[];e.state="run:face";let x=await fn(t,e.config);if(e.performance.face=T.perfadd?(e.performance.face||0)+Math.trunc(g()-o):Math.trunc(g()-o),!t.shape||t.shape.length!==4)return[];if(!x)return[];for(let R=0;R<x.length;R++){if(e.analyze("Get Face"),!x[R].tensor||x[R].tensor.isDisposedInternal){b("Face object is disposed:",x[R].tensor);continue}if((d=e.config.face.detector)!=null&&d.mask){let U=await Sr(x[R]);A0.dispose(x[R].tensor),x[R].tensor=U}let Q=x[R].mesh&&x[R].mesh.length>200?Wr(x[R],[t.shape[2],t.shape[1]]):null;e.analyze("Start Emotion:"),e.config.async?s=(u=e.config.face.emotion)!=null&&u.enabled?H5(x[R].tensor||A0.tensor([]),e.config,R,x.length):[]:(e.state="run:emotion",o=g(),s=(f=e.config.face.emotion)!=null&&f.enabled?await H5(x[R].tensor||A0.tensor([]),e.config,R,x.length):[],e.performance.emotion=T.perfadd?(e.performance.emotion||0)+Math.trunc(g()-o):Math.trunc(g()-o)),e.analyze("End Emotion:"),e.analyze("Start AntiSpoof:"),e.config.async?y=(M=e.config.face.antispoof)!=null&&M.enabled?b5(x[R].tensor||A0.tensor([]),e.config,R,x.length):0:(e.state="run:antispoof",o=g(),y=(h=e.config.face.antispoof)!=null&&h.enabled?await b5(x[R].tensor||A0.tensor([]),e.config,R,x.length):0,e.performance.antispoof=T.perfadd?(e.performance.antispoof||0)+Math.trunc(g()-o):Math.trunc(g()-o)),e.analyze("End AntiSpoof:"),e.analyze("Start Liveness:"),e.config.async?c=(P=e.config.face.liveness)!=null&&P.enabled?io(x[R].tensor||A0.tensor([]),e.config,R,x.length):0:(e.state="run:liveness",o=g(),c=(m=e.config.face.liveness)!=null&&m.enabled?await io(x[R].tensor||A0.tensor([]),e.config,R,x.length):0,e.performance.liveness=T.perfadd?(e.performance.antispoof||0)+Math.trunc(g()-o):Math.trunc(g()-o)),e.analyze("End Liveness:"),e.analyze("Start GEAR:"),e.config.async?n=(p=e.config.face.gear)!=null&&p.enabled?c5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null:(e.state="run:gear",o=g(),n=(k=e.config.face.gear)!=null&&k.enabled?await c5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null,e.performance.gear=Math.trunc(g()-o)),e.analyze("End GEAR:"),e.analyze("Start SSRNet:"),e.config.async?(A=(C=e.config.face.ssrnet)!=null&&C.enabled?f5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null,r=(O=e.config.face.ssrnet)!=null&&O.enabled?u5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null):(e.state="run:ssrnet",o=g(),A=(j=e.config.face.ssrnet)!=null&&j.enabled?await f5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null,r=(L=e.config.face.ssrnet)!=null&&L.enabled?await u5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null,e.performance.ssrnet=Math.trunc(g()-o)),e.analyze("End SSRNet:"),e.analyze("Start MobileFaceNet:"),e.config.async?a=(J=e.config.face.mobilefacenet)!=null&&J.enabled?V5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null:(e.state="run:mobilefacenet",o=g(),a=(Z=e.config.face.mobilefacenet)!=null&&Z.enabled?await V5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null,e.performance.mobilefacenet=Math.trunc(g()-o)),e.analyze("End MobileFaceNet:"),e.analyze("Start Description:"),e.config.async?i=(q=e.config.face.description)!=null&&q.enabled?J5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null:(e.state="run:description",o=g(),i=(x0=e.config.face.description)!=null&&x0.enabled?await J5(x[R].tensor||A0.tensor([]),e.config,R,x.length):null,e.performance.description=T.perfadd?(e.performance.description||0)+Math.trunc(g()-o):Math.trunc(g()-o)),e.analyze("End Description:"),e.config.async&&([A,r,s,a,i,n,y,c]=await Promise.all([A,r,s,a,i,n,y,c])),e.analyze("Finish Face:"),((E=e.config.face.ssrnet)==null?void 0:E.enabled)&&A&&r&&(i={...i,age:A.age,gender:r.gender,genderScore:r.genderScore}),((C0=e.config.face.gear)==null?void 0:C0.enabled)&&n&&(i={...i,age:n.age,gender:n.gender,genderScore:n.genderScore,race:n.race}),((le=e.config.face.mobilefacenet)==null?void 0:le.enabled)&&a&&(i.descriptor=a),(v=e.config.face.iris)!=null&&v.enabled;let n0=x[R].annotations&&x[R].annotations.leftEyeIris&&x[R].annotations.leftEyeIris[0]&&x[R].annotations.rightEyeIris&&x[R].annotations.rightEyeIris[0]&&x[R].annotations.leftEyeIris.length>0&&x[R].annotations.rightEyeIris.length>0&&x[R].annotations.leftEyeIris[0]!==null&&x[R].annotations.rightEyeIris[0]!==null?Math.max(Math.abs(x[R].annotations.leftEyeIris[3][0]-x[R].annotations.leftEyeIris[1][0]),Math.abs(x[R].annotations.rightEyeIris[4][1]-x[R].annotations.rightEyeIris[2][1]))/t.shape[2]:0,y0=(a0=e.config.face.detector)!=null&&a0.return?A0.squeeze(x[R].tensor):null;A0.dispose(x[R].tensor),x[R].tensor&&delete x[R].tensor;let I={...x[R],id:R};i!=null&&i.age&&(I.age=i.age),i!=null&&i.gender&&(I.gender=i.gender),i!=null&&i.genderScore&&(I.genderScore=i==null?void 0:i.genderScore),i!=null&&i.descriptor&&(I.embedding=i==null?void 0:i.descriptor),i!=null&&i.race&&(I.race=i==null?void 0:i.race),s&&(I.emotion=s),y&&(I.real=y),c&&(I.live=c),n0&&n0!==0&&(I.iris=Math.trunc(500/n0/11.7)/100),Q&&(I.rotation=Q),y0&&(I.tensor=y0),l.push(I),e.analyze("End Face")}return e.analyze("End FaceMesh:"),e.config.async&&(e.performance.face&&delete e.performance.face,e.performance.age&&delete e.performance.age,e.performance.gender&&delete e.performance.gender,e.performance.emotion&&delete e.performance.emotion),l};var Cr=e=>{if(!e)return[];let t=[];for(let o=0;o<e.length;o++){let A=e[o].keypoints.find(y=>y.part==="leftWrist"),n=e[o].keypoints.find(y=>y.part==="rightWrist"),r=e[o].keypoints.find(y=>y.part==="nose");r&&A&&n&&A.position[1]<r.position[1]&&n.position[1]<r.position[1]?t.push({body:o,gesture:"i give up"}):r&&A&&A.position[1]<r.position[1]?t.push({body:o,gesture:"raise left hand"}):r&&n&&n.position[1]<r.position[1]&&t.push({body:o,gesture:"raise right hand"});let s=e[o].keypoints.find(y=>y.part==="leftShoulder"),a=e[o].keypoints.find(y=>y.part==="rightShoulder");s&&a&&Math.abs(s.positionRaw[1]-a.positionRaw[1])>.1&&t.push({body:o,gesture:`leaning ${s.position[1]>a.position[1]?"left":"right"}`})}return t},Or=e=>{if(!e)return[];let t=[];for(let o=0;o<e.length;o++)if(e[o].mesh&&e[o].mesh.length>450){let A=(e[o].mesh[33][2]||0)-(e[o].mesh[263][2]||0),n=e[o].mesh[33][0]-e[o].mesh[263][0];Math.abs(A/n)<=.15?t.push({face:o,gesture:"facing center"}):t.push({face:o,gesture:`facing ${A<0?"left":"right"}`}),Math.abs(e[o].mesh[374][1]-e[o].mesh[386][1])/Math.abs(e[o].mesh[443][1]-e[o].mesh[450][1])<.2&&t.push({face:o,gesture:"blink left eye"}),Math.abs(e[o].mesh[145][1]-e[o].mesh[159][1])/Math.abs(e[o].mesh[223][1]-e[o].mesh[230][1])<.2&&t.push({face:o,gesture:"blink right eye"});let a=Math.min(100,500*Math.abs(e[o].mesh[13][1]-e[o].mesh[14][1])/Math.abs(e[o].mesh[10][1]-e[o].mesh[152][1]));a>10&&t.push({face:o,gesture:`mouth ${Math.trunc(a)}% open`});let y=e[o].mesh[152][2]||0;Math.abs(y)>10&&t.push({face:o,gesture:`head ${y<0?"up":"down"}`})}return t},Ir=e=>{if(!e)return[];let t=[];for(let o=0;o<e.length;o++){if(!e[o].annotations||!e[o].annotations.leftEyeIris||!e[o].annotations.leftEyeIris[0]||!e[o].annotations.rightEyeIris||!e[o].annotations.rightEyeIris[0])continue;let A=e[o].annotations.leftEyeIris[3][0]-e[o].annotations.leftEyeIris[1][0],n=e[o].annotations.leftEyeIris[4][1]-e[o].annotations.leftEyeIris[2][1],r=Math.abs(A*n),s=e[o].annotations.rightEyeIris[3][0]-e[o].annotations.rightEyeIris[1][0],a=e[o].annotations.rightEyeIris[4][1]-e[o].annotations.rightEyeIris[2][1],y=Math.abs(s*a),c=!1;Math.abs(r-y)/Math.max(r,y)<.25&&(c=!0,t.push({iris:o,gesture:"facing center"}));let l=Math.abs(e[o].mesh[263][0]-e[o].annotations.leftEyeIris[0][0])/e[o].box[2],x=Math.abs(e[o].mesh[33][0]-e[o].annotations.rightEyeIris[0][0])/e[o].box[2];(l>.06||x>.06)&&(c=!1),l>x?l>.05&&t.push({iris:o,gesture:"looking right"}):x>.05&&t.push({iris:o,gesture:"looking left"});let d=Math.abs(e[o].mesh[145][1]-e[o].annotations.rightEyeIris[0][1])/e[o].box[3],u=Math.abs(e[o].mesh[374][1]-e[o].annotations.leftEyeIris[0][1])/e[o].box[3];(u<.01||d<.01||u>.022||d>.022)&&(c=!1),(u<.01||d<.01)&&t.push({iris:o,gesture:"looking down"}),(u>.022||d>.022)&&t.push({iris:o,gesture:"looking up"}),c&&t.push({iris:o,gesture:"looking center"})}return t},Nr=e=>{if(!e)return[];let t=[];for(let o=0;o<e.length;o++){let A=[];if(e[o].annotations)for(let[n,r]of Object.entries(e[o].annotations))n!=="palmBase"&&Array.isArray(r)&&r[0]&&A.push({name:n.toLowerCase(),position:r[0]});if(A&&A.length>0){let n=A.reduce((s,a)=>(s.position[2]||0)<(a.position[2]||0)?s:a);t.push({hand:o,gesture:`${n.name} forward`});let r=A.reduce((s,a)=>s.position[1]<a.position[1]?s:a);t.push({hand:o,gesture:`${r.name} up`})}if(e[o].keypoints){let n=Hn(e[o].keypoints);for(let r of n)t.push({hand:o,gesture:r.name})}}return t};var z={face:[],body:[],hand:[],gesture:[],object:[],persons:[],performance:{},timestamp:0,error:null},Lo=0;function Lr(e,t){var s,a,y,c,i,l,x,d,u,f,M,h,P,m,p,k,C,O,j,L,J,Z,q,x0,E,C0,le;let o=g();if(!e)return{face:[],body:[],hand:[],gesture:[],object:[],persons:[],performance:{},timestamp:0,error:null};let A=Date.now()-e.timestamp,n=A<1e3?8-Math.log(A+1):1;if(e.canvas&&(z.canvas=e.canvas),e.error&&(z.error=e.error),!z.body||e.body.length!==z.body.length)z.body=JSON.parse(JSON.stringify(e.body));else for(let v=0;v<e.body.length;v++){let a0=e.body[v].box.map((I,U)=>((n-1)*z.body[v].box[U]+I)/n),R=e.body[v].boxRaw.map((I,U)=>((n-1)*z.body[v].boxRaw[U]+I)/n),Q=e.body[v].keypoints.map((I,U)=>{var Y0,K0,_e,$e,Se,Go,Bo,Ho,Fo;return{score:I.score,part:I.part,position:[z.body[v].keypoints[U]?((n-1)*(z.body[v].keypoints[U].position[0]||0)+(I.position[0]||0))/n:I.position[0],z.body[v].keypoints[U]?((n-1)*(z.body[v].keypoints[U].position[1]||0)+(I.position[1]||0))/n:I.position[1],z.body[v].keypoints[U]?((n-1)*(z.body[v].keypoints[U].position[2]||0)+(I.position[2]||0))/n:I.position[2]],positionRaw:[z.body[v].keypoints[U]?((n-1)*(z.body[v].keypoints[U].positionRaw[0]||0)+(I.positionRaw[0]||0))/n:I.positionRaw[0],z.body[v].keypoints[U]?((n-1)*(z.body[v].keypoints[U].positionRaw[1]||0)+(I.positionRaw[1]||0))/n:I.positionRaw[1],z.body[v].keypoints[U]?((n-1)*(z.body[v].keypoints[U].positionRaw[2]||0)+(I.positionRaw[2]||0))/n:I.positionRaw[2]],distance:[z.body[v].keypoints[U]?((n-1)*(((Y0=z.body[v].keypoints[U].distance)==null?void 0:Y0[0])||0)+(((K0=I.distance)==null?void 0:K0[0])||0))/n:(_e=I.distance)==null?void 0:_e[0],z.body[v].keypoints[U]?((n-1)*((($e=z.body[v].keypoints[U].distance)==null?void 0:$e[1])||0)+(((Se=I.distance)==null?void 0:Se[1])||0))/n:(Go=I.distance)==null?void 0:Go[1],z.body[v].keypoints[U]?((n-1)*(((Bo=z.body[v].keypoints[U].distance)==null?void 0:Bo[2])||0)+(((Ho=I.distance)==null?void 0:Ho[2])||0))/n:(Fo=I.distance)==null?void 0:Fo[2]]}}),n0={},y0={connected:{}};(a=(s=t.body)==null?void 0:s.modelPath)!=null&&a.includes("efficientpose")?y0=Ot:(c=(y=t.body)==null?void 0:y.modelPath)!=null&&c.includes("blazepose")?y0=zt:(l=(i=t.body)==null?void 0:i.modelPath)!=null&&l.includes("movenet")&&(y0=yt);for(let[I,U]of Object.entries(y0.connected)){let Y0=[];for(let K0=0;K0<U.length-1;K0++){let _e=Q.find(Se=>Se.part===U[K0]),$e=Q.find(Se=>Se.part===U[K0+1]);_e&&$e&&Y0.push([_e.position,$e.position])}n0[I]=Y0}z.body[v]={...e.body[v],box:a0,boxRaw:R,keypoints:Q,annotations:n0}}if(!z.hand||e.hand.length!==z.hand.length)z.hand=JSON.parse(JSON.stringify(e.hand));else for(let v=0;v<e.hand.length;v++){let a0=e.hand[v].box.map((y0,I)=>((n-1)*z.hand[v].box[I]+y0)/n),R=e.hand[v].boxRaw.map((y0,I)=>((n-1)*z.hand[v].boxRaw[I]+y0)/n);z.hand[v].keypoints.length!==e.hand[v].keypoints.length&&(z.hand[v].keypoints=e.hand[v].keypoints);let Q=e.hand[v].keypoints&&e.hand[v].keypoints.length>0?e.hand[v].keypoints.map((y0,I)=>y0.map((U,Y0)=>((n-1)*(z.hand[v].keypoints[I][Y0]||1)+(U||0))/n)):[],n0={};if(Object.keys(z.hand[v].annotations).length!==Object.keys(e.hand[v].annotations).length)z.hand[v].annotations=e.hand[v].annotations,n0=z.hand[v].annotations;else if(e.hand[v].annotations)for(let y0 of Object.keys(e.hand[v].annotations))n0[y0]=e.hand[v].annotations[y0]&&e.hand[v].annotations[y0][0]?e.hand[v].annotations[y0].map((I,U)=>I.map((Y0,K0)=>((n-1)*z.hand[v].annotations[y0][U][K0]+Y0)/n)):null;z.hand[v]={...e.hand[v],box:a0,boxRaw:R,keypoints:Q,annotations:n0}}if(!z.face||e.face.length!==z.face.length)z.face=JSON.parse(JSON.stringify(e.face));else for(let v=0;v<e.face.length;v++){let a0=e.face[v].box.map((Q,n0)=>((n-1)*z.face[v].box[n0]+Q)/n),R=e.face[v].boxRaw.map((Q,n0)=>((n-1)*z.face[v].boxRaw[n0]+Q)/n);if(e.face[v].rotation){let Q={matrix:[0,0,0,0,0,0,0,0,0],angle:{roll:0,yaw:0,pitch:0},gaze:{bearing:0,strength:0}};Q.matrix=(x=e.face[v].rotation)==null?void 0:x.matrix,Q.angle={roll:((n-1)*(((u=(d=z.face[v].rotation)==null?void 0:d.angle)==null?void 0:u.roll)||0)+(((M=(f=e.face[v].rotation)==null?void 0:f.angle)==null?void 0:M.roll)||0))/n,yaw:((n-1)*(((P=(h=z.face[v].rotation)==null?void 0:h.angle)==null?void 0:P.yaw)||0)+(((p=(m=e.face[v].rotation)==null?void 0:m.angle)==null?void 0:p.yaw)||0))/n,pitch:((n-1)*(((C=(k=z.face[v].rotation)==null?void 0:k.angle)==null?void 0:C.pitch)||0)+(((j=(O=e.face[v].rotation)==null?void 0:O.angle)==null?void 0:j.pitch)||0))/n},Q.gaze={bearing:((n-1)*(((J=(L=z.face[v].rotation)==null?void 0:L.gaze)==null?void 0:J.bearing)||0)+(((q=(Z=e.face[v].rotation)==null?void 0:Z.gaze)==null?void 0:q.bearing)||0))/n,strength:((n-1)*(((E=(x0=z.face[v].rotation)==null?void 0:x0.gaze)==null?void 0:E.strength)||0)+(((le=(C0=e.face[v].rotation)==null?void 0:C0.gaze)==null?void 0:le.strength)||0))/n},z.face[v]={...e.face[v],rotation:Q,box:a0,boxRaw:R}}z.face[v]={...e.face[v],box:a0,boxRaw:R}}if(!z.object||e.object.length!==z.object.length)z.object=JSON.parse(JSON.stringify(e.object));else for(let v=0;v<e.object.length;v++){let a0=e.object[v].box.map((Q,n0)=>((n-1)*z.object[v].box[n0]+Q)/n),R=e.object[v].boxRaw.map((Q,n0)=>((n-1)*z.object[v].boxRaw[n0]+Q)/n);z.object[v]={...e.object[v],box:a0,boxRaw:R}}if(e.persons){let v=e.persons;if(!z.persons||v.length!==z.persons.length)z.persons=JSON.parse(JSON.stringify(v));else for(let a0=0;a0<v.length;a0++)z.persons[a0].box=v[a0].box.map((R,Q)=>((n-1)*z.persons[a0].box[Q]+R)/n)}e.gesture&&(z.gesture=e.gesture);let r=g();return Lo=T.perfadd?Lo+Math.round(r-o):Math.round(r-o),e.performance&&(z.performance={...e.performance,interpolate:Lo}),z}function e5(e,t,o={order:2,multiplier:25}){let A=0;for(let n=0;n<e.length;n++){let r=!o.order||o.order===2?e[n]-t[n]:Math.abs(e[n]-t[n]);A+=!o.order||o.order===2?r*r:r**o.order}return(o.multiplier||20)*A}var Gr=(e,t,o,A)=>{if(e===0)return 1;let n=t===2?Math.sqrt(e):e**(1/t),r=(1-n/100-o)/(A-o);return Math.max(Math.min(r,1),0)};function Br(e,t,o={order:2,multiplier:25,min:.2,max:.8}){let A=e5(e,t,o);return Gr(A,o.order||2,o.min||0,o.max||1)}function Hr(e,t,o={order:2,multiplier:25,threshold:0,min:.2,max:.8}){if(!Array.isArray(e)||!Array.isArray(t)||e.length<64||t.length===0||e.length!==t[0].length)return{index:-1,distance:Number.POSITIVE_INFINITY,similarity:0};let A=Number.MAX_SAFE_INTEGER,n=-1;for(let s=0;s<t.length;s++){let a=e5(e,t[s],o);if(a<A&&(A=a,n=s),A<(o.threshold||0))break}let r=Gr(A,o.order||2,o.min||0,o.max||1);return{index:n,distance:A,similarity:r}}function Fr(e,t,o,A,n){var a,y,c,i,l,x,d,u,f,M,h,P,m,p,k,C;let r=0,s=[];for(let O of e){let j={id:r++,face:O,body:null,hands:{left:null,right:null},gestures:[],box:[0,0,0,0]};for(let E of t)O.box[0]>E.box[0]&&O.box[0]<E.box[0]+E.box[2]&&O.box[1]+O.box[3]>E.box[1]&&O.box[1]+O.box[3]<E.box[1]+E.box[3]&&(j.body=E);if(j.body)for(let E of o)E.box[0]+E.box[2]>j.body.box[0]&&E.box[0]+E.box[2]<j.body.box[0]+j.body.box[2]&&E.box[1]+E.box[3]>j.body.box[1]&&E.box[1]+E.box[3]<j.body.box[1]+j.body.box[3]&&j.hands&&(j.hands.left=E),E.box[0]<j.body.box[0]+j.body.box[2]&&E.box[0]>j.body.box[0]&&E.box[1]+E.box[3]>j.body.box[1]&&E.box[1]+E.box[3]<j.body.box[1]+j.body.box[3]&&j.hands&&(j.hands.right=E);for(let E of A)E.face!==void 0&&E.face===O.id?(a=j.gestures)==null||a.push(E):E.iris!==void 0&&E.iris===O.id?(y=j.gestures)==null||y.push(E):E.body!==void 0&&E.body===((c=j.body)==null?void 0:c.id)?(i=j.gestures)==null||i.push(E):E.hand!==void 0&&E.hand===((x=(l=j.hands)==null?void 0:l.left)==null?void 0:x.id)?(d=j.gestures)==null||d.push(E):E.hand!==void 0&&E.hand===((f=(u=j.hands)==null?void 0:u.right)==null?void 0:f.id)&&((M=j.gestures)==null||M.push(E));let L=[],J=[],Z=E=>{E&&E.length===4&&(L.push(E[0],E[0]+E[2]),J.push(E[1],E[1]+E[3]))};Z((h=j.face)==null?void 0:h.box),Z((P=j.body)==null?void 0:P.box),Z((p=(m=j.hands)==null?void 0:m.left)==null?void 0:p.box),Z((C=(k=j.hands)==null?void 0:k.right)==null?void 0:C.box);let q=Math.min(...L),x0=Math.min(...J);j.box=[q,x0,Math.max(...L)-q,Math.max(...J)-x0],n&&n[1]&&n[2]&&(j.boxRaw=[j.box[0]/n[2],j.box[1]/n[1],j.box[2]/n[2],j.box[3]/n[1]]),s.push(j)}return s}var t5=`
+              ${f.box[0]} ${valY},
+              ${f.box[0] + f.box[2]} ${valY},
+              ${f.box[0] + f.box[2]} ${f.box[1] + f.box[3] / 2}
+          `);
+          ctx.stroke(pathH);
+          ctx.stroke(pathV);
+        }
+        if (localOptions.drawGaze && ((_c = (_b = f.rotation) == null ? void 0 : _b.gaze) == null ? void 0 : _c.strength) && ((_e = (_d = f.rotation) == null ? void 0 : _d.gaze) == null ? void 0 : _e.bearing) && f.annotations["leftEyeIris"] && f.annotations["rightEyeIris"] && f.annotations["leftEyeIris"][0] && f.annotations["rightEyeIris"][0]) {
+          ctx.strokeStyle = "pink";
+          ctx.fillStyle = "pink";
+          const leftGaze = [
+            f.annotations["leftEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
+            f.annotations["leftEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
+          ];
+          arrow(ctx, [f.annotations["leftEyeIris"][0][0], f.annotations["leftEyeIris"][0][1]], [leftGaze[0], leftGaze[1]], 4);
+          const rightGaze = [
+            f.annotations["rightEyeIris"][0][0] + Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3],
+            f.annotations["rightEyeIris"][0][1] + Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]
+          ];
+          arrow(ctx, [f.annotations["rightEyeIris"][0][0], f.annotations["rightEyeIris"][0][1]], [rightGaze[0], rightGaze[1]], 4);
+        }
+      }
+    }
+  }
+}
+async function body(inCanvas2, result, drawOptions) {
+  var _a;
+  const localOptions = mergeDeep(options3, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  for (let i = 0; i < result.length; i++) {
+    ctx.strokeStyle = localOptions.color;
+    ctx.fillStyle = localOptions.color;
+    ctx.lineWidth = localOptions.lineWidth;
+    ctx.font = localOptions.font;
+    if (localOptions.drawBoxes && result[i].box && ((_a = result[i].box) == null ? void 0 : _a.length) === 4) {
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+    }
+    if (localOptions.drawPoints && result[i].keypoints) {
+      for (let pt = 0; pt < result[i].keypoints.length; pt++) {
+        if (!result[i].keypoints[pt].score || result[i].keypoints[pt].score === 0)
+          continue;
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? `rgba(${127.5 + 2 * (result[i].keypoints[pt].position[2] || 0)}, ${127.5 - 2 * (result[i].keypoints[pt].position[2] || 0)}, 255, 0.5)` : localOptions.color;
+        point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
+      }
+    }
+    if (localOptions.drawLabels && result[i].keypoints) {
+      ctx.font = localOptions.font;
+      for (const pt of result[i].keypoints) {
+        if (!pt.score || pt.score === 0)
+          continue;
+        ctx.fillStyle = localOptions.useDepth && pt.position[2] ? `rgba(${127.5 + 2 * pt.position[2]}, ${127.5 - 2 * pt.position[2]}, 255, 0.5)` : localOptions.color;
+        ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
+      }
+    }
+    if (localOptions.drawPolygons && result[i].keypoints && result[i].annotations) {
+      for (const part of Object.values(result[i].annotations)) {
+        for (const connected4 of part)
+          curves(ctx, connected4, localOptions);
+      }
+    }
+  }
+}
+async function hand(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options3, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (const h of result) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+      }
+      ctx.stroke();
+    }
+    if (localOptions.drawPoints) {
+      if (h.keypoints && h.keypoints.length > 0) {
+        for (const pt of h.keypoints) {
+          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * (pt[2] || 0)}, ${127.5 - 2 * (pt[2] || 0)}, 255, 0.5)` : localOptions.color;
+          point(ctx, pt[0], pt[1], 0, localOptions);
+        }
+      }
+    }
+    if (localOptions.drawLabels && h.annotations) {
+      const addHandLabel = (part, title) => {
+        if (!part || part.length === 0 || !part[0])
+          return;
+        const z = part[part.length - 1][2] || 0;
+        ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.5)` : localOptions.color;
+        ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
+      };
+      ctx.font = localOptions.font;
+      addHandLabel(h.annotations["index"], "index");
+      addHandLabel(h.annotations["middle"], "middle");
+      addHandLabel(h.annotations["ring"], "ring");
+      addHandLabel(h.annotations["pinky"], "pinky");
+      addHandLabel(h.annotations["thumb"], "thumb");
+      addHandLabel(h.annotations["palm"], "palm");
+    }
+    if (localOptions.drawPolygons && h.annotations) {
+      const addHandLine = (part) => {
+        if (!part || part.length === 0 || !part[0])
+          return;
+        for (let i = 0; i < part.length; i++) {
+          ctx.beginPath();
+          const z = part[i][2] || 0;
+          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + i * z}, ${127.5 - i * z}, 255, 0.5)` : localOptions.color;
+          ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
+          ctx.lineTo(part[i][0], part[i][1]);
+          ctx.stroke();
+        }
+      };
+      ctx.lineWidth = localOptions.lineWidth;
+      addHandLine(h.annotations["index"]);
+      addHandLine(h.annotations["middle"]);
+      addHandLine(h.annotations["ring"]);
+      addHandLine(h.annotations["pinky"]);
+      addHandLine(h.annotations["thumb"]);
+    }
+  }
+}
+async function object(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options3, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (const h of result) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `${h.label} ${Math.round(100 * h.score)}%`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+async function person(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options3, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  const ctx = getCanvasContext(inCanvas2);
+  if (!ctx)
+    return;
+  ctx.lineJoin = "round";
+  ctx.font = localOptions.font;
+  for (let i = 0; i < result.length; i++) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `person #${i}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+async function canvas2(input, output) {
+  if (!input || !output)
+    return;
+  const ctx = getCanvasContext(output);
+  if (!ctx)
+    return;
+  ctx.drawImage(input, 0, 0);
+}
+async function all(inCanvas2, result, drawOptions) {
+  if (!result || !result.performance || !result || !inCanvas2)
+    return null;
+  const timeStamp = now();
+  const localOptions = mergeDeep(options3, drawOptions);
+  const promise = Promise.all([
+    face(inCanvas2, result.face, localOptions),
+    body(inCanvas2, result.body, localOptions),
+    hand(inCanvas2, result.hand, localOptions),
+    object(inCanvas2, result.object, localOptions),
+    gesture(inCanvas2, result.gesture, localOptions)
+  ]);
+  drawTime = env.perfadd ? drawTime + Math.round(now() - timeStamp) : Math.round(now() - timeStamp);
+  result.performance.draw = drawTime;
+  return promise;
+}
+
+// src/face/face.ts
+var tf34 = __toESM(require_tfjs_esm());
+
+// src/face/mask.ts
+var tf33 = __toESM(require_tfjs_esm());
+var expandFact = 0.1;
+var alpha = 0.5;
+function insidePoly(x, y, polygon) {
+  let inside = false;
+  let j = polygon.length - 1;
+  for (let i = 0; i < polygon.length; j = i++) {
+    if (polygon[i].y > y !== polygon[j].y > y && x < (polygon[j].x - polygon[i].x) * (y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x)
+      inside = !inside;
+  }
+  return inside;
+}
+async function mask(face4) {
+  if (!face4.tensor)
+    return face4.tensor;
+  if (!face4.mesh || face4.mesh.length < 100)
+    return face4.tensor;
+  const width = face4.tensor.shape[2] || 0;
+  const height = face4.tensor.shape[1] || 0;
+  const buffer = await face4.tensor.buffer();
+  let silhouette = [];
+  for (const pt of meshAnnotations.silhouette)
+    silhouette.push({ x: (face4.mesh[pt][0] - face4.box[0]) / face4.box[2], y: (face4.mesh[pt][1] - face4.box[1]) / face4.box[3] });
+  if (expandFact && expandFact > 0)
+    silhouette = silhouette.map((pt) => ({ x: pt.x > 0.5 ? pt.x + expandFact : pt.x - expandFact, y: pt.y > 0.5 ? pt.y + expandFact : pt.y - expandFact }));
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      const inside = insidePoly(x / width, y / width, silhouette);
+      if (!inside) {
+        buffer.set(alpha * buffer.get(0, y, x, 0), 0, y, x, 0);
+        buffer.set(alpha * buffer.get(0, y, x, 1), 0, y, x, 1);
+        buffer.set(alpha * buffer.get(0, y, x, 2), 0, y, x, 2);
+      }
+    }
+  }
+  const output = buffer.toTensor();
+  tf33.dispose(buffer);
+  return output;
+}
+
+// src/face/angles.ts
+var calculateGaze = (face4) => {
+  const radians = (pt1, pt2) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]);
+  if (!face4.annotations["rightEyeIris"] || !face4.annotations["leftEyeIris"])
+    return { bearing: 0, strength: 0 };
+  const offsetIris = [0, -0.1];
+  const eyeRatio = 1;
+  const left = (face4.mesh[33][2] || 0) > (face4.mesh[263][2] || 0);
+  const irisCenter = left ? face4.mesh[473] : face4.mesh[468];
+  const eyeCenter = left ? [(face4.mesh[133][0] + face4.mesh[33][0]) / 2, (face4.mesh[133][1] + face4.mesh[33][1]) / 2] : [(face4.mesh[263][0] + face4.mesh[362][0]) / 2, (face4.mesh[263][1] + face4.mesh[362][1]) / 2];
+  const eyeSize = left ? [face4.mesh[133][0] - face4.mesh[33][0], face4.mesh[23][1] - face4.mesh[27][1]] : [face4.mesh[263][0] - face4.mesh[362][0], face4.mesh[253][1] - face4.mesh[257][1]];
+  const eyeDiff = [
+    (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
+    eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1]
+  ];
+  let strength = Math.sqrt(eyeDiff[0] * eyeDiff[0] + eyeDiff[1] * eyeDiff[1]);
+  strength = Math.min(strength, face4.boxRaw[2] / 2, face4.boxRaw[3] / 2);
+  const bearing = (radians([0, 0], eyeDiff) + Math.PI / 2) % Math.PI;
+  return { bearing, strength };
+};
+var calculateFaceAngle = (face4, imageSize) => {
+  const normalize = (v) => {
+    const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    v[0] /= length;
+    v[1] /= length;
+    v[2] /= length;
+    return v;
+  };
+  const subVectors = (a, b) => {
+    const x = a[0] - b[0];
+    const y = a[1] - b[1];
+    const z = a[2] - b[2];
+    return [x, y, z];
+  };
+  const crossVectors = (a, b) => {
+    const x = a[1] * b[2] - a[2] * b[1];
+    const y = a[2] * b[0] - a[0] * b[2];
+    const z = a[0] * b[1] - a[1] * b[0];
+    return [x, y, z];
+  };
+  const rotationMatrixToEulerAngle = (r) => {
+    const [r00, _r01, _r02, r10, r11, r12, r20, r21, r22] = r;
+    let thetaX;
+    let thetaY;
+    let thetaZ;
+    if (r10 < 1) {
+      if (r10 > -1) {
+        thetaZ = Math.asin(r10);
+        thetaY = Math.atan2(-r20, r00);
+        thetaX = Math.atan2(-r12, r11);
+      } else {
+        thetaZ = -Math.PI / 2;
+        thetaY = -Math.atan2(r21, r22);
+        thetaX = 0;
+      }
+    } else {
+      thetaZ = Math.PI / 2;
+      thetaY = Math.atan2(r21, r22);
+      thetaX = 0;
+    }
+    if (isNaN(thetaX))
+      thetaX = 0;
+    if (isNaN(thetaY))
+      thetaY = 0;
+    if (isNaN(thetaZ))
+      thetaZ = 0;
+    return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
+  };
+  const mesh = face4.meshRaw;
+  if (!mesh || mesh.length < 300)
+    return { angle: { pitch: 0, yaw: 0, roll: 0 }, matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1], gaze: { bearing: 0, strength: 0 } };
+  const size2 = Math.max(face4.boxRaw[2] * imageSize[0], face4.boxRaw[3] * imageSize[1]) / 1.5;
+  const pts = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [pt[0] * imageSize[0] / size2, pt[1] * imageSize[1] / size2, pt[2]]);
+  const y_axis = normalize(subVectors(pts[1], pts[0]));
+  let x_axis = normalize(subVectors(pts[3], pts[2]));
+  const z_axis = normalize(crossVectors(x_axis, y_axis));
+  x_axis = crossVectors(y_axis, z_axis);
+  const matrix = [
+    x_axis[0],
+    x_axis[1],
+    x_axis[2],
+    y_axis[0],
+    y_axis[1],
+    y_axis[2],
+    z_axis[0],
+    z_axis[1],
+    z_axis[2]
+  ];
+  const angle = rotationMatrixToEulerAngle(matrix);
+  const gaze = mesh.length === 478 ? calculateGaze(face4) : { bearing: 0, strength: 0 };
+  return { angle, matrix, gaze };
+};
+
+// src/face/face.ts
+var detectFace = async (instance, input) => {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
+  let timeStamp = now();
+  let ageRes;
+  let gearRes;
+  let genderRes;
+  let emotionRes;
+  let mobilefacenetRes;
+  let antispoofRes;
+  let livenessRes;
+  let descRes;
+  const faceRes = [];
+  instance.state = "run:face";
+  const faces = await predict10(input, instance.config);
+  instance.performance.face = env.perfadd ? (instance.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+  if (!input.shape || input.shape.length !== 4)
+    return [];
+  if (!faces)
+    return [];
+  for (let i = 0; i < faces.length; i++) {
+    instance.analyze("Get Face");
+    if (!faces[i].tensor || faces[i].tensor["isDisposedInternal"]) {
+      log("Face object is disposed:", faces[i].tensor);
+      continue;
+    }
+    if ((_a = instance.config.face.detector) == null ? void 0 : _a.mask) {
+      const masked = await mask(faces[i]);
+      tf34.dispose(faces[i].tensor);
+      faces[i].tensor = masked;
+    }
+    const rotation = faces[i].mesh && faces[i].mesh.length > 200 ? calculateFaceAngle(faces[i], [input.shape[2], input.shape[1]]) : null;
+    instance.analyze("Start Emotion:");
+    if (instance.config.async) {
+      emotionRes = ((_b = instance.config.face.emotion) == null ? void 0 : _b.enabled) ? predict8(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : [];
+    } else {
+      instance.state = "run:emotion";
+      timeStamp = now();
+      emotionRes = ((_c = instance.config.face.emotion) == null ? void 0 : _c.enabled) ? await predict8(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : [];
+      instance.performance.emotion = env.perfadd ? (instance.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+    }
+    instance.analyze("End Emotion:");
+    instance.analyze("Start AntiSpoof:");
+    if (instance.config.async) {
+      antispoofRes = ((_d = instance.config.face.antispoof) == null ? void 0 : _d.enabled) ? predict4(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : 0;
+    } else {
+      instance.state = "run:antispoof";
+      timeStamp = now();
+      antispoofRes = ((_e = instance.config.face.antispoof) == null ? void 0 : _e.enabled) ? await predict4(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : 0;
+      instance.performance.antispoof = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+    }
+    instance.analyze("End AntiSpoof:");
+    instance.analyze("Start Liveness:");
+    if (instance.config.async) {
+      livenessRes = ((_f = instance.config.face.liveness) == null ? void 0 : _f.enabled) ? predict14(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : 0;
+    } else {
+      instance.state = "run:liveness";
+      timeStamp = now();
+      livenessRes = ((_g = instance.config.face.liveness) == null ? void 0 : _g.enabled) ? await predict14(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : 0;
+      instance.performance.liveness = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+    }
+    instance.analyze("End Liveness:");
+    instance.analyze("Start GEAR:");
+    if (instance.config.async) {
+      gearRes = ((_h = instance.config.face["gear"]) == null ? void 0 : _h.enabled) ? predict(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+    } else {
+      instance.state = "run:gear";
+      timeStamp = now();
+      gearRes = ((_i = instance.config.face["gear"]) == null ? void 0 : _i.enabled) ? await predict(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.gear = Math.trunc(now() - timeStamp);
+    }
+    instance.analyze("End GEAR:");
+    instance.analyze("Start SSRNet:");
+    if (instance.config.async) {
+      ageRes = ((_j = instance.config.face["ssrnet"]) == null ? void 0 : _j.enabled) ? predict2(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+      genderRes = ((_k = instance.config.face["ssrnet"]) == null ? void 0 : _k.enabled) ? predict3(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+    } else {
+      instance.state = "run:ssrnet";
+      timeStamp = now();
+      ageRes = ((_l = instance.config.face["ssrnet"]) == null ? void 0 : _l.enabled) ? await predict2(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+      genderRes = ((_m = instance.config.face["ssrnet"]) == null ? void 0 : _m.enabled) ? await predict3(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.ssrnet = Math.trunc(now() - timeStamp);
+    }
+    instance.analyze("End SSRNet:");
+    instance.analyze("Start MobileFaceNet:");
+    if (instance.config.async) {
+      mobilefacenetRes = ((_n = instance.config.face["mobilefacenet"]) == null ? void 0 : _n.enabled) ? predict9(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+    } else {
+      instance.state = "run:mobilefacenet";
+      timeStamp = now();
+      mobilefacenetRes = ((_o = instance.config.face["mobilefacenet"]) == null ? void 0 : _o.enabled) ? await predict9(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.mobilefacenet = Math.trunc(now() - timeStamp);
+    }
+    instance.analyze("End MobileFaceNet:");
+    instance.analyze("Start Description:");
+    if (instance.config.async) {
+      descRes = ((_p = instance.config.face.description) == null ? void 0 : _p.enabled) ? predict11(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+    } else {
+      instance.state = "run:description";
+      timeStamp = now();
+      descRes = ((_q = instance.config.face.description) == null ? void 0 : _q.enabled) ? await predict11(faces[i].tensor || tf34.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.description = env.perfadd ? (instance.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+    }
+    instance.analyze("End Description:");
+    if (instance.config.async) {
+      [ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes]);
+    }
+    instance.analyze("Finish Face:");
+    if (((_r = instance.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && ageRes && genderRes) {
+      descRes = {
+        ...descRes,
+        age: ageRes.age,
+        gender: genderRes.gender,
+        genderScore: genderRes.genderScore
+      };
+    }
+    if (((_s = instance.config.face["gear"]) == null ? void 0 : _s.enabled) && gearRes) {
+      descRes = {
+        ...descRes,
+        age: gearRes.age,
+        gender: gearRes.gender,
+        genderScore: gearRes.genderScore,
+        race: gearRes.race
+      };
+    }
+    if (((_t = instance.config.face["mobilefacenet"]) == null ? void 0 : _t.enabled) && mobilefacenetRes) {
+      descRes.descriptor = mobilefacenetRes;
+    }
+    if (!((_u = instance.config.face.iris) == null ? void 0 : _u.enabled)) {
+    }
+    const irisSize = faces[i].annotations && faces[i].annotations.leftEyeIris && faces[i].annotations.leftEyeIris[0] && faces[i].annotations.rightEyeIris && faces[i].annotations.rightEyeIris[0] && faces[i].annotations.leftEyeIris.length > 0 && faces[i].annotations.rightEyeIris.length > 0 && faces[i].annotations.leftEyeIris[0] !== null && faces[i].annotations.rightEyeIris[0] !== null ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2] : 0;
+    const tensor3 = ((_v = instance.config.face.detector) == null ? void 0 : _v.return) ? tf34.squeeze(faces[i].tensor) : null;
+    tf34.dispose(faces[i].tensor);
+    if (faces[i].tensor)
+      delete faces[i].tensor;
+    const res = {
+      ...faces[i],
+      id: i
+    };
+    if (descRes == null ? void 0 : descRes.age)
+      res.age = descRes.age;
+    if (descRes == null ? void 0 : descRes.gender)
+      res.gender = descRes.gender;
+    if (descRes == null ? void 0 : descRes.genderScore)
+      res.genderScore = descRes == null ? void 0 : descRes.genderScore;
+    if (descRes == null ? void 0 : descRes.descriptor)
+      res.embedding = descRes == null ? void 0 : descRes.descriptor;
+    if (descRes == null ? void 0 : descRes.race)
+      res.race = descRes == null ? void 0 : descRes.race;
+    if (emotionRes)
+      res.emotion = emotionRes;
+    if (antispoofRes)
+      res.real = antispoofRes;
+    if (livenessRes)
+      res.live = livenessRes;
+    if (irisSize && irisSize !== 0)
+      res.iris = Math.trunc(500 / irisSize / 11.7) / 100;
+    if (rotation)
+      res.rotation = rotation;
+    if (tensor3)
+      res.tensor = tensor3;
+    faceRes.push(res);
+    instance.analyze("End Face");
+  }
+  instance.analyze("End FaceMesh:");
+  if (instance.config.async) {
+    if (instance.performance.face)
+      delete instance.performance.face;
+    if (instance.performance.age)
+      delete instance.performance.age;
+    if (instance.performance.gender)
+      delete instance.performance.gender;
+    if (instance.performance.emotion)
+      delete instance.performance.emotion;
+  }
+  return faceRes;
+};
+
+// src/gesture/gesture.ts
+var body2 = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    const leftWrist = res[i].keypoints.find((a) => a.part === "leftWrist");
+    const rightWrist = res[i].keypoints.find((a) => a.part === "rightWrist");
+    const nose = res[i].keypoints.find((a) => a.part === "nose");
+    if (nose && leftWrist && rightWrist && leftWrist.position[1] < nose.position[1] && rightWrist.position[1] < nose.position[1])
+      gestures.push({ body: i, gesture: "i give up" });
+    else if (nose && leftWrist && leftWrist.position[1] < nose.position[1])
+      gestures.push({ body: i, gesture: "raise left hand" });
+    else if (nose && rightWrist && rightWrist.position[1] < nose.position[1])
+      gestures.push({ body: i, gesture: "raise right hand" });
+    const leftShoulder = res[i].keypoints.find((a) => a.part === "leftShoulder");
+    const rightShoulder = res[i].keypoints.find((a) => a.part === "rightShoulder");
+    if (leftShoulder && rightShoulder && Math.abs(leftShoulder.positionRaw[1] - rightShoulder.positionRaw[1]) > 0.1) {
+      gestures.push({ body: i, gesture: `leaning ${leftShoulder.position[1] > rightShoulder.position[1] ? "left" : "right"}` });
+    }
+  }
+  return gestures;
+};
+var face2 = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    if (res[i].mesh && res[i].mesh.length > 450) {
+      const zDiff = (res[i].mesh[33][2] || 0) - (res[i].mesh[263][2] || 0);
+      const xDiff = res[i].mesh[33][0] - res[i].mesh[263][0];
+      if (Math.abs(zDiff / xDiff) <= 0.15)
+        gestures.push({ face: i, gesture: "facing center" });
+      else
+        gestures.push({ face: i, gesture: `facing ${zDiff < 0 ? "left" : "right"}` });
+      const openLeft = Math.abs(res[i].mesh[374][1] - res[i].mesh[386][1]) / Math.abs(res[i].mesh[443][1] - res[i].mesh[450][1]);
+      if (openLeft < 0.2)
+        gestures.push({ face: i, gesture: "blink left eye" });
+      const openRight = Math.abs(res[i].mesh[145][1] - res[i].mesh[159][1]) / Math.abs(res[i].mesh[223][1] - res[i].mesh[230][1]);
+      if (openRight < 0.2)
+        gestures.push({ face: i, gesture: "blink right eye" });
+      const mouthOpen = Math.min(100, 500 * Math.abs(res[i].mesh[13][1] - res[i].mesh[14][1]) / Math.abs(res[i].mesh[10][1] - res[i].mesh[152][1]));
+      if (mouthOpen > 10)
+        gestures.push({ face: i, gesture: `mouth ${Math.trunc(mouthOpen)}% open` });
+      const chinDepth = res[i].mesh[152][2] || 0;
+      if (Math.abs(chinDepth) > 10)
+        gestures.push({ face: i, gesture: `head ${chinDepth < 0 ? "up" : "down"}` });
+    }
+  }
+  return gestures;
+};
+var iris = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.leftEyeIris[0] || !res[i].annotations.rightEyeIris || !res[i].annotations.rightEyeIris[0])
+      continue;
+    const sizeXLeft = res[i].annotations.leftEyeIris[3][0] - res[i].annotations.leftEyeIris[1][0];
+    const sizeYLeft = res[i].annotations.leftEyeIris[4][1] - res[i].annotations.leftEyeIris[2][1];
+    const areaLeft = Math.abs(sizeXLeft * sizeYLeft);
+    const sizeXRight = res[i].annotations.rightEyeIris[3][0] - res[i].annotations.rightEyeIris[1][0];
+    const sizeYRight = res[i].annotations.rightEyeIris[4][1] - res[i].annotations.rightEyeIris[2][1];
+    const areaRight = Math.abs(sizeXRight * sizeYRight);
+    let center = false;
+    const difference = Math.abs(areaLeft - areaRight) / Math.max(areaLeft, areaRight);
+    if (difference < 0.25) {
+      center = true;
+      gestures.push({ iris: i, gesture: "facing center" });
+    }
+    const leftIrisCenterX = Math.abs(res[i].mesh[263][0] - res[i].annotations.leftEyeIris[0][0]) / res[i].box[2];
+    const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].box[2];
+    if (leftIrisCenterX > 0.06 || rightIrisCenterX > 0.06)
+      center = false;
+    if (leftIrisCenterX > rightIrisCenterX) {
+      if (leftIrisCenterX > 0.05)
+        gestures.push({ iris: i, gesture: "looking right" });
+    } else {
+      if (rightIrisCenterX > 0.05)
+        gestures.push({ iris: i, gesture: "looking left" });
+    }
+    const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];
+    const leftIrisCenterY = Math.abs(res[i].mesh[374][1] - res[i].annotations.leftEyeIris[0][1]) / res[i].box[3];
+    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01 || leftIrisCenterY > 0.022 || rightIrisCenterY > 0.022)
+      center = false;
+    if (leftIrisCenterY < 0.01 || rightIrisCenterY < 0.01)
+      gestures.push({ iris: i, gesture: "looking down" });
+    if (leftIrisCenterY > 0.022 || rightIrisCenterY > 0.022)
+      gestures.push({ iris: i, gesture: "looking up" });
+    if (center)
+      gestures.push({ iris: i, gesture: "looking center" });
+  }
+  return gestures;
+};
+var hand2 = (res) => {
+  if (!res)
+    return [];
+  const gestures = [];
+  for (let i = 0; i < res.length; i++) {
+    const fingers = [];
+    if (res[i]["annotations"]) {
+      for (const [finger, pos] of Object.entries(res[i]["annotations"])) {
+        if (finger !== "palmBase" && Array.isArray(pos) && pos[0])
+          fingers.push({ name: finger.toLowerCase(), position: pos[0] });
+      }
+    }
+    if (fingers && fingers.length > 0) {
+      const closest = fingers.reduce((best, a) => (best.position[2] || 0) < (a.position[2] || 0) ? best : a);
+      gestures.push({ hand: i, gesture: `${closest.name} forward` });
+      const highest = fingers.reduce((best, a) => best.position[1] < a.position[1] ? best : a);
+      gestures.push({ hand: i, gesture: `${highest.name} up` });
+    }
+    if (res[i]["keypoints"]) {
+      const poses = match(res[i]["keypoints"]);
+      for (const pose of poses)
+        gestures.push({ hand: i, gesture: pose.name });
+    }
+  }
+  return gestures;
+};
+
+// src/util/interpolate.ts
+var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
+var interpolateTime = 0;
+function calc2(newResult, config3) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
+  const t0 = now();
+  if (!newResult)
+    return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
+  const elapsed = Date.now() - newResult.timestamp;
+  const bufferedFactor = elapsed < 1e3 ? 8 - Math.log(elapsed + 1) : 1;
+  if (newResult.canvas)
+    bufferedResult.canvas = newResult.canvas;
+  if (newResult.error)
+    bufferedResult.error = newResult.error;
+  if (!bufferedResult.body || newResult.body.length !== bufferedResult.body.length) {
+    bufferedResult.body = JSON.parse(JSON.stringify(newResult.body));
+  } else {
+    for (let i = 0; i < newResult.body.length; i++) {
+      const box = newResult.body[i].box.map((newBoxCoord, j) => ((bufferedFactor - 1) * bufferedResult.body[i].box[j] + newBoxCoord) / bufferedFactor);
+      const boxRaw = newResult.body[i].boxRaw.map((newBoxCoord, j) => ((bufferedFactor - 1) * bufferedResult.body[i].boxRaw[j] + newBoxCoord) / bufferedFactor);
+      const keypoints = newResult.body[i].keypoints.map((newKpt, j) => {
+        var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2;
+        return {
+          score: newKpt.score,
+          part: newKpt.part,
+          position: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[0] || 0) + (newKpt.position[0] || 0)) / bufferedFactor : newKpt.position[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[1] || 0) + (newKpt.position[1] || 0)) / bufferedFactor : newKpt.position[1],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].position[2] || 0) + (newKpt.position[2] || 0)) / bufferedFactor : newKpt.position[2]
+          ],
+          positionRaw: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[0] || 0) + (newKpt.positionRaw[0] || 0)) / bufferedFactor : newKpt.positionRaw[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[1] || 0) + (newKpt.positionRaw[1] || 0)) / bufferedFactor : newKpt.positionRaw[1],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (bufferedResult.body[i].keypoints[j].positionRaw[2] || 0) + (newKpt.positionRaw[2] || 0)) / bufferedFactor : newKpt.positionRaw[2]
+          ],
+          distance: [
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (((_a2 = bufferedResult.body[i].keypoints[j].distance) == null ? void 0 : _a2[0]) || 0) + (((_b2 = newKpt.distance) == null ? void 0 : _b2[0]) || 0)) / bufferedFactor : (_c2 = newKpt.distance) == null ? void 0 : _c2[0],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (((_d2 = bufferedResult.body[i].keypoints[j].distance) == null ? void 0 : _d2[1]) || 0) + (((_e2 = newKpt.distance) == null ? void 0 : _e2[1]) || 0)) / bufferedFactor : (_f2 = newKpt.distance) == null ? void 0 : _f2[1],
+            bufferedResult.body[i].keypoints[j] ? ((bufferedFactor - 1) * (((_g2 = bufferedResult.body[i].keypoints[j].distance) == null ? void 0 : _g2[2]) || 0) + (((_h2 = newKpt.distance) == null ? void 0 : _h2[2]) || 0)) / bufferedFactor : (_i2 = newKpt.distance) == null ? void 0 : _i2[2]
+          ]
+        };
+      });
+      const annotations2 = {};
+      let coords = { connected: {} };
+      if ((_b = (_a = config3.body) == null ? void 0 : _a.modelPath) == null ? void 0 : _b.includes("efficientpose"))
+        coords = efficientposecoords_exports;
+      else if ((_d = (_c = config3.body) == null ? void 0 : _c.modelPath) == null ? void 0 : _d.includes("blazepose"))
+        coords = blazeposecoords_exports;
+      else if ((_f = (_e = config3.body) == null ? void 0 : _e.modelPath) == null ? void 0 : _f.includes("movenet"))
+        coords = movenetcoords_exports;
+      for (const [name, indexes] of Object.entries(coords.connected)) {
+        const pt = [];
+        for (let j = 0; j < indexes.length - 1; j++) {
+          const pt0 = keypoints.find((kp) => kp.part === indexes[j]);
+          const pt1 = keypoints.find((kp) => kp.part === indexes[j + 1]);
+          if (pt0 && pt1)
+            pt.push([pt0.position, pt1.position]);
+        }
+        annotations2[name] = pt;
+      }
+      bufferedResult.body[i] = { ...newResult.body[i], box, boxRaw, keypoints, annotations: annotations2 };
+    }
+  }
+  if (!bufferedResult.hand || newResult.hand.length !== bufferedResult.hand.length) {
+    bufferedResult.hand = JSON.parse(JSON.stringify(newResult.hand));
+  } else {
+    for (let i = 0; i < newResult.hand.length; i++) {
+      const box = newResult.hand[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].box[j] + b) / bufferedFactor);
+      const boxRaw = newResult.hand[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.hand[i].boxRaw[j] + b) / bufferedFactor);
+      if (bufferedResult.hand[i].keypoints.length !== newResult.hand[i].keypoints.length)
+        bufferedResult.hand[i].keypoints = newResult.hand[i].keypoints;
+      const keypoints = newResult.hand[i].keypoints && newResult.hand[i].keypoints.length > 0 ? newResult.hand[i].keypoints.map((landmark, j) => landmark.map((coord, k) => ((bufferedFactor - 1) * (bufferedResult.hand[i].keypoints[j][k] || 1) + (coord || 0)) / bufferedFactor)) : [];
+      let annotations2 = {};
+      if (Object.keys(bufferedResult.hand[i].annotations).length !== Object.keys(newResult.hand[i].annotations).length) {
+        bufferedResult.hand[i].annotations = newResult.hand[i].annotations;
+        annotations2 = bufferedResult.hand[i].annotations;
+      } else if (newResult.hand[i].annotations) {
+        for (const key of Object.keys(newResult.hand[i].annotations)) {
+          annotations2[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0] ? newResult.hand[i].annotations[key].map((val, j) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor)) : null;
+        }
+      }
+      bufferedResult.hand[i] = { ...newResult.hand[i], box, boxRaw, keypoints, annotations: annotations2 };
+    }
+  }
+  if (!bufferedResult.face || newResult.face.length !== bufferedResult.face.length) {
+    bufferedResult.face = JSON.parse(JSON.stringify(newResult.face));
+  } else {
+    for (let i = 0; i < newResult.face.length; i++) {
+      const box = newResult.face[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor);
+      const boxRaw = newResult.face[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor);
+      if (newResult.face[i].rotation) {
+        const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
+        rotation.matrix = (_g = newResult.face[i].rotation) == null ? void 0 : _g.matrix;
+        rotation.angle = {
+          roll: ((bufferedFactor - 1) * (((_i = (_h = bufferedResult.face[i].rotation) == null ? void 0 : _h.angle) == null ? void 0 : _i.roll) || 0) + (((_k = (_j = newResult.face[i].rotation) == null ? void 0 : _j.angle) == null ? void 0 : _k.roll) || 0)) / bufferedFactor,
+          yaw: ((bufferedFactor - 1) * (((_m = (_l = bufferedResult.face[i].rotation) == null ? void 0 : _l.angle) == null ? void 0 : _m.yaw) || 0) + (((_o = (_n = newResult.face[i].rotation) == null ? void 0 : _n.angle) == null ? void 0 : _o.yaw) || 0)) / bufferedFactor,
+          pitch: ((bufferedFactor - 1) * (((_q = (_p = bufferedResult.face[i].rotation) == null ? void 0 : _p.angle) == null ? void 0 : _q.pitch) || 0) + (((_s = (_r = newResult.face[i].rotation) == null ? void 0 : _r.angle) == null ? void 0 : _s.pitch) || 0)) / bufferedFactor
+        };
+        rotation.gaze = {
+          bearing: ((bufferedFactor - 1) * (((_u = (_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze) == null ? void 0 : _u.bearing) || 0) + (((_w = (_v = newResult.face[i].rotation) == null ? void 0 : _v.gaze) == null ? void 0 : _w.bearing) || 0)) / bufferedFactor,
+          strength: ((bufferedFactor - 1) * (((_y = (_x = bufferedResult.face[i].rotation) == null ? void 0 : _x.gaze) == null ? void 0 : _y.strength) || 0) + (((_A = (_z = newResult.face[i].rotation) == null ? void 0 : _z.gaze) == null ? void 0 : _A.strength) || 0)) / bufferedFactor
+        };
+        bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw };
+      }
+      bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw };
+    }
+  }
+  if (!bufferedResult.object || newResult.object.length !== bufferedResult.object.length) {
+    bufferedResult.object = JSON.parse(JSON.stringify(newResult.object));
+  } else {
+    for (let i = 0; i < newResult.object.length; i++) {
+      const box = newResult.object[i].box.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].box[j] + b) / bufferedFactor);
+      const boxRaw = newResult.object[i].boxRaw.map((b, j) => ((bufferedFactor - 1) * bufferedResult.object[i].boxRaw[j] + b) / bufferedFactor);
+      bufferedResult.object[i] = { ...newResult.object[i], box, boxRaw };
+    }
+  }
+  if (newResult.persons) {
+    const newPersons = newResult.persons;
+    if (!bufferedResult.persons || newPersons.length !== bufferedResult.persons.length) {
+      bufferedResult.persons = JSON.parse(JSON.stringify(newPersons));
+    } else {
+      for (let i = 0; i < newPersons.length; i++) {
+        bufferedResult.persons[i].box = newPersons[i].box.map((box, j) => ((bufferedFactor - 1) * bufferedResult.persons[i].box[j] + box) / bufferedFactor);
+      }
+    }
+  }
+  if (newResult.gesture)
+    bufferedResult.gesture = newResult.gesture;
+  const t1 = now();
+  interpolateTime = env.perfadd ? interpolateTime + Math.round(t1 - t0) : Math.round(t1 - t0);
+  if (newResult.performance)
+    bufferedResult.performance = { ...newResult.performance, interpolate: interpolateTime };
+  return bufferedResult;
+}
+
+// src/face/match.ts
+var match_exports = {};
+__export(match_exports, {
+  distance: () => distance,
+  match: () => match2,
+  similarity: () => similarity
+});
+function distance(descriptor1, descriptor2, options4 = { order: 2, multiplier: 25 }) {
+  let sum3 = 0;
+  for (let i = 0; i < descriptor1.length; i++) {
+    const diff = !options4.order || options4.order === 2 ? descriptor1[i] - descriptor2[i] : Math.abs(descriptor1[i] - descriptor2[i]);
+    sum3 += !options4.order || options4.order === 2 ? diff * diff : diff ** options4.order;
+  }
+  return (options4.multiplier || 20) * sum3;
+}
+var normalizeDistance = (dist, order, min2, max4) => {
+  if (dist === 0)
+    return 1;
+  const root = order === 2 ? Math.sqrt(dist) : dist ** (1 / order);
+  const norm = (1 - root / 100 - min2) / (max4 - min2);
+  const clamp2 = Math.max(Math.min(norm, 1), 0);
+  return clamp2;
+};
+function similarity(descriptor1, descriptor2, options4 = { order: 2, multiplier: 25, min: 0.2, max: 0.8 }) {
+  const dist = distance(descriptor1, descriptor2, options4);
+  return normalizeDistance(dist, options4.order || 2, options4.min || 0, options4.max || 1);
+}
+function match2(descriptor, descriptors, options4 = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
+  if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) {
+    return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
+  }
+  let lowestDistance = Number.MAX_SAFE_INTEGER;
+  let index2 = -1;
+  for (let i = 0; i < descriptors.length; i++) {
+    const res = distance(descriptor, descriptors[i], options4);
+    if (res < lowestDistance) {
+      lowestDistance = res;
+      index2 = i;
+    }
+    if (lowestDistance < (options4.threshold || 0))
+      break;
+  }
+  const normalizedSimilarity = normalizeDistance(lowestDistance, options4.order || 2, options4.min || 0, options4.max || 1);
+  return { index: index2, distance: lowestDistance, similarity: normalizedSimilarity };
+}
+
+// src/util/persons.ts
+function join2(faces, bodies, hands, gestures, shape) {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
+  let id = 0;
+  const persons = [];
+  for (const face4 of faces) {
+    const person2 = { id: id++, face: face4, body: null, hands: { left: null, right: null }, gestures: [], box: [0, 0, 0, 0] };
+    for (const body4 of bodies) {
+      if (face4.box[0] > body4.box[0] && face4.box[0] < body4.box[0] + body4.box[2] && face4.box[1] + face4.box[3] > body4.box[1] && face4.box[1] + face4.box[3] < body4.box[1] + body4.box[3]) {
+        person2.body = body4;
+      }
+    }
+    if (person2.body) {
+      for (const hand3 of hands) {
+        if (hand3.box[0] + hand3.box[2] > person2.body.box[0] && hand3.box[0] + hand3.box[2] < person2.body.box[0] + person2.body.box[2] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
+          if (person2.hands)
+            person2.hands.left = hand3;
+        }
+        if (hand3.box[0] < person2.body.box[0] + person2.body.box[2] && hand3.box[0] > person2.body.box[0] && hand3.box[1] + hand3.box[3] > person2.body.box[1] && hand3.box[1] + hand3.box[3] < person2.body.box[1] + person2.body.box[3]) {
+          if (person2.hands)
+            person2.hands.right = hand3;
+        }
+      }
+    }
+    for (const gesture2 of gestures) {
+      if (gesture2["face"] !== void 0 && gesture2["face"] === face4.id)
+        (_a = person2.gestures) == null ? void 0 : _a.push(gesture2);
+      else if (gesture2["iris"] !== void 0 && gesture2["iris"] === face4.id)
+        (_b = person2.gestures) == null ? void 0 : _b.push(gesture2);
+      else if (gesture2["body"] !== void 0 && gesture2["body"] === ((_c = person2.body) == null ? void 0 : _c.id))
+        (_d = person2.gestures) == null ? void 0 : _d.push(gesture2);
+      else if (gesture2["hand"] !== void 0 && gesture2["hand"] === ((_f = (_e = person2.hands) == null ? void 0 : _e.left) == null ? void 0 : _f.id))
+        (_g = person2.gestures) == null ? void 0 : _g.push(gesture2);
+      else if (gesture2["hand"] !== void 0 && gesture2["hand"] === ((_i = (_h = person2.hands) == null ? void 0 : _h.right) == null ? void 0 : _i.id))
+        (_j = person2.gestures) == null ? void 0 : _j.push(gesture2);
+    }
+    const x = [];
+    const y = [];
+    const extractXY = (box) => {
+      if (box && box.length === 4) {
+        x.push(box[0], box[0] + box[2]);
+        y.push(box[1], box[1] + box[3]);
+      }
+    };
+    extractXY((_k = person2.face) == null ? void 0 : _k.box);
+    extractXY((_l = person2.body) == null ? void 0 : _l.box);
+    extractXY((_n = (_m = person2.hands) == null ? void 0 : _m.left) == null ? void 0 : _n.box);
+    extractXY((_p = (_o = person2.hands) == null ? void 0 : _o.right) == null ? void 0 : _p.box);
+    const minX = Math.min(...x);
+    const minY = Math.min(...y);
+    person2.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY];
+    if (shape && shape[1] && shape[2])
+      person2.boxRaw = [person2.box[0] / shape[2], person2.box[1] / shape[1], person2.box[2] / shape[2], person2.box[3] / shape[1]];
+    persons.push(person2);
+  }
+  return persons;
+}
+
+// src/sample.ts
+var face3 = `
 /9j/4AAQSkZJRgABAQEAYABgAAD/4QBoRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUA
 AAABAAAARgEoAAMAAAABAAIAAAExAAIAAAARAAAATgAAAAAAAABgAAAAAQAAAGAAAAABcGFpbnQu
 bmV0IDQuMi4xMwAA/9sAQwAGBAUGBQQGBgUGBwcGCAoQCgoJCQoUDg8MEBcUGBgXFBYWGh0lHxob
@@ -259,7 +12717,8 @@ PQ4GJ+ashuK0MhWaoWcA0AaOmASMK7jRNPWYBmHyiuepO2x10qfcv6vYxCzYqoGK4HVYVTJrmb5l
 c6oaM5TUJ8EgGsG4kLNUHT0M64OaqMMikSRsuKbnFMRLG3zVehOaGNE445NNlnVFpDMu6uie9Vo1
 8z5mOAOST2pDK91cNN+5tsrH3PrW54a06KxT7fdrlh/q1Pc+tJ6IUdZGvHPLezMcnBOWbsPap5r3
 ylFtbdT1xUWNWzU0/Zbwlgfmx8zGsHWtRHmMqE59aAMyNifvHPc1f0gtPdqkY5JosJHeNci2tktY
-euPnNY+oXWZEVJNrZ9aun8SIq/CzodHuriIokhDIR1ronbKZr0o6o8ipoz//2Q==`,o5=`
+euPnNY+oXWZEVJNrZ9aun8SIq/CzodHuriIokhDIR1ronbKZr0o6o8ipoz//2Q==`;
+var body3 = `
 /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigk
 JyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVF
 RUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCASwBLADASIA
@@ -827,7 +13286,474 @@ AAAAAAJAAAAAAAAAAAAAABAJEAAAAAAAAAAAAAAAIEoBKAAAAAAAAAAAAAAABAlAAAAAAAIAAAAA
 BAkBAkBAkBAlACEgMZjdjbFW8bWrEx8YWANb6Fp+bfwab+vLDKMFK9qxH5L0bAr8OPRPKz2AY7J2
 SbAjYZAI2E7AIEgIEgIEgMdkSy2NgY7MdlmyNoBXsxmFuyNgVTVjNV3KjlBRNTlXTVHKCrlIqt5T
 lBhEMohlFerLlBjEMohMVTEARDKCITsAk2AEgAAAkAAAAAAAAAAAAAAAAAAAAAAAASAAAAAAAAD/
-2Q==`;var ie=V(F());async function js(e){let t=(n,r="application/octet-stream")=>fetch(`data:${r};base64,${n}`).then(s=>s.blob()),o,A;switch(e.config.warmup){case"face":o=await t(t5);break;case"body":case"full":o=await t(o5);break;default:o=null}if(o){let n=await createImageBitmap(o);A=await e.detect(n,e.config),n.close()}return A}async function Ss(e){return new Promise(t=>{let o;switch(e.config.warmup){case"face":o="data:image/jpeg;base64,"+t5;break;case"full":case"body":o="data:image/jpeg;base64,"+o5;break;default:o=null}let A;if(typeof Image!="undefined")A=new Image;else if(T.Image)A=new T.Image;else return;A.onload=async()=>{let n=h0(A.naturalWidth,A.naturalHeight);if(!n)b("Warmup: Canvas not found"),t(void 0);else{let r=n.getContext("2d");r&&r.drawImage(A,0,0);let s=await e.image(n),a=await e.detect(s.tensor,e.config);t(a)}},o?A.src=o:t(void 0)})}async function Ws(e){let t=n=>Buffer.from(n,"base64"),o;e.config.warmup==="face"?o=t(t5):o=t(o5);let A;if("node"in ie){let n=ie.node.decodeJpeg(o),r=n.expandDims(0);e.tf.dispose(n),A=await e.detect(r,e.config),e.tf.dispose(r)}else e.config.debug&&b("Warmup tfjs-node not loaded");return A}async function Cs(e){let t;return typeof createImageBitmap=="function"?t=await js(e):typeof Image!="undefined"||T.Canvas!==void 0?t=await Ss(e):t=await Ws(e),t}async function Vr(e,t){let o=g();return e.state="warmup",t&&(e.config=c0(e.config,t)),!e.config.warmup||e.config.warmup.length===0||e.config.warmup==="none"?{face:[],body:[],hand:[],gesture:[],object:[],performance:e.performance,timestamp:g(),persons:[],error:null}:new Promise(async A=>{let n=await Cs(e),r=g();e.config.debug&&b("warmup",e.config.warmup,Math.round(r-o),"ms"),e.emit("warmup"),A(n)})}var Qe,ft,mt,A5,Zr=class{constructor(t){w(this,"version");w(this,"config");w(this,"result");w(this,"state");w(this,"process");w(this,"tf");w(this,"env");w(this,"draw");w(this,"models");w(this,"events");w(this,"faceTriangulation");w(this,"faceUVMap");w(this,"performance");ot(this,Qe,void 0);ot(this,ft,void 0);ot(this,mt,void 0);w(this,"gl");w(this,"analyze",(...t)=>{if(!tt(this,ft))return;let o=this.tf.engine().state.numTensors,A=tt(this,Qe);At(this,Qe,o);let n=o-A;n!==0&&b(...t,n)});ot(this,A5,t=>{if(!tt(this,mt))return null;if(!t)return"input is not defined";if(this.env.node&&!(t instanceof D0.Tensor))return"input must be a tensor";try{this.tf.getBackend()}catch(o){return"backend not loaded"}return null});w(this,"similarity",Br);w(this,"distance",e5);w(this,"match",Hr);w(this,"emit",t=>{var o;this.events&&this.events.dispatchEvent&&((o=this.events)==null||o.dispatchEvent(new Event(t)))});this.env=T,ye.wasmPath=D0.version["tfjs-core"].includes("-")?"https://vladmandic.github.io/tfjs/dist/":`https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${D0.version_core}/dist/`,ye.modelBasePath=T.browser?"../models/":"file://models/",ye.backend=T.browser?"humangl":"tensorflow",this.version=l5,Object.defineProperty(this,"version",{value:l5}),this.config=JSON.parse(JSON.stringify(ye)),Object.seal(this.config),this.config.cacheModels=typeof indexedDB!="undefined",t&&(this.config=c0(this.config,t)),nA(this.config),this.tf=D0,this.state="idle",At(this,Qe,0),At(this,ft,!1),At(this,mt,!1),this.performance={},this.events=typeof EventTarget!="undefined"?new EventTarget:void 0,this.models=new Ro,this.draw={options:ae,canvas:(o,A)=>Er(o,A),face:(o,A,n)=>So(o,A,n),body:(o,A,n)=>Wo(o,A,n),hand:(o,A,n)=>Co(o,A,n),gesture:(o,A,n)=>jo(o,A,n),object:(o,A,n)=>Oo(o,A,n),person:(o,A,n)=>kr(o,A,n),all:(o,A,n)=>zr(o,A,n)},this.result={face:[],body:[],hand:[],gesture:[],object:[],performance:{},timestamp:0,persons:[],error:null},this.process={tensor:null,canvas:null},this.faceTriangulation=pn,this.faceUVMap=un,this.gl=$,this.emit("create")}reset(){let t=this.config.backend;this.config=JSON.parse(JSON.stringify(ye)),this.config.backend=t}validate(t){return n5(ye,t||this.config)}now(){return g()}image(t,o=!0){return Ce(t,this.config,o)}async segmentation(t,o){return hr(t,o,this.config)}enhance(t){return U5(t)}compare(t,o){return oA(this.config,t,o)}async init(){await $t(this,!0),await this.tf.ready()}async load(t){this.state="load";let o=g(),A=Object.values(this.models).filter(s=>s).length;t&&(this.config=c0(this.config,t)),this.env.initial&&(this.config.debug&&b(`version: ${this.version}`),this.config.debug&&b(`tfjs version: ${this.tf.version["tfjs-core"]}`),await $t(this)||b("error: backend check failed"),await D0.ready(),this.env.browser&&(this.config.debug&&b("configuration:",this.config),this.config.debug&&b("environment:",this.env),this.config.debug&&b("tf flags:",this.tf.ENV.flags))),await gr(this),this.env.initial&&this.config.debug&&b("tf engine state:",this.tf.engine().state.numBytes,"bytes",this.tf.engine().state.numTensors,"tensors"),this.env.initial=!1,Object.values(this.models).filter(s=>s).length!==A&&(await Pr(this),this.emit("load"));let r=Math.trunc(g()-o);r>(this.performance.loadModels||0)&&(this.performance.loadModels=this.env.perfadd?(this.performance.loadModels||0)+r:r)}next(t=this.result){return Lr(t,this.config)}async warmup(t){let o=g(),A=await Vr(this,t),n=g();return this.performance.warmup=Math.trunc(n-o),A}async profile(t,o){let A=await this.tf.profile(()=>this.detect(t,o)),n={};for(let a of A.kernels)n[a.name]?n[a.name]+=a.kernelTimeMs:n[a.name]=a.kernelTimeMs;let r=[];Object.entries(n).forEach(a=>r.push({name:a[0],ms:a[1]})),r.sort((a,y)=>y.ms-a.ms),r.length=20;let s={};for(let a of r)s[a.name]=a.ms;return s}async detect(t,o){return this.state="detect",new Promise(async A=>{var M,h,P,m,p,k,C,O,j,L,J,Z,q,x0,E,C0,le,v,a0,R,Q,n0;this.state="config";let n;this.config=c0(this.config,o),this.state="check";let r=tt(this,A5).call(this,t);r&&(b(r,t),this.emit("error"),A({face:[],body:[],hand:[],gesture:[],object:[],performance:this.performance,timestamp:g(),persons:[],error:r}));let s=g();await $t(this),await this.load(),n=g(),this.state="image";let a=await Ce(t,this.config);if(this.process=a,this.performance.inputProcess=this.env.perfadd?(this.performance.inputProcess||0)+Math.trunc(g()-n):Math.trunc(g()-n),this.analyze("Get Image:"),!a.tensor){this.config.debug&&b("could not convert input to tensor"),this.emit("error"),A({face:[],body:[],hand:[],gesture:[],object:[],performance:this.performance,timestamp:g(),persons:[],error:"could not convert input to tensor"});return}this.emit("image"),n=g(),this.config.skipAllowed=await tA(this.config,a.tensor),this.performance.totalFrames||(this.performance.totalFrames=0),this.performance.cachedFrames||(this.performance.cachedFrames=0),this.performance.totalFrames++,this.config.skipAllowed&&this.performance.cachedFrames++,this.performance.cacheCheck=this.env.perfadd?(this.performance.cacheCheck||0)+Math.trunc(g()-n):Math.trunc(g()-n),this.analyze("Check Changed:");let y=[],c=[],i=[],l=[];this.state="detect:face",this.config.async?(y=this.config.face.enabled?No(this,a.tensor):[],this.performance.face&&delete this.performance.face):(n=g(),y=this.config.face.enabled?await No(this,a.tensor):[],this.performance.face=this.env.perfadd?(this.performance.face||0)+Math.trunc(g()-n):Math.trunc(g()-n)),this.config.async&&(this.config.body.maxDetected===-1||this.config.hand.maxDetected===-1)&&(y=await y),this.analyze("Start Body:"),this.state="detect:body";let x=this.config.body.maxDetected===-1?c0(this.config,{body:{maxDetected:this.config.face.enabled?1*y.length:1}}):this.config;this.config.async?((M=this.config.body.modelPath)!=null&&M.includes("posenet")?c=this.config.body.enabled?vo(a.tensor,x):[]:(h=this.config.body.modelPath)!=null&&h.includes("blazepose")?c=this.config.body.enabled?S5(a.tensor,x):[]:(P=this.config.body.modelPath)!=null&&P.includes("efficientpose")?c=this.config.body.enabled?G5(a.tensor,x):[]:(m=this.config.body.modelPath)!=null&&m.includes("movenet")&&(c=this.config.body.enabled?mo(a.tensor,x):[]),this.performance.body&&delete this.performance.body):(n=g(),(p=this.config.body.modelPath)!=null&&p.includes("posenet")?c=this.config.body.enabled?await vo(a.tensor,x):[]:(k=this.config.body.modelPath)!=null&&k.includes("blazepose")?c=this.config.body.enabled?await S5(a.tensor,x):[]:(C=this.config.body.modelPath)!=null&&C.includes("efficientpose")?c=this.config.body.enabled?await G5(a.tensor,x):[]:(O=this.config.body.modelPath)!=null&&O.includes("movenet")&&(c=this.config.body.enabled?await mo(a.tensor,x):[]),this.performance.body=this.env.perfadd?(this.performance.body||0)+Math.trunc(g()-n):Math.trunc(g()-n)),this.analyze("End Body:"),this.analyze("Start Hand:"),this.state="detect:hand";let d=this.config.hand.maxDetected===-1?c0(this.config,{hand:{maxDetected:this.config.face.enabled?2*y.length:1}}):this.config;this.config.async?((L=(j=this.config.hand.detector)==null?void 0:j.modelPath)!=null&&L.includes("handdetect")?i=this.config.hand.enabled?oo(a.tensor,d):[]:(Z=(J=this.config.hand.detector)==null?void 0:J.modelPath)!=null&&Z.includes("handtrack")&&(i=this.config.hand.enabled?so(a.tensor,d):[]),this.performance.hand&&delete this.performance.hand):(n=g(),(x0=(q=this.config.hand.detector)==null?void 0:q.modelPath)!=null&&x0.includes("handdetect")?i=this.config.hand.enabled?await oo(a.tensor,d):[]:(C0=(E=this.config.hand.detector)==null?void 0:E.modelPath)!=null&&C0.includes("handtrack")&&(i=this.config.hand.enabled?await so(a.tensor,d):[]),this.performance.hand=this.env.perfadd?(this.performance.hand||0)+Math.trunc(g()-n):Math.trunc(g()-n)),this.analyze("End Hand:"),this.analyze("Start Object:"),this.state="detect:object",this.config.async?((le=this.config.object.modelPath)!=null&&le.includes("nanodet")?l=this.config.object.enabled?uo(a.tensor,this.config):[]:(v=this.config.object.modelPath)!=null&&v.includes("centernet")&&(l=this.config.object.enabled?O5(a.tensor,this.config):[]),this.performance.object&&delete this.performance.object):(n=g(),(a0=this.config.object.modelPath)!=null&&a0.includes("nanodet")?l=this.config.object.enabled?await uo(a.tensor,this.config):[]:(R=this.config.object.modelPath)!=null&&R.includes("centernet")&&(l=this.config.object.enabled?await O5(a.tensor,this.config):[]),this.performance.object=this.env.perfadd?(this.performance.object||0)+Math.trunc(g()-n):Math.trunc(g()-n)),this.analyze("End Object:"),this.state="detect:await",this.config.async&&([y,c,i,l]=await Promise.all([y,c,i,l])),this.state="detect:gesture";let u=[];this.config.gesture.enabled&&(n=g(),u=[...Or(y),...Cr(c),...Nr(i),...Ir(y)],this.config.async?this.performance.gesture&&delete this.performance.gesture:this.performance.gesture=this.env.perfadd?(this.performance.gesture||0)+Math.trunc(g()-n):Math.trunc(g()-n)),this.performance.total=this.env.perfadd?(this.performance.total||0)+Math.trunc(g()-s):Math.trunc(g()-s);let f=((n0=(Q=this.process)==null?void 0:Q.tensor)==null?void 0:n0.shape)||[];this.result={face:y,body:c,hand:i,gesture:u,object:l,performance:this.performance,canvas:this.process.canvas,timestamp:Date.now(),error:null,get persons(){return Fr(y,c,i,u,f)}},D0.dispose(a.tensor),this.emit("detect"),this.state="idle",A(this.result)})}};Qe=new WeakMap,ft=new WeakMap,mt=new WeakMap,A5=new WeakMap;0&&(module.exports={Human,defaults,env});
+2Q==`;
+
+// src/warmup.ts
+var tf35 = __toESM(require_tfjs_esm());
+async function warmupBitmap(instance) {
+  const b64toBlob = (base64, type = "application/octet-stream") => fetch(`data:${type};base64,${base64}`).then((res2) => res2.blob());
+  let blob;
+  let res;
+  switch (instance.config.warmup) {
+    case "face":
+      blob = await b64toBlob(face3);
+      break;
+    case "body":
+    case "full":
+      blob = await b64toBlob(body3);
+      break;
+    default:
+      blob = null;
+  }
+  if (blob) {
+    const bitmap = await createImageBitmap(blob);
+    res = await instance.detect(bitmap, instance.config);
+    bitmap.close();
+  }
+  return res;
+}
+async function warmupCanvas(instance) {
+  return new Promise((resolve) => {
+    let src;
+    switch (instance.config.warmup) {
+      case "face":
+        src = "data:image/jpeg;base64," + face3;
+        break;
+      case "full":
+      case "body":
+        src = "data:image/jpeg;base64," + body3;
+        break;
+      default:
+        src = null;
+    }
+    let img;
+    if (typeof Image !== "undefined")
+      img = new Image();
+    else if (env.Image)
+      img = new env.Image();
+    else
+      return;
+    img.onload = async () => {
+      const canvas3 = canvas(img.naturalWidth, img.naturalHeight);
+      if (!canvas3) {
+        log("Warmup: Canvas not found");
+        resolve(void 0);
+      } else {
+        const ctx = canvas3.getContext("2d");
+        if (ctx)
+          ctx.drawImage(img, 0, 0);
+        const tensor3 = await instance.image(canvas3);
+        const res = await instance.detect(tensor3.tensor, instance.config);
+        resolve(res);
+      }
+    };
+    if (src)
+      img.src = src;
+    else
+      resolve(void 0);
+  });
+}
+async function warmupNode(instance) {
+  const atob = (str) => Buffer.from(str, "base64");
+  let img;
+  if (instance.config.warmup === "face")
+    img = atob(face3);
+  else
+    img = atob(body3);
+  let res;
+  if ("node" in tf35) {
+    const data = tf35["node"].decodeJpeg(img);
+    const expanded = data.expandDims(0);
+    instance.tf.dispose(data);
+    res = await instance.detect(expanded, instance.config);
+    instance.tf.dispose(expanded);
+  } else {
+    if (instance.config.debug)
+      log("Warmup tfjs-node not loaded");
+  }
+  return res;
+}
+async function runInference(instance) {
+  let res;
+  if (typeof createImageBitmap === "function")
+    res = await warmupBitmap(instance);
+  else if (typeof Image !== "undefined" || env.Canvas !== void 0)
+    res = await warmupCanvas(instance);
+  else
+    res = await warmupNode(instance);
+  return res;
+}
+async function warmup(instance, userConfig) {
+  const t0 = now();
+  instance.state = "warmup";
+  if (userConfig)
+    instance.config = mergeDeep(instance.config, userConfig);
+  if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === "none") {
+    return { face: [], body: [], hand: [], gesture: [], object: [], performance: instance.performance, timestamp: now(), persons: [], error: null };
+  }
+  return new Promise(async (resolve) => {
+    const res = await runInference(instance);
+    const t1 = now();
+    if (instance.config.debug)
+      log("warmup", instance.config.warmup, Math.round(t1 - t0), "ms");
+    instance.emit("warmup");
+    resolve(res);
+  });
+}
+
+// src/human.ts
+var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity;
+var Human = class {
+  constructor(userConfig) {
+    __publicField(this, "version");
+    __publicField(this, "config");
+    __publicField(this, "result");
+    __publicField(this, "state");
+    __publicField(this, "process");
+    __publicField(this, "tf");
+    __publicField(this, "env");
+    __publicField(this, "draw");
+    __publicField(this, "models");
+    __publicField(this, "events");
+    __publicField(this, "faceTriangulation");
+    __publicField(this, "faceUVMap");
+    __publicField(this, "performance");
+    __privateAdd(this, _numTensors, void 0);
+    __privateAdd(this, _analyzeMemoryLeaks, void 0);
+    __privateAdd(this, _checkSanity, void 0);
+    __publicField(this, "gl");
+    __publicField(this, "analyze", (...msg) => {
+      if (!__privateGet(this, _analyzeMemoryLeaks))
+        return;
+      const currentTensors = this.tf.engine().state.numTensors;
+      const previousTensors = __privateGet(this, _numTensors);
+      __privateSet(this, _numTensors, currentTensors);
+      const leaked = currentTensors - previousTensors;
+      if (leaked !== 0)
+        log(...msg, leaked);
+    });
+    __privateAdd(this, _sanity, (input) => {
+      if (!__privateGet(this, _checkSanity))
+        return null;
+      if (!input)
+        return "input is not defined";
+      if (this.env.node && !(input instanceof tf36.Tensor))
+        return "input must be a tensor";
+      try {
+        this.tf.getBackend();
+      } catch (e) {
+        return "backend not loaded";
+      }
+      return null;
+    });
+    __publicField(this, "similarity", similarity);
+    __publicField(this, "distance", distance);
+    __publicField(this, "match", match2);
+    __publicField(this, "emit", (event) => {
+      var _a;
+      if (this.events && this.events.dispatchEvent)
+        (_a = this.events) == null ? void 0 : _a.dispatchEvent(new Event(event));
+    });
+    this.env = env;
+    config.wasmPath = tf36.version["tfjs-core"].includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf36.version_core}/dist/`;
+    config.modelBasePath = env.browser ? "../models/" : "file://models/";
+    config.backend = env.browser ? "humangl" : "tensorflow";
+    this.version = version2;
+    Object.defineProperty(this, "version", { value: version2 });
+    this.config = JSON.parse(JSON.stringify(config));
+    Object.seal(this.config);
+    this.config.cacheModels = typeof indexedDB !== "undefined";
+    if (userConfig)
+      this.config = mergeDeep(this.config, userConfig);
+    setModelLoadOptions(this.config);
+    this.tf = tf36;
+    this.state = "idle";
+    __privateSet(this, _numTensors, 0);
+    __privateSet(this, _analyzeMemoryLeaks, false);
+    __privateSet(this, _checkSanity, false);
+    this.performance = {};
+    this.events = typeof EventTarget !== "undefined" ? new EventTarget() : void 0;
+    this.models = new Models();
+    this.draw = {
+      options: options3,
+      canvas: (input, output) => canvas2(input, output),
+      face: (output, result, options4) => face(output, result, options4),
+      body: (output, result, options4) => body(output, result, options4),
+      hand: (output, result, options4) => hand(output, result, options4),
+      gesture: (output, result, options4) => gesture(output, result, options4),
+      object: (output, result, options4) => object(output, result, options4),
+      person: (output, result, options4) => person(output, result, options4),
+      all: (output, result, options4) => all(output, result, options4)
+    };
+    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [], error: null };
+    this.process = { tensor: null, canvas: null };
+    this.faceTriangulation = triangulation;
+    this.faceUVMap = uvmap;
+    this.gl = config2;
+    this.emit("create");
+  }
+  reset() {
+    const currentBackend = this.config.backend;
+    this.config = JSON.parse(JSON.stringify(config));
+    this.config.backend = currentBackend;
+  }
+  validate(userConfig) {
+    return validate(config, userConfig || this.config);
+  }
+  now() {
+    return now();
+  }
+  image(input, getTensor = true) {
+    return process2(input, this.config, getTensor);
+  }
+  async segmentation(input, background) {
+    return process5(input, background, this.config);
+  }
+  enhance(input) {
+    return enhance(input);
+  }
+  compare(firstImageTensor, secondImageTensor) {
+    return compare(this.config, firstImageTensor, secondImageTensor);
+  }
+  async init() {
+    await check(this, true);
+    await this.tf.ready();
+  }
+  async load(userConfig) {
+    this.state = "load";
+    const timeStamp = now();
+    const count2 = Object.values(this.models).filter((model18) => model18).length;
+    if (userConfig)
+      this.config = mergeDeep(this.config, userConfig);
+    if (this.env.initial) {
+      if (this.config.debug)
+        log(`version: ${this.version}`);
+      if (this.config.debug)
+        log(`tfjs version: ${this.tf.version["tfjs-core"]}`);
+      if (!await check(this))
+        log("error: backend check failed");
+      await tf36.ready();
+      if (this.env.browser) {
+        if (this.config.debug)
+          log("configuration:", this.config);
+        if (this.config.debug)
+          log("environment:", this.env);
+        if (this.config.debug)
+          log("tf flags:", this.tf.ENV["flags"]);
+      }
+    }
+    await load19(this);
+    if (this.env.initial && this.config.debug)
+      log("tf engine state:", this.tf.engine().state.numBytes, "bytes", this.tf.engine().state.numTensors, "tensors");
+    this.env.initial = false;
+    const loaded = Object.values(this.models).filter((model18) => model18).length;
+    if (loaded !== count2) {
+      await validate2(this);
+      this.emit("load");
+    }
+    const current = Math.trunc(now() - timeStamp);
+    if (current > (this.performance.loadModels || 0))
+      this.performance.loadModels = this.env.perfadd ? (this.performance.loadModels || 0) + current : current;
+  }
+  next(result = this.result) {
+    return calc2(result, this.config);
+  }
+  async warmup(userConfig) {
+    const t0 = now();
+    const res = await warmup(this, userConfig);
+    const t1 = now();
+    this.performance.warmup = Math.trunc(t1 - t0);
+    return res;
+  }
+  async profile(input, userConfig) {
+    const profile = await this.tf.profile(() => this.detect(input, userConfig));
+    const kernels = {};
+    for (const kernel of profile.kernels) {
+      if (kernels[kernel.name])
+        kernels[kernel.name] += kernel.kernelTimeMs;
+      else
+        kernels[kernel.name] = kernel.kernelTimeMs;
+    }
+    const kernelArr = [];
+    Object.entries(kernels).forEach((key) => kernelArr.push({ name: key[0], ms: key[1] }));
+    kernelArr.sort((a, b) => b.ms - a.ms);
+    kernelArr.length = 20;
+    const res = {};
+    for (const kernel of kernelArr)
+      res[kernel.name] = kernel.ms;
+    return res;
+  }
+  async detect(input, userConfig) {
+    this.state = "detect";
+    return new Promise(async (resolve) => {
+      var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v;
+      this.state = "config";
+      let timeStamp;
+      this.config = mergeDeep(this.config, userConfig);
+      this.state = "check";
+      const error = __privateGet(this, _sanity).call(this, input);
+      if (error) {
+        log(error, input);
+        this.emit("error");
+        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error });
+      }
+      const timeStart = now();
+      await check(this);
+      await this.load();
+      timeStamp = now();
+      this.state = "image";
+      const img = await process2(input, this.config);
+      this.process = img;
+      this.performance.inputProcess = this.env.perfadd ? (this.performance.inputProcess || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      this.analyze("Get Image:");
+      if (!img.tensor) {
+        if (this.config.debug)
+          log("could not convert input to tensor");
+        this.emit("error");
+        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error: "could not convert input to tensor" });
+        return;
+      }
+      this.emit("image");
+      timeStamp = now();
+      this.config.skipAllowed = await skip(this.config, img.tensor);
+      if (!this.performance.totalFrames)
+        this.performance.totalFrames = 0;
+      if (!this.performance.cachedFrames)
+        this.performance.cachedFrames = 0;
+      this.performance.totalFrames++;
+      if (this.config.skipAllowed)
+        this.performance.cachedFrames++;
+      this.performance.cacheCheck = this.env.perfadd ? (this.performance.cacheCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      this.analyze("Check Changed:");
+      let faceRes = [];
+      let bodyRes = [];
+      let handRes = [];
+      let objectRes = [];
+      this.state = "detect:face";
+      if (this.config.async) {
+        faceRes = this.config.face.enabled ? detectFace(this, img.tensor) : [];
+        if (this.performance.face)
+          delete this.performance.face;
+      } else {
+        timeStamp = now();
+        faceRes = this.config.face.enabled ? await detectFace(this, img.tensor) : [];
+        this.performance.face = this.env.perfadd ? (this.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      }
+      if (this.config.async && (this.config.body.maxDetected === -1 || this.config.hand.maxDetected === -1))
+        faceRes = await faceRes;
+      this.analyze("Start Body:");
+      this.state = "detect:body";
+      const bodyConfig = this.config.body.maxDetected === -1 ? mergeDeep(this.config, { body: { maxDetected: this.config.face.enabled ? 1 * faceRes.length : 1 } }) : this.config;
+      if (this.config.async) {
+        if ((_a = this.config.body.modelPath) == null ? void 0 : _a.includes("posenet"))
+          bodyRes = this.config.body.enabled ? predict17(img.tensor, bodyConfig) : [];
+        else if ((_b = this.config.body.modelPath) == null ? void 0 : _b.includes("blazepose"))
+          bodyRes = this.config.body.enabled ? predict5(img.tensor, bodyConfig) : [];
+        else if ((_c = this.config.body.modelPath) == null ? void 0 : _c.includes("efficientpose"))
+          bodyRes = this.config.body.enabled ? predict7(img.tensor, bodyConfig) : [];
+        else if ((_d = this.config.body.modelPath) == null ? void 0 : _d.includes("movenet"))
+          bodyRes = this.config.body.enabled ? predict15(img.tensor, bodyConfig) : [];
+        if (this.performance.body)
+          delete this.performance.body;
+      } else {
+        timeStamp = now();
+        if ((_e = this.config.body.modelPath) == null ? void 0 : _e.includes("posenet"))
+          bodyRes = this.config.body.enabled ? await predict17(img.tensor, bodyConfig) : [];
+        else if ((_f = this.config.body.modelPath) == null ? void 0 : _f.includes("blazepose"))
+          bodyRes = this.config.body.enabled ? await predict5(img.tensor, bodyConfig) : [];
+        else if ((_g = this.config.body.modelPath) == null ? void 0 : _g.includes("efficientpose"))
+          bodyRes = this.config.body.enabled ? await predict7(img.tensor, bodyConfig) : [];
+        else if ((_h = this.config.body.modelPath) == null ? void 0 : _h.includes("movenet"))
+          bodyRes = this.config.body.enabled ? await predict15(img.tensor, bodyConfig) : [];
+        this.performance.body = this.env.perfadd ? (this.performance.body || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      }
+      this.analyze("End Body:");
+      this.analyze("Start Hand:");
+      this.state = "detect:hand";
+      const handConfig = this.config.hand.maxDetected === -1 ? mergeDeep(this.config, { hand: { maxDetected: this.config.face.enabled ? 2 * faceRes.length : 1 } }) : this.config;
+      if (this.config.async) {
+        if ((_j = (_i = this.config.hand.detector) == null ? void 0 : _i.modelPath) == null ? void 0 : _j.includes("handdetect"))
+          handRes = this.config.hand.enabled ? predict12(img.tensor, handConfig) : [];
+        else if ((_l = (_k = this.config.hand.detector) == null ? void 0 : _k.modelPath) == null ? void 0 : _l.includes("handtrack"))
+          handRes = this.config.hand.enabled ? predict13(img.tensor, handConfig) : [];
+        if (this.performance.hand)
+          delete this.performance.hand;
+      } else {
+        timeStamp = now();
+        if ((_n = (_m = this.config.hand.detector) == null ? void 0 : _m.modelPath) == null ? void 0 : _n.includes("handdetect"))
+          handRes = this.config.hand.enabled ? await predict12(img.tensor, handConfig) : [];
+        else if ((_p = (_o = this.config.hand.detector) == null ? void 0 : _o.modelPath) == null ? void 0 : _p.includes("handtrack"))
+          handRes = this.config.hand.enabled ? await predict13(img.tensor, handConfig) : [];
+        this.performance.hand = this.env.perfadd ? (this.performance.hand || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      }
+      this.analyze("End Hand:");
+      this.analyze("Start Object:");
+      this.state = "detect:object";
+      if (this.config.async) {
+        if ((_q = this.config.object.modelPath) == null ? void 0 : _q.includes("nanodet"))
+          objectRes = this.config.object.enabled ? predict16(img.tensor, this.config) : [];
+        else if ((_r = this.config.object.modelPath) == null ? void 0 : _r.includes("centernet"))
+          objectRes = this.config.object.enabled ? predict6(img.tensor, this.config) : [];
+        if (this.performance.object)
+          delete this.performance.object;
+      } else {
+        timeStamp = now();
+        if ((_s = this.config.object.modelPath) == null ? void 0 : _s.includes("nanodet"))
+          objectRes = this.config.object.enabled ? await predict16(img.tensor, this.config) : [];
+        else if ((_t = this.config.object.modelPath) == null ? void 0 : _t.includes("centernet"))
+          objectRes = this.config.object.enabled ? await predict6(img.tensor, this.config) : [];
+        this.performance.object = this.env.perfadd ? (this.performance.object || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+      }
+      this.analyze("End Object:");
+      this.state = "detect:await";
+      if (this.config.async)
+        [faceRes, bodyRes, handRes, objectRes] = await Promise.all([faceRes, bodyRes, handRes, objectRes]);
+      this.state = "detect:gesture";
+      let gestureRes = [];
+      if (this.config.gesture.enabled) {
+        timeStamp = now();
+        gestureRes = [...face2(faceRes), ...body2(bodyRes), ...hand2(handRes), ...iris(faceRes)];
+        if (!this.config.async)
+          this.performance.gesture = this.env.perfadd ? (this.performance.gesture || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
+        else if (this.performance.gesture)
+          delete this.performance.gesture;
+      }
+      this.performance.total = this.env.perfadd ? (this.performance.total || 0) + Math.trunc(now() - timeStart) : Math.trunc(now() - timeStart);
+      const shape = ((_v = (_u = this.process) == null ? void 0 : _u.tensor) == null ? void 0 : _v.shape) || [];
+      this.result = {
+        face: faceRes,
+        body: bodyRes,
+        hand: handRes,
+        gesture: gestureRes,
+        object: objectRes,
+        performance: this.performance,
+        canvas: this.process.canvas,
+        timestamp: Date.now(),
+        error: null,
+        get persons() {
+          return join2(faceRes, bodyRes, handRes, gestureRes, shape);
+        }
+      };
+      tf36.dispose(img.tensor);
+      this.emit("detect");
+      this.state = "idle";
+      resolve(this.result);
+    });
+  }
+};
+_numTensors = new WeakMap();
+_analyzeMemoryLeaks = new WeakMap();
+_checkSanity = new WeakMap();
+_sanity = new WeakMap();
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  Human,
+  defaults,
+  draw,
+  env,
+  match,
+  models
+});
 /**
  * Human main module
  * @default Human Library

@@ -1,10 +1,17 @@
-import type { Tensor } from './tfjs/types';
 import type { env } from './util/env';
+import type { Tensor } from './tfjs/types';
+import type { OffscreenCanvas } from './tfjs/offscreencanvas';
 
+/* Export configuration details */
 export * from './config';
+/* Export results details */
 export * from './result';
 
+/* Explict reexport of main @tensorflow/tfjs types */
 export type { Tensor, TensorLike, GraphModel, Rank } from './tfjs/types';
+/* Explict reexport of @types/offscreencanvas to avoid requiring external reference */
+export type { OffscreenCanvas, OffscreenCanvasRenderingContext2D, CanvasDrawImage } from './tfjs/offscreencanvas';
+
 export type { DrawOptions } from './util/draw';
 export type { Descriptor } from './face/match';
 export type { Box, Point } from './result';

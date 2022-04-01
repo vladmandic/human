@@ -47,11 +47,11 @@ export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, opt
 /** Matches given descriptor to a closest entry in array of descriptors
  * @param descriptor - face descriptor
  * @param descriptors - array of face descriptors to commpare given descriptor to
- * @param options - see {@link similarity}
+ * @param options - see `similarity` method for options description
  * Returns
  * - `index` index array index where best match was found or -1 if no matches
- * - {@link distance} calculated `distance` of given descriptor to the best match
- * - {@link similarity} calculated normalized `similarity` of given descriptor to the best match
+ * - `distance` calculated `distance` of given descriptor to the best match
+ * - `similarity` calculated normalized `similarity` of given descriptor to the best match
 */
 export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options: MatchOptions = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) { // validate input

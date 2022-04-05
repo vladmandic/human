@@ -215,31 +215,31 @@ var config = {
 // dist/tfjs.esm.js
 var tfjs_esm_exports = {};
 __export(tfjs_esm_exports, {
-  Abs: () => ao,
-  Acos: () => nl,
-  Acosh: () => sl,
+  Abs: () => io,
+  Acos: () => sl,
+  Acosh: () => rl,
   AdadeltaOptimizer: () => fb,
   AdagradOptimizer: () => mb,
   AdamOptimizer: () => gb,
   AdamaxOptimizer: () => bb,
   Add: () => Ir,
   AddN: () => ka,
-  All: () => rl,
-  Any: () => al,
+  All: () => al,
+  Any: () => il,
   ArgMax: () => Ia,
-  ArgMin: () => il,
-  Asin: () => ol,
-  Asinh: () => ul,
-  Atan: () => ll,
-  Atan2: () => dl,
-  Atanh: () => cl,
+  ArgMin: () => ol,
+  Asin: () => ul,
+  Asinh: () => ll,
+  Atan: () => cl,
+  Atan2: () => pl,
+  Atanh: () => dl,
   AvgPool: () => Sa,
   AvgPool3D: () => qd,
   AvgPool3DGrad: () => og,
   AvgPoolGrad: () => ig,
-  BackendWasm: () => wde,
+  BackendWasm: () => kde,
   BatchMatMul: () => Ca,
-  BatchToSpaceND: () => io,
+  BatchToSpaceND: () => oo,
   Bincount: () => ug,
   BroadcastArgs: () => lg,
   BroadcastTo: () => A$,
@@ -250,7 +250,7 @@ __export(tfjs_esm_exports, {
   ClipByValue: () => Sr,
   Complex: () => jd,
   ComplexAbs: () => Kd,
-  Concat: () => oo,
+  Concat: () => uo,
   Conv2D: () => $a,
   Conv2DBackpropFilter: () => cg,
   Conv2DBackpropInput: () => _a,
@@ -259,13 +259,13 @@ __export(tfjs_esm_exports, {
   Conv3DBackpropInputV2: () => pg,
   Cos: () => Aa,
   Cosh: () => Ea,
-  CropAndResize: () => lo,
-  Cumprod: () => pl,
-  Cumsum: () => uo,
+  CropAndResize: () => co,
+  Cumprod: () => hl,
+  Cumsum: () => lo,
   CustomCallback: () => BL,
   DataStorage: () => Ud,
   DenseBincount: () => hg,
-  DepthToSpace: () => co,
+  DepthToSpace: () => po,
   DepthwiseConv2dNative: () => Ra,
   DepthwiseConv2dNativeBackpropFilter: () => fg,
   DepthwiseConv2dNativeBackpropInput: () => mg,
@@ -279,14 +279,14 @@ __export(tfjs_esm_exports, {
   Elu: () => Fa,
   EluGrad: () => bg,
   Environment: () => S$,
-  Equal: () => po,
-  Erf: () => hl,
+  Equal: () => ho,
+  Erf: () => fl,
   Exp: () => Oa,
-  ExpandDims: () => ho,
-  Expm1: () => fo,
+  ExpandDims: () => fo,
+  Expm1: () => mo,
   FFT: () => yg,
-  Fill: () => fl,
-  FlipLeftRight: () => mo,
+  Fill: () => ml,
+  FlipLeftRight: () => go,
   Floor: () => Pa,
   FloorDiv: () => za,
   FromPixels: () => fd,
@@ -294,33 +294,33 @@ __export(tfjs_esm_exports, {
   FusedConv2D: () => aa,
   FusedDepthwiseConv2D: () => ia,
   GPGPUContext: () => Kf,
-  GatherNd: () => bo,
-  GatherV2: () => go,
+  GatherNd: () => yo,
+  GatherV2: () => bo,
   GraphModel: () => E4,
-  Greater: () => yo,
+  Greater: () => vo,
   GreaterEqual: () => La,
   History: () => LL,
   IFFT: () => vg,
   Identity: () => Ba,
   Imag: () => Zd,
   InputSpec: () => Dt,
-  IsFinite: () => ml,
-  IsInf: () => gl,
-  IsNan: () => bl,
-  KernelBackend: () => tl,
+  IsFinite: () => gl,
+  IsInf: () => bl,
+  IsNan: () => yl,
+  KernelBackend: () => nl,
   LRN: () => ep,
   LRNGrad: () => wg,
   LayerVariable: () => AL,
   LayersModel: () => pr,
   LeakyRelu: () => Va,
-  Less: () => vo,
-  LessEqual: () => xo,
+  Less: () => xo,
+  LessEqual: () => wo,
   LinSpace: () => xg,
   Log: () => Wa,
-  Log1p: () => yl,
+  Log1p: () => vl,
   LogSoftmax: () => E$,
-  LogicalAnd: () => wo,
-  LogicalNot: () => vl,
+  LogicalAnd: () => ko,
+  LogicalNot: () => xl,
   LogicalOr: () => Jd,
   MathBackendCPU: () => L0,
   MathBackendWebGL: () => M1,
@@ -335,88 +335,88 @@ __export(tfjs_esm_exports, {
   Min: () => ja,
   Minimum: () => Ka,
   MirrorPad: () => Xa,
-  Mod: () => xl,
+  Mod: () => wl,
   MomentumOptimizer: () => yb,
   Multinomial: () => Cg,
   Multiply: () => Ya,
-  Neg: () => ko,
-  NonMaxSuppressionV3: () => So,
-  NonMaxSuppressionV4: () => wl,
-  NonMaxSuppressionV5: () => Co,
-  NotEqual: () => Io,
+  Neg: () => Io,
+  NonMaxSuppressionV3: () => Co,
+  NonMaxSuppressionV4: () => kl,
+  NonMaxSuppressionV5: () => No,
+  NotEqual: () => So,
   OP_SCOPE_SUFFIX: () => l_,
-  OneHot: () => To,
-  OnesLike: () => No,
+  OneHot: () => $o,
+  OnesLike: () => To,
   Optimizer: () => _r,
   OptimizerConstructors: () => Wr,
-  Pack: () => $o,
+  Pack: () => _o,
   PadV2: () => Qa,
-  Pool: () => Tde,
+  Pool: () => $de,
   Pow: () => Za,
   Prelu: () => Ja,
-  Prod: () => _o,
+  Prod: () => Ao,
   RMSPropOptimizer: () => vb,
   RNN: () => Ar,
-  Range: () => kl,
+  Range: () => Il,
   Rank: () => e_,
   Real: () => np,
   RealDiv: () => Da,
-  Reciprocal: () => Il,
+  Reciprocal: () => Sl,
   Reduction: () => oO,
   Relu: () => ei,
   Relu6: () => ni,
-  Reshape: () => Ao,
+  Reshape: () => Eo,
   ResizeBilinear: () => ti,
   ResizeBilinearGrad: () => Tg,
-  ResizeNearestNeighbor: () => Sl,
+  ResizeNearestNeighbor: () => Cl,
   ResizeNearestNeighborGrad: () => Ng,
-  Reverse: () => Eo,
-  RotateWithOffset: () => Ho,
-  Round: () => Ro,
+  Reverse: () => Ro,
+  RotateWithOffset: () => qo,
+  Round: () => Do,
   Rsqrt: () => si,
   SGDOptimizer: () => Ip,
-  ScatterNd: () => Do,
-  Select: () => Fo,
-  Selu: () => Cl,
+  ScatterNd: () => Fo,
+  Select: () => Oo,
+  Selu: () => Nl,
   Sequential: () => Ub,
   Sigmoid: () => ai,
-  Sign: () => Nl,
+  Sign: () => Tl,
   Sin: () => ri,
-  Sinh: () => Po,
-  Slice: () => Oo,
+  Sinh: () => zo,
+  Slice: () => Po,
   Softmax: () => ui,
-  Softplus: () => Tl,
-  SpaceToBatchND: () => zo,
+  Softplus: () => $l,
+  SpaceToBatchND: () => Mo,
   SparseFillEmptyRows: () => sp,
-  SparseReshape: () => $l,
+  SparseReshape: () => _l,
   SparseSegmentMean: () => rp,
   SparseSegmentSum: () => ap,
   SparseToDense: () => ip,
-  SplitV: () => Mo,
+  SplitV: () => Lo,
   Sqrt: () => ii,
-  Square: () => _l,
+  Square: () => Al,
   SquaredDifference: () => li,
   Step: () => hi,
-  StridedSlice: () => Lo,
+  StridedSlice: () => Bo,
   StringNGrams: () => op,
   StringSplit: () => $g,
   StringToHashBucketFast: () => _g,
   Sub: () => ci,
   Sum: () => oi,
   SymbolicTensor: () => $s,
-  Tan: () => Bo,
+  Tan: () => Vo,
   Tanh: () => di,
   Tensor: () => et,
   TensorBuffer: () => Vt,
   Tile: () => Cr,
-  TopK: () => Vo,
-  Transform: () => Wo,
+  TopK: () => Wo,
+  Transform: () => Uo,
   Transpose: () => pi,
   Unique: () => Ag,
-  Unpack: () => Uo,
+  Unpack: () => Go,
   UnsortedSegmentSum: () => up,
   Variable: () => gd,
-  ZerosLike: () => Go,
+  ZerosLike: () => Ho,
   _FusedMatMul: () => ra,
   abs: () => Mt,
   acos: () => GA,
@@ -425,7 +425,7 @@ __export(tfjs_esm_exports, {
   addN: () => KA,
   all: () => qk,
   any: () => pm,
-  argMax: () => Gu,
+  argMax: () => Hu,
   argMin: () => JA,
   asin: () => tE,
   asinh: () => sE,
@@ -436,20 +436,20 @@ __export(tfjs_esm_exports, {
   avgPool3d: () => Yk,
   backend: () => zA,
   backend_util: () => S,
-  basicLSTMCell: () => Hde,
-  batchNorm: () => qu,
+  basicLSTMCell: () => qde,
+  batchNorm: () => ju,
   batchNorm2d: () => $E,
   batchNorm3d: () => AE,
   batchNorm4d: () => RE,
   batchToSpaceND: () => Hg,
   bincount: () => Qk,
-  booleanMaskAsync: () => vpe,
+  booleanMaskAsync: () => xpe,
   broadcastArgs: () => OE,
   broadcastTo: () => nd,
-  broadcast_util: () => qo,
+  broadcast_util: () => jo,
   browser: () => Nk,
   buffer: () => De,
-  callbacks: () => _pe,
+  callbacks: () => Ape,
   cast: () => ce,
   ceil: () => ME,
   clipByValue: () => Vn,
@@ -466,7 +466,7 @@ __export(tfjs_esm_exports, {
   conv2dTranspose: () => Jk,
   conv3d: () => eI,
   conv3dTranspose: () => tR,
-  copyRegisteredKernels: () => Ade,
+  copyRegisteredKernels: () => Ede,
   cos: () => jg,
   cosh: () => nI,
   cosineWindow: () => TI,
@@ -478,21 +478,21 @@ __export(tfjs_esm_exports, {
   deprecationWarn: () => Gk,
   depthToSpace: () => cR,
   depthwiseConv2d: () => hp,
-  deregisterOp: () => Epe,
+  deregisterOp: () => Rpe,
   device_util: () => dp,
-  diag: () => qde,
+  diag: () => jde,
   dilation2d: () => fR,
-  disableDeprecationWarnings: () => Fde,
+  disableDeprecationWarnings: () => Ode,
   dispose: () => Re,
-  disposeVariables: () => Ode,
+  disposeVariables: () => Pde,
   div: () => xe,
   divNoNan: () => vR,
-  dot: () => jde,
+  dot: () => Kde,
   dropout: () => nF,
   einsum: () => kR,
   elu: () => fp,
-  enableDebugMode: () => Dde,
-  enableProdMode: () => Rde,
+  enableDebugMode: () => Fde,
+  enableProdMode: () => Dde,
   enclosingPowerOfTwo: () => sF,
   engine: () => Ss,
   env: () => X,
@@ -503,58 +503,58 @@ __export(tfjs_esm_exports, {
   expm1: () => _R,
   eye: () => rI,
   fft: () => lb,
-  fill: () => Ol,
-  findBackend: () => Wde,
-  findBackendFactory: () => Ude,
+  fill: () => Pl,
+  findBackend: () => Ude,
+  findBackendFactory: () => Gde,
   floor: () => mp,
   floorDiv: () => Hk,
   forceHalfFloat: () => GX,
   fused: () => ha,
-  gather: () => ju,
+  gather: () => Ku,
   gatherND: () => J3,
   gather_util: () => $k,
-  getBackend: () => Bde,
+  getBackend: () => Vde,
   getGradient: () => nx,
   getKernel: () => Zf,
   getKernelsForBackend: () => Jf,
-  getThreadsCount: () => Vpe,
+  getThreadsCount: () => Wpe,
   gpgpu_util: () => RK,
-  grad: () => Yde,
-  grads: () => Qde,
+  grad: () => Qde,
+  grads: () => Zde,
   greater: () => Wn,
-  greaterEqual: () => jo,
+  greaterEqual: () => Ko,
   ifft: () => Id,
   imag: () => Kg,
   image: () => qn,
-  inTopKAsync: () => wpe,
+  inTopKAsync: () => kpe,
   initializers: () => qM,
   input: () => OB,
   io: () => En,
   irfft: () => xI,
-  isFinite: () => Kde,
-  isInf: () => Xde,
+  isFinite: () => Xde,
+  isInf: () => Yde,
   isNaN: () => BR,
   keep: () => Ht,
   kernel_impls: () => xs,
   layers: () => $L,
   leakyRelu: () => Xg,
   less: () => aI,
-  lessEqual: () => Ko,
+  lessEqual: () => Xo,
   linalg: () => VO,
   linspace: () => GR,
-  loadGraphModel: () => Rpe,
-  loadLayersModel: () => Tpe,
+  loadGraphModel: () => Dpe,
+  loadLayersModel: () => $pe,
   localResponseNormalization: () => qR,
   log: () => Yn,
   log1p: () => Yg,
-  logSigmoid: () => epe,
+  logSigmoid: () => tpe,
   logSoftmax: () => iI,
   logSumExp: () => iD,
   logicalAnd: () => Ds,
   logicalNot: () => Jg,
   logicalOr: () => cI,
-  logicalXor: () => tpe,
-  losses: () => Spe,
+  logicalXor: () => npe,
+  losses: () => Cpe,
   matMul: () => We,
   math: () => iA,
   max: () => As,
@@ -564,62 +564,62 @@ __export(tfjs_esm_exports, {
   maximum: () => $r,
   mean: () => St,
   memory: () => dm,
-  meshgrid: () => npe,
+  meshgrid: () => spe,
   metrics: () => rW,
   min: () => fm,
   minimum: () => bp,
   mirrorPad: () => xD,
   mod: () => kD,
-  model: () => Cpe,
+  model: () => Npe,
   models: () => xW,
   moments: () => tb,
-  movingAverage: () => xpe,
+  movingAverage: () => wpe,
   mul: () => V,
-  multiRNNCell: () => spe,
+  multiRNNCell: () => rpe,
   multinomial: () => TD,
   neg: () => kt,
   nextFrame: () => OI,
   norm: () => CI,
-  notEqual: () => Ku,
+  notEqual: () => Xu,
   oneHot: () => vd,
   ones: () => Mn,
   onesLike: () => Qn,
   op: () => L,
-  outerProduct: () => rpe,
+  outerProduct: () => ape,
   pad: () => fi,
-  pad1d: () => ape,
-  pad2d: () => ipe,
-  pad3d: () => ope,
-  pad4d: () => upe,
-  pool: () => lpe,
+  pad1d: () => ipe,
+  pad2d: () => ope,
+  pad3d: () => upe,
+  pad4d: () => lpe,
+  pool: () => cpe,
   pow: () => pa,
   prelu: () => sb,
   print: () => U_,
   prod: () => pI,
-  profile: () => Pde,
-  rand: () => cpe,
-  randomGamma: () => dpe,
+  profile: () => zde,
+  rand: () => dpe,
+  randomGamma: () => ppe,
   randomNormal: () => KD,
-  randomUniform: () => zl,
-  range: () => Xu,
-  ready: () => Lde,
+  randomUniform: () => Ml,
+  range: () => Yu,
+  ready: () => Bde,
   real: () => wd,
   reciprocal: () => ZD,
   registerBackend: () => pp,
-  registerCallbackConstructor: () => $pe,
+  registerCallbackConstructor: () => _pe,
   registerGradient: () => D$,
-  registerKernel: () => Al,
-  registerOp: () => Ape,
+  registerKernel: () => El,
+  registerOp: () => Epe,
   regularizers: () => wW,
   relu: () => Xs,
   relu6: () => hI,
-  removeBackend: () => Vde,
+  removeBackend: () => Wde,
   reshape: () => G,
   reverse: () => Zn,
-  reverse1d: () => ppe,
-  reverse2d: () => hpe,
-  reverse3d: () => fpe,
-  reverse4d: () => mpe,
+  reverse1d: () => hpe,
+  reverse2d: () => fpe,
+  reverse3d: () => mpe,
+  reverse4d: () => gpe,
   rfft: () => cb,
   round: () => fI,
   rsqrt: () => mI,
@@ -628,19 +628,19 @@ __export(tfjs_esm_exports, {
   scatter_util: () => Ak,
   selu: () => gI,
   separableConv2d: () => c3,
-  sequential: () => Npe,
+  sequential: () => Tpe,
   serialization: () => ae,
-  setBackend: () => Mde,
-  setPlatform: () => Gde,
-  setThreadsCount: () => Bpe,
-  setWasmPath: () => Mpe,
-  setWasmPaths: () => Lpe,
+  setBackend: () => Lde,
+  setPlatform: () => Hde,
+  setThreadsCount: () => Vpe,
+  setWasmPath: () => Lpe,
+  setWasmPaths: () => Bpe,
   setWebGLContext: () => S5,
   setdiff1dAsync: () => p3,
   shared: () => Zy,
   sigmoid: () => qs,
   sign: () => f3,
-  signal: () => Ipe,
+  signal: () => Spe,
   sin: () => bI,
   sinh: () => yI,
   slice: () => He,
@@ -650,11 +650,11 @@ __export(tfjs_esm_exports, {
   slice4d: () => kd,
   slice_util: () => wt,
   softmax: () => ub,
-  softplus: () => Pl,
+  softplus: () => zl,
   spaceToBatchND: () => nb,
   sparse: () => Wc,
   sparseToDense: () => NI,
-  spectral: () => kpe,
+  spectral: () => Ipe,
   split: () => Bn,
   sqrt: () => dn,
   square: () => ct,
@@ -668,44 +668,44 @@ __export(tfjs_esm_exports, {
   sum: () => ve,
   sumOutType: () => cp,
   tan: () => O3,
-  tanh: () => Hu,
+  tanh: () => qu,
   tensor: () => fs,
   tensor1d: () => Zt,
   tensor2d: () => Ki,
   tensor3d: () => pA,
-  tensor4d: () => gpe,
-  tensor5d: () => bpe,
-  tensor6d: () => ype,
+  tensor4d: () => bpe,
+  tensor5d: () => ype,
+  tensor6d: () => vpe,
   tensor_util: () => _s,
   test_util: () => _A,
   tidy: () => j,
   tile: () => ps,
-  time: () => zde,
+  time: () => Mde,
   topk: () => z3,
   train: () => Pi,
   transpose: () => qe,
   truncatedNormal: () => db,
   unique: () => hx,
-  unregisterGradient: () => _de,
-  unregisterKernel: () => $de,
+  unregisterGradient: () => Ade,
+  unregisterKernel: () => _de,
   unsortedSegmentSum: () => V3,
   unstack: () => Fs,
   upcastType: () => cn,
   util: () => w,
-  valueAndGrad: () => Zde,
-  valueAndGrads: () => Jde,
+  valueAndGrad: () => Jde,
+  valueAndGrads: () => epe,
   variable: () => U3,
   variableGrads: () => XR,
-  version: () => Upe,
-  version_converter: () => Dpe,
-  version_core: () => Ede,
-  version_cpu: () => Fpe,
+  version: () => Gpe,
+  version_converter: () => Fpe,
+  version_core: () => Rde,
+  version_cpu: () => Ope,
   version_layers: () => uS,
-  version_wasm: () => Wpe,
-  version_webgl: () => Ope,
-  webgl: () => Ppe,
+  version_wasm: () => Upe,
+  version_webgl: () => Ppe,
+  webgl: () => zpe,
   webgl_util: () => I5,
-  webgpu: () => soe,
+  webgpu: () => roe,
   where: () => vn,
   whereAsync: () => II,
   zeros: () => $t,
@@ -1332,7 +1332,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         return Ce.buffer != nn && rs(Ce.buffer), oc;
       }
       function o() {
-        return Ce.buffer != nn && rs(Ce.buffer), pu;
+        return Ce.buffer != nn && rs(Ce.buffer), hu;
       }
       function u() {
         return Ce.buffer != nn && rs(Ce.buffer), uc;
@@ -1360,7 +1360,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
       }
       var P, R, F, $;
       function z(C) {
-        if (C instanceof wu)
+        if (C instanceof ku)
           return;
         ee("exiting due to exception: " + C);
       }
@@ -1378,7 +1378,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
             ue ? Q(ue) : B(pe.buffer);
           });
         }, process.argv.length > 1 && (y = process.argv[1].replace(/\\/g, "/")), b = process.argv.slice(2), process.on("uncaughtException", function(D) {
-          if (!(D instanceof wu))
+          if (!(D instanceof ku))
             throw D;
         }), process.on("unhandledRejection", function(D) {
           throw D;
@@ -1435,8 +1435,8 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         for (var ue = 0; ue < Te.length; ++ue)
           pe.push(bt[Te[ue]]);
         ye == "v" ? pe.push(0) : pe = pe.concat([1, bt[ye]]), pe[1] = pe.length - 2;
-        var us = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0].concat(pe, [2, 7, 1, 1, 101, 1, 102, 0, 0, 7, 5, 1, 1, 102, 0, 0])), ls = new WebAssembly.Module(us), Bc = new WebAssembly.Instance(ls, { e: { f: C } }), ku = Bc.exports.f;
-        return ku;
+        var us = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0].concat(pe, [2, 7, 1, 1, 101, 1, 102, 0, 0, 7, 5, 1, 1, 102, 0, 0])), ls = new WebAssembly.Module(us), Bc = new WebAssembly.Instance(ls, { e: { f: C } }), Iu = Bc.exports.f;
+        return Iu;
       }
       var re = [], le;
       function me() {
@@ -1490,11 +1490,11 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
             var Bc = pe[B[ls]];
             Bc ? (us === 0 && (us = Ef()), bt[ls] = Bc(Q[ls])) : bt[ls] = Q[ls];
           }
-        var ku = Te.apply(null, bt);
+        var Iu = Te.apply(null, bt);
         function MT($n) {
           return us !== 0 && Pc(us), ye($n);
         }
-        return ku = MT(ku), ku;
+        return Iu = MT(Iu), Iu;
       }
       function en(C, D, B, Q) {
         B = B || [];
@@ -1583,7 +1583,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
       function Bs(C, D) {
         a().set(C, D);
       }
-      function du(C, D, B) {
+      function pu(C, D, B) {
         for (var Q = 0; Q < C.length; ++Q)
           a()[D++ >> 0] = C.charCodeAt(Q);
         B || (a()[D >> 0] = 0);
@@ -1591,10 +1591,10 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
       function Ii(C, D) {
         return C % D > 0 && (C += D - C % D), C;
       }
-      var nn, ic, oc, pu, uc, lc, Fv, cc, dc;
+      var nn, ic, oc, hu, uc, lc, Fv, cc, dc;
       N && (nn = d.buffer);
       function rs(C) {
-        nn = C, d.HEAP8 = ic = new Int8Array(C), d.HEAP16 = pu = new Int16Array(C), d.HEAP32 = lc = new Int32Array(C), d.HEAPU8 = oc = new Uint8Array(C), d.HEAPU16 = uc = new Uint16Array(C), d.HEAPU32 = Fv = new Uint32Array(C), d.HEAPF32 = cc = new Float32Array(C), d.HEAPF64 = dc = new Float64Array(C);
+        nn = C, d.HEAP8 = ic = new Int8Array(C), d.HEAP16 = hu = new Int16Array(C), d.HEAP32 = lc = new Int32Array(C), d.HEAPU8 = oc = new Uint8Array(C), d.HEAPU16 = uc = new Uint16Array(C), d.HEAPU32 = Fv = new Uint32Array(C), d.HEAPF32 = cc = new Float32Array(C), d.HEAPF64 = dc = new Float64Array(C);
       }
       var pc = d.INITIAL_MEMORY || 16777216;
       if (N)
@@ -1614,7 +1614,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
             Ov(d.preRun.shift());
         vc(Si);
       }
-      function hu() {
+      function fu() {
         Or = true, !N && vc(er);
       }
       function sh() {
@@ -1624,7 +1624,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         if (!N) {
           if (d.postRun)
             for (typeof d.postRun == "function" && (d.postRun = [d.postRun]); d.postRun.length; )
-              fu(d.postRun.shift());
+              mu(d.postRun.shift());
           vc(hc);
         }
       }
@@ -1634,11 +1634,11 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
       function Pv(C) {
         er.unshift(C);
       }
-      function fu(C) {
+      function mu(C) {
         hc.unshift(C);
       }
       var tr = 0, mc = null, as = null;
-      function mu(C) {
+      function gu(C) {
         tr++, d.monitorRunDependencies && d.monitorRunDependencies(tr);
       }
       function zv(C) {
@@ -1707,7 +1707,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
             });
           }
         }
-        N || mu("wasm-instantiate");
+        N || gu("wasm-instantiate");
         function B(ye) {
           D(ye.instance, ye.module);
         }
@@ -1784,7 +1784,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         OT(C);
       }
       function ch(C) {
-        if (C instanceof wu || C == "unwind")
+        if (C instanceof ku || C == "unwind")
           return Jt;
         v(1, C);
       }
@@ -1980,13 +1980,13 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
           return Qv(C, ue, pe, D);
         });
       }
-      var gu = [];
+      var bu = [];
       function Th(C, D, B) {
-        gu.length = D;
+        bu.length = D;
         for (var Q = B >> 3, ue = 0; ue < D; ue++)
-          gu[ue] = p()[Q + ue];
+          bu[ue] = p()[Q + ue];
         var pe = C < 0, ye = pe ? oh[-C - 1] : qh[C];
-        return ye.apply(null, gu);
+        return ye.apply(null, bu);
       }
       function $h(C) {
         try {
@@ -2100,11 +2100,11 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         var D = Fh[C] || (typeof document != "undefined" ? document.querySelector(C) : void 0);
         return D;
       }
-      function bu(C) {
+      function yu(C) {
         return Oh(C);
       }
       function Cc(C, D, B) {
-        var Q = bu(C);
+        var Q = yu(C);
         if (!Q)
           return -4;
         if (Q.canvasSharedPtr && (l()[Q.canvasSharedPtr >> 2] = D, l()[Q.canvasSharedPtr + 4 >> 2] = B), Q.offscreenCanvas || !Q.controlTransferredOffscreen) {
@@ -2126,7 +2126,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         return N ? Lr(2, 1, C, D, B) : Cc(C, D, B);
       }
       function Ph(C, D, B) {
-        var Q = bu(C);
+        var Q = yu(C);
         return Q ? Cc(C, D, B) : Nc(C, D, B);
       }
       function zh() {
@@ -2211,7 +2211,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         }
       } }, Wh = ["default", "low-power", "high-performance"];
       function Uh(C, D) {
-        var B = D >> 2, Q = l()[B + 6], ue = { alpha: !!l()[B + 0], depth: !!l()[B + 1], stencil: !!l()[B + 2], antialias: !!l()[B + 3], premultipliedAlpha: !!l()[B + 4], preserveDrawingBuffer: !!l()[B + 5], powerPreference: Wh[Q], failIfMajorPerformanceCaveat: !!l()[B + 7], majorVersion: l()[B + 8], minorVersion: l()[B + 9], enableExtensionsByDefault: l()[B + 10], explicitSwapControl: l()[B + 11], proxyContextToMainThread: l()[B + 12], renderViaOffscreenBackBuffer: l()[B + 13] }, pe = bu(C);
+        var B = D >> 2, Q = l()[B + 6], ue = { alpha: !!l()[B + 0], depth: !!l()[B + 1], stencil: !!l()[B + 2], antialias: !!l()[B + 3], premultipliedAlpha: !!l()[B + 4], preserveDrawingBuffer: !!l()[B + 5], powerPreference: Wh[Q], failIfMajorPerformanceCaveat: !!l()[B + 7], majorVersion: l()[B + 8], minorVersion: l()[B + 9], enableExtensionsByDefault: l()[B + 10], explicitSwapControl: l()[B + 11], proxyContextToMainThread: l()[B + 12], renderViaOffscreenBackBuffer: l()[B + 13] }, pe = yu(C);
         if (!pe || ue.explicitSwapControl)
           return 0;
         var ye = gt.createContext(pe, ue);
@@ -2320,18 +2320,18 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         return (Rc = d._Floor = d.asm.Floor).apply(null, arguments);
       }, Dc = d._FloorDiv = function() {
         return (Dc = d._FloorDiv = d.asm.FloorDiv).apply(null, arguments);
-      }, yu = d._FusedBatchNorm = function() {
-        return (yu = d._FusedBatchNorm = d.asm.FusedBatchNorm).apply(null, arguments);
+      }, vu = d._FusedBatchNorm = function() {
+        return (vu = d._FusedBatchNorm = d.asm.FusedBatchNorm).apply(null, arguments);
       }, Sf = d._FusedConv2D = function() {
         return (Sf = d._FusedConv2D = d.asm.FusedConv2D).apply(null, arguments);
       }, Cf = d._FusedDepthwiseConv2D = function() {
         return (Cf = d._FusedDepthwiseConv2D = d.asm.FusedDepthwiseConv2D).apply(null, arguments);
       }, Ai = d._Gather = function() {
         return (Ai = d._Gather = d.asm.Gather).apply(null, arguments);
-      }, vu = d._GatherNd = function() {
-        return (vu = d._GatherNd = d.asm.GatherNd).apply(null, arguments);
-      }, xu = d._Greater = function() {
-        return (xu = d._Greater = d.asm.Greater).apply(null, arguments);
+      }, xu = d._GatherNd = function() {
+        return (xu = d._GatherNd = d.asm.GatherNd).apply(null, arguments);
+      }, wu = d._Greater = function() {
+        return (wu = d._Greater = d.asm.Greater).apply(null, arguments);
       }, Hv = d._GreaterEqual = function() {
         return (Hv = d._GreaterEqual = d.asm.GreaterEqual).apply(null, arguments);
       }, Ei = d._LeakyRelu = function() {
@@ -2487,9 +2487,9 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
       }, FT = d.dynCall_jiji = function() {
         return (FT = d.dynCall_jiji = d.asm.dynCall_jiji).apply(null, arguments);
       }, Jv = d.__emscripten_allow_main_runtime_queued_calls = 21456;
-      d.cwrap = en, d.keepRuntimeAlive = Pr, d.PThread = $e, d.PThread = $e, d.wasmMemory = Ce, d.ExitStatus = wu;
+      d.cwrap = en, d.keepRuntimeAlive = Pr, d.PThread = $e, d.PThread = $e, d.wasmMemory = Ce, d.ExitStatus = ku;
       var zc;
-      function wu(C) {
+      function ku(C) {
         this.name = "ExitStatus", this.message = "Program terminated with exit(" + C + ")", this.status = C;
       }
       as = function C() {
@@ -2499,13 +2499,13 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         if (C = C || b, tr > 0)
           return;
         if (N) {
-          h(d), hu(), postMessage({ cmd: "loaded" });
+          h(d), fu(), postMessage({ cmd: "loaded" });
           return;
         }
         if (sn(), tr > 0)
           return;
         function D() {
-          zc || (zc = true, d.calledRun = true, !at && (hu(), h(d), d.onRuntimeInitialized && d.onRuntimeInitialized(), rh()));
+          zc || (zc = true, d.calledRun = true, !at && (fu(), h(d), d.onRuntimeInitialized && d.onRuntimeInitialized(), rh()));
         }
         d.setStatus ? (d.setStatus("Running..."), setTimeout(function() {
           setTimeout(function() {
@@ -2520,7 +2520,7 @@ var a$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm-threaded-simd.js
         Pr() || sh(), PT(C);
       }
       function PT(C) {
-        Jt = C, Pr() || ($e.terminateAllThreads(), d.onExit && d.onExit(C), at = true), v(C, new wu(C));
+        Jt = C, Pr() || ($e.terminateAllThreads(), d.onExit && d.onExit(C), at = true), v(C, new ku(C));
       }
       if (d.preInit)
         for (typeof d.preInit == "function" && (d.preInit = [d.preInit]); d.preInit.length > 0; )
@@ -2575,7 +2575,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
       }
       var y, v, x, k;
       function T(H) {
-        if (H instanceof vu)
+        if (H instanceof xu)
           return;
         R("exiting due to exception: " + H);
       }
@@ -2592,12 +2592,12 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
           Ie ? de(Ie) : J(Qe.buffer);
         });
       }, process.argv.length > 1 && (p = process.argv[1].replace(/\\/g, "/")), c = process.argv.slice(2), process.on("uncaughtException", function(H) {
-        if (!(H instanceof vu))
+        if (!(H instanceof xu))
           throw H;
       }), process.on("unhandledRejection", function(H) {
         throw H;
       }), d = (H, J) => {
-        if (pu())
+        if (hu())
           throw process.exitCode = H, J;
         T(J), process.exit(H);
       }, a.inspect = function() {
@@ -2651,7 +2651,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
       }
       function Y(H, J) {
         for (var de = H; de < H + J; de++) {
-          var Ie = mu(de);
+          var Ie = gu(de);
           Ie && q.set(Ie, de);
         }
       }
@@ -2674,11 +2674,11 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
           var nr = 0;
           if (an != null && an !== 0) {
             var Fc = (an.length << 2) + 1;
-            nr = yu(Fc), tt(an, nr, Fc);
+            nr = vu(Fc), tt(an, nr, Fc);
           }
           return nr;
         }, array: function(an) {
-          var nr = yu(an.length);
+          var nr = vu(an.length);
           return at(an, nr), nr;
         } };
         function Ve(an) {
@@ -2790,18 +2790,18 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
       function Ls(H) {
         Cn = H, a.HEAP8 = Et = new Int8Array(H), a.HEAP16 = Nn = new Int16Array(H), a.HEAP32 = Yt = new Int32Array(H), a.HEAPU8 = en = new Uint8Array(H), a.HEAPU16 = Tn = new Uint16Array(H), a.HEAPU32 = Dn = new Uint32Array(H), a.HEAPF32 = tn = new Float32Array(H), a.HEAPF64 = Ms = new Float64Array(H);
       }
-      var ki = a.INITIAL_MEMORY || 16777216, Js, Bs = [], du = [], Ii = [], nn = false, ic = false, oc = 0;
-      function pu() {
+      var ki = a.INITIAL_MEMORY || 16777216, Js, Bs = [], pu = [], Ii = [], nn = false, ic = false, oc = 0;
+      function hu() {
         return se || oc > 0;
       }
       function uc() {
         if (a.preRun)
           for (typeof a.preRun == "function" && (a.preRun = [a.preRun]); a.preRun.length; )
             dc(a.preRun.shift());
-        fu(Bs);
+        mu(Bs);
       }
       function lc() {
-        nn = true, fu(du);
+        nn = true, mu(pu);
       }
       function Fv() {
         ic = true;
@@ -2810,13 +2810,13 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
         if (a.postRun)
           for (typeof a.postRun == "function" && (a.postRun = [a.postRun]); a.postRun.length; )
             pc(a.postRun.shift());
-        fu(Ii);
+        mu(Ii);
       }
       function dc(H) {
         Bs.unshift(H);
       }
       function rs(H) {
-        du.unshift(H);
+        pu.unshift(H);
       }
       function pc(H) {
         Ii.unshift(H);
@@ -2846,7 +2846,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
       }
       var sn;
       sn = "tfjs-backend-wasm.wasm", fc(sn) || (sn = b(sn));
-      function hu(H) {
+      function fu(H) {
         try {
           if (H == sn && ee)
             return new Uint8Array(ee);
@@ -2865,7 +2865,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
                 throw "failed to load wasm binary file at '" + sn + "'";
               return H.arrayBuffer();
             }).catch(function() {
-              return hu(sn);
+              return fu(sn);
             });
           if (v)
             return new Promise(function(H, J) {
@@ -2875,7 +2875,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
             });
         }
         return Promise.resolve().then(function() {
-          return hu(sn);
+          return fu(sn);
         });
       }
       function rh() {
@@ -2915,7 +2915,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
         return Qe().catch(o), {};
       }
       var Ov, Pv;
-      function fu(H) {
+      function mu(H) {
         for (; H.length > 0; ) {
           var J = H.shift();
           if (typeof J == "function") {
@@ -2923,7 +2923,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
             continue;
           }
           var de = J.func;
-          typeof de == "number" ? J.arg === void 0 ? mu(de)() : mu(de)(J.arg) : de(J.arg === void 0 ? null : J.arg);
+          typeof de == "number" ? J.arg === void 0 ? gu(de)() : gu(de)(J.arg) : de(J.arg === void 0 ? null : J.arg);
         }
       }
       function tr(H) {
@@ -2937,7 +2937,7 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
         });
       }
       var as = [];
-      function mu(H) {
+      function gu(H) {
         var J = as[H];
         return J || (H >= as.length && (as.length = H + 1), as[H] = J = Js.get(H)), J;
       }
@@ -3082,8 +3082,8 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
         return (Nh = a._Floor = a.asm.Floor).apply(null, arguments);
       }, Lr = a._FloorDiv = function() {
         return (Lr = a._FloorDiv = a.asm.FloorDiv).apply(null, arguments);
-      }, gu = a._FusedBatchNorm = function() {
-        return (gu = a._FusedBatchNorm = a.asm.FusedBatchNorm).apply(null, arguments);
+      }, bu = a._FusedBatchNorm = function() {
+        return (bu = a._FusedBatchNorm = a.asm.FusedBatchNorm).apply(null, arguments);
       }, Th = a._FusedConv2D = function() {
         return (Th = a._FusedConv2D = a.asm.FusedConv2D).apply(null, arguments);
       }, $h = a._FusedDepthwiseConv2D = function() {
@@ -3104,8 +3104,8 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
         return (Fh = a._LessEqual = a.asm.LessEqual).apply(null, arguments);
       }, Oh = a._Log = function() {
         return (Oh = a._Log = a.asm.Log).apply(null, arguments);
-      }, bu = a._LogicalAnd = function() {
-        return (bu = a._LogicalAnd = a.asm.LogicalAnd).apply(null, arguments);
+      }, yu = a._LogicalAnd = function() {
+        return (yu = a._LogicalAnd = a.asm.LogicalAnd).apply(null, arguments);
       }, Cc = a._Max = function() {
         return (Cc = a._Max = a.asm.Max).apply(null, arguments);
       }, Nc = a._MaxPool = function() {
@@ -3214,8 +3214,8 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
         return (Rc = a.stackSave = a.asm.stackSave).apply(null, arguments);
       }, Dc = a.stackRestore = function() {
         return (Dc = a.stackRestore = a.asm.stackRestore).apply(null, arguments);
-      }, yu = a.stackAlloc = function() {
-        return (yu = a.stackAlloc = a.asm.stackAlloc).apply(null, arguments);
+      }, vu = a.stackAlloc = function() {
+        return (vu = a.stackAlloc = a.asm.stackAlloc).apply(null, arguments);
       }, Sf = a.dynCall_iijjiiii = function() {
         return (Sf = a.dynCall_iijjiiii = a.asm.dynCall_iijjiiii).apply(null, arguments);
       }, Cf = a.dynCall_jiji = function() {
@@ -3223,13 +3223,13 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
       };
       a.cwrap = Se;
       var Ai;
-      function vu(H) {
+      function xu(H) {
         this.name = "ExitStatus", this.message = "Program terminated with exit(" + H + ")", this.status = H;
       }
       er = function H() {
-        Ai || xu(), Ai || (er = H);
+        Ai || wu(), Ai || (er = H);
       };
-      function xu(H) {
+      function wu(H) {
         if (H = H || c, Fn > 0 || (uc(), Fn > 0))
           return;
         function J() {
@@ -3241,14 +3241,14 @@ var i$ = zt({ "src/tfjs-backend-wasm/wasm-out/tfjs-backend-wasm.js"(e, t) {
           }, 1), J();
         }, 1)) : J();
       }
-      a.run = xu;
+      a.run = wu;
       function Hv(H) {
-        re = H, pu() || (a.onExit && a.onExit(H), oe = true), d(H, new vu(H));
+        re = H, hu() || (a.onExit && a.onExit(H), oe = true), d(H, new xu(H));
       }
       if (a.preInit)
         for (typeof a.preInit == "function" && (a.preInit = [a.preInit]); a.preInit.length > 0; )
           a.preInit.pop()();
-      xu();
+      wu();
       var Ei;
       u && (Ei = { uncaughtException: process.listeners("uncaughtException").filter(function(H) {
         return !u.uncaughtException.indexOf(H) > -1;
@@ -3301,7 +3301,7 @@ var Ud = class {
     return this.dataIdsCount;
   }
 };
-var tl = class {
+var nl = class {
   refCount(e) {
     return On("refCount");
   }
@@ -3363,7 +3363,7 @@ function l$(e, t) {
   for (; n > 0; )
     s = Math.random() * n | 0, n--, pd(e, n, s), pd(t, n, s);
 }
-function Bu(e, t, n) {
+function Vu(e, t, n) {
   return Math.max(e, Math.min(t, n));
 }
 function c$(e) {
@@ -3455,7 +3455,7 @@ function b$(e) {
     t[n] = n;
   return Uw(t), t;
 }
-function Pu(e, t) {
+function zu(e, t) {
   return t <= e.length ? e : e + " ".repeat(t - e.length);
 }
 function y$(e, t = (s) => 0, n) {
@@ -3593,7 +3593,7 @@ function hd(e, t) {
       return n;
   return e;
 }
-function ro(e) {
+function ao(e) {
   let t = e.length;
   if (t < 2)
     return [];
@@ -3794,26 +3794,26 @@ function ag(e, t) {
     return n.set(e, s), n.get(e);
   }
 }
-var ao = "Abs";
-var nl = "Acos";
-var sl = "Acosh";
+var io = "Abs";
+var sl = "Acos";
+var rl = "Acosh";
 var Ir = "Add";
 var ka = "AddN";
-var rl = "All";
-var al = "Any";
+var al = "All";
+var il = "Any";
 var Ia = "ArgMax";
-var il = "ArgMin";
-var ol = "Asin";
-var ul = "Asinh";
-var ll = "Atan";
-var cl = "Atanh";
-var dl = "Atan2";
+var ol = "ArgMin";
+var ul = "Asin";
+var ll = "Asinh";
+var cl = "Atan";
+var dl = "Atanh";
+var pl = "Atan2";
 var Sa = "AvgPool";
 var ig = "AvgPoolGrad";
 var qd = "AvgPool3D";
 var og = "AvgPool3DGrad";
 var Ca = "BatchMatMul";
-var io = "BatchToSpaceND";
+var oo = "BatchToSpaceND";
 var ug = "Bincount";
 var A$ = "BroadcastTo";
 var lg = "BroadcastArgs";
@@ -3822,7 +3822,7 @@ var Ta = "Ceil";
 var Sr = "ClipByValue";
 var jd = "Complex";
 var Kd = "ComplexAbs";
-var oo = "Concat";
+var uo = "Concat";
 var $a = "Conv2D";
 var cg = "Conv2DBackpropFilter";
 var _a = "Conv2DBackpropInput";
@@ -3831,11 +3831,11 @@ var dg = "Conv3DBackpropFilterV2";
 var pg = "Conv3DBackpropInputV2";
 var Aa = "Cos";
 var Ea = "Cosh";
-var pl = "Cumprod";
-var uo = "Cumsum";
-var lo = "CropAndResize";
+var hl = "Cumprod";
+var lo = "Cumsum";
+var co = "CropAndResize";
 var hg = "DenseBincount";
-var co = "DepthToSpace";
+var po = "DepthToSpace";
 var Ra = "DepthwiseConv2dNative";
 var fg = "DepthwiseConv2dNativeBackpropFilter";
 var mg = "DepthwiseConv2dNativeBackpropInput";
@@ -3847,35 +3847,35 @@ var Da = "RealDiv";
 var Qd = "Einsum";
 var Fa = "Elu";
 var bg = "EluGrad";
-var hl = "Erf";
-var po = "Equal";
+var fl = "Erf";
+var ho = "Equal";
 var Oa = "Exp";
-var ho = "ExpandDims";
-var fo = "Expm1";
+var fo = "ExpandDims";
+var mo = "Expm1";
 var yg = "FFT";
-var fl = "Fill";
-var mo = "FlipLeftRight";
+var ml = "Fill";
+var go = "FlipLeftRight";
 var Pa = "Floor";
 var za = "FloorDiv";
 var Ma = "FusedBatchNorm";
-var go = "GatherV2";
-var bo = "GatherNd";
-var yo = "Greater";
+var bo = "GatherV2";
+var yo = "GatherNd";
+var vo = "Greater";
 var La = "GreaterEqual";
 var Ba = "Identity";
 var vg = "IFFT";
 var Zd = "Imag";
-var ml = "IsFinite";
-var gl = "IsInf";
-var bl = "IsNan";
+var gl = "IsFinite";
+var bl = "IsInf";
+var yl = "IsNan";
 var Va = "LeakyRelu";
-var vo = "Less";
-var xo = "LessEqual";
+var xo = "Less";
+var wo = "LessEqual";
 var xg = "LinSpace";
 var Wa = "Log";
-var yl = "Log1p";
-var wo = "LogicalAnd";
-var vl = "LogicalNot";
+var vl = "Log1p";
+var ko = "LogicalAnd";
+var xl = "LogicalNot";
 var Jd = "LogicalOr";
 var E$ = "LogSoftmax";
 var ep = "LRN";
@@ -3891,74 +3891,74 @@ var qa = "Mean";
 var ja = "Min";
 var Ka = "Minimum";
 var Xa = "MirrorPad";
-var xl = "Mod";
+var wl = "Mod";
 var Cg = "Multinomial";
 var Ya = "Multiply";
-var ko = "Neg";
-var Io = "NotEqual";
-var So = "NonMaxSuppressionV3";
-var wl = "NonMaxSuppressionV4";
-var Co = "NonMaxSuppressionV5";
-var No = "OnesLike";
-var To = "OneHot";
-var $o = "Pack";
+var Io = "Neg";
+var So = "NotEqual";
+var Co = "NonMaxSuppressionV3";
+var kl = "NonMaxSuppressionV4";
+var No = "NonMaxSuppressionV5";
+var To = "OnesLike";
+var $o = "OneHot";
+var _o = "Pack";
 var Qa = "PadV2";
-var Tde = "Pool";
+var $de = "Pool";
 var Za = "Pow";
 var Ja = "Prelu";
-var _o = "Prod";
-var kl = "Range";
+var Ao = "Prod";
+var Il = "Range";
 var np = "Real";
-var Il = "Reciprocal";
+var Sl = "Reciprocal";
 var ei = "Relu";
-var Ao = "Reshape";
-var Sl = "ResizeNearestNeighbor";
+var Eo = "Reshape";
+var Cl = "ResizeNearestNeighbor";
 var Ng = "ResizeNearestNeighborGrad";
 var ti = "ResizeBilinear";
 var Tg = "ResizeBilinearGrad";
 var ni = "Relu6";
-var Eo = "Reverse";
-var Ro = "Round";
+var Ro = "Reverse";
+var Do = "Round";
 var si = "Rsqrt";
-var Do = "ScatterNd";
-var Fo = "Select";
-var Cl = "Selu";
-var Oo = "Slice";
+var Fo = "ScatterNd";
+var Oo = "Select";
+var Nl = "Selu";
+var Po = "Slice";
 var ri = "Sin";
-var Po = "Sinh";
-var Nl = "Sign";
+var zo = "Sinh";
+var Tl = "Sign";
 var ai = "Sigmoid";
-var Tl = "Softplus";
+var $l = "Softplus";
 var ii = "Sqrt";
 var oi = "Sum";
-var zo = "SpaceToBatchND";
-var Mo = "SplitV";
+var Mo = "SpaceToBatchND";
+var Lo = "SplitV";
 var ui = "Softmax";
 var sp = "SparseFillEmptyRows";
-var $l = "SparseReshape";
+var _l = "SparseReshape";
 var rp = "SparseSegmentMean";
 var ap = "SparseSegmentSum";
 var ip = "SparseToDense";
 var li = "SquaredDifference";
-var _l = "Square";
-var Lo = "StridedSlice";
+var Al = "Square";
+var Bo = "StridedSlice";
 var op = "StringNGrams";
 var $g = "StringSplit";
 var _g = "StringToHashBucketFast";
 var ci = "Sub";
-var Bo = "Tan";
+var Vo = "Tan";
 var di = "Tanh";
 var Cr = "Tile";
-var Vo = "TopK";
-var Wo = "Transform";
+var Wo = "TopK";
+var Uo = "Transform";
 var pi = "Transpose";
 var Ag = "Unique";
-var Uo = "Unpack";
+var Go = "Unpack";
 var up = "UnsortedSegmentSum";
-var Go = "ZerosLike";
+var Ho = "ZerosLike";
 var hi = "Step";
 var fd = "FromPixels";
-var Ho = "RotateWithOffset";
+var qo = "RotateWithOffset";
 var ra = "_FusedMatMul";
 var aa = "FusedConv2D";
 var ia = "FusedDepthwiseConv2D";
@@ -3969,13 +3969,13 @@ function R$(...e) {
   X().getBool("IS_TEST") || X().getBool("PROD") || console.log(...e);
 }
 var Qi = ag("kernelRegistry", () => /* @__PURE__ */ new Map());
-var Vu = ag("gradRegistry", () => /* @__PURE__ */ new Map());
+var Wu = ag("gradRegistry", () => /* @__PURE__ */ new Map());
 function Zf(e, t) {
   let n = Eg(e, t);
   return Qi.get(n);
 }
 function nx(e) {
-  return Vu.get(e);
+  return Wu.get(e);
 }
 function Jf(e) {
   let t = Qi.entries(), n = [];
@@ -3988,44 +3988,44 @@ function Jf(e) {
   }
   return n;
 }
-function Al(e) {
+function El(e) {
   let { kernelName: t, backendName: n } = e, s = Eg(t, n);
   Qi.has(s) && ar(`The kernel '${t}' for backend '${n}' is already registered`), Qi.set(s, e);
 }
 function D$(e) {
   let { kernelName: t } = e;
-  Vu.has(t) && X().getBool("DEBUG") && ar(`Overriding the gradient for '${t}'`), Vu.set(t, e);
+  Wu.has(t) && X().getBool("DEBUG") && ar(`Overriding the gradient for '${t}'`), Wu.set(t, e);
 }
-function $de(e, t) {
+function _de(e, t) {
   let n = Eg(e, t);
   if (!Qi.has(n))
     throw new Error(`The kernel '${e}' for backend '${t}' is not registered`);
   Qi.delete(n);
 }
-function _de(e) {
-  if (!Vu.has(e))
+function Ade(e) {
+  if (!Wu.has(e))
     throw new Error(`The gradient '${e}' for backend is not registered`);
-  Vu.delete(e);
+  Wu.delete(e);
 }
-function Ade(e, t) {
+function Ede(e, t) {
   Jf(e).forEach((s) => {
     let r = Object.assign({}, s, { backendName: t });
-    Al(r);
+    El(r);
   });
 }
 function Eg(e, t) {
   return `${t}_${e}`;
 }
 var w = {};
-Ae(w, { arraysEqual: () => kr, assert: () => O, assertNonNegativeIntegerDimensions: () => sg, assertNonNull: () => wa, assertShapesMatch: () => pn, bytesFromStringArray: () => Xw, bytesPerElement: () => Xf, checkConversionForErrors: () => jw, clamp: () => Bu, computeStrides: () => ro, createScalarValue: () => L$, createShuffledIndices: () => b$, decodeString: () => md, distSquared: () => h$, encodeString: () => Rl, fetch: () => V$, fingerPrint64: () => M$, flatten: () => sa, getArrayFromDType: () => qw, getTypedArrayFromDType: () => Hw, hasEncodingLoss: () => x$, hexToLong: () => El, indexToLoc: () => I$, inferDtype: () => Gd, inferFromImplicitShape: () => v$, isBoolean: () => Yw, isFunction: () => hr, isInt: () => Yi, isNumber: () => Qw, isPromise: () => rg, isScalarShape: () => f$, isString: () => ir, isTypedArray: () => Qt, isValidDtype: () => Kw, locToIndex: () => k$, makeOnesTypedArray: () => ng, makeZerosNestedTypedArray: () => w$, makeZerosTypedArray: () => Hd, nearestDivisor: () => hd, nearestLargerEven: () => c$, now: () => Wu, parseAxisParam: () => ts, randUniform: () => p$, repeatedTry: () => y$, rightPad: () => Pu, shuffle: () => Uw, shuffleCombo: () => l$, sizeFromShape: () => pt, sizeToSquarishShape: () => g$, squeezeShape: () => Gw, sum: () => d$, swap: () => pd, tanh: () => m$, toNestedArray: () => Hi, toTypedArray: () => lp });
+Ae(w, { arraysEqual: () => kr, assert: () => O, assertNonNegativeIntegerDimensions: () => sg, assertNonNull: () => wa, assertShapesMatch: () => pn, bytesFromStringArray: () => Xw, bytesPerElement: () => Xf, checkConversionForErrors: () => jw, clamp: () => Vu, computeStrides: () => ao, createScalarValue: () => L$, createShuffledIndices: () => b$, decodeString: () => md, distSquared: () => h$, encodeString: () => Dl, fetch: () => V$, fingerPrint64: () => M$, flatten: () => sa, getArrayFromDType: () => qw, getTypedArrayFromDType: () => Hw, hasEncodingLoss: () => x$, hexToLong: () => Rl, indexToLoc: () => I$, inferDtype: () => Gd, inferFromImplicitShape: () => v$, isBoolean: () => Yw, isFunction: () => hr, isInt: () => Yi, isNumber: () => Qw, isPromise: () => rg, isScalarShape: () => f$, isString: () => ir, isTypedArray: () => Qt, isValidDtype: () => Kw, locToIndex: () => k$, makeOnesTypedArray: () => ng, makeZerosNestedTypedArray: () => w$, makeZerosTypedArray: () => Hd, nearestDivisor: () => hd, nearestLargerEven: () => c$, now: () => Uu, parseAxisParam: () => ts, randUniform: () => p$, repeatedTry: () => y$, rightPad: () => zu, shuffle: () => Uw, shuffleCombo: () => l$, sizeFromShape: () => pt, sizeToSquarishShape: () => g$, squeezeShape: () => Gw, sum: () => d$, swap: () => pd, tanh: () => m$, toNestedArray: () => Hi, toTypedArray: () => lp });
 var sx = xa(HT());
 var qr = sx.default || sx;
-function El(e) {
+function Rl(e) {
   return qr.fromString(e, true, 16);
 }
-var tk = El("c3a5c85c97cb3127");
-var Gr = El("b492b66fbe98f273");
-var on = El("9ae16a3b2f90404f");
+var tk = Rl("c3a5c85c97cb3127");
+var Gr = Rl("b492b66fbe98f273");
+var on = Rl("9ae16a3b2f90404f");
 function em(e) {
   return e.xor(e.shru(47));
 }
@@ -4042,7 +4042,7 @@ function rx(e, t) {
 function Lt(e, t) {
   return t === 0 ? e : e.shru(t).or(e.shl(64 - t));
 }
-function ur(e, t, n = El("9ddfea08eb382d69")) {
+function ur(e, t, n = Rl("9ddfea08eb382d69")) {
   let s = e.xor(t).mul(n);
   s = s.xor(s.shru(47));
   let r = t.xor(s).mul(n);
@@ -4095,7 +4095,7 @@ function M$(e, t = e.length) {
   return u = c, o[0] = o[0].add(t - 1 & 63), i[0] = i[0].add(o[0]), o[0] = o[0].add(i[0]), s = Lt(s.add(r).add(i[0]).add(lt(e, u + 8)), 37).mul(p), r = Lt(r.add(i[1]).add(lt(e, u + 48)), 42).mul(p), s = s.xor(o[1].mul(9)), r = r.add(i[0].mul(9).add(lt(e, u + 40))), a = Lt(a.add(o[0]), 33).mul(p), i = Vc(e, u, i[1].mul(p), s.add(o[0])), o = Vc(e, u + 32, a.add(o[1]), r.add(lt(e, u + 16))), [a, s] = [s, a], ur(ur(i[0], o[0], p).add(em(r).mul(tk)).add(a), ur(i[1], o[1], p).add(s), p);
 }
 function L$(e, t) {
-  return t === "string" ? Rl(e) : lp([e], t);
+  return t === "string" ? Dl(e) : lp([e], t);
 }
 function B$(e, t) {
   return e instanceof Float32Array && t === "float32" || e instanceof Int32Array && t === "int32" || e instanceof Uint8Array && t === "bool";
@@ -4117,13 +4117,13 @@ function lp(e, t) {
   } else
     throw new Error(`Unknown data type ${t}`);
 }
-function Wu() {
+function Uu() {
   return X().platform.now();
 }
 function V$(e, t) {
   return X().platform.fetch(e, t);
 }
-function Rl(e, t = "utf-8") {
+function Dl(e, t = "utf-8") {
   return t = t || "utf-8", X().platform.encode(e, t);
 }
 function md(e, t = "utf-8") {
@@ -4136,14 +4136,14 @@ var W$ = class {
   profileKernel(e, t, n) {
     let s, r = () => {
       s = n();
-    }, a, i = Wu();
+    }, a, i = Uu();
     if (this.backendTimer.timerAvailable())
       a = this.backendTimer.time(r);
     else {
       r();
       for (let u of s)
         u.dataSync();
-      a = Promise.resolve({ kernelMs: Wu() - i });
+      a = Promise.resolve({ kernelMs: Uu() - i });
     }
     if (X().getBool("CHECK_COMPUTATION_FOR_ERRORS"))
       for (let u = 0; u < s.length; u++) {
@@ -4175,7 +4175,7 @@ function U$(e, t, n) {
 }
 var G$ = class {
   logKernelProfile(e, t, n, s, r, a) {
-    let i = typeof s == "number" ? Pu(`${s}ms`, 9) : s.error, o = Pu(e, 25), u = t.rank, l = t.size, c = Pu(t.shape.toString(), 14), p = "";
+    let i = typeof s == "number" ? zu(`${s}ms`, 9) : s.error, o = zu(e, 25), u = t.rank, l = t.size, c = zu(t.shape.toString(), 14), p = "";
     for (let d in r) {
       let h = r[d];
       if (h != null) {
@@ -4258,27 +4258,27 @@ function q$(e, t, n, s) {
   }
 }
 var ax = 20;
-var Iu = 3;
+var Su = 3;
 var Ff = 7;
 function j$(e, t, n, s) {
-  let r = ro(t), a = K$(e, t, n, r), i = t.length, o = ed(e, t, n, r, a), u = ["Tensor"];
+  let r = ao(t), a = K$(e, t, n, r), i = t.length, o = ed(e, t, n, r, a), u = ["Tensor"];
   return s && (u.push(`  dtype: ${n}`), u.push(`  rank: ${i}`), u.push(`  shape: [${t}]`), u.push("  values:")), u.push(o.map((l) => "    " + l).join(`
 `)), u.join(`
 `);
 }
 function K$(e, t, n, s) {
-  let r = pt(t), a = s[s.length - 1], i = new Array(a).fill(0), o = t.length, u = n === "complex64" ? $u(e) : e;
+  let r = pt(t), a = s[s.length - 1], i = new Array(a).fill(0), o = t.length, u = n === "complex64" ? _u(e) : e;
   if (o > 1)
     for (let l = 0; l < r / a; l++) {
       let c = l * a;
       for (let p = 0; p < a; p++)
-        i[p] = Math.max(i[p], Tu(u[c + p], 0, n).length);
+        i[p] = Math.max(i[p], $u(u[c + p], 0, n).length);
     }
   return i;
 }
-function Tu(e, t, n) {
+function $u(e, t, n) {
   let s;
-  return Array.isArray(e) ? s = `${parseFloat(e[0].toFixed(Ff))} + ${parseFloat(e[1].toFixed(Ff))}j` : ir(e) ? s = `'${e}'` : n === "bool" ? s = sk(e) : s = parseFloat(e.toFixed(Ff)).toString(), Pu(s, t);
+  return Array.isArray(e) ? s = `${parseFloat(e[0].toFixed(Ff))} + ${parseFloat(e[1].toFixed(Ff))}j` : ir(e) ? s = `'${e}'` : n === "bool" ? s = sk(e) : s = parseFloat(e.toFixed(Ff)).toString(), zu(s, t);
 }
 function sk(e) {
   return e === 0 ? "false" : "true";
@@ -4287,27 +4287,27 @@ function ed(e, t, n, s, r, a = true) {
   let i = n === "complex64" ? 2 : 1, o = t[0], u = t.length;
   if (u === 0) {
     if (n === "complex64") {
-      let m = $u(e);
-      return [Tu(m[0], 0, n)];
+      let m = _u(e);
+      return [$u(m[0], 0, n)];
     }
     return n === "bool" ? [sk(e[0])] : [e[0].toString()];
   }
   if (u === 1) {
     if (o > ax) {
-      let g = Iu * i, b = Array.from(e.slice(0, g)), y = Array.from(e.slice((o - Iu) * i, o * i));
-      return n === "complex64" && (b = $u(b), y = $u(y)), ["[" + b.map((v, x) => Tu(v, r[x], n)).join(", ") + ", ..., " + y.map((v, x) => Tu(v, r[o - Iu + x], n)).join(", ") + "]"];
+      let g = Su * i, b = Array.from(e.slice(0, g)), y = Array.from(e.slice((o - Su) * i, o * i));
+      return n === "complex64" && (b = _u(b), y = _u(y)), ["[" + b.map((v, x) => $u(v, r[x], n)).join(", ") + ", ..., " + y.map((v, x) => $u(v, r[o - Su + x], n)).join(", ") + "]"];
     }
-    let m = n === "complex64" ? $u(e) : Array.from(e);
-    return ["[" + m.map((g, b) => Tu(g, r[b], n)).join(", ") + "]"];
+    let m = n === "complex64" ? _u(e) : Array.from(e);
+    return ["[" + m.map((g, b) => $u(g, r[b], n)).join(", ") + "]"];
   }
   let l = t.slice(1), c = s.slice(1), p = s[0] * i, d = [];
   if (o > ax) {
-    for (let m = 0; m < Iu; m++) {
+    for (let m = 0; m < Su; m++) {
       let g = m * p, b = g + p;
       d.push(...ed(e.slice(g, b), l, n, c, r, false));
     }
     d.push("...");
-    for (let m = o - Iu; m < o; m++) {
+    for (let m = o - Su; m < o; m++) {
       let g = m * p, b = g + p;
       d.push(...ed(e.slice(g, b), l, n, c, r, m === o - 1));
     }
@@ -4327,7 +4327,7 @@ function ed(e, t, n, s, r, a = true) {
 `;
   return d[d.length - 1] = " " + d[d.length - 1] + "]" + (a ? "" : f), d;
 }
-function $u(e) {
+function _u(e) {
   let t = [];
   for (let n = 0; n < e.length; n += 2)
     t.push([e[n], e[n + 1]]);
@@ -4341,7 +4341,7 @@ var Vt = class {
     }
     if (t === "complex64")
       throw new Error("complex64 dtype TensorBuffers are not supported. Please create a TensorBuffer for the real and imaginary parts separately and call tf.complex(real, imag).");
-    this.values = n || qw(t, this.size), this.strides = ro(e);
+    this.values = n || qw(t, this.size), this.strides = ao(e);
   }
   set(e, ...t) {
     t.length === 0 && (t = [0]), O(t.length === this.rank, () => `The number of provided coordinates (${t.length}) must match the rank (${this.rank})`);
@@ -4404,7 +4404,7 @@ function Z$(e) {
 }
 var et = class {
   constructor(e, t, n, s) {
-    this.kept = false, this.isDisposedInternal = false, this.shape = e.slice(), this.dtype = t || "float32", this.size = pt(e), this.strides = ro(e), this.dataId = n, this.id = s, this.rankType = this.rank < 5 ? this.rank.toString() : "higher";
+    this.kept = false, this.isDisposedInternal = false, this.shape = e.slice(), this.dtype = t || "float32", this.size = pt(e), this.strides = ao(e), this.dataId = n, this.id = s, this.rankType = this.rank < 5 ? this.rank.toString() : "higher";
   }
   get rank() {
     return this.shape.length;
@@ -4489,8 +4489,7 @@ function J$() {
 J$();
 var gd = class extends et {
   constructor(e, t, n, s) {
-    super(e.shape, e.dtype, e.dataId, s);
-    this.trainable = t, this.name = n;
+    super(e.shape, e.dtype, e.dataId, s), this.trainable = t, this.name = n;
   }
   assign(e) {
     if (e.dtype !== this.dtype)
@@ -4648,7 +4647,7 @@ var tm = class {
       throw new Error(`Cannot initialize backend ${e}, no registration found.`);
     try {
       let n = t.factory();
-      if (n && !(n instanceof tl) && typeof n.then == "function") {
+      if (n && !(n instanceof nl) && typeof n.then == "function") {
         let s = ++this.pendingBackendInitId, r = n.then((a) => s < this.pendingBackendInitId ? false : (this.registry[e] = a, this.pendingBackendInit = null, true)).catch((a) => (s < this.pendingBackendInitId || (this.pendingBackendInit = null, ar(`Initialization of backend ${e} failed`), ar(a.stack || a.message)), false));
         return this.pendingBackendInit = r, { success: r, asyncInit: true };
       } else
@@ -4796,7 +4795,7 @@ var tm = class {
       throw new Error("Values passed to engine.makeTensor() are null");
     n = n || "float32", s = s || this.backend;
     let r = e;
-    n === "string" && ir(e[0]) && (r = e.map((o) => Rl(o)));
+    n === "string" && ir(e[0]) && (r = e.map((o) => Dl(o)));
     let a = s.write(r, t, n), i = new et(t, n, a, this.nextTensorId());
     if (this.trackTensor(i, s), n === "string") {
       let o = this.state.tensorInfo.get(a), u = Xw(r);
@@ -4941,8 +4940,8 @@ var tm = class {
     return this.state.tensorInfo.get(e).backend.readToGPU(e, t);
   }
   async time(e) {
-    let t = Wu(), n = await this.backend.time(e);
-    return n.wallMs = Wu() - t, n;
+    let t = Uu(), n = await this.backend.time(e);
+    return n.wallMs = Uu() - t, n;
   }
   track(e) {
     return this.state.activeScope != null && (e.scopeId = this.state.activeScope.id, this.state.activeScope.track.push(e)), e;
@@ -5060,7 +5059,7 @@ function _(e, t, n, s = "numeric") {
   let o = r !== "string" ? lp(e, r) : sa(e, [], true);
   return M.makeTensor(o, a, r);
 }
-function Uu(e, t, n, s = "numeric") {
+function Gu(e, t, n, s = "numeric") {
   if (!Array.isArray(e))
     throw new Error(`Argument ${t} passed to ${n} must be a \`Tensor[]\` or \`TensorLike[]\``);
   return e.map((a, i) => _(a, `${t}[${i}]`, n, s));
@@ -5271,7 +5270,7 @@ async function Pg(e, t) {
   }
   return e.signature != null && (n.signature = e.signature), e.userDefinedMetadata != null && (n.userDefinedMetadata = e.userDefinedMetadata), e.modelInitializer != null && (n.modelInitializer = e.modelInitializer), n;
 }
-function Dl(e) {
+function Fl(e) {
   if (e.modelTopology instanceof ArrayBuffer)
     throw new Error("Expected JSON model topology, received ArrayBuffer.");
   return { dateSaved: new Date(), modelTopologyType: "JSON", modelTopologyBytes: e.modelTopology == null ? 0 : ux(JSON.stringify(e.modelTopology)), weightSpecsBytes: e.weightSpecs == null ? 0 : ux(JSON.stringify(e.weightSpecs)), weightDataBytes: e.weightData == null ? 0 : e.weightData.byteLength };
@@ -5390,7 +5389,7 @@ var ua = class {
             n(u.result.modelArtifacts);
           }, u.onerror = (l) => (a.close(), s(u.error)), i.oncomplete = () => a.close();
         } else {
-          let i = Dl(t), o = a.transaction(or, "readwrite"), u = o.objectStore(or), l = u.put({ modelPath: this.modelPath, modelArtifactsInfo: i }), c;
+          let i = Fl(t), o = a.transaction(or, "readwrite"), u = o.objectStore(or), l = u.put({ modelPath: this.modelPath, modelArtifactsInfo: i }), c;
           l.onsuccess = () => {
             c = a.transaction(Yr, "readwrite");
             let d = c.objectStore(Yr).put({ modelPath: this.modelPath, modelArtifacts: t, modelArtifactsInfo: i });
@@ -5493,7 +5492,7 @@ var la = class {
     if (e.modelTopology instanceof ArrayBuffer)
       throw new Error("BrowserLocalStorage.save() does not support saving model topology in binary formats yet.");
     {
-      let t = JSON.stringify(e.modelTopology), n = JSON.stringify(e.weightSpecs), s = Dl(e);
+      let t = JSON.stringify(e.modelTopology), n = JSON.stringify(e.weightSpecs), s = Fl(e);
       try {
         this.LS.setItem(this.keys.info, JSON.stringify(s)), this.LS.setItem(this.keys.topology, t), this.LS.setItem(this.keys.weightSpecs, n), this.LS.setItem(this.keys.weightData, h_(e.weightData));
         let r = { format: e.format, generatedBy: e.generatedBy, convertedBy: e.convertedBy, signature: e.signature != null ? e.signature : void 0, userDefinedMetadata: e.userDefinedMetadata != null ? e.userDefinedMetadata : void 0, modelInitializer: e.modelInitializer != null ? e.modelInitializer : void 0, trainingConfig: e.trainingConfig != null ? e.trainingConfig : void 0 };
@@ -5694,7 +5693,7 @@ ck();
 var G_ = { buffer: De, cast: ce, clone: lr, print: U_ };
 Q$(G_);
 var En = {};
-Ae(En, { browserFiles: () => Q_, browserHTTPRequest: () => nA, concatenateArrayBuffers: () => Og, copyModel: () => P_, decodeWeights: () => hk, encodeWeights: () => d_, fromMemory: () => rA, getLoadHandlers: () => k_, getModelArtifactsForJSON: () => Pg, getModelArtifactsInfoForJSON: () => Dl, getSaveHandlers: () => w_, http: () => Mg, isHTTPScheme: () => um, listModels: () => F_, loadWeights: () => Z_, moveModel: () => z_, registerLoadRouter: () => x_, registerSaveRouter: () => v_, removeModel: () => O_, weightsLoaderFactory: () => Ik, withSaveHandler: () => aA });
+Ae(En, { browserFiles: () => Q_, browserHTTPRequest: () => nA, concatenateArrayBuffers: () => Og, copyModel: () => P_, decodeWeights: () => hk, encodeWeights: () => d_, fromMemory: () => rA, getLoadHandlers: () => k_, getModelArtifactsForJSON: () => Pg, getModelArtifactsInfoForJSON: () => Fl, getSaveHandlers: () => w_, http: () => Mg, isHTTPScheme: () => um, listModels: () => F_, loadWeights: () => Z_, moveModel: () => z_, registerLoadRouter: () => x_, registerSaveRouter: () => v_, removeModel: () => O_, weightsLoaderFactory: () => Ik, withSaveHandler: () => aA });
 var H_ = "model";
 var q_ = ".json";
 var j_ = ".weights.bin";
@@ -5719,7 +5718,7 @@ var om = class {
         let i = this.weightDataAnchor == null ? document.createElement("a") : this.weightDataAnchor;
         i.download = this.weightDataFileName, i.href = t, await cx(() => i.dispatchEvent(new MouseEvent("click")));
       }
-      return { modelArtifactsInfo: Dl(e) };
+      return { modelArtifactsInfo: Fl(e) };
     }
   }
 };
@@ -5875,7 +5874,7 @@ var zg = class {
     t.body.append("model.json", new Blob([JSON.stringify(s)], { type: eA }), "model.json"), e.weightData != null && t.body.append("model.weights.bin", new Blob([e.weightData], { type: J_ }), "model.weights.bin");
     let r = await this.fetch(this.path, t);
     if (r.ok)
-      return { modelArtifactsInfo: Dl(e), responses: [r] };
+      return { modelArtifactsInfo: Fl(e), responses: [r] };
     throw new Error(`BrowserHTTPRequest.save() failed due to HTTP response status ${r.status}.`);
   }
   async load() {
@@ -5968,7 +5967,7 @@ function uA(e, t, n = 1, s = 0) {
   if (t < 2)
     throw new Error(`Error in oneHot: depth must be >=2, but it is ${t}`);
   let a = { indices: _(e, "indices", "oneHot", "int32") }, i = { depth: t, onValue: n, offValue: s };
-  return M.runKernel(To, a, i);
+  return M.runKernel($o, a, i);
 }
 var vd = L({ oneHot_: uA });
 function lA(e, t) {
@@ -5988,8 +5987,8 @@ function cA(e, t, n) {
   return ce(u, "int32");
 }
 var dA = L({ confusionMatrix_: cA });
-var qo = {};
-Ae(qo, { assertAndGetBroadcastShape: () => ot, getBroadcastDims: () => Ck, getReductionAxes: () => _t });
+var jo = {};
+Ae(jo, { assertAndGetBroadcastShape: () => ot, getBroadcastDims: () => Ck, getReductionAxes: () => _t });
 function Ck(e, t) {
   let n = e.length, s = [];
   for (let r = 0; r < n; r++) {
@@ -6175,7 +6174,7 @@ function _k(e, t) {
   let l = 1;
   for (let p = a; p < n; ++p)
     l *= o[p], u.push(o[p]);
-  let c = [...ro(e.shape).map((p) => p / l), 1].slice(0, a);
+  let c = [...ao(e.shape).map((p) => p / l), 1].slice(0, a);
   return [u, i, l, c];
 }
 var Ak = {};
@@ -6216,7 +6215,7 @@ function Ek(e, t, n) {
   let s = t.shape.length, r = s > 1 ? t.shape[s - 1] : 1, a = n.length, i = 1;
   for (let p = r; p < a; ++p)
     i *= n[p];
-  let o = r < 1 ? 1 : r, u = pt(t.shape) / o, l = [...ro(n.slice(0, r)), 1], c = pt(n);
+  let o = r < 1 ? 1 : r, u = pt(t.shape) / o, l = [...ao(n.slice(0, r)), 1], c = pt(n);
   return { sliceRank: r, numUpdates: u, sliceSize: i, strides: l, outputSize: c };
 }
 var wt = {};
@@ -6290,7 +6289,7 @@ function Pk(e, t, n, s, r) {
     }
   for (let o = 0; o < a.length; o++) {
     let u = r[o];
-    a[o] < 0 && (a[o] += u), a[o] = Bu(0, a[o], r[o]);
+    a[o] < 0 && (a[o] += u), a[o] = Vu(0, a[o], r[o]);
   }
   return a;
 }
@@ -6302,13 +6301,13 @@ function Mk(e, t, n, s, r, a) {
   let i = t[r], o = n[r] || 1;
   (e & 1 << r || a & 1 << r || i == null) && (o > 0 ? i = Number.MIN_SAFE_INTEGER : i = Number.MAX_SAFE_INTEGER);
   let u = s[r];
-  return i < 0 && (i += u), i = Bu(0, i, u - 1), i;
+  return i < 0 && (i += u), i = Vu(0, i, u - 1), i;
 }
 function Lk(e, t, n, s, r, a) {
   let i = t[r], o = n[r] || 1;
   (e & 1 << r || a & 1 << r || i == null) && (o > 0 ? i = Number.MAX_SAFE_INTEGER : i = Number.MIN_SAFE_INTEGER);
   let u = s[r];
-  return i < 0 && (i += u), o > 0 ? i = Bu(0, i, u) : i = Bu(-1, i, u - 1), i;
+  return i < 0 && (i += u), o > 0 ? i = Vu(0, i, u) : i = Vu(-1, i, u - 1), i;
 }
 function CA(e, t, n) {
   let s = n.length;
@@ -6498,25 +6497,25 @@ function PA(e, t) {
 function Uk(e) {
   for (let t = 0; t < e.length; t++) {
     let n = e[t];
-    Array.isArray(n) ? Uk(n) : e[t] = Rl(n);
+    Array.isArray(n) ? Uk(n) : e[t] = Dl(n);
   }
   return e;
 }
-var Ede = "0.0.0";
-function Rde() {
+var Rde = "0.0.0";
+function Dde() {
   X().set("PROD", true);
 }
-function Dde() {
+function Fde() {
   X().set("DEBUG", true);
 }
-function Fde() {
+function Ode() {
   X().set("DEPRECATION_WARNINGS_ENABLED", false), console.warn("TensorFlow.js deprecation warnings have been disabled.");
 }
 function Gk(e) {
   X().getBool("DEPRECATION_WARNINGS_ENABLED") && console.warn(e + " You can disable deprecation warnings with tf.disableDeprecationWarnings().");
 }
 Z$(Gk);
-function Ode() {
+function Pde() {
   M.disposeVariables();
 }
 function Ss() {
@@ -6525,7 +6524,7 @@ function Ss() {
 function dm() {
   return M.memory();
 }
-function Pde(e) {
+function zde(e) {
   return M.profile(e);
 }
 function j(e, t) {
@@ -6537,25 +6536,25 @@ function Re(e) {
 function Ht(e) {
   return M.keep(e);
 }
-function zde(e) {
+function Mde(e) {
   return M.time(e);
 }
-function Mde(e) {
+function Lde(e) {
   return M.setBackend(e);
 }
-function Lde() {
+function Bde() {
   return M.ready();
 }
-function Bde() {
+function Vde() {
   return M.backendName;
 }
-function Vde(e) {
+function Wde(e) {
   M.removeBackend(e);
 }
-function Wde(e) {
+function Ude(e) {
   return M.findBackend(e);
 }
-function Ude(e) {
+function Gde(e) {
   return M.findBackendFactory(e);
 }
 function pp(e, t, n = 1) {
@@ -6564,7 +6563,7 @@ function pp(e, t, n = 1) {
 function zA() {
   return M.backend;
 }
-function Gde(e, t) {
+function Hde(e, t) {
   X().setPlatform(e, t);
 }
 function MA(e, t) {
@@ -6603,18 +6602,18 @@ function WA(e) {
     return M.runKernel(Kd, n);
   } else {
     let n = { x: t };
-    return M.runKernel(ao, n);
+    return M.runKernel(io, n);
   }
 }
 var Mt = L({ abs_: WA });
 function UA(e) {
   let n = { x: _(e, "x", "acos") };
-  return M.runKernel(nl, n);
+  return M.runKernel(sl, n);
 }
 var GA = L({ acos_: UA });
 function HA(e) {
   let n = { x: _(e, "x", "acosh") };
-  return M.runKernel(sl, n);
+  return M.runKernel(rl, n);
 }
 var qA = L({ acosh_: HA });
 function jA(e) {
@@ -6633,54 +6632,54 @@ function jA(e) {
 var KA = L({ addN_: jA });
 function XA(e, t = null, n = false) {
   let r = { x: _(e, "x", "all", "bool") }, a = { axis: t, keepDims: n };
-  return M.runKernel(rl, r, a);
+  return M.runKernel(al, r, a);
 }
 var qk = L({ all_: XA });
 function YA(e, t = null, n = false) {
   let r = { x: _(e, "x", "any", "bool") }, a = { axis: t, keepDims: n };
-  return M.runKernel(al, r, a);
+  return M.runKernel(il, r, a);
 }
 var pm = L({ any_: YA });
 function QA(e, t = 0) {
   let s = { x: _(e, "x", "argMax") }, r = { axis: t };
   return M.runKernel(Ia, s, r);
 }
-var Gu = L({ argMax_: QA });
+var Hu = L({ argMax_: QA });
 function ZA(e, t = 0) {
   let s = { x: _(e, "x", "argMin") }, r = { axis: t };
-  return M.runKernel(il, s, r);
+  return M.runKernel(ol, s, r);
 }
 var JA = L({ argMin_: ZA });
 function eE(e) {
   let n = { x: _(e, "x", "asin") };
-  return M.runKernel(ol, n);
+  return M.runKernel(ul, n);
 }
 var tE = L({ asin_: eE });
 function nE(e) {
   let n = { x: _(e, "x", "asinh") };
-  return M.runKernel(ul, n);
+  return M.runKernel(ll, n);
 }
 var sE = L({ asinh_: nE });
 function rE(e) {
   let n = { x: _(e, "x", "atan") };
-  return M.runKernel(ll, n);
+  return M.runKernel(cl, n);
 }
 var aE = L({ atan_: rE });
 function iE(e, t) {
   let n = _(e, "a", "atan2"), s = _(t, "b", "atan2");
   [n, s] = vt(n, s);
   let r = { a: n, b: s };
-  return M.runKernel(dl, r);
+  return M.runKernel(pl, r);
 }
 var oE = L({ atan2_: iE });
 function uE(e) {
   let n = { x: _(e, "x", "atanh") };
-  return M.runKernel(cl, n);
+  return M.runKernel(dl, n);
 }
 var lE = L({ atanh_: uE });
 function cE(e, t, n, s, r = "NHWC", a) {
   let i = e[3], o = [...t, i], u = Xk(r);
-  return Fl(e, o, n, a, s, null, null, u);
+  return Ol(e, o, n, a, s, null, null, u);
 }
 function jk(e, t, n, s, r, a, i = "channelsLast") {
   let [o, u] = xd(t), l;
@@ -6690,7 +6689,7 @@ function jk(e, t, n, s, r, a, i = "channelsLast") {
     l = [o, u, e[1], e[1]];
   else
     throw new Error(`Unknown dataFormat ${i}`);
-  return Fl(e, l, n, s, r, a, false, i);
+  return Ol(e, l, n, s, r, a, false, i);
 }
 function dE(e, t, n, s, r, a, i = "NDHWC") {
   let [o, u, l] = hm(t), c, p;
@@ -6702,7 +6701,7 @@ function dE(e, t, n, s, r, a, i = "NDHWC") {
     throw new Error(`Unknown dataFormat ${i}`);
   return Kk(e, c, n, s, r, false, p, a);
 }
-function Fl(e, t, n, s, r, a, i = false, o = "channelsLast") {
+function Ol(e, t, n, s, r, a, i = false, o = "channelsLast") {
   let [u, l, c, p] = [-1, -1, -1, -1];
   if (o === "channelsLast")
     [u, l, c, p] = e;
@@ -6828,7 +6827,7 @@ function hn(e, t, n) {
 }
 function gE(e, t) {
   let s = { x: _(e, "x", "reshape", "string_or_numeric") }, r = { shape: t };
-  return M.runKernel(Ao, s, r);
+  return M.runKernel(Eo, s, r);
 }
 var G = L({ reshape_: gE });
 function bE(e, t, n, s, r) {
@@ -6849,7 +6848,7 @@ function yE(e, t, n, s, r, a = "NDHWC") {
 var Yk = L({ avgPool3d_: yE });
 function vE(e, t = 0) {
   O(e.length >= 1, () => "Pass at least one tensor to concat");
-  let n = Uu(e, "tensors", "concat", "string_or_numeric");
+  let n = Gu(e, "tensors", "concat", "string_or_numeric");
   if (n[0].dtype === "complex64" && n.forEach((a) => {
     if (a.dtype !== "complex64")
       throw new Error(`Cannot concatenate complex64 tensors with a tensor
@@ -6857,7 +6856,7 @@ function vE(e, t = 0) {
   }), n.length === 1)
     return lr(n[0]);
   let s = n, r = { axis: t };
-  return M.runKernel(oo, s, r);
+  return M.runKernel(uo, s, r);
 }
 var Ft = L({ concat_: vE });
 function xE(e) {
@@ -6870,24 +6869,24 @@ function wE(e, t, n) {
   if (s.rank === 0)
     throw new Error("Slicing scalar is not possible");
   let r = { x: s }, a = { begin: t, size: n };
-  return M.runKernel(Oo, r, a);
+  return M.runKernel(Po, r, a);
 }
 var He = L({ slice_: wE });
 function kE(e) {
   let n = { x: _(e, "x", "tanh", "float32") };
   return M.runKernel(di, n);
 }
-var Hu = L({ tanh_: kE });
+var qu = L({ tanh_: kE });
 function IE(e, t, n, s, r, a) {
-  let i = _(e, "forgetBias", "basicLSTMCell"), o = _(t, "lstmKernel", "basicLSTMCell"), u = _(n, "lstmBias", "basicLSTMCell"), l = _(s, "data", "basicLSTMCell"), c = _(r, "c", "basicLSTMCell"), p = _(a, "h", "basicLSTMCell"), d = Ft([l, p], 1), h = We(d, o), f = ie(h, u), m = f.shape[0], g = f.shape[1] / 4, b = [m, g], y = He(f, [0, 0], b), v = He(f, [0, g], b), x = He(f, [0, g * 2], b), k = He(f, [0, g * 3], b), T = ie(V(qs(y), Hu(v)), V(c, qs(ie(i, x)))), N = V(Hu(T), qs(k));
+  let i = _(e, "forgetBias", "basicLSTMCell"), o = _(t, "lstmKernel", "basicLSTMCell"), u = _(n, "lstmBias", "basicLSTMCell"), l = _(s, "data", "basicLSTMCell"), c = _(r, "c", "basicLSTMCell"), p = _(a, "h", "basicLSTMCell"), d = Ft([l, p], 1), h = We(d, o), f = ie(h, u), m = f.shape[0], g = f.shape[1] / 4, b = [m, g], y = He(f, [0, 0], b), v = He(f, [0, g], b), x = He(f, [0, g * 2], b), k = He(f, [0, g * 3], b), T = ie(V(qs(y), qu(v)), V(c, qs(ie(i, x)))), N = V(qu(T), qs(k));
   return [T, N];
 }
-var Hde = L({ basicLSTMCell_: IE });
+var qde = L({ basicLSTMCell_: IE });
 function SE(e, t, n) {
   let s = _(e, "x", "batchToSpaceND"), r = t.reduce((o, u) => o * u);
   O(s.rank >= 1 + t.length, () => `input rank is ${s.rank} but should be > than blockShape.length ${t.length}`), O(n.length === t.length, () => `crops.length is ${n.length} but should be equal to blockShape.length  ${t.length}`), O(s.shape[0] % r === 0, () => `input tensor batch is ${s.shape[0]} but is not divisible by the product of the elements of blockShape ${t.join(" * ")} === ${r}`);
   let a = { x: s }, i = { blockShape: t, crops: n };
-  return M.runKernel(io, a, i);
+  return M.runKernel(oo, a, i);
 }
 var Hg = L({ batchToSpaceND_: SE });
 function CE(e) {
@@ -6903,26 +6902,26 @@ function NE(e, t, n, s, r, a) {
   let d = { x: CE(i), scale: l, offset: c, mean: o, variance: u }, h = { varianceEpsilon: a }, f = M.runKernel(Ma, d, h);
   return G(f, i.shape);
 }
-var qu = L({ batchNorm_: NE });
+var ju = L({ batchNorm_: NE });
 function TE(e, t, n, s, r, a) {
   let i = _(e, "x", "batchNorm"), o = _(t, "mean", "batchNorm"), u = _(n, "variance", "batchNorm"), l;
   r != null && (l = _(r, "scale", "batchNorm"));
   let c;
-  return s != null && (c = _(s, "offset", "batchNorm")), O(i.rank === 2, () => `Error in batchNorm2D: x must be rank 2 but got rank ${i.rank}.`), O(o.rank === 2 || o.rank === 1, () => `Error in batchNorm2D: mean must be rank 2 or rank 1 but got rank ${o.rank}.`), O(u.rank === 2 || u.rank === 1, () => `Error in batchNorm2D: variance must be rank 2 or rank 1 but got rank ${u.rank}.`), l != null && O(l.rank === 2 || l.rank === 1, () => `Error in batchNorm2D: scale must be rank 2 or rank 1 but got rank ${l.rank}.`), c != null && O(c.rank === 2 || c.rank === 1, () => `Error in batchNorm2D: offset must be rank 2 or rank 1 but got rank ${c.rank}.`), qu(i, o, u, c, l, a);
+  return s != null && (c = _(s, "offset", "batchNorm")), O(i.rank === 2, () => `Error in batchNorm2D: x must be rank 2 but got rank ${i.rank}.`), O(o.rank === 2 || o.rank === 1, () => `Error in batchNorm2D: mean must be rank 2 or rank 1 but got rank ${o.rank}.`), O(u.rank === 2 || u.rank === 1, () => `Error in batchNorm2D: variance must be rank 2 or rank 1 but got rank ${u.rank}.`), l != null && O(l.rank === 2 || l.rank === 1, () => `Error in batchNorm2D: scale must be rank 2 or rank 1 but got rank ${l.rank}.`), c != null && O(c.rank === 2 || c.rank === 1, () => `Error in batchNorm2D: offset must be rank 2 or rank 1 but got rank ${c.rank}.`), ju(i, o, u, c, l, a);
 }
 var $E = L({ batchNorm2d_: TE });
 function _E(e, t, n, s, r, a) {
   let i = _(e, "x", "batchNorm"), o = _(t, "mean", "batchNorm"), u = _(n, "variance", "batchNorm"), l;
   r != null && (l = _(r, "scale", "batchNorm"));
   let c;
-  return s != null && (c = _(s, "offset", "batchNorm")), O(i.rank === 3, () => `Error in batchNorm3D: x must be rank 3 but got rank ${i.rank}.`), O(o.rank === 3 || o.rank === 1, () => `Error in batchNorm3D: mean must be rank 3 or rank 1 but got rank ${o.rank}.`), O(u.rank === 3 || u.rank === 1, () => `Error in batchNorm3D: variance must be rank 3 or rank 1 but got rank ${u.rank}.`), l != null && O(l.rank === 3 || l.rank === 1, () => `Error in batchNorm3D: scale must be rank 3 or rank 1 but got rank ${l.rank}.`), c != null && O(c.rank === 3 || c.rank === 1, () => `Error in batchNorm3D: offset must be rank 3 or rank 1 but got rank ${c.rank}.`), qu(i, o, u, c, l, a);
+  return s != null && (c = _(s, "offset", "batchNorm")), O(i.rank === 3, () => `Error in batchNorm3D: x must be rank 3 but got rank ${i.rank}.`), O(o.rank === 3 || o.rank === 1, () => `Error in batchNorm3D: mean must be rank 3 or rank 1 but got rank ${o.rank}.`), O(u.rank === 3 || u.rank === 1, () => `Error in batchNorm3D: variance must be rank 3 or rank 1 but got rank ${u.rank}.`), l != null && O(l.rank === 3 || l.rank === 1, () => `Error in batchNorm3D: scale must be rank 3 or rank 1 but got rank ${l.rank}.`), c != null && O(c.rank === 3 || c.rank === 1, () => `Error in batchNorm3D: offset must be rank 3 or rank 1 but got rank ${c.rank}.`), ju(i, o, u, c, l, a);
 }
 var AE = L({ batchNorm3d_: _E });
 function EE(e, t, n, s, r, a) {
   let i = _(e, "x", "batchNorm"), o = _(t, "mean", "batchNorm"), u = _(n, "variance", "batchNorm"), l;
   r != null && (l = _(r, "scale", "batchNorm"));
   let c;
-  return s != null && (c = _(s, "offset", "batchNorm")), O(i.rank === 4, () => `Error in batchNorm4D: x must be rank 4 but got rank ${i.rank}.`), O(o.rank === 4 || o.rank === 1, () => `Error in batchNorm4D: mean must be rank 4 or rank 1 but got rank ${o.rank}.`), O(u.rank === 4 || u.rank === 1, () => `Error in batchNorm4D: variance must be rank 4 or rank 1 but got rank ${u.rank}.`), l != null && O(l.rank === 4 || l.rank === 1, () => `Error in batchNorm4D: scale must be rank 4 or rank 1 but got rank ${l.rank}.`), c != null && O(c.rank === 4 || c.rank === 1, () => `Error in batchNorm4D: offset must be rank 4 or rank 1 but got rank ${c.rank}.`), qu(i, o, u, c, l, a);
+  return s != null && (c = _(s, "offset", "batchNorm")), O(i.rank === 4, () => `Error in batchNorm4D: x must be rank 4 but got rank ${i.rank}.`), O(o.rank === 4 || o.rank === 1, () => `Error in batchNorm4D: mean must be rank 4 or rank 1 but got rank ${o.rank}.`), O(u.rank === 4 || u.rank === 1, () => `Error in batchNorm4D: variance must be rank 4 or rank 1 but got rank ${u.rank}.`), l != null && O(l.rank === 4 || l.rank === 1, () => `Error in batchNorm4D: scale must be rank 4 or rank 1 but got rank ${l.rank}.`), c != null && O(c.rank === 4 || c.rank === 1, () => `Error in batchNorm4D: offset must be rank 4 or rank 1 but got rank ${c.rank}.`), ju(i, o, u, c, l, a);
 }
 var RE = L({ batchNorm4d_: EE });
 function DE(e, t, n) {
@@ -7059,12 +7058,12 @@ function sR(e) {
 var nI = L({ cosh_: sR });
 function rR(e, t = 0, n = false, s = false) {
   let a = { x: _(e, "x", "cumprod") }, i = { axis: t, exclusive: n, reverse: s };
-  return M.runKernel(pl, a, i);
+  return M.runKernel(hl, a, i);
 }
 var aR = L({ cumprod_: rR });
 function iR(e, t = 0, n = false, s = false) {
   let a = { x: _(e, "x", "cumsum") }, i = { axis: t, exclusive: n, reverse: s };
-  return M.runKernel(uo, a, i);
+  return M.runKernel(lo, a, i);
 }
 var sI = L({ cumsum_: iR });
 function oR(e, t, n, s = false) {
@@ -7082,7 +7081,7 @@ function lR(e, t, n = "NHWC") {
     ${a} and ${t} for depthToSpace with input shape
         ${s.shape}`), O(i % (t * t) === 0, () => `Dimension size must be evenly divisible by ${t * t} but is ${i} for depthToSpace with input shape ${s.shape}`);
   let o = { x: s }, u = { blockSize: t, dataFormat: n };
-  return M.runKernel(co, o, u);
+  return M.runKernel(po, o, u);
 }
 var cR = L({ depthToSpace_: lR });
 function dR(e, t, n, s, r = "NHWC", a = [1, 1], i) {
@@ -7096,7 +7095,7 @@ function pR(e) {
   let n = { x: _(e, "x", "diag") };
   return M.runKernel(gg, n);
 }
-var qde = L({ diag_: pR });
+var jde = L({ diag_: pR });
 function hR(e, t, n, s, r = [1, 1], a = "NHWC") {
   let i = _(e, "x", "dilation2d"), o = _(t, "filter", "dilation2d");
   O(i.rank === 3 || i.rank === 4, () => `Error in dilation2d: input must be rank 3 or 4, but got rank ${i.rank}.`), O(o.rank === 3, () => `Error in dilation2d: filter must be rank 3, but got rank ${o.rank}.`), O(a === "NHWC", () => `Error in dilation2d: Only NHWC is currently supported, but got dataFormat of ${a}`);
@@ -7110,17 +7109,17 @@ function mR(e, t) {
   let n = _(e, "a", "equal", "string_or_numeric"), s = _(t, "b", "equal", "string_or_numeric");
   [n, s] = vt(n, s), ot(n.shape, s.shape);
   let r = { a: n, b: s };
-  return M.runKernel(po, r);
+  return M.runKernel(ho, r);
 }
 var Kn = L({ equal_: mR });
 function gR(e, t, n) {
   let s = _(t, "a", "where"), r = _(n, "b", "where"), a = _(e, "condition", "where", "bool"), i = ot(ot(a.shape, s.shape), r.shape), o = nd(a, i), u = nd(s, i), l = nd(r, i), c = { condition: o, t: u, e: l };
-  return M.runKernel(Fo, c);
+  return M.runKernel(Oo, c);
 }
 var vn = L({ where_: gR });
 function bR(e) {
   let n = { x: _(e, "x", "zerosLike") };
-  return M.runKernel(Go, n);
+  return M.runKernel(Ho, n);
 }
 var je = L({ zerosLike_: bR });
 function yR(e, t) {
@@ -7148,7 +7147,7 @@ function xR(e, t) {
     return We(n, i);
   }
 }
-var jde = L({ dot_: xR });
+var Kde = L({ dot_: xR });
 function wR(e, ...t) {
   let n = t.map((r, a) => _(r, `tensors${a}`, "einsum")), s = { equation: e };
   return M.runKernel(Qd, n, s);
@@ -7163,7 +7162,7 @@ function SR(e) {
   let t = _(e, "x", "erf");
   O(t.dtype === "int32" || t.dtype === "float32", () => "Input dtype must be `int32` or `float32`."), t.dtype === "int32" && (t = ce(t, "float32"));
   let n = { x: t };
-  return M.runKernel(hl, n);
+  return M.runKernel(fl, n);
 }
 var CR = L({ erf_: SR });
 function NR(e) {
@@ -7175,12 +7174,12 @@ function TR(e, t = 0) {
   let n = _(e, "x", "expandDims", "string_or_numeric");
   O(t <= n.rank, () => "Axis must be <= rank of the tensor");
   let s = { input: n }, r = { dim: t };
-  return M.runKernel(ho, s, r);
+  return M.runKernel(fo, s, r);
 }
 var Pn = L({ expandDims_: TR });
 function $R(e) {
   let n = { x: _(e, "x", "expm1") };
-  return M.runKernel(fo, n);
+  return M.runKernel(mo, n);
 }
 var _R = L({ expm1_: $R });
 function AR(e, t) {
@@ -7207,9 +7206,9 @@ function ER(e, t, n, s = "float32") {
   throw new Error(`eye() currently supports only 1D and 2D batchShapes, but received ${n.length}D.`);
 }
 var rI = L({ eye_: ER });
-function Ol(e, t, n) {
+function Pl(e, t, n) {
   let s = { shape: e, value: t, dtype: n };
-  return M.runKernel(fl, {}, s);
+  return M.runKernel(ml, {}, s);
 }
 function RR(e) {
   let n = { x: _(e, "x", "floor", "float32") };
@@ -7218,14 +7217,14 @@ function RR(e) {
 var mp = L({ floor_: RR });
 function DR(e, t, n = 0, s = 0) {
   let r = _(e, "x", "gather"), a = _(t, "indices", "gather", "int32"), i = { x: r, indices: a }, o = { axis: n, batchDims: s };
-  return M.runKernel(go, i, o);
+  return M.runKernel(bo, i, o);
 }
-var ju = L({ gather_: DR });
+var Ku = L({ gather_: DR });
 function FR(e, t) {
   let n = _(e, "a", "greater", "string_or_numeric"), s = _(t, "b", "greater", "string_or_numeric");
   [n, s] = vt(n, s), ot(n.shape, s.shape);
   let r = { a: n, b: s };
-  return M.runKernel(yo, r);
+  return M.runKernel(vo, r);
 }
 var Wn = L({ greater_: FR });
 function OR(e, t) {
@@ -7234,7 +7233,7 @@ function OR(e, t) {
   let r = { a: n, b: s };
   return M.runKernel(La, r);
 }
-var jo = L({ greaterEqual_: OR });
+var Ko = L({ greaterEqual_: OR });
 function PR(e) {
   let n = { input: _(e, "input", "imag") };
   return M.runKernel(Zd, n);
@@ -7242,17 +7241,17 @@ function PR(e) {
 var Kg = L({ imag_: PR });
 function zR(e) {
   let n = { x: _(e, "x", "isFinite") };
-  return M.runKernel(ml, n);
-}
-var Kde = L({ isFinite_: zR });
-function MR(e) {
-  let n = { x: _(e, "x", "isInf") };
   return M.runKernel(gl, n);
 }
-var Xde = L({ isInf_: MR });
+var Xde = L({ isFinite_: zR });
+function MR(e) {
+  let n = { x: _(e, "x", "isInf") };
+  return M.runKernel(bl, n);
+}
+var Yde = L({ isInf_: MR });
 function LR(e) {
   let n = { x: _(e, "x", "isNaN") };
-  return M.runKernel(bl, n);
+  return M.runKernel(yl, n);
 }
 var BR = L({ isNaN_: LR });
 function VR(e, t = 0.2) {
@@ -7264,16 +7263,16 @@ function WR(e, t) {
   let n = _(e, "a", "less", "string_or_numeric"), s = _(t, "b", "less", "string_or_numeric");
   [n, s] = vt(n, s), ot(n.shape, s.shape);
   let r = { a: n, b: s };
-  return M.runKernel(vo, r);
+  return M.runKernel(xo, r);
 }
 var aI = L({ less_: WR });
 function UR(e, t) {
   let n = _(e, "a", "lessEqual", "string_or_numeric"), s = _(t, "b", "lessEqual", "string_or_numeric");
   [n, s] = vt(n, s), ot(n.shape, s.shape);
   let r = { a: n, b: s };
-  return M.runKernel(xo, r);
+  return M.runKernel(wo, r);
 }
-var Ko = L({ lessEqual_: UR });
+var Xo = L({ lessEqual_: UR });
 function GR(e, t, n) {
   if (n <= 0)
     throw new Error("The number of values should be positive.");
@@ -7297,10 +7296,10 @@ function jR(e) {
 var Yn = L({ log_: jR });
 function KR(e) {
   let n = { x: _(e, "x", "log1p") };
-  return M.runKernel(yl, n);
+  return M.runKernel(vl, n);
 }
 var Yg = L({ log1p_: KR });
-function Yde(e) {
+function Qde(e) {
   return O(hr(e), () => "The f passed in grad(f) must be a function"), (t, n) => {
     let s = _(t, "x", "tf.grad", "string_or_numeric"), r = n != null ? _(n, "dy", "tf.grad") : null;
     return M.tidy(() => {
@@ -7309,24 +7308,24 @@ function Yde(e) {
     });
   };
 }
-function Qde(e) {
+function Zde(e) {
   return O(hr(e), () => "The f passed in grads(f) must be a function"), (t, n) => {
     O(Array.isArray(t), () => "The args passed in grads(f)(args) must be an array of `Tensor`s or `TensorLike`s");
-    let s = Uu(t, "args", "tf.grads", "string_or_numeric"), r = n != null ? _(n, "dy", "tf.grads") : null;
+    let s = Gu(t, "args", "tf.grads", "string_or_numeric"), r = n != null ? _(n, "dy", "tf.grads") : null;
     return M.tidy(() => {
       let { value: a, grads: i } = M.gradients(() => e(...s), s, r);
       return r != null && pn(a.shape, r.shape, "The shape of dy passed in grads(f)([x1,...], dy) must match the shape returned by f([x1,...])"), gp(i), i;
     });
   };
 }
-function Zde(e) {
+function Jde(e) {
   return O(hr(e), () => "The f passed in valueAndGrad(f) must be a function"), (t, n) => {
     O(t instanceof et, () => "The x passed in valueAndGrad(f)(x) must be a tensor"), O(n == null || n instanceof et, () => "The dy passed in valueAndGrad(f)(x, dy) must be a tensor");
     let { grads: s, value: r } = M.gradients(() => e(t), [t], n);
     return gp(s), { grad: s[0], value: r };
   };
 }
-function Jde(e) {
+function epe(e) {
   return O(hr(e), () => "The f passed in valueAndGrads(f) must be a function"), (t, n) => {
     O(Array.isArray(t) && t.every((r) => r instanceof et), () => "The args passed in valueAndGrads(f)(args) must be array of tensors"), O(n == null || n instanceof et, () => "The dy passed in valueAndGrads(f)(args, dy) must be a tensor");
     let s = M.gradients(() => e(...t), t, n);
@@ -7360,19 +7359,19 @@ function gp(e) {
 }
 function YR(e) {
   let n = { x: _(e, "x", "neg") };
-  return M.runKernel(ko, n);
+  return M.runKernel(Io, n);
 }
 var kt = L({ neg_: YR });
 function QR(e) {
   let n = { x: _(e, "x", "softplus") };
-  return M.runKernel(Tl, n);
+  return M.runKernel($l, n);
 }
-var Pl = L({ softplus_: QR });
+var zl = L({ softplus_: QR });
 function ZR(e) {
   let t = _(e, "x", "logSigmoid");
-  return js((s) => ({ value: kt(Pl(kt(s))), gradFunc: (i) => V(i, qs(kt(s))) }))(t);
+  return js((s) => ({ value: kt(zl(kt(s))), gradFunc: (i) => V(i, qs(kt(s))) }))(t);
 }
-var epe = L({ logSigmoid_: ZR });
+var tpe = L({ logSigmoid_: ZR });
 function JR(e, t = null, n = false) {
   let r = { x: _(e, "x", "max") }, a = { reductionIndices: t, keepDims: n };
   return M.runKernel(Ua, r, a);
@@ -7461,12 +7460,12 @@ function oD(e, t) {
   let n = _(e, "a", "logicalAnd", "bool"), s = _(t, "b", "logicalAnd", "bool");
   ot(n.shape, s.shape);
   let r = { a: n, b: s };
-  return M.runKernel(wo, r);
+  return M.runKernel(ko, r);
 }
 var Ds = L({ logicalAnd_: oD });
 function uD(e) {
   let n = { x: _(e, "x", "logicalNot", "bool") };
-  return M.runKernel(vl, n);
+  return M.runKernel(xl, n);
 }
 var Jg = L({ logicalNot_: uD });
 function lD(e, t) {
@@ -7480,7 +7479,7 @@ function cD(e, t) {
   let n = _(e, "a", "logicalXor", "bool"), s = _(t, "b", "logicalXor", "bool");
   return ot(n.shape, s.shape), Ds(cI(e, t), Jg(Ds(e, t)));
 }
-var tpe = L({ logicalXor_: cD });
+var npe = L({ logicalXor_: cD });
 function dD(e, t, n, s, r) {
   let a = _(e, "x", "maxPool"), i = 1, o = a, u = false;
   a.rank === 3 && (u = true, o = G(a, [1, a.shape[0], a.shape[1], a.shape[2]])), O(o.rank === 4, () => `Error in maxPool: input must be rank 4 but got rank ${o.rank}.`), O(Ps(n, i), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${n} and dilations '${i}'`), hn("maxPool", s, r);
@@ -7528,7 +7527,7 @@ function Mn(e, t = "float32") {
   let n = ng(pt(e), t);
   return M.makeTensor(n, e, t);
 }
-function npe(e, t, { indexing: n = "xy" } = {}) {
+function spe(e, t, { indexing: n = "xy" } = {}) {
   if (n !== "xy" && n !== "ij")
     throw new TypeError(`${n} is not a valid third argument to meshgrid`);
   if (e === void 0)
@@ -7568,7 +7567,7 @@ function wD(e, t) {
   let n = _(e, "a", "mod"), s = _(t, "b", "mod");
   [n, s] = vt(n, s);
   let r = { a: n, b: s };
-  return M.runKernel(xl, r);
+  return M.runKernel(wl, r);
 }
 var kD = L({ mod_: wD });
 function ID(e) {
@@ -7585,7 +7584,7 @@ function SD(e, t = null, n = false) {
 }
 var tb = L({ moments_: SD });
 function CD(e, t, n, s) {
-  let r = _(t, "data", "multiRNNCell"), a = Uu(n, "c", "multiRNNCell"), i = Uu(s, "h", "multiRNNCell"), o = r, u = [];
+  let r = _(t, "data", "multiRNNCell"), a = Gu(n, "c", "multiRNNCell"), i = Gu(s, "h", "multiRNNCell"), o = r, u = [];
   for (let p = 0; p < e.length; p++) {
     let d = e[p](o, a[p], i[p]);
     u.push(d[0]), u.push(d[1]), o = d[1];
@@ -7595,7 +7594,7 @@ function CD(e, t, n, s) {
     l.push(u[p]), c.push(u[p + 1]);
   return [l, c];
 }
-var spe = L({ multiRNNCell_: CD });
+var rpe = L({ multiRNNCell_: CD });
 function ND(e, t, n, s = false) {
   let r = _(e, "logits", "multinomial"), a = r.size, i = r.rank;
   if (a < 2)
@@ -7611,12 +7610,12 @@ function $D(e, t) {
   let n = _(e, "a", "notEqual", "string_or_numeric"), s = _(t, "b", "notEqual", "string_or_numeric");
   [n, s] = vt(n, s), ot(n.shape, s.shape);
   let r = { a: n, b: s };
-  return M.runKernel(Io, r);
+  return M.runKernel(So, r);
 }
-var Ku = L({ notEqual_: $D });
+var Xu = L({ notEqual_: $D });
 function _D(e) {
   let n = { x: _(e, "x", "onesLike") };
-  return M.runKernel(No, n);
+  return M.runKernel(To, n);
 }
 var Qn = L({ onesLike_: _D });
 function AD(e, t) {
@@ -7625,7 +7624,7 @@ function AD(e, t) {
   let r = G(n, [-1, 1]), a = G(s, [1, -1]);
   return We(r, a);
 }
-var rpe = L({ outerProduct_: AD });
+var ape = L({ outerProduct_: AD });
 function ED(e, t, n = 0) {
   let s = _(e, "x", "pad");
   if (s.rank === 0)
@@ -7637,24 +7636,24 @@ var fi = L({ pad_: ED });
 function RD(e, t, n = 0) {
   return O(t.length === 2, () => "Invalid number of paddings. Must be length of 2."), fi(e, [t], n);
 }
-var ape = L({ pad1d_: RD });
+var ipe = L({ pad1d_: RD });
 function DD(e, t, n = 0) {
   return O(t.length === 2 && t[0].length === 2 && t[1].length === 2, () => "Invalid number of paddings. Must be length of 2 each."), fi(e, t, n);
 }
-var ipe = L({ pad2d_: DD });
+var ope = L({ pad2d_: DD });
 function FD(e, t, n = 0) {
   return O(t.length === 3 && t[0].length === 2 && t[1].length === 2 && t[2].length === 2, () => "Invalid number of paddings. Must be length of 2 each."), fi(e, t, n);
 }
-var ope = L({ pad3d_: FD });
+var upe = L({ pad3d_: FD });
 function OD(e, t, n = 0) {
   return O(t.length === 4 && t[0].length === 2 && t[1].length === 2 && t[2].length === 2 && t[3].length === 2, () => "Invalid number of paddings. Must be length of 2 each."), fi(e, t, n);
 }
-var upe = L({ pad4d_: OD });
+var lpe = L({ pad4d_: OD });
 function PD(e, t, n) {
   let s = _(e, "x", "spaceToBatchND");
   O(s.rank >= 1 + t.length, () => `input rank ${s.rank} should be > than [blockShape] ${t.length}`), O(n.length === t.length, () => `paddings.shape[0] ${n.length} must be equal to [blockShape] ${t.length}`), O(s.shape.reduce((i, o, u) => u > 0 && u <= t.length ? i && (o + n[u - 1][0] + n[u - 1][1]) % t[u - 1] === 0 : i, true), () => `input spatial dimensions ${s.shape.slice(1)} with paddings ${n.toString()} must be divisible by blockShapes ${t.toString()}`);
   let r = { x: s }, a = { blockShape: t, paddings: n };
-  return M.runKernel(zo, r, a);
+  return M.runKernel(Mo, r, a);
 }
 var nb = L({ spaceToBatchND_: PD });
 function zD(e, t, n, s, r, a, i) {
@@ -7674,7 +7673,7 @@ function LD(e, t) {
   let s = e.map((i, o) => i + (i - 1) * (t[o] - 1)).map((i) => i - 1), r = s.map((i) => Math.floor(i / 2)), a = s.map((i, o) => i - r[o]);
   return s.map((i, o) => [r[o], a[o]]);
 }
-var lpe = L({ pool_: zD });
+var cpe = L({ pool_: zD });
 function BD(e, t) {
   let n = _(e, "base", "pow"), s = _(t, "exp", "pow");
   [n, s] = vt(n, s);
@@ -7691,7 +7690,7 @@ function WD(e, t = null, n = false) {
   let s = _(e, "x", "prod");
   s.dtype === "bool" && (s = ce(s, "int32"));
   let r = { x: s }, a = { axis: t, keepDims: n };
-  return M.runKernel(_o, r, a);
+  return M.runKernel(Ao, r, a);
 }
 var pI = L({ prod_: WD });
 function UD(e, t, n) {
@@ -7708,7 +7707,7 @@ function UD(e, t, n) {
     r[a] = t();
   return M.makeTensor(r, e, n);
 }
-var cpe = L({ rand_: UD });
+var dpe = L({ rand_: UD });
 var rb = xa(Wd());
 var ab = class {
   constructor(e, t, n, s, r) {
@@ -7781,7 +7780,7 @@ function qD(e, t, n = 1, s = "float32", r) {
     i.values[o] = a.nextValue();
   return i.toTensor();
 }
-var dpe = L({ randomGamma_: qD });
+var ppe = L({ randomGamma_: qD });
 function jD(e, t = 0, n = 1, s, r) {
   if (s != null && s === "bool")
     throw new Error(`Unsupported data type ${s}`);
@@ -7797,12 +7796,12 @@ function XD(e, t = 0, n = 1, s = "float32", r) {
     a.values[o] = i.nextValue();
   return a.toTensor();
 }
-var zl = L({ randomUniform_: XD });
-function Xu(e, t, n = 1, s = "float32") {
+var Ml = L({ randomUniform_: XD });
+function Yu(e, t, n = 1, s = "float32") {
   if (n === 0)
     throw new Error("Cannot have a step of zero");
   let r = { start: e, stop: t, step: n, dtype: s };
-  return M.runKernel(kl, {}, r);
+  return M.runKernel(Il, {}, r);
 }
 function YD(e) {
   let n = { input: _(e, "input", "real") };
@@ -7811,7 +7810,7 @@ function YD(e) {
 var wd = L({ real_: YD });
 function QD(e) {
   let n = { x: _(e, "x", "reciprocal") };
-  return M.runKernel(Il, n);
+  return M.runKernel(Sl, n);
 }
 var ZD = L({ reciprocal_: QD });
 function JD(e) {
@@ -7826,32 +7825,32 @@ function e3(e) {
 var hI = L({ relu6_: e3 });
 function t3(e, t) {
   let s = { x: _(e, "x", "reverse") }, r = { dims: t };
-  return M.runKernel(Eo, s, r);
+  return M.runKernel(Ro, s, r);
 }
 var Zn = L({ reverse_: t3 });
 function n3(e) {
   let t = _(e, "x", "reverse");
   return O(t.rank === 1, () => `Error in reverse1D: x must be rank 1 but got rank ${t.rank}.`), Zn(t, 0);
 }
-var ppe = L({ reverse1d_: n3 });
+var hpe = L({ reverse1d_: n3 });
 function s3(e, t) {
   let n = _(e, "x", "reverse");
   return O(n.rank === 2, () => `Error in reverse2D: x must be rank 2 but got rank ${n.rank}.`), Zn(n, t);
 }
-var hpe = L({ reverse2d_: s3 });
+var fpe = L({ reverse2d_: s3 });
 function r3(e, t) {
   let n = _(e, "x", "reverse");
   return O(n.rank === 3, () => `Error in reverse3D: x must be rank 3 but got rank ${n.rank}.`), Zn(n, t);
 }
-var fpe = L({ reverse3d_: r3 });
+var mpe = L({ reverse3d_: r3 });
 function a3(e, t) {
   let n = _(e, "x", "reverse");
   return O(n.rank === 4, () => `Error in reverse4D: x must be rank 4 but got rank ${n.rank}.`), Zn(n, t);
 }
-var mpe = L({ reverse4d_: a3 });
+var gpe = L({ reverse4d_: a3 });
 function i3(e) {
   let n = { x: _(e, "x", "round") };
-  return M.runKernel(Ro, n);
+  return M.runKernel(Do, n);
 }
 var fI = L({ round_: i3 });
 function o3(e) {
@@ -7868,7 +7867,7 @@ function we(e, t) {
 }
 function u3(e) {
   let n = { x: _(e, "x", "selu") };
-  return M.runKernel(Cl, n);
+  return M.runKernel(Nl, n);
 }
 var gI = L({ selu_: u3 });
 function l3(e, t, n, s, r, a = [1, 1], i = "NHWC") {
@@ -7896,7 +7895,7 @@ async function d3(e, t) {
 var p3 = d3;
 function h3(e) {
   let n = { x: _(e, "x", "sign") };
-  return M.runKernel(Nl, n);
+  return M.runKernel(Tl, n);
 }
 var f3 = L({ sign_: h3 });
 function m3(e) {
@@ -7906,7 +7905,7 @@ function m3(e) {
 var bI = L({ sin_: m3 });
 function g3(e) {
   let n = { x: _(e, "x", "sinh") };
-  return M.runKernel(Po, n);
+  return M.runKernel(zo, n);
 }
 var yI = L({ sinh_: g3 });
 function b3(e, t, n) {
@@ -7967,7 +7966,7 @@ function S3(e) {
 var xI = L({ irfft_: S3 });
 function C3(e, t, n = 0) {
   let r = { x: _(e, "x", "split") }, a = { numOrSizeSplits: t, axis: n };
-  return M.runKernel(Mo, r, a);
+  return M.runKernel(Lo, r, a);
 }
 var Bn = L({ split_: C3 });
 function N3(e, t) {
@@ -8003,10 +8002,10 @@ function _3(e, t) {
 }
 var mr = L({ squeeze_: _3 });
 function A3(e, t = 0) {
-  let n = Uu(e, "tensors", "stack", "string_or_numeric");
+  let n = Gu(e, "tensors", "stack", "string_or_numeric");
   O(n.length >= 1, () => "Pass at least one tensor to tf.stack"), n.length > 0 && O(t <= n[0].rank, () => "Axis must be <= rank of the tensor");
   let s = n, r = { axis: t };
-  return M.runKernel($o, s, r);
+  return M.runKernel(_o, s, r);
 }
 var Jn = L({ stack_: A3 });
 function E3(e, t = 0) {
@@ -8016,12 +8015,12 @@ function E3(e, t = 0) {
 var yp = L({ step_: E3 });
 function R3(e, t, n, s, r = 0, a = 0, i = 0, o = 0, u = 0) {
   let c = { x: _(e, "x", "stridedSlice", "string_or_numeric") }, p = { begin: t, end: n, strides: s, beginMask: r, endMask: a, ellipsisMask: i, newAxisMask: o, shrinkAxisMask: u };
-  return M.runKernel(Lo, c, p);
+  return M.runKernel(Bo, c, p);
 }
 var D3 = L({ stridedSlice_: R3 });
 function F3(e) {
   let n = { x: _(e, "x", "tan", "float32") };
-  return M.runKernel(Bo, n);
+  return M.runKernel(Vo, n);
 }
 var O3 = L({ tan_: F3 });
 function Zt(e, t) {
@@ -8041,7 +8040,7 @@ function Ki(e, t, n) {
     throw new Error("tensor2d() requires shape to be provided when `values` are a flat/TypedArray");
   return Nr(e, t, s, n);
 }
-function gpe(e, t, n) {
+function bpe(e, t, n) {
   if (wa(e), t != null && t.length !== 4)
     throw new Error("tensor4d() requires shape to have four numbers");
   let s = Rs(e, n);
@@ -8051,7 +8050,7 @@ function gpe(e, t, n) {
     throw new Error("tensor4d() requires shape to be provided when `values` are a flat array");
   return Nr(e, t, s, n);
 }
-function bpe(e, t, n) {
+function ype(e, t, n) {
   if (wa(e), t != null && t.length !== 5)
     throw new Error("tensor5d() requires shape to have five numbers");
   let s = Rs(e, n);
@@ -8061,7 +8060,7 @@ function bpe(e, t, n) {
     throw new Error("tensor5d() requires shape to be provided when `values` are a flat array");
   return Nr(e, t, s, n);
 }
-function ype(e, t, n) {
+function vpe(e, t, n) {
   if (wa(e), t != null && t.length !== 6)
     throw new Error("tensor6d() requires shape to have six numbers");
   let s = Rs(e, n);
@@ -8080,7 +8079,7 @@ function P3(e, t = 1, n = true) {
     throw new Error(`'k' passed to topk() must be >= 0 but got ${t}`);
   if (t > r)
     throw new Error(`'k' passed to topk() must be <= the last dimension (${r}) but got ${t}`);
-  let a = { x: s }, i = { k: t, sorted: n }, [o, u] = M.runKernel(Vo, a, i);
+  let a = { x: s }, i = { k: t, sorted: n }, [o, u] = M.runKernel(Wo, a, i);
   return { values: o, indices: u };
 }
 var z3 = L({ topk_: P3 });
@@ -8111,7 +8110,7 @@ function W3(e, t = 0) {
   let n = _(e, "x", "unstack", "string_or_numeric");
   O(t >= -n.shape.length && t < n.shape.length, () => `Axis = ${t} is not in [-${n.shape.length}, ${n.shape.length})`);
   let s = { value: n }, r = { axis: t };
-  return M.runKernel(Uo, s, r);
+  return M.runKernel(Go, s, r);
 }
 var Fs = L({ unstack_: W3 });
 function U3(e, t = true, n, s) {
@@ -8139,10 +8138,10 @@ async function H3(e, t, n) {
   let u = 1;
   for (let m = a; m < a + i; m++)
     u *= o[m];
-  let l = o.slice(0, a).concat([u], o.slice(a + i)), c = G(s, l), p = G(r, [-1]), d = await II(p), h = mr(d, [1]), f = ju(c, h, a);
+  let l = o.slice(0, a).concat([u], o.slice(a + i)), c = G(s, l), p = G(r, [-1]), d = await II(p), h = mr(d, [1]), f = Ku(c, h, a);
   return e !== s && s.dispose(), t !== r && r.dispose(), h.dispose(), c.dispose(), p.dispose(), d.dispose(), f;
 }
-var vpe = H3;
+var xpe = H3;
 function q3(e, t = "euclidean", n = null, s = false) {
   e = _(e, "x", "norm");
   let r = SI(e, t, n), a = r.shape;
@@ -8193,12 +8192,12 @@ function j3(e, t, n, s, r = true) {
   }
   return ie(a, c);
 }
-var xpe = L({ movingAverage_: j3 });
+var wpe = L({ movingAverage_: j3 });
 function K3(e, t, n) {
   let s = _(e, "indices", "scatterND", "int32"), r = _(t, "updates", "scatterND");
   Bg(r, s, n);
   let a = { indices: s, updates: r }, i = { shape: n };
-  return M.runKernel(Do, a, i);
+  return M.runKernel(Fo, a, i);
 }
 var X3 = L({ scatterND_: K3 });
 function Y3(e, t, n, s) {
@@ -8224,7 +8223,7 @@ function Q3(e, t, n, s = 0) {
 var NI = L({ sparseToDense_: Q3 });
 function Z3(e, t) {
   let n = _(t, "indices", "gatherND", "int32"), r = { params: _(e, "x", "gatherND", "string_or_numeric"), indices: n };
-  return M.runKernel(bo, r);
+  return M.runKernel(yo, r);
 }
 var J3 = L({ gatherND_: Z3 });
 function eF(e, t) {
@@ -8244,7 +8243,7 @@ function tF(e, t, n, s) {
   let r = _(e, "x", "dropout");
   if (O(r.dtype === "float32", () => `x has to be a floating point tensor since it's going to be scaled, but got a ${r.dtype} tensor instead.`), O(t >= 0 && t < 1, () => `rate must be a float in the range [0, 1), but got ${t}.`), t === 0)
     return e instanceof et ? r.clone() : r;
-  let a = eF(r, n), i = 1 - t, o = xe(mp(ie(zl(a, 0, 1, "float32", s), i)), i);
+  let a = eF(r, n), i = 1 - t, o = xe(mp(ie(Ml(a, 0, 1, "float32", s), i)), i);
   return V(r, o);
 }
 var nF = L({ dropout_: tF });
@@ -8278,7 +8277,7 @@ async function rF(e, t, n = 1) {
   }
   return e !== s && s.dispose(), t !== r && r.dispose(), fs(c, r.shape, "bool");
 }
-var wpe = rF;
+var kpe = rF;
 var ha = {};
 Ae(ha, { conv2d: () => oF, depthwiseConv2d: () => dF, matMul: () => hF });
 function aF(e, t, n, s, r, a = "NHWC", i) {
@@ -8328,7 +8327,7 @@ function iF({ x: e, filter: t, strides: n, pad: s, dataFormat: r = "NHWC", dilat
   }
   let p = _(e, "x", "conv2d", "float32"), d = _(t, "filter", "conv2d", "float32"), h = p, f = false;
   p.rank === 3 && (f = true, h = G(p, [1, p.shape[0], p.shape[1], p.shape[2]])), O(h.rank === 4, () => `Error in fused conv2d: input must be rank 4, but got rank ${h.rank}.`), O(d.rank === 4, () => `Error in fused conv2d: filter must be rank 4, but got rank ${d.rank}.`), hn("fused conv2d", s, i), O(h.shape[3] === d.shape[2], () => `Error in conv2d: depth of input (${h.shape[3]}) must match input depth for filter ${d.shape[2]}.`), O(Ps(n, a), () => `Error in conv2D: Either strides or dilations must be 1. Got strides ${n} and dilations '${a}'`), O(r === "NHWC", () => `Error in conv2d: got dataFormat of ${r} but only NHWC is currently supported.`);
-  let m = Fl(h.shape, d.shape, n, a, s, i), g;
+  let m = Ol(h.shape, d.shape, n, a, s, i), g;
   o != null && (g = _(o, "bias", "fused conv2d"), [g] = vt(g, p), ot(m.outShape, g.shape));
   let b;
   l != null && (b = _(l, "prelu weights", "fused conv2d"));
@@ -8374,7 +8373,7 @@ function cF({ x: e, filter: t, strides: n, pad: s, dataFormat: r = "NHWC", dilat
   }
   let p = _(e, "x", "depthwiseConv2d", "float32"), d = _(t, "filter", "depthwiseConv2d", "float32"), h = p, f = false;
   p.rank === 3 && (f = true, h = G(p, [1, p.shape[0], p.shape[1], p.shape[2]])), O(h.rank === 4, () => `Error in fused depthwiseConv2d: input must be rank 4, but got rank ${h.rank}.`), O(d.rank === 4, () => `Error in fused depthwiseConv2d: filter must be rank 4, but got rank ${d.rank}.`), O(h.shape[3] === d.shape[2], () => `Error in fused depthwiseConv2d: number of input channels (${h.shape[3]}) must match the inChannels dimension in filter ${d.shape[2]}.`), a == null && (a = [1, 1]), O(Ps(n, a), () => `Error in fused depthwiseConv2d: Either strides or dilations must be 1. Got strides ${n} and dilations '${a}'`), hn("fused depthwiseConv2d", s, i);
-  let m = Fl(h.shape, d.shape, n, a, s, i, true), g;
+  let m = Ol(h.shape, d.shape, n, a, s, i, true), g;
   o != null && (g = _(o, "bias", "fused conv2d"), [g] = vt(g, p), ot(m.outShape, g.shape));
   let b;
   l != null && (b = _(l, "prelu weights", "fused depthwiseConv2d"));
@@ -8440,7 +8439,7 @@ function bF(e, t, n, s = false, r = 0) {
     i.push(He(e, a, t)), a += n;
   if (s)
     for (; a < e.size; ) {
-      let o = a + t - e.size, u = Ft([He(e, a, t - o), Ol([o], r)]);
+      let o = a + t - e.size, u = Ft([He(e, a, t - o), Pl([o], r)]);
       i.push(u), a += n;
     }
   return i.length === 0 ? Ki([], [0, t]) : G(Ft(i), [i.length, t]);
@@ -8456,14 +8455,14 @@ function xF(e, t, n, s, r = "bilinear", a = 0) {
   let i = _(e, "image", "cropAndResize"), o = _(t, "boxes", "cropAndResize", "float32"), u = _(n, "boxInd", "cropAndResize", "int32"), l = o.shape[0];
   O(i.rank === 4, () => `Error in cropAndResize: image must be rank 4,but got rank ${i.rank}.`), O(o.rank === 2 && o.shape[1] === 4, () => `Error in cropAndResize: boxes must be have size [${l},4] but had shape ${o.shape}.`), O(u.rank === 1 && u.shape[0] === l, () => `Error in cropAndResize: boxInd must be have size [${l}] but had shape ${o.shape}.`), O(s.length === 2, () => `Error in cropAndResize: cropSize must be of length 2, but got length ${s.length}.`), O(s[0] >= 1 && s[1] >= 1, () => `cropSize must be atleast [1,1], but was ${s}`), O(r === "bilinear" || r === "nearest", () => `method must be bilinear or nearest, but was ${r}`);
   let c = { image: i, boxes: o, boxInd: u }, p = { method: r, extrapolationValue: a, cropSize: s };
-  return M.runKernel(lo, c, p);
+  return M.runKernel(co, c, p);
 }
 var wF = L({ cropAndResize_: xF });
 function kF(e) {
   let t = _(e, "image", "flipLeftRight", "float32");
   O(t.rank === 4, () => `Error in flipLeftRight: image must be rank 4,but got rank ${t.rank}.`);
   let n = { image: t };
-  return M.runKernel(mo, n, {});
+  return M.runKernel(go, n, {});
 }
 var IF = L({ flipLeftRight_: kF });
 function SF(e) {
@@ -8477,19 +8476,19 @@ function NF(e, t, n = 0, s = 0.5) {
   let r = _(e, "image", "rotateWithOffset", "float32");
   O(r.rank === 4, () => `Error in rotateWithOffset: image must be rank 4,but got rank ${r.rank}.`);
   let a = { image: r }, i = { radians: t, fillValue: n, center: s };
-  return M.runKernel(Ho, a, i);
+  return M.runKernel(qo, a, i);
 }
 var TF = L({ rotateWithOffset_: NF });
-function Xo(e, t, n, s, r, a) {
+function Yo(e, t, n, s, r, a) {
   s == null && (s = 0.5), r == null && (r = Number.NEGATIVE_INFINITY), a == null && (a = 0);
   let i = e.shape[0];
   return n = Math.min(n, i), O(0 <= s && s <= 1, () => `iouThreshold must be in [0, 1], but was '${s}'`), O(e.rank === 2, () => `boxes must be a 2D tensor, but was of rank '${e.rank}'`), O(e.shape[1] === 4, () => `boxes must have 4 columns, but 2nd dimension was ${e.shape[1]}`), O(t.rank === 1, () => "scores must be a 1D tensor"), O(t.shape[0] === i, () => `scores has incompatible shape with boxes. Expected ${i}, but was ${t.shape[0]}`), O(0 <= a && a <= 1, () => `softNmsSigma must be in [0, 1], but was '${a}'`), { maxOutputSize: n, iouThreshold: s, scoreThreshold: r, softNmsSigma: a };
 }
 function $F(e, t, n, s = 0.5, r = Number.NEGATIVE_INFINITY) {
-  let a = _(e, "boxes", "nonMaxSuppression", "float32"), i = _(t, "scores", "nonMaxSuppression", "float32"), o = Xo(a, i, n, s, r);
+  let a = _(e, "boxes", "nonMaxSuppression", "float32"), i = _(t, "scores", "nonMaxSuppression", "float32"), o = Yo(a, i, n, s, r);
   n = o.maxOutputSize, s = o.iouThreshold, r = o.scoreThreshold;
   let u = { maxOutputSize: n, iouThreshold: s, scoreThreshold: r };
-  return M.runKernel(So, { boxes: a, scores: i }, u);
+  return M.runKernel(Co, { boxes: a, scores: i }, u);
 }
 var _F = L({ nonMaxSuppression_: $F });
 function AF(e, t, n) {
@@ -8562,33 +8561,33 @@ function fx(e, t) {
   return e.score - t.score || e.score === t.score && t.boxIndex - e.boxIndex;
 }
 async function PF(e, t, n, s = 0.5, r = Number.NEGATIVE_INFINITY) {
-  let a = _(e, "boxes", "nonMaxSuppressionAsync"), i = _(t, "scores", "nonMaxSuppressionAsync"), o = Xo(a, i, n, s, r);
+  let a = _(e, "boxes", "nonMaxSuppressionAsync"), i = _(t, "scores", "nonMaxSuppressionAsync"), o = Yo(a, i, n, s, r);
   n = o.maxOutputSize, s = o.iouThreshold, r = o.scoreThreshold;
   let u = await Promise.all([a.data(), i.data()]), l = u[0], c = u[1], { selectedIndices: p } = RI(l, c, n, s, r);
   return a !== e && a.dispose(), i !== t && i.dispose(), Zt(p, "int32");
 }
 var zF = PF;
 function MF(e, t, n, s = 0.5, r = Number.NEGATIVE_INFINITY, a = 0) {
-  let i = _(e, "boxes", "nonMaxSuppression"), o = _(t, "scores", "nonMaxSuppression"), u = Xo(i, o, n, s, r, a);
+  let i = _(e, "boxes", "nonMaxSuppression"), o = _(t, "scores", "nonMaxSuppression"), u = Yo(i, o, n, s, r, a);
   n = u.maxOutputSize, s = u.iouThreshold, r = u.scoreThreshold, a = u.softNmsSigma;
-  let l = { boxes: i, scores: o }, c = { maxOutputSize: n, iouThreshold: s, scoreThreshold: r, softNmsSigma: a }, p = M.runKernel(Co, l, c);
+  let l = { boxes: i, scores: o }, c = { maxOutputSize: n, iouThreshold: s, scoreThreshold: r, softNmsSigma: a }, p = M.runKernel(No, l, c);
   return { selectedIndices: p[0], selectedScores: p[1] };
 }
 var LF = L({ nonMaxSuppressionWithScore_: MF });
 async function BF(e, t, n, s = 0.5, r = Number.NEGATIVE_INFINITY, a = 0) {
-  let i = _(e, "boxes", "nonMaxSuppressionAsync"), o = _(t, "scores", "nonMaxSuppressionAsync"), u = Xo(i, o, n, s, r, a);
+  let i = _(e, "boxes", "nonMaxSuppressionAsync"), o = _(t, "scores", "nonMaxSuppressionAsync"), u = Yo(i, o, n, s, r, a);
   n = u.maxOutputSize, s = u.iouThreshold, r = u.scoreThreshold, a = u.softNmsSigma;
   let l = await Promise.all([i.data(), o.data()]), c = l[0], p = l[1], { selectedIndices: d, selectedScores: h } = FI(c, p, n, s, r, a);
   return i !== e && i.dispose(), o !== t && o.dispose(), { selectedIndices: Zt(d, "int32"), selectedScores: Zt(h) };
 }
 var VF = BF;
 function WF(e, t, n, s = 0.5, r = Number.NEGATIVE_INFINITY, a = false) {
-  let i = _(e, "boxes", "nonMaxSuppression"), o = _(t, "scores", "nonMaxSuppression"), u = Xo(i, o, n, s, r, null), l = u.maxOutputSize, c = u.iouThreshold, p = u.scoreThreshold, d = { boxes: i, scores: o }, h = { maxOutputSize: l, iouThreshold: c, scoreThreshold: p, padToMaxOutputSize: a }, f = M.runKernel(wl, d, h);
+  let i = _(e, "boxes", "nonMaxSuppression"), o = _(t, "scores", "nonMaxSuppression"), u = Yo(i, o, n, s, r, null), l = u.maxOutputSize, c = u.iouThreshold, p = u.scoreThreshold, d = { boxes: i, scores: o }, h = { maxOutputSize: l, iouThreshold: c, scoreThreshold: p, padToMaxOutputSize: a }, f = M.runKernel(kl, d, h);
   return { selectedIndices: f[0], validOutputs: f[1] };
 }
 var UF = L({ nonMaxSuppressionPadded_: WF });
 async function GF(e, t, n, s = 0.5, r = Number.NEGATIVE_INFINITY, a = false) {
-  let i = _(e, "boxes", "nonMaxSuppressionAsync"), o = _(t, "scores", "nonMaxSuppressionAsync"), u = Xo(i, o, n, s, r, null), l = u.maxOutputSize, c = u.iouThreshold, p = u.scoreThreshold, [d, h] = await Promise.all([i.data(), o.data()]), { selectedIndices: f, validOutputs: m } = DI(d, h, l, c, p, a);
+  let i = _(e, "boxes", "nonMaxSuppressionAsync"), o = _(t, "scores", "nonMaxSuppressionAsync"), u = Yo(i, o, n, s, r, null), l = u.maxOutputSize, c = u.iouThreshold, p = u.scoreThreshold, [d, h] = await Promise.all([i.data(), o.data()]), { selectedIndices: f, validOutputs: m } = DI(d, h, l, c, p, a);
   return i !== e && i.dispose(), o !== t && o.dispose(), { selectedIndices: Zt(f, "int32"), validOutputs: we(m, "int32") };
 }
 var HF = GF;
@@ -8606,7 +8605,7 @@ function KF(e, t, n = false, s = false) {
   O(r.rank === 3 || r.rank === 4, () => `Error in resizeNearestNeighbor: x must be rank 3 or 4, but got rank ${r.rank}.`), O(t.length === 2, () => `Error in resizeNearestNeighbor: new shape must 2D, but got shape ${t}.`), O(r.dtype === "float32" || r.dtype === "int32", () => "`images` must have `int32` or `float32` as dtype"), O(s === false || n === false, () => "Error in resizeNearestNeighbor: If halfPixelCenters is true, alignCorners must be false.");
   let a = r, i = false;
   r.rank === 3 && (i = true, a = G(r, [1, r.shape[0], r.shape[1], r.shape[2]]));
-  let [] = t, o = { images: a }, u = { alignCorners: n, halfPixelCenters: s, size: t }, l = M.runKernel(Sl, o, u);
+  let [] = t, o = { images: a }, u = { alignCorners: n, halfPixelCenters: s, size: t }, l = M.runKernel(Cl, o, u);
   return i ? G(l, [l.shape[1], l.shape[2], l.shape[3]]) : l;
 }
 var XF = L({ resizeNearestNeighbor_: KF });
@@ -8622,16 +8621,16 @@ function YF(e, t = "binary", n = false, s = 0.5) {
     let g = Qk(ce(fI(h), "int32"), fs([]), 256);
     l = QF(g, u);
   }
-  let f = n ? Ko(h, l) : Wn(h, l);
+  let f = n ? Xo(h, l) : Wn(h, l);
   return ce(V(f, 255), "int32");
 }
 function QF(e, t) {
   let n = Zt([-1]), s = Zt([0]), r = Zt([0]), a, i, o, u, l, c;
   for (let p = 0; p < e.size - 1; p++) {
     a = He(e, 0, p + 1), i = He(e, p + 1), l = xe(ve(a), t), c = xe(ve(i), t);
-    let d = ve(V(a, Xu(0, a.size)));
+    let d = ve(V(a, Yu(0, a.size)));
     o = xe(d, ve(a));
-    let h = Ol(i.shape, a.size), f = ie(Xu(0, i.size), h), m = V(i, f);
+    let h = Pl(i.shape, a.size), f = ie(Yu(0, i.size), h), m = V(i, f);
     u = xe(ve(m), ve(i));
     let g = ge(o, u), b = ge(o, u), y = V(l, c);
     r = V(V(y, g), b);
@@ -8645,7 +8644,7 @@ function JF(e, t, n = "nearest", s = "constant", r = 0, a) {
   let i = _(e, "image", "transform", "float32"), o = _(t, "transforms", "transform", "float32");
   O(i.rank === 4, () => `Error in transform: image must be rank 4,but got rank ${i.rank}.`), O(o.rank === 2 && (o.shape[0] === i.shape[0] || o.shape[0] === 1) && o.shape[1] === 8, () => "Error in transform: Input transform should be batch x 8 or 1 x 8"), O(a == null || a.length === 2, () => `Error in transform: outputShape must be [height, width] or null, but got ${a}.`);
   let u = { image: i, transforms: o }, l = { interpolation: n, fillMode: s, fillValue: r, outputShape: a };
-  return M.runKernel(Wo, u, l);
+  return M.runKernel(Uo, u, l);
 }
 var eO = L({ transform_: JF });
 function tO(e, t, n) {
@@ -8658,7 +8657,7 @@ function tO(e, t, n) {
   if (!(n <= i))
     throw new Error(`bandPart(): numUpper (${n}) must not be greater than the number of columns (${i}).`);
   t < 0 && (t = a), n < 0 && (n = i);
-  let o = G(Xu(0, a, 1, "int32"), [-1, 1]), u = Xu(0, i, 1, "int32"), l = ge(o, u), c = Ds(Ko(l, we(+t, "int32")), jo(l, we(-n, "int32"))), p = $t([a, i], s.dtype);
+  let o = G(Yu(0, a, 1, "int32"), [-1, 1]), u = Yu(0, i, 1, "int32"), l = ge(o, u), c = Ds(Xo(l, we(+t, "int32")), Ko(l, we(-n, "int32"))), p = $t([a, i], s.dtype);
   return G(Jn(Fs(G(s, [-1, a, i])).map((d) => vn(c, d, p))), r);
 }
 var nO = L({ bandPart_: tO });
@@ -8750,7 +8749,7 @@ function uO(e, t, n = 3) {
     if (r == null)
       return xe(ve(a), we(s.size));
     {
-      let i = V(r, Mn(s.shape)), o = ce(ve(Ku(i, we(0))), "float32");
+      let i = V(r, Mn(s.shape)), o = ce(ve(Xu(i, we(0))), "float32");
       return xe(ve(a), o);
     }
   }
@@ -8864,7 +8863,7 @@ function _O(e, t, n) {
     throw new Error(`Input shape should be Tensor1D but received shape ${r.shape}`);
   if (a.rank !== 1)
     throw new Error(`New shape should be Tensor1D but received shape ${a.shape}`);
-  let i = { inputIndices: s, inputShape: r, newShape: a }, o = M.runKernel($l, i);
+  let i = { inputIndices: s, inputShape: r, newShape: a }, o = M.runKernel(_l, i);
   return { outputIndices: o[0], outputShape: o[1] };
 }
 var AO = L({ sparseReshape_: _O });
@@ -8927,11 +8926,11 @@ function LO(e, t) {
   return M.runKernel(_g, r, s);
 }
 var BO = L({ stringToHashBucketFast_: LO });
-var kpe = { fft: lb, ifft: Id, rfft: cb, irfft: xI };
-var Ipe = { hammingWindow: mF, hannWindow: AI, frame: EI, stft: vF };
+var Ipe = { fft: lb, ifft: Id, rfft: cb, irfft: xI };
+var Spe = { hammingWindow: mF, hannWindow: AI, frame: EI, stft: vF };
 var qn = { flipLeftRight: IF, grayscaleToRGB: CF, resizeNearestNeighbor: XF, resizeBilinear: jF, rotateWithOffset: TF, cropAndResize: wF, nonMaxSuppression: _F, nonMaxSuppressionAsync: zF, nonMaxSuppressionWithScore: LF, nonMaxSuppressionWithScoreAsync: VF, nonMaxSuppressionPadded: UF, nonMaxSuppressionPaddedAsync: HF, threshold: ZF, transform: eO };
 var VO = { bandPart: nO, gramSchmidt: rO, qr: iO };
-var Spe = { absoluteDifference: cO, computeWeightedLoss: Ys, cosineDistance: pO, hingeLoss: fO, huberLoss: gO, logLoss: yO, meanSquaredError: xO, sigmoidCrossEntropy: IO, softmaxCrossEntropy: NO };
+var Cpe = { absoluteDifference: cO, computeWeightedLoss: Ys, cosineDistance: pO, hingeLoss: fO, huberLoss: gO, logLoss: yO, meanSquaredError: xO, sigmoidCrossEntropy: IO, softmaxCrossEntropy: NO };
 var Wc = { sparseFillEmptyRows: $O, sparseReshape: AO, sparseSegmentMean: RO, sparseSegmentSum: FO };
 var Mf = { stringNGrams: PO, stringSplit: MO, stringToHashBucketFast: BO };
 var _r = class extends Vk {
@@ -8972,8 +8971,7 @@ var _r = class extends Vk {
 Object.defineProperty(_r, Symbol.hasInstance, { value: (e) => e.minimize != null && e.computeGradients != null && e.applyGradients != null });
 var fb = class extends _r {
   constructor(e, t, n = null) {
-    super();
-    this.learningRate = e, this.rho = t, this.epsilon = n, this.accumulatedGrads = [], this.accumulatedUpdates = [], n == null && (this.epsilon = M.backend.epsilon());
+    super(), this.learningRate = e, this.rho = t, this.epsilon = n, this.accumulatedGrads = [], this.accumulatedUpdates = [], n == null && (this.epsilon = M.backend.epsilon());
   }
   applyGradients(e) {
     (Array.isArray(e) ? e.map((n) => n.name) : Object.keys(e)).forEach((n, s) => {
@@ -9014,13 +9012,12 @@ fb.className = "Adadelta";
 Tr(fb);
 var mb = class extends _r {
   constructor(e, t = 0.1) {
-    super();
-    this.learningRate = e, this.initialAccumulatorValue = t, this.accumulatedGrads = [];
+    super(), this.learningRate = e, this.initialAccumulatorValue = t, this.accumulatedGrads = [];
   }
   applyGradients(e) {
     (Array.isArray(e) ? e.map((n) => n.name) : Object.keys(e)).forEach((n, s) => {
       let r = M.registeredVariables[n];
-      this.accumulatedGrads[s] == null && (this.accumulatedGrads[s] = { originalName: `${n}/accumulator`, variable: j(() => Ol(r.shape, this.initialAccumulatorValue).variable(false)) });
+      this.accumulatedGrads[s] == null && (this.accumulatedGrads[s] = { originalName: `${n}/accumulator`, variable: j(() => Pl(r.shape, this.initialAccumulatorValue).variable(false)) });
       let a = Array.isArray(e) ? e[s].tensor : e[n];
       if (a == null)
         return;
@@ -9055,8 +9052,7 @@ mb.className = "Adagrad";
 Tr(mb);
 var gb = class extends _r {
   constructor(e, t, n, s = null) {
-    super();
-    this.learningRate = e, this.beta1 = t, this.beta2 = n, this.epsilon = s, this.accumulatedFirstMoment = [], this.accumulatedSecondMoment = [], j(() => {
+    super(), this.learningRate = e, this.beta1 = t, this.beta2 = n, this.epsilon = s, this.accumulatedFirstMoment = [], this.accumulatedSecondMoment = [], j(() => {
       this.accBeta1 = we(t).variable(), this.accBeta2 = we(n).variable();
     }), s == null && (this.epsilon = M.backend.epsilon());
   }
@@ -9102,8 +9098,7 @@ gb.className = "Adam";
 Tr(gb);
 var bb = class extends _r {
   constructor(e, t, n, s = null, r = 0) {
-    super();
-    this.learningRate = e, this.beta1 = t, this.beta2 = n, this.epsilon = s, this.decay = r, this.accumulatedFirstMoment = [], this.accumulatedWeightedInfNorm = [], j(() => {
+    super(), this.learningRate = e, this.beta1 = t, this.beta2 = n, this.epsilon = s, this.decay = r, this.accumulatedFirstMoment = [], this.accumulatedWeightedInfNorm = [], j(() => {
       this.iteration = we(0).variable(), this.accBeta1 = we(t).variable();
     }), s == null && (this.epsilon = M.backend.epsilon());
   }
@@ -9144,8 +9139,7 @@ bb.className = "Adamax";
 Tr(bb);
 var Ip = class extends _r {
   constructor(e) {
-    super();
-    this.learningRate = e, this.setLearningRate(e);
+    super(), this.learningRate = e, this.setLearningRate(e);
   }
   applyGradients(e) {
     (Array.isArray(e) ? e.map((n) => n.name) : Object.keys(e)).forEach((n, s) => {
@@ -9183,8 +9177,7 @@ Ip.className = "SGD";
 Tr(Ip);
 var yb = class extends Ip {
   constructor(e, t, n = false) {
-    super(e);
-    this.learningRate = e, this.momentum = t, this.useNesterov = n, this.accumulations = [], this.m = we(this.momentum);
+    super(e), this.learningRate = e, this.momentum = t, this.useNesterov = n, this.accumulations = [], this.m = we(this.momentum);
   }
   applyGradients(e) {
     (Array.isArray(e) ? e.map((n) => n.name) : Object.keys(e)).forEach((n, s) => {
@@ -9222,8 +9215,7 @@ yb.className = "Momentum";
 Tr(yb);
 var vb = class extends _r {
   constructor(e, t = 0.9, n = 0, s = null, r = false) {
-    super();
-    if (this.learningRate = e, this.decay = t, this.momentum = n, this.epsilon = s, this.accumulatedMeanSquares = [], this.accumulatedMoments = [], this.accumulatedMeanGrads = [], this.centered = r, s == null && (this.epsilon = M.backend.epsilon()), e == null)
+    if (super(), this.learningRate = e, this.decay = t, this.momentum = n, this.epsilon = s, this.accumulatedMeanSquares = [], this.accumulatedMoments = [], this.accumulatedMeanGrads = [], this.centered = r, s == null && (this.epsilon = M.backend.epsilon()), e == null)
       throw new Error("learningRate for RMSPropOptimizer must be defined.");
   }
   applyGradients(e) {
@@ -9300,7 +9292,7 @@ function OI() {
   return new Promise((e) => WO(() => e()));
 }
 var S = {};
-Ae(S, { ERF_A1: () => JO, ERF_A2: () => eP, ERF_A3: () => tP, ERF_A4: () => nP, ERF_A5: () => sP, ERF_P: () => ZO, PARALLELIZE_THRESHOLD: () => xb, SELU_SCALE: () => zI, SELU_SCALEALPHA: () => PI, applyActivation: () => wp, assertAndGetBroadcastShape: () => ot, assertAxesAreInnerMostDims: () => sD, assertParamsConsistent: () => UO, assignToTypedArray: () => lP, axesAreInnerMostDims: () => Qg, calculateShapes: () => Ek, checkEinsumDimSizes: () => mP, checkPadOnDimRoundingMode: () => hn, combineLocations: () => oI, complexWithEvenIndex: () => iP, complexWithOddIndex: () => oP, computeConv2DInfo: () => Fl, computeConv3DInfo: () => Kk, computeDefaultPad: () => Ug, computeDilation2DInfo: () => cE, computeOptimalWindowSize: () => HO, computeOutAndReduceShapes: () => uI, computeOutShape: () => GO, computePool2DInfo: () => jk, computePool3DInfo: () => dE, convertConv2DDataFormat: () => Xk, decodeEinsumEquation: () => hP, eitherStridesOrDilationsAreOne: () => Ps, expandShapeToKeepDim: () => da, exponent: () => dP, exponents: () => cP, fromStringArrayToUint8: () => PP, fromUint8ToStringArray: () => OP, getAxesPermutation: () => lI, getBroadcastDims: () => Ck, getComplexWithIndex: () => uP, getEinsumComputePath: () => gP, getEinsumPermutation: () => fP, getFusedBiasGradient: () => xp, getFusedDyActivation: () => vp, getImageCenter: () => qO, getInnerMostAxes: () => rD, getPermuted: () => KO, getReductionAxes: () => _t, getReshaped: () => jO, getReshapedPermuted: () => XO, getSliceBeginCoords: () => YO, getSliceSize: () => QO, getSparseFillEmptyRowsIndicesDenseShapeMismatch: () => xP, getSparseFillEmptyRowsNegativeIndexErrorMessage: () => wP, getSparseFillEmptyRowsOutOfRangeIndexErrorMessage: () => kP, getSparseReshapeEmptyTensorZeroOutputDimErrorMessage: () => CP, getSparseReshapeInputOutputMismatchErrorMessage: () => TP, getSparseReshapeInputOutputMultipleErrorMessage: () => NP, getSparseReshapeMultipleNegativeOneOutputDimErrorMessage: () => IP, getSparseReshapeNegativeOutputDimErrorMessage: () => SP, getSparseSegmentReductionIndicesOutOfRangeErrorMessage: () => EP, getSparseSegmentReductionNegativeSegmentIdsErrorMessage: () => $P, getSparseSegmentReductionNonIncreasingSegmentIdsErrorMessage: () => _P, getSparseSegmentReductionSegmentIdOutOfRangeErrorMessage: () => AP, getUndoAxesPermutation: () => Zg, isIdentityPermutation: () => bP, log: () => R$, mergeRealAndImagArrays: () => rP, prepareAndValidate: () => _k, prepareSplitSize: () => vP, segment_util: () => MI, shouldFuse: () => kp, slice_util: () => wt, splitRealAndImagArrays: () => aP, tupleValuesAreOne: () => fr, upcastType: () => cn, validateInput: () => Bg, validateUpdateShape: () => Lg, warn: () => ar });
+Ae(S, { ERF_A1: () => JO, ERF_A2: () => eP, ERF_A3: () => tP, ERF_A4: () => nP, ERF_A5: () => sP, ERF_P: () => ZO, PARALLELIZE_THRESHOLD: () => xb, SELU_SCALE: () => zI, SELU_SCALEALPHA: () => PI, applyActivation: () => wp, assertAndGetBroadcastShape: () => ot, assertAxesAreInnerMostDims: () => sD, assertParamsConsistent: () => UO, assignToTypedArray: () => lP, axesAreInnerMostDims: () => Qg, calculateShapes: () => Ek, checkEinsumDimSizes: () => mP, checkPadOnDimRoundingMode: () => hn, combineLocations: () => oI, complexWithEvenIndex: () => iP, complexWithOddIndex: () => oP, computeConv2DInfo: () => Ol, computeConv3DInfo: () => Kk, computeDefaultPad: () => Ug, computeDilation2DInfo: () => cE, computeOptimalWindowSize: () => HO, computeOutAndReduceShapes: () => uI, computeOutShape: () => GO, computePool2DInfo: () => jk, computePool3DInfo: () => dE, convertConv2DDataFormat: () => Xk, decodeEinsumEquation: () => hP, eitherStridesOrDilationsAreOne: () => Ps, expandShapeToKeepDim: () => da, exponent: () => dP, exponents: () => cP, fromStringArrayToUint8: () => PP, fromUint8ToStringArray: () => OP, getAxesPermutation: () => lI, getBroadcastDims: () => Ck, getComplexWithIndex: () => uP, getEinsumComputePath: () => gP, getEinsumPermutation: () => fP, getFusedBiasGradient: () => xp, getFusedDyActivation: () => vp, getImageCenter: () => qO, getInnerMostAxes: () => rD, getPermuted: () => KO, getReductionAxes: () => _t, getReshaped: () => jO, getReshapedPermuted: () => XO, getSliceBeginCoords: () => YO, getSliceSize: () => QO, getSparseFillEmptyRowsIndicesDenseShapeMismatch: () => xP, getSparseFillEmptyRowsNegativeIndexErrorMessage: () => wP, getSparseFillEmptyRowsOutOfRangeIndexErrorMessage: () => kP, getSparseReshapeEmptyTensorZeroOutputDimErrorMessage: () => CP, getSparseReshapeInputOutputMismatchErrorMessage: () => TP, getSparseReshapeInputOutputMultipleErrorMessage: () => NP, getSparseReshapeMultipleNegativeOneOutputDimErrorMessage: () => IP, getSparseReshapeNegativeOutputDimErrorMessage: () => SP, getSparseSegmentReductionIndicesOutOfRangeErrorMessage: () => EP, getSparseSegmentReductionNegativeSegmentIdsErrorMessage: () => $P, getSparseSegmentReductionNonIncreasingSegmentIdsErrorMessage: () => _P, getSparseSegmentReductionSegmentIdOutOfRangeErrorMessage: () => AP, getUndoAxesPermutation: () => Zg, isIdentityPermutation: () => bP, log: () => R$, mergeRealAndImagArrays: () => rP, prepareAndValidate: () => _k, prepareSplitSize: () => vP, segment_util: () => MI, shouldFuse: () => kp, slice_util: () => wt, splitRealAndImagArrays: () => aP, tupleValuesAreOne: () => fr, upcastType: () => cn, validateInput: () => Bg, validateUpdateShape: () => Lg, warn: () => ar });
 function UO(e, t) {
   let n = e[0].length;
   e.forEach((r, a) => {
@@ -9608,22 +9600,22 @@ function OP(e) {
   }
 }
 function PP(e) {
-  return e.map((t) => Rl(t));
+  return e.map((t) => Dl(t));
 }
 var xs = {};
 Ae(xs, { nonMaxSuppressionV3Impl: () => RI, nonMaxSuppressionV4Impl: () => DI, nonMaxSuppressionV5Impl: () => FI, whereImpl: () => kI });
-var LI = { kernelName: ao, inputsToSave: ["x"], gradFunc: (e, t) => {
+var LI = { kernelName: io, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(e, yp(ce(n, "float32"), -1)) };
 } };
-var zP = { kernelName: nl, inputsToSave: ["x"], gradFunc: (e, t) => {
+var zP = { kernelName: sl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => {
     let s = ct(ce(n, "float32")), r = dn(ge(we(1), s));
     return kt(xe(e, r));
   } };
 } };
-var MP = { kernelName: sl, inputsToSave: ["x"], gradFunc: (e, t) => {
+var MP = { kernelName: rl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => {
     let s = dn(ge(ct(ce(n, "float32")), 1));
@@ -9650,22 +9642,22 @@ var VP = { kernelName: Ia, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => je(n) };
 } };
-var WP = { kernelName: il, inputsToSave: ["x"], gradFunc: (e, t) => {
+var WP = { kernelName: ol, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => je(n) };
 } };
-var UP = { kernelName: ol, inputsToSave: ["x"], gradFunc: (e, t) => {
+var UP = { kernelName: ul, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => xe(e, dn(ge(we(1), ct(ce(n, "float32"))))) };
 } };
-var GP = { kernelName: ul, inputsToSave: ["x"], gradFunc: (e, t) => {
+var GP = { kernelName: ll, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => {
     let s = dn(ie(we(1), ct(ce(n, "float32"))));
     return xe(e, s);
   } };
 } };
-var HP = { kernelName: dl, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
+var HP = { kernelName: pl, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
   let [n, s] = t, r = ot(n.shape, s.shape);
   return { a: () => {
     let o = ie(ct(n), ct(s)), u = V(e, xe(s, o)), l = _t(n.shape, r);
@@ -9675,11 +9667,11 @@ var HP = { kernelName: dl, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
     return l.length > 0 && (u = ve(u, l)), G(u, s.shape);
   } };
 } };
-var qP = { kernelName: ll, inputsToSave: ["x"], gradFunc: (e, t) => {
+var qP = { kernelName: cl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => xe(e, ie(ct(ce(n, "float32")), 1)) };
 } };
-var jP = { kernelName: cl, inputsToSave: ["x"], gradFunc: (e, t) => {
+var jP = { kernelName: dl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => xe(e, ge(we(1), ct(ce(n, "float32")))) };
 } };
@@ -9711,7 +9703,7 @@ var ez = { kernelName: Ca, inputsToSave: ["a", "b"], gradFunc: (e, t, n) => {
   let [s, r] = t, { transposeA: a, transposeB: i } = n;
   return !a && !i ? { a: () => We(e, r, false, true), b: () => We(s, e, true, false) } : !a && i ? { a: () => We(e, r, false, false), b: () => We(e, s, true, false) } : a && !i ? { a: () => We(r, e, false, true), b: () => We(s, e, false, false) } : { a: () => We(r, e, true, true), b: () => We(e, s, true, true) };
 } };
-var tz = { kernelName: io, gradFunc: (e, t, n) => {
+var tz = { kernelName: oo, gradFunc: (e, t, n) => {
   let { blockShape: s, crops: r } = n;
   return { x: () => nb(e, s, r) };
 } };
@@ -9731,10 +9723,10 @@ var sz = { kernelName: Na, gradFunc: (e) => ({ x: () => e.clone() }) };
 var rz = { kernelName: Ta, gradFunc: (e) => ({ x: () => je(e) }) };
 var az = { kernelName: Sr, inputsToSave: ["x"], gradFunc: (e, t, n) => {
   let [s] = t, { clipValueMin: r, clipValueMax: a } = n;
-  return { x: () => vn(Ds(jo(s, r), Ko(s, a)), e, je(e)) };
+  return { x: () => vn(Ds(Ko(s, r), Xo(s, a)), e, je(e)) };
 } };
 var iz = { kernelName: Kd, inputsToSave: ["x"], gradFunc: LI.gradFunc };
-var oz = { kernelName: oo, saveAllInputs: true, gradFunc: (e, t, n) => {
+var oz = { kernelName: uo, saveAllInputs: true, gradFunc: (e, t, n) => {
   let s = t.map((u) => u.shape), { axis: r } = n, a = ts(r, t[0].shape)[0], i = s.map((u) => u[a]);
   return Bn(e, i, a).map((u) => () => u);
 } };
@@ -9769,7 +9761,7 @@ var fz = { kernelName: Ea, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(yI(ce(n, "float32")), e) };
 } };
-var mz = { kernelName: uo, inputsToSave: ["x"], gradFunc: (e, t, n) => {
+var mz = { kernelName: lo, inputsToSave: ["x"], gradFunc: (e, t, n) => {
   let [s] = t, { axis: r, exclusive: a, reverse: i } = n;
   return { x: () => {
     let o = lI([r], s.rank), u = sI(e, r, a, !i);
@@ -9790,7 +9782,7 @@ var yz = { kernelName: Fa, outputsToSave: [true], gradFunc: (e, t) => {
   let [n] = t, s = { dy: e, y: n };
   return { x: () => M.runKernel(bg, s) };
 } };
-var vz = { kernelName: hl, inputsToSave: ["x"], gradFunc: (e, t) => {
+var vz = { kernelName: fl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t, s = V(Xn(kt(ct(n))), 2 / Math.sqrt(Math.PI));
   return { x: () => V(e, s) };
 } };
@@ -9798,11 +9790,11 @@ var xz = { kernelName: Oa, outputsToSave: [true], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(e, n) };
 } };
-var wz = { kernelName: ho, inputsToSave: ["input"], gradFunc: (e, t) => {
+var wz = { kernelName: fo, inputsToSave: ["input"], gradFunc: (e, t) => {
   let [n] = t;
   return { input: () => G(e, n.shape) };
 } };
-var kz = { kernelName: fo, inputsToSave: ["x"], gradFunc: (e, t) => {
+var kz = { kernelName: mo, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(e, Xn(n)) };
 } };
@@ -9841,7 +9833,7 @@ var Cz = { kernelName: Ma, inputsToSave: ["x", "mean", "variance", "scale"], gra
     return a.rank === 1 && (x = ve(x, l)), G(x, a.shape);
   } };
 } };
-var Nz = { kernelName: go, inputsToSave: ["x", "indices"], gradFunc: (e, t, n) => {
+var Nz = { kernelName: bo, inputsToSave: ["x", "indices"], gradFunc: (e, t, n) => {
   let [s, r] = t, { axis: a } = n, i = ts(a, s.shape)[0];
   return { x: () => {
     let u = s.shape, l = r.size, c = u.slice(0, i), p = c.length, d = u.slice(a, u.length).slice(1), h = d.length, f = yx(0, p), m = yx(p + 1, p + 1 + h), g = vx([c, [l], d]), b = G(e, g), y = G(r, [l]), v = vx([[p], f, m]), x = qe(b, v), k = V3(x, y, s.shape[i]), T = Zg(v);
@@ -9866,14 +9858,14 @@ var Tz = { kernelName: La, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
   return { a: () => je(n), b: () => je(s) };
 } };
 var $z = { kernelName: Ba, gradFunc: (e) => ({ x: () => ce(e, "float32") }) };
-var _z = { kernelName: ml, gradFunc: (e) => ({ x: () => je(e) }) };
-var Az = { kernelName: gl, gradFunc: (e) => ({ x: () => je(e) }) };
-var Ez = { kernelName: bl, gradFunc: (e) => ({ x: () => je(e) }) };
+var _z = { kernelName: gl, gradFunc: (e) => ({ x: () => je(e) }) };
+var Az = { kernelName: bl, gradFunc: (e) => ({ x: () => je(e) }) };
+var Ez = { kernelName: yl, gradFunc: (e) => ({ x: () => je(e) }) };
 var Rz = { kernelName: Va, inputsToSave: ["x"], gradFunc: (e, t, n) => {
   let [s] = t, { alpha: r } = n, a = Wn(s, 0);
   return { x: () => vn(a, e, V(e, r)) };
 } };
-var Dz = { kernelName: yl, inputsToSave: ["x"], gradFunc: (e, t) => {
+var Dz = { kernelName: vl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => xe(e, ie(n, 1)) };
 } };
@@ -9906,7 +9898,7 @@ var xx = { kernelName: Ua, inputsToSave: ["x"], outputsToSave: [true], gradFunc:
 } };
 var Lz = { kernelName: Ga, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
   let [n, s] = t;
-  return { a: () => V(e, ce(jo(n, s), "float32")), b: () => V(e, ce(aI(n, s), "float32")) };
+  return { a: () => V(e, ce(Ko(n, s), "float32")), b: () => V(e, ce(aI(n, s), "float32")) };
 } };
 function Bz(e, t, n, s, r, a, i) {
   let o = _(e, "dy", "maxPool3dGrad"), u = _(t, "input", "maxPool3dGrad"), l = _(n, "output", "maxPool3dGrad"), c = o, p = u, d = l, h = false;
@@ -9947,13 +9939,13 @@ var jz = { kernelName: ja, inputsToSave: ["x"], outputsToSave: [true], gradFunc:
 } };
 var Kz = { kernelName: Ka, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
   let [n, s] = t;
-  return { a: () => V(e, ce(Ko(n, s), "float32")), b: () => V(e, ce(Wn(n, s), "float32")) };
+  return { a: () => V(e, ce(Xo(n, s), "float32")), b: () => V(e, ce(Wn(n, s), "float32")) };
 } };
 var Xz = { kernelName: Xa, inputsToSave: ["x"], gradFunc: (e, t, n) => {
   let s = t[0], { paddings: r } = n, a = r.map((i) => i[0]);
   return { x: () => He(e, a, s.shape) };
 } };
-var Yz = { kernelName: xl, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
+var Yz = { kernelName: wl, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
   let [n, s] = t, r = ot(n.shape, s.shape);
   return { a: () => {
     let o = _t(n.shape, r);
@@ -9973,13 +9965,13 @@ var Qz = { kernelName: Ya, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
     return u.length > 0 ? G(ve(o, u), s.shape) : o;
   } };
 } };
-var Zz = { kernelName: ko, gradFunc: (e) => ({ x: () => kt(e) }) };
-var Jz = { kernelName: To, inputsToSave: ["indices"], gradFunc: (e, t) => {
+var Zz = { kernelName: Io, gradFunc: (e) => ({ x: () => kt(e) }) };
+var Jz = { kernelName: $o, inputsToSave: ["indices"], gradFunc: (e, t) => {
   let n = t[0];
   return { indices: () => $t(n.shape, "float32") };
 } };
-var eM = { kernelName: No, gradFunc: (e) => ({ x: () => je(e) }) };
-var tM = { kernelName: $o, saveAllInputs: true, gradFunc: (e, t, n) => {
+var eM = { kernelName: To, gradFunc: (e) => ({ x: () => je(e) }) };
+var tM = { kernelName: _o, saveAllInputs: true, gradFunc: (e, t, n) => {
   let { axis: s } = n;
   return Fs(e, s).map((a) => () => a);
 } };
@@ -10016,19 +10008,19 @@ var rM = { kernelName: Da, inputsToSave: ["a", "b"], gradFunc: (e, t) => {
     return kt(xe(o, ce(l, "float32")));
   } };
 } };
-var aM = { kernelName: Il, inputsToSave: ["x"], gradFunc: (e, t) => {
+var aM = { kernelName: Sl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => xe(e, kt(ct(n))) };
 } };
 var iM = { kernelName: ni, inputsToSave: ["x"], gradFunc: (e, t) => {
-  let [n] = t, s = V(Ko(n, 6), yp(n));
+  let [n] = t, s = V(Xo(n, 6), yp(n));
   return { x: () => V(e, ce(s, "float32")) };
 } };
 var oM = { kernelName: ei, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(e, ce(yp(n), "float32")) };
 } };
-var uM = { kernelName: Ao, inputsToSave: ["x"], gradFunc: (e, t) => {
+var uM = { kernelName: Eo, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => G(e, n.shape) };
 } };
@@ -10036,24 +10028,24 @@ var lM = { kernelName: ti, inputsToSave: ["images"], gradFunc: (e, t, n) => {
   let [s] = t, r = { dy: e, images: s };
   return { images: () => M.runKernel(Tg, r, n) };
 } };
-var cM = { kernelName: Sl, inputsToSave: ["images"], gradFunc: (e, t, n) => {
+var cM = { kernelName: Cl, inputsToSave: ["images"], gradFunc: (e, t, n) => {
   let [s] = t, r = { dy: e, images: s };
   return { images: () => M.runKernel(Ng, r, n) };
 } };
-var dM = { kernelName: Eo, gradFunc: (e, t, n) => {
+var dM = { kernelName: Ro, gradFunc: (e, t, n) => {
   let { dims: s } = n, r = ts(s, e.shape);
   return { x: () => Zn(e, r) };
 } };
-var pM = { kernelName: Ro, gradFunc: (e) => ({ x: () => je(e) }) };
+var pM = { kernelName: Do, gradFunc: (e) => ({ x: () => je(e) }) };
 var hM = { kernelName: si, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => kt(xe(e, V(pa(n, 1.5), 2))) };
 } };
-var fM = { kernelName: Fo, inputsToSave: ["condition"], gradFunc: (e, t) => {
+var fM = { kernelName: Oo, inputsToSave: ["condition"], gradFunc: (e, t) => {
   let [n] = t;
   return { condition: () => ce(je(n), "float32"), t: () => V(e, ce(n, e.dtype)), e: () => V(e, ce(Jg(n), e.dtype)) };
 } };
-var mM = { kernelName: Cl, inputsToSave: ["x"], gradFunc: (e, t) => {
+var mM = { kernelName: Nl, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => {
     let s = Wn(n, we(0)), r = we(PI), a = we(zI), i = V(e, a), o = V(V(e, r), Xn(ce(n, "float32")));
@@ -10064,16 +10056,16 @@ var gM = { kernelName: ai, outputsToSave: [true], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(e, V(n, ge(we(1), n))) };
 } };
-var bM = { kernelName: Nl, gradFunc: (e) => ({ x: () => je(e) }) };
+var bM = { kernelName: Tl, gradFunc: (e) => ({ x: () => je(e) }) };
 var yM = { kernelName: ri, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(jg(ce(n, "float32")), e) };
 } };
-var vM = { kernelName: Po, inputsToSave: ["x"], gradFunc: (e, t) => {
+var vM = { kernelName: zo, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(nI(ce(n, "float32")), e) };
 } };
-var xM = { kernelName: Oo, inputsToSave: ["x"], gradFunc: (e, t, n) => {
+var xM = { kernelName: Po, inputsToSave: ["x"], gradFunc: (e, t, n) => {
   let [s] = t, { begin: r, size: a } = n, i = s.shape, [o, u] = Bk(s, r, a), l = [];
   for (let c = 0; c < e.rank; c++)
     l.push([o[c], i[c] - o[c] - u[c]]);
@@ -10083,15 +10075,15 @@ var wM = { kernelName: ui, outputsToSave: [true], gradFunc: (e, t, n) => {
   let [s] = t, { dim: r } = n, a = true, i = V(e, s);
   return { logits: () => ge(i, V(ve(i, [r], a), s)) };
 } };
-var kM = { kernelName: Tl, inputsToSave: ["x"], gradFunc: (e, t) => {
+var kM = { kernelName: $l, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(e, qs(n)) };
 } };
-var kx = { kernelName: zo, gradFunc: (e, t, n) => {
+var kx = { kernelName: Mo, gradFunc: (e, t, n) => {
   let { blockShape: s, paddings: r } = n;
   return { x: () => Hg(e, s, r) };
 } };
-var Ix = { kernelName: Mo, gradFunc: (e, t, n) => {
+var Ix = { kernelName: Lo, gradFunc: (e, t, n) => {
   let { axis: s } = n;
   return { x: () => Ft(e, s) };
 } };
@@ -10099,7 +10091,7 @@ var IM = { kernelName: ii, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => xe(e, V(dn(ce(n, "float32")), 2)) };
 } };
-var SM = { kernelName: _l, inputsToSave: ["x"], gradFunc: (e, t) => {
+var SM = { kernelName: Al, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => V(e, V(ce(n, "float32"), 2)) };
 } };
@@ -10126,7 +10118,7 @@ var $M = { kernelName: oi, inputsToSave: ["x"], gradFunc: (e, t, n) => {
   let o = G(e, r), u = V(o, Mn(s.shape, "float32"));
   return { x: () => u };
 } };
-var _M = { kernelName: Bo, inputsToSave: ["x"], gradFunc: (e, t) => {
+var _M = { kernelName: Vo, inputsToSave: ["x"], gradFunc: (e, t) => {
   let [n] = t;
   return { x: () => xe(e, ct(jg(n))) };
 } };
@@ -10165,7 +10157,7 @@ var RM = { kernelName: pi, gradFunc: (e, t, n) => {
   let s = n, { perm: r } = s, a = Zg(r);
   return { x: () => qe(e, a) };
 } };
-var DM = { kernelName: Uo, gradFunc: (e, t, n) => {
+var DM = { kernelName: Go, gradFunc: (e, t, n) => {
   let s = n, { axis: r } = s;
   return { value: () => Jn(e, r) };
 } };
@@ -10174,14 +10166,14 @@ var FM = { kernelName: up, inputsToSave: ["segmentIds"], gradFunc: (e, t) => {
   return { x: () => OM(e, n) };
 } };
 function OM(e, t) {
-  let n = $r(t, je(t)), s = ju(e, n), r = jo(t, we(0, "int32")), a = s.rank - r.rank;
+  let n = $r(t, je(t)), s = Ku(e, n), r = Ko(t, we(0, "int32")), a = s.rank - r.rank;
   for (let o = 0; o < a; ++o)
     r = Pn(r, o + 1);
   r = Ds(r, Mn(s.shape, "bool"));
   let i = je(s);
   return vn(r, s, i);
 }
-var PM = { kernelName: Go, gradFunc: (e) => ({ x: () => je(e) }) };
+var PM = { kernelName: Ho, gradFunc: (e) => ({ x: () => je(e) }) };
 var zM = [LI, zP, MP, LP, BP, VP, WP, UP, GP, HP, qP, jP, YP, JP, ez, tz, nz, sz, rz, az, iz, oz, lz, uz, pz, hz, fz, mz, gz, bz, rM, yz, vz, xz, wz, kz, Sz, Iz, Cz, Nz, Tz, $z, _z, Az, Ez, Rz, Dz, Fz, Oz, Mz, xx, xx, Lz, Wz, Hz, qz, jz, Kz, Xz, Yz, Qz, Zz, Jz, eM, tM, wx, wx, nM, sM, aM, iM, oM, uM, lM, cM, dM, pM, hM, fM, mM, gM, bM, yM, vM, xM, wM, kM, kx, kx, Ix, Ix, IM, CM, SM, NM, TM, $M, _M, AM, EM, RM, DM, FM, PM];
 for (let e of zM)
   D$(e);
@@ -10196,32 +10188,27 @@ function bs() {
 }
 var Vs = class extends Error {
   constructor(e) {
-    super(e);
-    Object.setPrototypeOf(this, Vs.prototype);
+    super(e), Object.setPrototypeOf(this, Vs.prototype);
   }
 };
 var hs = class extends Error {
   constructor(e) {
-    super(e);
-    Object.setPrototypeOf(this, hs.prototype);
+    super(e), Object.setPrototypeOf(this, hs.prototype);
   }
 };
 var U = class extends Error {
   constructor(e) {
-    super(e);
-    Object.setPrototypeOf(this, U.prototype);
+    super(e), Object.setPrototypeOf(this, U.prototype);
   }
 };
 var Fe = class extends Error {
   constructor(e) {
-    super(e);
-    Object.setPrototypeOf(this, Fe.prototype);
+    super(e), Object.setPrototypeOf(this, Fe.prototype);
   }
 };
 var VI = class extends Error {
   constructor(e) {
-    super(e);
-    Object.setPrototypeOf(this, VI.prototype);
+    super(e), Object.setPrototypeOf(this, VI.prototype);
   }
 };
 function fa(e, t) {
@@ -10277,7 +10264,7 @@ function mm(e) {
       }
     }
 }
-function Ml(e, t = {}, n = {}, s = "object", r = false) {
+function Ll(e, t = {}, n = {}, s = "object", r = false) {
   if (typeof e == "string") {
     let a = e, i;
     if (a in n)
@@ -10370,15 +10357,14 @@ function UI(e) {
 function Ib(e, t) {
   return j(() => dn(ve(V(e, e), t, true)));
 }
-var Ll = class extends ae.Serializable {
+var Bl = class extends ae.Serializable {
   getConfig() {
     return {};
   }
 };
-var Sb = class extends Ll {
+var Sb = class extends Bl {
   constructor(e) {
-    super();
-    this.defaultMaxValue = 2, this.defaultAxis = 0, this.maxValue = e.maxValue != null ? e.maxValue : this.defaultMaxValue, this.axis = e.axis != null ? e.axis : this.defaultAxis;
+    super(), this.defaultMaxValue = 2, this.defaultAxis = 0, this.maxValue = e.maxValue != null ? e.maxValue : this.defaultMaxValue, this.axis = e.axis != null ? e.axis : this.defaultAxis;
   }
   apply(e) {
     return j(() => {
@@ -10392,10 +10378,9 @@ var Sb = class extends Ll {
 };
 Sb.className = "MaxNorm";
 ae.registerClass(Sb);
-var Cb = class extends Ll {
+var Cb = class extends Bl {
   constructor(e) {
-    super();
-    this.defaultAxis = 0, this.axis = e.axis != null ? e.axis : this.defaultAxis;
+    super(), this.defaultAxis = 0, this.axis = e.axis != null ? e.axis : this.defaultAxis;
   }
   apply(e) {
     return j(() => xe(e, ie(Rt(), Ib(e, this.axis))));
@@ -10406,17 +10391,16 @@ var Cb = class extends Ll {
 };
 Cb.className = "UnitNorm";
 ae.registerClass(Cb);
-var Nb = class extends Ll {
+var Nb = class extends Bl {
   apply(e) {
     return Xs(e);
   }
 };
 Nb.className = "NonNeg";
 ae.registerClass(Nb);
-var Tb = class extends Ll {
+var Tb = class extends Bl {
   constructor(e) {
-    super();
-    this.defaultMinValue = 0, this.defaultMaxValue = 1, this.defaultRate = 1, this.defaultAxis = 0, this.minValue = e.minValue != null ? e.minValue : this.defaultMinValue, this.maxValue = e.maxValue != null ? e.maxValue : this.defaultMaxValue, this.rate = e.rate != null ? e.rate : this.defaultRate, this.axis = e.axis != null ? e.axis : this.defaultAxis;
+    super(), this.defaultMinValue = 0, this.defaultMaxValue = 1, this.defaultRate = 1, this.defaultAxis = 0, this.minValue = e.minValue != null ? e.minValue : this.defaultMinValue, this.maxValue = e.maxValue != null ? e.maxValue : this.defaultMaxValue, this.rate = e.rate != null ? e.rate : this.defaultRate, this.axis = e.axis != null ? e.axis : this.defaultAxis;
   }
   apply(e) {
     return j(() => {
@@ -10435,7 +10419,7 @@ function Ot(e) {
   return wb(e);
 }
 function Nx(e, t = {}) {
-  return Ml(e, ae.SerializationMap.getMap().classNameMap, t, "constraint");
+  return Ll(e, ae.SerializationMap.getMap().classNameMap, t, "constraint");
 }
 function Pt(e) {
   if (e == null)
@@ -10444,7 +10428,7 @@ function Pt(e) {
     let n = { className: e in Cx ? Cx[e] : e, config: {} };
     return Nx(n);
   } else
-    return e instanceof Ll ? e : Nx(e);
+    return e instanceof Bl ? e : Nx(e);
 }
 function WM(e) {
   return new Sb(e);
@@ -10478,19 +10462,19 @@ function Un(e) {
 function GI(e) {
   mi(YM, "PoolMode", e);
 }
-var zu = [];
+var Mu = [];
 var Tx = "/";
 function ea(e, t) {
-  zu.push(e);
+  Mu.push(e);
   try {
     let n = t();
-    return zu.pop(), n;
+    return Mu.pop(), n;
   } catch (n) {
-    throw zu.pop(), n;
+    throw Mu.pop(), n;
   }
 }
 function JM() {
-  return zu.length === 0 ? "" : zu.join(Tx) + Tx;
+  return Mu.length === 0 ? "" : Mu.join(Tx) + Tx;
 }
 function HI(e) {
   if (!jI(e))
@@ -10553,7 +10537,7 @@ function ys(e, t) {
 function Sp(e, t) {
   return ce(e, t);
 }
-function Bl(e, t = -1) {
+function Vl(e, t = -1) {
   let n = e.shape.slice();
   return t < 0 && (t = n.length + t + 1), n.splice(t, 0, 1), G(e, n);
 }
@@ -10561,7 +10545,7 @@ function nL(e, t) {
   return j(() => {
     if (e.shape.length !== 2)
       throw new U(`repeat() expects a rank-2 tensor, but received a rank-${e.shape.length} tensor.`);
-    let n = Bl(e, 1);
+    let n = Vl(e, 1);
     return gm(n, [1, t, 1]);
   });
 }
@@ -10700,9 +10684,9 @@ function Es(e, t, n, s) {
   }
 }
 function KI(e, t, n) {
-  return j(() => (Array.isArray(t) ? t = Zt(t, "int32") : t = ce(t, "int32"), ju(e, t, n)));
+  return j(() => (Array.isArray(t) ? t = Zt(t, "int32") : t = ce(t, "int32"), Ku(e, t, n)));
 }
-function Vl(e) {
+function Wl(e) {
   return V(e, e);
 }
 function bm(e, t, n) {
@@ -10748,7 +10732,7 @@ function oL(e) {
     return Vn(t, 0, 1);
   });
 }
-function Wl(e, t, n = false) {
+function Ul(e, t, n = false) {
   return n ? e() : t();
 }
 var uL = ["fanIn", "fanOut", "fanAvg"];
@@ -10783,8 +10767,7 @@ Np.className = "Ones";
 ae.registerClass(Np);
 var Ab = class extends ns {
   constructor(e) {
-    super();
-    if (typeof e != "object")
+    if (super(), typeof e != "object")
       throw new U(`Expected argument of type ConstantConfig but got ${e}`);
     if (e.value === void 0)
       throw new U(`config must have value set but got ${e}`);
@@ -10801,11 +10784,10 @@ Ab.className = "Constant";
 ae.registerClass(Ab);
 var Eb = class extends ns {
   constructor(e) {
-    super();
-    this.DEFAULT_MINVAL = -0.05, this.DEFAULT_MAXVAL = 0.05, this.minval = e.minval || this.DEFAULT_MINVAL, this.maxval = e.maxval || this.DEFAULT_MAXVAL, this.seed = e.seed;
+    super(), this.DEFAULT_MINVAL = -0.05, this.DEFAULT_MAXVAL = 0.05, this.minval = e.minval || this.DEFAULT_MINVAL, this.maxval = e.maxval || this.DEFAULT_MAXVAL, this.seed = e.seed;
   }
   apply(e, t) {
-    return zl(e, this.minval, this.maxval, t);
+    return Ml(e, this.minval, this.maxval, t);
   }
   getConfig() {
     return { minval: this.minval, maxval: this.maxval, seed: this.seed };
@@ -10815,8 +10797,7 @@ Eb.className = "RandomUniform";
 ae.registerClass(Eb);
 var Rb = class extends ns {
   constructor(e) {
-    super();
-    this.DEFAULT_MEAN = 0, this.DEFAULT_STDDEV = 0.05, this.mean = e.mean || this.DEFAULT_MEAN, this.stddev = e.stddev || this.DEFAULT_STDDEV, this.seed = e.seed;
+    super(), this.DEFAULT_MEAN = 0, this.DEFAULT_STDDEV = 0.05, this.mean = e.mean || this.DEFAULT_MEAN, this.stddev = e.stddev || this.DEFAULT_STDDEV, this.seed = e.seed;
   }
   apply(e, t) {
     if (t = t || "float32", t !== "float32" && t !== "int32")
@@ -10831,8 +10812,7 @@ Rb.className = "RandomNormal";
 ae.registerClass(Rb);
 var Db = class extends ns {
   constructor(e) {
-    super();
-    this.DEFAULT_MEAN = 0, this.DEFAULT_STDDEV = 0.05, this.mean = e.mean || this.DEFAULT_MEAN, this.stddev = e.stddev || this.DEFAULT_STDDEV, this.seed = e.seed;
+    super(), this.DEFAULT_MEAN = 0, this.DEFAULT_STDDEV = 0.05, this.mean = e.mean || this.DEFAULT_MEAN, this.stddev = e.stddev || this.DEFAULT_STDDEV, this.seed = e.seed;
   }
   apply(e, t) {
     if (t = t || "float32", t !== "float32" && t !== "int32")
@@ -10847,8 +10827,7 @@ Db.className = "TruncatedNormal";
 ae.registerClass(Db);
 var Fb = class extends ns {
   constructor(e) {
-    super();
-    this.gain = e.gain != null ? e.gain : 1;
+    super(), this.gain = e.gain != null ? e.gain : 1;
   }
   apply(e, t) {
     return j(() => {
@@ -10883,8 +10862,7 @@ function pL(e, t = "channelsLast") {
 }
 var xn = class extends ns {
   constructor(e) {
-    super();
-    if (e.scale < 0)
+    if (super(), e.scale < 0)
       throw new U(`scale must be a positive float. Got: ${e.scale}`);
     this.scale = e.scale == null ? 1 : e.scale, this.mode = e.mode == null ? "fanIn" : e.mode, cL(this.mode), this.distribution = e.distribution == null ? "normal" : e.distribution, dL(this.distribution), this.seed = e.seed;
   }
@@ -10897,7 +10875,7 @@ var xn = class extends ns {
       return db(e, 0, i, t, this.seed);
     } else {
       let i = Math.sqrt(3 * a);
-      return zl(e, -i, i, t);
+      return Ml(e, -i, i, t);
     }
   }
   getConfig() {
@@ -10968,8 +10946,7 @@ Rp.className = "LeCunNormal";
 ae.registerClass(Rp);
 var Ob = class extends ns {
   constructor(e) {
-    super();
-    if (this.DEFAULT_GAIN = 1, this.gain = e.gain == null ? this.DEFAULT_GAIN : e.gain, this.seed = e.seed, this.seed != null)
+    if (super(), this.DEFAULT_GAIN = 1, this.gain = e.gain == null ? this.DEFAULT_GAIN : e.gain, this.seed = e.seed, this.seed != null)
       throw new Fe("Random seed is not implemented for Orthogonal Initializer yet.");
   }
   apply(e, t) {
@@ -10989,7 +10966,7 @@ Ob.className = "Orthogonal";
 ae.registerClass(Ob);
 var _x = { constant: "Constant", glorotNormal: "GlorotNormal", glorotUniform: "GlorotUniform", heNormal: "HeNormal", heUniform: "HeUniform", identity: "Identity", leCunNormal: "LeCunNormal", leCunUniform: "LeCunUniform", ones: "Ones", orthogonal: "Orthogonal", randomNormal: "RandomNormal", randomUniform: "RandomUniform", truncatedNormal: "TruncatedNormal", varianceScaling: "VarianceScaling", zeros: "Zeros" };
 function Ax(e, t = {}) {
-  return Ml(e, ae.SerializationMap.getMap().classNameMap, t, "initializer");
+  return Ll(e, ae.SerializationMap.getMap().classNameMap, t, "initializer");
 }
 function yt(e) {
   return wb(e);
@@ -11062,7 +11039,7 @@ function TL(e) {
   return new Ob(e);
 }
 var $L = {};
-Ae($L, { Layer: () => Ge, RNN: () => Ar, RNNCell: () => Hl, activation: () => cV, add: () => vV, alphaDropout: () => nW, average: () => xV, averagePooling1d: () => Hy, averagePooling2d: () => qy, averagePooling3d: () => jy, avgPool1d: () => _V, avgPool2d: () => EV, avgPool3d: () => DV, avgPooling1d: () => AV, avgPooling2d: () => RV, avgPooling3d: () => FV, batchNormalization: () => NV, bidirectional: () => KV, concatenate: () => wV, conv1d: () => tV, conv2d: () => nV, conv2dTranspose: () => sV, conv3d: () => rV, conv3dTranspose: () => aV, convLstm2d: () => GV, convLstm2dCell: () => HV, cropping2D: () => oV, dense: () => dV, depthwiseConv2d: () => lV, dot: () => CV, dropout: () => pV, elu: () => XB, embedding: () => yV, flatten: () => fV, gaussianDropout: () => tW, gaussianNoise: () => eW, globalAveragePooling1d: () => OV, globalAveragePooling2d: () => PV, globalMaxPool1d: () => YV, globalMaxPool2d: () => QV, globalMaxPooling1d: () => GS, globalMaxPooling2d: () => HS, gru: () => MV, gruCell: () => LV, input: () => OB, inputLayer: () => KB, layerNormalization: () => TV, leakyReLU: () => QB, lstm: () => BV, lstmCell: () => VV, masking: () => sW, maxPool1d: () => ZV, maxPool2d: () => JV, maxPooling1d: () => qS, maxPooling2d: () => jS, maxPooling3d: () => zV, maximum: () => kV, minimum: () => IV, multiply: () => SV, permute: () => bV, prelu: () => ZB, reLU: () => YB, repeatVector: () => mV, reshape: () => gV, rnn: () => qV, separableConv2d: () => iV, simpleRNN: () => WV, simpleRNNCell: () => UV, softmax: () => JB, spatialDropout1d: () => hV, stackedRNNCells: () => jV, thresholdedReLU: () => eV, timeDistributed: () => XV, upSampling2d: () => uV, zeroPadding2d: () => $V });
+Ae($L, { Layer: () => Ge, RNN: () => Ar, RNNCell: () => ql, activation: () => cV, add: () => vV, alphaDropout: () => nW, average: () => xV, averagePooling1d: () => Hy, averagePooling2d: () => qy, averagePooling3d: () => jy, avgPool1d: () => _V, avgPool2d: () => EV, avgPool3d: () => DV, avgPooling1d: () => AV, avgPooling2d: () => RV, avgPooling3d: () => FV, batchNormalization: () => NV, bidirectional: () => KV, concatenate: () => wV, conv1d: () => tV, conv2d: () => nV, conv2dTranspose: () => sV, conv3d: () => rV, conv3dTranspose: () => aV, convLstm2d: () => GV, convLstm2dCell: () => HV, cropping2D: () => oV, dense: () => dV, depthwiseConv2d: () => lV, dot: () => CV, dropout: () => pV, elu: () => XB, embedding: () => yV, flatten: () => fV, gaussianDropout: () => tW, gaussianNoise: () => eW, globalAveragePooling1d: () => OV, globalAveragePooling2d: () => PV, globalMaxPool1d: () => YV, globalMaxPool2d: () => QV, globalMaxPooling1d: () => GS, globalMaxPooling2d: () => HS, gru: () => MV, gruCell: () => LV, input: () => OB, inputLayer: () => KB, layerNormalization: () => TV, leakyReLU: () => QB, lstm: () => BV, lstmCell: () => VV, masking: () => sW, maxPool1d: () => ZV, maxPool2d: () => JV, maxPooling1d: () => qS, maxPooling2d: () => jS, maxPooling3d: () => zV, maximum: () => kV, minimum: () => IV, multiply: () => SV, permute: () => bV, prelu: () => ZB, reLU: () => YB, repeatVector: () => mV, reshape: () => gV, rnn: () => qV, separableConv2d: () => iV, simpleRNN: () => WV, simpleRNNCell: () => UV, softmax: () => JB, spatialDropout1d: () => hV, stackedRNNCells: () => jV, thresholdedReLU: () => eV, timeDistributed: () => XV, upSampling2d: () => uV, zeroPadding2d: () => $V });
 var _L = 0;
 function YI() {
   return _L++;
@@ -11166,8 +11143,7 @@ var Fp = class {
 var DL = 0;
 var Ge = class extends ae.Serializable {
   constructor(e = {}) {
-    super();
-    this._callHook = null, this._addedWeightNames = [], this._stateful = false, this.id = DL++, this.activityRegularizer = null, this.inputSpec = null, this.supportsMasking = false, this._trainableWeights = [], this._nonTrainableWeights = [], this._losses = [], this._updates = [], this._built = false, this.inboundNodes = [], this.outboundNodes = [];
+    super(), this._callHook = null, this._addedWeightNames = [], this._stateful = false, this.id = DL++, this.activityRegularizer = null, this.inputSpec = null, this.supportsMasking = false, this._trainableWeights = [], this._nonTrainableWeights = [], this._losses = [], this._updates = [], this._built = false, this.inboundNodes = [], this.outboundNodes = [];
     let t = e.name;
     if (!t) {
       let n = this.getClassName();
@@ -11488,10 +11464,9 @@ function QI(e, t, n) {
     }
   }
 }
-var Yo = class extends Ge {
+var Qo = class extends Ge {
   constructor(e) {
-    super({ dtype: e.dtype, name: e.name != null ? e.name : Dp("input").toString() });
-    if (e.batchSize == null && (e.batchSize = null), e.sparse == null && (e.sparse = false), this.trainable = false, this.built = true, this.sparse = e.sparse, e.inputShape != null && e.batchInputShape != null)
+    if (super({ dtype: e.dtype, name: e.name != null ? e.name : Dp("input").toString() }), e.batchSize == null && (e.batchSize = null), e.sparse == null && (e.sparse = false), this.trainable = false, this.built = true, this.sparse = e.sparse, e.inputShape != null && e.batchInputShape != null)
       throw new U("Only provide the inputShape OR batchInputShape argument to inputLayer, not both at the same time.");
     let t = e.batchInputShape;
     if (t == null) {
@@ -11515,8 +11490,8 @@ var Yo = class extends Ge {
     return { batchInputShape: this.batchInputShape, dtype: this.dtype, sparse: this.sparse, name: this.name };
   }
 };
-Yo.className = "InputLayer";
-ae.registerClass(Yo);
+Qo.className = "InputLayer";
+ae.registerClass(Qo);
 function ZI(e) {
   if (e.batchShape == null && e.shape == null)
     throw new Error("Please provide to Input either a `shape` or a `batchShape` argument. Note that `shape` does not include the batch dimension.");
@@ -11525,7 +11500,7 @@ function ZI(e) {
   let t = e.batchShape;
   e.shape != null && t == null && (t = [null].concat(e.shape));
   let n = e.dtype;
-  return n == null && (n = "float32"), new Yo({ batchInputShape: t, name: e.name, dtype: n, sparse: e.sparse }).inboundNodes[0].outputTensors[0];
+  return n == null && (n = "float32"), new Qo({ batchInputShape: t, name: e.name, dtype: n, sparse: e.sparse }).inboundNodes[0].outputTensors[0];
 }
 async function rr(e) {
   if (e == null)
@@ -11679,8 +11654,7 @@ var LL = class extends Ji {
 };
 var BL = class extends Ji {
   constructor(e, t) {
-    super();
-    if (this.currentEpoch = 0, this.nowFunc = e.nowFunc, this.nextFrameFunc = e.nextFrameFunc || OI, this.yieldEvery = t || "auto", this.yieldEvery === "auto" && (this.yieldEvery = PL), this.yieldEvery === "never" && e.onYield != null)
+    if (super(), this.currentEpoch = 0, this.nowFunc = e.nowFunc, this.nextFrameFunc = e.nextFrameFunc || OI, this.yieldEvery = t || "auto", this.yieldEvery === "auto" && (this.yieldEvery = PL), this.yieldEvery === "never" && e.onYield != null)
       throw new Error("yieldEvery is `never` but you provided an `onYield` callback. Either change `yieldEvery` or remove the callback");
     w.isNumber(this.yieldEvery) && (this.maybeWait = VM(this.maybeWait.bind(this), this.yieldEvery, this.nowFunc)), this.trainBegin = e.onTrainBegin, this.trainEnd = e.onTrainEnd, this.epochBegin = e.onEpochBegin, this.epochEnd = e.onEpochEnd, this.batchBegin = e.onBatchBegin, this.batchEnd = e.onBatchEnd, this.yield = e.onYield;
   }
@@ -11746,22 +11720,22 @@ function tS(e, t, n, s, r, a, i, o, u) {
   return p.setParams({ epochs: n, initialEpoch: s, samples: r, steps: a, batchSize: i, verbose: t, doValidation: o, metrics: u }), { callbackList: p, history: l };
 }
 function ms(e, t = {}, n = false) {
-  return Ml(e, ae.SerializationMap.getMap().classNameMap, t, "layer", n);
+  return Ll(e, ae.SerializationMap.getMap().classNameMap, t, "layer", n);
 }
 function Nd(e, t) {
   return j(() => {
     e.dtype !== "float32" && (e = ce(e, "float32"));
-    let n = ve(Vl(e), t, true), s = Ol(n.shape, Rt()), r = dn($r(n, s));
+    let n = ve(Wl(e), t, true), s = Pl(n.shape, Rt()), r = dn($r(n, s));
     return xe(e, r);
   });
 }
 function gi(e, t) {
-  return j(() => St(Vl(ge(t, e)), -1));
+  return j(() => St(Wl(ge(t, e)), -1));
 }
 function Op(e, t) {
   return j(() => St(Mt(ge(t, e)), -1));
 }
-function Qo(e, t) {
+function Zo(e, t) {
   return j(() => {
     let n = ge(e, t), s = Vn(Mt(e), Rt(), Number.MAX_VALUE), r = Mt(xe(n, s));
     return V(100, St(r, -1));
@@ -11770,13 +11744,13 @@ function Qo(e, t) {
 function VL(e, t) {
   return j(() => {
     let n = Vn(t, Rt(), Number.MAX_VALUE), s = Yn(ie(1, n)), r = Vn(e, Rt(), Number.MAX_VALUE), a = Yn(ie(1, r));
-    return St(Vl(ge(s, a)), -1);
+    return St(Wl(ge(s, a)), -1);
   });
 }
 function WL(e, t) {
   return j(() => {
     let n = $r(0, ge(1, V(e, t)));
-    return St(Vl(n), -1);
+    return St(Wl(n), -1);
   });
 }
 function UL(e, t) {
@@ -11793,11 +11767,11 @@ function GL(e, t) {
 }
 function HL(e, t) {
   return j(() => {
-    let n = Math.log(2), s = ge(t, e), r = ge(ie(s, Pl(V(-2, s))), n);
+    let n = Math.log(2), s = ge(t, e), r = ge(ie(s, zl(V(-2, s))), n);
     return St(r, -1);
   });
 }
-function Yu(e, t, n = false) {
+function Qu(e, t, n = false) {
   return j(() => {
     if (n)
       t = ub(t);
@@ -11813,7 +11787,7 @@ function Td(e, t, n = false) {
     let s = ce(mp(sL(e)), "int32");
     t = Vn(t, Rt(), 1 - Rt());
     let r = t.shape, a = G(vd(s, r[r.length - 1]), r);
-    return Yu(a, t, n);
+    return Qu(a, t, n);
   });
 }
 function qL(e, t) {
@@ -11848,7 +11822,7 @@ function Mb(e, t) {
     return kt(ve(r, -1));
   });
 }
-var $d = { meanSquaredError: gi, meanAbsoluteError: Op, meanAbsolutePercentageError: Qo, meanSquaredLogarithmicError: VL, squaredHinge: WL, hinge: UL, categoricalHinge: GL, logcosh: HL, categoricalCrossentropy: Yu, sparseCategoricalCrossentropy: Td, binaryCrossentropy: Pp, kullbackLeiblerDivergence: jL, poisson: KL, cosineProximity: Mb };
+var $d = { meanSquaredError: gi, meanAbsoluteError: Op, meanAbsolutePercentageError: Zo, meanSquaredLogarithmicError: VL, squaredHinge: WL, hinge: UL, categoricalHinge: GL, logcosh: HL, categoricalCrossentropy: Qu, sparseCategoricalCrossentropy: Td, binaryCrossentropy: Pp, kullbackLeiblerDivergence: jL, poisson: KL, cosineProximity: Mb };
 function Wf(e) {
   if (typeof e == "string") {
     if (e in $d)
@@ -11865,7 +11839,7 @@ function Lb(e, t) {
   });
 }
 function Bb(e, t) {
-  return j(() => Sp(Kn(Gu(e, -1), Gu(t, -1)), "float32"));
+  return j(() => Sp(Kn(Hu(e, -1), Hu(t, -1)), "float32"));
 }
 function nS(e, t) {
   return j(() => ce(ve(Ds(Kn(e, 1), Kn(t, 1))), "float32"));
@@ -11892,15 +11866,15 @@ function rS(e, t) {
   return Pp(e, t);
 }
 function aS(e, t) {
-  return e.rank === t.rank && (e = mr(e, [e.rank - 1])), t = Gu(t, -1), t.dtype !== e.dtype && (t = ce(t, e.dtype)), ce(Kn(e, t), "float32");
+  return e.rank === t.rank && (e = mr(e, [e.rank - 1])), t = Hu(t, -1), t.dtype !== e.dtype && (t = ce(t, e.dtype)), ce(Kn(e, t), "float32");
 }
 var ZL = gi;
 var JL = gi;
 var eB = Op;
 var tB = Op;
-var nB = Qo;
-var sB = Qo;
-var Vb = Yu;
+var nB = Zo;
+var sB = Zo;
+var Vb = Qu;
 var rB = Mb;
 var iS = Td;
 var _d = { binaryAccuracy: Lb, categoricalAccuracy: Bb, precision: sS, categoricalCrossentropy: Vb, sparseCategoricalCrossentropy: iS, mse: ZL, MSE: JL, mae: eB, MAE: tB, mape: nB, MAPE: sB, cosine: rB };
@@ -12063,7 +12037,7 @@ function dB(e, t, n, s) {
 function oS(e, t, n) {
   return (e === "inboundNodes" || e === "outputLayers" || e === "inputLayers") && t === 0 && typeof n == "string";
 }
-function Qu(e, t) {
+function Zu(e, t) {
   if (e === null)
     return null;
   if (typeof e == "string")
@@ -12074,7 +12048,7 @@ function Qu(e, t) {
     let n = [], s = e.length;
     for (let r = 0; r < s; ++r) {
       let a = e[r];
-      oS(t, r, a) ? n.push(a) : n.push(Qu(a, t));
+      oS(t, r, a) ? n.push(a) : n.push(Zu(a, t));
     }
     return n;
   } else {
@@ -12085,7 +12059,7 @@ function Qu(e, t) {
         n[s] = r;
       else {
         let a = Kr(s);
-        n[a] = Qu(r, a);
+        n[a] = Zu(r, a);
       }
     }
     return n;
@@ -12182,7 +12156,7 @@ var Qr = class {
 };
 var Uf = {};
 var Fx = {};
-function _u(e, t, n, s) {
+function Au(e, t, n, s) {
   let r = n == null ? false : n.training, a = Array.isArray(e), i = a ? e : [e], o = i.map((f) => f.name), u = [], l = t.names();
   for (let f of o)
     l.indexOf(f) !== -1 ? u.push(t.getValue(f)) : u.push(null);
@@ -12200,7 +12174,7 @@ function _u(e, t, n, s) {
       A > s.maxNumTensors && (s.maxNumTensors = A), A < s.minNumTensors && (s.minNumTensors = A);
     }
     let m = p[f], g = m.sourceLayer;
-    if (g instanceof Yo)
+    if (g instanceof Qo)
       continue;
     let b = [], y = [], v = [], x = false;
     for (let A of m.inputs) {
@@ -12284,8 +12258,7 @@ function mB(e) {
 }
 var Is = class extends Ge {
   constructor(e) {
-    super({});
-    if (this.containerNodes = /* @__PURE__ */ new Set(), this.name = e.name, this.name == null) {
+    if (super({}), this.containerNodes = /* @__PURE__ */ new Set(), this.name = e.name, this.name == null) {
       let b = this.getClassName().toLowerCase();
       this.name = Dp(b);
     }
@@ -12303,7 +12276,7 @@ var Is = class extends Ge {
     this.inputNames = [], this.outputNames = [], this.feedInputShapes = [], this.feedInputNames = [], this.feedOutputNames = [];
     for (let b = 0; b < this.inputLayers.length; b++) {
       let y = this.inputLayers[b];
-      if (!(y instanceof Yo))
+      if (!(y instanceof Qo))
         throw new TypeError(`Input layers to a LayersModel must be InputLayer objects. Received inputs: ${e.inputs}. Input ${b} (0-based) originates from layer type ${y.getClassName()}.`);
       this.inputNames.push(y.name), this.feedInputShapes.push(y.batchInputShape), this.feedInputNames.push(y.name);
     }
@@ -12475,7 +12448,7 @@ var Is = class extends Ge {
       let n = new Qr();
       for (let s = 0; s < this.inputs.length; ++s)
         n.add(this.inputs[s], e[s]);
-      return _u(this.outputs, n, t);
+      return Au(this.outputs, n, t);
     });
   }
   computeMask(e, t) {
@@ -12753,7 +12726,7 @@ async function cS(e, t, n, s) {
         return lr(e);
       if (e.shape.length === 2) {
         if (e.shape[1] > 1)
-          return Gu(e, 1);
+          return Hu(e, 1);
         if (e.shape[1] === 1)
           return G(e, [e.shape[0]]);
         throw new Error(`Encountered unexpected last-dimension size (${e.shape[1]}) during handling of class weights. The size is expected to be >= 1.`);
@@ -12918,7 +12891,7 @@ async function IB(e, t, n) {
 function km(e) {
   w.assert(e > 0 && Number.isInteger(e), () => `batchSize is required to be a positive integer, but got ${e}`);
 }
-function Au(e, t, n) {
+function Eu(e, t, n) {
   return e == null ? [null] : Array.isArray(e) ? e.map((s) => ta(s, t, n - t)) : ta(e, t, n - t);
 }
 function Wb(e, t) {
@@ -12997,7 +12970,7 @@ async function CB(e, t, n, s = {}) {
     } else if (s.validationSplit != null && s.validationSplit > 0 && s.validationSplit < 1) {
       g = true;
       let A = Math.floor(r[0].shape[0] * (1 - s.validationSplit)), P = r[0].shape[0];
-      c = Au(r, A, P), i = r, r = Au(r, 0, A), p = Au(a, A, P), o = a, a = Au(a, 0, A), b = c.concat(p);
+      c = Eu(r, A, P), i = r, r = Eu(r, 0, A), p = Eu(a, A, P), o = a, a = Eu(a, 0, A), b = c.concat(p);
     } else
       s.validationSteps != null && (g = true);
     let y = r.concat(a).concat(d);
@@ -13016,7 +12989,7 @@ function pS(e) {
   for (let n = 0; n < e.length; ++n) {
     let s = e[n];
     if (s.rank === 1)
-      t.push(Bl(s, 1));
+      t.push(Vl(s, 1));
     else {
       if (s.rank === 0)
         throw new Error("Expected tensor to be at least 1D, but received a 0D tensor (scalar).");
@@ -13130,11 +13103,11 @@ function TB(e, t, n) {
     throw new U(`Input Tensors should have the same number of samples as target Tensors. Found ${s[0]} input sample(s) and ${r[0]} target sample(s).`);
 }
 function $B(e, t, n) {
-  let s = [gi, Pp, Yu];
+  let s = [gi, Pp, Qu];
   for (let r = 0; r < e.length; ++r) {
     let a = e[r], i = t[r], o = n[r];
     if (i != null) {
-      if (i === Yu && a.shape[a.shape.length - 1] === 1)
+      if (i === Qu && a.shape[a.shape.length - 1] === 1)
         throw new U(`You are passing a target array of shape ${a.shape} while using a loss 'categorical_crossentropy'. 'categorical_crossentropy'expects targets to be binary matrices (1s and 0s) of shape [samples, classes].`);
       if (s.indexOf(i) !== -1) {
         let u = a.shape.slice(1), l = o.slice(1);
@@ -13198,8 +13171,7 @@ function _B(e, t) {
 var AB = "layers-model";
 var pr = class extends Is {
   constructor(e) {
-    super(e);
-    this.isTraining = false;
+    super(e), this.isTraining = false;
   }
   summary(e, t, n = console.log) {
     if (!this.built)
@@ -13319,7 +13291,7 @@ var pr = class extends Is {
           throw new U(`No value is provided for the model's input ${o.name}`);
         a.add(o, u);
       }
-    let i = _u(r, a);
+    let i = Au(r, a);
     return n ? i : i[0];
   }
   retrieveSymbolicTensors(e) {
@@ -13350,14 +13322,14 @@ var pr = class extends Is {
       let r = Im(s, t), a = this.outputs.map((i) => []);
       for (let i = 0; i < r.length; ++i)
         j(() => {
-          let u = r[i][0], l = r[i][1], c = Au(e, u, l), p = [];
+          let u = r[i][0], l = r[i][1], c = Eu(e, u, l), p = [];
           if (Array.isArray(c))
             for (let h = 0; h < c.length; ++h)
               p.push({ key: this.inputs[h], value: c[h] });
           else
             p.push({ key: this.inputs[0], value: c });
           let d = new Qr(p);
-          return _u(this.outputs, d);
+          return Au(this.outputs, d);
         }).forEach((u, l) => a[l].push(u));
       return bn(a.map((i) => Ft(i, 0)));
     });
@@ -13441,7 +13413,7 @@ var pr = class extends Is {
         let c = [];
         for (let f = 0; f < this.inputs.length; ++f)
           c.push({ key: this.inputs[f], value: n[f] });
-        let p = new Qr(c), d = _u(this.outputs, p, { training: true }), h;
+        let p = new Qr(c), d = Au(this.outputs, p, { training: true }), h;
         for (let f = 0; f < this.lossFunctions.length; ++f) {
           let g = this.lossFunctions[f](s[f], d[f]);
           r[f] != null && (g = bB(g, r[f]));
@@ -13470,7 +13442,7 @@ var pr = class extends Is {
       let t = [], n, s = e.slice(0, this.inputs.length), r = e.slice(this.inputs.length, this.inputs.length + this.outputs.length), a = [];
       for (let u = 0; u < this.inputs.length; ++u)
         a.push({ key: this.inputs[u], value: s[u] });
-      let i = new Qr(a), o = _u(this.outputs, i);
+      let i = new Qr(a), o = Au(this.outputs, i);
       for (let u = 0; u < this.lossFunctions.length; ++u) {
         let l = this.lossFunctions[u], c = St(l(r[u], o[u]));
         u === 0 ? n = c : n = ie(n, c), t.push(n);
@@ -13565,7 +13537,7 @@ var pr = class extends Is {
       throw new Error("Loading loss_weights is not supported yet.");
     if (e.sample_weight_mode != null)
       throw new Error("Loading sample_weight_mode is not supported yet.");
-    let t = Qu(e.optimizer_config), n = ms(t), s;
+    let t = Zu(e.optimizer_config), n = ms(t), s;
     if (typeof e.loss == "string")
       s = Kr(e.loss);
     else if (Array.isArray(e.loss))
@@ -13621,7 +13593,7 @@ async function EB(e, t) {
   "modelTopology" in e || (e = { modelTopology: e }), e = e;
   let n = e.modelTopology;
   n.model_config != null && (n = n.model_config);
-  let s = Qu(n), r = ms(s, t);
+  let s = Zu(n), r = ms(s, t);
   if (e.weightsManifest != null) {
     let a = await En.loadWeights(e.weightsManifest, e.pathPrefix, r.weights.map((o) => o.originalName)), i = {};
     for (let o of r.weights)
@@ -13646,7 +13618,7 @@ async function DB(e, t, n) {
     throw new U("Cannot proceed with model loading because the IOHandler provided does not have the `load` method implemented.");
   let s = await e.load(), r = s.modelTopology;
   r.model_config != null && (r = r.model_config);
-  let a = n.strict == null ? true : n.strict, i = s.weightData != null && s.weightSpecs != null && a, o = ms(Qu(r), t, i), u = s.trainingConfig;
+  let a = n.strict == null ? true : n.strict, i = s.weightData != null && s.weightSpecs != null && a, o = ms(Zu(r), t, i), u = s.trainingConfig;
   if (u != null && o.loadTrainingConfig(u), s.userDefinedMetadata != null && o.setUserDefinedMetadata(s.userDefinedMetadata), s.weightData != null) {
     if (s.weightSpecs == null)
       throw new U("LayersModel artifacts contains weight data, but not weight specs. Therefore loading of weights cannot proceed.");
@@ -13663,8 +13635,7 @@ function FB(e, t) {
 }
 var Cm = class extends pr {
   constructor(e) {
-    super({ inputs: [], outputs: [] });
-    if (e = e || {}, this.trainable = true, this.built = false, this.name = e.name != null ? e.name : Dp("sequential_"), e.layers != null)
+    if (super({ inputs: [], outputs: [] }), e = e || {}, this.trainable = true, this.built = false, this.name = e.name != null ? e.name : Dp("sequential_"), e.layers != null)
       for (let t of e.layers)
         this.add(t);
   }
@@ -13809,19 +13780,19 @@ var Cm = class extends pr {
 var Ub = Cm;
 Ub.className = "Sequential";
 ae.registerClass(Ub);
-function Cpe(e) {
+function Npe(e) {
   return new pr(e);
 }
-function Npe(e) {
+function Tpe(e) {
   return new Ub(e);
 }
-function Tpe(e, t) {
+function $pe(e, t) {
   return t == null && (t = {}), RB(e, t);
 }
 function OB(e) {
   return ZI(e);
 }
-function $pe(e, t) {
+function _pe(e, t) {
   zb.registerCallbackConstructor(e, t);
 }
 var In = class extends ae.Serializable {
@@ -13880,7 +13851,7 @@ xS.className = "hardSigmoid";
 ae.registerClass(xS);
 var wS = class extends In {
   apply(e) {
-    return Pl(e);
+    return zl(e);
   }
 };
 wS.className = "softplus";
@@ -13894,7 +13865,7 @@ kS.className = "softsign";
 ae.registerClass(kS);
 var IS = class extends In {
   apply(e) {
-    return Hu(e);
+    return qu(e);
   }
 };
 IS.className = "tanh";
@@ -13922,7 +13893,7 @@ CS.className = "swish";
 ae.registerClass(CS);
 var NS = class extends In {
   apply(e) {
-    return j(() => V(e, Hu(Pl(e))));
+    return j(() => V(e, qu(zl(e))));
   }
 };
 NS.className = "mish";
@@ -13931,7 +13902,7 @@ function br(e) {
   return e.getClassName();
 }
 function Gf(e, t = {}) {
-  return Ml(e, ae.SerializationMap.getMap().classNameMap, t, "activation");
+  return Ll(e, ae.SerializationMap.getMap().classNameMap, t, "activation");
 }
 function yr(e) {
   if (e == null) {
@@ -13950,15 +13921,14 @@ function Hb(e) {
 }
 var TS = class extends ae.Serializable {
 };
-var Ul = class extends TS {
+var Gl = class extends TS {
   constructor(e) {
-    super();
-    Hb(e), this.l1 = e == null || e.l1 == null ? 0.01 : e.l1, this.l2 = e == null || e.l2 == null ? 0.01 : e.l2, this.hasL1 = this.l1 !== 0, this.hasL2 = this.l2 !== 0;
+    super(), Hb(e), this.l1 = e == null || e.l1 == null ? 0.01 : e.l1, this.l2 = e == null || e.l2 == null ? 0.01 : e.l2, this.hasL1 = this.l1 !== 0, this.hasL2 = this.l2 !== 0;
   }
   apply(e) {
     return j(() => {
       let t = $t([1]);
-      return this.hasL1 && (t = ie(t, ve(V(this.l1, Mt(e))))), this.hasL2 && (t = ie(t, ve(V(this.l2, Vl(e))))), G(t, []);
+      return this.hasL1 && (t = ie(t, ve(V(this.l1, Mt(e))))), this.hasL2 && (t = ie(t, ve(V(this.l2, Wl(e))))), G(t, []);
     });
   }
   getConfig() {
@@ -13968,20 +13938,20 @@ var Ul = class extends TS {
     return new e({ l1: t.l1, l2: t.l2 });
   }
 };
-Ul.className = "L1L2";
-ae.registerClass(Ul);
+Gl.className = "L1L2";
+ae.registerClass(Gl);
 function PB(e) {
-  return Hb(e), new Ul({ l1: e != null ? e.l1 : null, l2: 0 });
+  return Hb(e), new Gl({ l1: e != null ? e.l1 : null, l2: 0 });
 }
 function zB(e) {
-  return Hb(e), new Ul({ l2: e != null ? e.l2 : null, l1: 0 });
+  return Hb(e), new Gl({ l2: e != null ? e.l2 : null, l1: 0 });
 }
 var Vx = { l1l2: "L1L2" };
 function it(e) {
   return wb(e);
 }
 function Wx(e, t = {}) {
-  return Ml(e, ae.SerializationMap.getMap().classNameMap, t, "regularizer");
+  return Ll(e, ae.SerializationMap.getMap().classNameMap, t, "regularizer");
 }
 function ft(e) {
   if (e == null)
@@ -13994,8 +13964,7 @@ function ft(e) {
 }
 var qb = class extends Ge {
   constructor(e) {
-    super(e == null ? {} : e);
-    this.supportsMasking = true, e != null && (this.maxValue = e.maxValue);
+    super(e == null ? {} : e), this.supportsMasking = true, e != null && (this.maxValue = e.maxValue);
   }
   call(e, t) {
     e = Oe(e);
@@ -14014,8 +13983,7 @@ qb.className = "ReLU";
 ae.registerClass(qb);
 var jb = class extends Ge {
   constructor(e) {
-    super(e == null ? {} : e);
-    this.DEFAULT_ALPHA = 0.3, e == null && (e = {}), this.alpha = e.alpha == null ? this.DEFAULT_ALPHA : e.alpha;
+    super(e == null ? {} : e), this.DEFAULT_ALPHA = 0.3, e == null && (e = {}), this.alpha = e.alpha == null ? this.DEFAULT_ALPHA : e.alpha;
   }
   call(e, t) {
     let n = Oe(e);
@@ -14033,8 +14001,7 @@ jb.className = "LeakyReLU";
 ae.registerClass(jb);
 var Kb = class extends Ge {
   constructor(e) {
-    super(e == null ? {} : e);
-    if (this.DEFAULT_ALPHA_INITIALIZER = "zeros", e == null && (e = {}), this.supportsMasking = true, this.alphaInitializer = ht(e.alphaInitializer || this.DEFAULT_ALPHA_INITIALIZER), this.alphaRegularizer = ft(e.alphaRegularizer), this.alphaConstraint = Pt(e.alphaConstraint), e.sharedAxes == null)
+    if (super(e == null ? {} : e), this.DEFAULT_ALPHA_INITIALIZER = "zeros", e == null && (e = {}), this.supportsMasking = true, this.alphaInitializer = ht(e.alphaInitializer || this.DEFAULT_ALPHA_INITIALIZER), this.alphaRegularizer = ft(e.alphaRegularizer), this.alphaConstraint = Pt(e.alphaConstraint), e.sharedAxes == null)
       this.sharedAxes = null;
     else if (Array.isArray(e.sharedAxes))
       this.sharedAxes = e.sharedAxes;
@@ -14068,8 +14035,7 @@ Kb.className = "PReLU";
 ae.registerClass(Kb);
 var Xb = class extends Ge {
   constructor(e) {
-    super(e == null ? {} : e);
-    if (this.DEFAULT_ALPHA = 1, e == null && (e = {}), e.alpha != null && e.alpha !== this.DEFAULT_ALPHA)
+    if (super(e == null ? {} : e), this.DEFAULT_ALPHA = 1, e == null && (e = {}), e.alpha != null && e.alpha !== this.DEFAULT_ALPHA)
       throw new Fe(`Non-default alpha value (${e.alpha}) is not supported by the ELU layer yet.`);
     this.alpha = e.alpha == null ? this.DEFAULT_ALPHA : e.alpha;
   }
@@ -14089,8 +14055,7 @@ Xb.className = "ELU";
 ae.registerClass(Xb);
 var Yb = class extends Ge {
   constructor(e) {
-    super(e == null ? {} : e);
-    this.DEFAULT_THETA = 1, e == null && (e = {}), this.theta = e.theta == null ? this.DEFAULT_THETA : e.theta;
+    super(e == null ? {} : e), this.DEFAULT_THETA = 1, e == null && (e = {}), this.theta = e.theta == null ? this.DEFAULT_THETA : e.theta;
   }
   call(e, t) {
     let n = Oe(e);
@@ -14108,8 +14073,7 @@ Yb.className = "ThresholdedReLU";
 ae.registerClass(Yb);
 var Qb = class extends Ge {
   constructor(e) {
-    super(e == null ? {} : e);
-    this.DEFAULT_AXIS = 1, e == null && (e = {}), this.softmax = new Gb().apply, this.axis = e.axis == null ? this.DEFAULT_AXIS : e.axis;
+    super(e == null ? {} : e), this.DEFAULT_AXIS = 1, e == null && (e = {}), this.softmax = new Gb().apply, this.axis = e.axis == null ? this.DEFAULT_AXIS : e.axis;
   }
   call(e, t) {
     let n = Oe(e);
@@ -14200,8 +14164,7 @@ function LB(e, t, n, s = [1, 1, 1], r = "valid", a, i) {
 }
 var Jb = class extends Ge {
   constructor(e, t) {
-    super(t);
-    if (this.bias = null, this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_BIAS_INITIALIZER = "zeros", Jb.verifyArgs(t), this.rank = e, Bt(this.rank, "rank"), this.rank !== 1 && this.rank !== 2 && this.rank !== 3)
+    if (super(t), this.bias = null, this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_BIAS_INITIALIZER = "zeros", Jb.verifyArgs(t), this.rank = e, Bt(this.rank, "rank"), this.rank !== 1 && this.rank !== 2 && this.rank !== 3)
       throw new Fe(`Convolution layer for rank other than 1, 2, or 3 (${this.rank}) is not implemented yet.`);
     if (this.kernelSize = Xi(t.kernelSize, e, "kernelSize"), this.strides = Xi(t.strides == null ? 1 : t.strides, e, "strides"), this.padding = t.padding == null ? "valid" : t.padding, Un(this.padding), this.dataFormat = t.dataFormat == null ? "channelsLast" : t.dataFormat, Ct(this.dataFormat), this.activation = yr(t.activation), this.useBias = t.useBias == null ? true : t.useBias, this.biasInitializer = ht(t.biasInitializer || this.DEFAULT_BIAS_INITIALIZER), this.biasConstraint = Pt(t.biasConstraint), this.biasRegularizer = ft(t.biasRegularizer), this.activityRegularizer = ft(t.activityRegularizer), this.dilationRate = Xi(t.dilationRate == null ? 1 : t.dilationRate, e, "dilationRate"), this.rank === 1 && Array.isArray(this.dilationRate) && this.dilationRate.length !== 1)
       throw new U(`dilationRate must be a number or an array of a single number for 1D convolution, but received ${JSON.stringify(this.dilationRate)}`);
@@ -14226,10 +14189,9 @@ var Jb = class extends Ge {
     return Object.assign(e, t), e;
   }
 };
-var Gl = class extends Jb {
+var Hl = class extends Jb {
   constructor(e, t) {
-    super(e, t);
-    this.kernel = null, Gl.verifyArgs(t), this.filters = t.filters, Bt(this.filters, "filters"), this.kernelInitializer = ht(t.kernelInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.kernelConstraint = Pt(t.kernelConstraint), this.kernelRegularizer = ft(t.kernelRegularizer);
+    super(e, t), this.kernel = null, Hl.verifyArgs(t), this.filters = t.filters, Bt(this.filters, "filters"), this.kernelInitializer = ht(t.kernelInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.kernelConstraint = Pt(t.kernelConstraint), this.kernelRegularizer = ft(t.kernelRegularizer);
   }
   build(e) {
     e = nt(e);
@@ -14278,10 +14240,9 @@ var Gl = class extends Jb {
       throw new U(`Convolution layer expected config.filters to be a 'number' > 0 but got ${JSON.stringify(e.filters)}`);
   }
 };
-var _S = class extends Gl {
+var _S = class extends Hl {
   constructor(e) {
-    super(2, e);
-    _S.verifyArgs(e);
+    super(2, e), _S.verifyArgs(e);
   }
   getConfig() {
     let e = super.getConfig();
@@ -14295,10 +14256,9 @@ var _S = class extends Gl {
 var zp = _S;
 zp.className = "Conv2D";
 ae.registerClass(zp);
-var AS = class extends Gl {
+var AS = class extends Hl {
   constructor(e) {
-    super(3, e);
-    AS.verifyArgs(e);
+    super(3, e), AS.verifyArgs(e);
   }
   getConfig() {
     let e = super.getConfig();
@@ -14314,8 +14274,7 @@ Mp.className = "Conv3D";
 ae.registerClass(Mp);
 var ey = class extends zp {
   constructor(e) {
-    super(e);
-    if (this.inputSpec = [new Dt({ ndim: 4 })], this.padding !== "same" && this.padding !== "valid")
+    if (super(e), this.inputSpec = [new Dt({ ndim: 4 })], this.padding !== "same" && this.padding !== "valid")
       throw new U(`Conv2DTranspose currently supports only padding modes 'same' and 'valid', but received padding mode ${this.padding}`);
   }
   build(e) {
@@ -14356,8 +14315,7 @@ ey.className = "Conv2DTranspose";
 ae.registerClass(ey);
 var ty = class extends Mp {
   constructor(e) {
-    super(e);
-    if (this.inputSpec = [new Dt({ ndim: 5 })], this.padding !== "same" && this.padding !== "valid")
+    if (super(e), this.inputSpec = [new Dt({ ndim: 5 })], this.padding !== "same" && this.padding !== "valid")
       throw new U(`Conv3DTranspose currently supports only padding modes 'same' and 'valid', but received padding mode ${this.padding}`);
   }
   build(e) {
@@ -14396,10 +14354,9 @@ var ty = class extends Mp {
 };
 ty.className = "Conv3DTranspose";
 ae.registerClass(ty);
-var ES = class extends Gl {
+var ES = class extends Hl {
   constructor(e, t) {
-    super(e, t);
-    if (this.DEFAULT_DEPTHWISE_INITIALIZER = "glorotUniform", this.DEFAULT_POINTWISE_INITIALIZER = "glorotUniform", this.depthwiseKernel = null, this.pointwiseKernel = null, t.filters == null)
+    if (super(e, t), this.DEFAULT_DEPTHWISE_INITIALIZER = "glorotUniform", this.DEFAULT_POINTWISE_INITIALIZER = "glorotUniform", this.depthwiseKernel = null, this.pointwiseKernel = null, t.filters == null)
       throw new U("The `filters` configuration field is required by SeparableConv, but is unspecified.");
     if (t.kernelInitializer != null || t.kernelRegularizer != null || t.kernelConstraint != null)
       throw new U("Fields kernelInitializer, kernelRegularizer and kernelConstraint are invalid for SeparableConv2D. Use depthwiseInitializer, depthwiseRegularizer, depthwiseConstraint, pointwiseInitializer, pointwiseRegularizer and pointwiseConstraint instead.");
@@ -14442,10 +14399,9 @@ var ny = class extends ES {
 };
 ny.className = "SeparableConv2D";
 ae.registerClass(ny);
-var RS = class extends Gl {
+var RS = class extends Hl {
   constructor(e) {
-    super(1, e);
-    RS.verifyArgs(e), this.inputSpec = [{ ndim: 3 }];
+    super(1, e), RS.verifyArgs(e), this.inputSpec = [{ ndim: 3 }];
   }
   getConfig() {
     let e = super.getConfig();
@@ -14461,8 +14417,7 @@ sy.className = "Conv1D";
 ae.registerClass(sy);
 var ry = class extends Ge {
   constructor(e) {
-    super(e);
-    typeof e.cropping == "number" ? this.cropping = [[e.cropping, e.cropping], [e.cropping, e.cropping]] : typeof e.cropping[0] == "number" ? this.cropping = [[e.cropping[0], e.cropping[0]], [e.cropping[1], e.cropping[1]]] : this.cropping = e.cropping, this.dataFormat = e.dataFormat === void 0 ? "channelsLast" : e.dataFormat, this.inputSpec = [{ ndim: 4 }];
+    super(e), typeof e.cropping == "number" ? this.cropping = [[e.cropping, e.cropping], [e.cropping, e.cropping]] : typeof e.cropping[0] == "number" ? this.cropping = [[e.cropping[0], e.cropping[0]], [e.cropping[1], e.cropping[1]]] : this.cropping = e.cropping, this.dataFormat = e.dataFormat === void 0 ? "channelsLast" : e.dataFormat, this.inputSpec = [{ ndim: 4 }];
   }
   computeOutputShape(e) {
     return this.dataFormat === "channelsFirst" ? [e[0], e[1], e[2] - this.cropping[0][0] - this.cropping[0][1], e[3] - this.cropping[1][0] - this.cropping[1][1]] : [e[0], e[1] - this.cropping[0][0] - this.cropping[0][1], e[2] - this.cropping[1][0] - this.cropping[1][1], e[3]];
@@ -14487,8 +14442,7 @@ ry.className = "Cropping2D";
 ae.registerClass(ry);
 var ay = class extends Ge {
   constructor(e) {
-    super(e);
-    this.DEFAULT_SIZE = [2, 2], this.inputSpec = [{ ndim: 4 }], this.size = e.size == null ? this.DEFAULT_SIZE : e.size, this.dataFormat = e.dataFormat == null ? "channelsLast" : e.dataFormat, Ct(this.dataFormat), this.interpolation = e.interpolation == null ? "nearest" : e.interpolation, ZM(this.interpolation);
+    super(e), this.DEFAULT_SIZE = [2, 2], this.inputSpec = [{ ndim: 4 }], this.size = e.size == null ? this.DEFAULT_SIZE : e.size, this.dataFormat = e.dataFormat == null ? "channelsLast" : e.dataFormat, Ct(this.dataFormat), this.interpolation = e.interpolation == null ? "nearest" : e.interpolation, ZM(this.interpolation);
   }
   computeOutputShape(e) {
     if (this.dataFormat === "channelsFirst") {
@@ -14532,8 +14486,7 @@ function BB(e, t, n = [1, 1], s = "valid", r, a) {
 }
 var iy = class extends Jb {
   constructor(e) {
-    super(2, e);
-    this.depthwiseKernel = null, this.depthMultiplier = e.depthMultiplier == null ? 1 : e.depthMultiplier, this.depthwiseInitializer = ht(e.depthwiseInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.depthwiseConstraint = Pt(e.depthwiseConstraint), this.depthwiseRegularizer = ft(e.depthwiseRegularizer);
+    super(2, e), this.depthwiseKernel = null, this.depthMultiplier = e.depthMultiplier == null ? 1 : e.depthMultiplier, this.depthwiseInitializer = ht(e.depthwiseInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.depthwiseConstraint = Pt(e.depthwiseConstraint), this.depthwiseRegularizer = ft(e.depthwiseRegularizer);
   }
   build(e) {
     if (e = nt(e), e.length < 4)
@@ -14739,7 +14692,7 @@ var OS = class extends Ge {
   getInitialState(e) {
     return j(() => {
       let t = $t(e.shape);
-      return t = ve(t, [1, 2]), t = Bl(t), Array.isArray(this.cell.stateSize) ? this.cell.stateSize.map((n) => n > 1 ? gm(t, [1, n]) : t) : this.cell.stateSize > 1 ? [gm(t, [1, this.cell.stateSize])] : [t];
+      return t = ve(t, [1, 2]), t = Vl(t), Array.isArray(this.cell.stateSize) ? this.cell.stateSize.map((n) => n > 1 ? gm(t, [1, n]) : t) : this.cell.stateSize > 1 ? [gm(t, [1, this.cell.stateSize])] : [t];
     });
   }
   get trainableWeights() {
@@ -14765,12 +14718,11 @@ var OS = class extends Ge {
 var Ar = OS;
 Ar.className = "RNN";
 ae.registerClass(Ar);
-var Hl = class extends Ge {
+var ql = class extends Ge {
 };
-var Lp = class extends Hl {
+var Lp = class extends ql {
   constructor(e) {
-    super(e);
-    this.DEFAULT_ACTIVATION = "tanh", this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_RECURRENT_INITIALIZER = "orthogonal", this.DEFAULT_BIAS_INITIALIZER = "zeros", this.units = e.units, Bt(this.units, "units"), this.activation = yr(e.activation == null ? this.DEFAULT_ACTIVATION : e.activation), this.useBias = e.useBias == null ? true : e.useBias, this.kernelInitializer = ht(e.kernelInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.recurrentInitializer = ht(e.recurrentInitializer || this.DEFAULT_RECURRENT_INITIALIZER), this.biasInitializer = ht(e.biasInitializer || this.DEFAULT_BIAS_INITIALIZER), this.kernelRegularizer = ft(e.kernelRegularizer), this.recurrentRegularizer = ft(e.recurrentRegularizer), this.biasRegularizer = ft(e.biasRegularizer), this.kernelConstraint = Pt(e.kernelConstraint), this.recurrentConstraint = Pt(e.recurrentConstraint), this.biasConstraint = Pt(e.biasConstraint), this.dropout = Zi([1, gr([0, e.dropout == null ? 0 : e.dropout])]), this.recurrentDropout = Zi([1, gr([0, e.recurrentDropout == null ? 0 : e.recurrentDropout])]), this.dropoutFunc = e.dropoutFunc, this.stateSize = this.units, this.dropoutMask = null, this.recurrentDropoutMask = null;
+    super(e), this.DEFAULT_ACTIVATION = "tanh", this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_RECURRENT_INITIALIZER = "orthogonal", this.DEFAULT_BIAS_INITIALIZER = "zeros", this.units = e.units, Bt(this.units, "units"), this.activation = yr(e.activation == null ? this.DEFAULT_ACTIVATION : e.activation), this.useBias = e.useBias == null ? true : e.useBias, this.kernelInitializer = ht(e.kernelInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.recurrentInitializer = ht(e.recurrentInitializer || this.DEFAULT_RECURRENT_INITIALIZER), this.biasInitializer = ht(e.biasInitializer || this.DEFAULT_BIAS_INITIALIZER), this.kernelRegularizer = ft(e.kernelRegularizer), this.recurrentRegularizer = ft(e.recurrentRegularizer), this.biasRegularizer = ft(e.biasRegularizer), this.kernelConstraint = Pt(e.kernelConstraint), this.recurrentConstraint = Pt(e.recurrentConstraint), this.biasConstraint = Pt(e.biasConstraint), this.dropout = Zi([1, gr([0, e.dropout == null ? 0 : e.dropout])]), this.recurrentDropout = Zi([1, gr([0, e.recurrentDropout == null ? 0 : e.recurrentDropout])]), this.dropoutFunc = e.dropoutFunc, this.stateSize = this.units, this.dropoutMask = null, this.recurrentDropoutMask = null;
   }
   build(e) {
     e = nt(e), this.kernel = this.addWeight("kernel", [e[e.length - 1], this.units], null, this.kernelInitializer, this.kernelRegularizer, true, this.kernelConstraint), this.recurrentKernel = this.addWeight("recurrent_kernel", [this.units, this.units], null, this.recurrentInitializer, this.recurrentRegularizer, true, this.recurrentConstraint), this.useBias ? this.bias = this.addWeight("bias", [this.units], null, this.biasInitializer, this.biasRegularizer, true, this.biasConstraint) : this.bias = null, this.built = true;
@@ -14798,8 +14750,7 @@ Lp.className = "SimpleRNNCell";
 ae.registerClass(Lp);
 var oy = class extends Ar {
   constructor(e) {
-    e.cell = new Lp(e);
-    super(e);
+    e.cell = new Lp(e), super(e);
   }
   call(e, t) {
     return j(() => {
@@ -14814,10 +14765,9 @@ var oy = class extends Ar {
 };
 oy.className = "SimpleRNN";
 ae.registerClass(oy);
-var Bp = class extends Hl {
+var Bp = class extends ql {
   constructor(e) {
-    super(e);
-    if (this.DEFAULT_ACTIVATION = "tanh", this.DEFAULT_RECURRENT_ACTIVATION = "hardSigmoid", this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_RECURRENT_INITIALIZER = "orthogonal", this.DEFAULT_BIAS_INITIALIZER = "zeros", e.resetAfter)
+    if (super(e), this.DEFAULT_ACTIVATION = "tanh", this.DEFAULT_RECURRENT_ACTIVATION = "hardSigmoid", this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_RECURRENT_INITIALIZER = "orthogonal", this.DEFAULT_BIAS_INITIALIZER = "zeros", e.resetAfter)
       throw new U("GRUCell does not support reset_after parameter set to true.");
     this.units = e.units, Bt(this.units, "units"), this.activation = yr(e.activation === void 0 ? this.DEFAULT_ACTIVATION : e.activation), this.recurrentActivation = yr(e.recurrentActivation === void 0 ? this.DEFAULT_RECURRENT_ACTIVATION : e.recurrentActivation), this.useBias = e.useBias == null ? true : e.useBias, this.kernelInitializer = ht(e.kernelInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.recurrentInitializer = ht(e.recurrentInitializer || this.DEFAULT_RECURRENT_INITIALIZER), this.biasInitializer = ht(e.biasInitializer || this.DEFAULT_BIAS_INITIALIZER), this.kernelRegularizer = ft(e.kernelRegularizer), this.recurrentRegularizer = ft(e.recurrentRegularizer), this.biasRegularizer = ft(e.biasRegularizer), this.kernelConstraint = Pt(e.kernelConstraint), this.recurrentConstraint = Pt(e.recurrentConstraint), this.biasConstraint = Pt(e.biasConstraint), this.dropout = Zi([1, gr([0, e.dropout == null ? 0 : e.dropout])]), this.recurrentDropout = Zi([1, gr([0, e.recurrentDropout == null ? 0 : e.recurrentDropout])]), this.dropoutFunc = e.dropoutFunc, this.implementation = e.implementation, this.stateSize = this.units, this.dropoutMask = null, this.recurrentDropoutMask = null;
   }
@@ -14853,8 +14803,7 @@ Bp.className = "GRUCell";
 ae.registerClass(Bp);
 var uy = class extends Ar {
   constructor(e) {
-    e.implementation === 0 && console.warn("`implementation=0` has been deprecated, and now defaults to `implementation=1`. Please update your layer call."), e.cell = new Bp(e);
-    super(e);
+    e.implementation === 0 && console.warn("`implementation=0` has been deprecated, and now defaults to `implementation=1`. Please update your layer call."), e.cell = new Bp(e), super(e);
   }
   call(e, t) {
     return j(() => {
@@ -14869,10 +14818,9 @@ var uy = class extends Ar {
 };
 uy.className = "GRU";
 ae.registerClass(uy);
-var ql = class extends Hl {
+var jl = class extends ql {
   constructor(e) {
-    super(e);
-    this.DEFAULT_ACTIVATION = "tanh", this.DEFAULT_RECURRENT_ACTIVATION = "hardSigmoid", this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_RECURRENT_INITIALIZER = "orthogonal", this.DEFAULT_BIAS_INITIALIZER = "zeros", this.units = e.units, Bt(this.units, "units"), this.activation = yr(e.activation === void 0 ? this.DEFAULT_ACTIVATION : e.activation), this.recurrentActivation = yr(e.recurrentActivation === void 0 ? this.DEFAULT_RECURRENT_ACTIVATION : e.recurrentActivation), this.useBias = e.useBias == null ? true : e.useBias, this.kernelInitializer = ht(e.kernelInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.recurrentInitializer = ht(e.recurrentInitializer || this.DEFAULT_RECURRENT_INITIALIZER), this.biasInitializer = ht(e.biasInitializer || this.DEFAULT_BIAS_INITIALIZER), this.unitForgetBias = e.unitForgetBias, this.kernelRegularizer = ft(e.kernelRegularizer), this.recurrentRegularizer = ft(e.recurrentRegularizer), this.biasRegularizer = ft(e.biasRegularizer), this.kernelConstraint = Pt(e.kernelConstraint), this.recurrentConstraint = Pt(e.recurrentConstraint), this.biasConstraint = Pt(e.biasConstraint), this.dropout = Zi([1, gr([0, e.dropout == null ? 0 : e.dropout])]), this.recurrentDropout = Zi([1, gr([0, e.recurrentDropout == null ? 0 : e.recurrentDropout])]), this.dropoutFunc = e.dropoutFunc, this.implementation = e.implementation, this.stateSize = [this.units, this.units], this.dropoutMask = null, this.recurrentDropoutMask = null;
+    super(e), this.DEFAULT_ACTIVATION = "tanh", this.DEFAULT_RECURRENT_ACTIVATION = "hardSigmoid", this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_RECURRENT_INITIALIZER = "orthogonal", this.DEFAULT_BIAS_INITIALIZER = "zeros", this.units = e.units, Bt(this.units, "units"), this.activation = yr(e.activation === void 0 ? this.DEFAULT_ACTIVATION : e.activation), this.recurrentActivation = yr(e.recurrentActivation === void 0 ? this.DEFAULT_RECURRENT_ACTIVATION : e.recurrentActivation), this.useBias = e.useBias == null ? true : e.useBias, this.kernelInitializer = ht(e.kernelInitializer || this.DEFAULT_KERNEL_INITIALIZER), this.recurrentInitializer = ht(e.recurrentInitializer || this.DEFAULT_RECURRENT_INITIALIZER), this.biasInitializer = ht(e.biasInitializer || this.DEFAULT_BIAS_INITIALIZER), this.unitForgetBias = e.unitForgetBias, this.kernelRegularizer = ft(e.kernelRegularizer), this.recurrentRegularizer = ft(e.recurrentRegularizer), this.biasRegularizer = ft(e.biasRegularizer), this.kernelConstraint = Pt(e.kernelConstraint), this.recurrentConstraint = Pt(e.recurrentConstraint), this.biasConstraint = Pt(e.biasConstraint), this.dropout = Zi([1, gr([0, e.dropout == null ? 0 : e.dropout])]), this.recurrentDropout = Zi([1, gr([0, e.recurrentDropout == null ? 0 : e.recurrentDropout])]), this.dropoutFunc = e.dropoutFunc, this.implementation = e.implementation, this.stateSize = [this.units, this.units], this.dropoutMask = null, this.recurrentDropoutMask = null;
   }
   build(e) {
     var t;
@@ -14918,12 +14866,11 @@ var ql = class extends Hl {
     return { ...e, ...t };
   }
 };
-ql.className = "LSTMCell";
-ae.registerClass(ql);
+jl.className = "LSTMCell";
+ae.registerClass(jl);
 var ly = class extends Ar {
   constructor(e) {
-    e.implementation === 0 && console.warn("`implementation=0` has been deprecated, and now defaults to `implementation=1`. Please update your layer call."), e.cell = new ql(e);
-    super(e);
+    e.implementation === 0 && console.warn("`implementation=0` has been deprecated, and now defaults to `implementation=1`. Please update your layer call."), e.cell = new jl(e), super(e);
   }
   call(e, t) {
     return j(() => {
@@ -14938,10 +14885,9 @@ var ly = class extends Ar {
 };
 ly.className = "LSTM";
 ae.registerClass(ly);
-var Vp = class extends Hl {
+var Vp = class extends ql {
   constructor(e) {
-    super(e);
-    this.cells = e.cells;
+    super(e), this.cells = e.cells;
   }
   get stateSize() {
     let e = [];
@@ -15025,7 +14971,7 @@ var Vp = class extends Hl {
 Vp.className = "StackedRNNCells";
 ae.registerClass(Vp);
 function vr(e) {
-  let { ones: t, rate: n, training: s = false, count: r = 1, dropoutFunc: a } = e, i = () => a != null ? a(t(), n) : XI(t(), n), o = () => Wl(i, t, s);
+  let { ones: t, rate: n, training: s = false, count: r = 1, dropoutFunc: a } = e, i = () => a != null ? a(t(), n) : XI(t(), n), o = () => Ul(i, t, s);
   return !r || r <= 1 ? Ht(o().clone()) : Array(r).fill(void 0).map(o).map((l) => Ht(l.clone()));
 }
 var PS = class extends Ar {
@@ -15034,8 +14980,7 @@ var PS = class extends Ar {
       throw new Fe("Unrolling is not possible with convolutional RNNs.");
     if (Array.isArray(e.cell))
       throw new Fe("It is not possible at the moment to stack convolutional cells.");
-    super(e);
-    this.inputSpec = [new Dt({ ndim: 5 })];
+    super(e), this.inputSpec = [new Dt({ ndim: 5 })];
   }
   call(e, t) {
     return j(() => {
@@ -15086,11 +15031,10 @@ var PS = class extends Ar {
   }
 };
 PS.className = "ConvRNN2D";
-var Wp = class extends ql {
+var Wp = class extends jl {
   constructor(e) {
     let { filters: t, kernelSize: n, strides: s, padding: r, dataFormat: a, dilationRate: i } = e;
-    super({ ...e, units: t });
-    this.filters = t, Bt(this.filters, "filters"), this.kernelSize = Xi(n, 2, "kernelSize"), this.kernelSize.forEach((o) => Bt(o, "kernelSize")), this.strides = Xi(s || 1, 2, "strides"), this.strides.forEach((o) => Bt(o, "strides")), this.padding = r || "valid", Un(this.padding), this.dataFormat = a || "channelsLast", Ct(this.dataFormat), this.dilationRate = Xi(i || 1, 2, "dilationRate"), this.dilationRate.forEach((o) => Bt(o, "dilationRate"));
+    super({ ...e, units: t }), this.filters = t, Bt(this.filters, "filters"), this.kernelSize = Xi(n, 2, "kernelSize"), this.kernelSize.forEach((o) => Bt(o, "kernelSize")), this.strides = Xi(s || 1, 2, "strides"), this.strides.forEach((o) => Bt(o, "strides")), this.padding = r || "valid", Un(this.padding), this.dataFormat = a || "channelsLast", Ct(this.dataFormat), this.dilationRate = Xi(i || 1, 2, "dilationRate"), this.dilationRate.forEach((o) => Bt(o, "dilationRate"));
   }
   build(e) {
     var t;
@@ -15160,8 +15104,7 @@ cy.className = "ConvLSTM2D";
 ae.registerClass(cy);
 var Up = class extends Ge {
   constructor(e) {
-    super(e);
-    this.rate = Math.max(Math.min(e.rate, 1), 0), this.noiseShape = e.noiseShape, this.seed = e.seed, this.supportsMasking = true;
+    super(e), this.rate = Math.max(Math.min(e.rate, 1), 0), this.noiseShape = e.noiseShape, this.seed = e.seed, this.supportsMasking = true;
   }
   getNoiseShape(e) {
     if (this.noiseShape == null)
@@ -15177,7 +15120,7 @@ var Up = class extends Ge {
       let n = Oe(e);
       if (0 < this.rate && this.rate < 1) {
         let s = t.training == null ? false : t.training, r = this.getNoiseShape(n);
-        return Wl(() => XI(n, this.rate, r, this.seed), () => n, s);
+        return Ul(() => XI(n, this.rate, r, this.seed), () => n, s);
       }
       return e;
     });
@@ -15194,8 +15137,7 @@ Up.className = "Dropout";
 ae.registerClass(Up);
 var dy = class extends Up {
   constructor(e) {
-    super(e);
-    this.inputSpec = [{ ndim: 3 }];
+    super(e), this.inputSpec = [{ ndim: 3 }];
   }
   getNoiseShape(e) {
     let t = e.shape;
@@ -15206,8 +15148,7 @@ dy.className = "SpatialDropout1D";
 ae.registerClass(dy);
 var py = class extends Ge {
   constructor(e) {
-    super(e);
-    if (this.activation = null, this.useBias = true, this.kernel = null, this.bias = null, this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_BIAS_INITIALIZER = "zeros", e.batchInputShape == null && e.inputShape == null && e.inputDim != null) {
+    if (super(e), this.activation = null, this.useBias = true, this.kernel = null, this.bias = null, this.DEFAULT_KERNEL_INITIALIZER = "glorotNormal", this.DEFAULT_BIAS_INITIALIZER = "zeros", e.batchInputShape == null && e.inputShape == null && e.inputDim != null) {
       let t = null;
       e.batchSize != null && (t = e.batchSize), this.batchInputShape = [t, e.inputDim];
     }
@@ -15239,9 +15180,7 @@ py.className = "Dense";
 ae.registerClass(py);
 var hy = class extends Ge {
   constructor(e) {
-    e = e || {};
-    super(e);
-    this.inputSpec = [{ minNDim: 3 }], this.dataFormat = e.dataFormat;
+    e = e || {}, super(e), this.inputSpec = [{ minNDim: 3 }], this.dataFormat = e.dataFormat;
   }
   computeOutputShape(e) {
     e = nt(e);
@@ -15274,8 +15213,7 @@ hy.className = "Flatten";
 ae.registerClass(hy);
 var fy = class extends Ge {
   constructor(e) {
-    super(e);
-    this.supportsMasking = true, this.activation = yr(e.activation);
+    super(e), this.supportsMasking = true, this.activation = yr(e.activation);
   }
   call(e, t) {
     return j(() => {
@@ -15293,8 +15231,7 @@ fy.className = "Activation";
 ae.registerClass(fy);
 var my = class extends Ge {
   constructor(e) {
-    super(e);
-    this.n = e.n, this.inputSpec = [{ ndim: 2 }];
+    super(e), this.n = e.n, this.inputSpec = [{ ndim: 2 }];
   }
   computeOutputShape(e) {
     return [e[0], this.n, e[1]];
@@ -15311,8 +15248,7 @@ my.className = "RepeatVector";
 ae.registerClass(my);
 var gy = class extends Ge {
   constructor(e) {
-    super(e);
-    this.targetShape = e.targetShape;
+    super(e), this.targetShape = e.targetShape;
     for (let t = 0; t < this.targetShape.length; ++t)
       this.isUnknown(this.targetShape[t]) && (this.targetShape[t] = null);
   }
@@ -15365,8 +15301,7 @@ gy.className = "Reshape";
 ae.registerClass(gy);
 var by = class extends Ge {
   constructor(e) {
-    super(e);
-    if (e.dims == null)
+    if (super(e), e.dims == null)
       throw new Error("Required configuration field `dims` is missing during Permute constructor call.");
     if (!Array.isArray(e.dims))
       throw new Error(`Permute constructor requires \`dims\` to be an Array, but received ${e.dims} instead.`);
@@ -15394,8 +15329,7 @@ by.className = "Permute";
 ae.registerClass(by);
 var yy = class extends Ge {
   constructor(e) {
-    super(e == null ? {} : e);
-    this.supportsMasking = true, e != null ? this.maskValue = e.maskValue == null ? 0 : e.maskValue : this.maskValue = 0;
+    super(e == null ? {} : e), this.supportsMasking = true, e != null ? this.maskValue = e.maskValue == null ? 0 : e.maskValue : this.maskValue = 0;
   }
   computeOutputShape(e) {
     return e;
@@ -15406,12 +15340,12 @@ var yy = class extends Ge {
   }
   computeMask(e, t) {
     let n = Oe(e), s = -1;
-    return pm(Ku(n, this.maskValue), s);
+    return pm(Xu(n, this.maskValue), s);
   }
   call(e, t) {
     return j(() => {
       this.invokeCallHook(e, t);
-      let n = Oe(e), s = -1, r = true, a = pm(Ku(n, this.maskValue), s, r);
+      let n = Oe(e), s = -1, r = true, a = pm(Xu(n, this.maskValue), s, r);
       return V(n, ce(a, n.dtype));
     });
   }
@@ -15420,8 +15354,7 @@ yy.className = "Masking";
 ae.registerClass(yy);
 var vy = class extends Ge {
   constructor(e) {
-    super(e);
-    if (this.embeddings = null, this.DEFAULT_EMBEDDINGS_INITIALIZER = "randomUniform", e.batchInputShape == null && e.inputShape == null) {
+    if (super(e), this.embeddings = null, this.DEFAULT_EMBEDDINGS_INITIALIZER = "randomUniform", e.batchInputShape == null && e.inputShape == null) {
       let t = null;
       e.batchSize != null && (t = e.batchSize), e.inputLength == null ? this.batchInputShape = [t, null] : this.batchInputShape = [t].concat(dt(e.inputLength));
     }
@@ -15433,7 +15366,7 @@ var vy = class extends Ge {
   warnOnIncompatibleInputShape(e) {
   }
   computeMask(e, t) {
-    return j(() => this.maskZero ? (e = Oe(e), Ku(e, je(e))) : null);
+    return j(() => this.maskZero ? (e = Oe(e), Xu(e, je(e))) : null);
   }
   computeOutputShape(e) {
     if (e = nt(e), this.inputLength == null)
@@ -15470,8 +15403,7 @@ vy.className = "Embedding";
 ae.registerClass(vy);
 var bi = class extends Ge {
   constructor(e) {
-    super(e || {});
-    this.supportsMasking = true;
+    super(e || {}), this.supportsMasking = true;
   }
   mergeFunction(e) {
     throw new Fe();
@@ -15525,7 +15457,7 @@ var bi = class extends Ge {
           for (let a of e) {
             let i = a.rank;
             for (let o = 0; o < r - i; ++o)
-              a = Bl(a, 1);
+              a = Vl(a, 1);
             n.push(a);
           }
           return this.mergeFunction(n);
@@ -15668,8 +15600,7 @@ Sy.className = "Minimum";
 ae.registerClass(Sy);
 var Cy = class extends bi {
   constructor(e) {
-    super(e);
-    this.DEFAULT_AXIS = -1, e == null && (e = {}), this.axis = e.axis == null ? this.DEFAULT_AXIS : e.axis, this.supportsMasking = true, this.reshapeRequired = false;
+    super(e), this.DEFAULT_AXIS = -1, e == null && (e = {}), this.axis = e.axis == null ? this.DEFAULT_AXIS : e.axis, this.supportsMasking = true, this.reshapeRequired = false;
   }
   build(e) {
     if (!(Array.isArray(e) && Array.isArray(e[0])) || e.length === 1)
@@ -15746,7 +15677,7 @@ var Cy = class extends bi {
 };
 Cy.className = "Concatenate";
 ae.registerClass(Cy);
-function Su(e, t) {
+function Cu(e, t) {
   for (; e < 0; )
     e += t;
   return e;
@@ -15795,8 +15726,7 @@ function VB(e, t, n) {
 }
 var Ny = class extends bi {
   constructor(e) {
-    super(e);
-    this.axes = e.axes, this.normalize = e.normalize == null ? false : e.normalize, this.supportsMasking = true, this.reshapeRequired = false;
+    super(e), this.axes = e.axes, this.normalize = e.normalize == null ? false : e.normalize, this.supportsMasking = true, this.reshapeRequired = false;
   }
   build(e) {
     w.assert(Array.isArray(e) && e.length === 2 && Array.isArray(e[0]) && Array.isArray(e[1]), () => "A `Dot` layer should be called on a list of exactly 2 inputs.");
@@ -15811,11 +15741,11 @@ var Ny = class extends bi {
     if (e.length !== 2)
       throw new U(`A \`Dot\` layer must be called on exactly 2 inputs, but received ${e.length} input(s).`);
     let t = e[0], n = e[1], s;
-    return Array.isArray(this.axes) ? s = this.axes.map((r, a) => Su(r, e[a].shape.length)) : s = [Su(this.axes, t.shape.length), Su(this.axes, n.shape.length)], this.normalize && (t = Nd(t, s[0]), n = Nd(n, s[1])), VB(t, n, s);
+    return Array.isArray(this.axes) ? s = this.axes.map((r, a) => Cu(r, e[a].shape.length)) : s = [Cu(this.axes, t.shape.length), Cu(this.axes, n.shape.length)], this.normalize && (t = Nd(t, s[0]), n = Nd(n, s[1])), VB(t, n, s);
   }
   interpretAxes(e, t) {
     let n;
-    return Array.isArray(this.axes) ? n = this.axes : n = [Su(this.axes, e.length), Su(this.axes, t.length)], n;
+    return Array.isArray(this.axes) ? n = this.axes : n = [Cu(this.axes, e.length), Cu(this.axes, t.length)], n;
   }
   computeOutputShape(e) {
     w.assert(Array.isArray(e) && e.length === 2 && Array.isArray(e[0]) && Array.isArray(e[1]), () => "A `Dot` layer should be called on a list of exactly 2 inputs.");
@@ -15839,8 +15769,7 @@ Ny.className = "Dot";
 ae.registerClass(Ny);
 var Ty = class extends Ge {
   constructor(e) {
-    super(e);
-    this.supportsMasking = true, this.stddev = e.stddev;
+    super(e), this.supportsMasking = true, this.stddev = e.stddev;
   }
   computeOutputShape(e) {
     return e;
@@ -15853,7 +15782,7 @@ var Ty = class extends Ge {
     return j(() => {
       this.invokeCallHook(e, t);
       let n = Oe(e);
-      return Wl(() => ie(Cp(n.shape, 0, this.stddev), n), () => n, t.training || false);
+      return Ul(() => ie(Cp(n.shape, 0, this.stddev), n), () => n, t.training || false);
     });
   }
 };
@@ -15861,8 +15790,7 @@ Ty.className = "GaussianNoise";
 ae.registerClass(Ty);
 var $y = class extends Ge {
   constructor(e) {
-    super(e);
-    this.supportsMasking = true, this.rate = e.rate;
+    super(e), this.supportsMasking = true, this.rate = e.rate;
   }
   computeOutputShape(e) {
     return e;
@@ -15875,7 +15803,7 @@ var $y = class extends Ge {
     return j(() => {
       this.invokeCallHook(e, t);
       let n = Oe(e);
-      return this.rate > 0 && this.rate < 1 ? Wl(() => {
+      return this.rate > 0 && this.rate < 1 ? Ul(() => {
         let r = Math.sqrt(this.rate / (1 - this.rate));
         return V(n, Cp(n.shape, 1, r));
       }, () => n, t.training || false) : n;
@@ -15886,8 +15814,7 @@ $y.className = "GaussianDropout";
 ae.registerClass($y);
 var _y = class extends Ge {
   constructor(e) {
-    super(e);
-    this.supportsMasking = true, this.rate = e.rate, this.noiseShape = e.noiseShape;
+    super(e), this.supportsMasking = true, this.rate = e.rate, this.noiseShape = e.noiseShape;
   }
   _getNoiseShape(e) {
     return this.noiseShape || Oe(e).shape;
@@ -15903,8 +15830,8 @@ var _y = class extends Ge {
     return j(() => {
       if (this.rate < 1 && this.rate > 0) {
         let n = this._getNoiseShape(e);
-        return Wl(() => {
-          let r = Oe(e), a = 1.6732632423543772, i = 1.0507009873554805, o = -a * i, u = jo(zl(n), this.rate);
+        return Ul(() => {
+          let r = Oe(e), a = 1.6732632423543772, i = 1.0507009873554805, o = -a * i, u = Ko(Ml(n), this.rate);
           u = Sp(u, "float32");
           let l = ((1 - this.rate) * (1 + this.rate * o ** 2)) ** -0.5, c = -l * o * this.rate, p = ie(V(r, u), V(ie(u, -1), o));
           return ie(V(p, l), c);
@@ -15916,7 +15843,7 @@ var _y = class extends Ge {
 };
 _y.className = "AlphaDropout";
 ae.registerClass(_y);
-function Zu(e, t, n, s, r, a = 1e-3) {
+function Ju(e, t, n, s, r, a = 1e-3) {
   let i;
   if (e.rank === 2)
     i = $E(e, t, n, s, r, a);
@@ -15931,7 +15858,7 @@ function Zu(e, t, n, s, r, a = 1e-3) {
 function WB(e, t, n, s, r = 1e-3) {
   return j(() => {
     let a = tb(e, s), i = a.mean, o = a.variance;
-    return [Zu(e, i, o, n, t, r), i, o];
+    return [Ju(e, i, o, n, t, r), i, o];
   });
 }
 function UB(e, t, n, s, r = 1e-3) {
@@ -15940,7 +15867,7 @@ function UB(e, t, n, s, r = 1e-3) {
     for (let f of ys(0, e.rank))
       s.indexOf(f) !== -1 ? u.push(1) : u.push(e.shape[f]);
     let l = G(i, u), c = G(o, u), p = t == null ? null : G(t, u), d = n == null ? null : G(n, u);
-    return [Zu(e, l, c, d, p, r), i, o];
+    return [Ju(e, l, c, d, p, r), i, o];
   });
 }
 function GB(e, t, n, s, r = 1e-3) {
@@ -15948,9 +15875,7 @@ function GB(e, t, n, s, r = 1e-3) {
 }
 var Ay = class extends Ge {
   constructor(e) {
-    e == null && (e = {});
-    super(e);
-    this.supportsMasking = true, this.axis = e.axis == null ? -1 : e.axis, this.momentum = e.momentum == null ? 0.99 : e.momentum, this.epsilon = e.epsilon == null ? 1e-3 : e.epsilon, this.center = e.center == null ? true : e.center, this.scale = e.scale == null ? true : e.scale, this.betaInitializer = ht(e.betaInitializer || "zeros"), this.gammaInitializer = ht(e.gammaInitializer || "ones"), this.movingMeanInitializer = ht(e.movingMeanInitializer || "zeros"), this.movingVarianceInitializer = ht(e.movingVarianceInitializer || "ones"), this.betaConstraint = Pt(e.betaConstraint), this.gammaConstraint = Pt(e.gammaConstraint), this.betaRegularizer = ft(e.betaRegularizer), this.gammaRegularizer = ft(e.gammaRegularizer);
+    e == null && (e = {}), super(e), this.supportsMasking = true, this.axis = e.axis == null ? -1 : e.axis, this.momentum = e.momentum == null ? 0.99 : e.momentum, this.epsilon = e.epsilon == null ? 1e-3 : e.epsilon, this.center = e.center == null ? true : e.center, this.scale = e.scale == null ? true : e.scale, this.betaInitializer = ht(e.betaInitializer || "zeros"), this.gammaInitializer = ht(e.gammaInitializer || "ones"), this.movingMeanInitializer = ht(e.movingMeanInitializer || "zeros"), this.movingVarianceInitializer = ht(e.movingVarianceInitializer || "ones"), this.betaConstraint = Pt(e.betaConstraint), this.gammaConstraint = Pt(e.gammaConstraint), this.betaRegularizer = ft(e.betaRegularizer), this.gammaRegularizer = ft(e.gammaRegularizer);
   }
   build(e) {
     e = nt(e);
@@ -15972,9 +15897,9 @@ var Ay = class extends Ge {
       let c = !w.arraysEqual(l, ys(0, a).slice(0, a - 1)), p = () => {
         if (c) {
           let b = G(this.movingMean.read(), u), y = G(this.movingVariance.read(), u), v = this.center ? G(this.beta.read(), u) : null, x = this.scale ? G(this.gamma.read(), u) : null;
-          return Zu(s, b, y, v, x, this.epsilon);
+          return Ju(s, b, y, v, x, this.epsilon);
         } else
-          return Zu(s, this.movingMean.read(), this.movingVariance.read(), this.beta == null ? null : this.beta.read(), this.gamma == null ? null : this.gamma.read(), this.epsilon);
+          return Ju(s, this.movingMean.read(), this.movingVariance.read(), this.beta == null ? null : this.beta.read(), this.gamma == null ? null : this.gamma.read(), this.epsilon);
       };
       if (!n)
         return p();
@@ -15998,9 +15923,7 @@ Ay.className = "BatchNormalization";
 ae.registerClass(Ay);
 var Ey = class extends Ge {
   constructor(e) {
-    e == null && (e = {});
-    super(e);
-    if (this.axis = e.axis == null ? -1 : e.axis, typeof this.axis == "number") {
+    if (e == null && (e = {}), super(e), this.axis = e.axis == null ? -1 : e.axis, typeof this.axis == "number") {
       if (!Number.isInteger(this.axis))
         throw new Error(`Expected axis to be an integer, but received ${this.axis}`);
     } else if (Array.isArray(this.axis)) {
@@ -16034,7 +15957,7 @@ var Ey = class extends Ge {
       let l = (f) => f != null && f.shape.length !== r ? G(f, u) : f, c = l(this.gamma.read()), p = l(this.beta.read()), d = [], h = [];
       for (let f = 0; f < r; ++f)
         this.axis.indexOf(f) !== -1 ? (d.push(s[f]), h.push(1)) : (d.push(1), h.push(s[f]));
-      return i = ps(i, d), o = ps(o, d), c = ps(c, h), p = ps(p, h), Zu(n, i, o, p, c, this.epsilon);
+      return i = ps(i, d), o = ps(o, d), c = ps(c, h), p = ps(p, h), Ju(n, i, o, p, c, this.epsilon);
     });
   }
   getConfig() {
@@ -16058,9 +15981,7 @@ function HB(e, t, n) {
 }
 var Ry = class extends Ge {
   constructor(e) {
-    e == null && (e = {});
-    super(e);
-    if (this.dataFormat = e.dataFormat == null ? bs() : e.dataFormat, e.padding == null)
+    if (e == null && (e = {}), super(e), this.dataFormat = e.dataFormat == null ? bs() : e.dataFormat, e.padding == null)
       this.padding = [[1, 1], [1, 1]];
     else if (typeof e.padding == "number")
       this.padding = [[e.padding, e.padding], [e.padding, e.padding]];
@@ -16112,9 +16033,7 @@ function zS(e, t, n, s, r, a) {
 }
 var MS = class extends Ge {
   constructor(e) {
-    e.poolSize == null && (e.poolSize = 2);
-    super(e);
-    if (typeof e.poolSize == "number")
+    if (e.poolSize == null && (e.poolSize = 2), super(e), typeof e.poolSize == "number")
       this.poolSize = [e.poolSize];
     else if (Array.isArray(e.poolSize) && e.poolSize.length === 1 && typeof e.poolSize[0] == "number")
       this.poolSize = e.poolSize;
@@ -16137,7 +16056,7 @@ var MS = class extends Ge {
   }
   call(e, t) {
     return j(() => {
-      this.invokeCallHook(e, t), e = Bl(Oe(e), 2);
+      this.invokeCallHook(e, t), e = Vl(Oe(e), 2);
       let n = this.poolingFunction(Oe(e), [this.poolSize[0], 1], [this.strides[0], 1], this.padding, "channelsLast");
       return mr(n, [2]);
     });
@@ -16169,9 +16088,7 @@ Fy.className = "AveragePooling1D";
 ae.registerClass(Fy);
 var LS = class extends Ge {
   constructor(e) {
-    e.poolSize == null && (e.poolSize = [2, 2]);
-    super(e);
-    if (this.poolSize = Array.isArray(e.poolSize) ? e.poolSize : [e.poolSize, e.poolSize], e.strides == null)
+    if (e.poolSize == null && (e.poolSize = [2, 2]), super(e), this.poolSize = Array.isArray(e.poolSize) ? e.poolSize : [e.poolSize, e.poolSize], e.strides == null)
       this.strides = this.poolSize;
     else if (Array.isArray(e.strides)) {
       if (e.strides.length !== 2)
@@ -16216,9 +16133,7 @@ Py.className = "AveragePooling2D";
 ae.registerClass(Py);
 var BS = class extends Ge {
   constructor(e) {
-    e.poolSize == null && (e.poolSize = [2, 2, 2]);
-    super(e);
-    if (this.poolSize = Array.isArray(e.poolSize) ? e.poolSize : [e.poolSize, e.poolSize, e.poolSize], e.strides == null)
+    if (e.poolSize == null && (e.poolSize = [2, 2, 2]), super(e), this.poolSize = Array.isArray(e.poolSize) ? e.poolSize : [e.poolSize, e.poolSize, e.poolSize], e.strides == null)
       this.strides = this.poolSize;
     else if (Array.isArray(e.strides)) {
       if (e.strides.length !== 3)
@@ -16263,8 +16178,7 @@ My.className = "AveragePooling3D";
 ae.registerClass(My);
 var VS = class extends Ge {
   constructor(e) {
-    super(e);
-    this.inputSpec = [new Dt({ ndim: 3 })];
+    super(e), this.inputSpec = [new Dt({ ndim: 3 })];
   }
   computeOutputShape(e) {
     return [e[0], e[2]];
@@ -16301,8 +16215,7 @@ By.className = "GlobalMaxPooling1D";
 ae.registerClass(By);
 var WS = class extends Ge {
   constructor(e) {
-    super(e);
-    this.dataFormat = e.dataFormat == null ? "channelsLast" : e.dataFormat, Ct(this.dataFormat), this.inputSpec = [new Dt({ ndim: 4 })];
+    super(e), this.dataFormat = e.dataFormat == null ? "channelsLast" : e.dataFormat, Ct(this.dataFormat), this.inputSpec = [new Dt({ ndim: 4 })];
   }
   computeOutputShape(e) {
     return e = e, this.dataFormat === "channelsLast" ? [e[0], e[3]] : [e[0], e[1]];
@@ -16337,8 +16250,7 @@ Wy.className = "GlobalMaxPooling2D";
 ae.registerClass(Wy);
 var US = class extends Ge {
   constructor(e) {
-    super(e);
-    this.layer = e.layer;
+    super(e), this.layer = e.layer;
   }
   build(e) {
     this.built = true;
@@ -16383,8 +16295,7 @@ var US = class extends Ge {
 };
 var Uy = class extends US {
   constructor(e) {
-    super(e);
-    this.supportsMasking = true;
+    super(e), this.supportsMasking = true;
   }
   build(e) {
     if (e = nt(e), e.length < 3)
@@ -16524,7 +16435,7 @@ var Gy = class extends US {
 Gy.className = "Bidirectional";
 ae.registerClass(Gy);
 function KB(e) {
-  return new Yo(e);
+  return new Qo(e);
 }
 function XB(e) {
   return new Xb(e);
@@ -16686,7 +16597,7 @@ function BV(e) {
   return new ly(e);
 }
 function VV(e) {
-  return new ql(e);
+  return new jl(e);
 }
 function WV(e) {
   return new oy(e);
@@ -16758,13 +16669,13 @@ function hW(e, t) {
   return Op(e, t);
 }
 function fW(e, t) {
-  return Qo(e, t);
+  return Zo(e, t);
 }
 function mW(e, t) {
-  return Qo(e, t);
+  return Zo(e, t);
 }
 function gW(e, t) {
-  return Qo(e, t);
+  return Zo(e, t);
 }
 function bW(e, t) {
   return gi(e, t);
@@ -16780,7 +16691,7 @@ Ae(xW, { modelFromJSON: () => EB });
 var wW = {};
 Ae(wW, { l1: () => IW, l1l2: () => kW, l2: () => SW });
 function kW(e) {
-  return new Ul(e);
+  return new Gl(e);
 }
 function IW(e) {
   return PB(e);
@@ -16790,8 +16701,7 @@ function SW(e) {
 }
 var CW = class extends Ji {
   constructor() {
-    super(...arguments);
-    this.model = null;
+    super(...arguments), this.model = null;
   }
   setModel(e) {
     if (!(e instanceof pr))
@@ -16807,8 +16717,7 @@ function Gx(e, t) {
 }
 var NW = class extends CW {
   constructor(e) {
-    super();
-    if (e == null && (e = {}), e.restoreBestWeights)
+    if (super(), e == null && (e = {}), e.restoreBestWeights)
       throw new Fe("restoreBestWeights = True is not implemented in EarlyStopping yet.");
     this.monitor = e.monitor || "val_loss", this.minDelta = Math.abs(e.minDelta || 0), this.patience = e.patience || 0, this.verbose = e.verbose || 0, this.mode = e.mode || "auto", this.baseline = e.baseline, ["auto", "min", "max"].indexOf(this.mode) === -1 && (console.warn(`EarlyStopping mode '${this.mode}' is invalid. Falling back to mode 'auto'.`), this.mode = "auto"), this.mode === "min" ? this.monitorFunc = jc : this.mode === "max" ? this.monitorFunc = Gx : this.monitor.indexOf("acc") !== -1 ? this.monitorFunc = Gx : this.monitorFunc = jc, this.monitorFunc === jc && (this.minDelta *= -1);
   }
@@ -16832,7 +16741,7 @@ var NW = class extends CW {
 function TW(e) {
   return new NW(e);
 }
-var _pe = { earlyStopping: TW };
+var Ape = { earlyStopping: TW };
 var $W = X();
 $W.registerFlag("KEEP_INTERMEDIATE_TENSORS", () => false, (e) => {
   e && console.warn("Keep intermediate tensors is ON. This will print the values of all intermediate tensors during model inference. Not all models support this mode. For details, check e2e/benchmarks/ model_config.js. This significantly impacts performance.");
@@ -16846,14 +16755,14 @@ var Hx;
   })(t = e.CheckpointFormatVersion || (e.CheckpointFormatVersion = {}));
 })(Hx || (Hx = {}));
 var Ky = {};
-function Ape(e, t) {
+function Epe(e, t) {
   let n = { tfOpName: e, category: "custom", inputs: [], attrs: [], customExecutor: t };
   Ky[e] = n;
 }
 function XS(e) {
   return Ky[e];
 }
-function Epe(e) {
+function Rpe(e) {
   delete Ky[e];
 }
 function I(e, t, n, s, r) {
@@ -16919,7 +16828,7 @@ Ae(QS, { json: () => EW });
 var EW = [{ tfOpName: "Abs", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Acos", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Asin", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Atan", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Atan2", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "y", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Ceil", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "ClipByValue", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "clipValueMin", type: "number" }, { start: 2, name: "clipValueMax", type: "number" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Complex", category: "basic_math", inputs: [{ start: 0, name: "real", type: "tensor" }, { start: 1, name: "imag", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "ComplexAbs", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Cos", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Cosh", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Elu", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Exp", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Floor", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Log", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Imag", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "Tout", name: "outputType", type: "dtype", notSupported: true }] }, { tfOpName: "Neg", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Real", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "Tout", name: "outputType", type: "dtype", notSupported: true }] }, { tfOpName: "Prelu", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "alpha", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Relu", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Relu6", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Selu", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Sigmoid", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Sin", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Sinh", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Sqrt", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Rsqrt", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Square", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Tan", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Tanh", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Sign", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Round", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Expm1", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Log1p", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Reciprocal", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Softplus", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Asinh", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Acosh", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Atanh", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Erf", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Prod", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "axes", type: "number[]" }], attrs: [{ tfName: "keep_dims", name: "keepDims", type: "bool", notSupported: true }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "LeakyRelu", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "alpha", name: "alpha", type: "number", defaultValue: 0.2 }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "IsNan", category: "basic_math", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }];
 var ZS = {};
 Ae(ZS, { json: () => RW });
-var RW = [{ tfOpName: "EmptyTensorList", category: "control", inputs: [{ start: 0, name: "elementShape", type: "shape" }, { start: 1, name: "maxNumElements", type: "number" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "LoopCond", category: "control", inputs: [{ start: 0, name: "pred", type: "tensor" }] }, { tfOpName: "Switch", category: "control", inputs: [{ start: 0, name: "data", type: "tensor" }, { start: 1, name: "pred", type: "tensor" }] }, { tfOpName: "Merge", category: "control", inputs: [{ start: 0, end: 0, name: "tensors", type: "tensors" }] }, { tfOpName: "Enter", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "frame_name", name: "frameName", type: "string" }, { tfName: "is_constant", name: "isConstant", type: "bool" }] }, { tfOpName: "Exit", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "NextIteration", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "TensorArrayV3", category: "control", inputs: [{ start: 0, name: "size", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype" }, { tfName: "element_shape", name: "elementShape", type: "shape" }, { tfName: "dynamic_size", name: "dynamicSize", type: "bool" }, { tfName: "clear_after_read", name: "clearAfterRead", type: "bool" }, { tfName: "identical_element_shapes", name: "identicalElementShapes", type: "bool" }, { tfName: "tensor_array_name", name: "name", type: "string" }] }, { tfOpName: "TensorArrayWriteV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "tensor", type: "tensor" }, { start: 3, name: "flowIn", type: "number" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "TensorArrayReadV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "flowIn", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "TensorArrayGatherV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "flowIn", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype" }, { tfName: "element_shape", name: "elementShape", type: "shape" }] }, { tfOpName: "TensorArrayScatterV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "tensor", type: "tensor" }, { start: 3, name: "flowIn", type: "number" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype" }] }, { tfOpName: "TensorArrayConcatV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "flowIn", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype" }, { tfName: "element_shape_except0", name: "elementShapeExcept0", type: "shape", notSupported: true }] }, { tfOpName: "TensorArraySplitV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "tensor", type: "tensor" }, { start: 2, name: "lengths", type: "number[]" }, { start: 3, name: "flowIn", type: "number" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype" }] }, { tfOpName: "TensorArraySizeV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "flowIn", type: "number" }] }, { tfOpName: "TensorArrayCloseV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }] }, { tfOpName: "StatelessIf", category: "control", inputs: [{ start: 0, name: "cond", type: "tensor" }, { start: 1, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "then_branch", name: "thenBranch", type: "func" }, { tfName: "else_branch", name: "elseBranch", type: "func" }] }, { tfOpName: "If", category: "control", inputs: [{ start: 0, name: "cond", type: "tensor" }, { start: 1, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "then_branch", name: "thenBranch", type: "func" }, { tfName: "else_branch", name: "elseBranch", type: "func" }] }, { tfOpName: "StatelessWhile", category: "control", inputs: [{ start: 0, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "cond", name: "cond", type: "func" }, { tfName: "body", name: "body", type: "func" }] }, { tfOpName: "While", category: "control", inputs: [{ start: 0, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "cond", name: "cond", type: "func" }, { tfName: "body", name: "body", type: "func" }] }, { tfOpName: "TensorListScatter", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListScatterV2", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "elementShape", type: "shape" }, { start: 3, name: "numElements", type: "number" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListGather", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListGetItem", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListSetItem", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "tensor", type: "tensor" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListReserve", category: "control", inputs: [{ start: 0, name: "elementShape", type: "shape" }, { start: 1, name: "numElements", type: "number" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListFromTensor", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListStack", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }, { tfName: "num_elements", name: "numElements", type: "dtype" }] }, { tfOpName: "TensorListSplit", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }, { start: 2, name: "lengths", type: "number[]" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListConcat", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }], attrs: [{ tfName: "element_shape", name: "elementShape", type: "shape" }, { tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListPopBack", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListPushBack", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "tensor", type: "tensor" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListLength", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }] }];
+var RW = [{ tfOpName: "EmptyTensorList", category: "control", inputs: [{ start: 0, name: "elementShape", type: "shape" }, { start: 1, name: "maxNumElements", type: "number" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "LoopCond", category: "control", inputs: [{ start: 0, name: "pred", type: "tensor" }] }, { tfOpName: "Switch", category: "control", inputs: [{ start: 0, name: "data", type: "tensor" }, { start: 1, name: "pred", type: "tensor" }] }, { tfOpName: "Merge", category: "control", inputs: [{ start: 0, end: 0, name: "tensors", type: "tensors" }] }, { tfOpName: "Enter", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "frame_name", name: "frameName", type: "string" }, { tfName: "is_constant", name: "isConstant", type: "bool" }] }, { tfOpName: "Exit", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "NextIteration", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "TensorArrayV3", category: "control", inputs: [{ start: 0, name: "size", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype" }, { tfName: "element_shape", name: "elementShape", type: "shape" }, { tfName: "dynamic_size", name: "dynamicSize", type: "bool" }, { tfName: "clear_after_read", name: "clearAfterRead", type: "bool" }, { tfName: "identical_element_shapes", name: "identicalElementShapes", type: "bool" }, { tfName: "tensor_array_name", name: "name", type: "string" }] }, { tfOpName: "TensorArrayWriteV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "tensor", type: "tensor" }, { start: 3, name: "flowIn", type: "number" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "TensorArrayReadV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "flowIn", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "TensorArrayGatherV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "flowIn", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype" }, { tfName: "element_shape", name: "elementShape", type: "shape" }] }, { tfOpName: "TensorArrayScatterV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "tensor", type: "tensor" }, { start: 3, name: "flowIn", type: "number" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype" }] }, { tfOpName: "TensorArrayConcatV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "flowIn", type: "number" }], attrs: [{ tfName: "dtype", name: "dtype", type: "dtype" }, { tfName: "element_shape_except0", name: "elementShapeExcept0", type: "shape", notSupported: true }] }, { tfOpName: "TensorArraySplitV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "tensor", type: "tensor" }, { start: 2, name: "lengths", type: "number[]" }, { start: 3, name: "flowIn", type: "number" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype" }] }, { tfOpName: "TensorArraySizeV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }, { start: 1, name: "flowIn", type: "number" }] }, { tfOpName: "TensorArrayCloseV3", category: "control", inputs: [{ start: 0, name: "tensorArrayId", type: "tensor" }] }, { tfOpName: "StatelessIf", category: "control", inputs: [{ start: 0, name: "cond", type: "tensor" }, { start: 1, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "then_branch", name: "thenBranch", type: "func" }, { tfName: "else_branch", name: "elseBranch", type: "func" }] }, { tfOpName: "If", category: "control", inputs: [{ start: 0, name: "cond", type: "tensor" }, { start: 1, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "then_branch", name: "thenBranch", type: "func" }, { tfName: "else_branch", name: "elseBranch", type: "func" }] }, { tfOpName: "StatelessWhile", category: "control", inputs: [{ start: 0, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "cond", name: "cond", type: "func" }, { tfName: "body", name: "body", type: "func" }] }, { tfOpName: "While", category: "control", inputs: [{ start: 0, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "cond", name: "cond", type: "func" }, { tfName: "body", name: "body", type: "func" }] }, { tfOpName: "TensorListScatter", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListScatterV2", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "elementShape", type: "shape" }, { start: 3, name: "numElements", type: "number" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListGather", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "indices", type: "number[]" }, { start: 2, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListGetItem", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListSetItem", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "index", type: "number" }, { start: 2, name: "tensor", type: "tensor" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListReserve", category: "control", inputs: [{ start: 0, name: "elementShape", type: "shape" }, { start: 1, name: "numElements", type: "number" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListFromTensor", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListStack", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }, { tfName: "num_elements", name: "numElements", type: "dtype" }] }, { tfOpName: "TensorListSplit", category: "control", inputs: [{ start: 0, name: "tensor", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }, { start: 2, name: "lengths", type: "number[]" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListConcat", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }], attrs: [{ tfName: "element_shape", name: "elementShape", type: "shape" }, { tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListPopBack", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "elementShape", type: "shape" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListPushBack", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "tensor", type: "tensor" }], attrs: [{ tfName: "element_dtype", name: "elementDType", type: "dtype" }] }, { tfOpName: "TensorListLength", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }] }, { tfOpName: "TensorListResize", category: "control", inputs: [{ start: 0, name: "tensorListId", type: "tensor" }, { start: 1, name: "size", type: "number" }] }];
 var JS = {};
 Ae(JS, { json: () => DW });
 var DW = [{ tfOpName: "AvgPool", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", notSupported: true }, { tfName: "ksize", name: "kernelSize", type: "number[]" }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "MaxPool", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", notSupported: true }, { tfName: "ksize", name: "kernelSize", type: "number[]" }, { tfName: "explicit_paddings", name: "explicitPaddings", type: "number[]", defaultValue: [], notSupported: true }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "MaxPoolWithArgmax", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "ksize", name: "kernelSize", type: "number[]" }, { tfName: "include_batch_in_index", name: "includeBatchInIndex", type: "bool" }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "AvgPool3D", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", notSupported: true }, { tfName: "ksize", name: "kernelSize", type: "number[]" }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "MaxPool3D", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", notSupported: true }, { tfName: "ksize", name: "kernelSize", type: "number[]" }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }] }, { tfOpName: "Conv1D", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }], attrs: [{ tfName: "stride", name: "stride", type: "number" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", defaultValue: "NWC" }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "dilation", name: "dilation", type: "number", defaultValue: 1 }] }, { tfOpName: "Conv2D", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }], attrs: [{ tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "useCudnnOnGpu", name: "useCudnnOnGpu", type: "bool" }, { tfName: "data_format", name: "dataFormat", type: "string", defaultValue: "NHWC" }, { tfName: "explicit_paddings", name: "explicitPaddings", type: "number[]", defaultValue: [] }, { tfName: "dilations", name: "dilations", type: "number[]" }] }, { tfOpName: "_FusedConv2D", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }, { start: 2, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "num_args", name: "numArgs", type: "number" }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "explicit_paddings", name: "explicitPaddings", type: "number[]", defaultValue: [] }, { tfName: "use_cudnn_on_gpu", name: "useCudnnOnGpu", type: "bool", defaultValue: true }, { tfName: "data_format", name: "dataFormat", type: "string", defaultValue: "NHWC" }, { tfName: "dilations", name: "dilations", type: "number[]", defaultValue: [1, 1, 1, 1] }, { tfName: "fused_ops", name: "fusedOps", type: "string[]", defaultValue: [] }, { tfName: "epsilon", name: "epsilon", type: "number", defaultValue: 1e-4 }, { tfName: "leakyrelu_alpha", name: "leakyreluAlpha", type: "number" }] }, { tfOpName: "Conv2DBackpropInput", category: "convolution", inputs: [{ start: 2, name: "x", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }, { start: 0, name: "outputShape", type: "number[]" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", notSupported: true }, { tfName: "explicit_paddings", name: "explicitPaddings", type: "number[]", defaultValue: [] }, { tfName: "dilations", name: "dilations", type: "number[]", notSupported: true }] }, { tfOpName: "DepthwiseConv2d", category: "convolution", inputs: [{ start: 0, name: "input", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", defaultValue: "NHWC" }, { tfName: "explicit_paddings", name: "explicitPaddings", type: "number[]", defaultValue: [] }, { tfName: "dilations", name: "dilations", type: "number[]" }] }, { tfOpName: "DepthwiseConv2dNative", category: "convolution", inputs: [{ start: 0, name: "input", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", defaultValue: "NHWC" }, { tfName: "explicit_paddings", name: "explicitPaddings", type: "number[]", defaultValue: [] }, { tfName: "dilations", name: "dilations", type: "number[]" }] }, { tfOpName: "FusedDepthwiseConv2dNative", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }, { start: 2, end: 0, name: "args", type: "tensors" }], attrs: [{ tfName: "num_args", name: "numArgs", type: "number" }, { tfName: "T", name: "dtype", type: "dtype", notSupported: true }, { tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", defaultValue: "NHWC" }, { tfName: "dilations", name: "dilations", type: "number[]", defaultValue: [1, 1, 1, 1] }, { tfName: "fused_ops", name: "fusedOps", type: "string[]", defaultValue: [] }, { tfName: "explicit_paddings", name: "explicitPaddings", type: "number[]", defaultValue: [] }] }, { tfOpName: "Conv3D", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }, { tfName: "data_format", name: "dataFormat", type: "string", defaultValue: "NHWC" }, { tfName: "dilations", name: "dilations", type: "number[]" }] }, { tfOpName: "Dilation2D", category: "convolution", inputs: [{ start: 0, name: "x", type: "tensor" }, { start: 1, name: "filter", type: "tensor" }], attrs: [{ tfName: "strides", name: "strides", type: "number[]" }, { tfName: "rates", name: "dilations", type: "number[]" }, { tfName: "padding", name: "pad", type: "string" }] }];
@@ -17311,13 +17220,13 @@ var ZW = (e, t, n) => {
     case "Sinh":
       return [yI(I("x", e, t, n))];
     case "Softplus":
-      return [Pl(I("x", e, t, n))];
+      return [zl(I("x", e, t, n))];
     case "Sqrt":
       return [dn(I("x", e, t, n))];
     case "Square":
       return [ct(I("x", e, t, n))];
     case "Tanh":
-      return [Hu(I("x", e, t, n))];
+      return [qu(I("x", e, t, n))];
     case "Tan":
       return [O3(I("x", e, t, n))];
     case "ClipByValue":
@@ -17350,7 +17259,7 @@ function Hn(e, t, n = "") {
 function Kx(e) {
   return !(typeof e == "number" || e.some((t) => t < 0));
 }
-function Cu(e, t, n) {
+function Nu(e, t, n) {
   let s = Pm(e, n), r = !Kx(s);
   if (r && t.length === 0)
     throw new Error(`Tried to calculate elements of an empty list with non-fully-defined elementShape: ${s}`);
@@ -17488,7 +17397,7 @@ var JW = class {
     this.writeMany(i, a);
   }
 };
-var jl = class {
+var eo = class {
   constructor(e, t, n, s = -1) {
     this.tensors = e, this.elementShape = t, this.elementDtype = n, e != null && e.forEach((r) => {
       if (n !== r.dtype)
@@ -17500,7 +17409,7 @@ var jl = class {
     return this.idTensor.id;
   }
   copy() {
-    return new jl([...this.tensors], this.elementShape, this.elementDtype);
+    return new eo([...this.tensors], this.elementShape, this.elementDtype);
   }
   clearAndClose(e) {
     this.tensors.forEach((t) => {
@@ -17516,7 +17425,7 @@ var jl = class {
     if (n !== -1 && this.tensors.length !== n)
       throw new Error(`Operation expected a list with ${n} elements but got a list with ${this.tensors.length} elements.`);
     Hn(e, this.elementShape, "TensorList shape mismatch: ");
-    let s = Cu(this.elementShape, this.tensors, e);
+    let s = Nu(this.elementShape, this.tensors, e);
     return j(() => {
       let r = this.tensors.map((a) => G(a, s));
       return Jn(r, 0);
@@ -17527,7 +17436,7 @@ var jl = class {
       throw new Error(`Invalid data types; op elements ${t}, but list elements ${this.elementDtype}`);
     if (this.size() === 0)
       throw new Error("Trying to pop from an empty list.");
-    let n = Cu(this.elementShape, this.tensors, e), s = this.tensors.pop();
+    let n = Nu(this.elementShape, this.tensors, e), s = this.tensors.pop();
     return Hn(s.shape, e, "TensorList shape mismatch: "), G(s, n);
   }
   pushBack(e) {
@@ -17542,7 +17451,11 @@ var jl = class {
       throw new Error(`TensorListResize expects size to be non-negative. Got: ${e}`);
     if (this.maxNumElements !== -1 && e > this.maxNumElements)
       throw new Error(`TensorListResize input size ${e} is greater maxNumElement ${this.maxNumElements}.`);
-    this.tensors.length = e;
+    let t = new eo([], this.elementShape, this.elementDtype, this.maxNumElements);
+    t.tensors.length = e;
+    for (let n = 0; n < Math.min(this.tensors.length, e); ++n)
+      t.tensors[n] = this.tensors[n];
+    return t;
   }
   getItem(e, t, n) {
     if (n !== this.elementDtype)
@@ -17552,7 +17465,7 @@ var jl = class {
     if (this.tensors[e] == null)
       throw new Error(`element at index ${e} is null.`);
     Hn(this.tensors[e].shape, t, "TensorList shape mismatch: ");
-    let s = Cu(this.elementShape, this.tensors, t);
+    let s = Nu(this.elementShape, this.tensors, t);
     return G(this.tensors[e], s);
   }
   setItem(e, t) {
@@ -17566,7 +17479,7 @@ var jl = class {
     if (t !== this.elementDtype)
       throw new Error(`Invalid data types; op elements ${t}, but list elements ${this.elementDtype}`);
     Hn(this.elementShape, n, "TensorList shape mismatch: "), e = e.slice(0, this.size());
-    let s = Cu(this.elementShape, this.tensors, n);
+    let s = Nu(this.elementShape, this.tensors, n);
     return e.length === 0 ? fs([], [0].concat(s)) : j(() => {
       let r = e.map((a) => G(this.tensors[a], s));
       return Jn(r, 0);
@@ -17576,7 +17489,7 @@ var jl = class {
     if (!!e && e !== this.elementDtype)
       throw new Error(`TensorList dtype is ${this.elementDtype} but concat requested dtype ${e}`);
     Hn(this.elementShape, t, "TensorList shape mismatch: ");
-    let n = Cu(this.elementShape, this.tensors, t);
+    let n = Nu(this.elementShape, this.tensors, t);
     return this.size() === 0 ? fs([], [0].concat(n)) : j(() => {
       let s = this.tensors.map((r) => G(r, n));
       return Ft(s, 0);
@@ -17592,10 +17505,10 @@ function e4(e, t, n) {
   let r = e.shape.slice(1);
   Hn(r, t, "TensorList shape mismatch: ");
   let a = Fs(e);
-  return new jl(a, t, s);
+  return new eo(a, t, s);
 }
 function t4(e, t, n) {
-  return new jl([], e, t, n);
+  return new eo([], e, t, n);
 }
 function n4(e, t, n, s) {
   if (t.length !== e.shape[0])
@@ -17603,7 +17516,7 @@ function n4(e, t, n, s) {
   let r = Math.max(...t);
   if (s != null && s !== -1 && r >= s)
     throw new Error(`Max index must be < array size (${r}  vs. ${s})`);
-  let a = new jl([], n, e.dtype, s), i = Fs(e, 0);
+  let a = new eo([], n, e.dtype, s), i = Fs(e, 0);
   return t.forEach((o, u) => {
     a.setItem(o, i[u]);
   }), a;
@@ -17622,7 +17535,7 @@ function s4(e, t, n) {
       c[p] = G(He(e, h, f), i);
     }
     return e.dispose(), c;
-  }), l = new jl([], n, e.dtype, t.length);
+  }), l = new eo([], n, e.dtype, t.length);
   for (let c = 0; c < u.length; c++)
     l.setItem(c, u[c]);
   return l;
@@ -17771,6 +17684,10 @@ var r4 = async (e, t, n) => {
       let s = I("tensorListId", e, t, n), r = n.getTensorList(s.id);
       return [we(r.size(), "int32")];
     }
+    case "TensorListResize": {
+      let s = I("tensorListId", e, t, n), r = I("size", e, t, n), i = n.getTensorList(s.id).resize(r);
+      return n.addTensorList(i), [i.idTensor];
+    }
     default:
       throw TypeError(`Node type ${e.op} is not implemented`);
   }
@@ -17854,7 +17771,7 @@ var i4 = (e, t, n) => {
   switch (e.op) {
     case "Fill": {
       let s = I("shape", e, t, n), r = I("dtype", e, t, n), a = I("value", e, t, n);
-      return [Ol(s, a, r)];
+      return [Pl(s, a, r)];
     }
     case "LinSpace": {
       let s = I("start", e, t, n), r = I("stop", e, t, n), a = I("num", e, t, n);
@@ -17873,10 +17790,10 @@ var i4 = (e, t, n) => {
     case "OnesLike":
       return [Qn(I("x", e, t, n))];
     case "RandomUniform":
-      return [zl(I("shape", e, t, n), I("minval", e, t, n), I("maxval", e, t, n), I("dtype", e, t, n))];
+      return [Ml(I("shape", e, t, n), I("minval", e, t, n), I("maxval", e, t, n), I("dtype", e, t, n))];
     case "Range": {
       let s = I("start", e, t, n), r = I("stop", e, t, n), a = I("step", e, t, n);
-      return [Xu(s, r, a, I("dtype", e, t, n))];
+      return [Yu(s, r, a, I("dtype", e, t, n))];
     }
     case "TruncatedNormal": {
       let s = I("shape", e, t, n), r = I("mean", e, t, n), a = I("stdDev", e, t, n), i = I("seed", e, t, n);
@@ -18082,15 +17999,15 @@ var h4 = (e, t, n) => {
     case "Equal":
       return [Kn(I("a", e, t, n), I("b", e, t, n))];
     case "NotEqual":
-      return [Ku(I("a", e, t, n), I("b", e, t, n))];
+      return [Xu(I("a", e, t, n), I("b", e, t, n))];
     case "Greater":
       return [Wn(I("a", e, t, n), I("b", e, t, n))];
     case "GreaterEqual":
-      return [jo(I("a", e, t, n), I("b", e, t, n))];
+      return [Ko(I("a", e, t, n), I("b", e, t, n))];
     case "Less":
       return [aI(I("a", e, t, n), I("b", e, t, n))];
     case "LessEqual":
-      return [Ko(I("a", e, t, n), I("b", e, t, n))];
+      return [Xo(I("a", e, t, n), I("b", e, t, n))];
     case "LogicalAnd":
       return [Ds(I("a", e, t, n), I("b", e, t, n))];
     case "LogicalNot":
@@ -18132,9 +18049,9 @@ var m4 = (e, t, n) => {
   switch (e.op) {
     case "FusedBatchNorm":
     case "FusedBatchNormV2":
-      return [qu(I("x", e, t, n), I("mean", e, t, n), I("variance", e, t, n), I("offset", e, t, n), I("scale", e, t, n), I("epsilon", e, t, n))];
+      return [ju(I("x", e, t, n), I("mean", e, t, n), I("variance", e, t, n), I("offset", e, t, n), I("scale", e, t, n), I("epsilon", e, t, n))];
     case "FusedBatchNormV3":
-      return [qu(I("x", e, t, n), I("mean", e, t, n), I("variance", e, t, n), I("offset", e, t, n), I("scale", e, t, n), I("epsilon", e, t, n))];
+      return [ju(I("x", e, t, n), I("mean", e, t, n), I("variance", e, t, n), I("offset", e, t, n), I("scale", e, t, n), I("epsilon", e, t, n))];
     case "LRN":
       return [qR(I("x", e, t, n), I("radius", e, t, n), I("bias", e, t, n), I("alpha", e, t, n), I("beta", e, t, n))];
     case "Softmax":
@@ -18175,7 +18092,7 @@ var g4 = (e, t, n) => {
     }
     case "ArgMax": {
       let i = I("axis", e, t, n);
-      return [Gu(I("x", e, t, n), i)];
+      return [Hu(I("x", e, t, n), i)];
     }
     case "ArgMin": {
       let i = I("axis", e, t, n);
@@ -18213,11 +18130,11 @@ var b4 = (e, t, n) => {
     }
     case "Gather": {
       let s = I("x", e, t, n), r = I("indices", e, t, n);
-      return [ju(s, ce(r, "int32"), 0)];
+      return [Ku(s, ce(r, "int32"), 0)];
     }
     case "GatherV2": {
       let s = I("axis", e, t, n), r = I("batchDims", e, t, n), a = I("x", e, t, n), i = I("indices", e, t, n);
-      return [ju(a, ce(i, "int32"), s, r)];
+      return [Ku(a, ce(i, "int32"), s, r)];
     }
     case "Reverse": {
       let s = I("dims", e, t, n), r = [];
@@ -18896,16 +18813,16 @@ var E4 = class {
     this.executor.dispose(), this.initializer && this.initializer.dispose(), this.resourceManager.dispose();
   }
 };
-async function Rpe(e, t = {}) {
+async function Dpe(e, t = {}) {
   if (e == null)
     throw new Error("modelUrl in loadGraphModel() cannot be null. Please provide a url or an IOHandler that loads the model");
   t == null && (t = {}), t.fromTFHub && e.load == null && (e.endsWith("/") || (e = e + "/"), e = `${e}${A4}${_4}`);
   let n = new E4(e, t);
   return await n.load(), n;
 }
-var Dpe = "0.0.0";
+var Fpe = "0.0.0";
 var R4 = {};
-Ae(R4, { CSVDataset: () => _0, Dataset: () => Zo, FileDataSource: () => P0, TextLineDataset: () => $0, URLDataSource: () => z0, array: () => tU, csv: () => pU, func: () => hU, generator: () => fU, microphone: () => gU, version_data: () => bU, webcam: () => mU, zip: () => nU });
+Ae(R4, { CSVDataset: () => _0, Dataset: () => Jo, FileDataSource: () => P0, TextLineDataset: () => $0, URLDataSource: () => z0, array: () => tU, csv: () => pU, func: () => hU, generator: () => fU, microphone: () => gU, version_data: () => bU, webcam: () => mU, zip: () => nU });
 var D4 = xa(Wd());
 var F4 = xa(Wd());
 function O4(e, t) {
@@ -18924,7 +18841,7 @@ function Rd(e, t, n = /* @__PURE__ */ new Map(), s = /* @__PURE__ */ new Set()) 
   if (r.recurse && r.value !== null)
     throw new Error("A deep map function may not return both a value and recurse=true.");
   if (r.recurse)
-    if (eo(e)) {
+    if (to(e)) {
       let a = Array.isArray(e) ? [] : {};
       s.add(e);
       for (let i in e) {
@@ -18948,7 +18865,7 @@ function y0(e, t, n = /* @__PURE__ */ new Set()) {
   if (r.recurse && r.value !== null)
     throw new Error("A deep zip function may not return both a value and recurse=true.");
   if (r.recurse)
-    if (eo(s)) {
+    if (to(s)) {
       let a = Array.isArray(s) ? [] : {};
       n.add(s);
       for (let i in s) {
@@ -18962,7 +18879,7 @@ function y0(e, t, n = /* @__PURE__ */ new Set()) {
     return r.value;
 }
 function v0(e) {
-  return e === null ? null : eo(e[0]) ? { value: null, recurse: true } : { value: e, recurse: false };
+  return e === null ? null : to(e[0]) ? { value: null, recurse: true } : { value: e, recurse: false };
 }
 async function x0(e, t) {
   let n = /* @__PURE__ */ new Map();
@@ -18976,7 +18893,7 @@ async function x0(e, t) {
   }
   return Rd(e, t, n);
 }
-function eo(e) {
+function to(e) {
   let t = false;
   if (X().get("IS_BROWSER"))
     t = e instanceof TextDecoder;
@@ -18996,7 +18913,7 @@ function L4(e) {
   return O4(e, B4);
 }
 function B4(e) {
-  return e instanceof et ? { value: e.clone(), recurse: false } : eo(e) ? { value: null, recurse: true } : { value: e, recurse: false };
+  return e instanceof et ? { value: e.clone(), recurse: false } : to(e) ? { value: null, recurse: true } : { value: e, recurse: false };
 }
 var w0 = class {
   constructor(e) {
@@ -19173,8 +19090,7 @@ var Ut = class {
 };
 var U4 = class extends Ut {
   constructor(e) {
-    super();
-    this.items = e, this.trav = 0;
+    super(), this.items = e, this.trav = 0;
   }
   summary() {
     return `Array of ${this.items.length} items`;
@@ -19188,8 +19104,7 @@ var U4 = class extends Ut {
 };
 var G4 = class extends Ut {
   constructor(e) {
-    super();
-    this.nextFn = e;
+    super(), this.nextFn = e;
   }
   summary() {
     return "Function call";
@@ -19204,8 +19119,7 @@ var G4 = class extends Ut {
 };
 var H4 = class extends Ut {
   constructor(e) {
-    super();
-    this.upstream = e, this.lastRead = Promise.resolve({ value: null, done: false });
+    super(), this.upstream = e, this.lastRead = Promise.resolve({ value: null, done: false });
   }
   summary() {
     return `${this.upstream.summary()} -> Serial`;
@@ -19219,8 +19133,7 @@ var H4 = class extends Ut {
 };
 var q4 = class extends Ut {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.maxCount = t, this.count = 0, this.lastRead = Promise.resolve({ value: null, done: false });
+    super(), this.upstream = e, this.maxCount = t, this.count = 0, this.lastRead = Promise.resolve({ value: null, done: false });
   }
   summary() {
     return `${this.upstream.summary()} -> Skip`;
@@ -19240,8 +19153,7 @@ var q4 = class extends Ut {
 };
 var j4 = class extends Ut {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.maxCount = t, this.count = 0;
+    super(), this.upstream = e, this.maxCount = t, this.count = 0;
   }
   summary() {
     return `${this.upstream.summary()} -> Take`;
@@ -19252,8 +19164,7 @@ var j4 = class extends Ut {
 };
 var K4 = class extends Ut {
   constructor(e, t, n = true) {
-    super();
-    this.upstream = e, this.batchSize = t, this.enableSmallLastBatch = n, this.lastRead = Promise.resolve({ value: null, done: false });
+    super(), this.upstream = e, this.batchSize = t, this.enableSmallLastBatch = n, this.lastRead = Promise.resolve({ value: null, done: false });
   }
   summary() {
     return `${this.upstream.summary()} -> RowMajorBatch`;
@@ -19274,8 +19185,7 @@ var K4 = class extends Ut {
 };
 var X4 = class extends Ut {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.predicate = t, this.lastRead = Promise.resolve({ value: null, done: false });
+    super(), this.upstream = e, this.predicate = t, this.lastRead = Promise.resolve({ value: null, done: false });
   }
   summary() {
     return `${this.upstream.summary()} -> Filter`;
@@ -19294,8 +19204,7 @@ var X4 = class extends Ut {
 };
 var Y4 = class extends Ut {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.transform = t;
+    super(), this.upstream = e, this.transform = t;
   }
   summary() {
     return `${this.upstream.summary()} -> Map`;
@@ -19312,8 +19221,7 @@ var Y4 = class extends Ut {
 };
 var Q4 = class extends Ut {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.handler = t, this.count = 0, this.lastRead = Promise.resolve({ value: null, done: false });
+    super(), this.upstream = e, this.handler = t, this.count = 0, this.lastRead = Promise.resolve({ value: null, done: false });
   }
   summary() {
     return `${this.upstream.summary()} -> handleErrors`;
@@ -19333,8 +19241,7 @@ var Q4 = class extends Ut {
 };
 var Jx = class extends Ut {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.transform = t;
+    super(), this.upstream = e, this.transform = t;
   }
   summary() {
     return `${this.upstream.summary()} -> AsyncMap`;
@@ -19351,8 +19258,7 @@ var Jx = class extends Ut {
 };
 var Qy = class extends Ut {
   constructor() {
-    super();
-    this.outputQueue = new I0(), this.lastRead = Promise.resolve({ value: null, done: false });
+    super(), this.outputQueue = new I0(), this.lastRead = Promise.resolve({ value: null, done: false });
   }
   async next() {
     return this.lastRead = this.lastRead.then(() => this.serialNext()), this.lastRead;
@@ -19366,8 +19272,7 @@ var Qy = class extends Ut {
 };
 var Z4 = class extends Qy {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.transform = t;
+    super(), this.upstream = e, this.transform = t;
   }
   summary() {
     return `${this.upstream.summary()} -> Flatmap`;
@@ -19385,8 +19290,7 @@ var Z4 = class extends Qy {
 };
 var C0 = class extends Ut {
   constructor(e, t) {
-    super();
-    this.baseErrorHandler = t, this.lastRead = null, this.iterator = null, this.moreIterators = e;
+    super(), this.baseErrorHandler = t, this.lastRead = null, this.iterator = null, this.moreIterators = e;
   }
   summary() {
     return "TODO: fill in upstream of chained summaries -> Chained";
@@ -19408,8 +19312,7 @@ var C0 = class extends Ut {
 var N0 = ((e) => (e[e.FAIL = 0] = "FAIL", e[e.SHORTEST = 1] = "SHORTEST", e[e.LONGEST = 2] = "LONGEST", e))(N0 || {});
 var J4 = class extends Ut {
   constructor(e, t = 0) {
-    super();
-    this.iterators = e, this.mismatchMode = t, this.count = 0, this.currentPromise = null;
+    super(), this.iterators = e, this.mismatchMode = t, this.count = 0, this.currentPromise = null;
   }
   summary() {
     return "{TODO: fill in upstream of zip summaries} -> Zip";
@@ -19440,8 +19343,7 @@ var J4 = class extends Ut {
 };
 var T0 = class extends Ut {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.bufferSize = t, this.buffer = new w0(t);
+    super(), this.upstream = e, this.bufferSize = t, this.buffer = new w0(t);
   }
   summary() {
     return `${this.upstream.summary()} -> Prefetch`;
@@ -19458,8 +19360,7 @@ var T0 = class extends Ut {
 };
 var eU = class extends T0 {
   constructor(e, t, n) {
-    super(e, t);
-    this.upstream = e, this.windowSize = t, this.upstreamExhausted = false, this.random = F4.alea(n || w.now().toString()), this.lastRead = Promise.resolve({ value: null, done: false });
+    super(e, t), this.upstream = e, this.windowSize = t, this.upstreamExhausted = false, this.random = F4.alea(n || w.now().toString()), this.lastRead = Promise.resolve({ value: null, done: false });
   }
   async next() {
     return this.lastRead = this.lastRead.then(() => this.serialNext()), this.lastRead;
@@ -19481,7 +19382,7 @@ var eU = class extends T0 {
     return { value: null, done: true };
   }
 };
-var Zo = class {
+var Jo = class {
   constructor() {
     this.size = null;
   }
@@ -19552,12 +19453,11 @@ var Zo = class {
     return (await this.iterator()).toArrayForTest();
   }
 };
-Zo.MAX_BUFFER_SIZE = 1e4;
+Jo.MAX_BUFFER_SIZE = 1e4;
 function _n(e, t = null) {
-  return new class extends Zo {
+  return new class extends Jo {
     constructor() {
-      super(...arguments);
-      this.size = t;
+      super(...arguments), this.size = t;
     }
     async iterator() {
       return e();
@@ -19568,7 +19468,7 @@ function tU(e) {
   return _n(async () => S0(e), e.length);
 }
 function nU(e) {
-  if (!eo(e))
+  if (!to(e))
     throw new Error("The argument to zip() must be an object or array.");
   let t;
   if (Array.isArray(e))
@@ -19579,9 +19479,9 @@ function nU(e) {
       t = t == null ? e[n].size : Math.min(t, e[n].size);
   return _n(async () => {
     let n = await x0(e, (s) => {
-      if (s instanceof Zo)
+      if (s instanceof Jo)
         return { value: s.iterator(), recurse: false };
-      if (eo(s))
+      if (to(s))
         return { value: null, recurse: true };
       throw new Error("Leaves of the structure passed to zip() must be Datasets, not primitives.");
     });
@@ -19599,10 +19499,9 @@ function rU(e) {
     throw new Error("Can't make a batch of zero elements.");
   return e[0] instanceof et ? Jn(e) : fs(e);
 }
-var $0 = class extends Zo {
+var $0 = class extends Jo {
   constructor(e) {
-    super();
-    this.input = e;
+    super(), this.input = e;
   }
   async iterator() {
     return (await this.input.iterator()).decodeUTF8().split(`
@@ -19610,15 +19509,14 @@ var $0 = class extends Zo {
   }
 };
 var Kc = '"';
-var Nu = Symbol("out");
+var Tu = Symbol("out");
 var ew = Symbol("field");
 var Xc = Symbol("quote");
 var qf = Symbol("quoteafterquote");
 var tw = Symbol("quoteinquote");
-var _0 = class extends Zo {
+var _0 = class extends Jo {
   constructor(e, t) {
-    super();
-    this.input = e, this.hasHeader = true, this.fullColumnNames = null, this.columnNamesValidated = false, this.columnConfigs = null, this.configuredColumnsOnly = false, this.delimiter = ",", this.delimWhitespace = false, this.base = new $0(e), t || (t = {}), this.hasHeader = t.hasHeader !== false, this.fullColumnNames = t.columnNames, this.columnConfigs = t.columnConfigs, this.configuredColumnsOnly = t.configuredColumnsOnly, t.delimWhitespace ? (w.assert(t.delimiter == null, () => "Delimiter should not be provided when delimWhitespace is true."), this.delimWhitespace = true, this.delimiter = " ") : this.delimiter = t.delimiter ? t.delimiter : ",";
+    super(), this.input = e, this.hasHeader = true, this.fullColumnNames = null, this.columnNamesValidated = false, this.columnConfigs = null, this.configuredColumnsOnly = false, this.delimiter = ",", this.delimWhitespace = false, this.base = new $0(e), t || (t = {}), this.hasHeader = t.hasHeader !== false, this.fullColumnNames = t.columnNames, this.columnConfigs = t.columnConfigs, this.configuredColumnsOnly = t.configuredColumnsOnly, t.delimWhitespace ? (w.assert(t.delimiter == null, () => "Delimiter should not be provided when delimWhitespace is true."), this.delimWhitespace = true, this.delimiter = " ") : this.delimiter = t.delimiter ? t.delimiter : ",";
   }
   async columnNames() {
     return this.columnNamesValidated || await this.setColumnNames(), this.configuredColumnsOnly ? Object.keys(this.columnConfigs) : this.fullColumnNames;
@@ -19695,10 +19593,10 @@ var _0 = class extends Zo {
     return e === "1" || e.toLowerCase() === "true" ? 1 : 0;
   }
   parseRow(e, t = true) {
-    let n = [], s = 0, r = e.length, a = Nu;
+    let n = [], s = 0, r = e.length, a = Tu;
     for (let i = 0; i < r; i++)
       switch (a) {
-        case Nu:
+        case Tu:
           switch (e.charAt(i)) {
             case Kc:
               s = i + 1, a = Xc;
@@ -19706,7 +19604,7 @@ var _0 = class extends Zo {
             case this.delimiter:
               if (s = i + 1, this.delimiter === " " && this.delimWhitespace)
                 break;
-              n.push(""), a = Nu;
+              n.push(""), a = Tu;
               break;
             default:
               a = ew, s = i;
@@ -19716,7 +19614,7 @@ var _0 = class extends Zo {
         case ew:
           switch (e.charAt(i)) {
             case this.delimiter:
-              n.push(e.substring(s, i)), a = Nu, s = i + 1;
+              n.push(e.substring(s, i)), a = Tu, s = i + 1;
               break;
             default:
           }
@@ -19732,7 +19630,7 @@ var _0 = class extends Zo {
         case qf:
           switch (e.charAt(i)) {
             case this.delimiter:
-              n.push(e.substring(s, i - 1)), a = Nu, s = i + 1;
+              n.push(e.substring(s, i - 1)), a = Tu, s = i + 1;
               break;
             case Kc:
               a = Xc;
@@ -19759,8 +19657,7 @@ var _0 = class extends Zo {
 };
 var A0 = class extends Ut {
   constructor(e) {
-    super();
-    this.microphoneConfig = e, this.isClosed = false, this.fftSize = e.fftSize || 1024;
+    super(), this.microphoneConfig = e, this.isClosed = false, this.fftSize = e.fftSize || 1024;
     let t = Math.log2(this.fftSize);
     if (this.fftSize < 0 || t < 4 || t > 14 || !Number.isInteger(t))
       throw new Error(`Invalid fftSize: it must be a power of 2 between 2 to 4 and 2 to 14, but got ${this.fftSize}`);
@@ -19837,8 +19734,7 @@ var A0 = class extends Ut {
 };
 var E0 = class extends Ut {
   constructor(e, t) {
-    super();
-    if (this.webcamVideoElement = e, this.webcamConfig = t, this.isClosed = true, this.resize = false, this.needToResize())
+    if (super(), this.webcamVideoElement = e, this.webcamConfig = t, this.isClosed = true, this.resize = false, this.needToResize())
       if (this.resize = true, this.cropSize = [this.webcamConfig.resizeHeight, this.webcamConfig.resizeWidth], this.cropBoxInd = Zt([0], "int32"), this.webcamConfig.centerCrop) {
         let n = this.webcamConfig.resizeWidth * 1 / this.webcamVideoElement.width, s = this.webcamConfig.resizeHeight * 1 / this.webcamVideoElement.height, r = (1 - n) / 2, a = (1 - s) / 2, i = r + n, o = s + a;
         this.cropBox = Ki([a, r, o, i], [1, 4]);
@@ -19935,8 +19831,7 @@ var D0 = class extends Ut {
 };
 var aU = class extends D0 {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.impl = new iU(e, t);
+    super(), this.upstream = e, this.impl = new iU(e, t);
   }
   summary() {
     return this.impl.summary();
@@ -19947,8 +19842,7 @@ var aU = class extends D0 {
 };
 var iU = class extends Qy {
   constructor(e, t) {
-    super();
-    this.upstream = e, this.separator = t, this.carryover = "";
+    super(), this.upstream = e, this.separator = t, this.carryover = "";
   }
   summary() {
     return `${this.upstream.summary()} -> Split('${this.separator}')`;
@@ -19971,8 +19865,7 @@ var oU = class extends Ut {
 };
 var uU = class extends D0 {
   constructor(e) {
-    super();
-    this.upstream = e, this.impl = new lU(e);
+    super(), this.upstream = e, this.impl = new lU(e);
   }
   summary() {
     return this.impl.summary();
@@ -19983,8 +19876,7 @@ var uU = class extends D0 {
 };
 var lU = class extends Qy {
   constructor(e) {
-    super();
-    if (this.upstream = e, X().get("IS_BROWSER"))
+    if (super(), this.upstream = e, X().get("IS_BROWSER"))
       this.decoder = new TextDecoder("utf-8");
     else {
       let { StringDecoder: t } = Ww();
@@ -20005,8 +19897,7 @@ var lU = class extends Qy {
 };
 var F0 = class extends oU {
   constructor(e, t = {}) {
-    super();
-    this.file = e, this.options = t, w.assert(e instanceof Uint8Array || (X().get("IS_BROWSER") ? e instanceof File || e instanceof Blob : false), () => "FileChunkIterator only supports File, Blob and Uint8Array right now."), this.offset = t.offset || 0, this.chunkSize = t.chunkSize || 1024 * 1024;
+    super(), this.file = e, this.options = t, w.assert(e instanceof Uint8Array || (X().get("IS_BROWSER") ? e instanceof File || e instanceof Blob : false), () => "FileChunkIterator only supports File, Blob and Uint8Array right now."), this.offset = t.offset || 0, this.chunkSize = t.chunkSize || 1024 * 1024;
   }
   summary() {
     return `FileChunks ${this.file}`;
@@ -20047,8 +19938,7 @@ function O0(e) {
 }
 var P0 = class extends R0 {
   constructor(e, t = {}) {
-    super();
-    this.input = e, this.options = t;
+    super(), this.input = e, this.options = t;
   }
   async iterator() {
     if (O0(this.input) && X().get("IS_NODE")) {
@@ -20060,8 +19950,7 @@ var P0 = class extends R0 {
 };
 var z0 = class extends R0 {
   constructor(e, t = {}) {
-    super();
-    this.url = e, this.fileOptions = t;
+    super(), this.url = e, this.fileOptions = t;
   }
   async iterator() {
     return O0(this.url) ? new P0(this.url, this.fileOptions).iterator() : cU(this.url, this.fileOptions);
@@ -20093,10 +19982,9 @@ function be(e, t) {
   });
 }
 var yU = xs.whereImpl;
-var M0 = class extends tl {
+var M0 = class extends nl {
   constructor() {
-    super();
-    this.blockSize = 48, this.firstUse = true, this.data = new Ud(this, Ss());
+    super(), this.blockSize = 48, this.firstUse = true, this.data = new Ud(this, Ss());
   }
   nextDataId() {
     return M0.nextDataId++;
@@ -20211,7 +20099,7 @@ var vU = (e) => {
   let s = new Float32Array(w.sizeFromShape(t.shape)), r = n.data.get(t.dataId).values;
   return s = B0(r), n.makeOutput(s, t.shape, t.dtype);
 };
-var xU = { kernelName: ao, backendName: "cpu", kernelFunc: vU };
+var xU = { kernelName: io, backendName: "cpu", kernelFunc: vU };
 function At(e) {
   return (t, n, s, r, a) => {
     let i = S.assertAndGetBroadcastShape(t, n), o = i.length, u = w.computeStrides(i), l = w.sizeFromShape(i), c = w.getTypedArrayFromDType(a, l), p = t.length, d = n.length, h = w.computeStrides(t), f = w.computeStrides(n), m = S.getBroadcastDims(t, i), g = S.getBroadcastDims(n, i);
@@ -20361,7 +20249,7 @@ function st(e, t, n) {
     return o.makeTensorInfo(i.shape, c, p);
   };
 }
-function Jo(e, t, n) {
+function eu(e, t, n) {
   return ({ inputs: s, attrs: r, backend: a }) => {
     let { x: i } = s;
     if (be(i, e), i.dtype === "string" || n === "string")
@@ -20371,7 +20259,7 @@ function Jo(e, t, n) {
   };
 }
 var U0 = Er((e) => Math.ceil(e));
-var TU = Jo(Ta, U0);
+var TU = eu(Ta, U0);
 var $U = { kernelName: Ta, backendName: "cpu", kernelFunc: TU };
 function tv(e, t, n, s) {
   let r = w.getArrayFromDType(n, w.sizeFromShape(t));
@@ -20396,16 +20284,16 @@ function tv(e, t, n, s) {
   return r;
 }
 var G0 = At((e, t) => e === t ? 1 : 0);
-var H0 = Gt(po, G0, null, "bool");
-var _U = { kernelName: po, backendName: "cpu", kernelFunc: H0 };
+var H0 = Gt(ho, G0, null, "bool");
+var _U = { kernelName: ho, backendName: "cpu", kernelFunc: H0 };
 var q0 = Er((e) => Math.exp(e));
-var j0 = Jo(Oa, q0, "float32");
+var j0 = eu(Oa, q0, "float32");
 var AU = { kernelName: Oa, backendName: "cpu", kernelFunc: j0 };
 var K0 = Er((e) => Math.expm1(e));
-var EU = Jo(fo, K0);
-var RU = { kernelName: fo, backendName: "cpu", kernelFunc: EU };
+var EU = eu(mo, K0);
+var RU = { kernelName: mo, backendName: "cpu", kernelFunc: EU };
 var X0 = Er((e) => Math.floor(e));
-var DU = Jo(Pa, X0);
+var DU = eu(Pa, X0);
 var FU = { kernelName: Pa, backendName: "cpu", kernelFunc: DU };
 function Y0(e, t, n, s, r, a, i, o, u) {
   let l = De([s, a], n);
@@ -20433,17 +20321,17 @@ function Q0(e, t, n) {
   return s;
 }
 var Z0 = At((e, t) => e > t ? 1 : 0);
-var OU = Gt(yo, Z0, null, "bool");
-var PU = { kernelName: yo, backendName: "cpu", kernelFunc: OU };
+var OU = Gt(vo, Z0, null, "bool");
+var PU = { kernelName: vo, backendName: "cpu", kernelFunc: OU };
 var J0 = At((e, t) => e >= t ? 1 : 0);
 var zU = Gt(La, J0, null, "bool");
 var MU = { kernelName: La, backendName: "cpu", kernelFunc: zU };
 var eC = At((e, t) => e < t ? 1 : 0);
-var LU = Gt(vo, eC, null, "bool");
-var BU = { kernelName: vo, backendName: "cpu", kernelFunc: LU };
+var LU = Gt(xo, eC, null, "bool");
+var BU = { kernelName: xo, backendName: "cpu", kernelFunc: LU };
 var tC = At((e, t) => e <= t ? 1 : 0);
-var VU = Gt(xo, tC, null, "bool");
-var WU = { kernelName: xo, backendName: "cpu", kernelFunc: VU };
+var VU = Gt(wo, tC, null, "bool");
+var WU = { kernelName: wo, backendName: "cpu", kernelFunc: VU };
 function nC(e, t, n) {
   let s = (t - e) / (n - 1), r = w.makeZerosTypedArray(n, "float32");
   r[0] = e;
@@ -20452,7 +20340,7 @@ function nC(e, t, n) {
   return r;
 }
 var sC = Er((e) => Math.log(e));
-var UU = Jo(Wa, sC);
+var UU = eu(Wa, sC);
 var GU = { kernelName: Wa, backendName: "cpu", kernelFunc: UU };
 function rC(e, t, n, s) {
   let r = w.getTypedArrayFromDType(s, w.sizeFromShape(n));
@@ -20486,10 +20374,10 @@ function QU(e) {
   let r = n.data.get(s.dataId).values, [a, i] = oC(r, s.shape, s.dtype);
   return n.makeTensorInfo(i, s.dtype, a);
 }
-var ZU = { kernelName: ko, backendName: "cpu", kernelFunc: QU };
+var ZU = { kernelName: Io, backendName: "cpu", kernelFunc: QU };
 var uC = At((e, t) => e !== t ? 1 : 0);
-var JU = Gt(Io, uC, null, "bool");
-var eG = { kernelName: Io, backendName: "cpu", kernelFunc: JU };
+var JU = Gt(So, uC, null, "bool");
+var eG = { kernelName: So, backendName: "cpu", kernelFunc: JU };
 function sv(e, t, n, s, r) {
   let a = t.length, i = w.sizeFromShape(t), o = w.computeStrides(t), u = w.computeStrides(r), l = w.getTypedArrayFromDType(n, w.sizeFromShape(r));
   for (let c = 0; c < i; ++c) {
@@ -20529,7 +20417,7 @@ function nG(e) {
   let h = n.data.get(p.dataId).values, { outVals: f, outShape: m, outDtype: g } = lC(p.shape, p.dtype, h, c), b = m;
   return i && (b = S.expandShapeToKeepDim(m, u)), d.forEach((y) => n.disposeIntermediateTensorInfo(y)), n.makeTensorInfo(b, g, f);
 }
-var sG = { kernelName: _o, backendName: "cpu", kernelFunc: nG };
+var sG = { kernelName: Ao, backendName: "cpu", kernelFunc: nG };
 function rv(e, t, n, s) {
   let r = e === t, a = e < t && n < 0, i = t < e && n > 1;
   if (r || a || i)
@@ -20541,7 +20429,7 @@ function rv(e, t, n, s) {
   return u;
 }
 var cC = Er((e) => 1 / Math.sqrt(e));
-var rG = Jo(si, cC);
+var rG = eu(si, cC);
 var aG = { kernelName: si, backendName: "cpu", kernelFunc: rG };
 var iG = Er((e) => 1 / (1 + Math.exp(-e)));
 var dC = st(ai, (e) => 1 / (1 + Math.exp(-e)));
@@ -20567,7 +20455,7 @@ function ga(e) {
   let l = n.data.get(r.dataId).values, c = Fd(l, o, u, r.shape, r.dtype);
   return n.makeTensorInfo(u, r.dtype, c);
 }
-var uG = { kernelName: Oo, backendName: "cpu", kernelFunc: ga };
+var uG = { kernelName: Po, backendName: "cpu", kernelFunc: ga };
 function pC(e, t, n, s, r, a, i) {
   let o = t[0], u = a[0], l = new Array(u), c = new Array(o), p = t[1];
   if (u === 0) {
@@ -20865,7 +20753,7 @@ function xC(e, t) {
   }
   return s;
 }
-var Eu = (e, t) => {
+var Ru = (e, t) => {
   let n = t.value - e.value;
   return n === 0 ? e.index - t.index : n;
 };
@@ -20876,20 +20764,20 @@ function wC(e, t, n = 0, s = e.length - 1) {
       wC(e, t, d, h);
     }
     let r = e[t], a = n, i = s;
-    for (w.swap(e, n, t), Eu(e[s], r) > 0 && w.swap(e, n, s); a < i; ) {
-      for (w.swap(e, a, i), a++, i--; Eu(e[a], r) < 0; )
+    for (w.swap(e, n, t), Ru(e[s], r) > 0 && w.swap(e, n, s); a < i; ) {
+      for (w.swap(e, a, i), a++, i--; Ru(e[a], r) < 0; )
         a = a + 1;
-      for (; Eu(e[i], r) > 0; )
+      for (; Ru(e[i], r) > 0; )
         i = i - 1;
     }
-    Eu(e[n], r) === 0 ? w.swap(e, n, i) : (i = i + 1, w.swap(e, i, s)), i <= t && (n = i + 1), t <= i && (s = i - 1);
+    Ru(e[n], r) === 0 ? w.swap(e, n, i) : (i = i + 1, w.swap(e, i, s)), i <= t && (n = i + 1), t <= i && (s = i - 1);
   }
 }
 function kC(e, t, n, s, r) {
   let a = t[t.length - 1], [i, o] = [e.length / a, a], u = w.getTypedArrayFromDType(n, i * s), l = w.getTypedArrayFromDType("int32", i * s);
   for (let p = 0; p < i; p++) {
     let d = p * o, h = e.subarray(d, d + o), f = new Array(h.length);
-    h.forEach((y, v) => f[v] = { value: y, index: v }), s < f.length && (wC(f, s), f = f.slice(0, s)), r && f.sort(Eu);
+    h.forEach((y, v) => f[v] = { value: y, index: v }), s < f.length && (wC(f, s), f = f.slice(0, s)), r && f.sort(Ru);
     let m = p * s, g = u.subarray(m, m + s), b = l.subarray(m, m + s);
     for (let y = 0; y < s; y++)
       g[y] = f[y].value, b[y] = f[y].index;
@@ -20934,7 +20822,7 @@ function IC(e, t, n, s) {
   let h = n.slice();
   return h[r] = p[1], { outputValues: d.values, outputShape: h, indices: o };
 }
-var Fpe = "0.0.0";
+var Ope = "0.0.0";
 pp("cpu", () => new L0(), 1);
 var SC = st(Fa, (e) => e >= 0 ? e : Math.exp(e) - 1);
 var yG = { kernelName: Fa, backendName: "cpu", kernelFunc: SC };
@@ -20986,11 +20874,11 @@ function mt(e) {
   }
   return { dataId: r.dataId, shape: o, dtype: r.dtype };
 }
-var SG = { kernelName: Ao, backendName: "cpu", kernelFunc: mt };
+var SG = { kernelName: Eo, backendName: "cpu", kernelFunc: mt };
 function _C(e) {
   let { inputs: t, backend: n, attrs: s } = e, { a: r, b: a } = t, { transposeA: i, transposeB: o } = s;
   be([r, a], "matMul");
-  let u = r.shape.length, l = a.shape.length, c = i ? r.shape[u - 2] : r.shape[u - 1], p = o ? a.shape[l - 1] : a.shape[l - 2], d = i ? r.shape[u - 1] : r.shape[u - 2], h = o ? a.shape[l - 2] : a.shape[l - 1], f = r.shape.slice(0, -2), m = a.shape.slice(0, -2), g = w.sizeFromShape(f), b = w.sizeFromShape(m), v = qo.assertAndGetBroadcastShape(r.shape.slice(0, -2), a.shape.slice(0, -2)).concat([d, h]);
+  let u = r.shape.length, l = a.shape.length, c = i ? r.shape[u - 2] : r.shape[u - 1], p = o ? a.shape[l - 1] : a.shape[l - 2], d = i ? r.shape[u - 1] : r.shape[u - 2], h = o ? a.shape[l - 2] : a.shape[l - 1], f = r.shape.slice(0, -2), m = a.shape.slice(0, -2), g = w.sizeFromShape(f), b = w.sizeFromShape(m), v = jo.assertAndGetBroadcastShape(r.shape.slice(0, -2), a.shape.slice(0, -2)).concat([d, h]);
   w.assert(c === p, () => `Error in matMul: inner shapes (${c}) and (${p}) of Tensors with shapes ${r.shape} and ${a.shape} and transposeA=${i} and transposeB=${o} must match.`);
   let x = i ? [g, c, d] : [g, d, c], k = o ? [b, h, p] : [b, p, h], T = mt({ inputs: { x: r }, backend: n, attrs: { shape: x } }), N = mt({ inputs: { x: a }, backend: n, attrs: { shape: k } }), E = i ? T.shape[1] : T.shape[2], A = i ? T.shape[2] : T.shape[1], P = o ? N.shape[1] : N.shape[2], R = Math.max(g, b), F = n.data.get(T.dataId).values, $ = n.data.get(N.dataId).values, z = w.computeStrides(T.shape), W = w.computeStrides(N.shape), [q, K, Y] = i ? [z[0], 1, z[1]] : [z[0], z[1], 1], [Z, te, ee] = o ? [1, W[1], W[0]] : [W[1], 1, W[0]], se = A * P, ne = De([R, A, P], T.dtype), oe = ne.values, re = n.blockSize;
   for (let le = 0; le < R; le++)
@@ -21019,10 +20907,10 @@ function NG(e) {
   return d;
 }
 var TG = { kernelName: ra, backendName: "cpu", kernelFunc: NG };
-var $G = st(nl, (e) => Math.acos(e));
-var _G = { kernelName: nl, backendName: "cpu", kernelFunc: $G };
-var AG = st(sl, (e) => Math.acosh(e));
-var EG = { kernelName: sl, backendName: "cpu", kernelFunc: AG };
+var $G = st(sl, (e) => Math.acos(e));
+var _G = { kernelName: sl, backendName: "cpu", kernelFunc: $G };
+var AG = st(rl, (e) => Math.acosh(e));
+var EG = { kernelName: rl, backendName: "cpu", kernelFunc: AG };
 function RG(e) {
   let { inputs: t, backend: n } = e, s = t;
   be(t, "addN");
@@ -21057,7 +20945,7 @@ function FG(e) {
   }
   return g;
 }
-var OG = { kernelName: rl, backendName: "cpu", kernelFunc: FG };
+var OG = { kernelName: al, backendName: "cpu", kernelFunc: FG };
 function PG(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, keepDims: i } = s;
   be(r, "any");
@@ -21080,7 +20968,7 @@ function PG(e) {
   }
   return g;
 }
-var zG = { kernelName: al, backendName: "cpu", kernelFunc: PG };
+var zG = { kernelName: il, backendName: "cpu", kernelFunc: PG };
 function MG(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a } = s;
   be(r, "argMax");
@@ -21114,18 +21002,18 @@ function BG(e) {
   }
   return l.forEach((g) => n.disposeIntermediateTensorInfo(g)), n.makeTensorInfo(c, "int32", h);
 }
-var VG = { kernelName: il, backendName: "cpu", kernelFunc: BG };
-var WG = st(ol, (e) => Math.asin(e));
-var UG = { kernelName: ol, backendName: "cpu", kernelFunc: WG };
-var GG = st(ul, (e) => Math.asinh(e));
-var HG = { kernelName: ul, backendName: "cpu", kernelFunc: GG };
-var qG = st(ll, (e) => Math.atan(e));
-var jG = { kernelName: ll, backendName: "cpu", kernelFunc: qG };
+var VG = { kernelName: ol, backendName: "cpu", kernelFunc: BG };
+var WG = st(ul, (e) => Math.asin(e));
+var UG = { kernelName: ul, backendName: "cpu", kernelFunc: WG };
+var GG = st(ll, (e) => Math.asinh(e));
+var HG = { kernelName: ll, backendName: "cpu", kernelFunc: GG };
+var qG = st(cl, (e) => Math.atan(e));
+var jG = { kernelName: cl, backendName: "cpu", kernelFunc: qG };
 var KG = At((e, t) => Math.atan2(e, t));
-var XG = Gt(dl, KG);
-var YG = { kernelName: dl, backendName: "cpu", kernelFunc: XG };
-var QG = st(cl, (e) => Math.atanh(e));
-var ZG = { kernelName: cl, backendName: "cpu", kernelFunc: QG };
+var XG = Gt(pl, KG);
+var YG = { kernelName: pl, backendName: "cpu", kernelFunc: XG };
+var QG = st(dl, (e) => Math.atanh(e));
+var ZG = { kernelName: dl, backendName: "cpu", kernelFunc: QG };
 function uv(e, t, n, s, r, a) {
   let i = r.strideHeight, o = r.strideWidth, u = r.dilationHeight, l = r.dilationWidth, c = r.effectiveFilterHeight, p = r.effectiveFilterWidth, d = r.padInfo.top, h = r.padInfo.left, f = a === "max" ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY, m = De(r.outShape, n), g = m.values, b = r.outShape[1] * r.outShape[2] * r.outShape[3], y = r.outShape[2] * r.outShape[3], v = r.outShape[3];
   for (let x = 0; x < r.batchSize; ++x) {
@@ -21347,7 +21235,7 @@ function cH(e) {
   let o = a.reduce((b, y) => b * y), u = S.getReshaped(r.shape, a, o), l = S.getPermuted(u.length, a.length), c = S.getReshapedPermuted(r.shape, a, o), p = S.getSliceBeginCoords(i, a.length), d = S.getSliceSize(c, i, a.length), h = mt({ inputs: { x: r }, backend: n, attrs: { shape: u } }), f = wn({ inputs: { x: h }, backend: n, attrs: { perm: l } }), m = mt({ inputs: { x: f }, backend: n, attrs: { shape: c } }), g = ga({ inputs: { x: m }, backend: n, attrs: { begin: p, size: d } });
   return n.disposeIntermediateTensorInfo(h), n.disposeIntermediateTensorInfo(f), n.disposeIntermediateTensorInfo(m), g;
 }
-var dH = { kernelName: io, backendName: "cpu", kernelFunc: cH };
+var dH = { kernelName: oo, backendName: "cpu", kernelFunc: cH };
 function pH(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, weights: a } = t, { size: i } = s, o = n.data.get(r.dataId).values, u = n.data.get(a.dataId).values, l = ev(o, u, a.dtype, a.shape, i);
   return n.makeTensorInfo([i], a.dtype, l);
@@ -21372,12 +21260,12 @@ var yH = (e) => {
   return n.makeOutput(s, t.shape, "float32");
 };
 var vH = { kernelName: Kd, backendName: "cpu", kernelFunc: yH };
-function to(e) {
+function no(e) {
   let { inputs: t, backend: n } = e, { input: s } = t, r = n.data.get(s.dataId).complexTensorInfos.imag, a = n.data.get(r.dataId).values;
   return n.makeTensorInfo(r.shape, r.dtype, a);
 }
-var xH = { kernelName: Zd, backendName: "cpu", kernelFunc: to };
-function no(e) {
+var xH = { kernelName: Zd, backendName: "cpu", kernelFunc: no };
+function so(e) {
   let { inputs: t, backend: n, attrs: s } = e, { axis: r } = s, a = w.parseAxisParam(r, t[0].shape)[0], i = S.computeOutShape(t.map((m) => m.shape), a);
   if (w.sizeFromShape(i) === 0)
     return n.makeTensorInfo(i, t[0].dtype, []);
@@ -21386,7 +21274,7 @@ function no(e) {
     return Os({ inputs: { x: o[0] }, backend: n });
   let u = o.map((m) => m.shape);
   if (S.assertParamsConsistent(u, a), o[0].dtype === "complex64") {
-    let m = o.map((x) => ma({ inputs: { input: x }, backend: n })), g = o.map((x) => to({ inputs: { input: x }, backend: n })), b = no({ inputs: m, backend: n, attrs: { axis: a } }), y = no({ inputs: g, backend: n, attrs: { axis: a } }), v = Rn({ inputs: { real: b, imag: y }, backend: n });
+    let m = o.map((x) => ma({ inputs: { input: x }, backend: n })), g = o.map((x) => no({ inputs: { input: x }, backend: n })), b = so({ inputs: m, backend: n, attrs: { axis: a } }), y = so({ inputs: g, backend: n, attrs: { axis: a } }), v = Rn({ inputs: { real: b, imag: y }, backend: n });
     return m.forEach((x) => n.disposeIntermediateTensorInfo(x)), g.forEach((x) => n.disposeIntermediateTensorInfo(x)), n.disposeIntermediateTensorInfo(b), n.disposeIntermediateTensorInfo(y), v;
   }
   let l = o.map((m) => {
@@ -21397,7 +21285,7 @@ function no(e) {
   let p = l[0].shape[0] === 1, d = tv(c, i, t[0].dtype, p), h = S.computeOutShape(o.map((m) => m.shape), a), f = n.makeTensorInfo(h, t[0].dtype, d);
   return l.forEach((m) => n.disposeIntermediateTensorInfo(m)), f;
 }
-var wH = { kernelName: oo, backendName: "cpu", kernelFunc: no };
+var wH = { kernelName: uo, backendName: "cpu", kernelFunc: so };
 function RC(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, filter: a } = t, { strides: i, pad: o, dataFormat: u, dilations: l, dimRoundingMode: c } = s;
   be([r, a], "conv2d");
@@ -21585,8 +21473,8 @@ function EH(e) {
                 for (let Ms = Et; Ms < en; ++Ms) {
                   let Ls = Ms * le - Cn, ki = v * Ee + x * Tn + k * Dn + T * Ms, Js = E * ($ - 1 - Yt) + A * (z - 1 - tn) + P * (W - 1 - Ls) + R * Pe;
                   for (let Bs = 0; Bs < te; ++Bs) {
-                    let du = y[ki + Bs], Ii = N[Js + Bs];
-                    Nn += du * Ii;
+                    let pu = y[ki + Bs], Ii = N[Js + Bs];
+                    Nn += pu * Ii;
                   }
                 }
               }
@@ -21662,7 +21550,7 @@ function zH(e) {
   }
   return n.makeTensorInfo(b.shape, b.dtype, b.values);
 }
-var MH = { kernelName: lo, backendName: "cpu", kernelFunc: zH };
+var MH = { kernelName: co, backendName: "cpu", kernelFunc: zH };
 function LH(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, exclusive: i, reverse: o } = s;
   be(r, "cumprod");
@@ -21689,7 +21577,7 @@ function LH(e) {
   }
   return g;
 }
-var BH = { kernelName: pl, backendName: "cpu", kernelFunc: LH };
+var BH = { kernelName: hl, backendName: "cpu", kernelFunc: LH };
 function VH(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, exclusive: i, reverse: o } = s;
   be(r, "cumsum");
@@ -21716,7 +21604,7 @@ function VH(e) {
   }
   return g;
 }
-var WH = { kernelName: uo, backendName: "cpu", kernelFunc: VH };
+var WH = { kernelName: lo, backendName: "cpu", kernelFunc: VH };
 function UH(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, weights: a } = t, { size: i, binaryOutput: o } = s;
   if (r.shape.length === 1) {
@@ -21746,7 +21634,7 @@ function HH(e) {
     }
   return n.makeTensorInfo([o, p, d, h], r.dtype, m);
 }
-var qH = { kernelName: co, backendName: "cpu", kernelFunc: HH };
+var qH = { kernelName: po, backendName: "cpu", kernelFunc: HH };
 function DC(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, filter: a } = t, { strides: i, pad: o, dilations: u, dimRoundingMode: l } = s;
   be([r, a], "depthwiseConv2DNative");
@@ -21983,16 +21871,16 @@ var c6 = S.ERF_A2;
 var d6 = S.ERF_A3;
 var p6 = S.ERF_A4;
 var h6 = S.ERF_A5;
-var f6 = st(hl, (e) => {
+var f6 = st(fl, (e) => {
   let t = Math.sign(e), n = Math.abs(e), s = 1 / (1 + u6 * n);
   return t * (1 - ((((h6 * s + p6) * s + d6) * s + c6) * s + l6) * s * Math.exp(-n * n));
 });
-var m6 = { kernelName: hl, backendName: "cpu", kernelFunc: f6 };
+var m6 = { kernelName: fl, backendName: "cpu", kernelFunc: f6 };
 function Od(e) {
   let { inputs: t, backend: n, attrs: s } = e, { input: r } = t, { dim: a } = s, i = r.shape.length, o = r.shape.slice(), u = a;
   return a < 0 && (w.assert(-(i + 1) <= a, () => `Axis must be in the interval [${-(i + 1)}, ${i}]`), u = i + a + 1), o.splice(u, 0, 1), mt({ inputs: { x: r }, backend: n, attrs: { shape: o } });
 }
-var g6 = { kernelName: ho, backendName: "cpu", kernelFunc: Od };
+var g6 = { kernelName: fo, backendName: "cpu", kernelFunc: Od };
 var b6 = At((e, t) => e / t);
 var lv = Gt(Da, b6);
 var Mm = { kernelName: Da, backendName: "cpu", kernelFunc: lv };
@@ -22029,7 +21917,7 @@ function v6(e) {
 function Lm(e, t, n, s, r) {
   if (n === 1)
     return { real: e, imag: t };
-  let a = S.mergeRealAndImagArrays(e, t), i = n / 2, o = S.complexWithEvenIndex(a), u = o.real, l = o.imag, c = [u.length], p = r.makeTensorInfo(c, "float32", u), d = r.makeTensorInfo(c, "float32", l), h = Rn({ inputs: { real: p, imag: d }, backend: r }), f = S.complexWithOddIndex(a), m = f.real, g = f.imag, b = [m.length], y = r.makeTensorInfo(b, "float32", m), v = r.makeTensorInfo(b, "float32", g), x = Rn({ inputs: { real: y, imag: v }, backend: r }), k = Lm(u, l, i, s, r), T = k.real, N = k.imag, E = [T.length], A = r.makeTensorInfo(E, "float32", T), P = r.makeTensorInfo(E, "float32", N), R = Rn({ inputs: { real: A, imag: P }, backend: r }), F = Lm(m, g, i, s, r), $ = F.real, z = F.imag, W = [$.length], q = r.makeTensorInfo(W, "float32", $), K = r.makeTensorInfo(W, "float32", z), Y = Rn({ inputs: { real: q, imag: K }, backend: r }), Z = S.exponents(n, s), te = [Z.real.length], ee = r.makeTensorInfo(te, "float32", Z.real), se = r.makeTensorInfo(te, "float32", Z.imag), ne = Rn({ inputs: { real: ee, imag: se }, backend: r }), oe = Hp({ inputs: { a: ne, b: Y }, backend: r }), re = Kl({ inputs: { a: R, b: oe }, backend: r }), le = iv({ inputs: { a: R, b: oe }, backend: r }), me = ma({ inputs: { input: re }, backend: r }), ke = ma({ inputs: { input: le }, backend: r }), Se = to({ inputs: { input: re }, backend: r }), Ee = to({ inputs: { input: le }, backend: r }), Pe = no({ inputs: [me, ke], backend: r, attrs: { axis: 0 } }), Xe = no({ inputs: [Se, Ee], backend: r, attrs: { axis: 0 } }), Je = r.data.get(Pe.dataId).values, Ye = r.data.get(Xe.dataId).values;
+  let a = S.mergeRealAndImagArrays(e, t), i = n / 2, o = S.complexWithEvenIndex(a), u = o.real, l = o.imag, c = [u.length], p = r.makeTensorInfo(c, "float32", u), d = r.makeTensorInfo(c, "float32", l), h = Rn({ inputs: { real: p, imag: d }, backend: r }), f = S.complexWithOddIndex(a), m = f.real, g = f.imag, b = [m.length], y = r.makeTensorInfo(b, "float32", m), v = r.makeTensorInfo(b, "float32", g), x = Rn({ inputs: { real: y, imag: v }, backend: r }), k = Lm(u, l, i, s, r), T = k.real, N = k.imag, E = [T.length], A = r.makeTensorInfo(E, "float32", T), P = r.makeTensorInfo(E, "float32", N), R = Rn({ inputs: { real: A, imag: P }, backend: r }), F = Lm(m, g, i, s, r), $ = F.real, z = F.imag, W = [$.length], q = r.makeTensorInfo(W, "float32", $), K = r.makeTensorInfo(W, "float32", z), Y = Rn({ inputs: { real: q, imag: K }, backend: r }), Z = S.exponents(n, s), te = [Z.real.length], ee = r.makeTensorInfo(te, "float32", Z.real), se = r.makeTensorInfo(te, "float32", Z.imag), ne = Rn({ inputs: { real: ee, imag: se }, backend: r }), oe = Hp({ inputs: { a: ne, b: Y }, backend: r }), re = Kl({ inputs: { a: R, b: oe }, backend: r }), le = iv({ inputs: { a: R, b: oe }, backend: r }), me = ma({ inputs: { input: re }, backend: r }), ke = ma({ inputs: { input: le }, backend: r }), Se = no({ inputs: { input: re }, backend: r }), Ee = no({ inputs: { input: le }, backend: r }), Pe = so({ inputs: [me, ke], backend: r, attrs: { axis: 0 } }), Xe = so({ inputs: [Se, Ee], backend: r, attrs: { axis: 0 } }), Je = r.data.get(Pe.dataId).values, Ye = r.data.get(Xe.dataId).values;
   return r.disposeIntermediateTensorInfo(p), r.disposeIntermediateTensorInfo(d), r.disposeIntermediateTensorInfo(h), r.disposeIntermediateTensorInfo(y), r.disposeIntermediateTensorInfo(v), r.disposeIntermediateTensorInfo(x), r.disposeIntermediateTensorInfo(A), r.disposeIntermediateTensorInfo(P), r.disposeIntermediateTensorInfo(R), r.disposeIntermediateTensorInfo(q), r.disposeIntermediateTensorInfo(K), r.disposeIntermediateTensorInfo(Y), r.disposeIntermediateTensorInfo(ee), r.disposeIntermediateTensorInfo(se), r.disposeIntermediateTensorInfo(ne), r.disposeIntermediateTensorInfo(oe), r.disposeIntermediateTensorInfo(re), r.disposeIntermediateTensorInfo(le), r.disposeIntermediateTensorInfo(me), r.disposeIntermediateTensorInfo(Se), r.disposeIntermediateTensorInfo(ke), r.disposeIntermediateTensorInfo(Ee), r.disposeIntermediateTensorInfo(Pe), r.disposeIntermediateTensorInfo(Xe), { real: Je, imag: Ye };
 }
 function x6(e, t, n) {
@@ -22053,11 +21941,11 @@ function cv(e) {
   let { backend: t, attrs: n } = e, { shape: s, value: r, dtype: a } = n, i = a || w.inferDtype(r), o = w.getArrayFromDType(i, w.sizeFromShape(s));
   return S6(o, r, i), t.makeTensorInfo(s, i, o);
 }
-var I6 = { kernelName: fl, backendName: "cpu", kernelFunc: cv };
+var I6 = { kernelName: ml, backendName: "cpu", kernelFunc: cv };
 function S6(e, t, n) {
   e.fill(t);
 }
-var C6 = { kernelName: mo, backendName: "cpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
+var C6 = { kernelName: go, backendName: "cpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
   let { image: s } = e, r = n, a = w.getTypedArrayFromDType(s.dtype, w.sizeFromShape(s.shape)), [i, o, u, l] = s.shape, c = r.data.get(s.dataId).values;
   for (let d = 0; d < i; d++) {
     let h = d * u * o * l;
@@ -22114,7 +22002,7 @@ function D6(e) {
   let d = n.data.get(r.dataId).values, h = n.bufferSync(s), f = Y0(d, h, s.dtype, l, o, c, p, s.shape, a);
   return n.makeTensorInfo(u, s.dtype, f.values);
 }
-var F6 = { kernelName: bo, backendName: "cpu", kernelFunc: D6 };
+var F6 = { kernelName: yo, backendName: "cpu", kernelFunc: D6 };
 function O6(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, indices: a } = t, { axis: i, batchDims: o } = s;
   be([r, a], "gatherV2");
@@ -22128,30 +22016,30 @@ function O6(e) {
   let d = w.sizeFromShape(a.shape), h = S.segment_util.collectGatherOpShapeInfo(r, a, u, p), f = mt({ inputs: { x: r }, backend: n, attrs: { shape: [h.batchSize, h.outerSize, h.dimSize, h.sliceSize] } }), m = mt({ inputs: { x: a }, backend: n, attrs: { shape: [h.batchSize, d / h.batchSize] } }), g = [h.batchSize, h.outerSize, d / h.batchSize, h.sliceSize], b = n.bufferSync(m), y = n.bufferSync(f), v = Q0(y, b, g);
   return n.disposeIntermediateTensorInfo(f), n.disposeIntermediateTensorInfo(m), n.makeTensorInfo(h.outputShape, v.dtype, v.values);
 }
-var P6 = { kernelName: go, backendName: "cpu", kernelFunc: O6 };
+var P6 = { kernelName: bo, backendName: "cpu", kernelFunc: O6 };
 function z6(e) {
   let { inputs: t, backend: n } = e, { input: s } = t, r = w.sizeFromShape(s.shape), a = s.shape[s.shape.length - 1], i = r / a, o = mt({ inputs: { x: s }, backend: n, attrs: { shape: [i, a] } }), u = FC(o, true, n), l = mt({ inputs: { x: u }, backend: n, attrs: { shape: s.shape } });
   return n.disposeIntermediateTensorInfo(o), n.disposeIntermediateTensorInfo(u), l;
 }
 var M6 = { kernelName: vg, backendName: "cpu", kernelFunc: z6 };
-var L6 = st(ml, (e) => Number.isFinite(e) ? 1 : 0, "bool");
-var B6 = { kernelName: ml, backendName: "cpu", kernelFunc: L6 };
-var V6 = st(gl, (e) => Math.abs(e) === 1 / 0 ? 1 : 0, "bool");
-var W6 = { kernelName: gl, backendName: "cpu", kernelFunc: V6 };
-var U6 = st(bl, (e) => Number.isNaN(e) ? 1 : 0, "bool");
-var G6 = { kernelName: bl, backendName: "cpu", kernelFunc: U6 };
+var L6 = st(gl, (e) => Number.isFinite(e) ? 1 : 0, "bool");
+var B6 = { kernelName: gl, backendName: "cpu", kernelFunc: L6 };
+var V6 = st(bl, (e) => Math.abs(e) === 1 / 0 ? 1 : 0, "bool");
+var W6 = { kernelName: bl, backendName: "cpu", kernelFunc: V6 };
+var U6 = st(yl, (e) => Number.isNaN(e) ? 1 : 0, "bool");
+var G6 = { kernelName: yl, backendName: "cpu", kernelFunc: U6 };
 function H6(e) {
   let { backend: t, attrs: n } = e, { start: s, stop: r, num: a } = n, i = nC(s, r, a);
   return t.makeTensorInfo([i.length], "float32", i);
 }
 var q6 = { kernelName: xg, backendName: "cpu", kernelFunc: H6 };
-var j6 = st(yl, (e) => Math.log1p(e));
-var K6 = { kernelName: yl, backendName: "cpu", kernelFunc: j6 };
+var j6 = st(vl, (e) => Math.log1p(e));
+var K6 = { kernelName: vl, backendName: "cpu", kernelFunc: j6 };
 var X6 = At((e, t) => e && t);
-var Y6 = Gt(wo, X6, null, "bool");
-var Q6 = { kernelName: wo, backendName: "cpu", kernelFunc: Y6 };
-var Z6 = st(vl, (e) => e ? 0 : 1, "bool");
-var J6 = { kernelName: vl, backendName: "cpu", kernelFunc: Z6 };
+var Y6 = Gt(ko, X6, null, "bool");
+var Q6 = { kernelName: ko, backendName: "cpu", kernelFunc: Y6 };
+var Z6 = st(xl, (e) => e ? 0 : 1, "bool");
+var J6 = { kernelName: xl, backendName: "cpu", kernelFunc: Z6 };
 var eq = At((e, t) => e || t);
 var tq = Gt(Jd, eq, null, "bool");
 var nq = { kernelName: Jd, backendName: "cpu", kernelFunc: tq };
@@ -22348,8 +22236,8 @@ var Sq = At((e, t) => {
   let n = e % t;
   return e < 0 && t < 0 || e >= 0 && t >= 0 ? n : (n + t) % t;
 });
-var Cq = Gt(xl, Sq);
-var Nq = { kernelName: xl, backendName: "cpu", kernelFunc: Cq };
+var Cq = Gt(wl, Sq);
+var Nq = { kernelName: wl, backendName: "cpu", kernelFunc: Cq };
 var Tq = xa(Wd());
 function PC(e) {
   let { inputs: t, backend: n, attrs: s } = e, { logits: r } = t, { dim: a } = s, i = r.shape.length, o = a;
@@ -22389,7 +22277,7 @@ function Rq(e) {
   let l = n.data.get(r.dataId).values, c = n.data.get(a.dataId).values, { selectedIndices: p } = Eq(l, c, i, o, u);
   return n.makeTensorInfo([p.length], "int32", new Int32Array(p));
 }
-var Dq = { kernelName: So, backendName: "cpu", kernelFunc: Rq };
+var Dq = { kernelName: Co, backendName: "cpu", kernelFunc: Rq };
 var Fq = xs.nonMaxSuppressionV4Impl;
 function Oq(e) {
   let { inputs: t, backend: n, attrs: s } = e, { boxes: r, scores: a } = t, { maxOutputSize: i, iouThreshold: o, scoreThreshold: u, padToMaxOutputSize: l } = s;
@@ -22397,7 +22285,7 @@ function Oq(e) {
   let c = n.data.get(r.dataId).values, p = n.data.get(a.dataId).values, { selectedIndices: d, validOutputs: h } = Fq(c, p, i, o, u, l);
   return [n.makeTensorInfo([d.length], "int32", new Int32Array(d)), n.makeTensorInfo([], "int32", new Int32Array([h]))];
 }
-var Pq = { kernelName: wl, backendName: "cpu", kernelFunc: Oq };
+var Pq = { kernelName: kl, backendName: "cpu", kernelFunc: Oq };
 var zq = xs.nonMaxSuppressionV5Impl;
 function Mq(e) {
   let { inputs: t, backend: n, attrs: s } = e, { boxes: r, scores: a } = t, { maxOutputSize: i, iouThreshold: o, scoreThreshold: u, softNmsSigma: l } = s;
@@ -22405,7 +22293,7 @@ function Mq(e) {
   let c = n.data.get(r.dataId).values, p = n.data.get(a.dataId).values, d = i, h = o, f = u, m = l, { selectedIndices: g, selectedScores: b } = zq(c, p, d, h, f, m);
   return [n.makeTensorInfo([g.length], "int32", new Int32Array(g)), n.makeTensorInfo([b.length], "float32", new Float32Array(b))];
 }
-var Lq = { kernelName: Co, backendName: "cpu", kernelFunc: Mq };
+var Lq = { kernelName: No, backendName: "cpu", kernelFunc: Mq };
 function Bq(e) {
   let { inputs: t, backend: n, attrs: s } = e, { indices: r } = t, { depth: a, onValue: i, offValue: o } = s;
   be(r, "oneHot");
@@ -22416,29 +22304,29 @@ function Bq(e) {
     c[p] >= 0 && c[p] < a && (l[p * a + c[p]] = i);
   return n.makeTensorInfo([...r.shape, a], "int32", l);
 }
-var Vq = { kernelName: To, backendName: "cpu", kernelFunc: Bq };
+var Vq = { kernelName: $o, backendName: "cpu", kernelFunc: Bq };
 function Pd(e) {
   let { inputs: t, backend: n } = e, { x: s } = t;
   if (s.dtype === "string")
     throw new Error("zerosLike is not supported for string tensors");
   if (s.dtype === "complex64") {
-    let r = ma({ inputs: { input: s }, backend: n }), a = Pd({ inputs: { x: r }, backend: n }), i = to({ inputs: { input: s }, backend: n }), o = Pd({ inputs: { x: i }, backend: n }), u = Rn({ inputs: { real: a, imag: o }, backend: n });
+    let r = ma({ inputs: { input: s }, backend: n }), a = Pd({ inputs: { x: r }, backend: n }), i = no({ inputs: { input: s }, backend: n }), o = Pd({ inputs: { x: i }, backend: n }), u = Rn({ inputs: { real: a, imag: o }, backend: n });
     return n.disposeIntermediateTensorInfo(r), n.disposeIntermediateTensorInfo(a), n.disposeIntermediateTensorInfo(i), n.disposeIntermediateTensorInfo(o), u;
   } else
     return cv({ backend: n, attrs: { shape: s.shape, value: 0, dtype: s.dtype } });
 }
-var Wq = { kernelName: Go, backendName: "cpu", kernelFunc: Pd };
+var Wq = { kernelName: Ho, backendName: "cpu", kernelFunc: Pd };
 function zC(e) {
   let { inputs: t, backend: n } = e, { x: s } = t;
   if (s.dtype === "string")
     throw new Error("onesLike is not supported for string tensors");
   if (s.dtype === "complex64") {
-    let r = ma({ inputs: { input: s }, backend: n }), a = zC({ inputs: { x: r }, backend: n }), i = to({ inputs: { input: s }, backend: n }), o = Pd({ inputs: { x: i }, backend: n }), u = Rn({ inputs: { real: a, imag: o }, backend: n });
+    let r = ma({ inputs: { input: s }, backend: n }), a = zC({ inputs: { x: r }, backend: n }), i = no({ inputs: { input: s }, backend: n }), o = Pd({ inputs: { x: i }, backend: n }), u = Rn({ inputs: { real: a, imag: o }, backend: n });
     return n.disposeIntermediateTensorInfo(r), n.disposeIntermediateTensorInfo(a), n.disposeIntermediateTensorInfo(i), n.disposeIntermediateTensorInfo(o), u;
   } else
     return cv({ backend: n, attrs: { shape: s.shape, value: 1, dtype: s.dtype } });
 }
-var Uq = { kernelName: No, backendName: "cpu", kernelFunc: zC };
+var Uq = { kernelName: To, backendName: "cpu", kernelFunc: zC };
 function MC(e) {
   let { inputs: t, backend: n, attrs: s } = e, { axis: r } = s;
   if (t.length === 1)
@@ -22450,10 +22338,10 @@ function MC(e) {
   let o = [], u = t.map((c) => {
     let p = Od({ inputs: { input: c }, backend: n, attrs: { dim: r } });
     return o.push(p), p;
-  }), l = no({ inputs: u, backend: n, attrs: { axis: r } });
+  }), l = so({ inputs: u, backend: n, attrs: { axis: r } });
   return o.forEach((c) => n.disposeIntermediateTensorInfo(c)), l;
 }
-var Gq = { kernelName: $o, backendName: "cpu", kernelFunc: MC };
+var Gq = { kernelName: _o, backendName: "cpu", kernelFunc: MC };
 function Hq(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { paddings: a, constantValue: i } = s;
   be(r, "pad");
@@ -22473,9 +22361,9 @@ function Xq(e) {
   let { backend: t, attrs: n } = e, { start: s, stop: r, dtype: a, step: i } = n, o = rv(s, r, i, a);
   return t.makeTensorInfo([o.length], a, o);
 }
-var Yq = { kernelName: kl, backendName: "cpu", kernelFunc: Xq };
-var Qq = st(Il, (e) => 1 / e);
-var Zq = { kernelName: Il, backendName: "cpu", kernelFunc: Qq };
+var Yq = { kernelName: Il, backendName: "cpu", kernelFunc: Xq };
+var Qq = st(Sl, (e) => 1 / e);
+var Zq = { kernelName: Sl, backendName: "cpu", kernelFunc: Qq };
 function Jq(e) {
   let { inputs: t, backend: n, attrs: s } = e, { images: r } = t, { alignCorners: a, halfPixelCenters: i, size: o } = s;
   be(r, "resizeBilinear");
@@ -22541,7 +22429,7 @@ function sj(e) {
   }
   return n.makeTensorInfo([p, l, c, f], r.dtype, g);
 }
-var rj = { kernelName: Sl, backendName: "cpu", kernelFunc: sj };
+var rj = { kernelName: Cl, backendName: "cpu", kernelFunc: sj };
 function aj(e) {
   let { inputs: t, backend: n, attrs: s } = e, { images: r, dy: a } = t, { alignCorners: i } = s;
   be([a, r], "resizeNearestNeighborGrad");
@@ -22589,8 +22477,8 @@ function oj(e) {
   }
   return n.makeTensorInfo(u.shape, u.dtype, u.values);
 }
-var uj = { kernelName: Eo, backendName: "cpu", kernelFunc: oj };
-var lj = { kernelName: Ho, backendName: "cpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
+var uj = { kernelName: Ro, backendName: "cpu", kernelFunc: oj };
+var lj = { kernelName: qo, backendName: "cpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
   let { image: s } = e, { radians: r, fillValue: a, center: i } = t, o = n, u = w.getTypedArrayFromDType(s.dtype, w.sizeFromShape(s.shape)), [l, c, p, d] = s.shape, [h, f] = S.getImageCenter(i, c, p), m = 255, g = Math.sin(r), b = Math.cos(r), y = o.data.get(s.dataId).values;
   for (let x = 0; x < l; x++) {
     let k = x * p * c * d;
@@ -22614,11 +22502,11 @@ var lj = { kernelName: Ho, backendName: "cpu", kernelFunc: ({ inputs: e, attrs: 
   }
   return { dataId: o.write(u, s.shape, s.dtype), shape: s.shape, dtype: s.dtype };
 } };
-var cj = st(Ro, (e) => {
+var cj = st(Do, (e) => {
   let t = Math.floor(e);
   return e - t < 0.5 ? Math.floor(e) : e - t > 0.5 ? Math.ceil(e) : t % 2 === 0 ? t : t + 1;
 });
-var dj = { kernelName: Ro, backendName: "cpu", kernelFunc: cj };
+var dj = { kernelName: Do, backendName: "cpu", kernelFunc: cj };
 function BC(e, t, n, s, r, a, i, o, u, l) {
   let c = [s / r, r], p = e.values, d = t.values;
   if (s === 0)
@@ -22642,7 +22530,7 @@ function pj(e) {
   let { inputs: t, backend: n, attrs: s } = e, { indices: r, updates: a } = t, { shape: i } = s, { sliceRank: o, numUpdates: u, sliceSize: l, strides: c, outputSize: p } = S.calculateShapes(a, r, i), d = true, h = n.bufferSync(r), f = n.bufferSync(a), m = BC(h, f, i, p, l, u, o, c, 0, d);
   return n.makeTensorInfo(i, m.dtype, m.values);
 }
-var hj = { kernelName: Do, backendName: "cpu", kernelFunc: pj };
+var hj = { kernelName: Fo, backendName: "cpu", kernelFunc: pj };
 function fj(e) {
   let { inputs: t, backend: n } = e, { condition: s, t: r, e: a } = t;
   be([s, r, a], "select");
@@ -22652,24 +22540,24 @@ function fj(e) {
       o[f] === 1 ? p[d++] = u[f] : p[d++] = l[f];
   return n.makeTensorInfo(r.shape, c, p);
 }
-var mj = { kernelName: Fo, backendName: "cpu", kernelFunc: fj };
+var mj = { kernelName: Oo, backendName: "cpu", kernelFunc: fj };
 var gj = S.SELU_SCALEALPHA;
 var bj = S.SELU_SCALE;
-var yj = st(Cl, (e) => e >= 0 ? bj * e : gj * (Math.exp(e) - 1));
-var vj = { kernelName: Cl, backendName: "cpu", kernelFunc: yj };
-var xj = st(Nl, (e) => e < 0 ? -1 : e > 0 ? 1 : 0);
-var wj = { kernelName: Nl, backendName: "cpu", kernelFunc: xj };
+var yj = st(Nl, (e) => e >= 0 ? bj * e : gj * (Math.exp(e) - 1));
+var vj = { kernelName: Nl, backendName: "cpu", kernelFunc: yj };
+var xj = st(Tl, (e) => e < 0 ? -1 : e > 0 ? 1 : 0);
+var wj = { kernelName: Tl, backendName: "cpu", kernelFunc: xj };
 var kj = st(ri, (e) => Math.sin(e));
 var Ij = { kernelName: ri, backendName: "cpu", kernelFunc: kj };
-var Sj = st(Po, (e) => Math.sinh(e));
-var Cj = { kernelName: Po, backendName: "cpu", kernelFunc: Sj };
+var Sj = st(zo, (e) => Math.sinh(e));
+var Cj = { kernelName: zo, backendName: "cpu", kernelFunc: Sj };
 var Nj = 11920928955078125e-23;
 var nw = Math.log(Nj) + 2;
-var Tj = st(Tl, (e) => {
+var Tj = st($l, (e) => {
   let t = e > -nw, n = e < nw, s = Math.exp(e), r;
   return n ? r = s : t ? r = e : r = Math.log(1 + s), r;
 });
-var $j = { kernelName: Tl, backendName: "cpu", kernelFunc: Tj };
+var $j = { kernelName: $l, backendName: "cpu", kernelFunc: Tj };
 function _j(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockShape: a, paddings: i } = s;
   be([r], "spaceToBatchND");
@@ -22680,7 +22568,7 @@ function _j(e) {
   let l = LC.kernelFunc({ inputs: { x: r }, backend: n, attrs: { paddings: u, constantValue: 0 } }), c = S.getReshaped(l.shape, a, o, false), p = S.getPermuted(c.length, a.length, false), d = S.getReshapedPermuted(l.shape, a, o, false), m = mt({ inputs: { x: l }, backend: n, attrs: { shape: c } }), y = wn({ inputs: { x: m }, backend: n, attrs: { perm: p } }), k = mt({ inputs: { x: y }, backend: n, attrs: { shape: d } });
   return n.disposeIntermediateTensorInfo(l), n.disposeIntermediateTensorInfo(m), n.disposeIntermediateTensorInfo(y), k;
 }
-var Aj = { kernelName: zo, backendName: "cpu", kernelFunc: _j };
+var Aj = { kernelName: Mo, backendName: "cpu", kernelFunc: _j };
 function Ej(e) {
   let { inputs: t, backend: n } = e, { indices: s, values: r, denseShape: a, defaultValue: i } = t;
   if (a.shape.length !== 1)
@@ -22712,7 +22600,7 @@ function Dj(e) {
   let i = Array.from(n.data.get(r.dataId).values), o = n.data.get(s.dataId).values, u = Array.from(n.data.get(a.dataId).values), [l, c, p] = hC(o, s.shape, s.dtype, i, u);
   return [n.makeTensorInfo(c, s.dtype, l), n.makeTensorInfo([p.length], a.dtype, new Int32Array(p))];
 }
-var Fj = { kernelName: $l, backendName: "cpu", kernelFunc: Dj };
+var Fj = { kernelName: _l, backendName: "cpu", kernelFunc: Dj };
 function Oj(e) {
   let { inputs: t, backend: n } = e, { data: s, indices: r, segmentIds: a } = t;
   if (s.shape.length < 1)
@@ -22759,8 +22647,8 @@ function Vj(e) {
     return l[o] += p, h;
   });
 }
-var Wj = { kernelName: Mo, backendName: "cpu", kernelFunc: Vj };
-var Uj = { kernelName: _l, backendName: "cpu", kernelFunc: ({ inputs: e, backend: t }) => {
+var Wj = { kernelName: Lo, backendName: "cpu", kernelFunc: Vj };
+var Uj = { kernelName: Al, backendName: "cpu", kernelFunc: ({ inputs: e, backend: t }) => {
   let { x: n } = e, s = t;
   be(n, "square");
   let r = s.data.get(n.dataId).values, a = new Float32Array(r.length);
@@ -22791,7 +22679,7 @@ function qj(e) {
   }
   return k;
 }
-var jj = { kernelName: Lo, backendName: "cpu", kernelFunc: qj };
+var jj = { kernelName: Bo, backendName: "cpu", kernelFunc: qj };
 function Kj(e) {
   let { inputs: t, backend: n, attrs: s } = e, { separator: r, nGramWidths: a, leftPad: i, rightPad: o, padWidth: u, preserveShortSequences: l } = s, { data: c, dataSplits: p } = t, d = n.data.get(c.dataId).values, h = n.data.get(p.dataId).values, [f, m] = gC(d, h, r, a, i, o, u, l);
   return [n.makeTensorInfo([f.length], "string", f), n.makeTensorInfo(p.shape, "int32", m)];
@@ -22819,8 +22707,8 @@ function Zj(e) {
   return n.makeTensorInfo(a.shape, "int32", o);
 }
 var Jj = { kernelName: _g, backendName: "cpu", kernelFunc: Zj };
-var e5 = st(Bo, (e) => Math.tan(e));
-var t5 = { kernelName: Bo, backendName: "cpu", kernelFunc: e5 };
+var e5 = st(Vo, (e) => Math.tan(e));
+var t5 = { kernelName: Vo, backendName: "cpu", kernelFunc: e5 };
 var n5 = st(di, (e) => Math.tanh(e));
 var s5 = { kernelName: di, backendName: "cpu", kernelFunc: n5 };
 function r5(e) {
@@ -22836,7 +22724,7 @@ function i5(e) {
   let o = n.data.get(r.dataId).values, [u, l] = kC(o, r.shape, r.dtype, a, i);
   return [n.makeTensorInfo(u.shape, u.dtype, u.values), n.makeTensorInfo(l.shape, l.dtype, l.values)];
 }
-var o5 = { kernelName: Vo, backendName: "cpu", kernelFunc: i5 };
+var o5 = { kernelName: Wo, backendName: "cpu", kernelFunc: i5 };
 function u5(e) {
   let { inputs: t, attrs: n, backend: s } = e, { image: r, transforms: a } = t, { interpolation: i, fillMode: o, fillValue: u, outputShape: l } = n, [c, p, d, h] = r.shape, [f, m] = l != null ? l : [p, d], g = [c, f, m, h], b = w.computeStrides(r.shape), y = b[0], v = b[1], x = b[2], k = w.getTypedArrayFromDType(r.dtype, w.sizeFromShape(g));
   k.fill(u);
@@ -22867,7 +22755,7 @@ function u5(e) {
   }
   return { dataId: s.write(k, g, r.dtype), shape: r.shape, dtype: r.dtype };
 }
-var l5 = { kernelName: Wo, backendName: "cpu", kernelFunc: u5 };
+var l5 = { kernelName: Uo, backendName: "cpu", kernelFunc: u5 };
 function sw(e, t, n) {
   switch (n) {
     case "reflect":
@@ -22923,16 +22811,16 @@ function p5(e, t) {
 function h5(e, t) {
   return w.clamp(0, e, t - 1);
 }
-function Ru(e, t, n, s, r, a, i, o, u, l, c) {
+function Du(e, t, n, s, r, a, i, o, u, l, c) {
   let p = i * s + o * r + u * a + l;
   return 0 <= o && o < t && 0 <= u && u < n ? e[p] : c;
 }
 function f5(e, t, n, s, r, a, i, o, u, l, c) {
   let p = Math.round(o), d = Math.round(u);
-  return Ru(e, t, n, s, r, a, i, p, d, l, c);
+  return Du(e, t, n, s, r, a, i, p, d, l, c);
 }
 function m5(e, t, n, s, r, a, i, o, u, l, c) {
-  let p = Math.floor(o), d = Math.floor(u), h = p + 1, f = d + 1, m = (f - u) * Ru(e, t, n, s, r, a, i, p, d, l, c) + (u - d) * Ru(e, t, n, s, r, a, i, p, f, l, c), g = (f - u) * Ru(e, t, n, s, r, a, i, h, d, l, c) + (u - d) * Ru(e, t, n, s, r, a, i, h, f, l, c);
+  let p = Math.floor(o), d = Math.floor(u), h = p + 1, f = d + 1, m = (f - u) * Du(e, t, n, s, r, a, i, p, d, l, c) + (u - d) * Du(e, t, n, s, r, a, i, p, f, l, c), g = (f - u) * Du(e, t, n, s, r, a, i, h, d, l, c) + (u - d) * Du(e, t, n, s, r, a, i, h, f, l, c);
   return (h - o) * m + (o - p) * g;
 }
 function g5(e) {
@@ -22958,7 +22846,7 @@ function y5(e) {
   }
   return d;
 }
-var v5 = { kernelName: Uo, backendName: "cpu", kernelFunc: y5 };
+var v5 = { kernelName: Go, backendName: "cpu", kernelFunc: y5 };
 function x5(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, segmentIds: a } = t, { numSegments: i } = s;
   be(r, "unsortedSegmentSum");
@@ -22977,9 +22865,9 @@ function x5(e) {
 var w5 = { kernelName: up, backendName: "cpu", kernelFunc: x5 };
 var k5 = [TG, xU, _G, EG, NU, DG, OG, zG, LG, VG, UG, HG, jG, YG, ZG, tH, sH, aH, oH, CG, lH, dH, hH, mH, SU, $U, bH, wU, vH, wH, kH, SH, NH, $H, AH, RH, FH, PH, MH, BH, WH, GH, qH, jH, XH, QH, JH, e6, t6, n6, a6, yG, o6, _U, m6, AU, g6, RU, k6, I6, C6, FU, $6, A6, R6, F6, P6, PU, MU, kU, M6, xH, B6, W6, G6, vG, BU, WU, q6, GU, K6, Q6, J6, nq, rq, iq, oq, qU, lq, dq, hq, mq, bq, vq, wq, KU, Iq, Nq, Aq, YU, ZU, Dq, Pq, Lq, eG, Vq, Uq, Gq, LC, Kq, wG, sG, Yq, IU, Mm, Zq, kG, IG, SG, ej, nj, rj, ij, uj, lj, dj, aG, hj, mj, vj, oG, wj, Ij, Cj, uG, $q, $j, Aj, Rj, Fj, Pj, Mj, Bj, Wj, dG, Uj, hG, Hj, jj, Xj, Qj, Jj, bG, s6, t5, s5, a5, o5, l5, tG, b5, v5, w5, Wq];
 for (let e of k5)
-  Al(e);
+  El(e);
 var I5 = {};
-Ae(I5, { assertNotComplex: () => tu, bindCanvasToFramebuffer: () => O5, bindColorTextureToFramebuffer: () => ad, bindTextureToProgramUniformSampler: () => t1, bindTextureUnit: () => ZC, bindVertexBufferToProgramAttribute: () => Bm, callAndCheck: () => fe, canBeRepresented: () => VC, createFragmentShader: () => GC, createFramebuffer: () => QC, createProgram: () => HC, createStaticIndexBuffer: () => KC, createStaticVertexBuffer: () => jC, createTexture: () => XC, createVertexShader: () => UC, getBatchDim: () => ba, getExtensionOrThrow: () => Du, getFramebufferErrorMessage: () => n1, getMaxTexturesInShader: () => i1, getNumChannels: () => D5, getProgramUniformLocation: () => e1, getProgramUniformLocationOrThrow: () => JC, getRowsCols: () => ya, getShapeAs3D: () => id, getTextureShapeFromLogicalShape: () => r1, getWebGLDisjointQueryTimerVersion: () => o1, getWebGLErrorMessage: () => WC, getWebGLMaxTextureSize: () => a1, hasExtension: () => Ln, isCapableOfRenderingToFloatTexture: () => u1, isDownloadFloatTextureEnabled: () => l1, isReshapeFree: () => Ju, isWebGLFenceEnabled: () => c1, isWebGLVersionEnabled: () => Wm, linkProgram: () => qC, logShaderSourceAndInfoLog: () => pv, resetMaxTextureSize: () => P5, resetMaxTexturesInShader: () => z5, unbindColorTextureFromFramebuffer: () => Vm, unbindTextureUnit: () => F5, validateFramebuffer: () => Fu, validateProgram: () => rd, validateTextureSize: () => YC });
+Ae(I5, { assertNotComplex: () => nu, bindCanvasToFramebuffer: () => O5, bindColorTextureToFramebuffer: () => ad, bindTextureToProgramUniformSampler: () => t1, bindTextureUnit: () => ZC, bindVertexBufferToProgramAttribute: () => Bm, callAndCheck: () => fe, canBeRepresented: () => VC, createFragmentShader: () => GC, createFramebuffer: () => QC, createProgram: () => HC, createStaticIndexBuffer: () => KC, createStaticVertexBuffer: () => jC, createTexture: () => XC, createVertexShader: () => UC, getBatchDim: () => ba, getExtensionOrThrow: () => Fu, getFramebufferErrorMessage: () => n1, getMaxTexturesInShader: () => i1, getNumChannels: () => D5, getProgramUniformLocation: () => e1, getProgramUniformLocationOrThrow: () => JC, getRowsCols: () => ya, getShapeAs3D: () => id, getTextureShapeFromLogicalShape: () => r1, getWebGLDisjointQueryTimerVersion: () => o1, getWebGLErrorMessage: () => WC, getWebGLMaxTextureSize: () => a1, hasExtension: () => Ln, isCapableOfRenderingToFloatTexture: () => u1, isDownloadFloatTextureEnabled: () => l1, isReshapeFree: () => el, isWebGLFenceEnabled: () => c1, isWebGLVersionEnabled: () => Wm, linkProgram: () => qC, logShaderSourceAndInfoLog: () => pv, resetMaxTextureSize: () => P5, resetMaxTexturesInShader: () => z5, unbindColorTextureFromFramebuffer: () => Vm, unbindTextureUnit: () => F5, validateFramebuffer: () => Ou, validateProgram: () => rd, validateTextureSize: () => YC });
 var Xr = {};
 var jf = { alpha: false, antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: false, depth: false, stencil: false, failIfMajorPerformanceCaveat: true };
 function S5(e, t) {
@@ -23021,11 +22909,11 @@ function Yc(e) {
   let t = w.sizeFromShape(e), n = Math.ceil(t / 4);
   return w.sizeToSquarishShape(n);
 }
-function eu(e, t) {
+function tu(e, t) {
   return [Math.max(1, Math.ceil(t / 2)), Math.max(1, Math.ceil(e / 2))];
 }
 function $5(e, t) {
-  let [n, s] = eu(e, t);
+  let [n, s] = tu(e, t);
   return n * s * 4;
 }
 function dv(e, t) {
@@ -23066,7 +22954,7 @@ function WC(e, t) {
       return `Unknown error code ${t}`;
   }
 }
-function Du(e, t) {
+function Fu(e, t) {
   return Qs(e, () => e.getExtension(t), 'Extension "' + t + '" not supported on this browser.');
 }
 function UC(e, t) {
@@ -23167,7 +23055,7 @@ function ad(e, t, n) {
 function Vm(e, t) {
   fe(e, () => e.bindFramebuffer(e.FRAMEBUFFER, t)), fe(e, () => e.framebufferTexture2D(e.FRAMEBUFFER, e.COLOR_ATTACHMENT0, e.TEXTURE_2D, null, 0));
 }
-function Fu(e) {
+function Ou(e) {
   let t = e.checkFramebufferStatus(e.FRAMEBUFFER);
   if (t !== e.FRAMEBUFFER_COMPLETE)
     throw new Error("Error binding framebuffer: " + n1(e, t));
@@ -23236,7 +23124,7 @@ function r1(e, t = false) {
 function Qc(e) {
   return e % 2 === 0;
 }
-function Ju(e, t) {
+function el(e, t) {
   if (e = e.slice(-2), t = t.slice(-2), w.arraysEqual(e, t) || !e.length || !t.length || e[0] === 0 || e[1] === 0 || t[0] === 0 || t[1] === 0)
     return true;
   if (e.length !== t.length) {
@@ -23339,7 +23227,7 @@ function M5(e, t) {
 function c1(e) {
   return e !== 2 ? false : vs(e).fenceSync != null;
 }
-function tu(e, t) {
+function nu(e, t) {
   Array.isArray(e) || (e = [e]), e.forEach((n) => {
     n != null && w.assert(n.dtype !== "complex64", () => `${t} does not support complex64 tensors in the WebGL backend.`);
   });
@@ -23572,7 +23460,7 @@ function V5(e, t, n) {
   return t.isPacked ? (l = U5(t.logicalShape, i, n.enableShapeUniforms), c = j5(o)) : (l = G5(t.logicalShape, i, n.enableShapeUniforms), c = q5(o)), n.packedInputs && (p += Z5), [p, u, c, r, l, a, n.userCode].join(`
 `);
 }
-function nu(e, t = false) {
+function su(e, t = false) {
   let n = e.shapeInfo.logicalShape;
   switch (n.length) {
     case 0:
@@ -23609,7 +23497,7 @@ function h1(e, t) {
 }
 function W5(e, t, n = false, s) {
   let r = "";
-  n ? r += h1(e, s) : r += nu(e, s);
+  n ? r += h1(e, s) : r += su(e, s);
   let a = e.shapeInfo.logicalShape, i = t.logicalShape;
   return a.length <= i.length && (n ? r += wK(e, t) : r += kK(e, t)), r;
 }
@@ -24165,7 +24053,7 @@ function pK(e, t) {
   if (e.shapeInfo.isUniform)
     return `
       float ${s}(int index) {
-        ${su(e)}
+        ${ru(e)}
       }
     `;
   let r = e.shapeInfo.texShape, a = r[0], i = r[1];
@@ -24261,11 +24149,11 @@ function fK(e, t) {
   }
   let { newShape: i, keptDims: o } = w.squeezeShape(n), u = i;
   if (u.length < n.length) {
-    let d = ru(e, u), h = ["row", "col"];
+    let d = au(e, u), h = ["row", "col"];
     return `
-      ${nu(d, t)}
+      ${su(d, t)}
       float ${r}(int row, int col) {
-        return ${r}(${au(h, o)});
+        return ${r}(${iu(h, o)});
       }
     `;
   }
@@ -24273,7 +24161,7 @@ function fK(e, t) {
     return `
       float ${r}(int row, int col) {
         int index = round(dot(vec2(row, col), vec2(${n[1]}, 1)));
-        ${su(e)}
+        ${ru(e)}
       }
     `;
   let l = a[0], c = a[1], p = vi(s);
@@ -24320,11 +24208,11 @@ function fK(e, t) {
 function mK(e, t) {
   let n = e.shapeInfo.logicalShape, s = e.name, r = "get" + s.charAt(0).toUpperCase() + s.slice(1), a = e.shapeInfo.texShape, i = [Math.ceil(a[0] / 2), Math.ceil(a[1] / 2)];
   if (n[0] === 1) {
-    let d = n.slice(1), h = [1, 2], f = ru(e, d), m = ["b", "row", "col"];
+    let d = n.slice(1), h = [1, 2], f = au(e, d), m = ["b", "row", "col"];
     return `
         ${h1(f, t)}
         vec4 ${r}(int b, int row, int col) {
-          return ${r}(${au(m, h)});
+          return ${r}(${iu(m, h)});
         }
       `;
   }
@@ -24352,11 +24240,11 @@ function mK(e, t) {
 function gK(e, t) {
   let n = e.shapeInfo.logicalShape, s = e.name, r = "get" + s.charAt(0).toUpperCase() + s.slice(1), a = n[1] * n[2], i = n[2], { newShape: o, keptDims: u } = w.squeezeShape(n), l = o;
   if (l.length < n.length) {
-    let m = ru(e, l), g = ["row", "col", "depth"];
+    let m = au(e, l), g = ["row", "col", "depth"];
     return `
-        ${nu(m, t)}
+        ${su(m, t)}
         float ${r}(int row, int col, int depth) {
-          return ${r}(${au(g, u)});
+          return ${r}(${iu(g, u)});
         }
       `;
   }
@@ -24365,7 +24253,7 @@ function gK(e, t) {
       float ${r}(int row, int col, int depth) {
         int index = round(dot(vec3(row, col, depth),
                           vec3(${a}, ${i}, 1)));
-        ${su(e)}
+        ${ru(e)}
       }
     `;
   let c = e.shapeInfo.texShape, p = c[0], d = c[1], h = e.shapeInfo.flatOffset;
@@ -24455,11 +24343,11 @@ function bK(e, t) {
 function yK(e, t) {
   let n = e.shapeInfo.logicalShape, s = e.name, r = "get" + s.charAt(0).toUpperCase() + s.slice(1), a = n[3], i = n[2] * a, o = n[1] * i, { newShape: u, keptDims: l } = w.squeezeShape(n);
   if (u.length < n.length) {
-    let y = ru(e, u), v = ["row", "col", "depth", "depth2"];
+    let y = au(e, u), v = ["row", "col", "depth", "depth2"];
     return `
-      ${nu(y, t)}
+      ${su(y, t)}
       float ${r}(int row, int col, int depth, int depth2) {
-        return ${r}(${au(v, l)});
+        return ${r}(${iu(v, l)});
       }
     `;
   }
@@ -24468,7 +24356,7 @@ function yK(e, t) {
       float ${r}(int row, int col, int depth, int depth2) {
         int index = round(dot(vec4(row, col, depth, depth2),
                           vec4(${o}, ${i}, ${a}, 1)));
-        ${su(e)}
+        ${ru(e)}
       }
     `;
   let c = e.shapeInfo.flatOffset, p = e.shapeInfo.texShape, d = p[0], h = p[1], f = `int stride2 = ${s}Shape[3];`, m = `int stride1 = ${s}Shape[2] * stride2;`, g = `int stride0 = ${s}Shape[1] * stride1;`;
@@ -24541,11 +24429,11 @@ function yK(e, t) {
 function vK(e) {
   let t = e.shapeInfo.logicalShape, n = e.name, s = "get" + n.charAt(0).toUpperCase() + n.slice(1), r = t[4], a = t[3] * r, i = t[2] * a, o = t[1] * i, { newShape: u, keptDims: l } = w.squeezeShape(t);
   if (u.length < t.length) {
-    let m = ru(e, u), g = ["row", "col", "depth", "depth2", "depth3"];
+    let m = au(e, u), g = ["row", "col", "depth", "depth2", "depth3"];
     return `
-      ${nu(m)}
+      ${su(m)}
       float ${s}(int row, int col, int depth, int depth2, int depth3) {
-        return ${s}(${au(g, l)});
+        return ${s}(${iu(g, l)});
       }
     `;
   }
@@ -24556,7 +24444,7 @@ function vK(e) {
           vec4(row, col, depth, depth2),
           vec4(${o}, ${i}, ${a}, ${r})) +
           depth3;
-        ${su(e)}
+        ${ru(e)}
       }
     `;
   let c = e.shapeInfo.flatOffset, p = e.shapeInfo.texShape, d = p[0], h = p[1];
@@ -24598,12 +24486,12 @@ function vK(e) {
 function xK(e) {
   let t = e.shapeInfo.logicalShape, n = e.name, s = "get" + n.charAt(0).toUpperCase() + n.slice(1), { newShape: r, keptDims: a } = w.squeezeShape(t);
   if (r.length < t.length) {
-    let g = ru(e, r), b = ["row", "col", "depth", "depth2", "depth3", "depth4"];
+    let g = au(e, r), b = ["row", "col", "depth", "depth2", "depth3", "depth4"];
     return `
-      ${nu(g)}
+      ${su(g)}
       float ${s}(int row, int col, int depth,
                     int depth2, int depth3, int depth4) {
-        return ${s}(${au(b, a)});
+        return ${s}(${iu(b, a)});
       }
     `;
   }
@@ -24618,7 +24506,7 @@ function xK(e) {
           dot(
             vec2(depth3, depth4),
             vec2(${i}, 1)));
-        ${su(e)}
+        ${ru(e)}
       }
     `;
   let p = e.shapeInfo.flatOffset, d = e.shapeInfo.texShape, h = d[0], f = d[1];
@@ -24662,7 +24550,7 @@ function xK(e) {
     }
   `;
 }
-function su(e) {
+function ru(e) {
   let t = e.name, n = w.sizeFromShape(e.shapeInfo.logicalShape);
   return n < 2 ? `return ${t};` : `
     for (int i = 0; i < ${n}; i++) {
@@ -24741,11 +24629,11 @@ function mv(e, t, n) {
   let { newShape: s, keptDims: r } = w.squeezeShape(t), a = t.length, i = e && a === 3 && t[0] === 1, o = i ? t.slice(1) : s, u = !e && a > 1 && !w.arraysEqual(t, n) && s.length < a || i;
   return { useSqueezeShape: u, uniformShape: u ? o : t, keptDims: r };
 }
-function ru(e, t) {
+function au(e, t) {
   let n = JSON.parse(JSON.stringify(e));
   return n.shapeInfo.logicalShape = t, n;
 }
-function au(e, t) {
+function iu(e, t) {
   return t.map((n) => e[n]).join(", ");
 }
 function IK(e, t, n, s) {
@@ -25136,14 +25024,14 @@ function vv(e) {
   return e.internalFormatPackedFloat;
 }
 function k1(e, t, n, s) {
-  let [r, a] = eu(t, n);
+  let [r, a] = tu(t, n);
   return Ql(e, r, a, vv(s), e.RGBA, e.FLOAT);
 }
 function xv(e) {
   return e.internalFormatPackedHalfFloat;
 }
 function I1(e, t, n, s) {
-  let [r, a] = eu(t, n);
+  let [r, a] = tu(t, n);
   return Ql(e, r, a, xv(s), e.RGBA, s.textureTypeHalfFloat);
 }
 function S1(e, t, n) {
@@ -25187,12 +25075,12 @@ var Kf = class {
     let n = "WEBGL_color_buffer_float", s = "EXT_color_buffer_half_float";
     if (this.parallelCompilationExtension = this.gl.getExtension("KHR_parallel_shader_compile"), X().getNumber("WEBGL_VERSION") === 1) {
       let r = "OES_texture_float", a = "OES_texture_half_float";
-      if (this.textureFloatExtension = Du(this.gl, r), Ln(this.gl, a))
-        this.textureHalfFloatExtension = Du(this.gl, a);
+      if (this.textureFloatExtension = Fu(this.gl, r), Ln(this.gl, a))
+        this.textureHalfFloatExtension = Fu(this.gl, a);
       else if (X().get("WEBGL_FORCE_F16_TEXTURES"))
         throw new Error("GL context does not support half float textures, yet the environment flag WEBGL_FORCE_F16_TEXTURES is set to true.");
       if (this.colorBufferFloatExtension = this.gl.getExtension(n), Ln(this.gl, s))
-        this.colorBufferHalfFloatExtension = Du(this.gl, s);
+        this.colorBufferHalfFloatExtension = Fu(this.gl, s);
       else if (X().get("WEBGL_FORCE_F16_TEXTURES"))
         throw new Error("GL context does not support color renderable half floats, yet the environment flag WEBGL_FORCE_F16_TEXTURES is set to true.");
     } else if (n = "EXT_color_buffer_float", Ln(this.gl, n))
@@ -25300,7 +25188,7 @@ var Kf = class {
   }
   setOutputPackedMatrixTexture(e, t, n) {
     this.throwIfDisposed();
-    let [s, r] = eu(t, n);
+    let [s, r] = tu(t, n);
     this.setOutputMatrixTextureDriver(e, s, r);
   }
   setOutputMatrixWriteRegion(e, t, n, s) {
@@ -25310,7 +25198,7 @@ var Kf = class {
     throw new Error("setOutputPackedMatrixWriteRegion not implemented.");
   }
   debugValidate() {
-    this.program != null && rd(this.gl, this.program), Fu(this.gl);
+    this.program != null && rd(this.gl, this.program), Ou(this.gl);
   }
   executeProgram() {
     this.throwIfDisposed(), this.throwIfNoProgram();
@@ -25321,7 +25209,7 @@ var Kf = class {
     this.throwIfDisposed(), fe(this.gl, () => this.gl.finish());
   }
   getQueryTimerExtension() {
-    return this.disjointQueryTimerExtension == null && (this.disjointQueryTimerExtension = Du(this.gl, X().getNumber("WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_VERSION") === 2 ? "EXT_disjoint_timer_query_webgl2" : "EXT_disjoint_timer_query")), this.disjointQueryTimerExtension;
+    return this.disjointQueryTimerExtension == null && (this.disjointQueryTimerExtension = Fu(this.gl, X().getNumber("WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_VERSION") === 2 ? "EXT_disjoint_timer_query_webgl2" : "EXT_disjoint_timer_query")), this.disjointQueryTimerExtension;
   }
   getQueryTimerExtensionWebGL2() {
     return this.getQueryTimerExtension();
@@ -25388,10 +25276,10 @@ var Kf = class {
     this.itemsToPoll.push({ isDoneFn: e, resolveFn: t }), !(this.itemsToPoll.length > 1) && w.repeatedTry(() => (this.pollItems(), this.itemsToPoll.length === 0));
   }
   bindTextureToFrameBuffer(e) {
-    this.throwIfDisposed(), ad(this.gl, e, this.framebuffer), this.debug && Fu(this.gl);
+    this.throwIfDisposed(), ad(this.gl, e, this.framebuffer), this.debug && Ou(this.gl);
   }
   unbindTextureToFrameBuffer() {
-    this.outputTexture != null ? (ad(this.gl, this.outputTexture, this.framebuffer), this.debug && Fu(this.gl)) : Vm(this.gl, this.framebuffer);
+    this.outputTexture != null ? (ad(this.gl, this.outputTexture, this.framebuffer), this.debug && Ou(this.gl)) : Vm(this.gl, this.framebuffer);
   }
   downloadMatrixDriver(e, t) {
     this.bindTextureToFrameBuffer(e);
@@ -25401,7 +25289,7 @@ var Kf = class {
   setOutputMatrixTextureDriver(e, t, n) {
     this.throwIfDisposed();
     let s = this.gl;
-    ad(s, e, this.framebuffer), this.debug && Fu(s), this.outputTexture = e, fe(s, () => s.viewport(0, 0, t, n)), fe(s, () => s.scissor(0, 0, t, n));
+    ad(s, e, this.framebuffer), this.debug && Ou(s), this.outputTexture = e, fe(s, () => s.viewport(0, 0, t, n)), fe(s, () => s.scissor(0, 0, t, n));
   }
   setOutputMatrixWriteRegionDriver(e, t, n, s) {
     this.throwIfDisposed(), fe(this.gl, () => this.gl.scissor(e, t, n, s));
@@ -25630,7 +25518,7 @@ function kX(e, t) {
 function aw(e, t, n, s, r) {
   let a = IX(t, s), i;
   if (r) {
-    let [u, l] = eu(e[0], e[1]);
+    let [u, l] = tu(e[0], e[1]);
     i = u * l;
   } else {
     let [u, l] = Yl(e[0], e[1]);
@@ -25774,10 +25662,9 @@ var VX = 600;
 function WX() {
   return X().global.screen == null ? 1024 : X().global.screen.height * X().global.screen.width * window.devicePixelRatio * VX / 1024 / 1024;
 }
-var z1 = class extends tl {
+var z1 = class extends nl {
   constructor(e) {
-    super();
-    if (this.pendingRead = /* @__PURE__ */ new WeakMap(), this.pendingDisposal = /* @__PURE__ */ new WeakSet(), this.dataRefCount = /* @__PURE__ */ new WeakMap(), this.numBytesInGPU = 0, this.uploadWaitMs = 0, this.downloadWaitMs = 0, this.lastGlFlushTime = 0, this.warnedAboutMemory = false, this.pendingDeletes = 0, this.disposed = false, !X().getBool("HAS_WEBGL"))
+    if (super(), this.pendingRead = /* @__PURE__ */ new WeakMap(), this.pendingDisposal = /* @__PURE__ */ new WeakSet(), this.dataRefCount = /* @__PURE__ */ new WeakMap(), this.numBytesInGPU = 0, this.uploadWaitMs = 0, this.downloadWaitMs = 0, this.lastGlFlushTime = 0, this.warnedAboutMemory = false, this.pendingDeletes = 0, this.disposed = false, !X().getBool("HAS_WEBGL"))
       throw new Error("WebGL is not supported on this device");
     let t;
     if (e != null) {
@@ -26069,7 +25956,7 @@ var z1 = class extends tl {
       }
       if (this.uploadToGPU(g.dataId), !!b.isPacked != !!e.packedInputs)
         g = b.isPacked ? this.unpackTensor(g) : this.packTensor(g), u.push(g), b = this.texData.get(g.dataId);
-      else if (b.isPacked && !Ju(b.shape, g.shape)) {
+      else if (b.isPacked && !el(b.shape, g.shape)) {
         let y = g, v = g.shape;
         g.shape = b.shape, g = this.packedReshape(g, v), u.push(g), b = this.texData.get(g.dataId), y.shape = v;
       }
@@ -26127,7 +26014,7 @@ var z1 = class extends tl {
     let c = t.texShape;
     if (c == null && (c = r1(n, o), t.texShape = c), r != null) {
       let p = id(n), d, h = c[1], f = c[0], m = r instanceof Uint8Array || r instanceof Uint8ClampedArray;
-      (o || !m) && ([h, f] = eu(c[0], c[1])), o ? d = new EK(p, m) : d = new AK(p, m);
+      (o || !m) && ([h, f] = tu(c[0], c[1])), o ? d = new EK(p, m) : d = new AK(p, m);
       let g = m ? [f, h] : c, b = this.makeTensorInfo(g, s), y = this.texData.get(b.dataId);
       m ? y.usage = 2 : y.usage = 1, y.texShape = g, this.gpgpu.uploadDenseMatrixToTexture(this.getTexture(b.dataId), h, f, r);
       let v = [[f, h]], x = true, k = this.runWebGLProgram(d, [b], s, v, x), T = this.texData.get(k.dataId);
@@ -26203,17 +26090,17 @@ function UX(e, t) {
   } else
     throw new Error(`Unknown dtype ${t}`);
 }
-var Ope = "0.0.0";
+var Ppe = "0.0.0";
 function GX() {
   X().set("WEBGL_FORCE_F16_TEXTURES", true);
 }
 dp.isBrowser() && pp("webgl", () => new M1(), 2);
-var Ppe = { forceHalfFloat: GX };
+var zpe = { forceHalfFloat: GX };
 var L1 = `
   if (isnan(a)) return a;
   if (isnan(b)) return b;
 `;
-var so = class {
+var ro = class {
   constructor(e, t, n) {
     this.variableNames = ["A", "B"], this.outputShape = S.assertAndGetBroadcastShape(t, n), this.enableShapeUniforms = Sn(this.outputShape.length), this.userCode = `
       float binaryOperation(float a, float b) {
@@ -26312,7 +26199,7 @@ var V1 = `
   return (aLessThanZero * (b * a)) + ((vec4(1.0) - aLessThanZero) * a);
 `;
 function jX(e) {
-  let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { alpha: a } = s, i = n.makeTensorInfo([], "float32", w.createScalarValue(a, "float32")), o = X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new Zl(V1, r.shape, i.shape) : new so(B1, r.shape, i.shape), u = n.runWebGLProgram(o, [r, i], "float32");
+  let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { alpha: a } = s, i = n.makeTensorInfo([], "float32", w.createScalarValue(a, "float32")), o = X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new Zl(V1, r.shape, i.shape) : new ro(B1, r.shape, i.shape), u = n.runWebGLProgram(o, [r, i], "float32");
   return n.disposeIntermediateTensorInfo(i), u;
 }
 var KX = { kernelName: Va, backendName: "webgl", kernelFunc: jX };
@@ -26322,11 +26209,11 @@ var U1 = `
   return (aLessThanZero * (b * a)) + ((vec4(1.0) - aLessThanZero) * a);
 `;
 function XX(e) {
-  let { inputs: t, backend: n } = e, { x: s, alpha: r } = t, a = X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new Zl(U1, s.shape, r.shape) : new so(W1, s.shape, r.shape);
+  let { inputs: t, backend: n } = e, { x: s, alpha: r } = t, a = X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new Zl(U1, s.shape, r.shape) : new ro(W1, s.shape, r.shape);
   return n.runWebGLProgram(a, [s, r], "float32");
 }
 var YX = { kernelName: Ja, backendName: "webgl", kernelFunc: XX };
-var iu = "if (isnan(x)) return x;";
+var ou = "if (isnan(x)) return x;";
 var QX = `
   if (isnan(a)) return a;
   if (isnan(b)) return b;
@@ -26353,7 +26240,7 @@ function jt({ opSnippet: e, packedOpSnippet: t, checkOutOfBounds: n = false, sup
     let { a: u, b: l } = i, c = o;
     if (s && u.dtype === "complex64") {
       let f = c.texData.get(u.dataId), m = c.texData.get(l.dataId), [g, b] = [[f.complexTensorInfos.real, m.complexTensorInfos.real], [f.complexTensorInfos.imag, m.complexTensorInfos.imag]].map((v) => {
-        let [x, k] = v, T = { dataId: x.dataId, dtype: x.dtype, shape: u.shape }, N = { dataId: k.dataId, dtype: k.dtype, shape: l.shape }, E = new so(e, u.shape, l.shape);
+        let [x, k] = v, T = { dataId: x.dataId, dtype: x.dtype, shape: u.shape }, N = { dataId: k.dataId, dtype: k.dtype, shape: l.shape }, E = new ro(e, u.shape, l.shape);
         return c.runWebGLProgram(E, [T, N], cn(x.dtype, k.dtype));
       }), y = Rr({ inputs: { real: g, imag: b }, backend: c });
       return c.disposeIntermediateTensorInfo(g), c.disposeIntermediateTensorInfo(b), y;
@@ -26364,7 +26251,7 @@ function jt({ opSnippet: e, packedOpSnippet: t, checkOutOfBounds: n = false, sup
       return k.values = y, x;
     }
     let d = X().getBool("WEBGL_PACK_BINARY_OPERATIONS") && t != null, h;
-    return d ? h = new Zl(t, u.shape, l.shape, n) : h = new so(e, u.shape, l.shape), c.runWebGLProgram(h, [u, l], p);
+    return d ? h = new Zl(t, u.shape, l.shape, n) : h = new ro(e, u.shape, l.shape), c.runWebGLProgram(h, [u, l], p);
   };
 }
 function Kp(e, t = false) {
@@ -26465,7 +26352,7 @@ function kv(e) {
     return d.values = l, p;
   }
   let i;
-  return X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? i = new Zl(dw, s.shape, r.shape) : i = new so(dw, s.shape, r.shape), n.runWebGLProgram(i, [s, r], a);
+  return X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? i = new Zl(dw, s.shape, r.shape) : i = new ro(dw, s.shape, r.shape), n.runWebGLProgram(i, [s, r], a);
 }
 var JX = { kernelName: Ya, backendName: "webgl", kernelFunc: kv };
 function e8(e, t, n) {
@@ -26476,9 +26363,9 @@ function he(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { shape: a } = s, i = n, o = w.sizeFromShape(r.shape), u = w.inferFromImplicitShape(a, o), l = w.sizeFromShape(u);
   w.assert(o === l, () => `The new shape (${u}) has ${l} elements and the old shape (${r.shape}) has ${o} elements. The new shape and old shape must have the same number of elements.`);
   let c = i.texData.get(r.dataId);
-  return c.isPacked && !Ju(r.shape, u) && !(c.texture !== null && Ju(c.shape, u)) ? e8(r, u, i) : (i.incRef(r.dataId), { dataId: r.dataId, shape: u, dtype: r.dtype });
+  return c.isPacked && !el(r.shape, u) && !(c.texture !== null && el(c.shape, u)) ? e8(r, u, i) : (i.incRef(r.dataId), { dataId: r.dataId, shape: u, dtype: r.dtype });
 }
-var t8 = { kernelName: Ao, backendName: "webgl", kernelFunc: he };
+var t8 = { kernelName: Eo, backendName: "webgl", kernelFunc: he };
 var pw = class {
   constructor(e, t) {
     this.variableNames = ["x"];
@@ -26760,7 +26647,7 @@ function qt(e) {
 var l8 = { kernelName: pi, backendName: "webgl", kernelFunc: qt };
 var H1 = 1e3;
 function zd({ a: e, b: t, transposeA: n, transposeB: s, backend: r, bias: a = null, preluActivationWeights: i = null, leakyreluAlpha: o = 0, activation: u = null }) {
-  let l = e.shape.length, c = t.shape.length, p = n ? e.shape[l - 2] : e.shape[l - 1], d = s ? t.shape[c - 1] : t.shape[c - 2], h = n ? e.shape[l - 1] : e.shape[l - 2], f = s ? t.shape[c - 2] : t.shape[c - 1], m = e.shape.slice(0, -2), g = t.shape.slice(0, -2), b = w.sizeFromShape(m), y = w.sizeFromShape(g), x = qo.assertAndGetBroadcastShape(e.shape.slice(0, -2), t.shape.slice(0, -2)).concat([h, f]);
+  let l = e.shape.length, c = t.shape.length, p = n ? e.shape[l - 2] : e.shape[l - 1], d = s ? t.shape[c - 1] : t.shape[c - 2], h = n ? e.shape[l - 1] : e.shape[l - 2], f = s ? t.shape[c - 2] : t.shape[c - 1], m = e.shape.slice(0, -2), g = t.shape.slice(0, -2), b = w.sizeFromShape(m), y = w.sizeFromShape(g), x = jo.assertAndGetBroadcastShape(e.shape.slice(0, -2), t.shape.slice(0, -2)).concat([h, f]);
   w.assert(p === d, () => `Error in matMul: inner shapes (${p}) and (${d}) of Tensors with shapes ${e.shape} and ${t.shape} and transposeA=${n} and transposeB=${s} must match.`);
   let k = n ? [b, p, h] : [b, h, p], T = s ? [y, f, d] : [y, d, f], N = he({ inputs: { x: e }, backend: r, attrs: { shape: k } }), E = he({ inputs: { x: t }, backend: r, attrs: { shape: T } }), A = [N, E], P = Math.max(b, y), R = n ? N.shape[1] : N.shape[2], F = a != null, $ = i != null, z = u === "leakyrelu", W = u != null ? Kp(u, true) : null, q = F || $ || z || W != null, K;
   if ((h === 1 || f === 1) && R > H1 && q === false) {
@@ -26801,7 +26688,7 @@ function p8(e) {
   let r;
   return X().getBool("WEBGL_PACK_UNARY_OPERATIONS") ? r = new Zr(s.shape, hw) : r = new Hs(s.shape, hw), n.runWebGLProgram(r, [s], s.dtype);
 }
-var h8 = { kernelName: ao, backendName: "webgl", kernelFunc: p8 };
+var h8 = { kernelName: io, backendName: "webgl", kernelFunc: p8 };
 var f8 = ss + `
   if (abs(x) > 1.) {
     return NAN;
@@ -26809,12 +26696,12 @@ var f8 = ss + `
   return acos(x);
 `;
 var m8 = Ke({ opSnippet: f8 });
-var g8 = { kernelName: nl, backendName: "webgl", kernelFunc: m8 };
+var g8 = { kernelName: sl, backendName: "webgl", kernelFunc: m8 };
 var b8 = ss + `
   if (x < 1.0) return NAN;
 return log(x + sqrt(x * x - 1.0));`;
 var y8 = Ke({ opSnippet: b8 });
-var v8 = { kernelName: sl, backendName: "webgl", kernelFunc: y8 };
+var v8 = { kernelName: rl, backendName: "webgl", kernelFunc: y8 };
 var fw = "return a + b;";
 var x8 = jt({ opSnippet: fw, packedOpSnippet: fw, supportsComplex: true, cpuKernelImpl: FK });
 var w8 = { kernelName: Ir, backendName: "webgl", kernelFunc: x8 };
@@ -26879,7 +26766,7 @@ function C8(e) {
     b = he({ inputs: { x: g }, backend: n, attrs: { shape: d } });
   return n.disposeIntermediateTensorInfo(m), n.disposeIntermediateTensorInfo(g), c != null && n.disposeIntermediateTensorInfo(p), b;
 }
-var N8 = { kernelName: rl, backendName: "webgl", kernelFunc: C8 };
+var N8 = { kernelName: al, backendName: "webgl", kernelFunc: C8 };
 function T8(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, keepDims: i } = s, o = r.shape.length, u = w.parseAxisParam(a, r.shape), l = u, c = S.getAxesPermutation(l, o), p = r;
   c != null && (p = qt({ inputs: { x: r }, backend: n, attrs: { perm: c } }), l = S.getInnerMostAxes(l.length, o)), S.assertAxesAreInnerMostDims("any", l, o);
@@ -26891,7 +26778,7 @@ function T8(e) {
     b = he({ inputs: { x: g }, backend: n, attrs: { shape: d } });
   return n.disposeIntermediateTensorInfo(m), n.disposeIntermediateTensorInfo(g), c != null && n.disposeIntermediateTensorInfo(p), b;
 }
-var $8 = { kernelName: al, backendName: "webgl", kernelFunc: T8 };
+var $8 = { kernelName: il, backendName: "webgl", kernelFunc: T8 };
 var _8 = class {
   constructor(e, t, n) {
     this.variableNames = ["A"];
@@ -27045,7 +26932,7 @@ function D8(e) {
   let c = K1(n, u, i[0], "min");
   return l.forEach((p) => n.disposeIntermediateTensorInfo(p)), c;
 }
-var F8 = { kernelName: il, backendName: "webgl", kernelFunc: D8 };
+var F8 = { kernelName: ol, backendName: "webgl", kernelFunc: D8 };
 var O8 = ss + `
   if (abs(x) > 1.) {
     return NAN;
@@ -27053,15 +26940,15 @@ var O8 = ss + `
   return asin(x);
 `;
 var P8 = Ke({ opSnippet: O8 });
-var z8 = { kernelName: ol, backendName: "webgl", kernelFunc: P8 };
+var z8 = { kernelName: ul, backendName: "webgl", kernelFunc: P8 };
 var M8 = ss + "return log(x + sqrt(x * x + 1.0));";
 var L8 = Ke({ opSnippet: M8 });
-var B8 = { kernelName: ul, backendName: "webgl", kernelFunc: L8 };
+var B8 = { kernelName: ll, backendName: "webgl", kernelFunc: L8 };
 var V8 = ss + `
   return atan(x);
 `;
 var W8 = Ke({ opSnippet: V8 });
-var U8 = { kernelName: ll, backendName: "webgl", kernelFunc: W8 };
+var U8 = { kernelName: cl, backendName: "webgl", kernelFunc: W8 };
 var G8 = QX + `
   return atan(a, b);
 `;
@@ -27072,13 +26959,13 @@ var H8 = `
   return result;
 `;
 var q8 = jt({ opSnippet: G8, packedOpSnippet: H8 });
-var j8 = { kernelName: dl, backendName: "webgl", kernelFunc: q8 };
+var j8 = { kernelName: pl, backendName: "webgl", kernelFunc: q8 };
 var K8 = ss + `
   if ((x < -1.0) || (x > 1.0)) return NAN;
 return (log(1.0 + x) - log(1.0 - x)) / 2.0;`;
 var X8 = Ke({ opSnippet: K8 });
-var Y8 = { kernelName: cl, backendName: "webgl", kernelFunc: X8 };
-var el = class {
+var Y8 = { kernelName: dl, backendName: "webgl", kernelFunc: X8 };
+var tl = class {
   constructor(e, t, n, s = false, r = false) {
     if (this.variableNames = ["x"], t === "avg" && n)
       throw new Error("Cannot compute positions for average pool.");
@@ -27420,13 +27307,13 @@ var Iv = class {
 };
 function Q8(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t;
-  tu(r, "avgPool");
+  nu(r, "avgPool");
   let { filterSize: a, strides: i, pad: o, dimRoundingMode: u } = s, l = 1;
   w.assert(S.eitherStridesOrDilationsAreOne(i, l), () => `Error in avgPool: Either strides or dilations must be 1. Got strides ${i} and dilations '${l}'`);
   let c = S.computePool2DInfo(r.shape, a, i, l, o, u);
   if (c.filterWidth === 1 && c.filterHeight === 1 && w.arraysEqual(c.inShape, c.outShape))
     return kn({ inputs: { x: r }, backend: n });
-  let p = new el(c, "avg", false);
+  let p = new tl(c, "avg", false);
   return n.runWebGLProgram(p, [r], "float32");
 }
 var Z8 = { kernelName: Sa, backendName: "webgl", kernelFunc: Q8 };
@@ -27554,7 +27441,7 @@ function sY(e) {
 var rY = { kernelName: og, backendName: "webgl", kernelFunc: sY };
 function aY(e) {
   let { inputs: t, backend: n, attrs: s } = e, { dy: r, input: a } = t, i = a;
-  tu([r, a], "avgPoolGrad");
+  nu([r, a], "avgPoolGrad");
   let { filterSize: o, strides: u, pad: l } = s, c = S.computePool2DInfo(i.shape, o, u, 1, l), p = new tY(c);
   return n.runWebGLProgram(p, [r], i.dtype);
 }
@@ -27689,7 +27576,7 @@ function gY(e, t, n, s) {
   let u = s.dataRefCount.get(i.slice.origDataId) || 1;
   return s.dataRefCount.set(i.slice.origDataId, u + 1), a;
 }
-function ou(e) {
+function uu(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { begin: a, size: i } = s, [o, u] = wt.parseSliceParams(r, a, i);
   if (wt.assertParamsValid(r, o, u), w.sizeFromShape(u) === 0)
     return n.makeTensorInfo(u, r.dtype, []);
@@ -27704,14 +27591,14 @@ function ou(e) {
   }
   return n.uploadToGPU(r.dataId), gY(r, o, u, n);
 }
-var bY = { kernelName: Oo, backendName: "webgl", kernelFunc: ou };
+var bY = { kernelName: Po, backendName: "webgl", kernelFunc: uu };
 var yY = (e) => {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockShape: a, crops: i } = s;
   w.assert(r.shape.length <= 4, () => "batchToSpaceND for rank > 4 with a WebGL backend not implemented yet");
-  let o = a.reduce((y, v) => y * v), u = S.getReshaped(r.shape, a, o), l = S.getPermuted(u.length, a.length), c = S.getReshapedPermuted(r.shape, a, o), p = S.getSliceBeginCoords(i, a.length), d = S.getSliceSize(c, i, a.length), h = [], f = he({ inputs: { x: r }, backend: n, attrs: { shape: u } }), m = qt({ inputs: { x: f }, backend: n, attrs: { perm: l } }), g = he({ inputs: { x: m }, backend: n, attrs: { shape: c } }), b = ou({ inputs: { x: g }, backend: n, attrs: { begin: p, size: d } });
+  let o = a.reduce((y, v) => y * v), u = S.getReshaped(r.shape, a, o), l = S.getPermuted(u.length, a.length), c = S.getReshapedPermuted(r.shape, a, o), p = S.getSliceBeginCoords(i, a.length), d = S.getSliceSize(c, i, a.length), h = [], f = he({ inputs: { x: r }, backend: n, attrs: { shape: u } }), m = qt({ inputs: { x: f }, backend: n, attrs: { perm: l } }), g = he({ inputs: { x: m }, backend: n, attrs: { shape: c } }), b = uu({ inputs: { x: g }, backend: n, attrs: { begin: p, size: d } });
   return h.push(f), h.push(m), h.push(g), h.forEach((y) => n.disposeIntermediateTensorInfo(y)), b;
 };
-var vY = { kernelName: io, backendName: "webgl", kernelFunc: yY };
+var vY = { kernelName: oo, backendName: "webgl", kernelFunc: yY };
 function xY(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, weights: a } = t, { size: i } = s, o = n.readSync(r.dataId), u = n.readSync(a.dataId), l = R1(o, u, a.dtype, a.shape, i);
   return n.makeTensorInfo([i], a.dtype, l);
@@ -27724,7 +27611,7 @@ function kY(e) {
 var IY = { kernelName: lg, backendName: "webgl", kernelFunc: kY };
 var SY = "return float(a != b);";
 var X1 = jt({ opSnippet: SY, cpuKernelImpl: tX, dtype: "bool" });
-var CY = { kernelName: Io, backendName: "webgl", kernelFunc: X1 };
+var CY = { kernelName: So, backendName: "webgl", kernelFunc: X1 };
 function Jl(e) {
   let { inputs: t, backend: n } = e, { input: s } = t, r = n.texData.get(s.dataId);
   return kn({ inputs: { x: r.complexTensorInfos.real }, backend: n });
@@ -27958,7 +27845,7 @@ function Y1(e) {
   let u = o.map((l) => l.shape);
   return S.assertParamsConsistent(u, a), Gi(o, a, n);
 }
-var UY = { kernelName: oo, backendName: "webgl", kernelFunc: Y1 };
+var UY = { kernelName: uo, backendName: "webgl", kernelFunc: Y1 };
 var Q1 = class {
   constructor(e, t = false, n = null, s = false, r = false) {
     this.variableNames = ["x", "W"], this.outputShape = e.outShape;
@@ -28258,7 +28145,7 @@ function Z1({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluAct
   let u = e.shape, l = s.texData.get(e.dataId), c = n.inChannels, p = u[0] * u[1] * u[2], d = n.outChannels, h = n.dataFormat === "channelsLast", f = false, m = false, g, b = [];
   if (!((p === 1 || d === 1) && c > H1) && l.isPacked && h && l.texture != null && u[2] % 2 !== 0 && w.arraysEqual(l.shape.slice(-3), u.slice(-3))) {
     let x = u[0] * u[1] * (u[2] + 1), k = { dataId: e.dataId, shape: [1, x, n.inChannels], dtype: e.dtype }, T = l.shape;
-    l.shape = l.shape.slice(), l.shape[l.shape.length - 2]++, w.assert(Ju(l.shape, k.shape), () => `packed reshape ${l.shape} to ${k.shape} isn't free`);
+    l.shape = l.shape.slice(), l.shape[l.shape.length - 2]++, w.assert(el(l.shape, k.shape), () => `packed reshape ${l.shape} to ${k.shape} isn't free`);
     let N = he({ inputs: { x: t }, backend: s, attrs: { shape: [1, n.inChannels, n.outChannels] } });
     b.push(N);
     let E = zd({ a: k, b: N, backend: s, transposeA: f, transposeB: m, bias: r, activation: o, preluActivationWeights: a, leakyreluAlpha: i }), A = s.texData.get(E.dataId);
@@ -28548,7 +28435,7 @@ function i9(e) {
   return n.runWebGLProgram(c, [r, a], "float32");
 }
 var o9 = { kernelName: pg, backendName: "webgl", kernelFunc: i9 };
-var u9 = iu + `
+var u9 = ou + `
   return cos(x);
 `;
 var l9 = Ke({ opSnippet: u9 });
@@ -28633,7 +28520,7 @@ var m9 = (e) => {
   let { inputs: t, backend: n, attrs: s } = e, { image: r, boxes: a, boxInd: i } = t, { cropSize: o, method: u, extrapolationValue: l } = s, c = new f9(r.shape, a.shape, o, u, l);
   return n.runWebGLProgram(c, [r, a, i], "float32");
 };
-var g9 = { kernelName: lo, backendName: "webgl", kernelFunc: m9 };
+var g9 = { kernelName: co, backendName: "webgl", kernelFunc: m9 };
 var bw = class {
   constructor(e, t, n) {
     this.variableNames = ["x"], this.customUniforms = [{ name: "index", type: "float" }], this.outputShape = e;
@@ -28697,7 +28584,7 @@ function b9(e) {
   }
   return h;
 }
-var y9 = { kernelName: pl, backendName: "webgl", kernelFunc: b9 };
+var y9 = { kernelName: hl, backendName: "webgl", kernelFunc: b9 };
 var xw = class {
   constructor(e, t, n) {
     this.variableNames = ["x"], this.customUniforms = [{ name: "index", type: "float" }], this.outputShape = e;
@@ -28761,7 +28648,7 @@ function v9(e) {
   }
   return h;
 }
-var x9 = { kernelName: uo, backendName: "webgl", kernelFunc: v9 };
+var x9 = { kernelName: lo, backendName: "webgl", kernelFunc: v9 };
 function w9(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, weights: a } = t, { size: i, binaryOutput: o } = s;
   if (r.shape.length === 1) {
@@ -28817,7 +28704,7 @@ function S9(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockSize: a, dataFormat: i } = s, o = r.shape[0], u = i === "NHWC" ? r.shape[1] : r.shape[2], l = i === "NHWC" ? r.shape[2] : r.shape[3], c = i === "NHWC" ? r.shape[3] : r.shape[1], p = u * a, d = l * a, h = c / (a * a), f = i === "NHWC" ? [o, p, d, h] : [o, h, p, d], m = new I9(f, a, i);
   return n.runWebGLProgram(m, [r], r.dtype);
 }
-var C9 = { kernelName: co, backendName: "webgl", kernelFunc: S9 };
+var C9 = { kernelName: po, backendName: "webgl", kernelFunc: S9 };
 var e2 = class {
   constructor(e, t = false, n = null, s = false, r = false) {
     this.variableNames = ["x", "W"], this.customUniforms = [{ name: "pads", type: "ivec2" }, { name: "strides", type: "ivec2" }, { name: "dilations", type: "ivec2" }, { name: "inDims", type: "ivec2" }], this.outputShape = e.outShape, this.enableShapeUniforms = Sn(this.outputShape.length);
@@ -29315,7 +29202,7 @@ var j9 = `
   return (bGTEZero * a) + ((vec4(1.0) - bGTEZero) * (a * (b + vec4(1.0))));
 `;
 var K9 = (e) => {
-  let { inputs: t, backend: n } = e, { dy: s, y: r } = t, a = X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new Zl(j9, s.shape, r.shape) : new so(q9, s.shape, r.shape);
+  let { inputs: t, backend: n } = e, { dy: s, y: r } = t, a = X().getBool("WEBGL_PACK_BINARY_OPERATIONS") ? new Zl(j9, s.shape, r.shape) : new ro(q9, s.shape, r.shape);
   return n.runWebGLProgram(a, [s, r], s.dtype);
 };
 var X9 = { kernelName: bg, backendName: "webgl", kernelFunc: K9 };
@@ -29324,7 +29211,7 @@ var Y9 = `
 `;
 var Q9 = "return float(a == b);";
 var Z9 = jt({ opSnippet: Q9, packedOpSnippet: Y9, dtype: "bool", cpuKernelImpl: MK });
-var J9 = { kernelName: po, backendName: "webgl", kernelFunc: Z9 };
+var J9 = { kernelName: ho, backendName: "webgl", kernelFunc: Z9 };
 var eQ = `
   // Error function is calculated approximately with elementary function.
   // See "Handbook of Mathematical Functions with Formulas,
@@ -29342,8 +29229,8 @@ var eQ = `
   return sign * (1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x));
 `;
 var tQ = Ke({ opSnippet: eQ });
-var nQ = { kernelName: hl, backendName: "webgl", kernelFunc: tQ };
-var sQ = iu + `
+var nQ = { kernelName: fl, backendName: "webgl", kernelFunc: tQ };
+var sQ = ou + `
   return exp(x);
 `;
 var rQ = `
@@ -29362,10 +29249,10 @@ function qm(e) {
   let { inputs: t, attrs: n, backend: s } = e, { dim: r } = n, { input: a } = t, i = a.shape.length, o = a.shape.slice(), u = r;
   return r < 0 && (w.assert(-(i + 1) <= r, () => `Axis must be in the interval [${-(i + 1)}, ${i}]`), u = i + r + 1), o.splice(u, 0, 1), he({ inputs: { x: a }, backend: s, attrs: { shape: o } });
 }
-var iQ = { kernelName: ho, backendName: "webgl", kernelFunc: qm };
+var iQ = { kernelName: fo, backendName: "webgl", kernelFunc: qm };
 var Iw = "return exp(x) - 1.0;";
 var oQ = Ke({ opSnippet: Iw, packedOpSnippet: Iw, cpuKernelImpl: BK });
-var uQ = { kernelName: fo, backendName: "webgl", kernelFunc: oQ };
+var uQ = { kernelName: mo, backendName: "webgl", kernelFunc: oQ };
 var Sw = class {
   constructor(e, t, n) {
     this.variableNames = ["real", "imag"];
@@ -29445,7 +29332,7 @@ function ec(e) {
     return t.runWebGLProgram(i, [], a, o);
   }
 }
-var pQ = { kernelName: fl, backendName: "webgl", kernelFunc: ec };
+var pQ = { kernelName: ml, backendName: "webgl", kernelFunc: ec };
 var hQ = class {
   constructor(e) {
     this.variableNames = ["Image"], this.outputShape = [];
@@ -29467,7 +29354,7 @@ var hQ = class {
     `;
   }
 };
-var fQ = { kernelName: mo, backendName: "webgl", kernelFunc: ({ inputs: e, backend: t }) => {
+var fQ = { kernelName: go, backendName: "webgl", kernelFunc: ({ inputs: e, backend: t }) => {
   let { image: n } = e, s = t, r = new hQ(n.shape);
   return s.runWebGLProgram(r, [n], n.dtype);
 } };
@@ -29648,7 +29535,7 @@ function AQ(e) {
   let f = new _Q(i, p, [l, c]), m = n.runWebGLProgram(f, [h, d], h.dtype), g = he({ inputs: { x: m }, backend: n, attrs: { shape: u } });
   return n.disposeIntermediateTensorInfo(d), n.disposeIntermediateTensorInfo(h), n.disposeIntermediateTensorInfo(m), g;
 }
-var EQ = { kernelName: bo, backendName: "webgl", kernelFunc: AQ };
+var EQ = { kernelName: yo, backendName: "webgl", kernelFunc: AQ };
 var RQ = class {
   constructor(e, t) {
     this.variableNames = ["A", "indices"], this.outputShape = t, this.rank = t.length;
@@ -29690,13 +29577,13 @@ function r2(e) {
   let b = he({ inputs: { x: g }, backend: n, attrs: { shape: l.outputShape } });
   return p.forEach((y) => n.disposeIntermediateTensorInfo(y)), b;
 }
-var FQ = { kernelName: go, backendName: "webgl", kernelFunc: r2 };
+var FQ = { kernelName: bo, backendName: "webgl", kernelFunc: r2 };
 var OQ = "return float(a > b);";
 var PQ = `
   return vec4(greaterThan(a, b));
 `;
 var zQ = jt({ opSnippet: OQ, packedOpSnippet: PQ, cpuKernelImpl: GK, dtype: "bool" });
-var MQ = { kernelName: yo, backendName: "webgl", kernelFunc: zQ };
+var MQ = { kernelName: vo, backendName: "webgl", kernelFunc: zQ };
 var LQ = "return float(a >= b);";
 var BQ = `
   return vec4(greaterThanEqual(a, b));
@@ -29710,31 +29597,31 @@ function UQ(e) {
 var GQ = { kernelName: vg, backendName: "webgl", kernelFunc: UQ };
 var HQ = "return float(!isnan(x) && !isinf(x));";
 var qQ = Ke({ opSnippet: HQ, dtype: "bool" });
-var jQ = { kernelName: ml, backendName: "webgl", kernelFunc: qQ };
+var jQ = { kernelName: gl, backendName: "webgl", kernelFunc: qQ };
 var KQ = "return float(isinf(x));";
 var XQ = Ke({ opSnippet: KQ, dtype: "bool" });
-var YQ = { kernelName: gl, backendName: "webgl", kernelFunc: XQ };
+var YQ = { kernelName: bl, backendName: "webgl", kernelFunc: XQ };
 var QQ = "return float(isnan(x));";
 var ZQ = Ke({ opSnippet: QQ, dtype: "bool" });
-var JQ = { kernelName: bl, backendName: "webgl", kernelFunc: ZQ };
+var JQ = { kernelName: yl, backendName: "webgl", kernelFunc: ZQ };
 var eZ = "return float(a < b);";
 var tZ = `
   return vec4(lessThan(a, b));
 `;
 var nZ = jt({ opSnippet: eZ, packedOpSnippet: tZ, cpuKernelImpl: qK, dtype: "bool" });
-var sZ = { kernelName: vo, backendName: "webgl", kernelFunc: nZ };
+var sZ = { kernelName: xo, backendName: "webgl", kernelFunc: nZ };
 var rZ = "return float(a <= b);";
 var aZ = `
   return vec4(lessThanEqual(a, b));
 `;
 var iZ = jt({ opSnippet: rZ, packedOpSnippet: aZ, cpuKernelImpl: jK, dtype: "bool" });
-var oZ = { kernelName: xo, backendName: "webgl", kernelFunc: iZ };
+var oZ = { kernelName: wo, backendName: "webgl", kernelFunc: iZ };
 function uZ(e) {
   let { backend: t, attrs: n } = e, { start: s, stop: r, num: a } = n, i = KK(s, r, a);
   return t.makeTensorInfo([i.length], "float32", i);
 }
 var lZ = { kernelName: xg, backendName: "webgl", kernelFunc: uZ };
-var cZ = iu + `
+var cZ = ou + `
   return x < 0.0 ? 0./0. : log(x);
 `;
 var dZ = `
@@ -29748,11 +29635,11 @@ var dZ = `
 `;
 var pZ = Ke({ opSnippet: cZ, packedOpSnippet: dZ, cpuKernelImpl: XK });
 var hZ = { kernelName: Wa, backendName: "webgl", kernelFunc: pZ };
-var fZ = iu + `
+var fZ = ou + `
   return log(1.0 + x);
 `;
 var mZ = Ke({ opSnippet: fZ });
-var gZ = { kernelName: yl, backendName: "webgl", kernelFunc: mZ };
+var gZ = { kernelName: vl, backendName: "webgl", kernelFunc: mZ };
 var bZ = "return float(a >= 1.0 && b >= 1.0);";
 var yZ = `
   return vec4(
@@ -29760,10 +29647,10 @@ var yZ = `
     vec4(greaterThanEqual(b, vec4(1.0))));
 `;
 var vZ = jt({ opSnippet: bZ, packedOpSnippet: yZ, dtype: "bool" });
-var xZ = { kernelName: wo, backendName: "webgl", kernelFunc: vZ };
+var xZ = { kernelName: ko, backendName: "webgl", kernelFunc: vZ };
 var wZ = "return float(!(x >= 1.0));";
 var kZ = Ke({ opSnippet: wZ });
-var IZ = { kernelName: vl, backendName: "webgl", kernelFunc: kZ };
+var IZ = { kernelName: xl, backendName: "webgl", kernelFunc: kZ };
 var SZ = "return float(a >= 1.0 || b >= 1.0);";
 var CZ = `
   return min(
@@ -29988,13 +29875,13 @@ var LZ = jt({ opSnippet: zZ, packedOpSnippet: MZ, cpuKernelImpl: QK });
 var BZ = { kernelName: Ga, backendName: "webgl", kernelFunc: LZ };
 function VZ(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t;
-  tu(r, "maxPool");
+  nu(r, "maxPool");
   let { filterSize: a, strides: i, pad: o, dimRoundingMode: u } = s, l = 1;
   w.assert(S.eitherStridesOrDilationsAreOne(i, l), () => `Error in maxPool: Either strides or dilations must be 1. Got strides ${i} and dilations '${l}'`);
   let c = S.computePool2DInfo(r.shape, a, i, l, o, u);
   if (c.filterWidth === 1 && c.filterHeight === 1 && w.arraysEqual(c.inShape, c.outShape))
     return kn({ inputs: { x: r }, backend: n });
-  let p = new el(c, "max", false);
+  let p = new tl(c, "max", false);
   return n.runWebGLProgram(p, [r], r.dtype);
 }
 var WZ = { kernelName: Ha, backendName: "webgl", kernelFunc: VZ };
@@ -30134,14 +30021,14 @@ function jZ(e) {
 var KZ = { kernelName: Ig, backendName: "webgl", kernelFunc: jZ };
 function XZ(e) {
   let { inputs: t, backend: n, attrs: s } = e, { dy: r, input: a, output: i } = t, o = a;
-  tu([a, i], "maxPoolGrad");
-  let { filterSize: u, strides: l, pad: c, dimRoundingMode: p } = s, d = S.computePool2DInfo(o.shape, u, l, 1, c, p), h = true, f = new el(d, "max", h), m = n.runWebGLProgram(f, [o], o.dtype), g = new HZ(d), b = n.runWebGLProgram(g, [r, m], o.dtype);
+  nu([a, i], "maxPoolGrad");
+  let { filterSize: u, strides: l, pad: c, dimRoundingMode: p } = s, d = S.computePool2DInfo(o.shape, u, l, 1, c, p), h = true, f = new tl(d, "max", h), m = n.runWebGLProgram(f, [o], o.dtype), g = new HZ(d), b = n.runWebGLProgram(g, [r, m], o.dtype);
   return n.disposeIntermediateTensorInfo(m), b;
 }
 var YZ = { kernelName: kg, backendName: "webgl", kernelFunc: XZ };
 function QZ(e, t, n, s) {
-  let r = new el(n, "max", false), a = s.runWebGLProgram(r, [e], "float32");
-  r = new el(n, "max", true, true, t);
+  let r = new tl(n, "max", false), a = s.runWebGLProgram(r, [e], "float32");
+  r = new tl(n, "max", true, true, t);
   let i = s.runWebGLProgram(r, [e], "float32");
   return [a, i];
 }
@@ -30327,7 +30214,7 @@ var p7 = `
   return result;
 `;
 var h7 = jt({ opSnippet: d7, packedOpSnippet: p7 });
-var f7 = { kernelName: xl, backendName: "webgl", kernelFunc: h7 };
+var f7 = { kernelName: wl, backendName: "webgl", kernelFunc: h7 };
 var m7 = class {
   constructor(e, t, n) {
     this.variableNames = ["probs"], this.customUniforms = [{ name: "seed", type: "float" }], this.outputShape = [e, n], this.userCode = `
@@ -30415,28 +30302,28 @@ function C7(e) {
   let r;
   return X().getBool("WEBGL_PACK_UNARY_OPERATIONS") ? r = new Zr(s.shape, S7) : r = new Hs(s.shape, I7), n.runWebGLProgram(r, [s], s.dtype);
 }
-var N7 = { kernelName: ko, backendName: "webgl", kernelFunc: C7 };
+var N7 = { kernelName: Io, backendName: "webgl", kernelFunc: C7 };
 var T7 = xs.nonMaxSuppressionV3Impl;
 function $7(e) {
   S.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: t, backend: n, attrs: s } = e, { boxes: r, scores: a } = t, { maxOutputSize: i, iouThreshold: o, scoreThreshold: u } = s, l = n.readSync(r.dataId), c = n.readSync(a.dataId), { selectedIndices: p } = T7(l, c, i, o, u);
   return n.makeTensorInfo([p.length], "int32", new Int32Array(p));
 }
-var _7 = { kernelName: So, backendName: "webgl", kernelFunc: $7 };
+var _7 = { kernelName: Co, backendName: "webgl", kernelFunc: $7 };
 var A7 = xs.nonMaxSuppressionV4Impl;
 function E7(e) {
   S.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: t, backend: n, attrs: s } = e, { boxes: r, scores: a } = t, { maxOutputSize: i, iouThreshold: o, scoreThreshold: u, padToMaxOutputSize: l } = s, c = n.readSync(r.dataId), p = n.readSync(a.dataId), { selectedIndices: d, validOutputs: h } = A7(c, p, i, o, u, l);
   return [n.makeTensorInfo([d.length], "int32", new Int32Array(d)), n.makeTensorInfo([], "int32", new Int32Array([h]))];
 }
-var R7 = { kernelName: wl, backendName: "webgl", kernelFunc: E7 };
+var R7 = { kernelName: kl, backendName: "webgl", kernelFunc: E7 };
 var D7 = xs.nonMaxSuppressionV5Impl;
 function F7(e) {
   S.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: t, backend: n, attrs: s } = e, { boxes: r, scores: a } = t, { maxOutputSize: i, iouThreshold: o, scoreThreshold: u, softNmsSigma: l } = s, c = n.readSync(r.dataId), p = n.readSync(a.dataId), d = i, h = o, f = u, m = l, { selectedIndices: g, selectedScores: b } = D7(c, p, d, h, f, m);
   return [n.makeTensorInfo([g.length], "int32", new Int32Array(g)), n.makeTensorInfo([b.length], "float32", new Float32Array(b))];
 }
-var O7 = { kernelName: Co, backendName: "webgl", kernelFunc: F7 };
+var O7 = { kernelName: No, backendName: "webgl", kernelFunc: F7 };
 var P7 = class {
   constructor(e, t, n, s) {
     this.variableNames = ["indices"], this.outputShape = [e, t], this.userCode = `
@@ -30455,7 +30342,7 @@ var z7 = (e) => {
   let d = [...r.shape, a], h = he({ inputs: { x: p }, backend: n, attrs: { shape: d } });
   return n.disposeIntermediateTensorInfo(p), h;
 };
-var M7 = { kernelName: To, backendName: "webgl", kernelFunc: z7 };
+var M7 = { kernelName: $o, backendName: "webgl", kernelFunc: z7 };
 function Md(e) {
   let { inputs: t, backend: n } = e, { x: s } = t;
   if (s.dtype === "complex64") {
@@ -30464,7 +30351,7 @@ function Md(e) {
   } else
     return ec({ attrs: { shape: s.shape, dtype: s.dtype, value: s.dtype === "string" ? "" : 0 }, backend: n });
 }
-var L7 = { kernelName: Go, backendName: "webgl", kernelFunc: Md };
+var L7 = { kernelName: Ho, backendName: "webgl", kernelFunc: Md };
 function l2(e) {
   let { inputs: t, backend: n } = e, { x: s } = t;
   if (s.dtype === "string")
@@ -30475,7 +30362,7 @@ function l2(e) {
   } else
     return ec({ attrs: { shape: s.shape, dtype: s.dtype, value: 1 }, backend: n });
 }
-var B7 = { kernelName: No, backendName: "webgl", kernelFunc: l2 };
+var B7 = { kernelName: To, backendName: "webgl", kernelFunc: l2 };
 function V7(e) {
   let { inputs: t, backend: n, attrs: s } = e, { axis: r } = s;
   if (t.length === 1)
@@ -30490,7 +30377,7 @@ function V7(e) {
   }), l = Y1({ inputs: u, backend: n, attrs: { axis: r } });
   return o.forEach((c) => n.disposeIntermediateTensorInfo(c)), l;
 }
-var W7 = { kernelName: $o, backendName: "webgl", kernelFunc: V7 };
+var W7 = { kernelName: _o, backendName: "webgl", kernelFunc: V7 };
 var U7 = class {
   constructor(e, t, n) {
     this.variableNames = ["x"], this.customUniforms = [{ name: "value", type: "float" }], this.outputShape = t.map((u, l) => u[0] + e[l] + u[1]);
@@ -30617,15 +30504,15 @@ function Y7(e) {
   }
   return u.forEach((f) => n.disposeIntermediateTensorInfo(f)), h;
 }
-var Q7 = { kernelName: _o, backendName: "webgl", kernelFunc: Y7 };
+var Q7 = { kernelName: Ao, backendName: "webgl", kernelFunc: Y7 };
 var d2 = (e) => {
   let { backend: t, attrs: n } = e, { start: s, stop: r, step: a, dtype: i } = n, o = sX(s, r, a, i);
   return t.makeTensorInfo([o.length], i, o);
 };
-var Z7 = { kernelName: kl, backendName: "webgl", kernelFunc: d2 };
+var Z7 = { kernelName: Il, backendName: "webgl", kernelFunc: d2 };
 var J7 = "return 1.0 / x;";
 var eJ = Ke({ opSnippet: J7 });
-var tJ = { kernelName: Il, backendName: "webgl", kernelFunc: eJ };
+var tJ = { kernelName: Sl, backendName: "webgl", kernelFunc: eJ };
 var nJ = ss + `
   return (x < 0.0) ? 0.0 : x;
 `;
@@ -30969,7 +30856,7 @@ function vJ(e) {
   let { inputs: t, backend: n, attrs: s } = e, { images: r } = t, { alignCorners: a, halfPixelCenters: i, size: o } = s, [u, l] = o, c = X().getBool("WEBGL_PACK_IMAGE_OPERATIONS") ? new yJ(r.shape, u, l, a, i) : new bJ(r.shape, u, l, a, i);
   return n.runWebGLProgram(c, [r], r.dtype);
 }
-var xJ = { kernelName: Sl, backendName: "webgl", kernelFunc: vJ };
+var xJ = { kernelName: Cl, backendName: "webgl", kernelFunc: vJ };
 var wJ = class {
   constructor(e, t, n) {
     this.variableNames = ["dy"], this.outputShape = [], this.outputShape = t;
@@ -31141,7 +31028,7 @@ function NJ(e) {
   let u = X().getBool("WEBGL_PACK_ARRAY_OPERATIONS") ? new CJ(r.shape, o) : new SJ(r.shape, o);
   return n.runWebGLProgram(u, [r], r.dtype);
 }
-var TJ = { kernelName: Eo, backendName: "webgl", kernelFunc: NJ };
+var TJ = { kernelName: Ro, backendName: "webgl", kernelFunc: NJ };
 var $J = class {
   constructor(e, t) {
     this.variableNames = ["Image"], this.outputShape = [], this.customUniforms = [{ name: "params", type: "vec4" }];
@@ -31170,7 +31057,7 @@ var $J = class {
     `;
   }
 };
-var _J = { kernelName: Ho, backendName: "webgl", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
+var _J = { kernelName: qo, backendName: "webgl", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
   let { image: s } = e, { radians: r, fillValue: a, center: i } = t, o = n, u = new $J(s.shape, a), [l, c] = S.getImageCenter(i, s.shape[1], s.shape[2]), p = [[l, c, Math.sin(r), Math.cos(r)]];
   return o.runWebGLProgram(u, [s], s.dtype, p);
 } };
@@ -31191,7 +31078,7 @@ var AJ = `
   }
 `;
 var EJ = Ke({ opSnippet: AJ });
-var RJ = { kernelName: Ro, backendName: "webgl", kernelFunc: EJ };
+var RJ = { kernelName: Do, backendName: "webgl", kernelFunc: EJ };
 var DJ = "return inversesqrt(x);";
 var FJ = Ke({ opSnippet: DJ, cpuKernelImpl: rX });
 var OJ = { kernelName: si, backendName: "webgl", kernelFunc: FJ };
@@ -31233,7 +31120,7 @@ function PJ(e) {
   let h = he({ inputs: { x: r }, backend: n, attrs: { shape: [u, o] } }), f = he({ inputs: { x: a }, backend: n, attrs: { shape: [u, l] } }), m = n.makeTensorInfo([], "float32", new Float32Array([0])), g = new p2(u, o, h.shape.length, f.shape.length, c, d), b = n.runWebGLProgram(g, [f, h, m], f.dtype), y = he({ inputs: { x: b }, backend: n, attrs: { shape: i } });
   return n.disposeIntermediateTensorInfo(h), n.disposeIntermediateTensorInfo(f), n.disposeIntermediateTensorInfo(b), n.disposeIntermediateTensorInfo(m), y;
 }
-var zJ = { kernelName: Do, backendName: "webgl", kernelFunc: PJ };
+var zJ = { kernelName: Fo, backendName: "webgl", kernelFunc: PJ };
 var MJ = class {
   constructor(e, t, n) {
     this.variableNames = ["c", "a", "b"], this.outputShape = t;
@@ -31266,7 +31153,7 @@ function LJ(e) {
   let { inputs: t, backend: n } = e, { condition: s, t: r, e: a } = t, i = new MJ(s.shape.length, r.shape, r.shape.length);
   return n.runWebGLProgram(i, [s, r, a], cn(r.dtype, a.dtype));
 }
-var BJ = { kernelName: Fo, backendName: "webgl", kernelFunc: LJ };
+var BJ = { kernelName: Oo, backendName: "webgl", kernelFunc: LJ };
 var VJ = `
   // Stable and Attracting Fixed Point (0, 1) for Normalized Weights.
   // see: https://arxiv.org/abs/1706.02515
@@ -31275,8 +31162,8 @@ var VJ = `
   return (x >= 0.0) ? scale * x : scaleAlpha * (exp(x) - 1.0);
 `;
 var WJ = Ke({ opSnippet: VJ });
-var UJ = { kernelName: Cl, backendName: "webgl", kernelFunc: WJ };
-var GJ = iu + `
+var UJ = { kernelName: Nl, backendName: "webgl", kernelFunc: WJ };
+var GJ = ou + `
   return 1.0 / (1.0 + exp(-1.0 * x));
 `;
 var HJ = `
@@ -31297,8 +31184,8 @@ var KJ = `
   return sign(x);
 `;
 var XJ = Ke({ opSnippet: KJ });
-var YJ = { kernelName: Nl, backendName: "webgl", kernelFunc: XJ };
-var QJ = iu + `
+var YJ = { kernelName: Tl, backendName: "webgl", kernelFunc: XJ };
+var QJ = ou + `
   return sin(x);
 `;
 var ZJ = Ke({ opSnippet: QJ });
@@ -31308,7 +31195,7 @@ var eee = `
   return (e2x - 1.0 / e2x) / 2.0;
 `;
 var tee = Ke({ opSnippet: eee });
-var nee = { kernelName: Po, backendName: "webgl", kernelFunc: tee };
+var nee = { kernelName: zo, backendName: "webgl", kernelFunc: tee };
 var see = `
   float epsilon = 1.1920928955078125e-7;
   float threshold = log(epsilon) + 2.0;
@@ -31331,7 +31218,7 @@ var see = `
   return result;
 `;
 var ree = Ke({ opSnippet: see });
-var aee = { kernelName: Tl, backendName: "webgl", kernelFunc: ree };
+var aee = { kernelName: $l, backendName: "webgl", kernelFunc: ree };
 var iee = (e) => {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockShape: a, paddings: i } = s;
   w.assert(r.shape.length <= 4, () => "spaceToBatchND for rank > 4 with a WebGL backend not implemented yet");
@@ -31342,7 +31229,7 @@ var iee = (e) => {
   let l = [], c = c2({ inputs: { x: r }, backend: n, attrs: { paddings: u, constantValue: 0 } }), p = S.getReshaped(c.shape, a, o, false), d = S.getPermuted(p.length, a.length, false), h = S.getReshapedPermuted(c.shape, a, o, false), f = he({ inputs: { x: c }, backend: n, attrs: { shape: p } }), m = qt({ inputs: { x: f }, backend: n, attrs: { perm: d } }), g = he({ inputs: { x: m }, backend: n, attrs: { shape: h } });
   return l.push(c), l.push(f), l.push(m), l.forEach((b) => n.disposeIntermediateTensorInfo(b)), g;
 };
-var oee = { kernelName: zo, backendName: "webgl", kernelFunc: iee };
+var oee = { kernelName: Mo, backendName: "webgl", kernelFunc: iee };
 function uee(e) {
   let { inputs: t, backend: n } = e, { indices: s, values: r, denseShape: a, defaultValue: i } = t;
   if (a.shape.length !== 1)
@@ -31372,7 +31259,7 @@ function cee(e) {
   let i = Array.from(n.readSync(r.dataId)), o = n.readSync(s.dataId), u = Array.from(n.readSync(a.dataId)), [l, c, p] = uX(o, s.shape, s.dtype, i, u);
   return [n.makeTensorInfo(c, s.dtype, l), n.makeTensorInfo([p.length], a.dtype, new Int32Array(p))];
 }
-var dee = { kernelName: $l, backendName: "webgl", kernelFunc: cee };
+var dee = { kernelName: _l, backendName: "webgl", kernelFunc: cee };
 function pee(e) {
   let { inputs: t, backend: n } = e, { data: s, indices: r, segmentIds: a } = t;
   if (s.shape.length < 1)
@@ -31411,17 +31298,17 @@ function yee(e) {
   return u.map((d) => {
     let h = [...p];
     h[o] = d;
-    let f = ou({ inputs: { x: r }, backend: n, attrs: { begin: c, size: h } });
+    let f = uu({ inputs: { x: r }, backend: n, attrs: { begin: c, size: h } });
     return c[o] += d, f;
   });
 }
-var vee = { kernelName: Mo, backendName: "webgl", kernelFunc: yee };
+var vee = { kernelName: Lo, backendName: "webgl", kernelFunc: yee };
 var Tw = "return sqrt(x);";
 var xee = Ke({ opSnippet: Tw, packedOpSnippet: Tw, cpuKernelImpl: lX });
 var wee = { kernelName: ii, backendName: "webgl", kernelFunc: xee };
 var kee = "return x * x;";
 var Iee = Ke({ opSnippet: kee });
-var See = { kernelName: _l, backendName: "webgl", kernelFunc: Iee };
+var See = { kernelName: Al, backendName: "webgl", kernelFunc: Iee };
 var $w = "return (a - b) * (a - b);";
 var Cee = jt({ opSnippet: $w, packedOpSnippet: $w });
 var Nee = { kernelName: li, backendName: "webgl", kernelFunc: Cee };
@@ -31459,7 +31346,7 @@ function Aee(e) {
     k = he({ inputs: { x: r }, backend: n, attrs: { shape: f } });
   else if (g || b) {
     w.assert(r.shape.length >= 1, () => `Input must have rank at least 1, got: ${r.shape.length}`);
-    let N = wt.computeOutShape(y, v, x), E = ou({ inputs: { x: r }, backend: n, attrs: { begin: y, size: N } });
+    let N = wt.computeOutShape(y, v, x), E = uu({ inputs: { x: r }, backend: n, attrs: { begin: y, size: N } });
     k = he({ inputs: { x: E }, backend: n, attrs: { shape: f } }), n.disposeIntermediateTensorInfo(E);
   } else if (n.shouldExecuteOnCPU([r])) {
     let E = n.readSync(r.dataId), A = De(r.shape, r.dtype, E), P = cX(h, A, x, y);
@@ -31471,7 +31358,7 @@ function Aee(e) {
   let T = he({ inputs: { x: k }, backend: n, attrs: { shape: f } });
   return n.disposeIntermediateTensorInfo(k), T;
 }
-var Eee = { kernelName: Lo, backendName: "webgl", kernelFunc: Aee };
+var Eee = { kernelName: Bo, backendName: "webgl", kernelFunc: Aee };
 function Ree(e) {
   let { inputs: t, backend: n, attrs: s } = e, { separator: r, nGramWidths: a, leftPad: i, rightPad: o, padWidth: u, preserveShortSequences: l } = s, { data: c, dataSplits: p } = t, d = n.readSync(c.dataId), h = n.readSync(p.dataId), [f, m] = dX(d, h, r, a, i, o, u, l);
   return [n.makeTensorInfo([f.length], "string", f), n.makeTensorInfo(p.shape, "int32", m)];
@@ -31501,7 +31388,7 @@ function Pee(e) {
 var zee = { kernelName: _g, backendName: "webgl", kernelFunc: Pee };
 var Mee = "return tan(x);";
 var Lee = Ke({ opSnippet: Mee });
-var Bee = { kernelName: Bo, backendName: "webgl", kernelFunc: Lee };
+var Bee = { kernelName: Vo, backendName: "webgl", kernelFunc: Lee };
 var Vee = `
   float e2x = exp(-2.0 * abs(x));
   return sign(x) * (1.0 - e2x) / (1.0 + e2x);
@@ -31667,7 +31554,7 @@ function Xee(e) {
       k(K, Y, v.shape);
   }
   let T = v;
-  v = ou({ inputs: { x: v }, backend: n, attrs: { begin: 0, size: [m, a] } }), Ur(n, T);
+  v = uu({ inputs: { x: v }, backend: n, attrs: { begin: 0, size: [m, a] } }), Ur(n, T);
   let N = r2({ inputs: { x: g, indices: v }, backend: n, attrs: { axis: 1, batchDims: 1 } });
   Ur(n, g);
   let E = l.slice(0, -1);
@@ -31675,7 +31562,7 @@ function Xee(e) {
   let A = N;
   return N = he({ inputs: { x: N }, attrs: { shape: E }, backend: n }), Ur(n, A), [N, v];
 }
-var Yee = { kernelName: Vo, backendName: "webgl", kernelFunc: Xee };
+var Yee = { kernelName: Wo, backendName: "webgl", kernelFunc: Xee };
 var Qee = class {
   constructor(e, t, n, s, r, a) {
     this.variableNames = ["Image", "Transforms"], this.outputShape = a;
@@ -31816,10 +31703,10 @@ function Zee(e) {
   let { inputs: t, backend: n, attrs: s } = e, { image: r, transforms: a } = t, { interpolation: i, fillMode: o, fillValue: u, outputShape: l } = s, [c, p, d, h] = r.shape, [f, m] = l != null ? l : [p, d], g = [c, f, m, h], b = new Qee(p, d, i, o, u, g);
   return n.runWebGLProgram(b, [r, a], "float32");
 }
-var Jee = { kernelName: Wo, backendName: "webgl", kernelFunc: Zee };
+var Jee = { kernelName: Uo, backendName: "webgl", kernelFunc: Zee };
 function ete(e) {
   let { inputs: t, attrs: n, backend: s } = e, { axis: r } = n, { x: a } = t;
-  tu(a, "unique"), console.warn("WARNING: ", "UI might be locked temporarily as data is being downloaded");
+  nu(a, "unique"), console.warn("WARNING: ", "UI might be locked temporarily as data is being downloaded");
   let i = s.readSync(a.dataId), { outputValues: o, outputShape: u, indices: l } = bX(i, r, a.shape, a.dtype);
   return [s.makeTensorInfo(u, a.dtype, o), s.makeTensorInfo([l.length], "int32", l)];
 }
@@ -31835,12 +31722,12 @@ function nte(e) {
   let f = new Array(u);
   for (let m = 0; m < f.length; m++) {
     d[a] = m;
-    let g = ou({ inputs: { x: i }, backend: n, attrs: { begin: d, size: h } }), b = he({ inputs: { x: g }, backend: n, attrs: { shape: l } });
+    let g = uu({ inputs: { x: i }, backend: n, attrs: { begin: d, size: h } }), b = he({ inputs: { x: g }, backend: n, attrs: { shape: l } });
     f[m] = b, p.push(g);
   }
   return p.forEach((m) => n.disposeIntermediateTensorInfo(m)), f;
 }
-var ste = { kernelName: Uo, backendName: "webgl", kernelFunc: nte };
+var ste = { kernelName: Go, backendName: "webgl", kernelFunc: nte };
 var rte = class {
   constructor(e, t) {
     this.variableNames = ["x", "segmentIds"];
@@ -31980,7 +31867,7 @@ function ate(e) {
 var ite = { kernelName: up, backendName: "webgl", kernelFunc: ate };
 var ote = [d8, h8, g8, v8, w8, S8, N8, $8, R8, F8, z8, B8, U8, j8, Y8, Z8, eY, rY, iY, uY, pY, vY, wY, IY, _Y, EY, OY, qX, MY, UY, jY, JY, t9, s9, a9, o9, c9, h9, g9, y9, x9, k9, C9, T9, E9, D9, P9, L9, V9, H9, X9, J9, nQ, aQ, iQ, uQ, cQ, pQ, fQ, gQ, xQ, IQ, NQ, $Q, EQ, FQ, MQ, WQ, HX, GQ, VY, jQ, YQ, JQ, KX, sZ, oZ, lZ, hZ, gZ, xZ, IZ, TZ, EZ, FZ, PZ, BZ, WZ, GZ, KZ, YZ, ZZ, e7, n7, i7, c7, f7, k7, JX, N7, _7, R7, O7, CY, M7, B7, W7, H7, X7, YX, Q7, Z7, NY, y7, tJ, aJ, lJ, t8, hJ, gJ, xJ, IJ, TJ, _J, RJ, OJ, zJ, BJ, UJ, jJ, YJ, JJ, nee, bY, x7, aee, oee, lee, dee, hee, mee, bee, vee, wee, See, Nee, $ee, Eee, Dee, Oee, zee, v7, u8, Bee, Uee, qee, Yee, Jee, l8, tte, ste, ite, L7];
 for (let e of ote)
-  Al(e);
+  El(e);
 var zs = X();
 zs.registerFlag("WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE", () => 15);
 zs.registerFlag("WEBGPU_CPU_FORWARD", () => true);
@@ -32189,10 +32076,14 @@ var qte = `if (a < 0.0) { return 1.0/0.0; }
 var jte = "return f32(!(a >= 1.0));";
 var Kte = "return -a;";
 var Xte = "if (a < 0.0) { return uniforms.alpha * a; } return a;";
-var Yte = "if(a < 0.0) { return 0.0; } return a;";
-var Qte = "return clamp(a, 0.0, 6.0);";
-var Zte = "return clamp(a, vec4<f32>(0.0, 0.0, 0.0, 0.0), vec4<f32>(6.0, 6.0, 6.0, 6.0));";
-var Jte = `
+var Yte = `
+  let aLessThanZero = vec4<f32>(a < vec4<f32>(0.0));
+  return (aLessThanZero * (uniforms.alpha * a)) + ((vec4<f32>(1.0) - aLessThanZero) * a);
+`;
+var Qte = "if(a < 0.0) { return 0.0; } return a;";
+var Zte = "return clamp(a, 0.0, 6.0);";
+var Jte = "return clamp(a, vec4<f32>(0.0, 0.0, 0.0, 0.0), vec4<f32>(6.0, 6.0, 6.0, 6.0));";
+var ene = `
   var resFloat = a * vec4<f32>(a >= vec4<f32>(0.0));
   let isNaN = isnanVec4(a);
 
@@ -32210,20 +32101,20 @@ var Jte = `
   }
   return resFloat;
 `;
-var ene = "return 1.0/sqrt(a);";
-var tne = "return 1.0 / (1.0 + exp(-1.0 * a));";
-var nne = "return sin(a);";
-var sne = `
+var tne = "return 1.0/sqrt(a);";
+var nne = "return 1.0 / (1.0 + exp(-1.0 * a));";
+var sne = "return sin(a);";
+var rne = `
   let e2x = exp(a);
   return (e2x - 1.0 / e2x) / 2.0;
 `;
-var rne = "return sqrt(a);";
-var ane = "return a * a;";
-var ine = `
+var ane = "return sqrt(a);";
+var ine = "return a * a;";
+var one = `
   let e2x = exp(-2.0 * abs(a));
   return sign(a) * (1.0 - e2x) / (1.0 + e2x);
 `;
-var one = "return f32(i32((a)));";
+var une = "return f32(i32((a)));";
 function Hr(e, t) {
   switch (e) {
     case 0:
@@ -32251,27 +32142,27 @@ function Hr(e, t) {
     case 11:
       return Kte;
     case 14:
-      return Xte;
+      return t ? Yte : Xte;
     case 12:
-      return t ? Jte : Yte;
+      return t ? ene : Qte;
     case 13:
-      return t ? Zte : Qte;
+      return t ? Jte : Zte;
     case 15:
-      return ene;
-    case 18:
       return tne;
-    case 16:
+    case 18:
       return nne;
-    case 17:
+    case 16:
       return sne;
-    case 19:
+    case 17:
       return rne;
-    case 20:
+    case 19:
       return ane;
-    case 21:
+    case 20:
       return ine;
-    case 22:
+    case 21:
       return one;
+    case 22:
+      return une;
     default:
       throw new Error(`BinaryType ${e} is not implemented!`);
   }
@@ -32290,12 +32181,12 @@ function Zs(e, t = false) {
   if (e === "prelu")
     return tc(14, t);
   if (e === "sigmoid")
-    return Hr(18);
+    return Hr(18, t);
   if (e === "leakyrelu")
-    return Hr(14);
+    return Hr(14, t);
   throw new Error(`Activation ${e} has not been implemented for the WebGPU backend.`);
 }
-function une(e, t) {
+function lne(e, t) {
   if (Math.max(...e) > 3)
     throw new Error("Cannot symbolically compute strides for rank > 4 tensor.");
   let n = e.length, s = e.map((a) => `${t}[${a}]`), r = new Array(n - 1);
@@ -32340,7 +32231,7 @@ function Ue() {
       let index = getGlobalIndex();
 `;
 }
-function lne(e, t, n, s = false) {
+function cne(e, t, n, s = false) {
   let r = [];
   if (r.push(`
     let workGroupSizeX = ${n.workGroupSize[0]}u;
@@ -32398,10 +32289,10 @@ function lne(e, t, n, s = false) {
   }), a !== "" && r.push(`
     @group(0) @binding(${1 + n.variableNames.length}) var<uniform> uniforms: Uniforms;
     `);
-  let [o, u] = mne(t.shape, n.dispatchLayout), l = [Ew, r.join(`
-`), Rw(t.shape), o, cne(t.shape.length)];
-  if (n.atomic || l.push(dne(t.shape, t.dtype, n.isVec4)), u === t.shape.length) {
-    let p = e.map((d) => pne(d, t.shape, n.isVec4, n.dispatchLayout.x.length === t.shape.length)).join(`
+  let [o, u] = gne(t.shape, n.dispatchLayout), l = [Ew, r.join(`
+`), Rw(t.shape), o, dne(t.shape.length)];
+  if (n.atomic || l.push(pne(t.shape, t.dtype, n.isVec4)), u === t.shape.length) {
+    let p = e.map((d) => hne(d, t.shape, n.isVec4, n.dispatchLayout.x.length === t.shape.length)).join(`
 `);
     l.push(p);
   }
@@ -32456,7 +32347,7 @@ var Ew = `
     return vec4<bool>(isnan(val[0]), isnan(val[1]), isnan(val[2]), isnan(val[3]));
   }
 `;
-function cne(e) {
+function dne(e) {
   let t = "";
   switch (e) {
     case 0:
@@ -32495,7 +32386,7 @@ function cne(e) {
   }
   return t;
 }
-function dne(e, t, n) {
+function pne(e, t, n) {
   let s = e.length, r = cd(t, n), a;
   if (n ? a = `fn setOutputAtIndex(flatIndex : i32, value : vec4<f32>) {
       result[flatIndex] = ${r}(value);
@@ -32531,11 +32422,11 @@ function dne(e, t, n) {
   }
   return a;
 }
-function pne(e, t, n, s) {
-  let r = hne(e, n);
-  return e.shape.length <= t.length && (r += fne(e, t, n, s)), r;
+function hne(e, t, n, s) {
+  let r = fne(e, n);
+  return e.shape.length <= t.length && (r += mne(e, t, n, s)), r;
 }
-function hne(e, t) {
+function fne(e, t) {
   let n = e.name, s = e.shape.length, r = Wt(s), a = "get" + n.charAt(0).toUpperCase() + n.slice(1), i = ["d0", "d1", "d2", "d3"].slice(0, s), o = i.map((c) => `${c} : i32`).join(", ");
   if (s < 1)
     return t ? `
@@ -32560,7 +32451,7 @@ function hne(e, t) {
     }
    `;
 }
-function fne(e, t, n, s) {
+function mne(e, t, n, s) {
   let r = e.name, a = r.charAt(0).toUpperCase() + r.slice(1), i = "get" + a + "ByOutput", o = e.shape.length, u = t.length, l = Wt(u);
   if (w.arraysEqual(e.shape, t) && s)
     return n ? `
@@ -32636,7 +32527,7 @@ function fne(e, t, n, s) {
     }
   `;
 }
-function mne(e, t) {
+function gne(e, t) {
   let { x: n, y: s = [], z: r = [] } = t, a = e.length;
   if (n.length === a)
     return [`fn getOutputCoords() -> ${Wt(a)}{
@@ -32651,7 +32542,7 @@ function mne(e, t) {
       if (u += h.length, h.length === 1)
         i += `let d${h[0]} = i32(globalId[${d}]);`;
       else {
-        let f = une(h, "uniforms.outShape");
+        let f = lne(h, "uniforms.outShape");
         i += `var index${d} = i32(globalId[${d}]);`;
         for (let m = 0; m < f.length; m++)
           i += `let d${h[m]} = index${d} / ${f[m]};`, m === f.length - 1 ? i += `let d${h[m + 1]} = index${d} - d${h[m]} * ${f[m]};` : i += `index${d} = index${d} - d${h[m]} * ${f[m]};`;
@@ -32808,7 +32699,7 @@ function y2(e, t, n, s) {
     }
   }`;
 }
-var gne = class {
+var bne = class {
   constructor(e, t, n, s = null, r = null, a = null) {
     this.variableNames = ["A", "B"], this.uniforms = "dimAOuter : i32, dimBOuter : i32, dimInner : i32,", this.workGroupSize = [8, 8, 1], this.isVec4 = true, this.outputShape = t, this.dispatchLayout = { x: [2], y: [1], z: [0] }, t[1] === 1 ? this.elementsPerThread = [4, 1, 1] : this.elementsPerThread = [4, 4, 1], this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, this.elementsPerThread);
     let i = s != null, o = a != null;
@@ -32954,7 +32845,7 @@ function $v(e, t) {
     }
   `;
 }
-function bne(e) {
+function yne(e) {
   return `
     let TileSize = ${e[0] * 4};
     var<workgroup> mm_Asub : array<vec4<f32>, ${e[0]}>;
@@ -33069,11 +32960,11 @@ var v2 = class {
         ${s}
         setOutputAtCoords(batch, row, col, value);
       }
-      ${this.outputShape[1] > 1 ? $v([this.workPerThread, this.workPerThread, 1], this.workGroupSize) : bne(this.workGroupSize)}
+      ${this.outputShape[1] > 1 ? $v([this.workPerThread, this.workPerThread, 1], this.workGroupSize) : yne(this.workGroupSize)}
     `;
   }
 };
-function yne() {
+function vne() {
   return `
     var<workgroup> sumValues : array<f32, workGroupSizeX>;
     ${Dr()}
@@ -33107,7 +32998,7 @@ function yne() {
     }
   `;
 }
-var vne = class {
+var xne = class {
   constructor(e, t = false, n = false, s = null, r = null, a = null) {
     this.variableNames = ["A", "B"], this.uniforms = "dimAOuter : i32, dimBOuter : i32, dimInner : i32,", this.workGroupSize = [256, 1, 1], this.outputShape = e, this.dispatchLayout = { x: [], y: [1, 2], z: [0] }, this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize);
     let i = s != null, o = a != null;
@@ -33151,11 +33042,11 @@ var vne = class {
         ${s}
         setOutputAtCoords(batch, row, col, value);
       }
-      ${yne()}
+      ${vne()}
     `;
   }
 };
-function xne(e) {
+function wne(e) {
   let t = e[1] / 2, n = e[0], s = t > n ? t : n;
   return `
   var<workgroup> mm_Asub1 : array<array<f32, ${s}>, ${t}>;
@@ -33246,7 +33137,7 @@ function xne(e) {
   }
   `;
 }
-var wne = class {
+var kne = class {
   constructor(e, t, n, s = null, r = null, a = null) {
     this.variableNames = ["A", "B"], this.uniforms = "dimAOuter : i32, dimBOuter : i32, dimInner : i32,", this.workGroupSize = [8, 16, 1], w.assert(e[1] <= 16 || t[2] <= 16, () => "This program can be only used when A width or B Height are small"), this.outputShape = n, this.dispatchLayout = { x: [2], y: [1], z: [0] }, this.dispatch = [Math.ceil(n[2] / this.workGroupSize[0]), Math.ceil(n[1] * 2 / this.workGroupSize[1]), n[0]];
     let i = s != null;
@@ -33295,7 +33186,7 @@ var wne = class {
           setOutputAtCoords(batch, row, col, value);
         }
       }
-      ${xne(this.workGroupSize)}
+      ${wne(this.workGroupSize)}
     `;
   }
 };
@@ -33303,12 +33194,12 @@ function Me(e) {
   let { inputs: t, attrs: n } = e, { x: s } = t, { shape: r } = n, a = w.sizeFromShape(s.shape), i = w.inferFromImplicitShape(r, a), o = w.sizeFromShape(i);
   return w.assert(a === o, () => `The new shape (${i}) has ${o} elements and the old shape (${s.shape}) has ${a} elements. The new shape and old shape must have the same number of elements.`), e.backend.incRef(s.dataId), { dataId: s.dataId, shape: i, dtype: s.dtype };
 }
-var kne = { kernelName: Ao, backendName: "webgpu", kernelFunc: Me };
+var Ine = { kernelName: Eo, backendName: "webgpu", kernelFunc: Me };
 function _v({ a: e, b: t, transposeA: n, transposeB: s, backend: r, bias: a = null, preluActivationWeights: i = null, leakyreluAlpha: o = 0, activation: u = null }) {
-  let l = e.shape.length, c = t.shape.length, p = n ? e.shape[l - 2] : e.shape[l - 1], d = s ? t.shape[c - 1] : t.shape[c - 2], h = n ? e.shape[l - 1] : e.shape[l - 2], f = s ? t.shape[c - 2] : t.shape[c - 1], m = e.shape.slice(0, -2), g = t.shape.slice(0, -2), b = w.sizeFromShape(m), y = w.sizeFromShape(g), x = qo.assertAndGetBroadcastShape(e.shape.slice(0, -2), t.shape.slice(0, -2)).concat([h, f]);
+  let l = e.shape.length, c = t.shape.length, p = n ? e.shape[l - 2] : e.shape[l - 1], d = s ? t.shape[c - 1] : t.shape[c - 2], h = n ? e.shape[l - 1] : e.shape[l - 2], f = s ? t.shape[c - 2] : t.shape[c - 1], m = e.shape.slice(0, -2), g = t.shape.slice(0, -2), b = w.sizeFromShape(m), y = w.sizeFromShape(g), x = jo.assertAndGetBroadcastShape(e.shape.slice(0, -2), t.shape.slice(0, -2)).concat([h, f]);
   w.assert(p === d, () => `Error in matMul: inner shapes (${p}) and (${d}) of Tensors with shapes ${e.shape} and ${t.shape} and transposeA=${n} and transposeB=${s} must match.`);
   let k = n ? [b, p, h] : [b, h, p], T = s ? [y, f, d] : [y, d, f], N = Me({ inputs: { x: e }, backend: r, attrs: { shape: k } }), E = Me({ inputs: { x: t }, backend: r, attrs: { shape: T } }), A = [N, E], P = Math.max(b, y), R = p % 4 === 0 && f % 4 === 0 && !n && !s && f >= 32, F;
-  h * f <= 32 ? F = new vne([P, h, f], n, s, a, u, i) : !n && !s && (h <= 16 && (f <= 512 || d >= 2 * f) || f <= 16 && (h <= 512 || p >= 2 * h)) ? F = new wne(k, T, [P, h, f], a, u, i) : R ? F = new gne(k, [P, h, f], X().get("WEBGPU_MATMUL_WORK_PER_THREAD"), a, u, i) : F = new v2(k, [P, h, f], X().get("WEBGPU_MATMUL_WORK_PER_THREAD"), n, s, a, u, i);
+  h * f <= 32 ? F = new xne([P, h, f], n, s, a, u, i) : !n && !s && (h <= 16 && (f <= 512 || d >= 2 * f) || f <= 16 && (h <= 512 || p >= 2 * h)) ? F = new kne(k, T, [P, h, f], a, u, i) : R ? F = new bne(k, [P, h, f], X().get("WEBGPU_MATMUL_WORK_PER_THREAD"), a, u, i) : F = new v2(k, [P, h, f], X().get("WEBGPU_MATMUL_WORK_PER_THREAD"), n, s, a, u, i);
   let $ = [N, E];
   a && $.push(a), i && $.push(i);
   let z = [{ type: "int32", data: [h] }, { type: "int32", data: [f] }, { type: "int32", data: [p] }];
@@ -33319,11 +33210,11 @@ function _v({ a: e, b: t, transposeA: n, transposeB: s, backend: r, bias: a = nu
     r.disposeData(K.dataId);
   return q;
 }
-function Ine(e) {
+function Sne(e) {
   let { inputs: t, backend: n, attrs: s } = e, { a: r, b: a, bias: i, preluActivationWeights: o } = t, { transposeA: u, transposeB: l, activation: c, leakyreluAlpha: p } = s;
   return _v({ a: r, b: a, transposeA: u, transposeB: l, backend: n, bias: i, preluActivationWeights: o, leakyreluAlpha: p, activation: c });
 }
-var Sne = { kernelName: ra, backendName: "webgpu", kernelFunc: Ine };
+var Cne = { kernelName: ra, backendName: "webgpu", kernelFunc: Sne };
 var Dw = class {
   constructor(e, t, n) {
     this.variableNames = ["AReal", "AImag", "BReal", "BImag"], this.workGroupSize = [128, 1, 1], this.size = true, this.outputShape = S.assertAndGetBroadcastShape(t, n), this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = `binaryOpComplex_${e}`, this.op = e;
@@ -33347,7 +33238,7 @@ var Dw = class {
     `;
   }
 };
-var Cne = class {
+var Nne = class {
   constructor(e, t, n, s) {
     this.variableNames = ["A", "B"], this.size = true;
     let r = 256;
@@ -33385,7 +33276,7 @@ var Cne = class {
         `;
   }
 };
-var Nne = class {
+var Tne = class {
   constructor(e, t, n) {
     this.variableNames = ["A", "B"], this.workPerThread = 4, this.isVec4 = true, this.size = true;
     let s = 128;
@@ -33429,20 +33320,20 @@ var x2 = class {
 };
 function Fw(e, t, n) {
   if (w.arraysEqual(t, n) && w.sizeFromShape(t) % 4 === 0)
-    return new Nne(e, t, n);
+    return new Tne(e, t, n);
   let r = t.length === 1 && n.length > 1 && t[0] < 1024, a = n.length === 1 && t.length > 1 && n[0] < 1024;
-  return r || a ? new Cne(e, t, n, a) : new x2(e, t, n);
+  return r || a ? new Nne(e, t, n, a) : new x2(e, t, n);
 }
 function es(e) {
   let { inputs: t } = e, { x: n } = t;
   return e.backend.incRef(n.dataId), { dataId: n.dataId, shape: n.shape, dtype: n.dtype };
 }
-var Tne = { kernelName: Ba, backendName: "webgpu", kernelFunc: es };
-function uu(e) {
+var $ne = { kernelName: Ba, backendName: "webgpu", kernelFunc: es };
+function lu(e) {
   let { inputs: t, backend: n } = e, { real: s, imag: r } = t, a = n.makeTensorInfo(s.shape, "complex64"), i = n.tensorMap.get(a.dataId), o = es({ inputs: { x: s }, backend: n }), u = es({ inputs: { x: r }, backend: n });
   return i.complexTensorInfos = { real: o, imag: u }, a;
 }
-var $ne = { kernelName: jd, backendName: "webgpu", kernelFunc: uu };
+var _ne = { kernelName: jd, backendName: "webgpu", kernelFunc: lu };
 var nc = class {
   constructor(e, t) {
     this.variableNames = ["A"], this.size = true;
@@ -33488,7 +33379,7 @@ function mn({ opSnippet: e, cpuKernelImpl: t, supportsComplex: n = false, dtype:
         let g = new Dw(17, i.shape, o.shape), b = new Dw(18, i.shape, o.shape), y = [{ dataId: p.complexTensorInfos.real.dataId, dtype: p.complexTensorInfos.real.dtype, shape: i.shape }, { dataId: p.complexTensorInfos.imag.dataId, dtype: p.complexTensorInfos.imag.dtype, shape: i.shape }, { dataId: d.complexTensorInfos.real.dataId, dtype: d.complexTensorInfos.real.dtype, shape: o.shape }, { dataId: d.complexTensorInfos.imag.dataId, dtype: d.complexTensorInfos.imag.dtype, shape: o.shape }];
         h = u.runWebGPUProgram(g, y, "float32"), f = u.runWebGPUProgram(b, y, "float32");
       }
-      let m = uu({ inputs: { real: h, imag: f }, backend: u });
+      let m = lu({ inputs: { real: h, imag: f }, backend: u });
       return u.disposeData(h.dataId), u.disposeData(f.dataId), m;
     }
     let l = s || cn(i.dtype, o.dtype);
@@ -33500,12 +33391,12 @@ function mn({ opSnippet: e, cpuKernelImpl: t, supportsComplex: n = false, dtype:
     return u.runWebGPUProgram(c, [i, o], l);
   };
 }
-var { addImpl: _ne, ceilImpl: Ane, concatImpl: Ene, equalImpl: Rne, expImpl: Dne, expm1Impl: Fne, floorImpl: One, gatherNdImpl: Pne, gatherV2Impl: zne, greaterEqualImpl: Mne, greaterImpl: Lne, lessEqualImpl: Bne, lessImpl: Vne, logImpl: Wne, maxImpl: Une, maximumImpl: Gne, minimumImpl: Hne, multiplyImpl: qne, negImpl: jne, notEqualImpl: Kne, prodImpl: Xne, rangeImpl: Yne, rsqrtImpl: Qne, simpleAbsImpl: Zne, sliceImpl: Jne, stridedSliceImpl: ese, stringNGramsImpl: tse, subImpl: nse, tileImpl: sse, topKImpl: rse, transposeImpl: ase, uniqueImpl: zpe } = Zy;
-var ise = Kt({ opType: 0, cpuKernelImpl: Zne });
-var ose = { kernelName: ao, backendName: "webgpu", kernelFunc: ise };
-var use = mn({ opSnippet: 1, cpuKernelImpl: _ne, supportsComplex: true });
-var lse = { kernelName: Ir, backendName: "webgpu", kernelFunc: use };
-var cse = class {
+var { addImpl: Ane, ceilImpl: Ene, concatImpl: Rne, equalImpl: Dne, expImpl: Fne, expm1Impl: One, floorImpl: Pne, gatherNdImpl: zne, gatherV2Impl: Mne, greaterEqualImpl: Lne, greaterImpl: Bne, lessEqualImpl: Vne, lessImpl: Wne, logImpl: Une, maxImpl: Gne, maximumImpl: Hne, minimumImpl: qne, multiplyImpl: jne, negImpl: Kne, notEqualImpl: Xne, prodImpl: Yne, rangeImpl: Qne, rsqrtImpl: Zne, simpleAbsImpl: Jne, sliceImpl: ese, stridedSliceImpl: tse, stringNGramsImpl: nse, subImpl: sse, tileImpl: rse, topKImpl: ase, transposeImpl: ise, uniqueImpl: Mpe } = Zy;
+var ose = Kt({ opType: 0, cpuKernelImpl: Jne });
+var use = { kernelName: io, backendName: "webgpu", kernelFunc: ose };
+var lse = mn({ opSnippet: 1, cpuKernelImpl: Ane, supportsComplex: true });
+var cse = { kernelName: Ir, backendName: "webgpu", kernelFunc: lse };
+var dse = class {
   constructor(e) {
     this.workPerThread = 4, this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e[0], this.variableNames = e.map((t, n) => `T${n}`), this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]), this.shaderKey = "addN";
   }
@@ -33530,14 +33421,14 @@ var cse = class {
     `;
   }
 };
-function dse(e) {
+function pse(e) {
   let { inputs: t, backend: n } = e, s = t;
   if (s.length === 1)
     return es({ inputs: { x: s[0] }, backend: n });
-  let r = s.map((o) => o.dtype).reduce((o, u) => cn(o, u)), a = s.map((o) => o.shape), i = new cse(a);
+  let r = s.map((o) => o.dtype).reduce((o, u) => cn(o, u)), a = s.map((o) => o.shape), i = new dse(a);
   return n.runWebGPUProgram(i, s, r);
 }
-var pse = { kernelName: ka, backendName: "webgpu", kernelFunc: dse };
+var hse = { kernelName: ka, backendName: "webgpu", kernelFunc: pse };
 var w2 = class {
   constructor(e, t, n) {
     this.workGroupSize = [64, 1, 1], this.variableNames = ["x"], this.uniforms = "axis : i32, infinityValue : f32,", this.size = true;
@@ -33631,7 +33522,7 @@ var w2 = class {
     `;
   }
 };
-var hse = class {
+var fse = class {
   constructor(e, t) {
     this.variableNames = ["A"], this.workGroupSize = [16, 16, 1];
     let n = new Array(e.length);
@@ -33665,7 +33556,7 @@ var hse = class {
     `;
   }
 };
-var fse = class {
+var mse = class {
   constructor(e, t) {
     this.variableNames = ["A"], this.workPerThread = 4, this.workGroupSize = [64, 1, 1], this.size = true;
     let n = new Array(e.length);
@@ -33674,7 +33565,7 @@ var fse = class {
     this.outputShape = n, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]), this.newDim = t, this.shaderKey = `transpose_${t}`;
   }
   getUserCode() {
-    let e = Wt(this.outputShape.length), t = mse(this.newDim);
+    let e = Wt(this.outputShape.length), t = gse(this.newDim);
     return `
       ${Ue()}
 
@@ -33690,7 +33581,7 @@ var fse = class {
     `;
   }
 };
-function mse(e) {
+function gse(e) {
   let t = e.length;
   if (t > 4)
     throw Error(`Transpose for rank ${t} is not yet supported`);
@@ -33704,31 +33595,31 @@ function wi(e) {
   for (let c = 0; c < u.length; c++)
     u[c] = r.shape[a[c]];
   if (n.shouldExecuteOnCPU([r])) {
-    let p = i.tensorMap.get(r.dataId).values, d = ase(p, r.shape, r.dtype, a, u);
+    let p = i.tensorMap.get(r.dataId).values, d = ise(p, r.shape, r.dtype, a, u);
     return n.makeTensorInfo(u, r.dtype, d);
   }
   if (r.shape.length === 2 && w.arraysEqual(a, [1, 0])) {
-    let c = new hse(r.shape, a);
+    let c = new fse(r.shape, a);
     return i.runWebGPUProgram(c, [r], r.dtype);
   }
-  let l = new fse(r.shape, a);
+  let l = new mse(r.shape, a);
   return i.runWebGPUProgram(l, [r], r.dtype);
 }
-var gse = { kernelName: pi, backendName: "webgpu", kernelFunc: wi };
-function bse(e) {
+var bse = { kernelName: pi, backendName: "webgpu", kernelFunc: wi };
+function yse(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a } = s, i = w.parseAxisParam(a, r.shape), o = S.getAxesPermutation(i, r.shape.length), u = r, l = [];
   o != null && (u = wi({ inputs: { x: r }, backend: n, attrs: { perm: o } }), l.push(u), i = S.getInnerMostAxes(i.length, u.shape.length)), S.assertAxesAreInnerMostDims("argMax", [i[0]], u.shape.length);
   let c = new w2(u.shape, i[0], "max"), p = [{ type: "int32", data: [i[0]] }, { type: "float32", data: [Number.NEGATIVE_INFINITY] }], d = n.runWebGPUProgram(c, [u], "int32", p);
   return l.forEach((h) => n.disposeData(h.dataId)), d;
 }
-var yse = { kernelName: Ia, backendName: "webgpu", kernelFunc: bse };
-function vse(e) {
+var vse = { kernelName: Ia, backendName: "webgpu", kernelFunc: yse };
+function xse(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a } = s, i = w.parseAxisParam(a, r.shape), o = S.getAxesPermutation(i, r.shape.length), u = r, l = [];
   o != null && (u = wi({ inputs: { x: r }, backend: n, attrs: { perm: o } }), l.push(u), i = S.getInnerMostAxes(i.length, u.shape.length)), S.assertAxesAreInnerMostDims("argMin", [i[0]], u.shape.length);
   let c = new w2(u.shape, i[0], "min"), p = [{ type: "int32", data: [i[0]] }, { type: "float32", data: [Number.POSITIVE_INFINITY] }], d = n.runWebGPUProgram(c, [u], "int32", p);
   return l.forEach((h) => n.disposeData(h.dataId)), d;
 }
-var xse = { kernelName: il, backendName: "webgpu", kernelFunc: vse };
+var wse = { kernelName: ol, backendName: "webgpu", kernelFunc: xse };
 var k2 = class {
   constructor(e, t) {
     this.variableNames = ["x"], this.uniforms = "stride : vec2<i32>, pad : vec2<i32>, dilation : vec2<i32>, convDims : vec2<i32>, filterDims : vec2<i32>,", this.workGroupSize = [128, 1, 1], this.size = true, this.outputShape = e.outShape, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = `pool2D_${t}`, this.poolType = t;
@@ -33796,25 +33687,25 @@ var I2 = class {
     `;
   }
 };
-function wse(e) {
+function kse(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { filterSize: a, strides: i, pad: o, dimRoundingMode: u } = s, l = 1, c = S.computePool2DInfo(r.shape, a, i, l, o, u);
   if (c.filterWidth === 1 && c.filterHeight === 1 && w.arraysEqual(c.inShape, c.outShape))
     return es({ inputs: { x: r }, backend: n });
   let p, d = [{ type: "int32", data: [c.strideHeight, c.strideWidth] }];
   return c.filterHeight === 1 && c.filterWidth === 1 ? p = new I2(c) : (p = new k2(c, "avg"), d.push({ type: "int32", data: [c.padInfo.top, c.padInfo.left] }, { type: "int32", data: [c.dilationHeight, c.dilationWidth] }, { type: "int32", data: [c.inHeight, c.inWidth] }, { type: "int32", data: [c.effectiveFilterHeight, c.effectiveFilterWidth] })), n.runWebGPUProgram(p, [r], r.dtype, d);
 }
-var kse = { kernelName: Sa, backendName: "webgpu", kernelFunc: wse };
-function Ise(e) {
+var Ise = { kernelName: Sa, backendName: "webgpu", kernelFunc: kse };
+function Sse(e) {
   let { inputs: t, backend: n, attrs: s } = e, { a: r, b: a } = t, { transposeA: i, transposeB: o } = s;
   return _v({ a: r, b: a, transposeA: i, transposeB: o, backend: n });
 }
-var Sse = { kernelName: Ca, backendName: "webgpu", kernelFunc: Ise };
-var Cse = class {
+var Cse = { kernelName: Ca, backendName: "webgpu", kernelFunc: Sse };
+var Nse = class {
   constructor(e, t) {
     this.variableNames = ["source"], this.workPerThread = 1, this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = t, this.rank = t.length, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]), this.start = e, this.uniforms = `start : ${Wt(e.length)}, `, this.shaderKey = "slice";
   }
   getUserCode() {
-    let e = Wt(this.rank), t = Nse(this.rank), n;
+    let e = Wt(this.rank), t = Tse(this.rank), n;
     return this.start.length === 1 ? n = this.outputShape.map((r, a) => "sourceLoc = uniforms.start + coords;") : n = this.outputShape.map((r, a) => `sourceLoc.${Km[a]} = uniforms.start[${a}] + coords.${Km[a]};`), `
       ${Ue()}
         if (index < uniforms.size) {
@@ -33829,40 +33720,40 @@ var Cse = class {
   }
 };
 var Km = ["x", "y", "z", "w", "u", "v"];
-function Nse(e) {
+function Tse(e) {
   if (e === 1)
     return "sourceLoc";
   if (e <= 6)
     return Km.slice(0, e).map((t) => `sourceLoc.${t}`).join(",");
   throw Error(`Slicing for rank ${e} is not yet supported`);
 }
-function lu(e) {
+function cu(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { begin: a, size: i } = s, [o, u] = wt.parseSliceParams(r, a, i);
   if (wt.assertParamsValid(r, o, u), n.shouldExecuteOnCPU([r]) || r.dtype === "string") {
-    let p = n.tensorMap.get(r.dataId), d = Jne(p.values, o, u, r.shape, r.dtype);
+    let p = n.tensorMap.get(r.dataId), d = ese(p.values, o, u, r.shape, r.dtype);
     return n.makeTensorInfo(u, r.dtype, d);
   }
   if (w.sizeFromShape(u) === 0)
     return n.makeTensorInfo(u, r.dtype, []);
-  let l = new Cse(o, u), c = [{ type: "int32", data: o }];
+  let l = new Nse(o, u), c = [{ type: "int32", data: o }];
   return n.runWebGPUProgram(l, [r], r.dtype, c);
 }
-var Tse = { kernelName: Oo, backendName: "webgpu", kernelFunc: lu };
-var $se = (e) => {
+var $se = { kernelName: Po, backendName: "webgpu", kernelFunc: cu };
+var _se = (e) => {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockShape: a, crops: i } = s;
   w.assert(r.shape.length <= 4, () => "batchToSpaceND for rank > 4 with a WebGPU backend not implemented yet");
-  let o = a.reduce((y, v) => y * v), u = S.getReshaped(r.shape, a, o), l = S.getPermuted(u.length, a.length), c = S.getReshapedPermuted(r.shape, a, o), p = S.getSliceBeginCoords(i, a.length), d = S.getSliceSize(c, i, a.length), h = [], f = Me({ inputs: { x: r }, backend: n, attrs: { shape: u } }), m = wi({ inputs: { x: f }, backend: n, attrs: { perm: l } }), g = Me({ inputs: { x: m }, backend: n, attrs: { shape: c } }), b = lu({ inputs: { x: g }, backend: n, attrs: { begin: p, size: d } });
+  let o = a.reduce((y, v) => y * v), u = S.getReshaped(r.shape, a, o), l = S.getPermuted(u.length, a.length), c = S.getReshapedPermuted(r.shape, a, o), p = S.getSliceBeginCoords(i, a.length), d = S.getSliceSize(c, i, a.length), h = [], f = Me({ inputs: { x: r }, backend: n, attrs: { shape: u } }), m = wi({ inputs: { x: f }, backend: n, attrs: { perm: l } }), g = Me({ inputs: { x: m }, backend: n, attrs: { shape: c } }), b = cu({ inputs: { x: g }, backend: n, attrs: { begin: p, size: d } });
   return h.push(f), h.push(m), h.push(g), h.forEach((y) => n.disposeData(y.dataId)), b;
 };
-var _se = { kernelName: io, backendName: "webgpu", kernelFunc: $se };
-var S2 = mn({ opSnippet: 10, dtype: "bool", cpuKernelImpl: Kne });
-var Ase = { kernelName: Io, backendName: "webgpu", kernelFunc: S2 };
+var Ase = { kernelName: oo, backendName: "webgpu", kernelFunc: _se };
+var S2 = mn({ opSnippet: 10, dtype: "bool", cpuKernelImpl: Xne });
+var Ese = { kernelName: So, backendName: "webgpu", kernelFunc: S2 };
 function sc(e) {
   let { inputs: t, backend: n } = e, { input: s } = t, r = n.tensorMap.get(s.dataId);
   return es({ inputs: { x: r.complexTensorInfos.real }, backend: n });
 }
-var Ese = { kernelName: np, backendName: "webgpu", kernelFunc: sc };
-function Rse(e, t) {
+var Rse = { kernelName: np, backendName: "webgpu", kernelFunc: sc };
+function Dse(e, t) {
   let n = new nc(e.shape, 22), s = t.runWebGPUProgram(n, [e], "int32");
   return { dataId: s.dataId, shape: s.shape, dtype: s.dtype };
 }
@@ -33871,7 +33762,7 @@ function Xm(e) {
   if (a === "complex64") {
     if (r.dtype === "complex64")
       return es({ inputs: { x: r }, backend: n });
-    let i = $t(r.shape), o = Xm({ inputs: { x: r }, backend: n, attrs: { dtype: "float32" } }), u = uu({ inputs: { real: o, imag: i }, backend: n });
+    let i = $t(r.shape), o = Xm({ inputs: { x: r }, backend: n, attrs: { dtype: "float32" } }), u = lu({ inputs: { real: o, imag: i }, backend: n });
     return i.dispose(), n.disposeData(o.dataId), u;
   }
   if (r.dtype === "complex64") {
@@ -33883,17 +33774,17 @@ function Xm(e) {
     return { dataId: i.dataId, shape: i.shape, dtype: a };
   }
   if (a === "int32")
-    return Rse(r, n);
+    return Dse(r, n);
   if (a === "bool") {
     let i = n.makeTensorInfo([], "bool", w.getTypedArrayFromDType("bool", 1)), u = S2({ inputs: { a: r, b: i }, backend: n });
     return n.disposeData(i.dataId), u;
   }
   throw new Error(`Error in Cast: failed to cast ${r.dtype} to ${a}`);
 }
-var Dse = { kernelName: Na, backendName: "webgpu", kernelFunc: Xm };
-var Fse = Kt({ opType: 1, cpuKernelImpl: Ane });
-var Ose = { kernelName: Ta, backendName: "webgpu", kernelFunc: Fse };
-var Pse = class {
+var Fse = { kernelName: Na, backendName: "webgpu", kernelFunc: Xm };
+var Ose = Kt({ opType: 1, cpuKernelImpl: Ene });
+var Pse = { kernelName: Ta, backendName: "webgpu", kernelFunc: Ose };
+var zse = class {
   constructor(e) {
     this.variableNames = ["A"], this.uniforms = "minVal : f32, maxVal : f32,", this.workPerThread = 4, this.workGroupSize = [64, 1, 1], this.isVec4 = true, this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]), this.shaderKey = "clipVec4";
   }
@@ -33917,7 +33808,7 @@ var Pse = class {
     `;
   }
 };
-var zse = class {
+var Mse = class {
   constructor(e) {
     this.variableNames = ["A"], this.uniforms = "minVal : f32, maxVal : f32,", this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = "clip";
   }
@@ -33936,12 +33827,12 @@ var zse = class {
     `;
   }
 };
-function Mse(e) {
+function Lse(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { clipValueMin: a, clipValueMax: i } = s, o, u = [{ type: "float32", data: [a] }, { type: "float32", data: [i] }];
-  return w.sizeFromShape(r.shape) % 4 === 0 ? o = new Pse(r.shape) : o = new zse(r.shape), n.runWebGPUProgram(o, [r], r.dtype, u);
+  return w.sizeFromShape(r.shape) % 4 === 0 ? o = new zse(r.shape) : o = new Mse(r.shape), n.runWebGPUProgram(o, [r], r.dtype, u);
 }
-var Lse = { kernelName: Sr, backendName: "webgpu", kernelFunc: Mse };
-var Bse = class {
+var Bse = { kernelName: Sr, backendName: "webgpu", kernelFunc: Lse };
+var Vse = class {
   constructor(e) {
     this.uniforms = "", this.workPerThread = 4, this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = S.computeOutShape(e, 1), this.variableNames = e.map((t, n) => `T${n}`), this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]), this.offsetLength = e.length - 1;
     for (let t = 0; t < this.offsetLength; t++)
@@ -33979,11 +33870,11 @@ function Zp(e) {
   let { inputs: t, backend: n } = e, { input: s } = t, r = n.tensorMap.get(s.dataId);
   return es({ inputs: { x: r.complexTensorInfos.imag }, backend: n });
 }
-var Vse = { kernelName: Zd, backendName: "webgpu", kernelFunc: Zp };
+var Wse = { kernelName: Zd, backendName: "webgpu", kernelFunc: Zp };
 function Ym(e, t, n) {
   let s = e[0].dtype;
   if (s === "complex64") {
-    let h = e.map((y) => sc({ inputs: { input: y }, backend: n })), f = e.map((y) => Zp({ inputs: { input: y }, backend: n })), m = Ym(h, t, n), g = Ym(f, t, n), b = uu({ inputs: { real: m, imag: g }, backend: n });
+    let h = e.map((y) => sc({ inputs: { input: y }, backend: n })), f = e.map((y) => Zp({ inputs: { input: y }, backend: n })), m = Ym(h, t, n), g = Ym(f, t, n), b = lu({ inputs: { real: m, imag: g }, backend: n });
     return h.forEach((y) => n.disposeData(y.dataId)), f.forEach((y) => n.disposeData(y.dataId)), n.disposeData(m.dataId), n.disposeData(g.dataId), b;
   }
   let r = n.shouldExecuteOnCPU(e);
@@ -33991,10 +33882,10 @@ function Ym(e, t, n) {
     let h = e.map((x) => {
       let k = w.sizeFromShape(x.shape.slice(t));
       return Me({ inputs: { x }, backend: n, attrs: { shape: [-1, k] } });
-    }), f = h.map((x) => ({ vals: n.readSync(x.dataId), shape: x.shape })), m = S.computeOutShape(h.map((x) => x.shape), 1), g = h[0].shape[0] === 1, b = Ene(f, m, s, g), y = S.computeOutShape(e.map((x) => x.shape), t), v = n.makeTensorInfo(y, s, b);
+    }), f = h.map((x) => ({ vals: n.readSync(x.dataId), shape: x.shape })), m = S.computeOutShape(h.map((x) => x.shape), 1), g = h[0].shape[0] === 1, b = Rne(f, m, s, g), y = S.computeOutShape(e.map((x) => x.shape), t), v = n.makeTensorInfo(y, s, b);
     return h.forEach((x) => n.disposeData(x.dataId)), v;
   }
-  let { tensors2D: a, outShape: i } = Wse(e, t, n), o = a.map((h) => h.shape), u = new Bse(o), l = [], c = new Array(o.length - 1);
+  let { tensors2D: a, outShape: i } = Use(e, t, n), o = a.map((h) => h.shape), u = new Vse(o), l = [], c = new Array(o.length - 1);
   if (c.length > 0) {
     c[0] = o[0][1], l.push({ type: "int32", data: [c[0]] });
     for (let h = 1; h < c.length; h++)
@@ -34005,7 +33896,7 @@ function Ym(e, t, n) {
   let d = Me({ inputs: { x: p }, backend: n, attrs: { shape: i } });
   return n.disposeData(p.dataId), d;
 }
-function Wse(e, t, n) {
+function Use(e, t, n) {
   let s = S.computeOutShape(e.map((a) => a.shape), t);
   return { tensors2D: e.map((a) => Me({ inputs: { x: a }, backend: n, attrs: { shape: [w.sizeFromShape(a.shape.slice(0, t)), w.sizeFromShape(a.shape.slice(t))] } })), outShape: s };
 }
@@ -34019,8 +33910,8 @@ function C2(e) {
   let u = o.map((l) => l.shape);
   return S.assertParamsConsistent(u, a), Ym(o, a, n);
 }
-var Use = { kernelName: oo, backendName: "webgpu", kernelFunc: C2 };
-var Gse = class {
+var Gse = { kernelName: uo, backendName: "webgpu", kernelFunc: C2 };
+var Hse = class {
   constructor(e, t = false, n = null, s = false, r = false) {
     this.variableNames = ["x", "W"], this.uniforms = `filterDims : vec2<i32>, pad : vec2<i32>, stride : vec2<i32>, dilation : vec2<i32>,
       dimAOuter : i32, dimBOuter : i32, dimInner : i32,`, this.workGroupSize = [8, 8, 1], this.isVec4 = true, this.outputShape = e.outShape, w.assert(e.dataFormat === "channelsLast", () => "TODO: NCHW is unimplemented"), this.dispatchLayout = { x: [3], y: [1, 2], z: [0] }, this.outputShape[1] === 1 ? this.elementsPerThread = [4, 1, 1] : this.elementsPerThread = [4, 4, 1], this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, this.elementsPerThread), this.convInfo = e, this.addBias = t, this.activation = n, this.hasPreluActivationWeights = s, this.hasLeakyreluAlpha = r, this.addBias && this.variableNames.push("bias"), this.hasPreluActivationWeights && this.variableNames.push("preluActivationWeights"), this.hasLeakyreluAlpha && this.variableNames.push("leakyreluAlpha"), this.tileAOuter = this.outputShape[1] === 1 ? 1 : this.workGroupSize[1] * this.elementsPerThread[1], this.tileBOuter = this.workGroupSize[0] * this.elementsPerThread[0], this.tileInner = this.tileBOuter, [this.fitA, this.fitB] = this.getShapeFit(), this.shaderKey = `conv2DMMVec4_${this.activation}_${this.fitA}_${this.fitB}_${this.elementsPerThread}`;
@@ -34147,7 +34038,7 @@ var Gse = class {
       `;
   }
 };
-var Hse = class {
+var qse = class {
   constructor(e, t = false, n = null, s = false) {
     this.variableNames = ["x", "W"], this.uniforms = "filterDims : vec2<i32>, pad : vec2<i32>, stride : vec2<i32>, dilation : vec2<i32>, dimAOuter : i32, dimBOuter : i32, dimInner : i32,", this.outputShape = e.outShape, w.assert(e.dataFormat === "channelsLast", () => "TODO: NCHW is unimplemented"), this.dispatchLayout = { x: [3], y: [1, 2], z: [0] }, this.workGroupSize = Cv(this.dispatchLayout, this.outputShape), this.elementsPerThread = Nv(this.dispatchLayout, this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, this.elementsPerThread), t && this.variableNames.push("bias"), s && this.variableNames.push("preluActivationWeights"), this.convInfo = e, this.addBias = t, this.activation = n, this.hasPreluActivationWeights = s, [this.fitA, this.fitB] = this.getShapeFit(), this.shaderKey = `conv2DMM_${this.elementsPerThread}_${this.activation}_${this.fitA}_${this.fitB}`;
   }
@@ -34222,7 +34113,7 @@ var Hse = class {
   `;
   }
 };
-var qse = class {
+var jse = class {
   constructor(e, t = false, n = null, s = false) {
     this.variableNames = ["x", "W"], this.uniforms = "filterDims : vec2<i32>, pad : vec2<i32>, stride : vec2<i32>, dilation : vec2<i32>,", this.workGroupSize = [128, 1, 1], this.outputShape = e.outShape, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), w.assert(e.dataFormat === "channelsLast", () => "TODO: NCHW is unimplemented"), t && this.variableNames.push("bias"), s && this.variableNames.push("preluActivationWeights"), this.convInfo = e, this.addBias = t, this.activation = n, this.hasPreluActivationWeights = s, this.shaderKey = `conv2DNaive_${this.activation}`;
   }
@@ -34291,7 +34182,7 @@ var qse = class {
     `;
   }
 };
-var jse = class {
+var Kse = class {
   constructor(e, t) {
     this.variableNames = ["A"], this.uniforms = `pad : vec2<i32>, stride : vec2<i32>, dilation : vec2<i32>, outWidth : i32, itemsPerBlockRow : i32,
       inChannels : i32,`, this.workPerThread = 4, this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]), this.isChannelsLast = t, this.shaderKey = `im2col_${this.isChannelsLast}`;
@@ -34330,7 +34221,7 @@ var jse = class {
   `;
   }
 };
-function Kse({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluActivationWeights: a = null, leakyreluAlpha: i = 0, activation: o = null }) {
+function Xse({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluActivationWeights: a = null, leakyreluAlpha: i = 0, activation: o = null }) {
   let u = e.shape, l = n.dataFormat === "channelsLast", c = false, p = false, d = n.filterHeight === n.inHeight && n.filterWidth === n.inWidth && n.padInfo.type === "VALID", h, f;
   if (d) {
     let b = n.inHeight * n.inWidth * n.inChannels;
@@ -34342,10 +34233,10 @@ function Kse({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluAc
   let m = _v({ a: h, b: f, transposeA: c, transposeB: p, backend: s, bias: r, activation: o, preluActivationWeights: a, leakyreluAlpha: i }), g = Me({ inputs: { x: m }, backend: s, attrs: { shape: n.outShape } });
   return s.disposeData(h.dataId), s.disposeData(f.dataId), s.disposeData(m.dataId), g;
 }
-function Xse({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluActivationWeights: a = null, leakyreluAlpha: i = 0, activation: o = null }) {
+function Yse({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluActivationWeights: a = null, leakyreluAlpha: i = 0, activation: o = null }) {
   let { filterWidth: u, filterHeight: l, inChannels: c, strideWidth: p, strideHeight: d, padInfo: h, outWidth: f, outHeight: m, dilationWidth: g, dilationHeight: b, dataFormat: y } = n, v = y === "channelsLast", x = u * l * c, k = m * f, T = [k, x], N = false, E = false, A = [], P = Me({ inputs: { x: e }, backend: s, attrs: { shape: e.shape.slice(1) } }), R = Me({ inputs: { x: t }, backend: s, attrs: { shape: [1, x, -1] } });
   A.push(P), A.push(R);
-  let F = new jse(T, v), $ = [{ type: "int32", data: [h.left, h.top] }, { type: "int32", data: [p, d] }, { type: "int32", data: [g, b] }, { type: "int32", data: [f] }, { type: "int32", data: [c * u] }, { type: "int32", data: [c] }], z = s.runWebGPUProgram(F, [P], P.dtype, $), W = Me({ inputs: { x: z }, backend: s, attrs: { shape: [1, T[0], T[1]] } });
+  let F = new Kse(T, v), $ = [{ type: "int32", data: [h.left, h.top] }, { type: "int32", data: [p, d] }, { type: "int32", data: [g, b] }, { type: "int32", data: [f] }, { type: "int32", data: [c * u] }, { type: "int32", data: [c] }], z = s.runWebGPUProgram(F, [P], P.dtype, $), W = Me({ inputs: { x: z }, backend: s, attrs: { shape: [1, T[0], T[1]] } });
   A.push(z), A.push(W);
   let q = [1, T[0], T[1]], K = new v2(q, [1, k, n.outChannels], X().get("WEBGPU_MATMUL_WORK_PER_THREAD"), N, E, r, o, a), Y = q[1], Z = q[2], te = n.outChannels, ee = [{ type: "int32", data: [Y] }, { type: "int32", data: [te] }, { type: "int32", data: [Z] }], se = [W, R];
   r && se.push(r), a && se.push(a), o === "leakyrelu" && ($.push({ type: "float32", data: [i] }), K.uniforms += " alpha : f32,");
@@ -34358,26 +34249,26 @@ function Xse({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluAc
 function N2({ x: e, filter: t, convInfo: n, backend: s, bias: r = null, preluActivationWeights: a = null, leakyreluAlpha: i = 0, activation: o = null }) {
   let u = r != null, l = a != null, c;
   if (n.filterHeight === n.inHeight && n.filterWidth === n.inWidth && n.padInfo.type === "VALID" || n.filterHeight === 1 && n.filterWidth === 1 && n.dilationHeight === 1 && n.dilationWidth === 1 && n.strideHeight === 1 && n.strideWidth === 1 && (n.padInfo.type === "SAME" || n.padInfo.type === "VALID"))
-    return Kse({ x: e, filter: t, convInfo: n, backend: s, bias: r, activation: o, preluActivationWeights: a, leakyreluAlpha: i });
+    return Xse({ x: e, filter: t, convInfo: n, backend: s, bias: r, activation: o, preluActivationWeights: a, leakyreluAlpha: i });
   if (X().getBool("WEBGPU_CONV_SEPARATE_IM2COL_SHADER") && e.shape[0] === 1)
-    return Xse({ x: e, filter: t, convInfo: n, backend: s, bias: r, preluActivationWeights: a, leakyreluAlpha: i, activation: o });
-  let d = X().getBool("WEBGPU_USE_NAIVE_CONV2D"), h = (n.inChannels % 4 === 0 || n.inChannels === 3 && n.padInfo.type === "VALID") && n.outChannels % 4 === 0 && n.outChannels >= 32, f = [n.padInfo.top, n.padInfo.left], m = [{ type: "int32", data: [n.filterHeight, n.filterWidth] }, { type: "int32", data: [...f] }, { type: "int32", data: [n.strideHeight, n.strideWidth] }, { type: "int32", data: [n.dilationHeight, n.dilationWidth] }];
+    return Yse({ x: e, filter: t, convInfo: n, backend: s, bias: r, preluActivationWeights: a, leakyreluAlpha: i, activation: o });
+  let d = X().getBool("WEBGPU_USE_NAIVE_CONV2D"), h = (n.inChannels % 4 === 0 || n.inChannels === 3 && n.padInfo.type === "VALID") && n.outChannels % 4 === 0, f = [n.padInfo.top, n.padInfo.left], m = [{ type: "int32", data: [n.filterHeight, n.filterWidth] }, { type: "int32", data: [...f] }, { type: "int32", data: [n.strideHeight, n.strideWidth] }, { type: "int32", data: [n.dilationHeight, n.dilationWidth] }];
   if (d)
-    c = new qse(n, u, o, l);
+    c = new jse(n, u, o, l);
   else {
-    h ? c = new Gse(n, u, o, l) : c = new Hse(n, u, o, l);
+    h ? c = new Hse(n, u, o, l) : c = new qse(n, u, o, l);
     let b = n.outShape[1] * n.outShape[2], y = n.outShape[3], v = n.filterHeight * n.filterWidth * n.inShape[3];
     m.push({ type: "int32", data: [b] }, { type: "int32", data: [y] }, { type: "int32", data: [v] });
   }
   let g = [e, t];
   return u && g.push(r), l && g.push(a), o === "leakyrelu" && (m.push({ type: "float32", data: [i] }), c.uniforms += " alpha : f32,"), s.runWebGPUProgram(c, g, e.dtype, m);
 }
-function Yse(e) {
+function Qse(e) {
   let { inputs: t, attrs: n, backend: s } = e, { x: r, filter: a } = t, { strides: i, pad: o, dataFormat: u, dilations: l, dimRoundingMode: c } = n, p = S.convertConv2DDataFormat(u), d = S.computeConv2DInfo(r.shape, a.shape, i, l, o, c, false, p);
   return N2({ x: r, filter: a, convInfo: d, backend: s });
 }
-var Qse = { kernelName: $a, backendName: "webgpu", kernelFunc: Yse };
-var Zse = class {
+var Zse = { kernelName: $a, backendName: "webgpu", kernelFunc: Qse };
+var Jse = class {
   constructor(e) {
     this.variableNames = ["x", "W"], this.uniforms = "filterDims : vec2<i32>, pads : vec2<i32>, stride : vec2<i32>, outBackprop : vec4<i32>, dimAOuter : i32, dimBOuter : i32, dimInner : i32,", this.outputShape = e.inShape, w.assert(e.dataFormat === "channelsLast", () => "TODO: NCHW is unimplemented"), this.dispatchLayout = { x: [3], y: [1, 2], z: [0] }, this.workGroupSize = Cv(this.dispatchLayout, this.outputShape), this.elementsPerThread = Nv(this.dispatchLayout, this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, this.elementsPerThread), this.shaderKey = `conv2DDerInputMM_${this.elementsPerThread}`;
   }
@@ -34439,7 +34330,7 @@ var Zse = class {
   `;
   }
 };
-var Jse = class {
+var ere = class {
   constructor(e) {
     this.variableNames = ["dy", "W"], this.uniforms = "filterDims : vec2<i32>, pads : vec2<i32>, stride : vec2<i32>, outBackprop : vec4<i32>,", this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e.inShape, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.isChannelsLast = e.dataFormat === "channelsLast", this.shaderKey = `conv2DDerInput_${this.isChannelsLast}`;
   }
@@ -34497,23 +34388,23 @@ var Jse = class {
   `;
   }
 };
-function ere(e) {
+function tre(e) {
   let { inputs: t, backend: n, attrs: s } = e, { dy: r, filter: a } = t, { inputShape: i, strides: o, pad: u, dataFormat: l, dimRoundingMode: c } = s, p = S.convertConv2DDataFormat(l), d = S.computeConv2DInfo(i, a.shape, o, 1, u, c, false, p), h = [{ type: "int32", data: [d.filterHeight, d.filterWidth] }, { type: "int32", data: [d.filterHeight - 1 - d.padInfo.top, d.filterWidth - 1 - d.padInfo.left] }, { type: "int32", data: [d.strideHeight, d.strideWidth] }, { type: "int32", data: [d.batchSize, d.outHeight, d.outWidth, d.outChannels] }], f;
   if (X().getBool("WEBGPU_USE_NAIVE_CONV2D_TRANSPOSE"))
-    f = new Jse(d);
+    f = new ere(d);
   else {
-    f = new Zse(d);
+    f = new Jse(d);
     let m = d.inShape[1] * d.inShape[2], g = d.inShape[3], b = d.filterHeight * d.filterWidth * d.outChannels;
     h.push({ type: "uint32", data: [m] }, { type: "uint32", data: [g] }, { type: "uint32", data: [b] });
   }
   return n.runWebGPUProgram(f, [r, a], "float32", h);
 }
-var tre = { kernelName: _a, backendName: "webgpu", kernelFunc: ere };
-var nre = Kt({ opType: 2 });
-var sre = { kernelName: Aa, backendName: "webgpu", kernelFunc: nre };
-var rre = Kt({ opType: 3 });
-var are = { kernelName: Ea, backendName: "webgpu", kernelFunc: rre };
-var ire = class {
+var nre = { kernelName: _a, backendName: "webgpu", kernelFunc: tre };
+var sre = Kt({ opType: 2 });
+var rre = { kernelName: Aa, backendName: "webgpu", kernelFunc: sre };
+var are = Kt({ opType: 3 });
+var ire = { kernelName: Ea, backendName: "webgpu", kernelFunc: are };
+var ore = class {
   constructor(e, t, n, s) {
     this.variableNames = ["Image", "Boxes", "BoxInd"], this.uniforms = "extrapolationValue : f32,", this.workGroupSize = [64, 1, 1], this.size = true;
     let [r] = t;
@@ -34580,12 +34471,12 @@ var ire = class {
     `;
   }
 };
-var ore = (e) => {
-  let { inputs: t, backend: n, attrs: s } = e, { image: r, boxes: a, boxInd: i } = t, { cropSize: o, method: u, extrapolationValue: l } = s, c = new ire(r.shape[3], a.shape, o, u), p = [{ type: "float32", data: [l] }];
+var ure = (e) => {
+  let { inputs: t, backend: n, attrs: s } = e, { image: r, boxes: a, boxInd: i } = t, { cropSize: o, method: u, extrapolationValue: l } = s, c = new ore(r.shape[3], a.shape, o, u), p = [{ type: "float32", data: [l] }];
   return n.runWebGPUProgram(c, [r, a, i], "float32", p);
 };
-var ure = { kernelName: lo, backendName: "webgpu", kernelFunc: ore };
-var lre = class {
+var lre = { kernelName: co, backendName: "webgpu", kernelFunc: ure };
+var cre = class {
   constructor(e, t) {
     this.variableNames = ["x"], this.workGroupSize = [64, 1, 1], this.size = true, this.uniforms = "blockSize : i32,", this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = `depthToSpace_${t}`, this.dataFormat = t;
   }
@@ -34628,11 +34519,11 @@ var lre = class {
     return this.dataFormat === "NHWC" ? "getX(b, in_h, in_w, in_d)" : "getX(b, in_d, in_h, in_w)";
   }
 };
-function cre(e) {
-  let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockSize: a, dataFormat: i } = s, o = r.shape[0], u = i === "NHWC" ? r.shape[1] : r.shape[2], l = i === "NHWC" ? r.shape[2] : r.shape[3], c = i === "NHWC" ? r.shape[3] : r.shape[1], p = u * a, d = l * a, h = c / (a * a), f = i === "NHWC" ? [o, p, d, h] : [o, h, p, d], m = [{ type: "int32", data: [a] }], g = new lre(f, i);
+function dre(e) {
+  let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockSize: a, dataFormat: i } = s, o = r.shape[0], u = i === "NHWC" ? r.shape[1] : r.shape[2], l = i === "NHWC" ? r.shape[2] : r.shape[3], c = i === "NHWC" ? r.shape[3] : r.shape[1], p = u * a, d = l * a, h = c / (a * a), f = i === "NHWC" ? [o, p, d, h] : [o, h, p, d], m = [{ type: "int32", data: [a] }], g = new cre(f, i);
   return n.runWebGPUProgram(g, [r], r.dtype, m);
 }
-var dre = { kernelName: co, backendName: "webgpu", kernelFunc: cre };
+var pre = { kernelName: po, backendName: "webgpu", kernelFunc: dre };
 var T2 = class {
   constructor(e, t = false, n = null, s = false) {
     this.variableNames = ["x", "W"], this.uniforms = "pad : vec2<i32>, stride : vec2<i32>, dilation : vec2<i32>, inDims : vec2<i32>,", this.workGroupSize = [4, 4, 4], this.isVec4 = true, this.outputShape = e.outShape, this.dispatchLayout = { x: [0, 1], y: [2], z: [3] }, this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [1, 4, 4]), w.assert(e.dataFormat === "channelsLast", () => "TODO: NCHW is unimplemented"), t && this.variableNames.push("bias"), s && this.variableNames.push("preluActivationWeights"), this.convInfo = e, this.addBias = t, this.activation = n, this.hasPreluActivation = s, this.shaderKey = `depthwise3x3_${n}`;
@@ -34815,16 +34706,16 @@ var $2 = class {
     `;
   }
 };
-function pre(e) {
+function hre(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, filter: a } = t, { strides: i, pad: o, dilations: u, dimRoundingMode: l } = s, c = u;
   c == null && (c = [1, 1]);
   let p = S.computeConv2DInfo(r.shape, a.shape, i, c, o, l, true), d = [{ type: "int32", data: [p.padInfo.top, p.padInfo.left] }, { type: "int32", data: [p.strideHeight, p.strideWidth] }, { type: "int32", data: [p.dilationHeight, p.dilationWidth] }, { type: "int32", data: [p.inHeight, p.inWidth] }], h;
   return p.batchSize === 1 && p.inHeight === p.outHeight && p.inWidth === p.outWidth && p.strideHeight === 1 && p.strideWidth === 1 && p.filterHeight === p.filterWidth && p.inChannels === p.outChannels && p.dilationHeight === 1 && p.dilationWidth === 1 && p.filterHeight === 3 && p.inChannels % 4 === 0 ? h = new T2(p) : (h = new $2(p), d.push({ type: "int32", data: [p.filterHeight] }, { type: "int32", data: [p.filterWidth] }, { type: "int32", data: [p.outChannels / p.inChannels] })), n.runWebGPUProgram(h, [r, a], r.dtype, d);
 }
-var hre = { kernelName: Ra, backendName: "webgpu", kernelFunc: pre };
-var _2 = mn({ opSnippet: 0, cpuKernelImpl: qne, supportsComplex: true });
-var fre = { kernelName: Ya, backendName: "webgpu", kernelFunc: _2 };
-var mre = class {
+var fre = { kernelName: Ra, backendName: "webgpu", kernelFunc: hre };
+var _2 = mn({ opSnippet: 0, cpuKernelImpl: jne, supportsComplex: true });
+var mre = { kernelName: Ya, backendName: "webgpu", kernelFunc: _2 };
+var gre = class {
   constructor(e, t) {
     this.workGroupSize = [64, 1, 1], this.variableNames = ["x"], this.uniforms = "reduceSize : i32,", this.size = true, this.inputShape = [e.batchSize, e.inSize];
     let [n] = S.computeOutAndReduceShapes(this.inputShape, [1]);
@@ -34895,18 +34786,18 @@ function rc(e, t, n, s, r) {
     let m = r.tensorMap.get(c.dataId).values;
     switch (s) {
       case "max":
-        let g = Une(m, w.sizeFromShape(d), h, e.dtype);
+        let g = Gne(m, w.sizeFromShape(d), h, e.dtype);
         f = r.makeTensorInfo(h, e.dtype, g);
         break;
       case "prod":
-        let { outVals: b, outShape: y, outDtype: v } = Xne(c.shape, c.dtype, m, u);
+        let { outVals: b, outShape: y, outDtype: v } = Yne(c.shape, c.dtype, m, u);
         f = r.makeTensorInfo(y, v, b);
         break;
       default:
         throw new Error(`${s} CPU implementation is not yet supported.`);
     }
   } else {
-    let m = w.sizeFromShape(d), b = w.sizeFromShape(c.shape) / m, y = { windowSize: m, inSize: m, batchSize: b, outSize: 1 }, v = s === "mean" ? "float32" : cp(e.dtype), x = [{ type: "int32", data: [m] }], k = new mre(y, s), T = r.runWebGPUProgram(k, [c], v, x);
+    let m = w.sizeFromShape(d), b = w.sizeFromShape(c.shape) / m, y = { windowSize: m, inSize: m, batchSize: b, outSize: 1 }, v = s === "mean" ? "float32" : cp(e.dtype), x = [{ type: "int32", data: [m] }], k = new gre(y, s), T = r.runWebGPUProgram(k, [c], v, x);
     i.push(T), f = Me({ inputs: { x: T }, attrs: { shape: h }, backend: r });
   }
   return i.forEach((m) => r.disposeData(m.dataId)), f;
@@ -34915,8 +34806,8 @@ function Av(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, keepDims: i } = s;
   return rc(r, a, i, "sum", n);
 }
-var gre = { kernelName: oi, backendName: "webgpu", kernelFunc: Av };
-function bre(e) {
+var bre = { kernelName: oi, backendName: "webgpu", kernelFunc: Av };
+function yre(e) {
   let { inputs: t, backend: n, attrs: s } = e, { equation: r } = s, a = t, { allDims: i, summedDims: o, idDims: u } = S.decodeEinsumEquation(r, a.length);
   S.checkEinsumDimSizes(i.length, u, a);
   let { path: l, steps: c } = S.getEinsumComputePath(o, u), p = c.length, d = null, h = i.length, f = [];
@@ -34935,21 +34826,21 @@ function bre(e) {
     m !== d && n.disposeData(m.dataId);
   return d;
 }
-var yre = { kernelName: Qd, backendName: "webgpu", kernelFunc: bre };
-var vre = Kt({ opType: 4 });
-var xre = { kernelName: Fa, backendName: "webgpu", kernelFunc: vre };
-var wre = mn({ opSnippet: 4, dtype: "bool", cpuKernelImpl: Rne });
-var kre = { kernelName: po, backendName: "webgpu", kernelFunc: wre };
-var A2 = Kt({ opType: 5, cpuKernelImpl: Dne, dtype: "float32" });
-var Ire = { kernelName: Oa, backendName: "webgpu", kernelFunc: A2 };
+var vre = { kernelName: Qd, backendName: "webgpu", kernelFunc: yre };
+var xre = Kt({ opType: 4 });
+var wre = { kernelName: Fa, backendName: "webgpu", kernelFunc: xre };
+var kre = mn({ opSnippet: 4, dtype: "bool", cpuKernelImpl: Dne });
+var Ire = { kernelName: ho, backendName: "webgpu", kernelFunc: kre };
+var A2 = Kt({ opType: 5, cpuKernelImpl: Fne, dtype: "float32" });
+var Sre = { kernelName: Oa, backendName: "webgpu", kernelFunc: A2 };
 function Qm(e) {
   let { inputs: t, attrs: n, backend: s } = e, { dim: r } = n, { input: a } = t, i = a.shape.length, o = a.shape.slice(), u = r;
   return r < 0 && (w.assert(-(i + 1) <= r, () => `Axis must be in the interval [${-(i + 1)}, ${i}]`), u = i + r + 1), o.splice(u, 0, 1), Me({ inputs: { x: a }, backend: s, attrs: { shape: o } });
 }
-var Sre = { kernelName: ho, backendName: "webgpu", kernelFunc: Qm };
-var Cre = Kt({ opType: 6, cpuKernelImpl: Fne });
-var Nre = { kernelName: fo, backendName: "webgpu", kernelFunc: Cre };
-var Tre = class {
+var Cre = { kernelName: fo, backendName: "webgpu", kernelFunc: Qm };
+var Nre = Kt({ opType: 6, cpuKernelImpl: One });
+var Tre = { kernelName: mo, backendName: "webgpu", kernelFunc: Nre };
+var $re = class {
   constructor(e) {
     this.variableNames = [], this.outputShape = [], this.uniforms = "value : f32,", this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = "fill";
   }
@@ -34963,18 +34854,18 @@ var Tre = class {
   `;
   }
 };
-function cu(e) {
+function du(e) {
   let { backend: t, attrs: n } = e, { shape: s, value: r } = n, { dtype: a } = n;
   if (a = a || w.inferDtype(r), a === "string") {
     let i = w.getArrayFromDType(a, w.sizeFromShape(s));
     return i.fill(r), t.makeTensorInfo(s, a, i);
   } else {
-    let i = new Tre(s), o = [{ type: "float32", data: [r] }];
+    let i = new $re(s), o = [{ type: "float32", data: [r] }];
     return t.runWebGPUProgram(i, [], a, o);
   }
 }
-var $re = { kernelName: fl, backendName: "webgpu", kernelFunc: cu };
-var _re = class {
+var _re = { kernelName: ml, backendName: "webgpu", kernelFunc: du };
+var Are = class {
   constructor(e) {
     this.outputShape = [], this.variableNames = ["x"], this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = "flipLeftRight";
   }
@@ -34991,20 +34882,20 @@ var _re = class {
     `;
   }
 };
-var Are = { kernelName: mo, backendName: "webgpu", kernelFunc: ({ inputs: e, backend: t }) => {
-  let { image: n } = e, s = t, r = new _re(n.shape);
+var Ere = { kernelName: go, backendName: "webgpu", kernelFunc: ({ inputs: e, backend: t }) => {
+  let { image: n } = e, s = t, r = new Are(n.shape);
   return s.runWebGPUProgram(r, [n], n.dtype);
 } };
-var Ere = Kt({ opType: 7, cpuKernelImpl: One });
-var Rre = { kernelName: Pa, backendName: "webgpu", kernelFunc: Ere };
-var Dre = mn({ opSnippet: 12, dtype: "int32" });
-var Fre = { kernelName: za, backendName: "webgpu", kernelFunc: Dre };
-var Ore = (e, t, n, s, r) => {
+var Rre = Kt({ opType: 7, cpuKernelImpl: Pne });
+var Dre = { kernelName: Pa, backendName: "webgpu", kernelFunc: Rre };
+var Fre = mn({ opSnippet: 12, dtype: "int32" });
+var Ore = { kernelName: za, backendName: "webgpu", kernelFunc: Fre };
+var Pre = (e, t, n, s, r) => {
   let a = [s, ...n];
   return r && a.push(r), e.createBindGroup({ layout: t, entries: a.map((i, o) => ({ binding: o, resource: i })) });
 };
 var E2 = (e, t, n, s, r, a = false) => {
-  let i = { dtype: r.dtype, shape: r.shape }, o = lne(s, i, t, a), u = e.createShaderModule({ code: o, label: t.constructor.name });
+  let i = { dtype: r.dtype, shape: r.shape }, o = cne(s, i, t, a), u = e.createShaderModule({ code: o, label: t.constructor.name });
   return e.createComputePipeline({ layout: n, compute: { module: u, entryPoint: "main" }, label: t.constructor.name });
 };
 function R2(e, t, n, s = "", r = "") {
@@ -35027,9 +34918,9 @@ function Ow(e) {
     y = c.inputTexture.createView();
   return n.runFromPixelsProgram(c, g.bufferInfo.buffer, f, y, l.dataId), l;
 }
-var Pre = { kernelName: fd, backendName: "webgpu", kernelFunc: zre };
+var zre = { kernelName: fd, backendName: "webgpu", kernelFunc: Mre };
 var Bi;
-function zre(e) {
+function Mre(e) {
   let { inputs: t, backend: n, attrs: s } = e, { pixels: r } = t, { numChannels: a } = s;
   if (r == null)
     throw new Error("pixels passed to tf.browser.fromPixels() can not be null");
@@ -35048,7 +34939,7 @@ function zre(e) {
   let m = n.makeTensorInfo(d, "int32"), g = n.tensorMap.get(m.dataId);
   return g.values = new Int32Array(f), n.maybeReleaseBuffer(m.dataId), n.uploadToGPU(m.dataId), m;
 }
-var Mre = class {
+var Lre = class {
   constructor(e, t, n, s, r) {
     this.uniforms = "varianceEpsilon : f32,", this.workGroupSize = [128, 1, 1], this.size = true, this.variableNames = ["x", "mean", "variance"], S.assertAndGetBroadcastShape(e, t), S.assertAndGetBroadcastShape(e, n), this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), s != null && (S.assertAndGetBroadcastShape(e, s), this.variableNames.push("offset")), r != null && (S.assertAndGetBroadcastShape(e, r), this.variableNames.push("scale")), this.offsetShape = s, this.scaleShape = r, this.shaderKey = "batchNorm";
   }
@@ -35072,20 +34963,20 @@ var Mre = class {
   `;
   }
 };
-var Lre = { kernelName: Ma, backendName: "webgpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
+var Bre = { kernelName: Ma, backendName: "webgpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
   let { x: s, scale: r, offset: a, mean: i, variance: o } = e, { varianceEpsilon: u } = t, l = n, c = [s, i, o], p = null;
   a != null && (p = a.shape, c.push(a));
   let d = null;
   r != null && (d = r.shape, c.push(r));
-  let h = new Mre(s.shape, i.shape, o.shape, p, d), f = [{ type: "float32", data: [u] }];
+  let h = new Lre(s.shape, i.shape, o.shape, p, d), f = [{ type: "float32", data: [u] }];
   return l.runWebGPUProgram(h, c, s.dtype, f);
 } };
-function Bre(e) {
+function Vre(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, filter: a, bias: i, preluActivationWeights: o } = t, { strides: u, pad: l, dataFormat: c, dilations: p, dimRoundingMode: d, activation: h, leakyreluAlpha: f } = s, m = S.convertConv2DDataFormat(c), g = S.computeConv2DInfo(r.shape, a.shape, u, p, l, d, false, m);
   return N2({ x: r, filter: a, convInfo: g, backend: n, bias: i, preluActivationWeights: o, leakyreluAlpha: f, activation: h });
 }
-var Vre = { kernelName: aa, backendName: "webgpu", kernelFunc: Bre };
-function Wre(e) {
+var Wre = { kernelName: aa, backendName: "webgpu", kernelFunc: Vre };
+function Ure(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r, filter: a, bias: i, preluActivationWeights: o } = t, { strides: u, pad: l, dilations: c, dimRoundingMode: p, activation: d, leakyreluAlpha: h } = s, f = c;
   f == null && (f = [1, 1]), w.assert(S.eitherStridesOrDilationsAreOne(u, f), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${u} and dilations '${f}'`);
   let m = S.computeConv2DInfo(r.shape, a.shape, u, f, l, p, true), g = [r, a], b = i != null, y = o != null;
@@ -35093,8 +34984,8 @@ function Wre(e) {
   let v = [{ type: "int32", data: [m.padInfo.top, m.padInfo.left] }, { type: "int32", data: [m.strideHeight, m.strideWidth] }, { type: "int32", data: [m.dilationHeight, m.dilationWidth] }, { type: "int32", data: [m.inHeight, m.inWidth] }], x;
   return m.batchSize === 1 && m.inHeight === m.outHeight && m.inWidth === m.outWidth && m.strideHeight === 1 && m.strideWidth === 1 && m.filterHeight === m.filterWidth && m.inChannels === m.outChannels && m.dilationHeight === 1 && m.dilationWidth === 1 && m.filterHeight === 3 && m.inChannels % 4 === 0 ? x = new T2(m, b, d, y) : (x = new $2(m, b, d, y), v.push({ type: "int32", data: [m.filterHeight] }, { type: "int32", data: [m.filterWidth] }, { type: "int32", data: [m.outChannels / m.inChannels] })), d === "leakyrelu" && (v.push({ type: "float32", data: [h] }), x.uniforms += " alpha : f32,"), n.runWebGPUProgram(x, g, "float32", v);
 }
-var Ure = { kernelName: ia, backendName: "webgpu", kernelFunc: Wre };
-var Gre = class {
+var Gre = { kernelName: ia, backendName: "webgpu", kernelFunc: Ure };
+var Hre = class {
   constructor(e, t) {
     this.variableNames = ["A", "indices"], this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = t, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = `gathernd_${e}`, this.sliceDim = e, this.uniforms = `sliceDim : i32, strides : ${Wt(e)},`;
   }
@@ -35117,22 +35008,22 @@ var Gre = class {
       `;
   }
 };
-function Hre(e) {
+function qre(e) {
   let { inputs: t, backend: n } = e, { params: s, indices: r } = t, a = r.shape, i = a[a.length - 1], o = w.sizeFromShape(s.shape), [u, l, c, p] = S.prepareAndValidate(s, r), d = Me({ inputs: { x: r }, backend: n, attrs: { shape: [l, i] } }), h = Me({ inputs: { x: s }, backend: n, attrs: { shape: [w.sizeFromShape(s.shape) / c, c] } });
   if (n.shouldExecuteOnCPU([s, r]) || s.dtype === "string") {
-    let y = n.readSync(r.dataId), v = n.bufferSync(s), x = Pne(y, v, s.dtype, l, i, c, p, s.shape, o);
+    let y = n.readSync(r.dataId), v = n.bufferSync(s), x = zne(y, v, s.dtype, l, i, c, p, s.shape, o);
     return n.makeTensorInfo(u, s.dtype, x.values);
   }
-  let f = new Gre(i, [l, c]), m = [{ type: "int32", data: [i] }, { type: "int32", data: p }], g = n.runWebGPUProgram(f, [h, d], h.dtype, m), b = Me({ inputs: { x: g }, backend: n, attrs: { shape: u } });
+  let f = new Hre(i, [l, c]), m = [{ type: "int32", data: [i] }, { type: "int32", data: p }], g = n.runWebGPUProgram(f, [h, d], h.dtype, m), b = Me({ inputs: { x: g }, backend: n, attrs: { shape: u } });
   return n.disposeData(d.dataId), n.disposeData(h.dataId), n.disposeData(g.dataId), b;
 }
-var qre = { kernelName: bo, backendName: "webgpu", kernelFunc: Hre };
-var jre = class {
+var jre = { kernelName: yo, backendName: "webgpu", kernelFunc: qre };
+var Kre = class {
   constructor(e, t) {
     this.variableNames = ["A", "indices"], this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e.slice(), this.aShape = e, this.outputShape = t, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = "gather";
   }
   getUserCode() {
-    let e = Kre(this.aShape);
+    let e = Xre(this.aShape);
     return `
       ${Ue()}
         if (index < uniforms.size) {
@@ -35145,7 +35036,7 @@ var jre = class {
     `;
   }
 };
-function Kre(e) {
+function Xre(e) {
   let t = ["resRC.x", "resRC.y", "resRC.z", "resRC.w"], n = [];
   for (let s = 0; s < e.length; s++)
     s === 2 ? n.push("indexZ") : n.push(`${t[s]}`);
@@ -35156,42 +35047,42 @@ function D2(e) {
   p.push(d), p.push(h);
   let f = [l.batchSize, l.outerSize, c / l.batchSize, l.sliceSize];
   if (n.shouldExecuteOnCPU([r, a])) {
-    let v = n.tensorMap.get(h.dataId).values, x = De(h.shape, h.dtype, v), T = n.tensorMap.get(d.dataId).values, N = De(d.shape, d.dtype, T), E = zne(N, x, f);
+    let v = n.tensorMap.get(h.dataId).values, x = De(h.shape, h.dtype, v), T = n.tensorMap.get(d.dataId).values, N = De(d.shape, d.dtype, T), E = Mne(N, x, f);
     return p.forEach((A) => n.disposeData(A.dataId)), n.makeTensorInfo(l.outputShape, E.dtype, E.values);
   }
-  let m = new jre(d.shape, f), g = n.runWebGPUProgram(m, [d, h], d.dtype);
+  let m = new Kre(d.shape, f), g = n.runWebGPUProgram(m, [d, h], d.dtype);
   p.push(g);
   let b = Me({ inputs: { x: g }, backend: n, attrs: { shape: l.outputShape } });
   return p.forEach((y) => n.disposeData(y.dataId)), b;
 }
-var Xre = { kernelName: go, backendName: "webgpu", kernelFunc: D2 };
-var Yre = mn({ opSnippet: 5, cpuKernelImpl: Lne, dtype: "bool" });
-var Qre = { kernelName: yo, backendName: "webgpu", kernelFunc: Yre };
-var Zre = mn({ opSnippet: 6, dtype: "bool", cpuKernelImpl: Mne });
-var Jre = { kernelName: La, backendName: "webgpu", kernelFunc: Zre };
-function eae(e) {
+var Yre = { kernelName: bo, backendName: "webgpu", kernelFunc: D2 };
+var Qre = mn({ opSnippet: 5, cpuKernelImpl: Bne, dtype: "bool" });
+var Zre = { kernelName: vo, backendName: "webgpu", kernelFunc: Qre };
+var Jre = mn({ opSnippet: 6, dtype: "bool", cpuKernelImpl: Lne });
+var eae = { kernelName: La, backendName: "webgpu", kernelFunc: Jre };
+function tae(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { alpha: a } = s, i = [{ type: "float32", data: [a] }], o = new nc(r.shape, 14);
   return o.uniforms = "alpha : f32,", n.runWebGPUProgram(o, [r], "float32", i);
 }
-var tae = { kernelName: Va, backendName: "webgpu", kernelFunc: eae };
-var nae = mn({ opSnippet: 7, dtype: "bool", cpuKernelImpl: Vne });
-var sae = { kernelName: vo, backendName: "webgpu", kernelFunc: nae };
-var rae = mn({ opSnippet: 8, dtype: "bool", cpuKernelImpl: Bne });
-var aae = { kernelName: xo, backendName: "webgpu", kernelFunc: rae };
-var iae = Kt({ opType: 9, cpuKernelImpl: Wne });
-var oae = { kernelName: Wa, backendName: "webgpu", kernelFunc: iae };
-var uae = mn({ opSnippet: 9, dtype: "bool" });
-var lae = { kernelName: wo, backendName: "webgpu", kernelFunc: uae };
-var cae = Kt({ opType: 10 });
-var dae = { kernelName: vl, backendName: "webgpu", kernelFunc: cae };
+var nae = { kernelName: Va, backendName: "webgpu", kernelFunc: tae };
+var sae = mn({ opSnippet: 7, dtype: "bool", cpuKernelImpl: Wne });
+var rae = { kernelName: xo, backendName: "webgpu", kernelFunc: sae };
+var aae = mn({ opSnippet: 8, dtype: "bool", cpuKernelImpl: Vne });
+var iae = { kernelName: wo, backendName: "webgpu", kernelFunc: aae };
+var oae = Kt({ opType: 9, cpuKernelImpl: Une });
+var uae = { kernelName: Wa, backendName: "webgpu", kernelFunc: oae };
+var lae = mn({ opSnippet: 9, dtype: "bool" });
+var cae = { kernelName: ko, backendName: "webgpu", kernelFunc: lae };
+var dae = Kt({ opType: 10 });
+var pae = { kernelName: xl, backendName: "webgpu", kernelFunc: dae };
 function F2(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { reductionIndices: a, keepDims: i } = s;
   return rc(r, a, i, "max", n);
 }
-var pae = { kernelName: Ua, backendName: "webgpu", kernelFunc: F2 };
-var hae = mn({ opSnippet: 15, cpuKernelImpl: Gne });
-var fae = { kernelName: Ga, backendName: "webgpu", kernelFunc: hae };
-function mae(e) {
+var hae = { kernelName: Ua, backendName: "webgpu", kernelFunc: F2 };
+var fae = mn({ opSnippet: 15, cpuKernelImpl: Hne });
+var mae = { kernelName: Ga, backendName: "webgpu", kernelFunc: fae };
+function gae(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { filterSize: a, strides: i, pad: o, dimRoundingMode: u } = s, l = 1, c = S.computePool2DInfo(r.shape, a, i, l, o, u), p, d = [];
   if (c.filterHeight === 1 && c.filterWidth === 1) {
     if (w.arraysEqual(c.inShape, c.outShape))
@@ -35201,20 +35092,20 @@ function mae(e) {
     p = new k2(c, "max"), d.push({ type: "int32", data: [c.strideHeight, c.strideWidth] }, { type: "int32", data: [c.padInfo.top, c.padInfo.left] }, { type: "int32", data: [c.dilationHeight, c.dilationWidth] }, { type: "int32", data: [c.inHeight, c.inWidth] }, { type: "int32", data: [c.effectiveFilterHeight, c.effectiveFilterWidth] });
   return n.runWebGPUProgram(p, [r], r.dtype, d);
 }
-var gae = { kernelName: Ha, backendName: "webgpu", kernelFunc: mae };
-function bae(e) {
+var bae = { kernelName: Ha, backendName: "webgpu", kernelFunc: gae };
+function yae(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { keepDims: a, axis: i } = s;
   return rc(r, i, a, "mean", n);
 }
-var yae = { kernelName: qa, backendName: "webgpu", kernelFunc: bae };
-function vae(e) {
+var vae = { kernelName: qa, backendName: "webgpu", kernelFunc: yae };
+function xae(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, keepDims: i } = s;
   return rc(r, a, i, "min", n);
 }
-var xae = { kernelName: ja, backendName: "webgpu", kernelFunc: vae };
-var wae = mn({ opSnippet: 16, cpuKernelImpl: Hne });
-var kae = { kernelName: Ka, backendName: "webgpu", kernelFunc: wae };
-var Iae = class {
+var wae = { kernelName: ja, backendName: "webgpu", kernelFunc: xae };
+var kae = mn({ opSnippet: 16, cpuKernelImpl: qne });
+var Iae = { kernelName: Ka, backendName: "webgpu", kernelFunc: kae };
+var Sae = class {
   constructor(e, t, n) {
     this.uniforms = "", this.variableNames = ["x"], this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = t.map((s, r) => s[0] + e[r] + s[1]), this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.xShape = e, t.map((s, r) => {
       this.uniforms += ` pad${r} : vec2<i32>,`;
@@ -35242,53 +35133,53 @@ var Iae = class {
     `;
   }
 };
-var Sae = { kernelName: Xa, backendName: "webgpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
-  let { x: s } = e, { paddings: r, mode: a } = t, i = n, o = r.map((c) => ({ type: "int32", data: [c[0], c[1]] })), u = new Iae(s.shape, r, a);
+var Cae = { kernelName: Xa, backendName: "webgpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
+  let { x: s } = e, { paddings: r, mode: a } = t, i = n, o = r.map((c) => ({ type: "int32", data: [c[0], c[1]] })), u = new Sae(s.shape, r, a);
   return i.runWebGPUProgram(u, [s], s.dtype, o);
 } };
-function Cae(e) {
+function Nae(e) {
   let { inputs: t, backend: n } = e, { x: s } = t;
   if (n.shouldExecuteOnCPU([s])) {
-    let a = n.tensorMap.get(s.dataId), [i, o] = jne(a.values, s.shape, s.dtype);
+    let a = n.tensorMap.get(s.dataId), [i, o] = Kne(a.values, s.shape, s.dtype);
     return n.makeTensorInfo(o, s.dtype, i);
   }
   let r = new nc(s.shape, 11);
   return n.runWebGPUProgram(r, [s], s.dtype);
 }
-var Nae = { kernelName: ko, backendName: "webgpu", kernelFunc: Cae };
-function Tae(e) {
+var Tae = { kernelName: Io, backendName: "webgpu", kernelFunc: Nae };
+function $ae(e) {
   console.warn("tf.nonMaxSuppression() in webgpu locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: t, backend: n, attrs: s } = e, { boxes: r, scores: a } = t, { maxOutputSize: i, iouThreshold: o, scoreThreshold: u } = s, l = n.readSync(r.dataId), c = n.readSync(a.dataId), { selectedIndices: p } = xs.nonMaxSuppressionV3Impl(l, c, i, o, u);
   return n.makeTensorInfo([p.length], "int32", new Int32Array(p));
 }
-var $ae = { kernelName: So, backendName: "webgpu", kernelFunc: Tae };
-function _ae(e) {
+var _ae = { kernelName: Co, backendName: "webgpu", kernelFunc: $ae };
+function Aae(e) {
   console.warn("tf.nonMaxSuppression() in webgpu locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: t, backend: n, attrs: s } = e, { boxes: r, scores: a } = t, { maxOutputSize: i, iouThreshold: o, scoreThreshold: u, softNmsSigma: l } = s, c = n.readSync(r.dataId), p = n.readSync(a.dataId), d = i, h = o, f = u, m = l, { selectedIndices: g, selectedScores: b } = xs.nonMaxSuppressionV5Impl(c, p, d, h, f, m);
   return [n.makeTensorInfo([g.length], "int32", new Int32Array(g)), n.makeTensorInfo([b.length], "float32", new Float32Array(b))];
 }
-var Aae = { kernelName: Co, backendName: "webgpu", kernelFunc: _ae };
+var Eae = { kernelName: No, backendName: "webgpu", kernelFunc: Aae };
 function Ld(e) {
   let { inputs: t, backend: n } = e, { x: s } = t;
   if (s.dtype === "complex64") {
-    let r = sc({ inputs: { input: s }, backend: n }), a = Ld({ inputs: { x: r }, backend: n }), i = Zp({ inputs: { input: s }, backend: n }), o = Ld({ inputs: { x: i }, backend: n }), u = uu({ inputs: { real: a, imag: o }, backend: n });
+    let r = sc({ inputs: { input: s }, backend: n }), a = Ld({ inputs: { x: r }, backend: n }), i = Zp({ inputs: { input: s }, backend: n }), o = Ld({ inputs: { x: i }, backend: n }), u = lu({ inputs: { real: a, imag: o }, backend: n });
     return n.disposeData(r.dataId), n.disposeData(a.dataId), n.disposeData(i.dataId), n.disposeData(o.dataId), u;
   } else
-    return cu({ attrs: { shape: s.shape, dtype: s.dtype, value: s.dtype === "string" ? "" : 0 }, backend: n });
+    return du({ attrs: { shape: s.shape, dtype: s.dtype, value: s.dtype === "string" ? "" : 0 }, backend: n });
 }
-var Eae = { kernelName: Go, backendName: "webgpu", kernelFunc: Ld };
+var Rae = { kernelName: Ho, backendName: "webgpu", kernelFunc: Ld };
 function O2(e) {
   let { inputs: t, backend: n } = e, { x: s } = t;
   if (s.dtype === "string")
     throw new Error("onesLike is not supported under string dtype");
   if (s.dtype === "complex64") {
-    let r = sc({ inputs: { input: s }, backend: n }), a = O2({ inputs: { x: r }, backend: n }), i = Zp({ inputs: { input: s }, backend: n }), o = Ld({ inputs: { x: i }, backend: n }), u = uu({ inputs: { real: a, imag: o }, backend: n });
+    let r = sc({ inputs: { input: s }, backend: n }), a = O2({ inputs: { x: r }, backend: n }), i = Zp({ inputs: { input: s }, backend: n }), o = Ld({ inputs: { x: i }, backend: n }), u = lu({ inputs: { real: a, imag: o }, backend: n });
     return n.disposeData(r.dataId), n.disposeData(a.dataId), n.disposeData(i.dataId), n.disposeData(o.dataId), u;
   } else
-    return cu({ attrs: { shape: s.shape, dtype: s.dtype, value: 1 }, backend: n });
+    return du({ attrs: { shape: s.shape, dtype: s.dtype, value: 1 }, backend: n });
 }
-var Rae = { kernelName: No, backendName: "webgpu", kernelFunc: O2 };
-function Dae(e) {
+var Dae = { kernelName: To, backendName: "webgpu", kernelFunc: O2 };
+function Fae(e) {
   let { inputs: t, backend: n, attrs: s } = e, { axis: r } = s;
   if (t.length === 1)
     return Qm({ inputs: { input: t[0] }, backend: n, attrs: { dim: r } });
@@ -35302,8 +35193,8 @@ function Dae(e) {
   }), l = C2({ inputs: u, backend: n, attrs: { axis: r } });
   return o.forEach((c) => n.disposeData(c.dataId)), l;
 }
-var Fae = { kernelName: $o, backendName: "webgpu", kernelFunc: Dae };
-var Oae = class {
+var Oae = { kernelName: _o, backendName: "webgpu", kernelFunc: Fae };
+var Pae = class {
   constructor(e, t) {
     this.variableNames = ["x"], this.uniforms = "constantValue : f32,", this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = t.map((n, s) => n[0] + e[s] + n[1]), this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), t.map((n, s) => {
       this.uniforms += ` pad${s} : vec2<i32>,`;
@@ -35335,38 +35226,38 @@ var P2 = (e) => {
     return es({ inputs: { x: r }, backend: n });
   if (w.sizeFromShape(r.shape) === 0) {
     let l = a.map((c, p) => c[0] + r.shape[p] + c[1]);
-    return cu({ backend: n, attrs: { shape: l, value: i, dtype: r.dtype } });
+    return du({ backend: n, attrs: { shape: l, value: i, dtype: r.dtype } });
   }
   let o = [{ type: "float32", data: [i] }];
   a.map((l) => o.push({ type: "int32", data: [l[0], l[1]] }));
-  let u = new Oae(r.shape, a);
+  let u = new Pae(r.shape, a);
   return n.runWebGPUProgram(u, [r], r.dtype, o);
 };
-var Pae = { kernelName: Qa, backendName: "webgpu", kernelFunc: P2 };
-var zae = mn({ opSnippet: 13 });
-var Mae = { kernelName: Za, backendName: "webgpu", kernelFunc: zae };
-function Lae(e) {
+var zae = { kernelName: Qa, backendName: "webgpu", kernelFunc: P2 };
+var Mae = mn({ opSnippet: 13 });
+var Lae = { kernelName: Za, backendName: "webgpu", kernelFunc: Mae };
+function Bae(e) {
   let { inputs: t, backend: n } = e, { x: s, alpha: r } = t, a = new x2(14, s.shape, r.shape);
   return n.runWebGPUProgram(a, [s, r], "float32");
 }
-var Bae = { kernelName: Ja, backendName: "webgpu", kernelFunc: Lae };
-function Vae(e) {
+var Vae = { kernelName: Ja, backendName: "webgpu", kernelFunc: Bae };
+function Wae(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, keepDims: i } = s;
   return rc(r, a, i, "prod", n);
 }
-var Wae = { kernelName: _o, backendName: "webgpu", kernelFunc: Vae };
-var Uae = (e) => {
-  let { backend: t, attrs: n } = e, { start: s, stop: r, step: a, dtype: i } = n, o = Yne(s, r, a, i);
+var Uae = { kernelName: Ao, backendName: "webgpu", kernelFunc: Wae };
+var Gae = (e) => {
+  let { backend: t, attrs: n } = e, { start: s, stop: r, step: a, dtype: i } = n, o = Qne(s, r, a, i);
   return t.makeTensorInfo([o.length], i, o);
 };
-var Gae = { kernelName: kl, backendName: "webgpu", kernelFunc: Uae };
+var Hae = { kernelName: Il, backendName: "webgpu", kernelFunc: Gae };
 var z2 = mn({ opSnippet: 3 });
-var Hae = { kernelName: Da, backendName: "webgpu", kernelFunc: z2 };
-var qae = Kt({ opType: 12 });
-var jae = { kernelName: ei, backendName: "webgpu", kernelFunc: qae };
-var Kae = Kt({ opType: 13 });
-var Xae = { kernelName: ni, backendName: "webgpu", kernelFunc: Kae };
-var Yae = class {
+var qae = { kernelName: Da, backendName: "webgpu", kernelFunc: z2 };
+var jae = Kt({ opType: 12 });
+var Kae = { kernelName: ei, backendName: "webgpu", kernelFunc: jae };
+var Xae = Kt({ opType: 13 });
+var Yae = { kernelName: ni, backendName: "webgpu", kernelFunc: Xae };
+var Qae = class {
   constructor(e, t, n) {
     this.variableNames = ["x"], this.uniforms = "adjustHeightWidth : vec2<f32>, halfPixelCenters : f32,", this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = [e[0], t, n, e[3]], this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = "resizeBilinear";
   }
@@ -35417,12 +35308,12 @@ var Yae = class {
     `;
   }
 };
-function Qae(e) {
-  let { inputs: t, backend: n, attrs: s } = e, { images: r } = t, { alignCorners: a, size: i, halfPixelCenters: o } = s, [u, l] = i, c = a && u > 1 ? 1 : 0, p = a && l > 1 ? 1 : 0, h = [{ type: "float32", data: [c, p] }, { type: "float32", data: [o ? 0.5 : 0] }], f = new Yae(r.shape, u, l);
+function Zae(e) {
+  let { inputs: t, backend: n, attrs: s } = e, { images: r } = t, { alignCorners: a, size: i, halfPixelCenters: o } = s, [u, l] = i, c = a && u > 1 ? 1 : 0, p = a && l > 1 ? 1 : 0, h = [{ type: "float32", data: [c, p] }, { type: "float32", data: [o ? 0.5 : 0] }], f = new Qae(r.shape, u, l);
   return n.runWebGPUProgram(f, [r], "float32", h);
 }
-var Zae = { kernelName: ti, backendName: "webgpu", kernelFunc: Qae };
-var Jae = class {
+var Jae = { kernelName: ti, backendName: "webgpu", kernelFunc: Zae };
+var eie = class {
   constructor(e, t, n, s) {
     this.variableNames = ["x"], this.uniforms = "adjustHeightWidth : vec2<f32>, roundBase : f32,", this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = [e[0], t, n, e[3]], this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.halfPixelCenters = s, this.shaderKey = `resizeNearest_${s}`;
   }
@@ -35462,12 +35353,12 @@ var Jae = class {
     `;
   }
 };
-function eie(e) {
-  let { inputs: t, backend: n, attrs: s } = e, { images: r } = t, { alignCorners: a, halfPixelCenters: i, size: o } = s, [u, l] = o, c = a && u > 1 ? 1 : 0, p = a && l > 1 ? 1 : 0, h = [{ type: "float32", data: [c, p] }, { type: "float32", data: [a ? 0.5 : 0] }], f = new Jae(r.shape, u, l, i);
+function tie(e) {
+  let { inputs: t, backend: n, attrs: s } = e, { images: r } = t, { alignCorners: a, halfPixelCenters: i, size: o } = s, [u, l] = o, c = a && u > 1 ? 1 : 0, p = a && l > 1 ? 1 : 0, h = [{ type: "float32", data: [c, p] }, { type: "float32", data: [a ? 0.5 : 0] }], f = new eie(r.shape, u, l, i);
   return n.runWebGPUProgram(f, [r], r.dtype, h);
 }
-var tie = { kernelName: Sl, backendName: "webgpu", kernelFunc: eie };
-var nie = class {
+var nie = { kernelName: Cl, backendName: "webgpu", kernelFunc: tie };
+var sie = class {
   constructor(e, t) {
     this.outputShape = [], this.variableNames = ["x"], this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.uniforms = `centerX : f32, centerY : f32, sinRadians : f32,
           cosRadians : f32,`, this.shaderKey = "rotate", this.outputShape = e, typeof t == "number" ? (this.uniforms += " fillValue : f32,", this.fillSnippet = "var outputValue = uniforms.fillValue;", this.shaderKey += "_float") : (this.uniforms += " fillValue : vec3<f32>,", this.fillSnippet = "var outputValue = uniforms.fillValue[coords[3]];", this.shaderKey += "_vec3");
@@ -35497,13 +35388,13 @@ var nie = class {
       `;
   }
 };
-var sie = { kernelName: Ho, backendName: "webgpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
-  let { image: s } = e, { radians: r, fillValue: a, center: i } = t, o = n, u = new nie(s.shape, a), [l, c] = S.getImageCenter(i, s.shape[1], s.shape[2]), p = [{ type: "float32", data: [l] }, { type: "float32", data: [c] }, { type: "float32", data: [Math.sin(r)] }, { type: "float32", data: [Math.cos(r)] }];
+var rie = { kernelName: qo, backendName: "webgpu", kernelFunc: ({ inputs: e, attrs: t, backend: n }) => {
+  let { image: s } = e, { radians: r, fillValue: a, center: i } = t, o = n, u = new sie(s.shape, a), [l, c] = S.getImageCenter(i, s.shape[1], s.shape[2]), p = [{ type: "float32", data: [l] }, { type: "float32", data: [c] }, { type: "float32", data: [Math.sin(r)] }, { type: "float32", data: [Math.cos(r)] }];
   return typeof a == "number" ? p.push({ type: "float32", data: [Number.parseFloat(a.toFixed(2))] }) : p.push({ type: "float32", data: a }), o.runWebGPUProgram(u, [s], s.dtype, p);
 } };
-var rie = Kt({ opType: 15, cpuKernelImpl: Qne });
-var aie = { kernelName: si, backendName: "webgpu", kernelFunc: rie };
-var iie = class {
+var aie = Kt({ opType: 15, cpuKernelImpl: Zne });
+var iie = { kernelName: si, backendName: "webgpu", kernelFunc: aie };
+var oie = class {
   constructor(e, t, n, s, r, a, i) {
     this.variableNames = ["updates", "indices"], this.workGroupSize = [64, 1, 1], this.atomic = true, this.outputShape = a, this.type = i, this.dispatchLayout = Be(e), this.dispatch = _e(this.dispatchLayout, e, this.workGroupSize), this.sliceDimGreaterThanOne = t > 1, this.shaderKey = `scatter_${n}_${s}_${this.sliceDimGreaterThanOne}_${i}`;
     let o = Wt(r.length);
@@ -35555,15 +35446,15 @@ var iie = class {
       }`;
   }
 };
-function oie(e) {
+function uie(e) {
   let { inputs: t, backend: n, attrs: s } = e, { indices: r, updates: a } = t, { shape: i } = s, { sliceRank: o, numUpdates: u, sliceSize: l, strides: c, outputSize: p } = S.calculateShapes(a, r, i), d = [p / l, l];
   if (p === 0)
     return n.makeTensorInfo(i, r.dtype);
-  let h = Me({ inputs: { x: r }, backend: n, attrs: { shape: [u, o] } }), f = Me({ inputs: { x: a }, backend: n, attrs: { shape: [u, l] } }), m = f.dtype, g = cu({ backend: n, attrs: { shape: d, value: 0, dtype: m } }), b = w.sizeFromShape(f.shape), y = [{ type: "int32", data: [o] }, { type: "int32", data: c }, { type: "int32", data: [b] }], v = new iie(f.shape, o, h.shape.length, f.shape.length, c, d, m), x = n.runWebGPUProgram(v, [f, h], m, y, g), k = Me({ inputs: { x }, backend: n, attrs: { shape: i } });
+  let h = Me({ inputs: { x: r }, backend: n, attrs: { shape: [u, o] } }), f = Me({ inputs: { x: a }, backend: n, attrs: { shape: [u, l] } }), m = f.dtype, g = du({ backend: n, attrs: { shape: d, value: 0, dtype: m } }), b = w.sizeFromShape(f.shape), y = [{ type: "int32", data: [o] }, { type: "int32", data: c }, { type: "int32", data: [b] }], v = new oie(f.shape, o, h.shape.length, f.shape.length, c, d, m), x = n.runWebGPUProgram(v, [f, h], m, y, g), k = Me({ inputs: { x }, backend: n, attrs: { shape: i } });
   return n.disposeData(h.dataId), n.disposeData(f.dataId), n.disposeData(x.dataId), k;
 }
-var uie = { kernelName: Do, backendName: "webgpu", kernelFunc: oie };
-var lie = class {
+var lie = { kernelName: Fo, backendName: "webgpu", kernelFunc: uie };
+var cie = class {
   constructor(e, t, n) {
     this.variableNames = ["c", "a", "b"], this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = t, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.cRank = e, this.rank = n, this.shaderKey = "select";
   }
@@ -35594,25 +35485,25 @@ var lie = class {
     `;
   }
 };
-function cie(e) {
-  let { inputs: t, backend: n } = e, { condition: s, t: r, e: a } = t, i = new lie(s.shape.length, r.shape, r.shape.length);
+function die(e) {
+  let { inputs: t, backend: n } = e, { condition: s, t: r, e: a } = t, i = new cie(s.shape.length, r.shape, r.shape.length);
   return n.runWebGPUProgram(i, [s, r, a], cn(r.dtype, a.dtype));
 }
-var die = { kernelName: Fo, backendName: "webgpu", kernelFunc: cie };
-var pie = Kt({ opType: 18 });
-var hie = { kernelName: ai, backendName: "webgpu", kernelFunc: pie };
-var fie = Kt({ opType: 16 });
-var mie = { kernelName: ri, backendName: "webgpu", kernelFunc: fie };
-var gie = Kt({ opType: 17 });
-var bie = { kernelName: Po, backendName: "webgpu", kernelFunc: gie };
-var M2 = mn({ opSnippet: 2, cpuKernelImpl: nse, supportsComplex: true });
-var yie = { kernelName: ci, backendName: "webgpu", kernelFunc: M2 };
-function vie(e) {
+var pie = { kernelName: Oo, backendName: "webgpu", kernelFunc: die };
+var hie = Kt({ opType: 18 });
+var fie = { kernelName: ai, backendName: "webgpu", kernelFunc: hie };
+var mie = Kt({ opType: 16 });
+var gie = { kernelName: ri, backendName: "webgpu", kernelFunc: mie };
+var bie = Kt({ opType: 17 });
+var yie = { kernelName: zo, backendName: "webgpu", kernelFunc: bie };
+var M2 = mn({ opSnippet: 2, cpuKernelImpl: sse, supportsComplex: true });
+var vie = { kernelName: ci, backendName: "webgpu", kernelFunc: M2 };
+function xie(e) {
   let { inputs: t, backend: n, attrs: s } = e, { logits: r } = t, { dim: a } = s, i = w.parseAxisParam([a], r.shape), o = F2({ inputs: { x: r }, backend: n, attrs: { reductionIndices: i, keepDims: false } }), u = S.expandShapeToKeepDim(o.shape, i), l = Me({ inputs: { x: o }, backend: n, attrs: { shape: u } }), c = M2({ inputs: { a: r, b: l }, backend: n }), p = A2({ inputs: { x: c }, backend: n }), d = Av({ inputs: { x: p }, backend: n, attrs: { axis: i, keepDims: false } }), h = Me({ inputs: { x: d }, backend: n, attrs: { shape: u } }), f = z2({ inputs: { a: p, b: h }, backend: n });
   return n.disposeData(o.dataId), n.disposeData(l.dataId), n.disposeData(c.dataId), n.disposeData(p.dataId), n.disposeData(d.dataId), n.disposeData(h.dataId), f;
 }
-var xie = { kernelName: ui, backendName: "webgpu", kernelFunc: vie };
-var wie = (e) => {
+var wie = { kernelName: ui, backendName: "webgpu", kernelFunc: xie };
+var kie = (e) => {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockShape: a, paddings: i } = s;
   w.assert(r.shape.length <= 4, () => "spaceToBatchND for rank > 4 with a WebGPU backend not implemented yet");
   let o = a.reduce((b, y) => b * y), u = [[0, 0]];
@@ -35622,8 +35513,8 @@ var wie = (e) => {
   let l = [], c = P2({ inputs: { x: r }, backend: n, attrs: { paddings: u, constantValue: 0 } }), p = S.getReshaped(c.shape, a, o, false), d = S.getPermuted(p.length, a.length, false), h = S.getReshapedPermuted(c.shape, a, o, false), f = Me({ inputs: { x: c }, backend: n, attrs: { shape: p } }), m = wi({ inputs: { x: f }, backend: n, attrs: { perm: d } }), g = Me({ inputs: { x: m }, backend: n, attrs: { shape: h } });
   return l.push(c), l.push(f), l.push(m), l.forEach((b) => n.disposeData(b.dataId)), g;
 };
-var kie = { kernelName: zo, backendName: "webgpu", kernelFunc: wie };
-var Iie = class {
+var Iie = { kernelName: Mo, backendName: "webgpu", kernelFunc: kie };
+var Sie = class {
   constructor(e, t, n, s, r, a, i = true) {
     this.variableNames = ["updates", "indices", "defaultValue"], this.workGroupSize = [64, 1, 1], this.workPerThread = 4, this.size = true, this.outputShape = a, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]);
     let o = t > 1;
@@ -35669,30 +35560,30 @@ var Iie = class {
       }`;
   }
 };
-function Sie(e) {
-  let { inputs: t, backend: n, attrs: s } = e, { sparseIndices: r, sparseValues: a, defaultValue: i } = t, { outputShape: o } = s, { sliceRank: u, numUpdates: l, strides: c, outputSize: p } = S.calculateShapes(a, r, o), d = false, h = [{ type: "int32", data: [l] }, { type: "int32", data: [u] }, { type: "int32", data: c }], f = new Iie(l, u, r.shape.length, a.shape.length, c, [p, 1], d), m = n.runWebGPUProgram(f, [a, r, i], a.dtype, h), g = Me({ inputs: { x: m }, backend: n, attrs: { shape: o } });
+function Cie(e) {
+  let { inputs: t, backend: n, attrs: s } = e, { sparseIndices: r, sparseValues: a, defaultValue: i } = t, { outputShape: o } = s, { sliceRank: u, numUpdates: l, strides: c, outputSize: p } = S.calculateShapes(a, r, o), d = false, h = [{ type: "int32", data: [l] }, { type: "int32", data: [u] }, { type: "int32", data: c }], f = new Sie(l, u, r.shape.length, a.shape.length, c, [p, 1], d), m = n.runWebGPUProgram(f, [a, r, i], a.dtype, h), g = Me({ inputs: { x: m }, backend: n, attrs: { shape: o } });
   return n.disposeData(m.dataId), g;
 }
-var Cie = { kernelName: ip, backendName: "webgpu", kernelFunc: Sie };
-function Nie(e) {
+var Nie = { kernelName: ip, backendName: "webgpu", kernelFunc: Cie };
+function Tie(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { numOrSizeSplits: a, axis: i } = s, o = w.parseAxisParam(i, r.shape)[0], u = S.prepareSplitSize(r, a, o), l = r.shape.length, c = new Array(l).fill(0), p = r.shape.slice();
   return u.map((d) => {
     let h = [...p];
     h[o] = d;
-    let f = lu({ inputs: { x: r }, backend: n, attrs: { begin: c, size: h } });
+    let f = cu({ inputs: { x: r }, backend: n, attrs: { begin: c, size: h } });
     return c[o] += d, f;
   });
 }
-var Tie = { kernelName: Mo, backendName: "webgpu", kernelFunc: Nie };
-var $ie = Kt({ opType: 19 });
-var _ie = { kernelName: ii, backendName: "webgpu", kernelFunc: $ie };
-var Aie = { kernelName: _l, backendName: "webgpu", kernelFunc: ({ inputs: e, backend: t }) => {
+var $ie = { kernelName: Lo, backendName: "webgpu", kernelFunc: Tie };
+var _ie = Kt({ opType: 19 });
+var Aie = { kernelName: ii, backendName: "webgpu", kernelFunc: _ie };
+var Eie = { kernelName: Al, backendName: "webgpu", kernelFunc: ({ inputs: e, backend: t }) => {
   let { x: n } = e, s = t, r = new nc(n.shape, 20);
   return s.runWebGPUProgram(r, [n], n.dtype);
 } };
-var Eie = mn({ opSnippet: 11 });
-var Rie = { kernelName: li, backendName: "webgpu", kernelFunc: Eie };
-var Die = class {
+var Rie = mn({ opSnippet: 11 });
+var Die = { kernelName: li, backendName: "webgpu", kernelFunc: Rie };
+var Fie = class {
   constructor(e) {
     this.variableNames = ["x"], this.workPerThread = 1, this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize, [this.workPerThread, 1, 1]);
     let t = Wt(this.outputShape.length);
@@ -35716,32 +35607,32 @@ var Die = class {
      `;
   }
 };
-function Fie(e) {
+function Oie(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { begin: a, end: i, strides: o, beginMask: u, endMask: l, ellipsisMask: c, newAxisMask: p, shrinkAxisMask: d } = s, { finalShapeSparse: h, finalShape: f, isIdentity: m, sliceDim0: g, isSimpleSlice: b, begin: y, end: v, strides: x } = wt.sliceInfo(r.shape, a, i, o, u, l, c, p, d), k;
   if (m)
     k = Me({ inputs: { x: r }, backend: n, attrs: { shape: f } });
   else if (g || b) {
     w.assert(r.shape.length >= 1, () => `Input must have rank at least 1, got: ${r.shape.length}`);
-    let T = wt.computeOutShape(y, v, x), N = lu({ inputs: { x: r }, backend: n, attrs: { begin: y, size: T } });
+    let T = wt.computeOutShape(y, v, x), N = cu({ inputs: { x: r }, backend: n, attrs: { begin: y, size: T } });
     k = Me({ inputs: { x: N }, backend: n, attrs: { shape: f } }), n.disposeData(N.dataId);
   } else if (n.shouldExecuteOnCPU([r])) {
-    let N = n.readSync(r.dataId), E = De(r.shape, r.dtype, N), A = ese(h, E, x, y);
+    let N = n.readSync(r.dataId), E = De(r.shape, r.dtype, N), A = tse(h, E, x, y);
     k = n.makeTensorInfo(f, r.dtype, A.values);
   } else {
-    let N = new Die(h), E = [{ type: "int32", data: y }, { type: "int32", data: x }], A = n.runWebGPUProgram(N, [r], r.dtype, E);
+    let N = new Fie(h), E = [{ type: "int32", data: y }, { type: "int32", data: x }], A = n.runWebGPUProgram(N, [r], r.dtype, E);
     k = Me({ inputs: { x: A }, backend: n, attrs: { shape: f } }), n.disposeData(A.dataId);
   }
   return k;
 }
-var Oie = { kernelName: Lo, backendName: "webgpu", kernelFunc: Fie };
-function Pie(e) {
-  let { inputs: t, backend: n, attrs: s } = e, { separator: r, nGramWidths: a, leftPad: i, rightPad: o, padWidth: u, preserveShortSequences: l } = s, { data: c, dataSplits: p } = t, d = n.readSync(c.dataId), h = n.readSync(p.dataId), [f, m] = tse(d, h, r, a, i, o, u, l);
+var Pie = { kernelName: Bo, backendName: "webgpu", kernelFunc: Oie };
+function zie(e) {
+  let { inputs: t, backend: n, attrs: s } = e, { separator: r, nGramWidths: a, leftPad: i, rightPad: o, padWidth: u, preserveShortSequences: l } = s, { data: c, dataSplits: p } = t, d = n.readSync(c.dataId), h = n.readSync(p.dataId), [f, m] = nse(d, h, r, a, i, o, u, l);
   return [n.makeTensorInfo([f.length], "string", f), n.makeTensorInfo(p.shape, "int32", m)];
 }
-var zie = { kernelName: op, backendName: "webgpu", kernelFunc: Pie };
-var Mie = Kt({ opType: 21 });
-var Lie = { kernelName: di, backendName: "webgpu", kernelFunc: Mie };
-var Bie = class {
+var Mie = { kernelName: op, backendName: "webgpu", kernelFunc: zie };
+var Lie = Kt({ opType: 21 });
+var Bie = { kernelName: di, backendName: "webgpu", kernelFunc: Lie };
+var Vie = class {
   constructor(e, t) {
     this.variableNames = ["A"], this.workGroupSize = [64, 1, 1], this.size = true;
     let n = new Array(e.length);
@@ -35750,7 +35641,7 @@ var Bie = class {
     this.outputShape = n, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.rank = this.outputShape.length, this.shaderKey = "tile";
   }
   getUserCode() {
-    let e = Vie(this.rank, "uniforms.");
+    let e = Wie(this.rank, "uniforms.");
     return `
       ${Ue()}
         if (index < uniforms.size) {
@@ -35761,7 +35652,7 @@ var Bie = class {
     `;
   }
 };
-function Vie(e, t = "") {
+function Wie(e, t = "") {
   if (e >= 5)
     throw Error(`Tile for rank ${e} is not yet supported`);
   if (e === 1)
@@ -35771,17 +35662,17 @@ function Vie(e, t = "") {
     s.push(`(${n[r]} % ${t}aShape[${r}])`);
   return s.join();
 }
-function Wie(e) {
+function Uie(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { reps: a } = s;
   if (n.shouldExecuteOnCPU([r]) || r.dtype === "string" || r.shape.length >= 5) {
-    let u = n.readSync(r.dataId), l = r.dtype === "string" ? u.map((d) => w.decodeString(d)) : u, c = De(r.shape, r.dtype, l), p = sse(c, a);
+    let u = n.readSync(r.dataId), l = r.dtype === "string" ? u.map((d) => w.decodeString(d)) : u, c = De(r.shape, r.dtype, l), p = rse(c, a);
     return n.makeTensorInfo(p.shape, p.dtype, p.values);
   }
-  let i = new Bie(r.shape, a);
+  let i = new Vie(r.shape, a);
   return n.runWebGPUProgram(i, [r], r.dtype);
 }
-var Uie = { kernelName: Cr, backendName: "webgpu", kernelFunc: Wie };
-var Gie = class {
+var Gie = { kernelName: Cr, backendName: "webgpu", kernelFunc: Uie };
+var Hie = class {
   constructor(e) {
     this.variableNames = ["x", "indices"], this.workGroupSize = [256, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.uniforms = `inputSize : i32, firstPass : i32, negativeInf : f32,
         dir : i32, inc : i32,`, this.shaderKey = "swap";
@@ -35857,7 +35748,7 @@ var Gie = class {
       `;
   }
 };
-var Hie = class {
+var qie = class {
   constructor(e) {
     this.variableNames = ["x", "indices"], this.workGroupSize = [256, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.uniforms = "inputSize : i32, firstPass : i32, k : i32,", this.shaderKey = "merge";
   }
@@ -35933,18 +35824,18 @@ function Pw(e) {
     t *= 2;
   return t;
 }
-function qie(e) {
+function jie(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { k: a, sorted: i } = s, o = r.shape, u = o[o.length - 1];
   if (n.shouldExecuteOnCPU([r])) {
-    let k = n.readSync(r.dataId), [T, N] = rse(k, o, r.dtype, a, i);
+    let k = n.readSync(r.dataId), [T, N] = ase(k, o, r.dtype, a, i);
     return [n.makeTensorInfo(T.shape, T.dtype, T.values), n.makeTensorInfo(N.shape, N.dtype, N.values)];
   }
   if (a === 0)
     return o[o.length - 1] = 0, [n.makeTensorInfo(o, r.dtype, []), n.makeTensorInfo(o, "int32", [])];
   if (u === 1)
-    return [r, cu({ attrs: { shape: o, dtype: "int32", value: 0 }, backend: n })];
+    return [r, du({ attrs: { shape: o, dtype: "int32", value: 0 }, backend: n })];
   let c = w.sizeFromShape(o) / u, p = Me({ inputs: { x: r }, attrs: { shape: [c, u] }, backend: n }), d = Pw(a), h = Pw(u), f = null, m = () => f === null ? [p, p] : [p, f], g = (k, T, N) => {
-    let E = m(), A = new Gie(N), R = [{ type: "int32", data: [u] }, { type: "int32", data: [f === null ? 1 : 0] }, { type: "float32", data: [Number.NEGATIVE_INFINITY] }, { type: "int32", data: [k] }, { type: "int32", data: [T] }], F = f;
+    let E = m(), A = new Hie(N), R = [{ type: "int32", data: [u] }, { type: "int32", data: [f === null ? 1 : 0] }, { type: "float32", data: [Number.NEGATIVE_INFINITY] }, { type: "int32", data: [k] }, { type: "int32", data: [T] }], F = f;
     f = n.runWebGPUProgram(A, E, "int32", R), Vi(n, F);
   };
   for (let k = 1; k < d; k *= 2) {
@@ -35953,14 +35844,14 @@ function qie(e) {
       g(T, N, [c, h]);
   }
   for (let k = h; k > d; k /= 2) {
-    let T = m(), N = new Hie([c, k / 2]), A = [{ type: "int32", data: [u] }, { type: "int32", data: [f === null ? 1 : 0] }, { type: "int32", data: [d] }], P = f;
+    let T = m(), N = new qie([c, k / 2]), A = [{ type: "int32", data: [u] }, { type: "int32", data: [f === null ? 1 : 0] }, { type: "int32", data: [d] }], P = f;
     f = n.runWebGPUProgram(N, T, "int32", A), Vi(n, P);
     let R = d / 2, F = R * 2;
     for (let $ = R; $ >= 1; $ /= 2)
       g(F, $, f.shape);
   }
   let b = f;
-  f = lu({ inputs: { x: f }, backend: n, attrs: { begin: 0, size: [c, a] } }), Vi(n, b);
+  f = cu({ inputs: { x: f }, backend: n, attrs: { begin: 0, size: [c, a] } }), Vi(n, b);
   let y = D2({ inputs: { x: p, indices: f }, backend: n, attrs: { axis: 1, batchDims: 1 } });
   Vi(n, p);
   let v = o.slice(0, -1);
@@ -35968,8 +35859,8 @@ function qie(e) {
   let x = y;
   return y = Me({ inputs: { x: y }, attrs: { shape: v }, backend: n }), Vi(n, x), [y, f];
 }
-var jie = { kernelName: Vo, backendName: "webgpu", kernelFunc: qie };
-var Kie = class {
+var Kie = { kernelName: Wo, backendName: "webgpu", kernelFunc: jie };
+var Xie = class {
   constructor(e) {
     this.variableNames = ["Image", "Transforms"], this.uniforms = "interpolationModeId : i32, fillModeId : i32, fillValue : f32,", this.workGroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = Be(this.outputShape), this.dispatch = _e(this.dispatchLayout, this.outputShape, this.workGroupSize), this.shaderKey = "transform";
   }
@@ -36093,8 +35984,8 @@ var Kie = class {
         `;
   }
 };
-function Xie(e) {
-  let { inputs: t, backend: n, attrs: s } = e, { image: r, transforms: a } = t, { interpolation: i, fillMode: o, fillValue: u, outputShape: l } = s, [c, p, d, h] = r.shape, [f, m] = l != null ? l : [p, d], g = [c, f, m, h], b = new Kie(g), y = i === "nearest" ? 1 : 2, v;
+function Yie(e) {
+  let { inputs: t, backend: n, attrs: s } = e, { image: r, transforms: a } = t, { interpolation: i, fillMode: o, fillValue: u, outputShape: l } = s, [c, p, d, h] = r.shape, [f, m] = l != null ? l : [p, d], g = [c, f, m, h], b = new Xie(g), y = i === "nearest" ? 1 : 2, v;
   switch (o) {
     case "constant":
       v = 1;
@@ -36115,8 +36006,8 @@ function Xie(e) {
   let x = [{ type: "int32", data: [y] }, { type: "int32", data: [v] }, { type: "float32", data: [u] }];
   return n.runWebGPUProgram(b, [r, a], "float32", x);
 }
-var Yie = { kernelName: Wo, backendName: "webgpu", kernelFunc: Xie };
-function Qie(e) {
+var Qie = { kernelName: Uo, backendName: "webgpu", kernelFunc: Yie };
+function Zie(e) {
   let { inputs: t, backend: n, attrs: s } = e, { value: r } = t, { axis: a } = s;
   a < 0 && (a += r.shape.length);
   let i = r, o = i.shape.length, u = r.shape[a], l = new Array(o - 1), c = 0;
@@ -36127,16 +36018,16 @@ function Qie(e) {
   let f = new Array(u);
   for (let m = 0; m < f.length; m++) {
     d[a] = m;
-    let g = lu({ inputs: { x: i }, backend: n, attrs: { begin: d, size: h } }), b = Me({ inputs: { x: g }, backend: n, attrs: { shape: l } });
+    let g = cu({ inputs: { x: i }, backend: n, attrs: { begin: d, size: h } }), b = Me({ inputs: { x: g }, backend: n, attrs: { shape: l } });
     f[m] = b, p.push(g);
   }
   return p.forEach((m) => n.disposeData(m.dataId)), f;
 }
-var Zie = { kernelName: Uo, backendName: "webgpu", kernelFunc: Qie };
-var Jie = [Sne, ose, lse, pse, yse, xse, kse, Sse, _se, Dse, Ose, Lse, $ne, Use, Qse, tre, sre, are, ure, dre, hre, yre, xre, kre, Ire, Sre, Nre, $re, Are, Pre, Rre, Fre, Lre, Vre, Ure, qre, Xre, Qre, Jre, Tne, Vse, tae, sae, aae, oae, lae, dae, pae, fae, gae, yae, xae, kae, Sae, fre, Nae, $ae, Aae, Ase, Rae, Fae, Pae, Mae, Bae, Wae, Gae, Ese, Hae, jae, Xae, kne, Zae, tie, sie, aie, uie, die, hie, mie, bie, Tse, Oie, zie, xie, kie, Cie, Tie, _ie, Aie, Rie, yie, gre, Lie, Uie, jie, Yie, gse, Zie, Eae];
-for (let e of Jie)
-  Al(e);
-var eoe = class {
+var Jie = { kernelName: Go, backendName: "webgpu", kernelFunc: Zie };
+var eoe = [Cne, use, cse, hse, vse, wse, Ise, Cse, Ase, Fse, Pse, Bse, _ne, Gse, Zse, nre, rre, ire, lre, pre, fre, vre, wre, Ire, Sre, Cre, Tre, _re, Ere, zre, Dre, Ore, Bre, Wre, Gre, jre, Yre, Zre, eae, $ne, Wse, nae, rae, iae, uae, cae, pae, hae, mae, bae, vae, wae, Iae, Cae, mre, Tae, _ae, Eae, Ese, Dae, Oae, zae, Lae, Vae, Uae, Hae, Rse, qae, Kae, Yae, Ine, Jae, nie, rie, iie, lie, pie, fie, gie, yie, $se, Pie, Mie, wie, Iie, Nie, $ie, Aie, Eie, Die, vie, bre, Bie, Gie, Kie, Qie, bse, Jie, Rae];
+for (let e of eoe)
+  El(e);
+var toe = class {
   constructor(e) {
     this.device = e, this.numUsedBuffers = 0, this.numFreeBuffers = 0, this.freeBuffers = /* @__PURE__ */ new Map(), this.usedBuffers = /* @__PURE__ */ new Map(), this.numBytesUsed = 0, this.numBytesAllocated = 0;
   }
@@ -36245,10 +36136,9 @@ var L2 = class {
     return { bindGroupLayout: n, pipelineLayout: s };
   }
 };
-var toe = class extends L2 {
+var noe = class extends L2 {
   constructor() {
-    super(...arguments);
-    this.layout = null, this.useImport = true;
+    super(...arguments), this.layout = null, this.useImport = true;
   }
   getUserCode() {
     return this.makeFromPixelsSource();
@@ -36263,7 +36153,7 @@ var toe = class extends L2 {
     return { bindGroupLayout: n, pipelineLayout: s };
   }
 };
-var noe = X().getNumber("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD");
+var soe = X().getNumber("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD");
 var Mw = (e, t) => {
   let n = e.limits.maxComputeWorkgroupsPerDimension, s = t.dispatchLayout, r = t.dispatch;
   if (r.every((i) => i <= n))
@@ -36272,12 +36162,11 @@ var Mw = (e, t) => {
   let a = Math.ceil(Math.sqrt(r[0]));
   return a > n ? (a = Math.ceil(Math.cbrt(r[0])), w.assert(a <= n, () => "Total dispatch size exceeds WebGPU maximum."), [a, a, a]) : [a, a, 1];
 };
-var B2 = class extends tl {
+var B2 = class extends nl {
   constructor(e, t = false) {
-    super();
-    if (this.commandQueueOwnedIds = /* @__PURE__ */ new WeakSet(), this.tensorDisposalQueue = [], this.uniformDisposalQueue = [], this.stagingDisposalQueue = [], this.disposed = false, this.uploadWaitMs = 0, this.downloadWaitMs = 0, this.dispatchNumberInEncoder = 0, !Tv())
+    if (super(), this.commandQueueOwnedIds = /* @__PURE__ */ new WeakSet(), this.tensorDisposalQueue = [], this.uniformDisposalQueue = [], this.stagingDisposalQueue = [], this.disposed = false, this.uploadWaitMs = 0, this.downloadWaitMs = 0, this.dispatchNumberInEncoder = 0, !Tv())
       throw new Error("WebGPU is not supported on this device");
-    this.layoutCache = {}, this.pipelineCache = {}, this.device = e, this.queue = e.queue, this.currentCommandEncoder = null, this.currentComputePass = null, this.supportTimeQuery = t, this.bufferManager = new eoe(this.device), this.tensorMap = new Ud(this, Ss()), this.supportTimeQuery && (this.querySet = this.device.createQuerySet({ type: "timestamp", count: 2 })), X().getBool("WEBGPU_USE_PROFILE_TOOL") && (this.dummyCanvas = document.createElement("canvas"), this.dummyCanvas.width = 1, this.dummyCanvas.height = 1, this.dummyContext = this.dummyCanvas.getContext("webgpu"), this.dummyContext.configure({ device: e, format: "bgra8unorm" }), document.body.appendChild(this.dummyCanvas));
+    this.layoutCache = {}, this.pipelineCache = {}, this.device = e, this.queue = e.queue, this.currentCommandEncoder = null, this.currentComputePass = null, this.supportTimeQuery = t, this.bufferManager = new toe(this.device), this.tensorMap = new Ud(this, Ss()), this.supportTimeQuery && (this.querySet = this.device.createQuerySet({ type: "timestamp", count: 2 })), X().getBool("WEBGPU_USE_PROFILE_TOOL") && (this.dummyCanvas = document.createElement("canvas"), this.dummyCanvas.width = 1, this.dummyCanvas.height = 1, this.dummyContext = this.dummyCanvas.getContext("webgpu"), this.dummyContext.configure({ device: e, format: "bgra8unorm" }), document.body.appendChild(this.dummyCanvas));
   }
   nextDataId() {
     return B2.nextDataId++;
@@ -36355,7 +36244,7 @@ var B2 = class extends tl {
       case "copyExternal":
         return this.fromPixelProgram || (this.fromPixelProgram = new L2()), this.fromPixelProgram;
       case "import":
-        return this.fromPixelImportProgram || (this.fromPixelImportProgram = new toe()), this.fromPixelImportProgram;
+        return this.fromPixelImportProgram || (this.fromPixelImportProgram = new noe()), this.fromPixelImportProgram;
       default:
         w.assert(false, () => "Unsupported fromPixels shape");
         return;
@@ -36518,7 +36407,7 @@ var B2 = class extends tl {
       if (N.dtype === "complex64")
         throw new Error("GPGPUProgram does not support complex64 input. For complex64 dtypes, please separate the program into real and imaginary parts.");
       return this.uploadToGPU(N.dataId), { dtype: this.tensorMap.get(N.dataId).dtype, shape: N.shape, name: e.variableNames[E] };
-    }), p = c.map((N) => N.dtype).concat(r.dtype), d = c.map((N) => S.getBroadcastDims(N.shape, r.shape)), h = c.map((N) => w.arraysEqual(N.shape, r.shape)).join("_"), f = d.map((N) => N.join("_")).join(";"), m = R2(e, i, p, f, h), { bindGroupLayout: g, pipelineLayout: b } = this.getCachedOrCreateLayout(e.variableNames.length), y = this.getAndSavePipeline(m, () => E2(this.device, e, b, c, r)), v = this.activeTimers != null, x = Ore(this.device, g, t.map((N) => this.tensorToBinding(N)), this.tensorToBinding(r), l);
+    }), p = c.map((N) => N.dtype).concat(r.dtype), d = c.map((N) => S.getBroadcastDims(N.shape, r.shape)), h = c.map((N) => w.arraysEqual(N.shape, r.shape)).join("_"), f = d.map((N) => N.join("_")).join(";"), m = R2(e, i, p, f, h), { bindGroupLayout: g, pipelineLayout: b } = this.getCachedOrCreateLayout(e.variableNames.length), y = this.getAndSavePipeline(m, () => E2(this.device, e, b, c, r)), v = this.activeTimers != null, x = Pre(this.device, g, t.map((N) => this.tensorToBinding(N)), this.tensorToBinding(r), l);
     this.ensureCommandEncoderReady();
     let k = this.getComputePass();
     v && this.supportTimeQuery && k.writeTimestamp(this.querySet, 0), k.setPipeline(y), k.setBindGroup(0, x), k.dispatch(e.dispatch[0], e.dispatch[1], e.dispatch[2]), v && this.supportTimeQuery && k.writeTimestamp(this.querySet, 1), this.dispatchNumberInEncoder++, t.forEach((N) => {
@@ -36540,7 +36429,7 @@ var B2 = class extends tl {
     let s = new BigUint64Array(n.getMappedRange()), r = Number(s[1] - s[0]);
     return n.unmap(), this.bufferManager.releaseBuffer(n, 16, GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST), this.bufferManager.releaseBuffer(t, 16, GPUBufferUsage.COPY_SRC | GPUBufferUsage.QUERY_RESOLVE), r / 1e6;
   }
-  shouldExecuteOnCPU(e, t = noe) {
+  shouldExecuteOnCPU(e, t = soe) {
     return X().getBool("WEBGPU_CPU_FORWARD") && e.every((n) => this.tensorMap.get(n.dataId).bufferInfo.buffer == null && w.sizeFromShape(n.shape) < t);
   }
   numDataIds() {
@@ -36552,8 +36441,8 @@ var B2 = class extends tl {
 };
 var Ev = B2;
 Ev.nextDataId = 0;
-var soe = {};
-Ae(soe, { WebGPUBackend: () => Ev, webgpu_util: () => m2 });
+var roe = {};
+Ae(roe, { WebGPUBackend: () => Ev, webgpu_util: () => m2 });
 Tv() && pp("webgpu", async () => {
   X().set("CHECK_COMPUTATION_FOR_ERRORS", false);
   let e = { powerPreference: X().get("WEBGPU_USE_LOW_POWER_GPU") ? "low-power" : "high-performance" }, t = await navigator.gpu.requestAdapter(e), n = t.limits, s = {}, r = t.features.has("timestamp-query");
@@ -36564,10 +36453,10 @@ Tv() && pp("webgpu", async () => {
 var It = ((e) => (e[e.float32 = 0] = "float32", e[e.int32 = 1] = "int32", e[e.bool = 2] = "bool", e[e.string = 3] = "string", e[e.complex64 = 4] = "complex64", e))(It || {});
 var Jp = ((e) => (e[e.linear = 0] = "linear", e[e.relu = 1] = "relu", e[e.relu6 = 2] = "relu6", e[e.prelu = 3] = "prelu", e[e.leakyrelu = 4] = "leakyrelu", e[e.sigmoid = 5] = "sigmoid", e[e.elu = 6] = "elu", e))(Jp || {});
 var V2;
-function roe(e) {
+function aoe(e) {
   V2 = e.wasm.cwrap(ra, null, ["number", "array", "number", "number", "array", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function aoe(e) {
+function ioe(e) {
   let { inputs: t, backend: n, attrs: s } = e, { a: r, b: a, bias: i, preluActivationWeights: o } = t;
   if (r.dtype !== "float32" || a.dtype !== "float32")
     throw new Error("_FusedMatMul for non non-float32 tensors not yet supported.");
@@ -36581,10 +36470,10 @@ function aoe(e) {
   let m = o == null ? 0 : n.dataIdMap.get(o.dataId).id, g = Jp[c];
   if (g == null)
     throw new Error(`${c} activation not yet supported for FusedConv2D in the wasm backend.`);
-  let b = u ? r.shape[2] : r.shape[1], y = l ? a.shape[1] : a.shape[2], v = qo.assertAndGetBroadcastShape(r.shape.slice(0, -2), a.shape.slice(0, -2)), x = n.makeOutput([...v, b, y], r.dtype), k = n.dataIdMap.get(x.dataId).id, T = new Uint8Array(new Int32Array(r.shape).buffer), N = new Uint8Array(new Int32Array(a.shape).buffer);
+  let b = u ? r.shape[2] : r.shape[1], y = l ? a.shape[1] : a.shape[2], v = jo.assertAndGetBroadcastShape(r.shape.slice(0, -2), a.shape.slice(0, -2)), x = n.makeOutput([...v, b, y], r.dtype), k = n.dataIdMap.get(x.dataId).id, T = new Uint8Array(new Int32Array(r.shape).buffer), N = new Uint8Array(new Int32Array(a.shape).buffer);
   return V2(d, T, r.shape.length, h, N, a.shape.length, u, l, g, f, m, p || 0, k), x;
 }
-var ioe = { kernelName: ra, backendName: "wasm", setupFunc: roe, kernelFunc: aoe };
+var ooe = { kernelName: ra, backendName: "wasm", setupFunc: aoe, kernelFunc: ioe };
 function Xt(e, t) {
   let n;
   function s(a) {
@@ -36596,7 +36485,7 @@ function Xt(e, t) {
   }
   return { kernelName: e, backendName: "wasm", setupFunc: s, kernelFunc: r };
 }
-var ooe = Xt(ao);
+var uoe = Xt(io);
 function gn(e, t, n) {
   let s;
   function r(i) {
@@ -36611,34 +36500,34 @@ function gn(e, t, n) {
   }
   return { kernelName: e, backendName: "wasm", setupFunc: r, kernelFunc: a };
 }
-var uoe = true;
-var loe = gn(Ir, uoe);
+var loe = true;
+var coe = gn(Ir, loe);
 var W2;
-function coe(e) {
+function doe(e) {
   W2 = e.wasm.cwrap(ka, null, ["array", "number", "number", "number"]);
 }
-function doe(e) {
+function poe(e) {
   let { inputs: t, backend: n } = e, s = n.makeOutput(t[0].shape, t[0].dtype);
   if (w.sizeFromShape(s.shape) === 0)
     return s;
   let r = t.map((o) => n.dataIdMap.get(o.dataId).id), a = new Uint8Array(new Int32Array(r).buffer), i = n.dataIdMap.get(s.dataId).id;
   return W2(a, r.length, It[s.dtype], i), s;
 }
-var poe = { kernelName: ka, backendName: "wasm", setupFunc: coe, kernelFunc: doe };
+var hoe = { kernelName: ka, backendName: "wasm", setupFunc: doe, kernelFunc: poe };
 function eh(e) {
   let { inputs: { x: t }, backend: n } = e, s = n.makeOutput(t.shape, t.dtype), r = n.typedArrayFromHeap(t);
   return n.typedArrayFromHeap(s).set(r), s;
 }
-var hoe = { kernelName: Ba, backendName: "wasm", kernelFunc: eh };
+var foe = { kernelName: Ba, backendName: "wasm", kernelFunc: eh };
 var U2;
-function foe(e) {
+function moe(e) {
   U2 = e.wasm.cwrap(pi, null, ["number", "array", "number", "number", "number", "array", "number"]);
 }
 function wr(e) {
-  let { inputs: t, backend: n, attrs: s } = e, [r, a] = goe(t.x.shape, s.perm), i = true;
+  let { inputs: t, backend: n, attrs: s } = e, [r, a] = boe(t.x.shape, s.perm), i = true;
   for (let f = 0; f < a.length; f++)
     a[f] !== f && (i = false);
-  let o = moe(t.x.shape, s.perm), u = { dataId: t.x.dataId, shape: r, dtype: t.x.dtype };
+  let o = goe(t.x.shape, s.perm), u = { dataId: t.x.dataId, shape: r, dtype: t.x.dtype };
   if (i) {
     let f = eh({ inputs: t, backend: n });
     return f.shape = o, f;
@@ -36646,13 +36535,13 @@ function wr(e) {
   let l = n.makeOutput(o, u.dtype), c = n.dataIdMap.get(u.dataId).id, p = n.dataIdMap.get(l.dataId).id, d = new Uint8Array(new Int32Array(a).buffer), h = new Uint8Array(new Int32Array(u.shape).buffer);
   return U2(c, h, u.shape.length, It[u.dtype], p, d, a.length), l;
 }
-function moe(e, t) {
+function goe(e, t) {
   let n = new Array(e.length);
   for (let s = 0; s < n.length; s++)
     n[s] = e[t[s]];
   return n;
 }
-function goe(e, t) {
+function boe(e, t) {
   let n = [], s = [];
   for (let r = 0; r < e.length; ++r)
     e[r] !== 1 && n.push(e[r]), e[t[r]] !== 1 && s.push(t[r]);
@@ -36664,7 +36553,7 @@ function goe(e, t) {
   }
   return [n, s];
 }
-var boe = { kernelName: pi, backendName: "wasm", kernelFunc: wr, setupFunc: foe };
+var yoe = { kernelName: pi, backendName: "wasm", kernelFunc: wr, setupFunc: moe };
 function Fr(e, t, n) {
   let s = e.shape, r = e.shape.length, a = w.parseAxisParam(t, s), i = a, o = S.getAxesPermutation(i, r), u = null, l = false;
   if (o != null) {
@@ -36678,10 +36567,10 @@ function Fr(e, t, n) {
   return { transposed: u, originalAxes: a, axes: i, inputWasTransposed: l };
 }
 var G2;
-function yoe(e) {
-  G2 = e.wasm.cwrap(rl, null, ["number, number, number"]);
-}
 function voe(e) {
+  G2 = e.wasm.cwrap(al, null, ["number, number, number"]);
+}
+function xoe(e) {
   let { backend: t, inputs: n, attrs: s } = e, { axis: r, keepDims: a } = s, { x: i } = n, u = t.dataIdMap.get(i.dataId).id, l = i, { transposed: c, axes: p, originalAxes: d, inputWasTransposed: h } = Fr(i, r, t);
   if (h) {
     let v = t.dataIdMap.get(c.dataId).id;
@@ -36700,12 +36589,12 @@ function voe(e) {
   }
   return y;
 }
-var xoe = { kernelName: rl, backendName: "wasm", setupFunc: yoe, kernelFunc: voe };
+var woe = { kernelName: al, backendName: "wasm", setupFunc: voe, kernelFunc: xoe };
 var H2;
-function woe(e) {
-  H2 = e.wasm.cwrap(al, null, ["number, number, number"]);
-}
 function koe(e) {
+  H2 = e.wasm.cwrap(il, null, ["number, number, number"]);
+}
+function Ioe(e) {
   let { backend: t, inputs: n, attrs: s } = e, { axis: r, keepDims: a } = s, { x: i } = n, u = t.dataIdMap.get(i.dataId).id, l = i, { transposed: c, axes: p, originalAxes: d, inputWasTransposed: h } = Fr(i, r, t);
   if (h) {
     let v = t.dataIdMap.get(c.dataId).id;
@@ -36724,12 +36613,12 @@ function koe(e) {
   }
   return y;
 }
-var Ioe = { kernelName: al, backendName: "wasm", setupFunc: woe, kernelFunc: koe };
+var Soe = { kernelName: il, backendName: "wasm", setupFunc: koe, kernelFunc: Ioe };
 var q2;
-function Soe(e) {
+function Coe(e) {
   q2 = e.wasm.cwrap(Ia, null, ["number", "number", "number", "number", "number"]);
 }
-function Coe(e) {
+function Noe(e) {
   let { backend: t, inputs: n, attrs: s } = e, { axis: r } = s, { x: a } = n, i = t.dataIdMap.get(a.dataId).id, o = i, u = a, { transposed: l, axes: c, inputWasTransposed: p } = Fr(a, r, t);
   if (p) {
     let b = t.dataIdMap.get(l.dataId).id;
@@ -36738,12 +36627,12 @@ function Coe(e) {
   let d = u.shape.slice(0, -1), h = t.makeOutput(d, "int32"), f = t.dataIdMap.get(h.dataId).id, m = w.sizeFromShape(h.shape), g = u.shape[c[0]];
   return q2(o, It[u.dtype], m, g, f), p && t.disposeData(l.dataId), h;
 }
-var Noe = { kernelName: Ia, backendName: "wasm", kernelFunc: Coe, setupFunc: Soe };
+var Toe = { kernelName: Ia, backendName: "wasm", kernelFunc: Noe, setupFunc: Coe };
 var j2;
-function Toe(e) {
+function $oe(e) {
   j2 = e.wasm.cwrap(Sa, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function $oe(e) {
+function _oe(e) {
   let { inputs: t, attrs: n, backend: s } = e, r = t.x, a = s.dataIdMap.get(r.dataId).id, { filterSize: i, strides: o, pad: u, dimRoundingMode: l } = n, c = S.computePool2DInfo(r.shape, i, o, 1, u, l), p = c.filterHeight, d = c.filterWidth, h = c.padInfo.top, f = c.padInfo.right, m = c.padInfo.bottom, g = c.padInfo.left, b = c.strideHeight, y = c.strideWidth, v = c.inChannels;
   if (c.dataFormat !== "channelsLast")
     throw new Error(`wasm backend does not support dataFormat:'${c.dataFormat}'. Please use 'channelsLast'.`);
@@ -36752,26 +36641,26 @@ function $oe(e) {
   let x = s.makeOutput(c.outShape, "float32"), k = s.dataIdMap.get(x.dataId).id;
   return j2(a, r.shape[0], r.shape[1], r.shape[2], p, d, h, f, m, g, b, y, v, k), x;
 }
-var _oe = { kernelName: Sa, backendName: "wasm", setupFunc: Toe, kernelFunc: $oe };
+var Aoe = { kernelName: Sa, backendName: "wasm", setupFunc: $oe, kernelFunc: _oe };
 function yn(e) {
   let { inputs: t, attrs: n } = e, { x: s } = t, { shape: r } = n, a = w.sizeFromShape(s.shape), i = w.inferFromImplicitShape(r, a);
   return w.assert(a === w.sizeFromShape(i), () => `new shape: ${i}, old shape: ${s.shape}. New shape and old shape must have the same number of elements.`), e.backend.incRef(s.dataId), { dataId: s.dataId, shape: i, dtype: s.dtype };
 }
-var Aoe = { kernelName: Ao, backendName: "wasm", kernelFunc: yn };
+var Eoe = { kernelName: Eo, backendName: "wasm", kernelFunc: yn };
 var K2;
-function Eoe(e) {
+function Roe(e) {
   K2 = e.wasm.cwrap(Ca, null, ["number", "array", "number", "number", "array", "number", "number", "number", "number"]);
 }
-function Roe(e) {
+function Doe(e) {
   let { inputs: t, backend: n, attrs: s } = e, { a: r, b: a } = t, { transposeA: i, transposeB: o } = s;
   if (r.dtype !== "float32" || a.dtype !== "float32")
     throw new Error("BatchMatMul for non non-float32 tensors not yet supported.");
-  let u = r.shape.length, l = a.shape.length, c = i ? r.shape[u - 2] : r.shape[u - 1], p = o ? a.shape[l - 1] : a.shape[l - 2], d = i ? r.shape[u - 1] : r.shape[u - 2], h = o ? a.shape[l - 2] : a.shape[l - 1], f = r.shape.slice(0, -2), m = a.shape.slice(0, -2), g = w.sizeFromShape(f), b = w.sizeFromShape(m), v = qo.assertAndGetBroadcastShape(r.shape.slice(0, -2), a.shape.slice(0, -2)).concat([d, h]);
+  let u = r.shape.length, l = a.shape.length, c = i ? r.shape[u - 2] : r.shape[u - 1], p = o ? a.shape[l - 1] : a.shape[l - 2], d = i ? r.shape[u - 1] : r.shape[u - 2], h = o ? a.shape[l - 2] : a.shape[l - 1], f = r.shape.slice(0, -2), m = a.shape.slice(0, -2), g = w.sizeFromShape(f), b = w.sizeFromShape(m), v = jo.assertAndGetBroadcastShape(r.shape.slice(0, -2), a.shape.slice(0, -2)).concat([d, h]);
   w.assert(c === p, () => `Error in matMul: inner shapes (${c}) and (${p}) of Tensors with shapes ${r.shape} and ${a.shape} and transposeA=${i} and transposeB=${o} must match.`);
   let x = i ? [g, c, d] : [g, d, c], k = o ? [b, h, p] : [b, p, h], T = yn({ inputs: { x: r }, backend: n, attrs: { shape: x } }), N = yn({ inputs: { x: a }, backend: n, attrs: { shape: k } }), E = n.dataIdMap.get(T.dataId).id, A = n.dataIdMap.get(N.dataId).id, P = i ? T.shape[2] : T.shape[1], R = o ? N.shape[1] : N.shape[2], F = Math.max(g, b), $ = n.makeOutput([F, P, R], T.dtype), z = n.dataIdMap.get($.dataId).id, W = new Uint8Array(new Int32Array(T.shape).buffer), q = new Uint8Array(new Int32Array(N.shape).buffer);
   return K2(E, W, T.shape.length, A, q, N.shape.length, i, o, z), n.disposeData(T.dataId), n.disposeData(N.dataId), $.shape = v, $;
 }
-var Doe = { kernelName: Ca, backendName: "wasm", setupFunc: Eoe, kernelFunc: Roe };
+var Foe = { kernelName: Ca, backendName: "wasm", setupFunc: Roe, kernelFunc: Doe };
 function va(e) {
   let { inputs: { x: t }, attrs: { begin: n, size: s }, backend: r } = e, [a, i] = wt.parseSliceParams(t, n, s), o = wt.isSliceContinous(t.shape, a, i), u = r.readSync(t.dataId), l = r.makeOutput(i, t.dtype), c = w.computeStrides(t.shape), p = r.dataIdMap.get(l.dataId);
   if (o) {
@@ -36784,25 +36673,25 @@ function va(e) {
   }
   let d = r.typedArrayFromHeap(l), h = t.shape.length;
   if (h === 2)
-    Foe(u, c[0], d, a, i);
+    Ooe(u, c[0], d, a, i);
   else if (h === 3)
-    Ooe(u, c[0], c[1], d, a, i);
+    Poe(u, c[0], c[1], d, a, i);
   else if (h === 4)
-    Poe(u, c[0], c[1], c[2], d, a, i);
+    zoe(u, c[0], c[1], c[2], d, a, i);
   else {
     let f = Fd(u, a, i, t.shape, t.dtype);
     d.set(f);
   }
   return l;
 }
-function Foe(e, t, n, s, r) {
+function Ooe(e, t, n, s, r) {
   let a = 0, i = s[0], o = s[1], u = i + r[0];
   for (let l = i; l < u; l++) {
     let c = l * t + o;
     n.set(e.subarray(c, c + r[1]), a), a += r[1];
   }
 }
-function Ooe(e, t, n, s, r, a) {
+function Poe(e, t, n, s, r, a) {
   let i = 0, o = r[0], u = r[1], l = r[2], c = o + a[0], p = u + a[1];
   for (let d = o; d < c; d++)
     for (let h = u; h < p; h++) {
@@ -36810,7 +36699,7 @@ function Ooe(e, t, n, s, r, a) {
       s.set(e.subarray(f, f + a[2]), i), i += a[2];
     }
 }
-function Poe(e, t, n, s, r, a, i) {
+function zoe(e, t, n, s, r, a, i) {
   let o = 0, u = a[0], l = a[1], c = a[2], p = u + i[0], d = l + i[1], h = c + i[2], f = a[3];
   for (let m = u; m < p; m++)
     for (let g = l; g < d; g++)
@@ -36819,27 +36708,27 @@ function Poe(e, t, n, s, r, a, i) {
         r.set(e.subarray(y, y + i[3]), o), o += i[3];
       }
 }
-var zoe = { kernelName: Oo, backendName: "wasm", kernelFunc: va };
-function Moe(e) {
+var Moe = { kernelName: Po, backendName: "wasm", kernelFunc: va };
+function Loe(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockShape: a, crops: i } = s, o = a.reduce((b, y) => b * y), u = S.getReshaped(r.shape, a, o), l = S.getPermuted(u.length, a.length), c = S.getReshapedPermuted(r.shape, a, o), p = S.getSliceBeginCoords(i, a.length), d = S.getSliceSize(c, i, a.length), h = yn({ inputs: { x: r }, backend: n, attrs: { shape: u } }), f = wr({ inputs: { x: h }, backend: n, attrs: { perm: l } }), m = yn({ inputs: { x: f }, backend: n, attrs: { shape: c } }), g = va({ inputs: { x: m }, backend: n, attrs: { begin: p, size: d } });
   return n.disposeData(h.dataId), n.disposeData(f.dataId), n.disposeData(h.dataId), g;
 }
-var Loe = { kernelName: io, backendName: "wasm", kernelFunc: Moe };
+var Boe = { kernelName: oo, backendName: "wasm", kernelFunc: Loe };
 function ac(e) {
   let { inputs: { x: t }, attrs: { dtype: n }, backend: s } = e, r = s.makeOutput(t.shape, n), a = s.typedArrayFromHeap(t);
   return s.typedArrayFromHeap(r).set(a), r;
 }
-var Boe = { kernelName: Na, backendName: "wasm", kernelFunc: ac };
-var Voe = Xt(Ta);
+var Voe = { kernelName: Na, backendName: "wasm", kernelFunc: ac };
+var Woe = Xt(Ta);
 var X2;
-function Woe(e) {
+function Uoe(e) {
   X2 = e.wasm.cwrap(Sr, null, ["number", "number", "number", "number"]);
 }
-function Uoe(e) {
+function Goe(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { clipValueMin: a, clipValueMax: i } = s, o = n.dataIdMap.get(r.dataId).id, u = n.makeOutput(r.shape, r.dtype), l = n.dataIdMap.get(u.dataId).id;
   return X2(o, a, i, l), u;
 }
-var Goe = { kernelName: Sr, backendName: "wasm", setupFunc: Woe, kernelFunc: Uoe };
+var Hoe = { kernelName: Sr, backendName: "wasm", setupFunc: Uoe, kernelFunc: Goe };
 function Y2(e) {
   let { inputs: t, backend: n } = e, s = w.parseAxisParam(e.attrs.axis, t[0].shape)[0], r = S.computeOutShape(t.map((h) => h.shape), s), a = t.filter((h) => w.sizeFromShape(h.shape) > 0);
   if (a.length === 1)
@@ -36872,47 +36761,47 @@ function Y2(e) {
   }
   return i;
 }
-var Hoe = { kernelName: oo, backendName: "wasm", kernelFunc: Y2 };
+var qoe = { kernelName: uo, backendName: "wasm", kernelFunc: Y2 };
 var Q2;
-function qoe(e) {
+function joe(e) {
   Q2 = e.wasm.cwrap($a, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function joe(e) {
+function Koe(e) {
   let { inputs: t, attrs: n, backend: s } = e, { x: r, filter: a } = t, i = s.dataIdMap.get(r.dataId).id, o = s.dataIdMap.get(a.dataId).id, { strides: u, dilations: l, pad: c, dimRoundingMode: p, dataFormat: d } = n, h = S.convertConv2DDataFormat(d), f = S.computeConv2DInfo(r.shape, a.shape, u, l, c, p, false, h), m = f.filterHeight, g = f.filterWidth, b = f.padInfo.top, y = f.padInfo.right, v = f.padInfo.bottom, x = f.padInfo.left, k = f.dilationHeight, T = f.dilationWidth, N = f.strideHeight, E = f.strideWidth, A = f.inChannels, P = f.outChannels, R = f.padInfo.type === "SAME" ? 1 : 0;
   if (f.dataFormat !== "channelsLast")
     throw new Error(`wasm backend Conv2D does not support dataFormat:'${f.dataFormat}'. Please use 'channelsLast'.`);
   let F = s.makeOutput(f.outShape, "float32"), $ = s.dataIdMap.get(F.dataId).id;
   return Q2(i, r.shape[0], r.shape[1], r.shape[2], o, m, g, b, y, v, x, R, k, T, N, E, A, P, $), F;
 }
-var Koe = { kernelName: $a, backendName: "wasm", setupFunc: qoe, kernelFunc: joe };
+var Xoe = { kernelName: $a, backendName: "wasm", setupFunc: joe, kernelFunc: Koe };
 var Z2;
-function Xoe(e) {
+function Yoe(e) {
   Z2 = e.wasm.cwrap(_a, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function Yoe(e) {
+function Qoe(e) {
   let { backend: t, inputs: n, attrs: s } = e, { dy: r, filter: a } = n, { strides: i, pad: o, dataFormat: u, dimRoundingMode: l, inputShape: c } = s, p = 1, d = S.convertConv2DDataFormat(u), h = S.computeConv2DInfo(c, a.shape, i, p, o, l, false, d), { batchSize: f, filterHeight: m, filterWidth: g, inChannels: b, inHeight: y, inWidth: v, outChannels: x, outHeight: k, outWidth: T, strideHeight: N, strideWidth: E } = h, A = m - 1 - h.padInfo.top, P = g - 1 - h.padInfo.left, R = h.dataFormat === "channelsLast", F = w.computeStrides(h.inShape), $ = w.computeStrides(r.shape), [z, W, q] = w.computeStrides(a.shape), K = F[0], Y = R ? F[1] : F[2], Z = R ? F[2] : 1, te = R ? 1 : F[1], ee = $[0], se = R ? $[1] : $[2], ne = R ? $[2] : 1, oe = R ? 1 : $[1], re = t.makeOutput(h.inShape, "float32"), le = t.dataIdMap.get(re.dataId).id, me = t.dataIdMap.get(r.dataId).id, ke = t.dataIdMap.get(a.dataId).id;
   return Z2(me, ke, f, m, g, y, v, b, k, T, x, N, E, A, P, z, W, q, K, Y, Z, te, ee, se, ne, oe, le), re;
 }
-var Qoe = { kernelName: _a, backendName: "wasm", setupFunc: Xoe, kernelFunc: Yoe };
-var Zoe = Xt(Aa);
-var Joe = Xt(Ea);
+var Zoe = { kernelName: _a, backendName: "wasm", setupFunc: Yoe, kernelFunc: Qoe };
+var Joe = Xt(Aa);
+var eue = Xt(Ea);
 var J2 = ((e) => (e[e.bilinear = 0] = "bilinear", e[e.nearest = 1] = "nearest", e))(J2 || {});
 var eN;
-function eue(e) {
-  eN = e.wasm.cwrap(lo, null, ["number", "number", "number", "number", "array", "number", "number", "number", "number", "number"]);
-}
 function tue(e) {
+  eN = e.wasm.cwrap(co, null, ["number", "number", "number", "number", "array", "number", "number", "number", "number", "number"]);
+}
+function nue(e) {
   let { backend: t, inputs: n, attrs: s } = e, { method: r, extrapolationValue: a, cropSize: i } = s, { image: o, boxes: u, boxInd: l } = n, c = u.shape[0], [p, d] = i, h = [c, p, d, o.shape[3]], f = t.dataIdMap.get(o.dataId), m;
   o.dtype !== "float32" && (m = ac({ backend: t, inputs: { x: o }, attrs: { dtype: "float32" } }), f = t.dataIdMap.get(m.dataId));
   let g = f.id, b = t.dataIdMap.get(u.dataId).id, y = t.dataIdMap.get(l.dataId).id, v = t.makeOutput(h, "float32"), x = t.dataIdMap.get(v.dataId).id, k = new Uint8Array(new Int32Array(o.shape).buffer);
   return eN(g, b, y, c, k, p, d, J2[r], a, x), m != null && t.disposeData(m.dataId), v;
 }
-var nue = { kernelName: lo, backendName: "wasm", setupFunc: eue, kernelFunc: tue };
+var sue = { kernelName: co, backendName: "wasm", setupFunc: tue, kernelFunc: nue };
 var tN;
-function sue(e) {
-  tN = e.wasm.cwrap(pl, null, ["number", "number", "number", "number", "number", "number"]);
-}
 function rue(e) {
+  tN = e.wasm.cwrap(hl, null, ["number", "number", "number", "number", "number", "number"]);
+}
+function aue(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, exclusive: i, reverse: o } = s, u = r.shape.length;
   w.assert(r.dtype === "float32" || r.dtype === "int32", () => `cumprod does not support ${r.dtype} tensors in the WASM backend`);
   let l = S.getAxesPermutation([a], u), c = r;
@@ -36928,12 +36817,12 @@ function rue(e) {
   }
   return g;
 }
-var aue = { kernelName: pl, backendName: "wasm", setupFunc: sue, kernelFunc: rue };
+var iue = { kernelName: hl, backendName: "wasm", setupFunc: rue, kernelFunc: aue };
 var nN;
-function iue(e) {
-  nN = e.wasm.cwrap(uo, null, ["number", "number", "number", "number", "number", "number"]);
-}
 function oue(e) {
+  nN = e.wasm.cwrap(lo, null, ["number", "number", "number", "number", "number", "number"]);
+}
+function uue(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { axis: a, exclusive: i, reverse: o } = s, u = r.shape.length;
   w.assert(r.dtype === "float32" || r.dtype === "int32", () => `cumsum does not support ${r.dtype} tensors in the WASM backend`);
   let l = S.getAxesPermutation([a], u), c = r;
@@ -36949,71 +36838,71 @@ function oue(e) {
   }
   return g;
 }
-var uue = { kernelName: uo, backendName: "wasm", setupFunc: iue, kernelFunc: oue };
+var lue = { kernelName: lo, backendName: "wasm", setupFunc: oue, kernelFunc: uue };
 var sN;
-function lue(e) {
-  sN = e.wasm.cwrap(co, null, ["number", "number", "number", "array", "number", "array", "array", "number", "number"]);
-}
 function cue(e) {
+  sN = e.wasm.cwrap(po, null, ["number", "number", "number", "array", "number", "array", "array", "number", "number"]);
+}
+function due(e) {
   let { backend: t, inputs: n, attrs: s } = e, { x: r } = n, { blockSize: a, dataFormat: i } = s, o = r.shape[0], u = i === "NHWC" ? r.shape[1] : r.shape[2], l = i === "NHWC" ? r.shape[2] : r.shape[3], c = i === "NHWC" ? r.shape[3] : r.shape[1], p = u * a, d = l * a, h = c / (a * a), f = i === "NHWC" ? [o, p, d, h] : [o, h, p, d], m = t.makeOutput(f, "float32"), b = t.dataIdMap.get(r.dataId).id, y = new Uint8Array(new Int32Array(w.computeStrides(r.shape)).buffer), v = new Uint8Array(new Int32Array(f).buffer), x = new Uint8Array(new Int32Array(w.computeStrides(f)).buffer), k = t.dataIdMap.get(m.dataId).id;
   return sN(b, a, i === "NHWC" ? 1 : 0, y, r.shape.length - 1, v, x, f.length, k), m;
 }
-var due = { kernelName: co, backendName: "wasm", setupFunc: lue, kernelFunc: cue };
+var pue = { kernelName: po, backendName: "wasm", setupFunc: cue, kernelFunc: due };
 var rN;
-function pue(e) {
+function hue(e) {
   rN = e.wasm.cwrap(Ra, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function hue(e) {
+function fue(e) {
   let { inputs: t, attrs: n, backend: s } = e, { x: r, filter: a } = t, i = s.dataIdMap.get(r.dataId).id, o = s.dataIdMap.get(a.dataId).id, { strides: u, dilations: l, pad: c, dimRoundingMode: p } = n, d = l == null ? [1, 1] : l, h = S.computeConv2DInfo(r.shape, a.shape, u, d, c, p, true), f = h.filterHeight, m = h.filterWidth, g = h.padInfo.top, b = h.padInfo.right, y = h.padInfo.bottom, v = h.padInfo.left, x = h.dilationHeight, k = h.dilationWidth, T = h.strideHeight, N = h.strideWidth, E = h.inChannels, A = h.outChannels, P = h.padInfo.type === "SAME" ? 1 : 0;
   if (h.dataFormat !== "channelsLast")
     throw new Error(`wasm backend DepthwiseConv2dNative does not support dataFormat:'${h.dataFormat}'. Please use 'channelsLast'.`);
   let R = s.makeOutput(h.outShape, "float32"), F = s.dataIdMap.get(R.dataId).id;
   return rN(i, r.shape[0], r.shape[1], r.shape[2], o, f, m, g, b, y, v, P, x, k, T, N, E, A, F), R;
 }
-var fue = { kernelName: Ra, backendName: "wasm", setupFunc: pue, kernelFunc: hue };
-var mue = Xt(Fa);
-var gue = false;
-var bue = gn(po, gue, "bool");
-var yue = Xt(Oa, "float32");
+var mue = { kernelName: Ra, backendName: "wasm", setupFunc: hue, kernelFunc: fue };
+var gue = Xt(Fa);
+var bue = false;
+var yue = gn(ho, bue, "bool");
+var vue = Xt(Oa, "float32");
 function Zm(e) {
   let { inputs: t, attrs: n, backend: s } = e, { input: r } = t, { dim: a } = n, i = r.shape.length, o = r.shape.slice(), u = a;
   return a < 0 && (w.assert(-(i + 1) <= a, () => `Axis must be in the interval [${-(i + 1)}, ${i}]`), u = i + a + 1), o.splice(u, 0, 1), yn({ inputs: { x: r }, backend: s, attrs: { shape: o } });
 }
-var vue = { kernelName: ho, backendName: "wasm", kernelFunc: Zm };
+var xue = { kernelName: fo, backendName: "wasm", kernelFunc: Zm };
 function aN(e) {
   let { attrs: { shape: t, value: n, dtype: s }, backend: r } = e, a = r.makeOutput(t, s);
   return r.typedArrayFromHeap(a).fill(n), a;
 }
-var xue = { kernelName: fl, backendName: "wasm", kernelFunc: aN };
+var wue = { kernelName: ml, backendName: "wasm", kernelFunc: aN };
 var iN;
-function wue(e) {
-  iN = e.wasm.cwrap(mo, null, ["number", "number", "number", "number", "number", "number"]);
-}
 function kue(e) {
+  iN = e.wasm.cwrap(go, null, ["number", "number", "number", "number", "number", "number"]);
+}
+function Iue(e) {
   let { inputs: t, backend: n } = e, { image: s } = t, r = n.makeOutput(s.shape, s.dtype), a = n.dataIdMap.get(s.dataId).id, i = n.dataIdMap.get(r.dataId).id, [o, u, l, c] = s.shape;
   return iN(a, o, u, l, c, i), r;
 }
-var Iue = { kernelName: mo, backendName: "wasm", kernelFunc: kue, setupFunc: wue };
-var Sue = Xt(Pa);
-var Cue = false;
-var Nue = gn(za, Cue);
+var Sue = { kernelName: go, backendName: "wasm", kernelFunc: Iue, setupFunc: kue };
+var Cue = Xt(Pa);
+var Nue = false;
+var Tue = gn(za, Nue);
 var oN;
-function Tue(e) {
+function $ue(e) {
   oN = e.wasm.cwrap(Ma, null, ["number", "number", "number", "number", "number", "number", "number"]);
 }
-function $ue(e) {
+function _ue(e) {
   let { backend: t, inputs: n, attrs: s } = e, { varianceEpsilon: r } = s, { x: a, mean: i, variance: o, offset: u, scale: l } = n, c = t.dataIdMap.get(a.dataId).id, p = t.dataIdMap.get(i.dataId).id, d = t.dataIdMap.get(o.dataId).id, h = u != null ? t.dataIdMap.get(u.dataId).id : 0, f = l != null ? t.dataIdMap.get(l.dataId).id : 0, m = t.makeOutput(a.shape, a.dtype);
   if (w.sizeFromShape(a.shape) === 0)
     return m;
   let g = t.dataIdMap.get(m.dataId).id;
   return oN(c, p, d, h, f, r, g), m;
 }
-var _ue = { kernelName: Ma, backendName: "wasm", setupFunc: Tue, kernelFunc: $ue };
+var Aue = { kernelName: Ma, backendName: "wasm", setupFunc: $ue, kernelFunc: _ue };
 var uN;
-function Aue(e) {
+function Eue(e) {
   uN = e.wasm.cwrap(aa, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function Eue(e) {
+function Rue(e) {
   let { inputs: t, attrs: n, backend: s } = e, { x: r, filter: a, bias: i, preluActivationWeights: o } = t, { strides: u, pad: l, dilations: c, dataFormat: p, dimRoundingMode: d, activation: h, leakyreluAlpha: f } = n, m = S.computeConv2DInfo(r.shape, a.shape, u, c, l, d), g = Jp[h];
   if (g == null)
     throw new Error(`${h} activation not yet supported for FusedConv2D in the wasm backend.`);
@@ -37032,12 +36921,12 @@ function Eue(e) {
   let te = s.makeOutput(m.outShape, "float32"), ee = s.dataIdMap.get(te.dataId).id, se = o == null ? 0 : s.dataIdMap.get(o.dataId).id;
   return uN(b, K, Y, Z, y, k, T, x, N, E, A, P, q, R, F, $, z, W, v, g, se, f || 0, ee), te;
 }
-var Rue = { kernelName: aa, backendName: "wasm", setupFunc: Aue, kernelFunc: Eue };
+var Due = { kernelName: aa, backendName: "wasm", setupFunc: Eue, kernelFunc: Rue };
 var lN;
-function Due(e) {
+function Fue(e) {
   lN = e.wasm.cwrap(ia, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function Fue(e) {
+function Oue(e) {
   let { inputs: t, attrs: n, backend: s } = e, { x: r, filter: a, bias: i, preluActivationWeights: o } = t, { strides: u, pad: l, dilations: c, dataFormat: p, dimRoundingMode: d, activation: h, leakyreluAlpha: f } = n, m = S.computeConv2DInfo(r.shape, a.shape, u, c, l, d, true), g = Jp[h];
   if (g == null)
     throw new Error(`${h} activation not yet supported for FusedDepthwiseConv2D in the wasm backend.`);
@@ -37056,24 +36945,24 @@ function Fue(e) {
   let te = s.makeOutput(m.outShape, "float32"), ee = s.dataIdMap.get(te.dataId).id, se = o == null ? 0 : s.dataIdMap.get(o.dataId).id;
   return lN(b, K, Y, Z, y, k, T, x, N, E, A, P, q, R, F, $, z, W, v, g, se, f || 0, ee), te;
 }
-var Oue = { kernelName: ia, backendName: "wasm", setupFunc: Due, kernelFunc: Fue };
+var Pue = { kernelName: ia, backendName: "wasm", setupFunc: Fue, kernelFunc: Oue };
 var cN;
-function Pue(e) {
-  cN = e.wasm.cwrap(bo, null, ["number", "number", "number", "number", "number", "number", "array", "number"]);
-}
 function zue(e) {
+  cN = e.wasm.cwrap(yo, null, ["number", "number", "number", "number", "number", "number", "array", "number"]);
+}
+function Mue(e) {
   let { backend: t, inputs: n } = e, { params: s, indices: r } = n, [a, i, o, u] = $k.prepareAndValidate(s, r), l = t.makeOutput(a, s.dtype);
   if (i === 0)
     return l;
   let c = r.shape, p = c[c.length - 1], h = t.dataIdMap.get(s.dataId).id, m = t.dataIdMap.get(r.dataId).id, g = new Uint8Array(new Int32Array(u).buffer), b = t.dataIdMap.get(l.dataId).id;
   return cN(h, It[s.dtype], m, i, p, o, g, b), l;
 }
-var Mue = { kernelName: bo, backendName: "wasm", setupFunc: Pue, kernelFunc: zue };
+var Lue = { kernelName: yo, backendName: "wasm", setupFunc: zue, kernelFunc: Mue };
 var dN;
-function Lue(e) {
+function Bue(e) {
   dN = e.wasm.cwrap("Gather", null, ["number", "number", "array", "number", "number", "number", "array", "number"]);
 }
-function Bue(e) {
+function Vue(e) {
   let { backend: t, inputs: n, attrs: s } = e, { x: r, indices: a } = n, { axis: i, batchDims: o } = s, u = w.parseAxisParam(i, r.shape)[0], l = t.readSync(a.dataId), c = r.shape[u];
   for (let A = 0; A < l.length; ++A) {
     let P = l[A];
@@ -37085,16 +36974,16 @@ function Bue(e) {
   let b = d.shape.length - 1, v = t.dataIdMap.get(d.dataId).id, k = t.dataIdMap.get(f.dataId).id, T = t.dataIdMap.get(g.dataId).id, N = new Uint8Array(new Int32Array(w.computeStrides(d.shape)).buffer), E = new Uint8Array(new Int32Array(w.computeStrides(m)).buffer);
   return dN(v, It[r.dtype], N, b, k, p.batchSize, E, T), t.disposeData(d.dataId), t.disposeData(f.dataId), g.shape = p.outputShape, g;
 }
-var Vue = { kernelName: go, backendName: "wasm", setupFunc: Lue, kernelFunc: Bue };
-var Wue = false;
-var Uue = gn(yo, Wue, "bool");
-var Gue = false;
-var Hue = gn(La, Gue, "bool");
+var Wue = { kernelName: bo, backendName: "wasm", setupFunc: Bue, kernelFunc: Vue };
+var Uue = false;
+var Gue = gn(vo, Uue, "bool");
+var Hue = false;
+var que = gn(La, Hue, "bool");
 var pN;
-function que(e) {
+function jue(e) {
   pN = e.wasm.cwrap(Va, null, ["number", "number", "number", "number"]);
 }
-function jue(e) {
+function Kue(e) {
   let { inputs: { x: t }, attrs: { alpha: n }, backend: s } = e, r = s.dataIdMap.get(t.dataId).id, a = s.makeOutput(t.shape, "float32");
   if (w.sizeFromShape(t.shape) !== 0) {
     let i = s.dataIdMap.get(a.dataId).id;
@@ -37102,19 +36991,19 @@ function jue(e) {
   }
   return a;
 }
-var Kue = { kernelName: Va, backendName: "wasm", setupFunc: que, kernelFunc: jue };
-var Xue = false;
-var Yue = gn(vo, Xue, "bool");
-var Que = false;
-var Zue = gn(xo, Que, "bool");
-var Jue = Xt(Wa);
-var ele = false;
-var tle = gn(wo, ele, "bool");
+var Xue = { kernelName: Va, backendName: "wasm", setupFunc: jue, kernelFunc: Kue };
+var Yue = false;
+var Que = gn(xo, Yue, "bool");
+var Zue = false;
+var Jue = gn(wo, Zue, "bool");
+var ele = Xt(Wa);
+var tle = false;
+var nle = gn(ko, tle, "bool");
 var hN;
-function nle(e) {
+function sle(e) {
   hN = e.wasm.cwrap(Ua, null, ["number", "number", "number", "number"]);
 }
-function sle(e) {
+function rle(e) {
   let { backend: t, inputs: n, attrs: s } = e, { reductionIndices: r, keepDims: a } = s, { x: i } = n, u = t.dataIdMap.get(i.dataId).id, l = i, { transposed: c, axes: p, originalAxes: d, inputWasTransposed: h } = Fr(i, r, t);
   if (h) {
     let v = t.dataIdMap.get(c.dataId).id;
@@ -37133,14 +37022,14 @@ function sle(e) {
   }
   return y;
 }
-var rle = { kernelName: Ua, backendName: "wasm", setupFunc: nle, kernelFunc: sle };
-var ale = false;
-var ile = gn(Ga, ale);
+var ale = { kernelName: Ua, backendName: "wasm", setupFunc: sle, kernelFunc: rle };
+var ile = false;
+var ole = gn(Ga, ile);
 var fN;
-function ole(e) {
+function ule(e) {
   fN = e.wasm.cwrap(Ha, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function ule(e) {
+function lle(e) {
   let { inputs: t, attrs: n, backend: s } = e, r = t.x, a = s.dataIdMap.get(r.dataId).id;
   w.assert(r.dtype === "float32", () => `Error in MaxPool: only float32 input is supported. Got ${r.dtype}.`);
   let { filterSize: i, strides: o, pad: u, dimRoundingMode: l } = n, c = S.computePool2DInfo(r.shape, i, o, 1, u, l), p = c.filterHeight, d = c.filterWidth, h = c.padInfo.top, f = c.padInfo.right, m = c.padInfo.bottom, g = c.padInfo.left, b = c.dilationHeight, y = c.dilationWidth, v = c.strideHeight, x = c.strideWidth, k = c.inChannels, T = c.outChannels;
@@ -37149,12 +37038,12 @@ function ule(e) {
   let N = s.makeOutput(c.outShape, "float32"), E = s.dataIdMap.get(N.dataId).id;
   return fN(a, r.shape[0], r.shape[1], r.shape[2], p, d, h, f, m, g, b, y, v, x, k, T, E), N;
 }
-var lle = { kernelName: Ha, backendName: "wasm", setupFunc: ole, kernelFunc: ule };
+var cle = { kernelName: Ha, backendName: "wasm", setupFunc: ule, kernelFunc: lle };
 var mN;
-function cle(e) {
+function dle(e) {
   mN = e.wasm.cwrap(qa, null, ["number, number, number"]);
 }
-function dle(e) {
+function ple(e) {
   let { backend: t, inputs: n, attrs: s } = e, { axis: r, keepDims: a } = s, { x: i } = n, o = t.dataIdMap.get(i.dataId).id, u = o, l = i, { transposed: c, axes: p, originalAxes: d, inputWasTransposed: h } = Fr(i, r, t), f = p;
   if (h) {
     let x = t.dataIdMap.get(c.dataId).id;
@@ -37174,12 +37063,12 @@ function dle(e) {
   }
   return l.dtype !== "float32" && t.disposeData(y.dataId), v;
 }
-var ple = { kernelName: qa, backendName: "wasm", setupFunc: cle, kernelFunc: dle };
+var hle = { kernelName: qa, backendName: "wasm", setupFunc: dle, kernelFunc: ple };
 var gN;
-function hle(e) {
+function fle(e) {
   gN = e.wasm.cwrap(ja, null, ["number", "number", "number", "number"]);
 }
-function fle(e) {
+function mle(e) {
   let { backend: t, inputs: n, attrs: s } = e, { axis: r, keepDims: a } = s, { x: i } = n, o = t.dataIdMap.get(i.dataId).id, u = o, l = i, { transposed: c, axes: p, originalAxes: d, inputWasTransposed: h } = Fr(i, r, t);
   if (h) {
     let v = t.dataIdMap.get(c.dataId).id;
@@ -37198,74 +37087,74 @@ function fle(e) {
   }
   return y;
 }
-var mle = { kernelName: ja, backendName: "wasm", setupFunc: hle, kernelFunc: fle };
-var gle = false;
-var ble = gn(Ka, gle);
+var gle = { kernelName: ja, backendName: "wasm", setupFunc: fle, kernelFunc: mle };
+var ble = false;
+var yle = gn(Ka, ble);
 var bN = ((e) => (e[e.reflect = 0] = "reflect", e[e.symmetric = 1] = "symmetric", e))(bN || {});
 var yN;
-function yle(e) {
+function vle(e) {
   yN = e.wasm.cwrap(Xa, null, ["number", "array", "number", "number", "array", "array", "number", "number"]);
 }
-function vle(e) {
+function xle(e) {
   let { inputs: { x: t }, backend: n, attrs: { paddings: s, mode: r } } = e, a = s.map((f, m) => f[0] + t.shape[m] + f[1]), i = n.dataIdMap.get(t.dataId).id, o = n.makeOutput(a, t.dtype), u = n.dataIdMap.get(o.dataId).id, l = new Uint8Array(new Int32Array(t.shape).buffer), c = s.map((f) => f[0]), p = s.map((f) => f[1]), d = new Uint8Array(new Int32Array(c).buffer), h = new Uint8Array(new Int32Array(p).buffer);
   return yN(i, l, t.shape.length, It[t.dtype], d, h, bN[r], u), o;
 }
-var xle = { kernelName: Xa, backendName: "wasm", kernelFunc: vle, setupFunc: yle };
-var wle = true;
-var kle = gn(Ya, wle);
-var Ile = Xt(ko);
+var wle = { kernelName: Xa, backendName: "wasm", kernelFunc: xle, setupFunc: vle };
+var kle = true;
+var Ile = gn(Ya, kle);
+var Sle = Xt(Io);
 function Rv(e, t) {
   let n = new Int32Array(e.wasm.HEAPU8.buffer, t, 4), s = n[0], r = n[1], a = n[2], i = n[3];
   return e.wasm._free(t), { pSelectedIndices: s, selectedSize: r, pSelectedScores: a, pValidOutputs: i };
 }
 var vN;
-function Sle(e) {
-  vN = e.wasm.cwrap(So, "number", ["number", "number", "number", "number", "number"]);
-}
 function Cle(e) {
+  vN = e.wasm.cwrap(Co, "number", ["number", "number", "number", "number", "number"]);
+}
+function Nle(e) {
   let { backend: t, inputs: n, attrs: s } = e, { iouThreshold: r, maxOutputSize: a, scoreThreshold: i } = s, { boxes: o, scores: u } = n, l = t.dataIdMap.get(o.dataId).id, c = t.dataIdMap.get(u.dataId).id, p = vN(l, c, a, r, i), { pSelectedIndices: d, selectedSize: h, pSelectedScores: f, pValidOutputs: m } = Rv(t, p);
   return t.wasm._free(f), t.wasm._free(m), t.makeOutput([h], "int32", d);
 }
-var Nle = { kernelName: So, backendName: "wasm", setupFunc: Sle, kernelFunc: Cle };
+var Tle = { kernelName: Co, backendName: "wasm", setupFunc: Cle, kernelFunc: Nle };
 var xN;
-function Tle(e) {
-  xN = e.wasm.cwrap(wl, "number", ["number", "number", "number", "number", "number", "bool"]);
-}
 function $le(e) {
+  xN = e.wasm.cwrap(kl, "number", ["number", "number", "number", "number", "number", "bool"]);
+}
+function _le(e) {
   let { backend: t, inputs: n, attrs: s } = e, { iouThreshold: r, maxOutputSize: a, scoreThreshold: i, padToMaxOutputSize: o } = s, { boxes: u, scores: l } = n, c = t.dataIdMap.get(u.dataId).id, p = t.dataIdMap.get(l.dataId).id, d = xN(c, p, a, r, i, o), { pSelectedIndices: h, selectedSize: f, pSelectedScores: m, pValidOutputs: g } = Rv(t, d);
   t.wasm._free(m);
   let b = t.makeOutput([f], "int32", h), y = t.makeOutput([], "int32", g);
   return [b, y];
 }
-var _le = { kernelName: wl, backendName: "wasm", setupFunc: Tle, kernelFunc: $le };
+var Ale = { kernelName: kl, backendName: "wasm", setupFunc: $le, kernelFunc: _le };
 var wN;
-function Ale(e) {
-  wN = e.wasm.cwrap(Co, "number", ["number", "number", "number", "number", "number", "number"]);
-}
 function Ele(e) {
+  wN = e.wasm.cwrap(No, "number", ["number", "number", "number", "number", "number", "number"]);
+}
+function Rle(e) {
   let { backend: t, inputs: n, attrs: s } = e, { iouThreshold: r, maxOutputSize: a, scoreThreshold: i, softNmsSigma: o } = s, { boxes: u, scores: l } = n, c = t.dataIdMap.get(u.dataId).id, p = t.dataIdMap.get(l.dataId).id, d = wN(c, p, a, r, i, o), { pSelectedIndices: h, selectedSize: f, pSelectedScores: m, pValidOutputs: g } = Rv(t, d);
   t.wasm._free(g);
   let b = t.makeOutput([f], "int32", h), y = t.makeOutput([f], "float32", m);
   return [b, y];
 }
-var Rle = { kernelName: Co, backendName: "wasm", setupFunc: Ale, kernelFunc: Ele };
-var Dle = false;
-var Fle = gn(Io, Dle, "bool");
+var Dle = { kernelName: No, backendName: "wasm", setupFunc: Ele, kernelFunc: Rle };
+var Fle = false;
+var Ole = gn(So, Fle, "bool");
 var kN;
-function Ole(e) {
-  kN = e.wasm.cwrap(To, null, ["number", "number", "number", "number", "number"]);
-}
 function Ple(e) {
+  kN = e.wasm.cwrap($o, null, ["number", "number", "number", "number", "number"]);
+}
+function zle(e) {
   let { inputs: t, backend: n, attrs: s } = e, { indices: r } = t, { depth: a, onValue: i, offValue: o } = s, u = n.makeOutput([...r.shape, a], "int32"), l = n.dataIdMap.get(u.dataId).id, p = n.dataIdMap.get(r.dataId).id;
   return kN(p, a, i, o, l), u;
 }
-var zle = { kernelName: To, backendName: "wasm", setupFunc: Ole, kernelFunc: Ple };
-function Mle(e) {
+var Mle = { kernelName: $o, backendName: "wasm", setupFunc: Ple, kernelFunc: zle };
+function Lle(e) {
   let { inputs: { x: t }, backend: n } = e, s = n.makeOutput(t.shape, t.dtype);
   return n.typedArrayFromHeap(s).fill(1), s;
 }
-var Lle = { kernelName: No, backendName: "wasm", kernelFunc: Mle };
-function Ble(e) {
+var Ble = { kernelName: To, backendName: "wasm", kernelFunc: Lle };
+function Vle(e) {
   let { inputs: t, backend: n, attrs: s } = e, { axis: r } = s;
   if (t.length === 1)
     return Zm({ inputs: { input: t[0] }, backend: n, attrs: { dim: r } });
@@ -37279,37 +37168,37 @@ function Ble(e) {
   }), l = Y2({ inputs: u, backend: n, attrs: { axis: r } });
   return o.forEach((c) => n.disposeData(c.dataId)), l;
 }
-var Vle = { kernelName: $o, backendName: "wasm", kernelFunc: Ble };
+var Wle = { kernelName: _o, backendName: "wasm", kernelFunc: Vle };
 var IN;
-function Wle(e) {
+function Ule(e) {
   IN = e.wasm.cwrap(Qa, null, ["number", "array", "number", "number", "array", "array", "number", "number"]);
 }
-function Ule(e) {
+function Gle(e) {
   let { inputs: { x: t }, backend: n, attrs: { paddings: s, constantValue: r } } = e, a = s.map((m, g) => m[0] + t.shape[g] + m[1]);
   if (w.sizeFromShape(t.shape) === 0)
     return aN({ backend: n, attrs: { shape: a, value: r, dtype: t.dtype } });
   let i = n.dataIdMap.get(t.dataId).id, o = n.makeOutput(a, t.dtype), l = n.dataIdMap.get(o.dataId).id, c = new Uint8Array(new Int32Array(t.shape).buffer), p = s.map((m) => m[0]), d = s.map((m) => m[1]), h = new Uint8Array(new Int32Array(p).buffer), f = new Uint8Array(new Int32Array(d).buffer);
   return IN(i, c, t.shape.length, It[t.dtype], h, f, r, l), o;
 }
-var SN = { kernelName: Qa, backendName: "wasm", kernelFunc: Ule, setupFunc: Wle };
-var Gle = false;
-var Hle = gn(Za, Gle);
+var SN = { kernelName: Qa, backendName: "wasm", kernelFunc: Gle, setupFunc: Ule };
+var Hle = false;
+var qle = gn(Za, Hle);
 var CN;
-function qle(e) {
+function jle(e) {
   CN = e.wasm.cwrap(Ja, null, ["number", "number", "number"]);
 }
-function jle(e) {
+function Kle(e) {
   let { inputs: t, backend: n } = e, { x: s, alpha: r } = t, a = n.dataIdMap.get(s.dataId).id, i = n.dataIdMap.get(r.dataId).id, o = a, u = s, l = u;
   u.dtype !== "float32" && (l = ac({ backend: n, inputs: { x: s }, attrs: { dtype: "float32" } }), o = n.dataIdMap.get(l.dataId).id);
   let c = n.makeOutput(s.shape, "float32"), p = n.dataIdMap.get(c.dataId).id;
   return CN(o, i, p), u.dtype !== "float32" && n.disposeData(l.dataId), c;
 }
-var Kle = { kernelName: Ja, backendName: "wasm", setupFunc: qle, kernelFunc: jle };
+var Xle = { kernelName: Ja, backendName: "wasm", setupFunc: jle, kernelFunc: Kle };
 var NN;
-function Xle(e) {
-  NN = e.wasm.cwrap(_o, null, ["number", "number", "number", "number"]);
-}
 function Yle(e) {
+  NN = e.wasm.cwrap(Ao, null, ["number", "number", "number", "number"]);
+}
+function Qle(e) {
   let { backend: t, inputs: n, attrs: s } = e, { axis: r, keepDims: a } = s, { x: i } = n, o = t.dataIdMap.get(i.dataId).id, u = o, l = i, { transposed: c, axes: p, originalAxes: d, inputWasTransposed: h } = Fr(i, r, t), f = p;
   if (h) {
     let v = t.dataIdMap.get(c.dataId).id;
@@ -37327,21 +37216,21 @@ function Yle(e) {
   }
   return y;
 }
-var Qle = { kernelName: _o, backendName: "wasm", setupFunc: Xle, kernelFunc: Yle };
-var Zle = (e) => {
+var Zle = { kernelName: Ao, backendName: "wasm", setupFunc: Yle, kernelFunc: Qle };
+var Jle = (e) => {
   let { backend: t, attrs: n } = e, { start: s, stop: r, step: a, dtype: i } = n, o = rv(s, r, a, i), u = t.makeOutput([o.length], i);
   return t.typedArrayFromHeap(u).set(o), u;
 };
-var Jle = { kernelName: kl, backendName: "wasm", kernelFunc: Zle };
-var ece = true;
-var tce = gn(Da, ece);
-var nce = Xt(ei);
-var sce = Xt(ni);
+var ece = { kernelName: Il, backendName: "wasm", kernelFunc: Jle };
+var tce = true;
+var nce = gn(Da, tce);
+var sce = Xt(ei);
+var rce = Xt(ni);
 var TN;
-function rce(e) {
+function ace(e) {
   TN = e.wasm.cwrap(ti, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function ace(e) {
+function ice(e) {
   let { backend: t, inputs: n, attrs: s } = e, { images: r } = n, { alignCorners: a, halfPixelCenters: i, size: o } = s, [u, l] = o, [c, p, d, h] = r.shape, f = [c, u, l, h], m = t.dataIdMap.get(r.dataId), g;
   m.dtype !== "float32" && (g = ac({ backend: t, inputs: { x: r }, attrs: { dtype: "float32" } }), m = t.dataIdMap.get(g.dataId));
   let b = m.id, y = t.makeOutput(f, "float32");
@@ -37350,12 +37239,12 @@ function ace(e) {
   let v = t.dataIdMap.get(y.dataId).id;
   return TN(b, c, p, d, h, u, l, a ? 1 : 0, i ? 1 : 0, v), g != null && t.disposeData(g.dataId), y;
 }
-var ice = { kernelName: ti, backendName: "wasm", setupFunc: rce, kernelFunc: ace };
+var oce = { kernelName: ti, backendName: "wasm", setupFunc: ace, kernelFunc: ice };
 var $N;
-function oce(e) {
-  $N = e.wasm.cwrap(Eo, null, ["number", "array", "number", "array", "number", "number"]);
-}
 function uce(e) {
+  $N = e.wasm.cwrap(Ro, null, ["number", "array", "number", "array", "number", "number"]);
+}
+function lce(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { dims: a } = s, i = w.parseAxisParam(a, r.shape);
   if (r.shape.length === 0)
     return eh({ inputs: { x: r }, backend: n });
@@ -37364,59 +37253,59 @@ function uce(e) {
   let d = yn({ inputs: { x: o }, attrs: { shape: r.shape }, backend: n });
   return n.disposeData(o.dataId), d;
 }
-var lce = { kernelName: Eo, backendName: "wasm", kernelFunc: uce, setupFunc: oce };
+var cce = { kernelName: Ro, backendName: "wasm", kernelFunc: lce, setupFunc: uce };
 var _N;
-function cce(e) {
-  _N = e.wasm.cwrap(Ho, null, ["number", "number", "number", "number", "number", "number", "number", "number", "array", "number", "number"]);
-}
 function dce(e) {
+  _N = e.wasm.cwrap(qo, null, ["number", "number", "number", "number", "number", "number", "number", "number", "array", "number", "number"]);
+}
+function pce(e) {
   let { inputs: t, backend: n, attrs: s } = e, { image: r } = t, { radians: a, fillValue: i, center: o } = s, u = n.makeOutput(r.shape, r.dtype), l = n.dataIdMap.get(r.dataId).id, c = n.dataIdMap.get(u.dataId).id, [p, d, h, f] = r.shape, [m, g] = S.getImageCenter(o, d, h), b = i === 0, y = 255, v = typeof i == "number" ? [i, i, i, b ? 0 : y] : [...i, y], x = new Uint8Array(new Int32Array(v).buffer);
   return _N(l, p, d, h, f, a, m, g, x, v.length, c), u;
 }
-var pce = { kernelName: Ho, backendName: "wasm", kernelFunc: dce, setupFunc: cce };
-var hce = Xt(Ro);
-var fce = Xt(si);
+var hce = { kernelName: qo, backendName: "wasm", kernelFunc: pce, setupFunc: dce };
+var fce = Xt(Do);
+var mce = Xt(si);
 var AN;
-function mce(e) {
-  AN = e.wasm.cwrap(Do, null, ["number", "number", "number", "number", "number", "number", "array", "number", "number"]);
-}
 function gce(e) {
+  AN = e.wasm.cwrap(Fo, null, ["number", "number", "number", "number", "number", "number", "array", "number", "number"]);
+}
+function bce(e) {
   let { backend: t, inputs: n, attrs: s } = e, { indices: r, updates: a } = n, { shape: i } = s, o = t.makeOutput(i, a.dtype);
   if (w.sizeFromShape(i) === 0)
     return o;
   let { sliceRank: u, numUpdates: l, sliceSize: c, strides: p, outputSize: d } = Ak.calculateShapes(a, r, i), f = t.dataIdMap.get(r.dataId).id, g = t.dataIdMap.get(a.dataId).id, b = new Uint8Array(new Int32Array(p).buffer), y = t.dataIdMap.get(o.dataId).id;
   return AN(f, g, It[a.dtype], u, l, c, b, d, y), o;
 }
-var bce = { kernelName: Do, backendName: "wasm", setupFunc: mce, kernelFunc: gce };
+var yce = { kernelName: Fo, backendName: "wasm", setupFunc: gce, kernelFunc: bce };
 var EN;
-function yce(e) {
+function vce(e) {
   EN = e.wasm.cwrap("SelectV2", null, ["number", "number", "number", "number", "number"]);
 }
-function vce(e) {
+function xce(e) {
   let { inputs: t, backend: n } = e, { condition: s, t: r, e: a } = t, i = n.dataIdMap.get(s.dataId).id, o = n.dataIdMap.get(r.dataId).id, u = n.dataIdMap.get(a.dataId).id, l = n.makeOutput(r.shape, r.dtype), c = n.dataIdMap.get(l.dataId).id, p = s.shape.length, d = r.shape.length, h = p === 0 || p > 1 || d === 1 ? 1 : w.sizeFromShape(r.shape.slice(1));
   return EN(i, o, u, h, c), l;
 }
-var xce = { kernelName: Fo, backendName: "wasm", kernelFunc: vce, setupFunc: yce };
+var wce = { kernelName: Oo, backendName: "wasm", kernelFunc: xce, setupFunc: vce };
 var RN;
-function wce(e) {
+function kce(e) {
   RN = e.wasm.cwrap(ai, null, ["number", "number"]);
 }
-function kce(e) {
+function Ice(e) {
   let { backend: t, inputs: { x: n } } = e, s = t.dataIdMap.get(n.dataId).id, r = t.makeOutput(n.shape, n.dtype), a = t.dataIdMap.get(r.dataId).id;
   return w.sizeFromShape(r.shape) === 0 || RN(s, a), r;
 }
-var Ice = { kernelName: "Sigmoid", backendName: "wasm", setupFunc: wce, kernelFunc: kce };
-var Sce = Xt(ri);
+var Sce = { kernelName: "Sigmoid", backendName: "wasm", setupFunc: kce, kernelFunc: Ice };
+var Cce = Xt(ri);
 var DN;
-function Cce(e) {
+function Nce(e) {
   DN = e.wasm.cwrap(ui, null, ["number", "number", "number", "number"]);
 }
-function Nce(e) {
+function Tce(e) {
   let { backend: t, inputs: { logits: n }, attrs: { dim: s } } = e, r = t.dataIdMap.get(n.dataId).id, a = t.makeOutput(n.shape, n.dtype), i = t.dataIdMap.get(a.dataId).id, o = n.shape[s], u = w.sizeFromShape(n.shape) / o;
   return w.sizeFromShape(a.shape) === 0 || DN(r, i, o, u), a;
 }
-var Tce = { kernelName: ui, backendName: "wasm", setupFunc: Cce, kernelFunc: Nce };
-function $ce(e) {
+var $ce = { kernelName: ui, backendName: "wasm", setupFunc: Nce, kernelFunc: Tce };
+function _ce(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, { blockShape: a, paddings: i } = s, o = w.sizeFromShape(a), u = [[0, 0]];
   u.push(...i);
   for (let T = 1 + a.length; T < r.shape.length; ++T)
@@ -37424,12 +37313,12 @@ function $ce(e) {
   let l = SN.kernelFunc({ inputs: { x: r }, backend: n, attrs: { paddings: u, constantValue: 0 } }), c = S.getReshaped(l.shape, a, o, false), p = S.getPermuted(c.length, a.length, false), d = S.getReshapedPermuted(l.shape, a, o, false), m = yn({ inputs: { x: l }, backend: n, attrs: { shape: c } }), y = wr({ inputs: { x: m }, backend: n, attrs: { perm: p } }), k = yn({ inputs: { x: y }, backend: n, attrs: { shape: d } });
   return n.disposeData(l.dataId), n.disposeData(m.dataId), n.disposeData(y.dataId), k;
 }
-var _ce = { kernelName: zo, backendName: "wasm", kernelFunc: $ce };
+var Ace = { kernelName: Mo, backendName: "wasm", kernelFunc: _ce };
 var FN;
-function Ace(e) {
+function Ece(e) {
   FN = e.wasm.cwrap("SparseFillEmptyRows", "number", ["number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"]);
 }
-function Ece(e) {
+function Rce(e) {
   let { backend: t, inputs: n } = e, { indices: s, values: r, denseShape: a, defaultValue: i } = n, o = s.shape[0], u = s.shape[1], l = t.readSync(a.dataId)[0], c = [o + l, u], p = t.dataIdMap.get(s.dataId).id, d = t.dataIdMap.get(r.dataId).id, h = t.dataIdMap.get(i.dataId).id, f = t.makeOutput(c, s.dtype), m = t.dataIdMap.get(f.dataId).id, g = t.makeOutput(c.slice(0, 1), r.dtype), b = t.dataIdMap.get(g.dataId).id, y = t.makeOutput([l], "bool"), v = t.dataIdMap.get(y.dataId).id, x = t.makeOutput([o], s.dtype), k = t.dataIdMap.get(x.dataId).id, T = t.makeOutput([4], "int32"), N = t.dataIdMap.get(T.dataId).id, E = FN(p, d, It[r.dtype], o, l, u, h, m, b, v, k, N), A = t.readSync(T.dataId), P;
   switch (A[0]) {
     case 1: {
@@ -37451,12 +37340,12 @@ function Ece(e) {
   let R = f, F = g;
   return E !== c[0] && (R = va({ inputs: { x: f }, attrs: { begin: 0, size: [E, u] }, backend: t }), F = va({ inputs: { x: g }, attrs: { begin: 0, size: E }, backend: t }), t.disposeData(f.dataId), t.disposeData(g.dataId)), [R, F, y, x];
 }
-var Rce = { kernelName: sp, backendName: "wasm", setupFunc: Ace, kernelFunc: Ece };
+var Dce = { kernelName: sp, backendName: "wasm", setupFunc: Ece, kernelFunc: Rce };
 var ON;
-function Dce(e) {
-  ON = e.wasm.cwrap($l, null, ["number", "number", "number", "number", "number", "number", "number"]);
-}
 function Fce(e) {
+  ON = e.wasm.cwrap(_l, null, ["number", "number", "number", "number", "number", "number", "number"]);
+}
+function Oce(e) {
   let { backend: t, inputs: n } = e, { inputIndices: s, inputShape: r, newShape: a } = n;
   if (s.shape.length !== 2)
     throw new Error(`Input indices should be a matrix but received shape
@@ -37498,7 +37387,7 @@ function Fce(e) {
     throw t.disposeData(p.dataId), t.disposeData(h.dataId), new Error(y);
   return [p, h];
 }
-var Oce = { kernelName: $l, backendName: "wasm", setupFunc: Dce, kernelFunc: Fce };
+var Pce = { kernelName: _l, backendName: "wasm", setupFunc: Fce, kernelFunc: Oce };
 var PN;
 function zN(e) {
   PN = e.wasm.cwrap("SparseSegmentReduction", null, ["number", "number", "number", "number", "number", "number", "number", "number", "number"]);
@@ -37534,15 +37423,15 @@ function MN(e, t) {
     throw n.disposeData(m.dataId), new Error(x);
   return m;
 }
-function Pce(e) {
+function zce(e) {
   return MN(e, true);
 }
-var zce = { kernelName: rp, backendName: "wasm", setupFunc: zN, kernelFunc: Pce };
-function Mce(e) {
+var Mce = { kernelName: rp, backendName: "wasm", setupFunc: zN, kernelFunc: zce };
+function Lce(e) {
   return MN(e, false);
 }
-var Lce = { kernelName: ap, backendName: "wasm", setupFunc: zN, kernelFunc: Mce };
-function Bce(e) {
+var Bce = { kernelName: ap, backendName: "wasm", setupFunc: zN, kernelFunc: Lce };
+function Vce(e) {
   let { inputs: t, attrs: n, backend: s } = e, { x: r } = t, { numOrSizeSplits: a, axis: i } = n, o = w.parseAxisParam(i, r.shape)[0], u = S.prepareSplitSize(r, a, o), l = new Array(r.shape.length).fill(0), c = r.shape.slice();
   return u.map((p) => {
     let d = [...c];
@@ -37551,25 +37440,25 @@ function Bce(e) {
     return l[o] += p, h;
   });
 }
-var Vce = { kernelName: Mo, backendName: "wasm", kernelFunc: Bce };
-var Wce = Xt(ii);
-var Uce = Xt(_l);
-var Gce = true;
-var Hce = gn(li, Gce);
+var Wce = { kernelName: Lo, backendName: "wasm", kernelFunc: Vce };
+var Uce = Xt(ii);
+var Gce = Xt(Al);
+var Hce = true;
+var qce = gn(li, Hce);
 var LN;
-function qce(e) {
+function jce(e) {
   LN = e.wasm.cwrap(hi, null, ["number", "number", "number", "number"]);
 }
-function jce(e) {
+function Kce(e) {
   let { backend: t, inputs: n, attrs: s } = e, { alpha: r } = s, { x: a } = n, i = t.dataIdMap.get(a.dataId).id, o = t.makeOutput(a.shape, a.dtype), u = t.dataIdMap.get(o.dataId).id;
   return LN(i, r, It[a.dtype], u), o;
 }
-var Kce = { kernelName: hi, backendName: "wasm", setupFunc: qce, kernelFunc: jce };
+var Xce = { kernelName: hi, backendName: "wasm", setupFunc: jce, kernelFunc: Kce };
 var BN;
-function Xce(e) {
-  BN = e.wasm.cwrap(Lo, null, ["number", "array", "number", "array", "array", "array", "array", "array", "number", "number"]);
-}
 function Yce(e) {
+  BN = e.wasm.cwrap(Bo, null, ["number", "array", "number", "array", "array", "array", "array", "array", "number", "number"]);
+}
+function Qce(e) {
   let { backend: t, inputs: n, attrs: s } = e, { x: r } = n, { begin: a, end: i, strides: o, beginMask: u, endMask: l, ellipsisMask: c, newAxisMask: p, shrinkAxisMask: d } = s, { finalShapeSparse: h, finalShape: f, isIdentity: m, sliceDim0: g, isSimpleSlice: b, begin: y, end: v, strides: x } = wt.sliceInfo(r.shape, a, i, o, u, l, c, p, d), k;
   if (m)
     k = yn({ inputs: { x: r }, backend: t, attrs: { shape: f } });
@@ -37583,14 +37472,14 @@ function Yce(e) {
   }
   return k;
 }
-var Qce = { kernelName: Lo, backendName: "wasm", setupFunc: Xce, kernelFunc: Yce };
-var Zce = true;
-var Jce = gn(ci, Zce);
+var Zce = { kernelName: Bo, backendName: "wasm", setupFunc: Yce, kernelFunc: Qce };
+var Jce = true;
+var ede = gn(ci, Jce);
 var VN;
-function ede(e) {
+function tde(e) {
   VN = e.wasm.cwrap(oi, null, ["number", "number", "number", "number"]);
 }
-function tde(e) {
+function nde(e) {
   let { backend: t, inputs: n, attrs: s } = e, { axis: r, keepDims: a } = s, { x: i } = n, o = t.dataIdMap.get(i.dataId).id, u = o, l = i, { transposed: c, axes: p, originalAxes: d, inputWasTransposed: h } = Fr(i, r, t), f = p;
   if (h) {
     let v = t.dataIdMap.get(c.dataId).id;
@@ -37608,37 +37497,37 @@ function tde(e) {
   }
   return y;
 }
-var nde = { kernelName: oi, backendName: "wasm", setupFunc: ede, kernelFunc: tde };
-var sde = Xt(Bo);
-var rde = Xt(di);
+var sde = { kernelName: oi, backendName: "wasm", setupFunc: tde, kernelFunc: nde };
+var rde = Xt(Vo);
+var ade = Xt(di);
 var WN;
-function ade(e) {
+function ide(e) {
   WN = e.wasm.cwrap(Cr, null, ["number", "array", "number", "array", "number", "number"]);
 }
-function ide(e) {
+function ode(e) {
   let { inputs: t, backend: n, attrs: s } = e, { x: r } = t, a = n.dataIdMap.get(r.dataId).id, { reps: i } = s, o = new Array(r.shape.length);
   for (let d = 0; d < o.length; d++)
     o[d] = r.shape[d] * i[d];
   let u = new Uint8Array(new Int32Array(r.shape).buffer), l = new Uint8Array(new Int32Array(o).buffer), c = n.makeOutput(o, r.dtype), p = n.dataIdMap.get(c.dataId).id;
   return WN(a, u, r.shape.length, l, o.length, It[c.dtype], p), c;
 }
-var ode = { kernelName: Cr, backendName: "wasm", setupFunc: ade, kernelFunc: ide };
+var ude = { kernelName: Cr, backendName: "wasm", setupFunc: ide, kernelFunc: ode };
 var UN;
-function ude(e) {
-  UN = e.wasm.cwrap(Vo, null, ["number", "array", "number", "number", "number", "bool", "number", "number"]);
+function lde(e) {
+  UN = e.wasm.cwrap(Wo, null, ["number", "array", "number", "number", "number", "bool", "number", "number"]);
 }
-var lde = ({ inputs: e, backend: t, attrs: n }) => {
+var cde = ({ inputs: e, backend: t, attrs: n }) => {
   let { x: s } = e, { k: r, sorted: a } = n, i = t.dataIdMap.get(s.dataId).id, o = new Uint8Array(new Int32Array(s.shape).buffer), u = s.shape.slice();
   u[u.length - 1] = r;
   let l = t.makeOutput(u, s.dtype), c = t.dataIdMap.get(l.dataId).id, p = t.makeOutput(u, "int32"), d = t.dataIdMap.get(p.dataId).id;
   return UN(i, o, s.shape.length, It[s.dtype], r, a, c, d), [l, p];
 };
-var cde = { kernelName: Vo, backendName: "wasm", setupFunc: ude, kernelFunc: lde };
+var dde = { kernelName: Wo, backendName: "wasm", setupFunc: lde, kernelFunc: cde };
 var GN;
-function dde(e) {
-  GN = e.wasm.cwrap(Wo, null, ["number", "number", "bool", "number", "number", "number", "number", "number", "number", "array", "number", "number", "number", "number", "number"]);
-}
 function pde(e) {
+  GN = e.wasm.cwrap(Uo, null, ["number", "number", "bool", "number", "number", "number", "number", "number", "number", "array", "number", "number", "number", "number", "number"]);
+}
+function hde(e) {
   let { backend: t, inputs: n, attrs: s } = e, { image: r, transforms: a } = n, { interpolation: i, fillMode: o, fillValue: u, outputShape: l } = s, [c, p, d, h] = r.shape, [f, m] = l != null ? l : [p, d], g = [c, f, m, h], b = new Uint8Array(new Int32Array(w.computeStrides(r.shape)).buffer), y = t.makeOutput(g, r.dtype), v = t.dataIdMap.get(y.dataId).id, k = t.dataIdMap.get(r.dataId).id, N = t.dataIdMap.get(a.dataId).id, E = i === "nearest" ? 1 : 2, A;
   switch (o) {
     case "constant":
@@ -37659,8 +37548,8 @@ function pde(e) {
   }
   return GN(k, N, a.shape[0] > 1, c, f, m, h, d, p, b, r.shape.length - 1, E, A, u, v), y;
 }
-var hde = { kernelName: Wo, backendName: "wasm", setupFunc: dde, kernelFunc: pde };
-function fde(e) {
+var fde = { kernelName: Uo, backendName: "wasm", setupFunc: pde, kernelFunc: hde };
+function mde(e) {
   let { inputs: t, backend: n, attrs: s } = e, { value: r } = t, { axis: a } = s;
   a < 0 && (a += r.shape.length);
   let i = r.shape[a], o = r.shape.length, u = new Array(o - 1), l = 0;
@@ -37672,15 +37561,15 @@ function fde(e) {
     p[a] = h, c[h] = va({ inputs: { x: r }, attrs: { begin: p, size: d }, backend: n });
   return c.map(({ dataId: h, dtype: f }) => ({ dataId: h, dtype: f, shape: u }));
 }
-var mde = { kernelName: Uo, backendName: "wasm", kernelFunc: fde };
-function gde(e) {
+var gde = { kernelName: Go, backendName: "wasm", kernelFunc: mde };
+function bde(e) {
   let { inputs: { x: t }, backend: n } = e, s = n.makeOutput(t.shape, t.dtype);
   return n.typedArrayFromHeap(s).fill(0), s;
 }
-var bde = { kernelName: Go, backendName: "wasm", kernelFunc: gde };
-var yde = [ioe, ooe, loe, poe, xoe, Ioe, Noe, _oe, Doe, Loe, Boe, Voe, Goe, Hoe, Koe, Qoe, Zoe, Joe, nue, aue, uue, due, fue, mue, bue, yue, vue, xue, Iue, Sue, Nue, _ue, Rue, Oue, Mue, Vue, Uue, Hue, hoe, Kue, Yue, Zue, Jue, tle, rle, ile, lle, ple, mle, ble, xle, kle, Ile, Nle, _le, Rle, Fle, zle, Lle, Vle, SN, Hle, Kle, Qle, Jle, tce, nce, sce, Aoe, ice, lce, pce, hce, fce, bce, xce, Ice, Sce, zoe, Tce, _ce, Rce, Oce, zce, Lce, Vce, Wce, Uce, Hce, Kce, Qce, Jce, nde, sde, rde, ode, cde, hde, boe, mde, bde];
-for (let e of yde)
-  Al(e);
+var yde = { kernelName: Ho, backendName: "wasm", kernelFunc: bde };
+var vde = [ooe, uoe, coe, hoe, woe, Soe, Toe, Aoe, Foe, Boe, Voe, Woe, Hoe, qoe, Xoe, Zoe, Joe, eue, sue, iue, lue, pue, mue, gue, yue, vue, xue, wue, Sue, Cue, Tue, Aue, Due, Pue, Lue, Wue, Gue, que, foe, Xue, Que, Jue, ele, nle, ale, ole, cle, hle, gle, yle, wle, Ile, Sle, Tle, Ale, Dle, Ole, Mle, Ble, Wle, SN, qle, Xle, Zle, ece, nce, sce, rce, Eoe, oce, cce, hce, fce, mce, yce, wce, Sce, Cce, Moe, $ce, Ace, Dce, Pce, Mce, Bce, Wce, Uce, Gce, qce, Xce, Zce, ede, sde, rde, ade, ude, dde, fde, yoe, gde, yde];
+for (let e of vde)
+  El(e);
 var Jm = X();
 Jm.registerFlag("WASM_HAS_SIMD_SUPPORT", async () => WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 4, 1, 96, 0, 0, 3, 2, 1, 0, 10, 9, 1, 7, 0, 65, 0, 253, 15, 26, 11])));
 Jm.registerFlag("WASM_HAS_MULTITHREAD_SUPPORT", async () => {
@@ -37693,13 +37582,12 @@ Jm.registerFlag("WASM_HAS_MULTITHREAD_SUPPORT", async () => {
   }
 });
 var Lw = xa(a$());
-var vde = `"use strict";var Module={};var ENVIRONMENT_IS_NODE=typeof process==="object"&&typeof process.versions==="object"&&typeof process.versions.node==="string";if(ENVIRONMENT_IS_NODE){var nodeWorkerThreads=require("worker_threads");var parentPort=nodeWorkerThreads.parentPort;parentPort.on("message",function(data){onmessage({data:data})});var fs=require("fs");Object.assign(global,{self:global,require:require,Module:Module,location:{href:__filename},Worker:nodeWorkerThreads.Worker,importScripts:function(f){(0,eval)(fs.readFileSync(f,"utf8"))},postMessage:function(msg){parentPort.postMessage(msg)},performance:global.performance||{now:function(){return Date.now()}}})}function threadPrintErr(){var text=Array.prototype.slice.call(arguments).join(" ");if(ENVIRONMENT_IS_NODE){fs.writeSync(2,text+"
+var xde = `"use strict";var Module={};var ENVIRONMENT_IS_NODE=typeof process==="object"&&typeof process.versions==="object"&&typeof process.versions.node==="string";if(ENVIRONMENT_IS_NODE){var nodeWorkerThreads=require("worker_threads");var parentPort=nodeWorkerThreads.parentPort;parentPort.on("message",function(data){onmessage({data:data})});var fs=require("fs");Object.assign(global,{self:global,require:require,Module:Module,location:{href:__filename},Worker:nodeWorkerThreads.Worker,importScripts:function(f){(0,eval)(fs.readFileSync(f,"utf8"))},postMessage:function(msg){parentPort.postMessage(msg)},performance:global.performance||{now:function(){return Date.now()}}})}function threadPrintErr(){var text=Array.prototype.slice.call(arguments).join(" ");if(ENVIRONMENT_IS_NODE){fs.writeSync(2,text+"
 ");return}console.error(text)}function threadAlert(){var text=Array.prototype.slice.call(arguments).join(" ");postMessage({cmd:"alert",text:text,threadId:Module["_pthread_self"]()})}var err=threadPrintErr;self.alert=threadAlert;Module["instantiateWasm"]=((info,receiveInstance)=>{var instance=new WebAssembly.Instance(Module["wasmModule"],info);receiveInstance(instance);Module["wasmModule"]=null;return instance.exports});self.onmessage=(e=>{try{if(e.data.cmd==="load"){Module["wasmModule"]=e.data.wasmModule;Module["wasmMemory"]=e.data.wasmMemory;Module["buffer"]=Module["wasmMemory"].buffer;Module["ENVIRONMENT_IS_PTHREAD"]=true;if(typeof e.data.urlOrBlob==="string"){importScripts(e.data.urlOrBlob)}else{var objectUrl=URL.createObjectURL(e.data.urlOrBlob);importScripts(objectUrl);URL.revokeObjectURL(objectUrl)}WasmBackendModuleThreadedSimd(Module).then(function(instance){Module=instance})}else if(e.data.cmd==="run"){Module["__performance_now_clock_drift"]=performance.now()-e.data.time;Module["__emscripten_thread_init"](e.data.threadInfoStruct,0,0,1);Module["establishStackSpace"]();Module["PThread"].receiveObjectTransfer(e.data);Module["PThread"].threadInit();try{var result=Module["invokeEntryPoint"](e.data.start_routine,e.data.arg);if(Module["keepRuntimeAlive"]()){Module["PThread"].setExitStatus(result)}else{Module["__emscripten_thread_exit"](result)}}catch(ex){if(ex!="unwind"){if(ex instanceof Module["ExitStatus"]){if(Module["keepRuntimeAlive"]()){}else{Module["__emscripten_thread_exit"](ex.status)}}else{throw ex}}}}else if(e.data.cmd==="cancel"){if(Module["_pthread_self"]()){Module["__emscripten_thread_exit"](-1)}}else if(e.data.target==="setimmediate"){}else if(e.data.cmd==="processThreadQueue"){if(Module["_pthread_self"]()){Module["_emscripten_current_thread_process_queued_calls"]()}}else if(e.data.cmd==="processProxyingQueue"){if(Module["_pthread_self"]()){Module["_emscripten_proxy_execute_queue"](e.data.queue)}}else{err("worker.js received unknown command "+e.data.cmd);err(e.data)}}catch(ex){err("worker.js onmessage() captured an uncaught exception: "+ex);if(ex&&ex.stack)err(ex.stack);if(Module["__emscripten_thread_crashed"]){Module["__emscripten_thread_crashed"]()}throw ex}});`;
-var xde = xa(i$());
-var wde = class extends tl {
+var wde = xa(i$());
+var kde = class extends nl {
   constructor(e) {
-    super();
-    this.wasm = e, this.dataIdNextNumber = 1, this.wasm.tfjs.initWithThreadsCount(HN), eg = this.wasm.tfjs.getThreadsCount(), this.dataIdMap = new Ud(this, Ss());
+    super(), this.wasm = e, this.dataIdNextNumber = 1, this.wasm.tfjs.initWithThreadsCount(HN), eg = this.wasm.tfjs.getThreadsCount(), this.dataIdMap = new Ud(this, Ss());
   }
   write(e, t, n) {
     let s = { id: this.dataIdNextNumber++ };
@@ -37731,7 +37619,7 @@ var wde = class extends tl {
       return (t == null || t === 0) && (n == null || n >= i.length) ? i : i.slice(t, n);
     t = t || 0, n = n || w.sizeFromShape(a);
     let o = w.bytesPerElement(r), u = this.wasm.HEAPU8.slice(s + t * o, s + n * o);
-    return Sde(u.buffer, r);
+    return Cde(u.buffer, r);
   }
   disposeData(e, t = false) {
     if (this.dataIdMap.has(e)) {
@@ -37787,7 +37675,7 @@ var wde = class extends tl {
     }
   }
 };
-function kde(e) {
+function Ide(e) {
   return (t, n) => (w.fetch(e, { credentials: "same-origin" }).then((s) => {
     s.ok || t.env.a(`failed to load wasm binary file at '${e}'`), s.arrayBuffer().then((r) => {
       WebAssembly.instantiate(r, t).then((a) => {
@@ -37800,34 +37688,34 @@ function Bw(e, t, n) {
   if (Bd != null)
     return Bd;
   let s = "tfjs-backend-wasm.wasm";
-  return e && t ? s = "tfjs-backend-wasm-threaded-simd.wasm" : e && (s = "tfjs-backend-wasm-simd.wasm"), Mu != null && Mu[s] != null ? Mu[s] : n + s;
+  return e && t ? s = "tfjs-backend-wasm-threaded-simd.wasm" : e && (s = "tfjs-backend-wasm-simd.wasm"), Lu != null && Lu[s] != null ? Lu[s] : n + s;
 }
-async function Ide() {
+async function Sde() {
   let [e, t] = await Promise.all([X().getAsync("WASM_HAS_SIMD_SUPPORT"), X().getAsync("WASM_HAS_MULTITHREAD_SUPPORT")]);
   return new Promise((n, s) => {
     let r = {};
     r.locateFile = (o, u) => {
       if (o.endsWith(".worker.js")) {
-        let l = vde.replace(/\n/g, "\\n"), c = new Blob([l], { type: "application/javascript" });
+        let l = xde.replace(/\n/g, "\\n"), c = new Blob([l], { type: "application/javascript" });
         return URL.createObjectURL(c);
       }
-      return o.endsWith(".wasm") ? Bw(e, t, Ou != null ? Ou : u) : u + o;
-    }, Dv && (r.instantiateWasm = kde(Bw(e, t, Ou != null ? Ou : "")));
+      return o.endsWith(".wasm") ? Bw(e, t, Pu != null ? Pu : u) : u + o;
+    }, Dv && (r.instantiateWasm = Ide(Bw(e, t, Pu != null ? Pu : "")));
     let a = false;
     r.onAbort = () => {
-      if (a || Lu)
+      if (a || Bu)
         return;
-      Lu = true, s({ message: "Make sure the server can serve the `.wasm` file relative to the bundled js file. For more details see https://github.com/tensorflow/tfjs/blob/master/tfjs-backend-wasm/README.md#using-bundlers" });
+      Bu = true, s({ message: "Make sure the server can serve the `.wasm` file relative to the bundled js file. For more details see https://github.com/tensorflow/tfjs/blob/master/tfjs-backend-wasm/README.md#using-bundlers" });
     };
     let i;
-    t && e && Bd == null ? (r.mainScriptUrlOrBlob = new Blob(["var WasmBackendModuleThreadedSimd = " + Lw.default.toString()], { type: "text/javascript" }), i = (0, Lw.default)(r)) : i = (0, xde.default)(r), i.then((o) => {
-      a = true, Lu = false;
+    t && e && Bd == null ? (r.mainScriptUrlOrBlob = new Blob(["var WasmBackendModuleThreadedSimd = " + Lw.default.toString()], { type: "text/javascript" }), i = (0, Lw.default)(r)) : i = (0, wde.default)(r), i.then((o) => {
+      a = true, Bu = false;
       let u = null;
       o.tfjs = { init: o.cwrap("init", null, []), initWithThreadsCount: o.cwrap("init_with_threads_count", null, ["number"]), getThreadsCount: o.cwrap("get_threads_count", "number", []), registerTensor: o.cwrap("register_tensor", null, ["number", "number", "number"]), disposeData: o.cwrap("dispose_data", u, ["number"]), dispose: o.cwrap("dispose", u, []) }, n({ wasm: o });
     });
   });
 }
-function Sde(e, t) {
+function Cde(e, t) {
   switch (t) {
     case "float32":
       return new Float32Array(e);
@@ -37839,25 +37727,25 @@ function Sde(e, t) {
       throw new Error(`Unknown dtype ${t}`);
   }
 }
-var Cde = ["tfjs-backend-wasm.wasm", "tfjs-backend-wasm-simd.wasm", "tfjs-backend-wasm-threaded-simd.wasm"];
+var Nde = ["tfjs-backend-wasm.wasm", "tfjs-backend-wasm-simd.wasm", "tfjs-backend-wasm-threaded-simd.wasm"];
 var Bd = null;
-var Ou = null;
-var Mu = {};
-var Lu = false;
+var Pu = null;
+var Lu = {};
+var Bu = false;
 var Dv = false;
-function Mpe(e, t = false) {
-  if (Gk("setWasmPath has been deprecated in favor of setWasmPaths and will be removed in a future release."), Lu)
+function Lpe(e, t = false) {
+  if (Gk("setWasmPath has been deprecated in favor of setWasmPaths and will be removed in a future release."), Bu)
     throw new Error("The WASM backend was already initialized. Make sure you call `setWasmPath()` before you call `tf.setBackend()` or `tf.ready()`");
   Bd = e, Dv = t;
 }
-function Lpe(e, t = false) {
-  if (Lu)
+function Bpe(e, t = false) {
+  if (Bu)
     throw new Error("The WASM backend was already initialized. Make sure you call `setWasmPaths()` before you call `tf.setBackend()` or `tf.ready()`");
   if (typeof e == "string")
-    Ou = e;
+    Pu = e;
   else {
-    Mu = e;
-    let n = Cde.filter((s) => Mu[s] == null);
+    Lu = e;
+    let n = Nde.filter((s) => Lu[s] == null);
     if (n.length > 0)
       throw new Error(`There were no entries found for the following binaries: ${n.join(",")}. Please either call setWasmPaths with a map providing a path for each binary, or with a string indicating the directory where all the binaries can be found.`);
   }
@@ -37865,22 +37753,22 @@ function Lpe(e, t = false) {
 }
 var HN = -1;
 var eg = -1;
-function Bpe(e) {
+function Vpe(e) {
   HN = e;
 }
-function Vpe() {
+function Wpe() {
   if (eg === -1)
     throw new Error("WASM backend not initialized.");
   return eg;
 }
-var Wpe = "0.0.0";
-var Nde = 2;
+var Upe = "0.0.0";
+var Tde = 2;
 pp("wasm", async () => {
-  let { wasm: e } = await Ide();
-  return new wde(e);
-}, Nde);
-var sr = "3.15.0-20220401";
-var Upe = { tfjs: sr, "tfjs-core": sr, "tfjs-data": sr, "tfjs-layers": sr, "tfjs-converter": sr, "tfjs-backend-cpu": sr, "tfjs-backend-webgl": sr, "tfjs-backend-wasm": sr };
+  let { wasm: e } = await Sde();
+  return new kde(e);
+}, Tde);
+var sr = "3.15.0-20220405";
+var Gpe = { tfjs: sr, "tfjs-core": sr, "tfjs-data": sr, "tfjs-layers": sr, "tfjs-converter": sr, "tfjs-backend-cpu": sr, "tfjs-backend-webgl": sr, "tfjs-backend-wasm": sr };
 
 // src/image/imagefxshaders.ts
 var vertexIdentity = `
@@ -38913,7 +38801,7 @@ var Env = class {
     __publicField(this, "ImageData");
     this.browser = typeof navigator !== "undefined";
     this.node = typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined";
-    this.tfjs = { version: Upe["tfjs-core"] };
+    this.tfjs = { version: Gpe["tfjs-core"] };
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;
     this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
@@ -38936,7 +38824,7 @@ var Env = class {
     this.backends = Object.keys(Ss().registryFactory);
     this.wasm.supported = typeof WebAssembly !== "undefined";
     this.wasm.backend = this.backends.includes("wasm");
-    if (this.wasm.supported && this.wasm.backend && Bde() === "wasm") {
+    if (this.wasm.supported && this.wasm.backend && Vde() === "wasm") {
       this.wasm.simd = await X().getAsync("WASM_HAS_SIMD_SUPPORT");
       this.wasm.multithread = await X().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
     }
@@ -38944,7 +38832,7 @@ var Env = class {
     const ctx = c ? c.getContext("webgl2") : void 0;
     this.webgl.supported = typeof ctx !== "undefined";
     this.webgl.backend = this.backends.includes("webgl");
-    if (this.webgl.supported && this.webgl.backend && (Bde() === "webgl" || Bde() === "humangl")) {
+    if (this.webgl.supported && this.webgl.backend && (Vde() === "webgl" || Vde() === "humangl")) {
       const gl2 = zA().gpgpu !== "undefined" ? await zA().getGPGPUContext().gl : null;
       if (gl2) {
         this.webgl.version = gl2.getParameter(gl2.VERSION);
@@ -38960,7 +38848,7 @@ var Env = class {
       this.webgpu.supported = false;
     }
     try {
-      this.kernels = Jf(Bde()).map((kernel) => kernel.kernelName.toLowerCase());
+      this.kernels = Jf(Vde()).map((kernel) => kernel.kernelName.toLowerCase());
     } catch (e) {
     }
   }
@@ -43308,7 +43196,7 @@ async function max2d(inputs, minScore) {
   const newScore = (await max.data())[0];
   Re([reshaped, max]);
   if (newScore > minScore) {
-    const coordinates = Gu(reshaped, 0);
+    const coordinates = Hu(reshaped, 0);
     const mod = kD(coordinates, width);
     const x = (await mod.data())[0];
     const div = xe(coordinates, we(width, "int32"));
@@ -43781,7 +43669,7 @@ async function predict11(image, config3, idx, count2) {
         obj.gender = gender[0] <= 0.5 ? "female" : "male";
         obj.genderScore = Math.min(0.99, confidence);
       }
-      const argmax = Gu(resT.find((t) => t.shape[1] === 100), 1);
+      const argmax = Hu(resT.find((t) => t.shape[1] === 100), 1);
       const age = (await argmax.data())[0];
       Re(argmax);
       const ageT = resT.find((t) => t.shape[1] === 100);
@@ -47647,7 +47535,7 @@ async function detectHands(input, config3) {
   t.filtered = Jn(classScores, 1);
   Re(classScores);
   t.max = As(t.filtered, 1);
-  t.argmax = Gu(t.filtered, 1);
+  t.argmax = Hu(t.filtered, 1);
   let id2 = 0;
   t.nms = await qn.nonMaxSuppressionAsync(t.boxes, t.max, (config3.hand.maxDetected || 0) + 1, config3.hand.iouThreshold || 0, config3.hand.minConfidence || 1);
   const nms = await t.nms.data();
@@ -48746,7 +48634,7 @@ async function register(instance) {
     log("error: humangl backend invalid context");
     reset(instance);
   }
-  if (!Wde(config2.name)) {
+  if (!Ude(config2.name)) {
     try {
       config2.canvas = await canvas(100, 100);
     } catch (err) {
@@ -48796,7 +48684,7 @@ async function register(instance) {
       const kernels = Jf("webgl");
       kernels.forEach((kernelConfig) => {
         const newKernelConfig = { ...kernelConfig, backendName: config2.name };
-        Al(newKernelConfig);
+        El(newKernelConfig);
       });
     } catch (err) {
       log("error: cannot update WebGL backend registration:", err);
@@ -48825,25 +48713,25 @@ function registerCustomOps() {
   if (!env.kernels.includes("mod")) {
     const kernelMod = {
       kernelName: "Mod",
-      backendName: Bde(),
+      backendName: Vde(),
       kernelFunc: (op2) => j(() => ge(op2.inputs.a, V(xe(op2.inputs.a, op2.inputs.b), op2.inputs.b)))
     };
-    Al(kernelMod);
+    El(kernelMod);
     env.kernels.push("mod");
   }
   if (!env.kernels.includes("floormod")) {
     const kernelMod = {
       kernelName: "FloorMod",
-      backendName: Bde(),
+      backendName: Vde(),
       kernelFunc: (op2) => j(() => Hk(op2.inputs.a / op2.inputs.b) * op2.inputs.b + kD(op2.inputs.a, op2.inputs.b))
     };
-    Al(kernelMod);
+    El(kernelMod);
     env.kernels.push("floormod");
   }
 }
 async function check(instance, force = false) {
   instance.state = "backend";
-  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && Bde() !== instance.config.backend) {
+  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && Vde() !== instance.config.backend) {
     const timeStamp = now();
     if (instance.config.backend && instance.config.backend.length > 0) {
       if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
@@ -48887,7 +48775,7 @@ async function check(instance, force = false) {
         if (instance.config.debug)
           log("wasm path:", instance.config.wasmPath);
         if (typeof (tfjs_esm_exports == null ? void 0 : tfjs_esm_exports.setWasmPaths) !== "undefined")
-          await Lpe(instance.config.wasmPath, instance.config.wasmPlatformFetch);
+          await Bpe(instance.config.wasmPath, instance.config.wasmPlatformFetch);
         else
           throw new Error("backend error: attempting to use wasm backend but wasm path is not set");
         const simd = await X().getAsync("WASM_HAS_SIMD_SUPPORT");
@@ -48898,15 +48786,15 @@ async function check(instance, force = false) {
           log("warning: wasm simd support is not enabled");
       }
       try {
-        await Mde(instance.config.backend);
-        await Lde();
+        await Lde(instance.config.backend);
+        await Bde();
         init();
       } catch (err) {
         log("error: cannot set backend:", instance.config.backend, err);
         return false;
       }
     }
-    if (Bde() === "humangl") {
+    if (Vde() === "humangl") {
       Jw.set("CHECK_COMPUTATION_FOR_ERRORS", false);
       Jw.set("WEBGL_CPU_FORWARD", true);
       Jw.set("WEBGL_USE_SHAPES_UNIFORMS", true);
@@ -48921,12 +48809,12 @@ async function check(instance, force = false) {
           log(`gl version:${gl2.getParameter(gl2.VERSION)} renderer:${gl2.getParameter(gl2.RENDERER)}`);
       }
     }
-    if (Bde() === "webgpu") {
+    if (Vde() === "webgpu") {
     }
-    Rde();
-    await Lde();
+    Dde();
+    await Bde();
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
-    instance.config.backend = Bde();
+    instance.config.backend = Vde();
     await env.updateBackend();
     registerCustomOps();
   }
@@ -48942,9 +48830,9 @@ function fakeOps(kernelNames, config3) {
           log("kernelFunc", kernelName, config3.backend);
       }
     };
-    Al(kernelConfig);
+    El(kernelConfig);
   }
-  env.kernels = Jf(Bde()).map((kernel) => kernel.kernelName.toLowerCase());
+  env.kernels = Jf(Vde()).map((kernel) => kernel.kernelName.toLowerCase());
 }
 
 // src/util/draw.ts
@@ -51005,7 +50893,7 @@ var Human = class {
         (_a2 = this.events) == null ? void 0 : _a2.dispatchEvent(new Event(event));
     });
     this.env = env;
-    config.wasmPath = Upe["tfjs-core"].includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${Ede}/dist/`;
+    config.wasmPath = Gpe["tfjs-core"].includes("-") ? "https://vladmandic.github.io/tfjs/dist/" : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${Rde}/dist/`;
     config.modelBasePath = env.browser ? "../models/" : "file://models/";
     config.backend = env.browser ? "humangl" : "tensorflow";
     this.version = version;
@@ -51082,7 +50970,7 @@ var Human = class {
         log(`tfjs version: ${this.tf.version["tfjs-core"]}`);
       if (!await check(this))
         log("error: backend check failed");
-      await Lde();
+      await Bde();
       if (this.env.browser) {
         if (this.config.debug)
           log("configuration:", this.config);

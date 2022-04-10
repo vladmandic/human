@@ -38889,6 +38889,7 @@ async function loadModel(modelPath) {
   const modelCached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName);
   const tfLoadOptions = typeof fetch === "undefined" ? {} : { fetchFunc: (url, init2) => httpHandler(url, init2) };
   const model18 = new E4(modelCached ? cachedModelName : modelUrl, tfLoadOptions);
+  let loaded = false;
   try {
     model18.findIOHandler();
     if (options.debug)
@@ -38897,10 +38898,11 @@ async function loadModel(modelPath) {
     model18.loadSync(artifacts);
     if (options.verbose)
       log("load model:", model18["modelUrl"]);
+    loaded = true;
   } catch (err) {
     log("error loading model:", modelUrl, err);
   }
-  if (options.cacheModels && !modelCached) {
+  if (loaded && options.cacheModels && !modelCached) {
     try {
       const saveResult = await model18.save(cachedModelName);
       log("model saved:", cachedModelName, saveResult);

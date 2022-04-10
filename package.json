@@ -53,7 +53,7 @@
     "tensorflow"
   ],
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.20.0",
+    "@microsoft/api-extractor": "^7.21.2",
     "@tensorflow/tfjs": "^3.15.0",
     "@tensorflow/tfjs-backend-cpu": "^3.15.0",
     "@tensorflow/tfjs-backend-wasm": "^3.15.0",
@@ -74,11 +74,11 @@
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
     "canvas": "^2.9.1",
     "dayjs": "^1.11.0",
-    "esbuild": "^0.14.31",
-    "eslint": "8.12.0",
+    "esbuild": "^0.14.34",
+    "eslint": "8.13.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-html": "^6.2.0",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
@@ -86,7 +86,7 @@
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
     "tslib": "^2.3.1",
-    "typedoc": "0.22.13",
+    "typedoc": "0.22.14",
     "typescript": "4.6.3"
   }
 }

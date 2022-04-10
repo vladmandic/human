@@ -29,6 +29,7 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
   const modelCached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
   const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url, init?) => httpHandler(url, init) };
   const model: GraphModel = new tf.GraphModel(modelCached ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
+  let loaded = false;
   try {
     // @ts-ignore private function
     model.findIOHandler(); // decide how to actually load a model
@@ -38,10 +39,11 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     const artifacts = await model.handler.load(); // load manifest
     model.loadSync(artifacts); // load weights
     if (options.verbose) log('load model:', model['modelUrl']);
+    loaded = true;
   } catch (err) {
     log('error loading model:', modelUrl, err);
   }
-  if (options.cacheModels && !modelCached) { // save model to cache
+  if (loaded && options.cacheModels && !modelCached) { // save model to cache
     try {
       const saveResult = await model.save(cachedModelName);
       log('model saved:', cachedModelName, saveResult);

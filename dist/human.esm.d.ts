@@ -334,16 +334,15 @@ declare function distance(descriptor1: Descriptor, descriptor2: Descriptor, opti
 
 declare namespace draw {
     export {
-        gesture,
+        person,
+        canvas,
+        all,
+        options,
         face,
         body,
         hand,
         object,
-        person,
-        canvas,
-        all,
-        DrawOptions,
-        options
+        gesture
     }
 }
 export { draw }
@@ -354,6 +353,8 @@ export { draw }
 export declare type DrawOptions = {
     /** draw line color */
     color: string;
+    /** alpha value used for lines */
+    alpha: number;
     /** label color */
     labelColor: string;
     /** label shadow color */
@@ -372,6 +373,8 @@ export declare type DrawOptions = {
     drawPoints: boolean;
     /** should labels be drawn? */
     drawLabels: boolean;
+    /** should face attention keypoints be highlighted */
+    drawAttention: boolean;
     /** should detected gestures be drawn? */
     drawGestures: boolean;
     /** should draw boxes around detection results? */
@@ -499,10 +502,15 @@ declare function face(inCanvas: AnyCanvas, result: Array<FaceResult>, drawOption
 export declare interface FaceAntiSpoofConfig extends GenericConfig {
 }
 
+/** Attention part of face configuration */
+export declare interface FaceAttentionConfig extends GenericConfig {
+}
+
 /** Configures all face-specific options: face detection, mesh analysis, age, gender, emotion detection and face description */
 export declare interface FaceConfig extends GenericConfig {
     detector: Partial<FaceDetectorConfig>;
     mesh: Partial<FaceMeshConfig>;
+    attention: Partial<FaceAttentionConfig>;
     iris: Partial<FaceIrisConfig>;
     description: Partial<FaceDescriptionConfig>;
     emotion: Partial<FaceEmotionConfig>;

@@ -141,6 +141,10 @@ var config = {
       enabled: true,
       modelPath: "facemesh.json"
     },
+    attention: {
+      enabled: false,
+      modelPath: "facemesh-attention.json"
+    },
     iris: {
       enabled: true,
       modelPath: "iris.json"
@@ -37938,11 +37942,11 @@ function GLImageFilter() {
   const shaderProgramCache = {};
   const DRAW = { INTERMEDIATE: 1 };
   const gl2 = fxcanvas.getContext("webgl");
-  this.gl = gl2;
   if (!gl2) {
     log("filter: cannot get webgl context");
     return;
   }
+  this.gl = gl2;
   function resize(width, height) {
     if (width === fxcanvas.width && height === fxcanvas.height)
       return;
@@ -38628,41 +38632,44 @@ async function process2(input, config3, getTensor = true) {
       if (!fx2 || !fx2.add) {
         if (config3.debug)
           log("input process error: cannot initialize filters");
-        return { tensor: null, canvas: inCanvas };
+        env.webgl.supported = false;
+        config3.filter.enabled = false;
+        copy(inCanvas, outCanvas);
+      } else {
+        fx2.reset();
+        if (config3.filter.brightness !== 0)
+          fx2.add("brightness", config3.filter.brightness);
+        if (config3.filter.contrast !== 0)
+          fx2.add("contrast", config3.filter.contrast);
+        if (config3.filter.sharpness !== 0)
+          fx2.add("sharpen", config3.filter.sharpness);
+        if (config3.filter.blur !== 0)
+          fx2.add("blur", config3.filter.blur);
+        if (config3.filter.saturation !== 0)
+          fx2.add("saturation", config3.filter.saturation);
+        if (config3.filter.hue !== 0)
+          fx2.add("hue", config3.filter.hue);
+        if (config3.filter.negative)
+          fx2.add("negative");
+        if (config3.filter.sepia)
+          fx2.add("sepia");
+        if (config3.filter.vintage)
+          fx2.add("brownie");
+        if (config3.filter.sepia)
+          fx2.add("sepia");
+        if (config3.filter.kodachrome)
+          fx2.add("kodachrome");
+        if (config3.filter.technicolor)
+          fx2.add("technicolor");
+        if (config3.filter.polaroid)
+          fx2.add("polaroid");
+        if (config3.filter.pixelate !== 0)
+          fx2.add("pixelate", config3.filter.pixelate);
+        if (fx2.get() > 0)
+          outCanvas = fx2.apply(inCanvas);
+        else
+          outCanvas = fx2.draw(inCanvas);
       }
-      fx2.reset();
-      if (config3.filter.brightness !== 0)
-        fx2.add("brightness", config3.filter.brightness);
-      if (config3.filter.contrast !== 0)
-        fx2.add("contrast", config3.filter.contrast);
-      if (config3.filter.sharpness !== 0)
-        fx2.add("sharpen", config3.filter.sharpness);
-      if (config3.filter.blur !== 0)
-        fx2.add("blur", config3.filter.blur);
-      if (config3.filter.saturation !== 0)
-        fx2.add("saturation", config3.filter.saturation);
-      if (config3.filter.hue !== 0)
-        fx2.add("hue", config3.filter.hue);
-      if (config3.filter.negative)
-        fx2.add("negative");
-      if (config3.filter.sepia)
-        fx2.add("sepia");
-      if (config3.filter.vintage)
-        fx2.add("brownie");
-      if (config3.filter.sepia)
-        fx2.add("sepia");
-      if (config3.filter.kodachrome)
-        fx2.add("kodachrome");
-      if (config3.filter.technicolor)
-        fx2.add("technicolor");
-      if (config3.filter.polaroid)
-        fx2.add("polaroid");
-      if (config3.filter.pixelate !== 0)
-        fx2.add("pixelate", config3.filter.pixelate);
-      if (fx2.get() > 0)
-        outCanvas = fx2.apply(inCanvas);
-      else
-        outCanvas = fx2.draw(inCanvas);
     } else {
       copy(inCanvas, outCanvas);
       if (fx2)
@@ -38914,7 +38921,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "2.6.5";
+var version = "2.7.0";
 
 // src/models.ts
 var models_exports = {};
@@ -42594,7 +42601,7 @@ var calculateFaceBox = (mesh, previousBox) => {
 
 // src/face/blazeface.ts
 var keypointsCount = 6;
-var faceBoxScaleFactor = 1.2;
+var faceBoxScaleFactor = 1.4;
 var model5;
 var anchors = null;
 var inputSize = 0;
@@ -43496,7 +43503,7 @@ async function augmentIris(rawCoords, face4, config3, meshSize) {
   const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
   const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
   const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
-  const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
+  const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize, false);
   const leftToRightEyeDepthDifference = getLeftToRightEyeDepthDifference(rawCoords);
   if (Math.abs(leftToRightEyeDepthDifference) < 30) {
     replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", null);
@@ -43512,6 +43519,28 @@ async function augmentIris(rawCoords, face4, config3, meshSize) {
   return newCoords;
 }
 
+// src/face/attention.ts
+async function augment(rawCoords, results) {
+  const t = {
+    eyeL: results[0].dataSync(),
+    eyeR: results[6].dataSync(),
+    irisL: results[3].dataSync(),
+    irisR: results[1].dataSync(),
+    lips: results[5].dataSync()
+  };
+  for (let i = 0; i < t.lips.length / 2; i++)
+    rawCoords.push([t.lips[2 * i + 0], t.lips[2 * i + 1], 0]);
+  for (let i = 0; i < t.eyeL.length / 2; i++)
+    rawCoords.push([t.eyeL[2 * i + 0], t.eyeL[2 * i + 1], 0]);
+  for (let i = 0; i < t.eyeR.length / 2; i++)
+    rawCoords.push([t.eyeR[2 * i + 0], t.eyeR[2 * i + 1], 0]);
+  for (let i = 0; i < t.irisL.length / 2; i++)
+    rawCoords.push([t.irisL[2 * i + 0], t.irisL[2 * i + 1], 0]);
+  for (let i = 0; i < t.irisR.length / 2; i++)
+    rawCoords.push([t.irisR[2 * i + 0], t.irisR[2 * i + 1], 0]);
+  return rawCoords;
+}
+
 // src/face/facemesh.ts
 var cache3 = {
   boxes: [],
@@ -43521,7 +43550,7 @@ var cache3 = {
 var model11 = null;
 var inputSize6 = 0;
 async function predict10(input, config3) {
-  var _a2, _b2, _c, _d2, _e2, _f, _g2, _h, _i;
+  var _a2, _b2, _c, _d2, _e2, _f, _g2, _h, _i, _j2;
   const skipTime = (((_a2 = config3.face.detector) == null ? void 0 : _a2.skipTime) || 0) > now() - cache3.timestamp;
   const skipFrame = cache3.skipped < (((_b2 = config3.face.detector) == null ? void 0 : _b2.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || cache3.boxes.length === 0) {
@@ -43565,23 +43594,28 @@ async function predict10(input, config3) {
         (box.startPoint[1] + box.endPoint[1]) / 2 + (box.endPoint[1] + box.startPoint[1]) * pt2[1] / size()
       ]);
       face4.meshRaw = face4.mesh.map((pt2) => [pt2[0] / (input.shape[2] || 0), pt2[1] / (input.shape[1] || 0), (pt2[2] || 0) / inputSize6]);
-      for (const key of Object.keys(blazeFaceLandmarks))
+      for (const key of Object.keys(blazeFaceLandmarks)) {
         face4.annotations[key] = [face4.mesh[blazeFaceLandmarks[key]]];
+      }
     } else if (!model11) {
       if (config3.debug)
         log("face mesh detection requested, but model is not loaded");
     } else {
-      const [contours, confidence, contourCoords] = model11.execute(face4.tensor);
+      const results = model11.execute(face4.tensor);
+      const confidence = results.find((t) => t.shape[t.shape.length - 1] === 1);
+      const contourCoords = results.find((t) => t.shape[t.shape.length - 1] === 1404);
       const faceConfidence = await confidence.data();
       face4.faceScore = Math.round(100 * faceConfidence[0]) / 100;
       const coordsReshaped = G(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
-      Re([contourCoords, coordsReshaped, confidence, contours]);
       if (face4.faceScore < (((_g2 = config3.face.detector) == null ? void 0 : _g2.minConfidence) || 1)) {
         box.confidence = face4.faceScore;
       } else {
-        if ((_h = config3.face.iris) == null ? void 0 : _h.enabled)
+        if ((_h = config3.face.attention) == null ? void 0 : _h.enabled) {
+          rawCoords = await augment(rawCoords, results);
+        } else if ((_i = config3.face.iris) == null ? void 0 : _i.enabled) {
           rawCoords = await augmentIris(rawCoords, face4.tensor, config3, inputSize6);
+        }
         face4.mesh = transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize6);
         face4.meshRaw = face4.mesh.map((pt2) => [pt2[0] / (input.shape[2] || 0), pt2[1] / (input.shape[1] || 0), (pt2[2] || 0) / inputSize6]);
         for (const key of Object.keys(meshAnnotations))
@@ -43592,8 +43626,9 @@ async function predict10(input, config3) {
         face4.boxRaw = getRawBox(calculatedBox, input);
         newCache.push(calculatedBox);
       }
+      Re([...results, coordsReshaped]);
     }
-    if (face4.score > (((_i = config3.face.detector) == null ? void 0 : _i.minConfidence) || 1))
+    if (face4.score > (((_j2 = config3.face.detector) == null ? void 0 : _j2.minConfidence) || 1))
       faces.push(face4);
     else
       Re(face4.tensor);
@@ -43602,13 +43637,17 @@ async function predict10(input, config3) {
   return faces;
 }
 async function load11(config3) {
-  var _a2;
+  var _a2, _b2, _c;
   if (env.initial)
     model11 = null;
-  if (!model11)
-    model11 = await loadModel((_a2 = config3.face.mesh) == null ? void 0 : _a2.modelPath);
-  else if (config3.debug)
+  if (!model11) {
+    if ((_a2 = config3.face.attention) == null ? void 0 : _a2.enabled)
+      model11 = await loadModel((_b2 = config3.face.attention) == null ? void 0 : _b2.modelPath);
+    else
+      model11 = await loadModel((_c = config3.face.mesh) == null ? void 0 : _c.modelPath);
+  } else if (config3.debug) {
     log("cached model:", model11["modelUrl"]);
+  }
   inputSize6 = model11.inputs[0].shape ? model11.inputs[0].shape[2] : 0;
   return model11;
 }
@@ -48837,7 +48876,7 @@ function fakeOps(kernelNames, config3) {
   env.kernels = Jf(Vde()).map((kernel) => kernel.kernelName.toLowerCase());
 }
 
-// src/util/draw.ts
+// src/draw/draw.ts
 var draw_exports = {};
 __export(draw_exports, {
   all: () => all,
@@ -48850,10 +48889,13 @@ __export(draw_exports, {
   options: () => options3,
   person: () => person
 });
+
+// src/draw/options.ts
 var options3 = {
   color: "rgba(173, 216, 230, 0.6)",
   labelColor: "rgba(173, 216, 230, 1)",
   shadowColor: "black",
+  alpha: 0.5,
   font: 'small-caps 16px "Segoe UI"',
   lineHeight: 18,
   lineWidth: 4,
@@ -48862,6 +48904,7 @@ var options3 = {
   drawPoints: false,
   drawLabels: true,
   drawBoxes: true,
+  drawAttention: true,
   drawGestures: true,
   drawPolygons: true,
   drawGaze: true,
@@ -48869,7 +48912,8 @@ var options3 = {
   useDepth: true,
   useCurves: false
 };
-var drawTime = 0;
+
+// src/draw/primitives.ts
 var getCanvasContext = (input) => {
   if (!input)
     log("draw error: invalid canvas");
@@ -48885,9 +48929,15 @@ var getCanvasContext = (input) => {
   return null;
 };
 var rad2deg = (theta) => Math.round(theta * 180 / Math.PI);
+var colorDepth = (z, rgb2 = [true, true, false]) => {
+  const r = rgb2[0] ? 127 + Math.trunc(3 * z) : 255;
+  const g = rgb2[1] ? 127 - Math.trunc(3 * z) : 255;
+  const b = rgb2[2] ? 127 - Math.trunc(3 * z) : 255;
+  return `rgba(${r}, ${g}, ${b}, ${options3.alpha})`;
+};
 function point(ctx, x, y, z, localOptions) {
   z = z || 0;
-  ctx.fillStyle = localOptions.useDepth && z ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+  ctx.fillStyle = localOptions.useDepth && z ? colorDepth(z, z === -255 ? [true, false, true] : [true, false, false]) : localOptions.color;
   ctx.beginPath();
   ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
   ctx.fill();
@@ -48920,8 +48970,8 @@ function lines(ctx, points, localOptions) {
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt2 of points) {
     const z = pt2[2] || 0;
-    ctx.strokeStyle = localOptions.useDepth && z !== 0 ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
-    ctx.fillStyle = localOptions.useDepth && z !== 0 ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.3)` : localOptions.color;
+    ctx.strokeStyle = localOptions.useDepth && z !== 0 ? colorDepth(z) : localOptions.color;
+    ctx.fillStyle = localOptions.useDepth && z !== 0 ? colorDepth(z) : localOptions.color;
     ctx.lineTo(pt2[0], Math.round(pt2[1]));
   }
   ctx.stroke();
@@ -48974,35 +49024,8 @@ function arrow(ctx, from, to2, radius = 5) {
   ctx.stroke();
   ctx.fill();
 }
-async function gesture(inCanvas2, result, drawOptions) {
-  const localOptions = mergeDeep(options3, drawOptions);
-  if (!result || !inCanvas2)
-    return;
-  if (localOptions.drawGestures) {
-    const ctx = getCanvasContext(inCanvas2);
-    if (!ctx)
-      return;
-    ctx.font = localOptions.font;
-    ctx.fillStyle = localOptions.color;
-    let i = 1;
-    for (let j10 = 0; j10 < result.length; j10++) {
-      let where = [];
-      let what = [];
-      [where, what] = Object.entries(result[j10]);
-      if (what.length > 1 && what[1].length > 0) {
-        const who = where[1] > 0 ? `#${where[1]}` : "";
-        const label = `${where[0]} ${who}: ${what[1]}`;
-        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
-        i += 1;
-      }
-    }
-  }
-}
+
+// src/draw/face.ts
 async function face(inCanvas2, result, drawOptions) {
   var _a2, _b2, _c, _d2, _e2;
   const localOptions = mergeDeep(options3, drawOptions);
@@ -49059,8 +49082,13 @@ async function face(inCanvas2, result, drawOptions) {
     ctx.lineWidth = 2;
     if (f.mesh && f.mesh.length > 0) {
       if (localOptions.drawPoints) {
-        for (const pt2 of f.mesh)
-          point(ctx, pt2[0], pt2[1], pt2[2], localOptions);
+        const length = Math.max(468, f.mesh.length);
+        for (let i = 0; i < length; i++)
+          point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], localOptions);
+      }
+      if (localOptions.drawAttention && f.mesh.length > 468) {
+        for (let i = 468; i < f.mesh.length; i++)
+          point(ctx, f.mesh[i][0], f.mesh[i][1], -255, localOptions);
       }
       if (localOptions.drawPolygons) {
         if (f.mesh.length > 450) {
@@ -49136,6 +49164,8 @@ async function face(inCanvas2, result, drawOptions) {
     }
   }
 }
+
+// src/draw/body.ts
 async function body(inCanvas2, result, drawOptions) {
   var _a2;
   const localOptions = mergeDeep(options3, drawOptions);
@@ -49165,7 +49195,7 @@ async function body(inCanvas2, result, drawOptions) {
       for (let pt2 = 0; pt2 < result[i].keypoints.length; pt2++) {
         if (!result[i].keypoints[pt2].score || result[i].keypoints[pt2].score === 0)
           continue;
-        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt2].position[2] ? `rgba(${127.5 + 2 * (result[i].keypoints[pt2].position[2] || 0)}, ${127.5 - 2 * (result[i].keypoints[pt2].position[2] || 0)}, 255, 0.5)` : localOptions.color;
+        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt2].position[2] ? colorDepth(result[i].keypoints[pt2].position[2] || 0) : localOptions.color;
         point(ctx, result[i].keypoints[pt2].position[0], result[i].keypoints[pt2].position[1], 0, localOptions);
       }
     }
@@ -49174,7 +49204,7 @@ async function body(inCanvas2, result, drawOptions) {
       for (const pt2 of result[i].keypoints) {
         if (!pt2.score || pt2.score === 0)
           continue;
-        ctx.fillStyle = localOptions.useDepth && pt2.position[2] ? `rgba(${127.5 + 2 * pt2.position[2]}, ${127.5 - 2 * pt2.position[2]}, 255, 0.5)` : localOptions.color;
+        ctx.fillStyle = localOptions.useDepth && pt2.position[2] ? colorDepth(pt2.position[2]) : localOptions.color;
         ctx.fillText(`${pt2.part} ${Math.trunc(100 * pt2.score)}%`, pt2.position[0] + 4, pt2.position[1] + 4);
       }
     }
@@ -49186,6 +49216,8 @@ async function body(inCanvas2, result, drawOptions) {
     }
   }
 }
+
+// src/draw/hand.ts
 async function hand(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
@@ -49213,7 +49245,7 @@ async function hand(inCanvas2, result, drawOptions) {
     if (localOptions.drawPoints) {
       if (h.keypoints && h.keypoints.length > 0) {
         for (const pt2 of h.keypoints) {
-          ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * (pt2[2] || 0)}, ${127.5 - 2 * (pt2[2] || 0)}, 255, 0.5)` : localOptions.color;
+          ctx.fillStyle = localOptions.useDepth ? colorDepth(pt2[2] || 0) : localOptions.color;
           point(ctx, pt2[0], pt2[1], 0, localOptions);
         }
       }
@@ -49223,7 +49255,7 @@ async function hand(inCanvas2, result, drawOptions) {
         if (!part || part.length === 0 || !part[0])
           return;
         const z = part[part.length - 1][2] || 0;
-        ctx.fillStyle = localOptions.useDepth ? `rgba(${127.5 + 2 * z}, ${127.5 - 2 * z}, 255, 0.5)` : localOptions.color;
+        ctx.fillStyle = localOptions.useDepth ? colorDepth(z) : localOptions.color;
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
@@ -49241,7 +49273,7 @@ async function hand(inCanvas2, result, drawOptions) {
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
           const z = part[i][2] || 0;
-          ctx.strokeStyle = localOptions.useDepth ? `rgba(${127.5 + i * z}, ${127.5 - i * z}, 255, 0.5)` : localOptions.color;
+          ctx.strokeStyle = localOptions.useDepth ? colorDepth(i * z) : localOptions.color;
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();
@@ -49256,6 +49288,8 @@ async function hand(inCanvas2, result, drawOptions) {
     }
   }
 }
+
+// src/draw/object.ts
 async function object(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)
@@ -49283,6 +49317,40 @@ async function object(inCanvas2, result, drawOptions) {
     }
   }
 }
+
+// src/draw/gesture.ts
+async function gesture(inCanvas2, result, drawOptions) {
+  const localOptions = mergeDeep(options3, drawOptions);
+  if (!result || !inCanvas2)
+    return;
+  if (localOptions.drawGestures) {
+    const ctx = getCanvasContext(inCanvas2);
+    if (!ctx)
+      return;
+    ctx.font = localOptions.font;
+    ctx.fillStyle = localOptions.color;
+    let i = 1;
+    for (let j10 = 0; j10 < result.length; j10++) {
+      let where = [];
+      let what = [];
+      [where, what] = Object.entries(result[j10]);
+      if (what.length > 1 && what[1].length > 0) {
+        const who = where[1] > 0 ? `#${where[1]}` : "";
+        const label = `${where[0]} ${who}: ${what[1]}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== "") {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, 8, 2 + i * localOptions.lineHeight);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, 6, 0 + i * localOptions.lineHeight);
+        i += 1;
+      }
+    }
+  }
+}
+
+// src/draw/draw.ts
+var drawTime = 0;
 async function person(inCanvas2, result, drawOptions) {
   const localOptions = mergeDeep(options3, drawOptions);
   if (!result || !inCanvas2)

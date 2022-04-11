@@ -40,6 +40,9 @@ export interface FaceMeshConfig extends GenericConfig {}
 /** Iris part of face configuration */
 export interface FaceIrisConfig extends GenericConfig {}
 
+/** Attention part of face configuration */
+export interface FaceAttentionConfig extends GenericConfig {}
+
 /** Description or face embedding part of face configuration
  * - also used by age and gender detection
  */
@@ -64,6 +67,7 @@ export interface FaceLivenessConfig extends GenericConfig {}
 export interface FaceConfig extends GenericConfig {
   detector: Partial<FaceDetectorConfig>,
   mesh: Partial<FaceMeshConfig>,
+  attention: Partial<FaceAttentionConfig>,
   iris: Partial<FaceIrisConfig>,
   description: Partial<FaceDescriptionConfig>,
   emotion: Partial<FaceEmotionConfig>,
@@ -348,6 +352,10 @@ const config: Config = {
     mesh: {
       enabled: true,
       modelPath: 'facemesh.json',
+    },
+    attention: {
+      enabled: false,
+      modelPath: 'facemesh-attention.json',
     },
     iris: {
       enabled: true,

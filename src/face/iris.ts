@@ -129,7 +129,7 @@ export async function augmentIris(rawCoords, face, config, meshSize) {
   const leftEyeData = eyePredictionsData.slice(0, irisLandmarks.numCoordinates * 3);
   const { rawCoords: leftEyeRawCoords, iris: leftIrisRawCoords } = getEyeCoords(leftEyeData, leftEyeBox, leftEyeBoxSize, true);
   const rightEyeData = eyePredictionsData.slice(irisLandmarks.numCoordinates * 3);
-  const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize);
+  const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize, false);
   const leftToRightEyeDepthDifference = getLeftToRightEyeDepthDifference(rawCoords);
   if (Math.abs(leftToRightEyeDepthDifference) < 30) { // User is looking straight ahead.
     replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', null);

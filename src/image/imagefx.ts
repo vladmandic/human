@@ -84,12 +84,12 @@ export function GLImageFilter() {
   const shaderProgramCache = { }; // key is the shader program source, value is the compiled program
   const DRAW = { INTERMEDIATE: 1 };
   const gl = fxcanvas.getContext('webgl') as WebGLRenderingContext;
-  // @ts-ignore used for sanity checks outside of imagefx
-  this.gl = gl;
   if (!gl) {
     log('filter: cannot get webgl context');
     return;
   }
+  // @ts-ignore used for sanity checks outside of imagefx
+  this.gl = gl;
 
   function resize(width, height) {
     if (width === fxcanvas.width && height === fxcanvas.height) return; // Same width/height? Nothing to do here

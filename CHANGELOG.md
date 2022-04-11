@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/04/11 mandic00@live.com
 
+- implement face attention model
 
 ### **origin/main** 2022/04/10 mandic00@live.com
 

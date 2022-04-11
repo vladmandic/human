@@ -14,7 +14,7 @@ import { env } from '../util/env';
 import type { Point } from '../result';
 
 const keypointsCount = 6;
-const faceBoxScaleFactor = 1.2;
+const faceBoxScaleFactor = 1.4;
 let model: GraphModel | null;
 let anchors: Tensor | null = null;
 let inputSize = 0;

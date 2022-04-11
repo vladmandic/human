@@ -1,0 +1,78 @@
+/**
+ * Module that implements helper draw functions, exposed as human.draw
+ */
+
+import { mergeDeep, now } from '../util/util';
+import { env } from '../util/env';
+import { getCanvasContext, rect } from './primitives';
+import { options } from './options';
+import { face } from './face';
+import { body } from './body';
+import { hand } from './hand';
+import { object } from './object';
+import { gesture } from './gesture';
+import type { Result, PersonResult } from '../result';
+import type { AnyCanvas, DrawOptions } from '../exports';
+
+let drawTime = 0;
+
+export { options } from './options';
+export { face } from './face';
+export { body } from './body';
+export { hand } from './hand';
+export { object } from './object';
+export { gesture } from './gesture';
+
+/** draw combined person results instead of individual detection result objects */
+export async function person(inCanvas: AnyCanvas, result: Array<PersonResult>, drawOptions?: Partial<DrawOptions>) {
+  const localOptions = mergeDeep(options, drawOptions);
+  if (!result || !inCanvas) return;
+  const ctx = getCanvasContext(inCanvas);
+  if (!ctx) return;
+  ctx.lineJoin = 'round';
+  ctx.font = localOptions.font;
+
+  for (let i = 0; i < result.length; i++) {
+    if (localOptions.drawBoxes) {
+      ctx.strokeStyle = localOptions.color;
+      ctx.fillStyle = localOptions.color;
+      rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
+      if (localOptions.drawLabels) {
+        const label = `person #${i}`;
+        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+          ctx.fillStyle = localOptions.shadowColor;
+          ctx.fillText(label, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+        }
+        ctx.fillStyle = localOptions.labelColor;
+        ctx.fillText(label, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      }
+      ctx.stroke();
+    }
+  }
+}
+
+/** draw processed canvas */
+export async function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) {
+  if (!input || !output) return;
+  const ctx = getCanvasContext(output);
+  if (!ctx) return;
+  ctx.drawImage(input, 0, 0);
+}
+
+/** meta-function that performs draw for: canvas, face, body, hand */
+export async function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>) {
+  if (!result || !result.performance || !result || !inCanvas) return null;
+  const timeStamp = now();
+  const localOptions = mergeDeep(options, drawOptions);
+  const promise = Promise.all([
+    face(inCanvas, result.face, localOptions),
+    body(inCanvas, result.body, localOptions),
+    hand(inCanvas, result.hand, localOptions),
+    object(inCanvas, result.object, localOptions),
+    gesture(inCanvas, result.gesture, localOptions), // gestures do not have buffering
+    // person(inCanvas, result.persons, localOptions); // already included above
+  ]);
+  drawTime = env.perfadd ? drawTime + Math.round(now() - timeStamp) : Math.round(now() - timeStamp);
+  result.performance.draw = drawTime;
+  return promise;
+}

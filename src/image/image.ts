@@ -159,25 +159,29 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       env.filter = !!fx;
       if (!fx || !fx.add) {
         if (config.debug) log('input process error: cannot initialize filters');
-        return { tensor: null, canvas: inCanvas };
+        env.webgl.supported = false;
+        config.filter.enabled = false;
+        copy(inCanvas, outCanvas); // filter failed to initialize
+        // return { tensor: null, canvas: inCanvas };
+      } else {
+        fx.reset();
+        if (config.filter.brightness !== 0) fx.add('brightness', config.filter.brightness);
+        if (config.filter.contrast !== 0) fx.add('contrast', config.filter.contrast);
+        if (config.filter.sharpness !== 0) fx.add('sharpen', config.filter.sharpness);
+        if (config.filter.blur !== 0) fx.add('blur', config.filter.blur);
+        if (config.filter.saturation !== 0) fx.add('saturation', config.filter.saturation);
+        if (config.filter.hue !== 0) fx.add('hue', config.filter.hue);
+        if (config.filter.negative) fx.add('negative');
+        if (config.filter.sepia) fx.add('sepia');
+        if (config.filter.vintage) fx.add('brownie');
+        if (config.filter.sepia) fx.add('sepia');
+        if (config.filter.kodachrome) fx.add('kodachrome');
+        if (config.filter.technicolor) fx.add('technicolor');
+        if (config.filter.polaroid) fx.add('polaroid');
+        if (config.filter.pixelate !== 0) fx.add('pixelate', config.filter.pixelate);
+        if (fx.get() > 0) outCanvas = fx.apply(inCanvas);
+        else outCanvas = fx.draw(inCanvas);
       }
-      fx.reset();
-      if (config.filter.brightness !== 0) fx.add('brightness', config.filter.brightness);
-      if (config.filter.contrast !== 0) fx.add('contrast', config.filter.contrast);
-      if (config.filter.sharpness !== 0) fx.add('sharpen', config.filter.sharpness);
-      if (config.filter.blur !== 0) fx.add('blur', config.filter.blur);
-      if (config.filter.saturation !== 0) fx.add('saturation', config.filter.saturation);
-      if (config.filter.hue !== 0) fx.add('hue', config.filter.hue);
-      if (config.filter.negative) fx.add('negative');
-      if (config.filter.sepia) fx.add('sepia');
-      if (config.filter.vintage) fx.add('brownie');
-      if (config.filter.sepia) fx.add('sepia');
-      if (config.filter.kodachrome) fx.add('kodachrome');
-      if (config.filter.technicolor) fx.add('technicolor');
-      if (config.filter.polaroid) fx.add('polaroid');
-      if (config.filter.pixelate !== 0) fx.add('pixelate', config.filter.pixelate);
-      if (fx.get() > 0) outCanvas = fx.apply(inCanvas);
-      else outCanvas = fx.draw(inCanvas);
     } else {
       copy(inCanvas, outCanvas); // if no filters applied, output canvas is input canvas
       if (fx) fx = null;

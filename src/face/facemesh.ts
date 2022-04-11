@@ -14,6 +14,7 @@ import * as blazeface from './blazeface';
 import * as util from './facemeshutil';
 import * as coords from './facemeshcoords';
 import * as iris from './iris';
+import * as attention from './attention';
 import { histogramEqualization } from '../image/enhance';
 import { env } from '../util/env';
 import type { GraphModel, Tensor } from '../tfjs/types';
@@ -78,20 +79,27 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         ((box.startPoint[1] + box.endPoint[1])) / 2 + ((box.endPoint[1] + box.startPoint[1]) * pt[1] / blazeface.size()),
       ]);
       face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
-      for (const key of Object.keys(coords.blazeFaceLandmarks)) face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
+      for (const key of Object.keys(coords.blazeFaceLandmarks)) {
+        face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
+      }
     } else if (!model) { // mesh enabled, but not loaded
       if (config.debug) log('face mesh detection requested, but model is not loaded');
     } else { // mesh enabled
-      const [contours, confidence, contourCoords] = model.execute(face.tensor as Tensor) as Array<Tensor>; // first returned tensor represents facial contours which are already included in the coordinates.
+      const results = model.execute(face.tensor as Tensor) as Array<Tensor>;
+      const confidence = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
+      const contourCoords = results.find((t) => t.shape[t.shape.length - 1] === 1404) as Tensor;
       const faceConfidence = await confidence.data();
       face.faceScore = Math.round(100 * faceConfidence[0]) / 100;
       const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
-      tf.dispose([contourCoords, coordsReshaped, confidence, contours]);
       if (face.faceScore < (config.face.detector?.minConfidence || 1)) { // low confidence in detected mesh
         box.confidence = face.faceScore; // reset confidence of cached box
       } else {
-        if (config.face.iris?.enabled) rawCoords = await iris.augmentIris(rawCoords, face.tensor, config, inputSize); // augment results with iris
+        if (config.face.attention?.enabled) {
+          rawCoords = await attention.augment(rawCoords, results); // augment iris results using attention model results
+        } else if (config.face.iris?.enabled) {
+          rawCoords = await iris.augmentIris(rawCoords, face.tensor, config, inputSize); // run iris model and augment results
+        }
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
         for (const key of Object.keys(coords.meshAnnotations)) face.annotations[key] = coords.meshAnnotations[key].map((index) => face.mesh[index]); // add annotations
@@ -101,6 +109,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.boxRaw = util.getRawBox(calculatedBox, input);
         newCache.push(calculatedBox);
       }
+      tf.dispose([...results, coordsReshaped]);
     }
     if (face.score > (config.face.detector?.minConfidence || 1)) faces.push(face);
     else tf.dispose(face.tensor);
@@ -111,8 +120,12 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
-  if (!model) model = await loadModel(config.face.mesh?.modelPath);
-  else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) {
+    if (config.face.attention?.enabled) model = await loadModel(config.face.attention?.modelPath);
+    else model = await loadModel(config.face.mesh?.modelPath);
+  } else if (config.debug) {
+    log('cached model:', model['modelUrl']);
+  }
   inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
   return model;
 }

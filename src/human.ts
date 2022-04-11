@@ -17,7 +17,7 @@ import * as app from '../package.json';
 import * as backend from './tfjs/backend';
 import * as blazepose from './body/blazepose';
 import * as centernet from './object/centernet';
-import * as draw from './util/draw';
+import * as draw from './draw/draw';
 import * as efficientpose from './body/efficientpose';
 import * as face from './face/face';
 import * as facemesh from './face/facemesh';

@@ -9,7 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/04/11 mandic00@live.com
+### **HEAD -> main** 2022/04/14 mandic00@live.com
+
+
+### **origin/main** 2022/04/11 mandic00@live.com
 
 - face attention model is available in human-models
 - beta release 2.7

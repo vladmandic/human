@@ -2,7 +2,18 @@
 
 ## Work in Progress
 
-<br>
+Release 2.7:
+- add MediaPipe FaceMesh attention model  
+  model is available in @vladmandic/human-models repository  
+  to enable, set `config.face.attention = true`  
+  model replaces iris and eyes keypoints with high-detailed ones  
+  and adds additional keypoints for lips  
+- changed default face crop from 120% to 140%  
+  to better utilize caching between frames  
+- refactor draw methods into separate modules  
+- add **ElectronJS** demo  
+  see <https://github.com/vladmandic/human-electron>  
+- update build platform and dependencies  
 
 ### Exploring
 

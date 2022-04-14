@@ -39,7 +39,7 @@ export async function load(config: Config): Promise<GraphModel> {
 
 // Replace the raw coordinates returned by facemesh with refined iris model coordinates
 // Update the z coordinate to be an average of the original and the new.
-function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
+export function replaceIrisCoords(rawCoords, newCoords, prefix, keys) {
   for (let i = 0; i < coords.MESH_TO_IRIS_INDICES_MAP.length; i++) {
     const { key, indices } = coords.MESH_TO_IRIS_INDICES_MAP[i];
     const originalIndices = coords.meshAnnotations[`${prefix}${key}`];
@@ -47,7 +47,8 @@ function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
       for (let j = 0; j < indices.length; j++) {
         const index = indices[j];
         rawCoords[originalIndices[j]] = [
-          newCoords[index][0], newCoords[index][1],
+          newCoords[index][0],
+          newCoords[index][1],
           (newCoords[index][2] + rawCoords[originalIndices[j]][2]) / 2,
         ];
       }
@@ -132,14 +133,14 @@ export async function augmentIris(rawCoords, face, config, meshSize) {
   const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize, false);
   const leftToRightEyeDepthDifference = getLeftToRightEyeDepthDifference(rawCoords);
   if (Math.abs(leftToRightEyeDepthDifference) < 30) { // User is looking straight ahead.
-    replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', null);
-    replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', null);
+    replaceIrisCoords(rawCoords, leftEyeRawCoords, 'left', null);
+    replaceIrisCoords(rawCoords, rightEyeRawCoords, 'right', null);
     // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged
     // So we only update a single contour line above and below the eye.
   } else if (leftToRightEyeDepthDifference < 1) { // User is looking towards the right.
-    replaceRawCoordinates(rawCoords, leftEyeRawCoords, 'left', ['EyeUpper0', 'EyeLower0']);
+    replaceIrisCoords(rawCoords, leftEyeRawCoords, 'left', ['EyeUpper0', 'EyeLower0']);
   } else { // User is looking towards the left.
-    replaceRawCoordinates(rawCoords, rightEyeRawCoords, 'right', ['EyeUpper0', 'EyeLower0']);
+    replaceIrisCoords(rawCoords, rightEyeRawCoords, 'right', ['EyeUpper0', 'EyeLower0']);
   }
   const adjustedLeftIrisCoords = getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, 'left');
   const adjustedRightIrisCoords = getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, 'right');

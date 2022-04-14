@@ -81,7 +81,7 @@ export async function load(instance: Human): Promise<void> {
   if (instance.config.face.enabled && instance.config.face.liveness?.enabled && !instance.models.liveness) instance.models.liveness = liveness.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.description?.enabled && !instance.models.faceres) instance.models.faceres = faceres.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.emotion?.enabled && !instance.models.emotion) instance.models.emotion = emotion.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
+  if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.config.face.attention?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.mesh?.enabled && !instance.models.facemesh) instance.models.facemesh = facemesh.load(instance.config);
   // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['gear']?.enabled && !instance.models.gear) instance.models.gear = gear.load(instance.config);

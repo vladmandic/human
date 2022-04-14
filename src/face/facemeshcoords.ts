@@ -9,20 +9,20 @@ export const meshAnnotations: Record<string, number[]> = {
     397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136,
     172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109,
   ],
-  lipsUpperOuter: [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291],
-  lipsLowerOuter: [146, 91, 181, 84, 17, 314, 405, 321, 375, 291],
-  lipsUpperInner: [78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308],
-  lipsLowerInner: [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308],
-  rightEyeUpper0: [246, 161, 160, 159, 158, 157, 173],
-  rightEyeLower0: [33, 7, 163, 144, 145, 153, 154, 155, 133],
-  rightEyeUpper1: [247, 30, 29, 27, 28, 56, 190],
-  rightEyeLower1: [130, 25, 110, 24, 23, 22, 26, 112, 243],
-  rightEyeUpper2: [113, 225, 224, 223, 222, 221, 189],
-  rightEyeLower2: [226, 31, 228, 229, 230, 231, 232, 233, 244],
-  rightEyeLower3: [143, 111, 117, 118, 119, 120, 121, 128, 245],
-  rightEyebrowUpper: [156, 70, 63, 105, 66, 107, 55, 193],
-  rightEyebrowLower: [35, 124, 46, 53, 52, 65],
-  rightEyeIris: [473, 474, 475, 476, 477],
+  lipsUpperOuter: [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291], // 11
+  lipsLowerOuter: [146, 91, 181, 84, 17, 314, 405, 321, 375, 291], // 10
+  lipsUpperInner: [78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308], // 11
+  lipsLowerInner: [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308], // 11
+  rightEyeUpper0: [246, 161, 160, 159, 158, 157, 173], // 7
+  rightEyeLower0: [33, 7, 163, 144, 145, 153, 154, 155, 133], // 9
+  rightEyeUpper1: [247, 30, 29, 27, 28, 56, 190], // 7
+  rightEyeLower1: [130, 25, 110, 24, 23, 22, 26, 112, 243], // 9
+  rightEyeUpper2: [113, 225, 224, 223, 222, 221, 189], // 7
+  rightEyeLower2: [226, 31, 228, 229, 230, 231, 232, 233, 244], // 9
+  rightEyeLower3: [143, 111, 117, 118, 119, 120, 121, 128, 245], // 9
+  rightEyebrowUpper: [156, 70, 63, 105, 66, 107, 55, 193], // 8
+  rightEyebrowLower: [35, 124, 46, 53, 52, 65], // 6
+  rightEyeIris: [473, 474, 475, 476, 477], // 5
   leftEyeUpper0: [466, 388, 387, 386, 385, 384, 398],
   leftEyeLower0: [263, 249, 390, 373, 374, 380, 381, 382, 362],
   leftEyeUpper1: [467, 260, 259, 257, 258, 286, 414],
@@ -59,15 +59,15 @@ export const blazeFaceLandmarks: Record<string, number | number[]> = {
 };
 
 export const MESH_TO_IRIS_INDICES_MAP: Array<{ key: string, indices: number[] }> = [ // A mapping from facemesh model keypoints to iris model keypoints.
-  { key: 'EyeUpper0', indices: [9, 10, 11, 12, 13, 14, 15] },
-  { key: 'EyeUpper1', indices: [25, 26, 27, 28, 29, 30, 31] },
-  { key: 'EyeUpper2', indices: [41, 42, 43, 44, 45, 46, 47] },
-  { key: 'EyeLower0', indices: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
-  { key: 'EyeLower1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24] },
-  { key: 'EyeLower2', indices: [32, 33, 34, 35, 36, 37, 38, 39, 40] },
-  { key: 'EyeLower3', indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] },
-  // { key: 'EyebrowUpper', indices: [63, 64, 65, 66, 67, 68, 69, 70] },
-  // { key: 'EyebrowLower', indices: [48, 49, 50, 51, 52, 53] },
+  { key: 'EyeUpper0', indices: [9, 10, 11, 12, 13, 14, 15] }, // 7 x 3d
+  { key: 'EyeUpper1', indices: [25, 26, 27, 28, 29, 30, 31] }, // 7 x 3d
+  { key: 'EyeUpper2', indices: [41, 42, 43, 44, 45, 46, 47] }, // 7 x 3d
+  { key: 'EyeLower0', indices: [0, 1, 2, 3, 4, 5, 6, 7, 8] }, // 7 x 3d
+  { key: 'EyeLower1', indices: [16, 17, 18, 19, 20, 21, 22, 23, 24] }, // 9 x 3d
+  { key: 'EyeLower2', indices: [32, 33, 34, 35, 36, 37, 38, 39, 40] }, // 9 x 3d
+  { key: 'EyeLower3', indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] }, // 9 x 3d
+  { key: 'EyebrowUpper', indices: [63, 64, 65, 66, 67, 68, 69, 70] }, // 8 x 3d
+  { key: 'EyebrowLower', indices: [48, 49, 50, 51, 52, 53] }, // 6 x 3d
 ];
 
 export const UV468: [number, number][] = [

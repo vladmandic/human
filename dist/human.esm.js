@@ -39245,7 +39245,9 @@ var MESH_TO_IRIS_INDICES_MAP = [
   { key: "EyeLower0", indices: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
   { key: "EyeLower1", indices: [16, 17, 18, 19, 20, 21, 22, 23, 24] },
   { key: "EyeLower2", indices: [32, 33, 34, 35, 36, 37, 38, 39, 40] },
-  { key: "EyeLower3", indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] }
+  { key: "EyeLower3", indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] },
+  { key: "EyebrowUpper", indices: [63, 64, 65, 66, 67, 68, 69, 70] },
+  { key: "EyebrowLower", indices: [48, 49, 50, 51, 52, 53] }
 ];
 var UV468 = [
   [0.499976992607117, 0.652534008026123],
@@ -43420,7 +43422,7 @@ async function load10(config3) {
     inputSize5 = 64;
   return model10;
 }
-function replaceRawCoordinates(rawCoords, newCoords, prefix, keys) {
+function replaceIrisCoords(rawCoords, newCoords, prefix, keys) {
   for (let i = 0; i < MESH_TO_IRIS_INDICES_MAP.length; i++) {
     const { key, indices } = MESH_TO_IRIS_INDICES_MAP[i];
     const originalIndices = meshAnnotations[`${prefix}${key}`];
@@ -43506,12 +43508,12 @@ async function augmentIris(rawCoords, face4, config3, meshSize) {
   const { rawCoords: rightEyeRawCoords, iris: rightIrisRawCoords } = getEyeCoords(rightEyeData, rightEyeBox, rightEyeBoxSize, false);
   const leftToRightEyeDepthDifference = getLeftToRightEyeDepthDifference(rawCoords);
   if (Math.abs(leftToRightEyeDepthDifference) < 30) {
-    replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", null);
-    replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", null);
+    replaceIrisCoords(rawCoords, leftEyeRawCoords, "left", null);
+    replaceIrisCoords(rawCoords, rightEyeRawCoords, "right", null);
   } else if (leftToRightEyeDepthDifference < 1) {
-    replaceRawCoordinates(rawCoords, leftEyeRawCoords, "left", ["EyeUpper0", "EyeLower0"]);
+    replaceIrisCoords(rawCoords, leftEyeRawCoords, "left", ["EyeUpper0", "EyeLower0"]);
   } else {
-    replaceRawCoordinates(rawCoords, rightEyeRawCoords, "right", ["EyeUpper0", "EyeLower0"]);
+    replaceIrisCoords(rawCoords, rightEyeRawCoords, "right", ["EyeUpper0", "EyeLower0"]);
   }
   const adjustedLeftIrisCoords = getAdjustedIrisCoords(rawCoords, leftIrisRawCoords, "left");
   const adjustedRightIrisCoords = getAdjustedIrisCoords(rawCoords, rightIrisRawCoords, "right");
@@ -43520,24 +43522,31 @@ async function augmentIris(rawCoords, face4, config3, meshSize) {
 }
 
 // src/face/attention.ts
+var attentionDefinitions = {
+  eyeLLower: [33, 7, 163, 144, 145, 153, 154, 155, 133],
+  eyeRLower: [263, 249, 390, 373, 374, 380, 381, 382, 362],
+  lips: [61, 76, 91, 181, 84, 17, 314, 405, 321, 291, 291, 185, 40, 39, 37, 0, 267, 269, 270, 291, 62, 183, 88, 178, 87, 14, 268, 303, 304, 408, 291, 184, 42, 178, 87, 14, 268, 303, 304, 408, 61, 62, 90, 180, 85, 16, 315, 404, 307, 308, 291, 185, 40, 73, 72, 0, 302, 269, 270, 409, 61, 184, 95, 179, 86, 15, 316, 403, 324, 408, 291, 184, 74, 41, 38, 11, 268, 303, 304, 408],
+  eyeL: [33, 7, 163, 144, 145, 153, 154, 155, 133, 246, 161, 160, 159, 158, 157, 173, 130, 25, 110, 24, 23, 22, 26, 112, 243, 247, 30, 29, 27, 28, 56, 190, 226, 31, 228, 229, 230, 231, 232, 233, 244, 113, 225, 224, 223, 222, 221, 189, 35, 124, 46, 53, 52, 65, 143, 111, 117, 118, 119, 120, 121, 128, 245, 156, 70, 63, 105, 66, 107, 55, 193],
+  eyeR: [263, 249, 390, 373, 374, 380, 381, 382, 362, 466, 388, 387, 386, 385, 384, 398, 359, 255, 339, 254, 253, 252, 256, 341, 463, 467, 260, 259, 257, 258, 286, 414, 446, 261, 448, 449, 450, 451, 452, 453, 464, 342, 445, 444, 443, 442, 441, 413, 265, 353, 276, 283, 282, 295, 372, 340, 346, 347, 348, 349, 350, 357, 465, 383, 300, 293, 334, 296, 336, 285, 417]
+};
 async function augment(rawCoords, results) {
   const t = {
-    eyeL: results[0].dataSync(),
-    eyeR: results[6].dataSync(),
     irisL: results[3].dataSync(),
     irisR: results[1].dataSync(),
+    eyeL: results[0].dataSync(),
+    eyeR: results[6].dataSync(),
     lips: results[5].dataSync()
   };
-  for (let i = 0; i < t.lips.length / 2; i++)
-    rawCoords.push([t.lips[2 * i + 0], t.lips[2 * i + 1], 0]);
-  for (let i = 0; i < t.eyeL.length / 2; i++)
-    rawCoords.push([t.eyeL[2 * i + 0], t.eyeL[2 * i + 1], 0]);
-  for (let i = 0; i < t.eyeR.length / 2; i++)
-    rawCoords.push([t.eyeR[2 * i + 0], t.eyeR[2 * i + 1], 0]);
-  for (let i = 0; i < t.irisL.length / 2; i++)
-    rawCoords.push([t.irisL[2 * i + 0], t.irisL[2 * i + 1], 0]);
+  const irisRDepth = attentionDefinitions.eyeRLower.reduce((prev, curr) => prev += rawCoords[curr][2], 0) / attentionDefinitions.eyeRLower.length;
   for (let i = 0; i < t.irisR.length / 2; i++)
-    rawCoords.push([t.irisR[2 * i + 0], t.irisR[2 * i + 1], 0]);
+    rawCoords.push([t.irisR[2 * i + 0], t.irisR[2 * i + 1], irisRDepth]);
+  const irisLDepth = attentionDefinitions.eyeLLower.reduce((prev, curr) => prev += rawCoords[curr][2], 0) / attentionDefinitions.eyeLLower.length;
+  for (let i = 0; i < t.irisL.length / 2; i++)
+    rawCoords.push([t.irisL[2 * i + 0], t.irisL[2 * i + 1], irisLDepth]);
+  for (let i = 0; i < t.eyeL.length / 2; i++)
+    rawCoords[attentionDefinitions.eyeL[i]] = [t.eyeL[2 * i + 0], t.eyeL[2 * i + 1], rawCoords[attentionDefinitions.eyeL[i]][2]];
+  for (let i = 0; i < t.eyeR.length / 2; i++)
+    rawCoords[attentionDefinitions.eyeR[i]] = [t.eyeR[2 * i + 0], t.eyeR[2 * i + 1], rawCoords[attentionDefinitions.eyeR[i]][2]];
   return rawCoords;
 }
 
@@ -48558,7 +48567,7 @@ function reset(instance) {
     instance.models[model18] = null;
 }
 async function load19(instance) {
-  var _a2, _b2, _c, _d2, _e2, _f, _g2, _h, _i, _j2, _k2, _l2, _m2, _n2, _o2, _p2, _q2, _r2, _s2, _t2, _u2, _v2, _w2, _x2, _y2, _z2, _A2, _B2, _C2, _D2;
+  var _a2, _b2, _c, _d2, _e2, _f, _g2, _h, _i, _j2, _k2, _l2, _m2, _n2, _o2, _p2, _q2, _r2, _s2, _t2, _u2, _v2, _w2, _x2, _y2, _z2, _A2, _B2, _C2, _D2, _E2;
   if (env.initial)
     reset(instance);
   if (instance.config.hand.enabled) {
@@ -48587,25 +48596,25 @@ async function load19(instance) {
     instance.models.faceres = load12(instance.config);
   if (instance.config.face.enabled && ((_p2 = instance.config.face.emotion) == null ? void 0 : _p2.enabled) && !instance.models.emotion)
     instance.models.emotion = load8(instance.config);
-  if (instance.config.face.enabled && ((_q2 = instance.config.face.iris) == null ? void 0 : _q2.enabled) && !instance.models.faceiris)
+  if (instance.config.face.enabled && ((_q2 = instance.config.face.iris) == null ? void 0 : _q2.enabled) && !((_r2 = instance.config.face.attention) == null ? void 0 : _r2.enabled) && !instance.models.faceiris)
     instance.models.faceiris = load10(instance.config);
-  if (instance.config.face.enabled && ((_r2 = instance.config.face.mesh) == null ? void 0 : _r2.enabled) && !instance.models.facemesh)
+  if (instance.config.face.enabled && ((_s2 = instance.config.face.mesh) == null ? void 0 : _s2.enabled) && !instance.models.facemesh)
     instance.models.facemesh = load11(instance.config);
-  if (instance.config.face.enabled && ((_s2 = instance.config.face["gear"]) == null ? void 0 : _s2.enabled) && !instance.models.gear)
+  if (instance.config.face.enabled && ((_t2 = instance.config.face["gear"]) == null ? void 0 : _t2.enabled) && !instance.models.gear)
     instance.models.gear = load(instance.config);
-  if (instance.config.face.enabled && ((_t2 = instance.config.face["ssrnet"]) == null ? void 0 : _t2.enabled) && !instance.models.ssrnetage)
+  if (instance.config.face.enabled && ((_u2 = instance.config.face["ssrnet"]) == null ? void 0 : _u2.enabled) && !instance.models.ssrnetage)
     instance.models.ssrnetage = load2(instance.config);
-  if (instance.config.face.enabled && ((_u2 = instance.config.face["ssrnet"]) == null ? void 0 : _u2.enabled) && !instance.models.ssrnetgender)
+  if (instance.config.face.enabled && ((_v2 = instance.config.face["ssrnet"]) == null ? void 0 : _v2.enabled) && !instance.models.ssrnetgender)
     instance.models.ssrnetgender = load3(instance.config);
-  if (instance.config.face.enabled && ((_v2 = instance.config.face["mobilefacenet"]) == null ? void 0 : _v2.enabled) && !instance.models.mobilefacenet)
+  if (instance.config.face.enabled && ((_w2 = instance.config.face["mobilefacenet"]) == null ? void 0 : _w2.enabled) && !instance.models.mobilefacenet)
     instance.models.mobilefacenet = load9(instance.config);
-  if (instance.config.hand.enabled && !instance.models.handtrack && ((_x2 = (_w2 = instance.config.hand.detector) == null ? void 0 : _w2.modelPath) == null ? void 0 : _x2.includes("handtrack")))
+  if (instance.config.hand.enabled && !instance.models.handtrack && ((_y2 = (_x2 = instance.config.hand.detector) == null ? void 0 : _x2.modelPath) == null ? void 0 : _y2.includes("handtrack")))
     instance.models.handtrack = loadDetect2(instance.config);
-  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_z2 = (_y2 = instance.config.hand.detector) == null ? void 0 : _y2.modelPath) == null ? void 0 : _z2.includes("handtrack")))
+  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_A2 = (_z2 = instance.config.hand.detector) == null ? void 0 : _z2.modelPath) == null ? void 0 : _A2.includes("handtrack")))
     instance.models.handskeleton = loadSkeleton(instance.config);
-  if (instance.config.object.enabled && !instance.models.centernet && ((_B2 = (_A2 = instance.config.object) == null ? void 0 : _A2.modelPath) == null ? void 0 : _B2.includes("centernet")))
+  if (instance.config.object.enabled && !instance.models.centernet && ((_C2 = (_B2 = instance.config.object) == null ? void 0 : _B2.modelPath) == null ? void 0 : _C2.includes("centernet")))
     instance.models.centernet = load6(instance.config);
-  if (instance.config.object.enabled && !instance.models.nanodet && ((_D2 = (_C2 = instance.config.object) == null ? void 0 : _C2.modelPath) == null ? void 0 : _D2.includes("nanodet")))
+  if (instance.config.object.enabled && !instance.models.nanodet && ((_E2 = (_D2 = instance.config.object) == null ? void 0 : _D2.modelPath) == null ? void 0 : _E2.includes("nanodet")))
     instance.models.nanodet = load16(instance.config);
   if (instance.config.segmentation.enabled && !instance.models.segmentation)
     instance.models.segmentation = load18(instance.config);

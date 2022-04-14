@@ -150,9 +150,9 @@ async function verifyDetails(human) {
   verify(res.face.length === 1, 'details face length', res.face.length);
   for (const face of res.face) {
     verify(face.score > 0.9 && face.boxScore > 0.9 && face.faceScore > 0.9, 'details face score', face.score, face.boxScore, face.faceScore);
-    verify(face.age > 25 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 80, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
+    verify(face.age > 23 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 80, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
     verify(face.box.length === 4 && face.boxRaw.length === 4 && face.mesh.length === 478 && face.meshRaw.length === 478 && face.embedding.length === 1024, 'details face arrays', face.box.length, face.mesh.length, face.embedding.length);
-    verify(face.emotion.length === 3 && face.emotion[0].score > 0.30 && face.emotion[0].emotion === 'fear', 'details face emotion', face.emotion.length, face.emotion[0]);
+    verify(face.emotion.length >= 2 && face.emotion[0].score > 0.30 && face.emotion[0].emotion === 'angry', 'details face emotion', face.emotion.length, face.emotion[0]);
     verify(face.real > 0.75, 'details face anti-spoofing', face.real);
     verify(face.live > 0.75, 'details face liveness', face.live);
   }
@@ -270,7 +270,7 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: warmup none result match');
   config.warmup = 'face';
   res = await testWarmup(human, 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length < 7) log('error', 'failed: warmup face result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length < 6) log('error', 'failed: warmup face result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup face result match');
   config.warmup = 'body';
   res = await testWarmup(human, 'default');
@@ -334,7 +334,7 @@ async function test(Human, inputConfig) {
   res1 = human.similarity(desc1, desc1);
   res2 = human.similarity(desc1, desc2);
   res3 = human.similarity(desc1, desc3);
-  if (res1 < 1 || res2 < 0.50 || res3 < 0.45 || res2 > 0.75 || res3 > 0.75) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
+  if (res1 < 1 || res2 < 0.40 || res3 < 0.40 || res2 > 0.75 || res3 > 0.75) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
   else log('state', 'passed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
 
   // test face matching

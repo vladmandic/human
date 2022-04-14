@@ -11,10 +11,11 @@
   
 ### **HEAD -> main** 2022/04/11 mandic00@live.com
 
+- face attention model is available in human-models
+- beta release 2.7
+- refactor draw methods
 - implement face attention model
-
-### **origin/main** 2022/04/10 mandic00@live.com
-
+- add electronjs demo
 - rebuild
 
 ### **2.6.5** 2022/04/01 mandic00@live.com

@@ -51038,6 +51038,44 @@ async function runInference(instance) {
     res = await warmupNode(instance);
   return res;
 }
+async function runCompile(allModels) {
+  const backendType = tpe();
+  const webGLBackend = UA();
+  if (backendType !== "webgl" && backendType !== "humangl" || (!webGLBackend || !webGLBackend.checkCompileCompletion)) {
+    return;
+  }
+  X().set("ENGINE_COMPILE_ONLY", true);
+  const numTensorsStart = Ss().state.numTensors;
+  const compiledModels = [];
+  for (const [modelName, model18] of Object.entries(allModels).filter(([key, val]) => key !== null && val !== null)) {
+    const shape = model18.inputs && model18.inputs[0] && model18.inputs[0].shape ? [...model18.inputs[0].shape] : [1, 64, 64, 3];
+    const dtype = model18.inputs && model18.inputs[0] && model18.inputs[0].dtype ? model18.inputs[0].dtype : "float32";
+    for (let dim = 0; dim < shape.length; dim++) {
+      if (shape[dim] === -1)
+        shape[dim] = dim === 0 ? 1 : 64;
+    }
+    const tensor = $t(shape, dtype);
+    try {
+      const res = model18.execute(tensor);
+      compiledModels.push(modelName);
+      if (Array.isArray(res))
+        res.forEach((t) => Re(t));
+      else
+        Re(res);
+    } catch (e) {
+      log("compile fail model:", modelName);
+    }
+    Re(tensor);
+  }
+  const kernels = await webGLBackend.checkCompileCompletionAsync();
+  webGLBackend.getUniformLocations();
+  log("compile pass models:", compiledModels);
+  log("compile pass kernels:", kernels.length);
+  X().set("ENGINE_COMPILE_ONLY", false);
+  const numTensorsEnd = Ss().state.numTensors;
+  if (numTensorsEnd - numTensorsStart > 0)
+    log("tensor leak:", numTensorsEnd - numTensorsStart);
+}
 async function warmup(instance, userConfig) {
   const t02 = now();
   instance.state = "warmup";
@@ -51047,6 +51085,7 @@ async function warmup(instance, userConfig) {
     return { face: [], body: [], hand: [], gesture: [], object: [], performance: instance.performance, timestamp: now(), persons: [], error: null };
   }
   return new Promise(async (resolve) => {
+    await runCompile(instance.models);
     const res = await runInference(instance);
     const t12 = now();
     if (instance.config.debug)

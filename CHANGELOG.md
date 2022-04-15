@@ -11,9 +11,7 @@
   
 ### **HEAD -> main** 2022/04/14 mandic00@live.com
 
-
-### **origin/main** 2022/04/11 mandic00@live.com
-
+- change default face crop
 - face attention model is available in human-models
 - beta release 2.7
 - refactor draw methods

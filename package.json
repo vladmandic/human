@@ -53,7 +53,7 @@
     "tensorflow"
   ],
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.22.1",
+    "@microsoft/api-extractor": "^7.22.2",
     "@tensorflow/tfjs": "^3.15.0",
     "@tensorflow/tfjs-backend-cpu": "^3.15.0",
     "@tensorflow/tfjs-backend-wasm": "^3.15.0",
@@ -73,7 +73,7 @@
     "@vladmandic/pilogger": "^0.4.4",
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
     "canvas": "^2.9.1",
-    "dayjs": "^1.11.0",
+    "dayjs": "^1.11.1",
     "esbuild": "^0.14.36",
     "eslint": "8.13.0",
     "eslint-config-airbnb-base": "^15.0.0",

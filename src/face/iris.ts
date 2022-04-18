@@ -37,11 +37,10 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-// Replace the raw coordinates returned by facemesh with refined iris model coordinates
-// Update the z coordinate to be an average of the original and the new.
+// Replace the raw coordinates returned by facemesh with refined iris model coordinates and update the z coordinate to be an average of the original and the new.
 export function replaceIrisCoords(rawCoords, newCoords, prefix, keys) {
-  for (let i = 0; i < coords.MESH_TO_IRIS_INDICES_MAP.length; i++) {
-    const { key, indices } = coords.MESH_TO_IRIS_INDICES_MAP[i];
+  for (let i = 0; i < coords.irisIndices.length; i++) {
+    const { key, indices } = coords.irisIndices[i];
     const originalIndices = coords.meshAnnotations[`${prefix}${key}`];
     if (!keys || keys.includes(key)) {
       for (let j = 0; j < indices.length; j++) {
@@ -56,7 +55,6 @@ export function replaceIrisCoords(rawCoords, newCoords, prefix, keys) {
   }
 }
 
-// eslint-disable-next-line class-methods-use-this
 export const getLeftToRightEyeDepthDifference = (rawCoords) => {
   const leftEyeZ = rawCoords[eyeLandmarks.leftBounds[0]][2];
   const rightEyeZ = rawCoords[eyeLandmarks.rightBounds[0]][2];
@@ -96,7 +94,6 @@ export const getEyeCoords = (eyeData, eyeBox, eyeBoxSize, flip = false) => {
 };
 
 // The z-coordinates returned for the iris are unreliable, so we take the z values from the surrounding keypoints.
-// eslint-disable-next-line class-methods-use-this
 export const getAdjustedIrisCoords = (rawCoords, irisCoords, direction) => {
   const upperCenterZ = rawCoords[coords.meshAnnotations[`${direction}EyeUpper0`][irisLandmarks.upperCenter]][2];
   const lowerCenterZ = rawCoords[coords.meshAnnotations[`${direction}EyeLower0`][irisLandmarks.lowerCenter]][2];
@@ -135,8 +132,7 @@ export async function augmentIris(rawCoords, face, config, meshSize) {
   if (Math.abs(leftToRightEyeDepthDifference) < 30) { // User is looking straight ahead.
     replaceIrisCoords(rawCoords, leftEyeRawCoords, 'left', null);
     replaceIrisCoords(rawCoords, rightEyeRawCoords, 'right', null);
-    // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged
-    // So we only update a single contour line above and below the eye.
+    // If the user is looking to the left or to the right, the iris coordinates tend to diverge too much from the mesh coordinates for them to be merged so we only update a single contour line above and below the eye.
   } else if (leftToRightEyeDepthDifference < 1) { // User is looking towards the right.
     replaceIrisCoords(rawCoords, leftEyeRawCoords, 'left', ['EyeUpper0', 'EyeLower0']);
   } else { // User is looking towards the left.

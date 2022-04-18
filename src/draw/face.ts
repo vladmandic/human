@@ -2,6 +2,7 @@ import { TRI468 as triangulation } from '../face/facemeshcoords';
 import { mergeDeep } from '../util/util';
 import { getCanvasContext, rad2deg, rect, point, lines, arrow } from './primitives';
 import { options } from './options';
+import { attentionDefinitions } from '../face/attention';
 import type { FaceResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
 
@@ -122,12 +123,15 @@ function drawFacePolygons(f: FaceResult, ctx: CanvasRenderingContext2D | Offscre
 }
 
 function drawFacePoints(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
-  const length = Math.max(468, f.mesh.length);
   if (opt.drawPoints && f.mesh.length >= 468) {
-    for (let i = 0; i < length; i++) point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], opt);
-  }
-  if (opt.drawAttention && f.mesh.length > 468) {
-    for (let i = 468; i < f.mesh.length; i++) point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], opt);
+    for (let i = 0; i < f.mesh.length; i++) {
+      point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], opt);
+      if (opt.drawAttention) {
+        if (attentionDefinitions.lips.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) + 127, opt);
+        if (attentionDefinitions.eyeL.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, opt);
+        if (attentionDefinitions.eyeR.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, opt);
+      }
+    }
   }
 }
 

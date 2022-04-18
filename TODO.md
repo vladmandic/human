@@ -11,9 +11,14 @@ Release 2.7:
   result is speed-up to first inference by around ~30% for browser environments
 - Changed default face crop from 120% to 140%  
   to better utilize caching between frames  
-- Refactor **draw** methods into separate modules  
-- Add **ElectronJS** demo  
+- Refactor **draw** methods into separate modules and fix coloring function  
+- Add highlights to attention keypoints  
+  enabled when both points and attention draw are enabled:  
+  `human.draw.options.drawAttention = true` and `human.draw.options.drawPoints = true`
+- Add **ElectronJS** demo:  
   see <https://github.com/vladmandic/human-electron>  
+- Enhanced **3D** demos:  
+  see <https://github.com/vladmandic/human-motion>
 - Update build platform and dependencies  
 - Update **TFJS**
 

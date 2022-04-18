@@ -30,7 +30,7 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
     if (localOptions.drawPoints) {
       if (h.keypoints && h.keypoints.length > 0) {
         for (const pt of h.keypoints) {
-          ctx.fillStyle = localOptions.useDepth ? colorDepth(pt[2] || 0) : localOptions.color;
+          ctx.fillStyle = colorDepth(pt[2], localOptions);
           point(ctx, pt[0], pt[1], 0, localOptions);
         }
       }
@@ -38,8 +38,8 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
     if (localOptions.drawLabels && h.annotations) {
       const addHandLabel = (part: Array<Point>, title: string) => {
         if (!part || part.length === 0 || !part[0]) return;
-        const z = part[part.length - 1][2] || 0;
-        ctx.fillStyle = localOptions.useDepth ? colorDepth(z) : localOptions.color;
+        const z = part[part.length - 1][2] || -256;
+        ctx.fillStyle = colorDepth(z, localOptions);
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
@@ -56,7 +56,7 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
           const z = part[i][2] || 0;
-          ctx.strokeStyle = localOptions.useDepth ? colorDepth(i * z) : localOptions.color;
+          ctx.strokeStyle = colorDepth(i * z, localOptions);
           ctx.moveTo(part[i > 0 ? i - 1 : 0][0], part[i > 0 ? i - 1 : 0][1]);
           ctx.lineTo(part[i][0], part[i][1]);
           ctx.stroke();

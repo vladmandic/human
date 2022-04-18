@@ -30,7 +30,7 @@ export async function body(inCanvas: AnyCanvas, result: Array<BodyResult>, drawO
     if (localOptions.drawPoints && result[i].keypoints) {
       for (let pt = 0; pt < result[i].keypoints.length; pt++) {
         if (!result[i].keypoints[pt].score || (result[i].keypoints[pt].score === 0)) continue;
-        ctx.fillStyle = localOptions.useDepth && result[i].keypoints[pt].position[2] ? colorDepth(result[i].keypoints[pt].position[2] || 0) : localOptions.color;
+        ctx.fillStyle = colorDepth(result[i].keypoints[pt].position[2], localOptions);
         point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
       }
     }
@@ -38,7 +38,7 @@ export async function body(inCanvas: AnyCanvas, result: Array<BodyResult>, drawO
       ctx.font = localOptions.font;
       for (const pt of result[i].keypoints) {
         if (!pt.score || (pt.score === 0)) continue;
-        ctx.fillStyle = localOptions.useDepth && pt.position[2] ? colorDepth(pt.position[2]) : localOptions.color;
+        ctx.fillStyle = colorDepth(pt.position[2], localOptions);
         ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
       }
     }

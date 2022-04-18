@@ -4,8 +4,100 @@
   author: <https://github.com/vladmandic>'
 */
 
-import{Human as p}from"../../dist/human.esm.js";var w={modelBasePath:"../../models",filter:{enabled:!0,equalization:!1},face:{enabled:!0,detector:{rotation:!1},mesh:{enabled:!0},attention:{enabled:!1},iris:{enabled:!0},description:{enabled:!0},emotion:{enabled:!0}},body:{enabled:!0},hand:{enabled:!0},object:{enabled:!1},gesture:{enabled:!0}},t=new p(w);t.env.perfadd=!1;t.draw.options.font='small-caps 18px "Lato"';t.draw.options.lineHeight=20;var e={video:document.getElementById("video"),canvas:document.getElementById("canvas"),log:document.getElementById("log"),fps:document.getElementById("status"),perf:document.getElementById("performance")},i={detect:0,draw:0,tensors:0},d={detect:0,draw:0},s=(...a)=>{e.log.innerText+=a.join(" ")+`
-`,console.log(...a)},r=a=>e.fps.innerText=a,b=a=>e.perf.innerText="tensors:"+t.tf.memory().numTensors+" | performance: "+JSON.stringify(a).replace(/"|{|}/g,"").replace(/,/g," | ");async function h(){r("starting webcam...");let a={audio:!1,video:{facingMode:"user",resizeMode:"none",width:{ideal:document.body.clientWidth}}},n=await navigator.mediaDevices.getUserMedia(a),m=new Promise(f=>{e.video.onloadeddata=()=>f(!0)});e.video.srcObject=n,e.video.play(),await m,e.canvas.width=e.video.videoWidth,e.canvas.height=e.video.videoHeight;let o=n.getVideoTracks()[0],v=o.getCapabilities?o.getCapabilities():"",g=o.getSettings?o.getSettings():"",u=o.getConstraints?o.getConstraints():"";s("video:",e.video.videoWidth,e.video.videoHeight,o.label,{stream:n,track:o,settings:g,constraints:u,capabilities:v}),e.canvas.onclick=()=>{e.video.paused?e.video.play():e.video.pause()}}async function c(){if(!e.video.paused){await t.detect(e.video);let n=t.tf.memory().numTensors;n-i.tensors!==0&&s("allocated tensors:",n-i.tensors),i.tensors=n}let a=t.now();d.detect=1e3/(a-i.detect),i.detect=a,requestAnimationFrame(c)}async function l(){if(!e.video.paused){let n=await t.next(t.result);await t.draw.canvas(e.video,e.canvas),await t.draw.all(e.canvas,n),b(n.performance)}let a=t.now();d.draw=1e3/(a-i.draw),i.draw=a,r(e.video.paused?"paused":`fps: ${d.detect.toFixed(1).padStart(5," ")} detect | ${d.draw.toFixed(1).padStart(5," ")} draw`),setTimeout(l,30)}async function y(){s("human version:",t.version,"| tfjs version:",t.tf.version["tfjs-core"]),s("platform:",t.env.platform,"| agent:",t.env.agent),r("loading..."),await t.load(),s("backend:",t.tf.getBackend(),"| available:",t.env.backends),s("loaded models:",Object.values(t.models).filter(a=>a!==null).length),r("initializing..."),await t.warmup(),await h(),await c(),await l()}window.onload=y;
+// demo/typescript/index.ts
+import { Human } from "../../dist/human.esm.js";
+var humanConfig = {
+  modelBasePath: "../../models",
+  filter: { enabled: true, equalization: false },
+  face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
+  body: { enabled: true },
+  hand: { enabled: true },
+  object: { enabled: false },
+  gesture: { enabled: true }
+};
+var human = new Human(humanConfig);
+human.env["perfadd"] = false;
+human.draw.options.font = 'small-caps 18px "Lato"';
+human.draw.options.lineHeight = 20;
+var dom = {
+  video: document.getElementById("video"),
+  canvas: document.getElementById("canvas"),
+  log: document.getElementById("log"),
+  fps: document.getElementById("status"),
+  perf: document.getElementById("performance")
+};
+var timestamp = { detect: 0, draw: 0, tensors: 0 };
+var fps = { detect: 0, draw: 0 };
+var log = (...msg) => {
+  dom.log.innerText += msg.join(" ") + "\n";
+  console.log(...msg);
+};
+var status = (msg) => dom.fps.innerText = msg;
+var perf = (msg) => dom.perf.innerText = "tensors:" + human.tf.memory().numTensors + " | performance: " + JSON.stringify(msg).replace(/"|{|}/g, "").replace(/,/g, " | ");
+async function webCam() {
+  status("starting webcam...");
+  const options = { audio: false, video: { facingMode: "user", resizeMode: "none", width: { ideal: document.body.clientWidth } } };
+  const stream = await navigator.mediaDevices.getUserMedia(options);
+  const ready = new Promise((resolve) => {
+    dom.video.onloadeddata = () => resolve(true);
+  });
+  dom.video.srcObject = stream;
+  dom.video.play();
+  await ready;
+  dom.canvas.width = dom.video.videoWidth;
+  dom.canvas.height = dom.video.videoHeight;
+  const track = stream.getVideoTracks()[0];
+  const capabilities = track.getCapabilities ? track.getCapabilities() : "";
+  const settings = track.getSettings ? track.getSettings() : "";
+  const constraints = track.getConstraints ? track.getConstraints() : "";
+  log("video:", dom.video.videoWidth, dom.video.videoHeight, track.label, { stream, track, settings, constraints, capabilities });
+  dom.canvas.onclick = () => {
+    if (dom.video.paused)
+      dom.video.play();
+    else
+      dom.video.pause();
+  };
+}
+async function detectionLoop() {
+  if (!dom.video.paused) {
+    await human.detect(dom.video);
+    const tensors = human.tf.memory().numTensors;
+    if (tensors - timestamp.tensors !== 0)
+      log("allocated tensors:", tensors - timestamp.tensors);
+    timestamp.tensors = tensors;
+  }
+  const now = human.now();
+  fps.detect = 1e3 / (now - timestamp.detect);
+  timestamp.detect = now;
+  requestAnimationFrame(detectionLoop);
+}
+async function drawLoop() {
+  if (!dom.video.paused) {
+    const interpolated = await human.next(human.result);
+    await human.draw.canvas(dom.video, dom.canvas);
+    await human.draw.all(dom.canvas, interpolated);
+    perf(interpolated.performance);
+  }
+  const now = human.now();
+  fps.draw = 1e3 / (now - timestamp.draw);
+  timestamp.draw = now;
+  status(dom.video.paused ? "paused" : `fps: ${fps.detect.toFixed(1).padStart(5, " ")} detect | ${fps.draw.toFixed(1).padStart(5, " ")} draw`);
+  setTimeout(drawLoop, 30);
+}
+async function main() {
+  log("human version:", human.version, "| tfjs version:", human.tf.version["tfjs-core"]);
+  log("platform:", human.env.platform, "| agent:", human.env.agent);
+  status("loading...");
+  await human.load();
+  log("backend:", human.tf.getBackend(), "| available:", human.env.backends);
+  log("loaded models:", Object.values(human.models).filter((model) => model !== null).length);
+  status("initializing...");
+  await human.warmup();
+  await webCam();
+  await detectionLoop();
+  await drawLoop();
+}
+window.onload = main;
 /**
  * Human demo for browsers
  * @default Human Library

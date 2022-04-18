@@ -1,7 +1,7 @@
 import { log } from '../util/util';
 import type { AnyCanvas } from '../exports';
 import type { Point } from '../result';
-import { options, DrawOptions } from './options';
+import type { DrawOptions } from './options';
 
 export const getCanvasContext = (input: AnyCanvas) => {
   if (!input) log('draw error: invalid canvas');
@@ -15,16 +15,16 @@ export const getCanvasContext = (input: AnyCanvas) => {
 };
 
 export const rad2deg = (theta: number) => Math.round((theta * 180) / Math.PI);
-export const colorDepth = (z: number, rgb: [boolean, boolean, boolean] = [true, true, false]): string => {
-  const r = rgb[0] ? 127 + Math.trunc(3 * z) : 255;
-  const g = rgb[1] ? 127 - Math.trunc(3 * z) : 255;
-  const b = rgb[2] ? 127 - Math.trunc(3 * z) : 255;
-  return `rgba(${r}, ${g}, ${b}, ${options.alpha})`;
+
+export const colorDepth = (z: number | undefined, opt: DrawOptions): string => {
+  if (!opt.useDepth || typeof z === 'undefined') return opt.color;
+  const rgb = Uint8ClampedArray.from([127 + (2 * z), 127 - (2 * z), 255]);
+  const color = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opt.alpha})`;
+  return color;
 };
 
 export function point(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, x: number, y: number, z: number | undefined, localOptions: DrawOptions) {
-  z = z || 0;
-  ctx.fillStyle = localOptions.useDepth && z ? colorDepth(z, z === -255 ? [true, false, true] : [true, false, false]) : localOptions.color;
+  ctx.fillStyle = colorDepth(z, localOptions);
   ctx.beginPath();
   ctx.arc(x, y, localOptions.pointSize, 0, 2 * Math.PI);
   ctx.fill();
@@ -57,10 +57,8 @@ export function lines(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCo
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt of points) {
-    const z = pt[2] || 0;
-    ctx.strokeStyle = localOptions.useDepth && z !== 0 ? colorDepth(z) : localOptions.color;
-    ctx.fillStyle = localOptions.useDepth && z !== 0 ? colorDepth(z) : localOptions.color;
-    ctx.lineTo(pt[0], Math.round(pt[1]));
+    ctx.strokeStyle = colorDepth(pt[2], localOptions);
+    ctx.lineTo(Math.trunc(pt[0]), Math.trunc(pt[1]));
   }
   ctx.stroke();
   if (localOptions.fillPolygons) {

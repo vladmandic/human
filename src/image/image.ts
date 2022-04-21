@@ -9,7 +9,7 @@ import { env } from '../util/env';
 import { log } from '../util/util';
 import * as enhance from './enhance';
 
-const maxSize = 2048;
+const maxSize = 3840;
 // internal temp canvases
 let inCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 let outCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame

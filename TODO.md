@@ -2,26 +2,6 @@
 
 ## Work in Progress
 
-Release 2.7:
-- Add **MediaPipe FaceMesh-with-Attention** model  
-  model is available in `@vladmandic/human-models` repository  
-  to enable, set `config.face.attention = true`  
-  model replaces **iris**, **eyes** and **lips** keypoints with high-detailed ones  
-- Add model **pre-compile** phase to `warmup` method
-  result is speed-up to first inference by around ~30% for browser environments
-- Changed default face crop from 120% to 140%  
-  to better utilize caching between frames  
-- Refactor **draw** methods into separate modules and fix coloring function  
-- Add highlights to attention keypoints  
-  enabled when both points and attention draw are enabled:  
-  `human.draw.options.drawAttention = true` and `human.draw.options.drawPoints = true`
-- Add **ElectronJS** demo:  
-  see <https://github.com/vladmandic/human-electron>  
-- Enhanced **3D** demos:  
-  see <https://github.com/vladmandic/human-motion>
-- Update build platform and dependencies  
-- Update **TFJS**
-
 ### Exploring
 
 - Optical flow: <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
@@ -48,3 +28,25 @@ Feature is automatically disabled in NodeJS without user impact
 <br><hr><br>
 
 ## Pending Release Notes
+
+Release 2.7:
+- Add **MediaPipe FaceMesh-with-Attention** model  
+  model is available in `@vladmandic/human-models` repository  
+  to enable, set `config.face.attention = true`  
+  model replaces **iris**, **eyes** and **lips** keypoints with high-detailed ones  
+- Add model **pre-compile** phase to `warmup` method
+  result is speed-up to first inference by around ~30% for browser environments
+- Changed default face crop from 120% to 140%  
+  to better utilize caching between frames and face mesh mapping  
+- Refactor **draw** methods into separate modules and fix coloring function  
+- Add highlights to attention keypoints  
+  enabled when both points and attention draw are enabled:  
+  `human.draw.options.drawAttention = true` and `human.draw.options.drawPoints = true`
+- Add **ElectronJS** demo:  
+  see <https://github.com/vladmandic/human-electron>  
+- Enhanced **3D** demos:  
+  see <https://github.com/vladmandic/human-motion>
+- Support for **4K** input
+- Support for **NodeJS** 8.0.0
+- Update **TFJS** to 3.16.0
+- Update build platform and dependencies  

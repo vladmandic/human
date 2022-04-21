@@ -9,6 +9,7 @@ function copy(src, dst) {
   fs.writeFileSync(dst, buffer);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const apiExtractorIgnoreList = [
   'ae-missing-release-tag',
   'tsdoc-param-tag-missing-hyphen',
@@ -18,7 +19,7 @@ const apiExtractorIgnoreList = [
   'ae-unresolved-link',
   'ae-forgotten-export',
   'tsdoc-malformed-inline-tag',
-  'tsdoc-unnecessary-backslash'
+  'tsdoc-unnecessary-backslash',
 ];
 
 async function main() {

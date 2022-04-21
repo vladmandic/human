@@ -49,7 +49,7 @@ const perf = (msg) => dom.perf.innerText = 'tensors:' + human.tf.memory().numTen
 async function webCam() { // initialize webcam
   status('starting webcam...');
   // @ts-ignore resizeMode is not yet defined in tslib
-  const options: MediaStreamConstraints = { audio: false, video: { facingMode: 'user', resizeMode: 'none', width: { ideal: document.body.clientWidth } } };
+  const options: MediaStreamConstraints = { audio: false, video: { facingMode: 'user', resizeMode: 'none', width: { ideal: document.body.clientWidth }, height: { ideal: document.body.clientHeight } } };
   const stream: MediaStream = await navigator.mediaDevices.getUserMedia(options);
   const ready = new Promise((resolve) => { dom.video.onloadeddata = () => resolve(true); });
   dom.video.srcObject = stream;
@@ -87,6 +87,7 @@ async function drawLoop() { // main screen refresh loop
     const interpolated = await human.next(human.result); // smoothen result using last-known results
     await human.draw.canvas(dom.video, dom.canvas); // draw canvas to screen
     await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
+    console.log(dom.canvas.width, dom.canvas.height);
     perf(interpolated.performance); // write performance data
   }
   const now = human.now();

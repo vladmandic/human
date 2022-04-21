@@ -11,9 +11,8 @@
   
 ### **HEAD -> main** 2022/04/18 mandic00@live.com
 
-
-### **origin/main** 2022/04/15 mandic00@live.com
-
+- fix coloring function
+- enable precompile as part of warmup
 - prepare release beta
 - change default face crop
 - face attention model is available in human-models

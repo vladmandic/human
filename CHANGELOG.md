@@ -9,12 +9,13 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/05/09 mandic00@live.com
+
+
 ### **2.7.1** 2022/05/09 mandic00@live.com
 
 - support 4k input
-
-### **origin/main** 2022/04/18 mandic00@live.com
-
+- add attention draw methods
 - fix coloring function
 - enable precompile as part of warmup
 - prepare release beta

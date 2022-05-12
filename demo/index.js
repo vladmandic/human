@@ -187,9 +187,9 @@ function status(msg) {
   }
 }
 
-async function videoPlay() {
+async function videoPlay(videoElement = document.getElementById('video')) {
   document.getElementById('btnStartText').innerHTML = 'pause video';
-  await document.getElementById('video').play();
+  await videoElement.play();
   // status();
 }
 
@@ -630,12 +630,14 @@ async function processImage(input, title) {
 
 async function processVideo(input, title) {
   status(`processing video: ${title}`);
-  const video = document.createElement('video');
+  // const video = document.getElementById('video-file') || document.createElement('video');
+  const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
-  video.id = 'video-file';
-  video.controls = true;
-  video.loop = true;
-  // video.onerror = async () => status(`video loading error: ${video.error.message}`);
+  // video.id = 'video-file';
+  // video.controls = true;
+  // video.loop = true;
+  // video.style.display = 'none';
+  // document.body.appendChild(video);
   video.addEventListener('error', () => status(`video loading error: ${video.error.message}`));
   video.addEventListener('canplay', async () => {
     for (const m of Object.values(menu)) m.hide();
@@ -644,6 +646,7 @@ async function processVideo(input, title) {
     await videoPlay();
     if (!ui.detectThread) runHumanDetect(video, canvas);
   });
+  video.srcObject = null;
   video.src = input;
 }
 

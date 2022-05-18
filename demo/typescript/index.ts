@@ -87,7 +87,6 @@ async function drawLoop() { // main screen refresh loop
     const interpolated = await human.next(human.result); // smoothen result using last-known results
     await human.draw.canvas(dom.video, dom.canvas); // draw canvas to screen
     await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
-    console.log(dom.canvas.width, dom.canvas.height);
     perf(interpolated.performance); // write performance data
   }
   const now = human.now();

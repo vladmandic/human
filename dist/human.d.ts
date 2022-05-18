@@ -1,3 +1,4 @@
+/// <reference types="@webgpu/types/dist" />
 /// <reference types="offscreencanvas" />
 
 /** meta-function that performs draw for: canvas, face, body, hand */
@@ -285,10 +286,14 @@ declare function copyModel(sourceURL: string, destURL: string): Promise<ModelArt
  */
 declare type DataId = object;
 
-declare type DataToGPUOptions = DataToGPUWebGLOption;
+declare type DataToGPUOptions = DataToGPUWebGLOption | DataToGPUWebGPUOption;
 
 declare interface DataToGPUWebGLOption {
     customTexShape?: [number, number];
+}
+
+declare interface DataToGPUWebGPUOption {
+    customBufSize?: number;
 }
 
 /** @docalias 'float32'|'int32'|'bool'|'complex64'|'string' */
@@ -787,7 +792,9 @@ declare const getSaveHandlers: (url: string | string[]) => IOHandler[];
 declare interface GPUData {
     tensorRef: Tensor;
     texture?: WebGLTexture;
+    buffer?: GPUBuffer;
     texShape?: [number, number];
+    bufSize?: number;
 }
 
 /**

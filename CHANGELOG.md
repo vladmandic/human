@@ -9,6 +9,9 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/05/18 mandic00@live.com
+
+
 ### **2.7.2** 2022/05/12 mandic00@live.com
 
 - fix demo when used with video files

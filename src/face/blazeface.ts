@@ -59,14 +59,16 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   t.div = tf.div(t.resized, constants.tf127);
   t.normalized = tf.sub(t.div, constants.tf05);
   const res = model?.execute(t.normalized) as Tensor[];
-  if (Array.isArray(res)) { // are we using tfhub or pinto converted model?
+  if (Array.isArray(res) && res.length > 2) { // pinto converted model?
     const sorted = res.sort((a, b) => a.size - b.size);
     t.concat384 = tf.concat([sorted[0], sorted[2]], 2); // dim: 384, 1 + 16
     t.concat512 = tf.concat([sorted[1], sorted[3]], 2); // dim: 512, 1 + 16
     t.concat = tf.concat([t.concat512, t.concat384], 1);
     t.batch = tf.squeeze(t.concat, 0);
-  } else {
-    t.batch = tf.squeeze(res); // when using tfhub model
+  } else if (Array.isArray(res)) { // new facemesh-detection tfhub model
+    t.batch = tf.squeeze(res[0]);
+  } else { // original blazeface tfhub model
+    t.batch = tf.squeeze(res);
   }
   tf.dispose(res);
   t.boxes = decodeBounds(t.batch);

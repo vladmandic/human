@@ -42966,12 +42966,14 @@ async function getBoxes(inputImage, config3) {
   t.div = xe(t.resized, constants.tf127);
   t.normalized = ge(t.div, constants.tf05);
   const res = model5 == null ? void 0 : model5.execute(t.normalized);
-  if (Array.isArray(res)) {
+  if (Array.isArray(res) && res.length > 2) {
     const sorted = res.sort((a, b) => a.size - b.size);
     t.concat384 = Ot([sorted[0], sorted[2]], 2);
     t.concat512 = Ot([sorted[1], sorted[3]], 2);
     t.concat = Ot([t.concat512, t.concat384], 1);
     t.batch = mr(t.concat, 0);
+  } else if (Array.isArray(res)) {
+    t.batch = mr(res[0]);
   } else {
     t.batch = mr(res);
   }

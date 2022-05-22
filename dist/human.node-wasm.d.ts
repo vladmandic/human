@@ -286,14 +286,10 @@ declare function copyModel(sourceURL: string, destURL: string): Promise<ModelArt
  */
 declare type DataId = object;
 
-declare type DataToGPUOptions = DataToGPUWebGLOption | DataToGPUWebGPUOption;
+declare type DataToGPUOptions = DataToGPUWebGLOption;
 
 declare interface DataToGPUWebGLOption {
     customTexShape?: [number, number];
-}
-
-declare interface DataToGPUWebGPUOption {
-    customBufSize?: number;
 }
 
 /** @docalias 'float32'|'int32'|'bool'|'complex64'|'string' */
@@ -573,6 +569,8 @@ export declare interface FaceLivenessConfig extends GenericConfig {
 
 /** Mesh part of face configuration */
 export declare interface FaceMeshConfig extends GenericConfig {
+    /** Keep detected faces that cannot be verified using facemesh */
+    keepInvalid: boolean;
 }
 
 /** Face results
@@ -714,14 +712,37 @@ export declare type FingerDirection = 'verticalUp' | 'verticalDown' | 'horizonta
  * @param modelArtifacts a object containing model topology (i.e., parsed from
  *   the JSON format).
  * @param weightSpecs An array of `WeightsManifestEntry` objects describing the
- *   names, shapes, types, and quantization of the weight data.
+ *   names, shapes, types, and quantization of the weight data. Optional.
  * @param weightData A single `ArrayBuffer` containing the weight data,
- *   concatenated in the order described by the weightSpecs.
+ *   concatenated in the order described by the weightSpecs. Optional.
  * @param trainingConfig Model training configuration. Optional.
  *
  * @returns A passthrough `IOHandler` that simply loads the provided data.
  */
 declare function fromMemory(modelArtifacts: {} | ModelArtifacts, weightSpecs?: WeightsManifestEntry[], weightData?: ArrayBuffer, trainingConfig?: TrainingConfig): IOHandler;
+
+/**
+ * Creates an IOHandler that loads model artifacts from memory.
+ *
+ * When used in conjunction with `tf.loadLayersModel`, an instance of
+ * `tf.LayersModel` (Keras-style) can be constructed from the loaded artifacts.
+ *
+ * ```js
+ * const model = await tf.loadLayersModel(tf.io.fromMemory(
+ *     modelTopology, weightSpecs, weightData));
+ * ```
+ *
+ * @param modelArtifacts a object containing model topology (i.e., parsed from
+ *   the JSON format).
+ * @param weightSpecs An array of `WeightsManifestEntry` objects describing the
+ *   names, shapes, types, and quantization of the weight data. Optional.
+ * @param weightData A single `ArrayBuffer` containing the weight data,
+ *   concatenated in the order described by the weightSpecs. Optional.
+ * @param trainingConfig Model training configuration. Optional.
+ *
+ * @returns A passthrough `IOHandlerSync` that simply loads the provided data.
+ */
+declare function fromMemorySync(modelArtifacts: {} | ModelArtifacts, weightSpecs?: WeightsManifestEntry[], weightData?: ArrayBuffer, trainingConfig?: TrainingConfig): IOHandlerSync;
 
 export declare type Gender = 'male' | 'female' | 'unknown';
 
@@ -807,7 +828,7 @@ declare interface GPUData {
  *
  * @doc {heading: 'Models', subheading: 'Classes'}
  */
-export declare class GraphModel implements InferenceModel {
+export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> implements InferenceModel {
     private modelUrl;
     private loadOptions;
     private executor;
@@ -834,13 +855,13 @@ export declare class GraphModel implements InferenceModel {
      * @param onProgress Optional, progress callback function, fired periodically
      * before the load is completed.
      */
-    constructor(modelUrl: string | io.IOHandler, loadOptions?: io.LoadOptions);
+    constructor(modelUrl: ModelURL, loadOptions?: io.LoadOptions);
     private findIOHandler;
     /**
      * Loads the model and weight files, construct the in memory weight map and
      * compile the inference graph.
      */
-    load(): Promise<boolean>;
+    load(): UrlIOHandler<ModelURL> extends io.IOHandlerSync ? boolean : Promise<boolean>;
     /**
      * Synchronously construct the in memory weight map and
      * compile the inference graph. Also initialize hashtable if any.
@@ -1378,12 +1399,14 @@ declare namespace io {
         decodeWeights,
         encodeWeights,
         fromMemory,
+        fromMemorySync,
         getLoadHandlers,
         getModelArtifactsForJSON,
         getModelArtifactsInfoForJSON,
         getSaveHandlers,
         http,
         IOHandler,
+        IOHandlerSync,
         isHTTPScheme,
         LoadHandler,
         LoadOptions,
@@ -1404,7 +1427,8 @@ declare namespace io {
         weightsLoaderFactory,
         WeightsManifestConfig,
         WeightsManifestEntry,
-        withSaveHandler
+        withSaveHandler,
+        withSaveHandlerSync
     }
 }
 
@@ -1418,6 +1442,10 @@ declare interface IOHandler {
     save?: SaveHandler;
     load?: LoadHandler;
 }
+
+declare type IOHandlerSync = {
+    [K in keyof IOHandler]: Syncify<IOHandler[K]>;
+};
 
 declare type IORouter = (url: string | string[], loadOptions?: LoadOptions) => IOHandler;
 
@@ -1985,6 +2013,8 @@ export declare interface PersonResult {
 /** generic point as [x, y, z?] */
 export declare type Point = [number, number, number?];
 
+declare type PromiseFunction = (...args: unknown[]) => Promise<unknown>;
+
 export declare type Race = 'white' | 'black' | 'asian' | 'indian' | 'other';
 
 export declare enum Rank {
@@ -2182,6 +2212,8 @@ declare interface SingleValueMap {
     string: string;
 }
 
+declare type Syncify<T extends PromiseFunction> = T extends (...args: infer Args) => Promise<infer R> ? (...args: Args) => R : never;
+
 export declare namespace Tensor { }
 
 /**
@@ -2265,6 +2297,9 @@ export declare class Tensor<R extends Rank = Rank> {
      * For WebGL backend, the data will be stored on a densely packed texture.
      * This means that the texture will use the RGBA channels to store value.
      *
+     * For WebGPU backend, the data will be stored on a buffer. There is no
+     * parameter, so can not use an user defined size to create the buffer.
+     *
      * @param options:
      *     For WebGL,
      *         - customTexShape: Optional. If set, will use the user defined
@@ -2277,6 +2312,15 @@ export declare class Tensor<R extends Rank = Rank> {
      *        texture: WebGLTexture,
      *        texShape: [number, number] // [height, width]
      *     }
+     *
+     *     For WebGPU backend, a GPUData contains the new buffer and
+     *     its information.
+     *     {
+     *        tensorRef: The tensor that is associated with this buffer,
+     *        buffer: GPUBuffer,
+     *        bufSize: number
+     *     }
+     *
      *     Remember to dispose the GPUData after it is used by
      *     `res.tensorRef.dispose()`.
      *
@@ -2396,6 +2440,10 @@ declare interface TrainingConfig {
 }
 
 declare type TypedArray = Float32Array | Int32Array | Uint8Array;
+
+declare type Url = string | io.IOHandler | io.IOHandlerSync;
+
+declare type UrlIOHandler<T extends Url> = T extends string ? io.IOHandler : T;
 
 declare function validate(instance: Human): Promise<void>;
 
@@ -2536,8 +2584,25 @@ declare interface WeightsManifestGroupConfig {
  * ```
  *
  * @param saveHandler A function that accepts a `ModelArtifacts` and returns a
- *     `SaveResult`.
+ *     promise that resolves to a `SaveResult`.
  */
 declare function withSaveHandler(saveHandler: (artifacts: ModelArtifacts) => Promise<SaveResult>): IOHandler;
+
+/**
+ * Creates an IOHandlerSync that passes saved model artifacts to a callback.
+ *
+ * ```js
+ * function handleSave(artifacts) {
+ *   // ... do something with the artifacts ...
+ *   return {modelArtifactsInfo: {...}, ...};
+ * }
+ *
+ * const saveResult = model.save(tf.io.withSaveHandler(handleSave));
+ * ```
+ *
+ * @param saveHandler A function that accepts a `ModelArtifacts` and returns a
+ *     `SaveResult`.
+ */
+declare function withSaveHandlerSync(saveHandler: (artifacts: ModelArtifacts) => SaveResult): IOHandlerSync;
 
 export { }

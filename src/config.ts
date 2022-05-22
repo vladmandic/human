@@ -35,7 +35,10 @@ export interface FaceDetectorConfig extends GenericConfig {
 }
 
 /** Mesh part of face configuration */
-export interface FaceMeshConfig extends GenericConfig {}
+export interface FaceMeshConfig extends GenericConfig {
+  /** Keep detected faces that cannot be verified using facemesh */
+  keepInvalid: boolean
+}
 
 /** Iris part of face configuration */
 export interface FaceIrisConfig extends GenericConfig {}
@@ -352,6 +355,7 @@ const config: Config = {
     mesh: {
       enabled: true,
       modelPath: 'facemesh.json',
+      keepInvalid: false,
     },
     attention: {
       enabled: false,

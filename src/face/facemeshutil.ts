@@ -121,7 +121,9 @@ export const rotatePoint = (homogeneousCoordinate, rotationMatrix) => [dot(homog
 export const xyDistanceBetweenPoints = (a, b) => Math.sqrt(((a[0] - b[0]) ** 2) + ((a[1] - b[1]) ** 2));
 
 export function generateAnchors(inputSize) {
-  const spec = { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] };
+  const spec = inputSize === 192
+    ? { strides: [4], anchors: [1] } // facemesh-detector
+    : { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] }; // blazeface
   const anchors: Array<[number, number]> = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];

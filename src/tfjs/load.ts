@@ -22,7 +22,8 @@ export function setModelLoadOptions(config: Config) {
 }
 
 export async function loadModel(modelPath: string | undefined): Promise<GraphModel> {
-  const modelUrl = join(options.modelBasePath, modelPath || '');
+  let modelUrl = join(options.modelBasePath, modelPath || '');
+  if (!modelUrl.toLowerCase().endsWith('.json')) modelUrl += '.json';
   const modelPathSegments = modelUrl.split('/');
   const cachedModelName = 'indexeddb://' + modelPathSegments[modelPathSegments.length - 1].replace('.json', ''); // generate short model name for cache
   const cachedModels = await tf.io.listModels(); // list all models already in cache

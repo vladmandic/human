@@ -29,3 +29,10 @@ Feature is automatically disabled in NodeJS without user impact
 
 ## Pending Release Notes
 
+- Updated **FaceMesh-Landmarks** models
+- Added **FaceMesh-with-Attention** model is disabled by defauls, enable using  
+  `config.face.mesh.attention = true`
+- If **FaceMesh-with-Attention** model is anbled, Iris model gets disabled  
+  as its functionality is superseded by attention model
+- Results include more detailed face mesh annotations  
+  `result.face[].annotations`

@@ -150,7 +150,7 @@ async function verifyDetails(human) {
   verify(res.face.length === 1, 'details face length', res.face.length);
   for (const face of res.face) {
     verify(face.score > 0.9 && face.boxScore > 0.9 && face.faceScore > 0.9, 'details face score', face.score, face.boxScore, face.faceScore);
-    verify(face.age > 23 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 80, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
+    verify(face.age > 23 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 90, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
     verify(face.box.length === 4 && face.boxRaw.length === 4 && face.mesh.length === 478 && face.meshRaw.length === 478 && face.embedding.length === 1024, 'details face arrays', face.box.length, face.mesh.length, face.embedding.length);
     verify(face.emotion.length >= 2 && face.emotion[0].score > 0.30 && face.emotion[0].emotion === 'angry', 'details face emotion', face.emotion.length, face.emotion[0]);
     verify(face.real > 0.75, 'details face anti-spoofing', face.real);
@@ -165,7 +165,7 @@ async function verifyDetails(human) {
     verify(hand.score > 0.5 && hand.boxScore > 0.5 && hand.fingerScore > 0.5 && hand.box.length === 4 && hand.boxRaw.length === 4 && hand.label === 'point', 'details hand', hand.boxScore, hand.fingerScore, hand.label);
     verify(hand.keypoints.length === 21 && Object.keys(hand.landmarks).length === 5 && Object.keys(hand.annotations).length === 7, 'details hand arrays', hand.keypoints.length, Object.keys(hand.landmarks).length, Object.keys(hand.annotations).length);
   }
-  verify(res.gesture.length === 6, 'details gesture length', res.gesture.length);
+  verify(res.gesture.length >= 6, 'details gesture length', res.gesture.length);
   verify(res.gesture[0].gesture === 'facing right', 'details gesture first', res.gesture[0]);
   verify(res.object.length === 1, 'details object length', res.object.length);
   for (const obj of res.object) {
@@ -252,7 +252,7 @@ async function test(Human, inputConfig) {
   // test model loading
   log('info', 'test: model load');
   await human.load();
-  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
+  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null), url: human.models[model] ? human.models[model].modelUrl : null }));
   const loaded = models.filter((model) => model.loaded);
   if (models.length === 22 && loaded.length === 12) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
@@ -274,7 +274,7 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: warmup face result match');
   config.warmup = 'body';
   res = await testWarmup(human, 'default');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length !== 6) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 1 || res?.gesture?.length < 6) log('error', 'failed: warmup body result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: warmup body result match');
   log('state', 'details:', {
     face: { boxScore: res.face[0].boxScore, faceScore: res.face[0].faceScore, age: res.face[0].age, gender: res.face[0].gender, genderScore: res.face[0].genderScore },
@@ -317,6 +317,14 @@ async function test(Human, inputConfig) {
   res = await human.detect(null);
   if (!res || !res.error) log('error', 'failed: invalid input', res);
   else log('state', 'passed: invalid input', res.error || res);
+
+  // test face attention
+  /*
+  log('info', 'test face attention');
+  human.models.facemesh = null; // unload model
+  config.face.attention = { enabled: true };
+  res = await testDetect(human, 'samples/in/ai-face.jpg', 'default');
+  */
 
   // test face similarity
   log('info', 'test face similarity');

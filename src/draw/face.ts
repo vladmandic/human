@@ -2,7 +2,7 @@ import { TRI468 as triangulation } from '../face/facemeshcoords';
 import { mergeDeep } from '../util/util';
 import { getCanvasContext, rad2deg, rect, point, lines, arrow } from './primitives';
 import { options } from './options';
-import { attentionDefinitions } from '../face/attention';
+import * as facemeshConstants from '../face/constants';
 import type { FaceResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
 
@@ -127,9 +127,9 @@ function drawFacePoints(f: FaceResult, ctx: CanvasRenderingContext2D | Offscreen
     for (let i = 0; i < f.mesh.length; i++) {
       point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], opt);
       if (opt.drawAttention) {
-        if (attentionDefinitions.lips.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) + 127, opt);
-        if (attentionDefinitions.eyeL.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, opt);
-        if (attentionDefinitions.eyeR.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, opt);
+        if (facemeshConstants.LANDMARKS_REFINEMENT_LIPS_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) + 127, opt);
+        if (facemeshConstants.LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, opt);
+        if (facemeshConstants.LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, opt);
       }
     }
   }

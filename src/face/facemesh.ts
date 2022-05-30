@@ -86,11 +86,11 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       if (config.debug) log('face mesh detection requested, but model is not loaded');
     } else { // mesh enabled
       const results = model.execute(face.tensor as Tensor) as Array<Tensor>;
-      const confidence = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
-      const contourCoords = results.find((t) => t.shape[t.shape.length - 1] === 1404) as Tensor;
-      const faceConfidence = await confidence.data();
+      const confidenceT = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
+      const meshT = results.find((t) => t.shape[t.shape.length - 1] === 1404) as Tensor;
+      const faceConfidence = confidenceT.dataSync();
       face.faceScore = Math.round(100 * faceConfidence[0]) / 100;
-      const coordsReshaped = tf.reshape(contourCoords, [-1, 3]);
+      const coordsReshaped = tf.reshape(meshT, [-1, 3]);
       let rawCoords = await coordsReshaped.array();
       if (face.faceScore < (config.face.detector?.minConfidence || 1)) { // low confidence in detected mesh
         box.confidence = face.faceScore; // reset confidence of cached box
@@ -133,6 +133,11 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
+  // @ts-ignore private property
+  if (config?.face?.attention?.enabled && model?.signature) {
+    // @ts-ignore private property
+    if (Object.keys(model?.signature?.outputs || {}).length < 6) model = null;
+  }
   if (!model) {
     if (config.face.attention?.enabled) model = await loadModel(config.face.attention?.modelPath);
     else model = await loadModel(config.face.mesh?.modelPath);

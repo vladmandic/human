@@ -12,11 +12,10 @@ import { Human, Config } from '../../dist/human.esm.js'; // equivalent of @vladm
 const humanConfig: Partial<Config> = { // user configuration for human, used to fine-tune behavior
   // backend: 'webgpu' as const,
   // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.18.0/dist/',
+  // cacheSensitivity: 0,
   async: true,
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false },
-  //
-  cacheSensitivity: 0,
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
   body: { enabled: true },
   hand: { enabled: true },

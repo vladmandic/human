@@ -58,6 +58,16 @@ export async function check(instance: Human, force = false) {
         } else {
           const adapter = await navigator['gpu'].requestAdapter();
           if (instance.config.debug) log('enumerated webgpu adapter:', adapter);
+          if (!adapter) {
+            log('override: backend set to webgpu but browser reports no available gpu');
+            instance.config.backend = 'humangl';
+          } else {
+            // @ts-ignore requestAdapterInfo is not in tslib
+            // eslint-disable-next-line no-undef
+            const adapterInfo = 'requestAdapterInfo' in adapter ? await (adapter as GPUAdapter).requestAdapterInfo() : undefined;
+            // if (adapter.features) adapter.features.forEach((feature) => log('webgpu features:', feature));
+            log('webgpu adapter info:', adapterInfo);
+          }
         }
       }
 
@@ -76,6 +86,9 @@ export async function check(instance: Human, force = false) {
 
       // customize wasm
       if (instance.config.backend === 'wasm') {
+        try {
+          tf.env().set('CANVAS2D_WILL_READ_FREQUENTLY', true);
+        } catch { /**/ }
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
         if (typeof tf?.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
         else throw new Error('backend error: attempting to use wasm backend but wasm path is not set');

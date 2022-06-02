@@ -88,7 +88,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       const results = model.execute(face.tensor as Tensor) as Array<Tensor>;
       const confidenceT = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
       const meshT = results.find((t) => t.shape[t.shape.length - 1] === 1404) as Tensor;
-      const faceConfidence = confidenceT.dataSync();
+      const faceConfidence = await confidenceT.data();
       face.faceScore = Math.round(100 * faceConfidence[0]) / 100;
       const coordsReshaped = tf.reshape(meshT, [-1, 3]);
       let rawCoords = await coordsReshaped.array();

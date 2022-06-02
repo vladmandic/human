@@ -26,7 +26,7 @@ export class FaceBoxes {
     const resizeT = tf.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
     const castT = resizeT.toInt();
     const [scoresT, boxesT, numT] = await this.model.executeAsync(castT) as Tensor[];
-    const scores = scoresT.dataSync();
+    const scores = await scoresT.data();
     const squeezeT = tf.squeeze(boxesT);
     const boxes = squeezeT.arraySync();
     scoresT.dispose();

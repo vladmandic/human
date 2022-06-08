@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-  Version: **2.8.0**  
+  Version: **2.8.1**  
   Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
   
   Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,11 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/05/30 mandic00@live.com
+### **2.8.1** 2022/06/08 mandic00@live.com
 
 
-### **origin/main** 2022/05/29 mandic00@live.com
+### **origin/main** 2022/06/02 mandic00@live.com
 
+- add faceboxes prototype
 - full rebuild
 
 ### **2.7.4** 2022/05/24 mandic00@live.com

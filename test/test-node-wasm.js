@@ -13,8 +13,8 @@ const config = {
   cacheSensitivity: 0,
   modelBasePath: 'https://vladmandic.github.io/human/models/',
   backend: 'wasm',
-  // wasmPath: 'node_modules/@tensorflow/tfjs-backend-wasm/dist/',
-  wasmPath: `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`,
+  wasmPath: 'node_modules/@tensorflow/tfjs-backend-wasm/dist/',
+  // wasmPath: `cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`,
   debug: false,
   async: false,
   face: {

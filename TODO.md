@@ -47,18 +47,3 @@ Feature is automatically disabled in **NodeJS** without user impact
 <hr><br>
 
 ## Pending Release Changes
-
-- Updated **FaceMesh-Landmarks** models
-- Added **FaceMesh-with-Attention** model is disabled by defauls, enable using  
-  `config.face.mesh.attention = true`
-- If **FaceMesh-with-Attention** model is enabled, Iris model gets disabled  
-  as its functionality is superseded by attention model
-- Results include more detailed face mesh annotations  
-  `result.face[].annotations`
-- Update benchmarks: `demo/benchmark`
-- Slight performance improvement with canvas reads using `WASM` backend
-- Default to RTM version of `WASM` binaries
-- Enhanced `WebGPU` compatibility
-- Support for **NodeJS v18**
-- Updated **Known Issues**  
-  See <https://github.com/vladmandic/human/blob/main/TODO.md>

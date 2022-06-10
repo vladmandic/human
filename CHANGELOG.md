@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/06/08 mandic00@live.com
+
+
 ### **2.8.1** 2022/06/08 mandic00@live.com
 
-
-### **origin/main** 2022/06/02 mandic00@live.com
-
+- webgpu and wasm optimizations
 - add faceboxes prototype
 - full rebuild
 

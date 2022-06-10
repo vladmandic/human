@@ -15,7 +15,7 @@ const humanConfig: Partial<Config> = { // user configuration for human, used to 
   // cacheSensitivity: 0,
   async: true,
   modelBasePath: '../../models',
-  filter: { enabled: true, equalization: false },
+  filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
   body: { enabled: true },
   hand: { enabled: true },
@@ -86,7 +86,8 @@ async function detectionLoop() { // main detection loop
 async function drawLoop() { // main screen refresh loop
   if (!dom.video.paused) {
     const interpolated = await human.next(human.result); // smoothen result using last-known results
-    await human.draw.canvas(dom.video, dom.canvas); // draw canvas to screen
+    if (human.config.filter.flip) await human.draw.canvas(interpolated.canvas as HTMLCanvasElement, dom.canvas); // draw processed image to screen canvas
+    else await human.draw.canvas(dom.video, dom.canvas); // draw original video to screen canvas // better than using procesed image as this loop happens faster than processing loop
     await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
     perf(interpolated.performance); // write performance data
   }

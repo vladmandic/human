@@ -1,4 +1,4 @@
-/*
+"use strict";/*
   Human
   homepage: <https://github.com/vladmandic/human>
   author: <https://github.com/vladmandic>'

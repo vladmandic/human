@@ -1,3 +1,4 @@
+"use strict";
 /*
   Human
   homepage: <https://github.com/vladmandic/human>
@@ -13561,7 +13562,7 @@ var pr = class extends Is {
           c.push({ key: this.inputs[f], value: n[f] });
         let p = new Jr(c), d = Fu(this.outputs, p, { training: true }), h;
         for (let f = 0; f < this.lossFunctions.length; ++f) {
-          let g = this.lossFunctions[f](s[f], d[f]);
+          let m = this.lossFunctions[f], g = m(s[f], d[f]);
           r[f] != null && (g = HB(g, r[f]));
           let b = It(g);
           t.push(b), f === 0 ? h = g : h = oe(h, g);

@@ -2,6 +2,7 @@
 
 import { log } from '../util/util';
 import * as tf from '../../dist/tfjs.esm.js';
+import { loadModel } from '../tfjs/load';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
 
@@ -56,7 +57,7 @@ export class FaceBoxes {
 }
 
 export async function load(config) {
-  const model = await tf.loadGraphModel(config.face.detector.modelPath);
+  const model = await loadModel(config.face.detector?.modelPath);
   if (config.debug) log(`load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
   const faceboxes = new FaceBoxes(model, config);
   if (config.face.mesh.enabled && config.debug) log(`load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);

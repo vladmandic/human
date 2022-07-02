@@ -808,6 +808,12 @@ declare function getModelArtifactsForJSON(modelJSON: ModelJSON, loadWeights: (we
  */
 declare function getModelArtifactsInfoForJSON(modelArtifacts: ModelArtifacts): ModelArtifactsInfo;
 
+declare const getModelStats: () => {
+    sizeManifest: number;
+    sizeWeights: number;
+    numModels: number;
+};
+
 declare const getSaveHandlers: (url: string | string[]) => IOHandler[];
 
 declare interface GPUData {
@@ -1302,6 +1308,12 @@ declare class Human {
      * @returns result - {@link Result}
      */
     next(result?: Result): Result;
+    /** get model loading/loaded stats */
+    getModelStats: () => {
+        sizeManifest: number;
+        sizeWeights: number;
+        numModels: number;
+    };
     /** Warmup method pre-initializes all configured models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
@@ -1830,7 +1842,8 @@ declare namespace models {
         reset,
         load,
         validate,
-        Models
+        Models,
+        getModelStats
     }
 }
 export { models }

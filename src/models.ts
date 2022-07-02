@@ -24,6 +24,7 @@ import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
 import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
+import { modelStats } from './tfjs/load';
 import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
 
@@ -58,6 +59,16 @@ export class Models {
   antispoof: null | GraphModel | Promise<GraphModel> = null;
 }
 
+export const getModelStats = () => {
+  let sizeManifest = 0;
+  let sizeWeights = 0;
+  for (const m of Object.values(modelStats)) {
+    sizeManifest += m.manifest;
+    sizeWeights += m.weights;
+  }
+  return { sizeManifest, sizeWeights, numModels: Object.values(modelStats).length };
+};
+
 export function reset(instance: Human): void {
   // if (instance.config.debug) log('resetting loaded models');
   for (const model of Object.keys(instance.models)) instance.models[model as keyof Models] = null;
@@ -67,8 +78,12 @@ export function reset(instance: Human): void {
 export async function load(instance: Human): Promise<void> {
   if (env.initial) reset(instance);
   if (instance.config.hand.enabled) { // handpose model is a combo that must be loaded as a whole
-    if (!instance.models.handpose && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
-    if (!instance.models.handskeleton && instance.config.hand.landmarks && instance.config.hand.detector?.modelPath?.includes('handdetect')) [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
+    if (!instance.models.handpose && instance.config.hand.detector?.modelPath?.includes('handdetect')) {
+      [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
+    }
+    if (!instance.models.handskeleton && instance.config.hand.landmarks && instance.config.hand.detector?.modelPath?.includes('handdetect')) {
+      [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
+    }
   }
   if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
   // @ts-ignore optional model
@@ -99,7 +114,9 @@ export async function load(instance: Human): Promise<void> {
 
   // models are loaded in parallel asynchronously so lets wait until they are actually loaded
   for await (const model of Object.keys(instance.models)) {
-    if (instance.models[model as keyof Models] && typeof instance.models[model as keyof Models] !== 'undefined') instance.models[model as keyof Models] = await instance.models[model as keyof Models];
+    if (instance.models[model as keyof Models] && typeof instance.models[model as keyof Models] !== 'undefined') {
+      instance.models[model as keyof Models] = await instance.models[model as keyof Models];
+    }
   }
 }
 

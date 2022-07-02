@@ -39165,6 +39165,7 @@ var options = {
   debug: false,
   modelBasePath: ""
 };
+var modelStats = {};
 async function httpHandler(url, init2) {
   if (options.debug)
     log("load model fetch:", url, init2);
@@ -39176,29 +39177,39 @@ function setModelLoadOptions(config3) {
   options.modelBasePath = config3.modelBasePath;
 }
 async function loadModel(modelPath) {
+  var _a2, _b2, _c;
   let modelUrl = join(options.modelBasePath, modelPath || "");
   if (!modelUrl.toLowerCase().endsWith(".json"))
     modelUrl += ".json";
   const modelPathSegments = modelUrl.split("/");
-  const cachedModelName = "indexeddb://" + modelPathSegments[modelPathSegments.length - 1].replace(".json", "");
+  const shortModelName = modelPathSegments[modelPathSegments.length - 1].replace(".json", "");
+  const cachedModelName = "indexeddb://" + shortModelName;
+  modelStats[shortModelName] = {
+    name: shortModelName,
+    manifest: 0,
+    weights: 0,
+    cached: false
+  };
   const cachedModels = await An.listModels();
-  const modelCached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName);
+  modelStats[shortModelName].cached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName);
   const tfLoadOptions = typeof fetch === "undefined" ? {} : { fetchFunc: (url, init2) => httpHandler(url, init2) };
-  const model18 = new P0(modelCached ? cachedModelName : modelUrl, tfLoadOptions);
+  const model18 = new P0(modelStats[shortModelName].cached ? cachedModelName : modelUrl, tfLoadOptions);
   let loaded = false;
   try {
     model18.findIOHandler();
     if (options.debug)
-      log("model load handler:", model18.handler);
+      log("model load handler:", model18["handler"]);
     const artifacts = await model18.handler.load();
+    modelStats[shortModelName].manifest = ((_a2 = artifacts == null ? void 0 : artifacts.weightData) == null ? void 0 : _a2.byteLength) || 0;
     model18.loadSync(artifacts);
+    modelStats[shortModelName].weights = ((_c = (_b2 = model18 == null ? void 0 : model18.artifacts) == null ? void 0 : _b2.weightData) == null ? void 0 : _c.byteLength) || 0;
     if (options.verbose)
-      log("load model:", model18["modelUrl"]);
+      log("load model:", model18["modelUrl"], { bytes: modelStats[shortModelName].weights });
     loaded = true;
   } catch (err) {
     log("error loading model:", modelUrl, err);
   }
-  if (loaded && options.cacheModels && !modelCached) {
+  if (loaded && options.cacheModels && !modelStats[shortModelName].cached) {
     try {
       const saveResult = await model18.save(cachedModelName);
       log("model saved:", cachedModelName, saveResult);
@@ -39216,6 +39227,7 @@ var version = "2.8.1";
 var models_exports = {};
 __export(models_exports, {
   Models: () => Models,
+  getModelStats: () => getModelStats,
   load: () => load19,
   reset: () => reset,
   validate: () => validate2
@@ -49303,6 +49315,15 @@ var Models = class {
     __publicField(this, "antispoof", null);
   }
 };
+var getModelStats = () => {
+  let sizeManifest = 0;
+  let sizeWeights = 0;
+  for (const m of Object.values(modelStats)) {
+    sizeManifest += m.manifest;
+    sizeWeights += m.weights;
+  }
+  return { sizeManifest, sizeWeights, numModels: Object.values(modelStats).length };
+};
 function reset(instance) {
   for (const model18 of Object.keys(instance.models))
     instance.models[model18] = null;
@@ -49312,10 +49333,12 @@ async function load19(instance) {
   if (env.initial)
     reset(instance);
   if (instance.config.hand.enabled) {
-    if (!instance.models.handpose && ((_b2 = (_a2 = instance.config.hand.detector) == null ? void 0 : _a2.modelPath) == null ? void 0 : _b2.includes("handdetect")))
+    if (!instance.models.handpose && ((_b2 = (_a2 = instance.config.hand.detector) == null ? void 0 : _a2.modelPath) == null ? void 0 : _b2.includes("handdetect"))) {
       [instance.models.handpose, instance.models.handskeleton] = await load13(instance.config);
-    if (!instance.models.handskeleton && instance.config.hand.landmarks && ((_d2 = (_c = instance.config.hand.detector) == null ? void 0 : _c.modelPath) == null ? void 0 : _d2.includes("handdetect")))
+    }
+    if (!instance.models.handskeleton && instance.config.hand.landmarks && ((_d2 = (_c = instance.config.hand.detector) == null ? void 0 : _c.modelPath) == null ? void 0 : _d2.includes("handdetect"))) {
       [instance.models.handpose, instance.models.handskeleton] = await load13(instance.config);
+    }
   }
   if (instance.config.body.enabled && !instance.models.blazepose && ((_f = (_e2 = instance.config.body) == null ? void 0 : _e2.modelPath) == null ? void 0 : _f.includes("blazepose")))
     instance.models.blazepose = loadPose(instance.config);
@@ -49360,8 +49383,9 @@ async function load19(instance) {
   if (instance.config.segmentation.enabled && !instance.models.segmentation)
     instance.models.segmentation = load18(instance.config);
   for await (const model18 of Object.keys(instance.models)) {
-    if (instance.models[model18] && typeof instance.models[model18] !== "undefined")
+    if (instance.models[model18] && typeof instance.models[model18] !== "undefined") {
       instance.models[model18] = await instance.models[model18];
+    }
   }
 }
 async function validate2(instance) {
@@ -51782,6 +51806,7 @@ var Human = class {
       if (this.events && this.events.dispatchEvent)
         (_a2 = this.events) == null ? void 0 : _a2.dispatchEvent(new Event(event));
     });
+    __publicField(this, "getModelStats", () => getModelStats());
     var _a2;
     this.env = env;
     const tfVersion = (((_a2 = Ghe) == null ? void 0 : _a2.tfjs) || Gpe).replace(/-(.*)/, "");

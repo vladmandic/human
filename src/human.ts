@@ -329,6 +329,9 @@ export class Human {
     return interpolate.calc(result, this.config) as Result;
   }
 
+  /** get model loading/loaded stats */
+  getModelStats = () => models.getModelStats();
+
   /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup
    * - only used for `webgl` and `humangl` backends

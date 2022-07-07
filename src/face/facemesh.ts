@@ -87,11 +87,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     } else { // mesh enabled
       const results = model.execute(face.tensor as Tensor) as Array<Tensor>;
       const confidenceT = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
-      const meshT = results.find((t) => t.shape[t.shape.length - 1] === 1404) as Tensor;
       const faceConfidence = await confidenceT.data();
       face.faceScore = Math.round(100 * faceConfidence[0]) / 100;
-      const coordsReshaped = tf.reshape(meshT, [-1, 3]);
-      let rawCoords = await coordsReshaped.array();
       if (face.faceScore < (config.face.detector?.minConfidence || 1)) { // low confidence in detected mesh
         box.confidence = face.faceScore; // reset confidence of cached box
         if (config.face.mesh?.keepInvalid) {
@@ -108,6 +105,10 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
           }
         }
       } else {
+        const meshT = results.find((t) => t.shape[t.shape.length - 1] === 1404) as Tensor;
+        const coordsReshaped = tf.reshape(meshT, [-1, 3]);
+        let rawCoords = await coordsReshaped.array();
+        tf.dispose(coordsReshaped);
         if (config.face.attention?.enabled) {
           rawCoords = await attention.augment(rawCoords, results); // augment iris results using attention model results
         } else if (config.face.iris?.enabled) {
@@ -122,7 +123,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         face.boxRaw = util.getRawBox(calculatedBox, input);
         newCache.push(calculatedBox);
       }
-      tf.dispose([...results, coordsReshaped]);
+      tf.dispose(results);
     }
     if (face.score > (config.face.detector?.minConfidence || 1)) faces.push(face);
     else tf.dispose(face.tensor);

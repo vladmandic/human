@@ -44347,11 +44347,8 @@ async function predict10(input, config3) {
     } else {
       const results = model11.execute(face4.tensor);
       const confidenceT = results.find((t) => t.shape[t.shape.length - 1] === 1);
-      const meshT = results.find((t) => t.shape[t.shape.length - 1] === 1404);
       const faceConfidence = await confidenceT.data();
       face4.faceScore = Math.round(100 * faceConfidence[0]) / 100;
-      const coordsReshaped = U(meshT, [-1, 3]);
-      let rawCoords = await coordsReshaped.array();
       if (face4.faceScore < (((_g2 = config3.face.detector) == null ? void 0 : _g2.minConfidence) || 1)) {
         box.confidence = face4.faceScore;
         if ((_h = config3.face.mesh) == null ? void 0 : _h.keepInvalid) {
@@ -44368,6 +44365,10 @@ async function predict10(input, config3) {
           }
         }
       } else {
+        const meshT = results.find((t) => t.shape[t.shape.length - 1] === 1404);
+        const coordsReshaped = U(meshT, [-1, 3]);
+        let rawCoords = await coordsReshaped.array();
+        De(coordsReshaped);
         if ((_i2 = config3.face.attention) == null ? void 0 : _i2.enabled) {
           rawCoords = await augment(rawCoords, results);
         } else if ((_j2 = config3.face.iris) == null ? void 0 : _j2.enabled) {
@@ -44383,7 +44384,7 @@ async function predict10(input, config3) {
         face4.boxRaw = getRawBox(calculatedBox, input);
         newCache.push(calculatedBox);
       }
-      De([...results, coordsReshaped]);
+      De(results);
     }
     if (face4.score > (((_k2 = config3.face.detector) == null ? void 0 : _k2.minConfidence) || 1))
       faces.push(face4);

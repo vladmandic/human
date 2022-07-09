@@ -66,6 +66,12 @@ export interface FaceAntiSpoofConfig extends GenericConfig {}
 /** Liveness part of face configuration */
 export interface FaceLivenessConfig extends GenericConfig {}
 
+/** Gear part of face configuration */
+export interface FaceGearConfig extends GenericConfig {
+  /** minimum confidence for a detected race before results are discarded */
+  minConfidence: number,
+}
+
 /** Configures all face-specific options: face detection, mesh analysis, age, gender, emotion detection and face description */
 export interface FaceConfig extends GenericConfig {
   detector: Partial<FaceDetectorConfig>,
@@ -76,6 +82,7 @@ export interface FaceConfig extends GenericConfig {
   emotion: Partial<FaceEmotionConfig>,
   antispoof: Partial<FaceAntiSpoofConfig>,
   liveness: Partial<FaceLivenessConfig>,
+  gear: Partial<FaceGearConfig>,
 }
 
 /** Configures all body detection specific options */

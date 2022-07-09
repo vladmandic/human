@@ -24,7 +24,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config) {
   if (env.initial) model = null;
-  if (!model) model = await loadModel(config.face['gear']);
+  if (!model) model = await loadModel(config.face['gear']?.modelPath);
   else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }

@@ -56,6 +56,10 @@ let userConfig = {
   // body: { enabled: true, modelPath: 'movenet-multipose.json' },
   segmentation: { enabled: false },
   */
+  face: { iris: { enabled: false }, emotion: { enabled: false } },
+  hand: { enabled: false },
+  body: { enabled: false },
+  gesture: { enabled: false },
 };
 
 const drawOptions = {
@@ -203,8 +207,15 @@ async function videoPause() {
 
 const compare = { enabled: false, original: null };
 async function calcSimmilarity(result) {
+  document.getElementById('compare-container').onclick = () => {
+    log('resetting face compare baseline:');
+    compare.original = null;
+  };
   document.getElementById('compare-container').style.display = compare.enabled ? 'block' : 'none';
-  if (!compare.enabled) return;
+  if (!compare.enabled) {
+    compare.original = null;
+    return;
+  }
   if (!result || !result.face || !result.face[0] || !result.face[0].embedding) return;
   if (!(result.face.length > 0) || (result.face[0].embedding.length <= 64)) return;
   if (!compare.original) {

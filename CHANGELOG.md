@@ -9,8 +9,13 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/07/05 mandic00@live.com
+### **HEAD -> main** 2022/07/13 mandic00@live.com
 
+
+### **origin/main** 2022/07/09 animeniac@live.com
+
+- npm default install should be prod only
+- fix npm v7 compatibility
 - add getmodelstats method
 - rebuild
 
@@ -438,7 +443,7 @@
 - remove efficientpose
 - major version rebuild
 
-### **1.6.1** 2021/04/23 mandic00@live.com
+### **1.6.1** 2021/04/22 mandic00@live.com
 
 - add npmrc
 - added filter.flip feature
@@ -577,7 +582,7 @@
 - add typedocs and types
 - strong typings
 
-### **1.1.2** 2021/03/13 mandic00@live.com
+### **1.1.2** 2021/03/12 mandic00@live.com
 
 - distance based on minkowski space and limited euclidean space
 - guard against invalid input images
@@ -586,7 +591,7 @@
 
 - switched face embedding to mobileface
 
-### **1.0.4** 2021/03/12 mandic00@live.com
+### **1.0.4** 2021/03/11 mandic00@live.com
 
 - add face return tensor
 - add test for face descriptors
@@ -601,7 +606,7 @@
 - enhanced age, gender, emotion detection
 - full rebuild
 
-### **1.0.2** 2021/03/10 mandic00@live.com
+### **1.0.2** 2021/03/09 mandic00@live.com
 
 - remove blazeface-front, blazepose-upper, faceboxes
 - remove blazeface-front and faceboxes
@@ -711,7 +716,7 @@
 - variable name changes, setting .rawcoords only if necessary
 - option to return raw data (mesh, box) for facemesh / "preserve aspect ratio" fix from facemesh upstream
 
-### **0.9.18** 2020/12/17 mandic00@live.com
+### **0.9.18** 2020/12/16 mandic00@live.com
 
 - add z axis scaling
 - major work on body module
@@ -745,7 +750,7 @@
 
 - minor compatibility fixes
 
-### **0.9.11** 2020/11/24 mandic00@live.com
+### **0.9.11** 2020/11/23 mandic00@live.com
 
 - implement multi-person gestures
 - modularize pipeline models
@@ -782,7 +787,7 @@
 
 - swtich to tfjs source import
 
-### **0.9.3** 2020/11/17 mandic00@live.com
+### **0.9.3** 2020/11/16 mandic00@live.com
 
 - switched to minified build
 - web worker fixes
@@ -812,7 +817,7 @@
 - fix bug in async ops and change imports
 - fix wiki links
 
-### **0.8.6** 2020/11/10 mandic00@live.com
+### **0.8.6** 2020/11/09 mandic00@live.com
 
 - add wasm bundle
 
@@ -852,7 +857,7 @@
 - cache invalidation improvements
 - full async operations
 
-### **0.7.5** 2020/11/06 mandic00@live.com
+### **0.7.5** 2020/11/05 mandic00@live.com
 
 - implemented dev-server
 
@@ -897,12 +902,12 @@
 - complete model refactoring
 - fixed typo
 
-### **0.6.2** 2020/11/03 mandic00@live.com
+### **0.6.2** 2020/11/02 mandic00@live.com
 
 - optimized demo
 - package update
 
-### **0.6.1** 2020/11/03 mandic00@live.com
+### **0.6.1** 2020/11/02 mandic00@live.com
 
 - major performance improvements for all models
 - revert "optimized canvas handling"
@@ -956,7 +961,7 @@
 
 - implelented input resizing
 
-### **0.4.3** 2020/10/23 mandic00@live.com
+### **0.4.3** 2020/10/22 mandic00@live.com
 
 
 ### **0.4.2** 2020/10/20 mandic00@live.com
@@ -974,7 +979,7 @@
 - pure tensor pipeline without image converts
 - autodetect skipframes
 
-### **0.3.8** 2020/10/18 mandic00@live.com
+### **0.3.8** 2020/10/17 mandic00@live.com
 
 - new menu layout
 
@@ -1001,28 +1006,28 @@
 - optimized blazeface anchors
 - added error handling
 
-### **0.3.3** 2020/10/16 mandic00@live.com
+### **0.3.3** 2020/10/15 mandic00@live.com
 
 - added blazeface back and front models
 
-### **0.3.2** 2020/10/16 mandic00@live.com
+### **0.3.2** 2020/10/15 mandic00@live.com
 
 - reduced web worker latency
 - added debugging and versioning
 - optimized demos and added scoped runs
 - added multi backend support
 
-### **0.3.1** 2020/10/15 mandic00@live.com
+### **0.3.1** 2020/10/14 mandic00@live.com
 
 
-### **0.2.10** 2020/10/15 mandic00@live.com
+### **0.2.10** 2020/10/14 mandic00@live.com
 
 - added emotion backend
 - module parametrization and performance monitoring
 - implemented multi-hand support
 - fixed documentation typos
 
-### **0.2.9** 2020/10/14 mandic00@live.com
+### **0.2.9** 2020/10/13 mandic00@live.com
 
 - added node build and demo
 
@@ -1037,7 +1042,7 @@
 
 - enable all models by default
 
-### **0.2.5** 2020/10/13 mandic00@live.com
+### **0.2.5** 2020/10/12 mandic00@live.com
 
 - fixed memory leak
 

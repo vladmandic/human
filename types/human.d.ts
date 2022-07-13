@@ -519,6 +519,7 @@ export declare interface FaceConfig extends GenericConfig {
     emotion: Partial<FaceEmotionConfig>;
     antispoof: Partial<FaceAntiSpoofConfig>;
     liveness: Partial<FaceLivenessConfig>;
+    gear: Partial<FaceGearConfig>;
 }
 
 /** Description or face embedding part of face configuration
@@ -551,6 +552,12 @@ export declare interface FaceDetectorConfig extends GenericConfig {
 /** Emotion part of face configuration */
 export declare interface FaceEmotionConfig extends GenericConfig {
     /** minimum confidence for a detected face before results are discarded */
+    minConfidence: number;
+}
+
+/** Gear part of face configuration */
+export declare interface FaceGearConfig extends GenericConfig {
+    /** minimum confidence for a detected race before results are discarded */
     minConfidence: number;
 }
 

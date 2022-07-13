@@ -4,7 +4,8 @@ import type { GraphModel } from './types';
 import type { Config } from '../config';
 
 const options = {
-  cacheModels: false,
+  cacheModels: true,
+  cacheSupported: true,
   verbose: true,
   debug: false,
   modelBasePath: '',
@@ -42,8 +43,9 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     weights: 0,
     cached: false,
   };
-  const cachedModels = await tf.io.listModels(); // list all models already in cache
-  modelStats[shortModelName].cached = options.cacheModels && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
+  options.cacheSupported = (typeof window !== 'undefined') && (typeof window.localStorage !== 'undefined') && (typeof window.indexedDB !== 'undefined'); // check if running in browser and if indexedb is available
+  const cachedModels = (options.cacheSupported && options.cacheModels) ? await tf.io.listModels() : {}; // list all models already in cache
+  modelStats[shortModelName].cached = (options.cacheSupported && options.cacheModels) && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
   const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url, init?) => httpHandler(url, init) };
   const model: GraphModel = new tf.GraphModel(modelStats[shortModelName].cached ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
   let loaded = false;
@@ -57,12 +59,12 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     model.loadSync(artifacts); // load weights
     // @ts-ignore private property
     modelStats[shortModelName].weights = model?.artifacts?.weightData?.byteLength || 0;
-    if (options.verbose) log('load model:', model['modelUrl'], { bytes: modelStats[shortModelName].weights });
+    if (options.verbose) log('load model:', model['modelUrl'], { bytes: modelStats[shortModelName].weights }, options);
     loaded = true;
   } catch (err) {
     log('error loading model:', modelUrl, err);
   }
-  if (loaded && options.cacheModels && !modelStats[shortModelName].cached) { // save model to cache
+  if (loaded && options.cacheModels && options.cacheSupported && !modelStats[shortModelName].cached) { // save model to cache
     try {
       const saveResult = await model.save(cachedModelName);
       log('model saved:', cachedModelName, saveResult);

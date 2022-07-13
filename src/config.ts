@@ -316,7 +316,7 @@ const config: Config = {
   cacheModels: true,
   wasmPath: '',
   wasmPlatformFetch: false,
-  debug: true,
+  debug: false,
   async: true,
   warmup: 'full',
   cacheSensitivity: 0.70,

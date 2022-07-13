@@ -18,7 +18,8 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - **Browser**:  
   Compatible with both desktop and mobile platforms  
   Compatible with *CPU*, *WebGL*, *WASM* backends  
-  Compatible with *WebWorker* execution
+  Compatible with *WebWorker* execution  
+  Compatible with *WebView*  
 - **NodeJS**:  
   Compatible with both software *tfjs-node* and  
   GPU accelerated backends *tfjs-node-gpu* using CUDA libraries  

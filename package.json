@@ -52,8 +52,12 @@
     "tfjs",
     "tensorflow"
   ],
+  "optionalDependencies": {
+    "canvas": "^2.9.3",
+    "dayjs": "^1.11.3"
+  },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.28.3",
+    "@microsoft/api-extractor": "^7.28.4",
     "@tensorflow/tfjs": "^3.18.0",
     "@tensorflow/tfjs-backend-cpu": "^3.18.0",
     "@tensorflow/tfjs-backend-wasm": "^3.18.0",
@@ -67,14 +71,12 @@
     "@tensorflow/tfjs-node-gpu": "^3.18.0",
     "@types/node": "^18.0.3",
     "@types/offscreencanvas": "^2019.7.0",
-    "@typescript-eslint/eslint-plugin": "^5.30.5",
-    "@typescript-eslint/parser": "^5.30.5",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
     "@vladmandic/build": "^0.7.4",
     "@vladmandic/pilogger": "^0.4.4",
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
-    "canvas": "^2.9.3",
-    "dayjs": "^1.11.3",
-    "esbuild": "^0.14.48",
+    "esbuild": "^0.14.49",
     "eslint": "8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-html": "^6.2.0",
@@ -82,11 +84,11 @@
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
-    "node-fetch": "^3.2.6",
+    "node-fetch": "^3.2.8",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
     "tslib": "^2.4.0",
-    "typedoc": "0.23.5",
+    "typedoc": "0.23.7",
     "typescript": "4.7.4"
   }
 }

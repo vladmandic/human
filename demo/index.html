@@ -35,7 +35,7 @@
       .video { display: none; }
       .canvas { margin: 0 auto; }
       .bench { position: absolute; right: 0; bottom: 0; }
-      .compare-image { width: 256px; position: absolute; top: 150px; left: 30px; box-shadow: 0 0 2px 2px black; background: black; display: none; }
+      .compare-image { width: 200px; position: absolute; top: 150px; left: 30px; box-shadow: 0 0 2px 2px black; background: black; display: none; }
       .loader { width: 300px; height: 300px; border: 3px solid transparent; border-radius: 50%; border-top: 4px solid #f15e41; animation: spin 4s linear infinite; position: absolute; bottom: 15%; left: 50%; margin-left: -150px; z-index: 15; }
       .loader::before, .loader::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 6px; right: 6px; border-radius: 50%; border: 4px solid transparent; }
       .loader::before { border-top-color: #bad375; animation: 3s spin linear infinite; }
@@ -107,7 +107,7 @@
       <video id="video" playsinline class="video"></video>
     </div>
     <div id="compare-container" class="compare-image">
-      <canvas id="compare-canvas" width="256" height="256"></canvas>
+      <canvas id="compare-canvas" width="200" height="200"></canvas>
       <div id="similarity"></div>
     </div>
     <div id="segmentation-container" class="compare-image">

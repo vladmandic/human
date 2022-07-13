@@ -11,9 +11,7 @@
   
 ### **HEAD -> main** 2022/07/13 mandic00@live.com
 
-
-### **origin/main** 2022/07/09 animeniac@live.com
-
+- fix(gear): ensure gear.modelpath is used for loadmodel()
 - npm default install should be prod only
 - fix npm v7 compatibility
 - add getmodelstats method

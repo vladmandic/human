@@ -59,6 +59,8 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       score: 0,
       boxScore: 0,
       faceScore: 0,
+      // contoursRaw: [],
+      // contours: [],
       annotations: {} as Record<FaceLandmark, Point[]>,
     };
 
@@ -89,6 +91,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
       const confidenceT = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
       const faceConfidence = await confidenceT.data();
       face.faceScore = Math.round(100 * faceConfidence[0]) / 100;
+
       if (face.faceScore < (config.face.detector?.minConfidence || 1)) { // low confidence in detected mesh
         box.confidence = face.faceScore; // reset confidence of cached box
         if (config.face.mesh?.keepInvalid) {
@@ -99,7 +102,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
             ((box.startPoint[0] + box.endPoint[0])) / 2 + ((box.endPoint[0] + box.startPoint[0]) * pt[0] / blazeface.size()),
             ((box.startPoint[1] + box.endPoint[1])) / 2 + ((box.endPoint[1] + box.startPoint[1]) * pt[1] / blazeface.size()),
           ]);
-          face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
+          face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 1), pt[1] / (input.shape[1] || 1), (pt[2] || 0) / inputSize]);
           for (const key of Object.keys(coords.blazeFaceLandmarks)) {
             face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
           }
@@ -121,6 +124,13 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         const calculatedBox = { ...util.calculateFaceBox(face.mesh, box), confidence: box.confidence, landmarks: box.landmarks };
         face.box = util.clampBox(calculatedBox, input);
         face.boxRaw = util.getRawBox(calculatedBox, input);
+        /*
+        const contoursT = results.find((t) => t.shape[t.shape.length - 1] === 266) as Tensor;
+        const contoursData = contoursT && await contoursT.data(); // 133 x 2d points
+        face.contoursRaw = [];
+        for (let j = 0; j < contoursData.length / 2; j++) face.contoursRaw.push([contoursData[2 * j + 0] / inputSize, contoursData[2 * j + 1] / inputSize]);
+        face.contours = face.contoursRaw.map((c) => [Math.trunc((input.shape[2] || 1) * c[0]), Math.trunc((input.shape[1] || 1) * c[1])]);
+        */
         newCache.push(calculatedBox);
       }
       tf.dispose(results);

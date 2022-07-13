@@ -40,7 +40,11 @@ export interface FaceResult {
   /** detected face mesh */
   mesh: Array<Point>
   /** detected face mesh normalized to 0..1 */
-  meshRaw: Array<Point>
+  meshRaw: Array<Point>,
+  /** face contours as array of 2d points normalized to 0..1 */
+  // contoursRaw: Array<[number, number]>,
+  /** face contours as array of 2d points */
+  // contours: Array<[number, number]>,
   /** mesh keypoints combined into annotated results */
   annotations: Record<FaceLandmark, Point[]>,
   /** detected age */

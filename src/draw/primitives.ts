@@ -57,7 +57,7 @@ export function lines(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingCo
   ctx.beginPath();
   ctx.moveTo(points[0][0], points[0][1]);
   for (const pt of points) {
-    ctx.strokeStyle = colorDepth(pt[2], localOptions);
+    ctx.strokeStyle = colorDepth(pt[2] || 0, localOptions);
     ctx.lineTo(Math.trunc(pt[0]), Math.trunc(pt[1]));
   }
   ctx.stroke();

@@ -120,6 +120,13 @@ function drawFacePolygons(f: FaceResult, ctx: CanvasRenderingContext2D | Offscre
     }
     drawIrisElipse(f, ctx);
   }
+  /*
+  if (opt.drawPolygons && f.contours.length > 1) {
+    ctx.lineWidth = 5;
+    lines(ctx, f.contours, opt);
+  }
+  ctx.lineWidth = 1;
+  */
 }
 
 function drawFacePoints(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {

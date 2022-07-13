@@ -34,7 +34,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-function decodeBounds(boxOutputs: Tensor) {
+function decodeBoxes(boxOutputs: Tensor) {
   const t: Record<string, Tensor> = {};
   t.boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
   t.centers = tf.add(t.boxStarts, anchors);
@@ -71,7 +71,7 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
     t.batch = tf.squeeze(res);
   }
   tf.dispose(res);
-  t.boxes = decodeBounds(t.batch);
+  t.boxes = decodeBoxes(t.batch);
   t.logits = tf.slice(t.batch, [0, 0], [-1, 1]);
   t.sigmoid = tf.sigmoid(t.logits);
   t.scores = tf.squeeze(t.sigmoid);

@@ -56,10 +56,12 @@ let userConfig = {
   // body: { enabled: true, modelPath: 'movenet-multipose.json' },
   segmentation: { enabled: false },
   */
+  /*
   face: { iris: { enabled: false }, emotion: { enabled: false } },
   hand: { enabled: false },
   body: { enabled: false },
   gesture: { enabled: false },
+  */
 };
 
 const drawOptions = {

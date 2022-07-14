@@ -60,13 +60,13 @@ export class Models {
 }
 
 export const getModelStats = () => {
-  let sizeManifest = 0;
+  let sizeFromManifest = 0;
   let sizeWeights = 0;
   for (const m of Object.values(modelStats)) {
-    sizeManifest += m.manifest;
+    sizeFromManifest += m.manifest;
     sizeWeights += m.weights;
   }
-  return { sizeManifest, sizeWeights, numModels: Object.values(modelStats).length };
+  return { numLoadedModels: Object.values(modelStats).length, sizeFromManifest, sizeWeights };
 };
 
 export function reset(instance: Human): void {

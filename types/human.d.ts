@@ -818,9 +818,9 @@ declare function getModelArtifactsForJSON(modelJSON: ModelJSON, loadWeights: (we
 declare function getModelArtifactsInfoForJSON(modelArtifacts: ModelArtifacts): ModelArtifactsInfo;
 
 declare const getModelStats: () => {
-    sizeManifest: number;
+    numLoadedModels: number;
+    sizeFromManifest: number;
     sizeWeights: number;
-    numModels: number;
 };
 
 declare const getSaveHandlers: (url: string | string[]) => IOHandler[];
@@ -1318,10 +1318,10 @@ declare class Human {
      */
     next(result?: Result): Result;
     /** get model loading/loaded stats */
-    getModelStats: () => {
-        sizeManifest: number;
+    getModelStats(): {
+        numLoadedModels: number;
+        sizeFromManifest: number;
         sizeWeights: number;
-        numModels: number;
     };
     /** Warmup method pre-initializes all configured models for faster inference
      * - can take significant time on startup

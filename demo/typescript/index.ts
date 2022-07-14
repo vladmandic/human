@@ -105,7 +105,8 @@ async function main() { // main entry point
   status('loading...');
   await human.load(); // preload all models
   log('backend:', human.tf.getBackend(), '| available:', human.env.backends);
-  log('loaded models:', Object.values(human.models).filter((model) => model !== null).length);
+  log('models stats:', human.getModelStats());
+  log('models loaded:', Object.values(human.models).filter((model) => model !== null).length);
   status('initializing...');
   await human.warmup(); // warmup function to initialize backend for future faster detection
   await webCam(); // start webcam

@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/07/13 mandic00@live.com
+### **HEAD -> main** 2022/07/14 mandic00@live.com
 
+- placeholder for face contours
 - improve face compare in main demo
 - add webview support
 - fix(gear): ensure gear.modelpath is used for loadmodel()

@@ -330,7 +330,7 @@ export class Human {
   }
 
   /** get model loading/loaded stats */
-  getModelStats = () => models.getModelStats();
+  getModelStats() { return models.getModelStats(); }
 
   /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup

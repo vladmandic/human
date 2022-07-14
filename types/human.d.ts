@@ -1191,7 +1191,7 @@ declare class Human {
     };
     /** Instance of TensorFlow/JS used by Human
      *  - Can be embedded or externally provided
-     * [TFJS API]: {@link https://js.tensorflow.org/api/latest/}
+     * [TFJS API](https://js.tensorflow.org/api/latest/)
      */
     tf: any;
     /** Object containing environment information used for diagnostics */

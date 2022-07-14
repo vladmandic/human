@@ -44,7 +44,12 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     cached: false,
   };
   options.cacheSupported = (typeof window !== 'undefined') && (typeof window.localStorage !== 'undefined') && (typeof window.indexedDB !== 'undefined'); // check if running in browser and if indexedb is available
-  const cachedModels = (options.cacheSupported && options.cacheModels) ? await tf.io.listModels() : {}; // list all models already in cache
+  let cachedModels = {};
+  try {
+    cachedModels = (options.cacheSupported && options.cacheModels) ? await tf.io.listModels() : {}; // list all models already in cache // this fails for webview although localStorage is defined
+  } catch {
+    options.cacheSupported = false;
+  }
   modelStats[shortModelName].cached = (options.cacheSupported && options.cacheModels) && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
   const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url, init?) => httpHandler(url, init) };
   const model: GraphModel = new tf.GraphModel(modelStats[shortModelName].cached ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl

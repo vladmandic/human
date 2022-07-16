@@ -116,7 +116,8 @@
         "format": "esm",
         "input": "tfjs/tf-custom.ts",
         "output": "dist/tfjs.esm.js",
-        "sourcemap": false
+        "sourcemap": false,
+        "minify": false
       },
       {
         "name": "human/browser/iife/bundle",

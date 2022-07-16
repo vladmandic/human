@@ -152,17 +152,12 @@ export class Env {
     const cpu = { model: '', flags: [] };
     if (this.node && this.platform.startsWith('linux')) {
       /*
-      // eslint-disable-next-line global-require
       const fs = require('fs');
       try {
         const data = fs.readFileSync('/proc/cpuinfo').toString();
         for (const line of data.split('\n')) {
-          if (line.startsWith('model name')) {
-            cpu.model = line.match(/:(.*)/g)[0].replace(':', '').trim();
-          }
-          if (line.startsWith('flags')) {
-            cpu.flags = line.match(/:(.*)/g)[0].replace(':', '').trim().split(' ').sort();
-          }
+          if (line.startsWith('model name')) cpu.model = line.match(/:(.*)/g)[0].replace(':', '').trim();
+          if (line.startsWith('flags')) cpu.flags = line.match(/:(.*)/g)[0].replace(':', '').trim().split(' ').sort();
         }
       } catch { }
       */

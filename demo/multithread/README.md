@@ -19,7 +19,7 @@ node demo/nodejs/node-multiprocess.js
 ```json
 2021-06-01 08:54:19 INFO:  @vladmandic/human version 2.0.0
 2021-06-01 08:54:19 INFO:  User: vlado Platform: linux Arch: x64 Node: v16.0.0
-2021-06-01 08:54:19 INFO:  FaceAPI multi-process test
+2021-06-01 08:54:19 INFO:  Human multi-process test
 2021-06-01 08:54:19 STATE: Enumerated images: ./assets 15
 2021-06-01 08:54:19 STATE: Main: started worker: 130362
 2021-06-01 08:54:19 STATE: Main: started worker: 130363

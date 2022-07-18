@@ -47,3 +47,17 @@ Feature is automatically disabled in **NodeJS** without user impact
 <hr><br>
 
 ## Pending Release Changes
+
+- install production-only dependencies by default
+  results in a must faster and smaller `human` installation
+  to install all dependencies use `npm install @vladmandic/human --production=false`
+- switch to production `@tensorflow/tfjs` for browsers  
+  `tfjs` has stabilized in recent versions so its not necessary to run a custom bundle anymore
+- add **webview** support
+- add `getModelStats` method
+- extract model stats in build process
+- typedoc fixes
+- add face contours to results
+- improve face compare in demo app
+- update dependencies
+- gear model fixes

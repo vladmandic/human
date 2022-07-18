@@ -58,7 +58,7 @@ async function main() {
   });
 
   log.header();
-  log.info('FaceAPI multi-process test');
+  log.info('Human multi-process test');
 
   // enumerate all images into queue
   const dir = fs.readdirSync(imgPathRoot);

@@ -8,7 +8,7 @@
 const fs = require('fs');
 const log = require('@vladmandic/pilogger');
 
-// workers actual import tfjs and faceapi modules
+// workers actual import tfjs and human modules
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node');
 const Human = require('../../dist/human.node.js').default; // or const Human = require('../dist/human.node-gpu.js').default;
@@ -36,7 +36,7 @@ const myConfig = {
   object: { enabled: true },
 };
 
-// read image from a file and create tensor to be used by faceapi
+// read image from a file and create tensor to be used by human
 // this way we don't need any monkey patches
 // you can add any pre-proocessing here such as resizing, etc.
 async function image(img) {
@@ -45,7 +45,7 @@ async function image(img) {
   return tensor;
 }
 
-// actual faceapi detection
+// actual human detection
 async function detect(img) {
   const tensor = await image(img);
   const result = await human.detect(tensor);

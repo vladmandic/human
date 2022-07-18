@@ -9,7 +9,7 @@ const canvas = require('canvas');
 
 // eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
-// const faceapi = require('@vladmandic/face-api'); // use this when human is installed as module (majority of use cases)
+// const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
 const config = { // just enable all and leave default settings

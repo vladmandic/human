@@ -1862,6 +1862,7 @@ export declare type ModelStats = {
     numLoadedModels: number;
     numEnabledModels: undefined;
     numDefinedModels: number;
+    percentageLoaded: number;
     totalSizeFromManifest: number;
     totalSizeWeights: number;
     totalSizeLoading: number;

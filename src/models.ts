@@ -63,6 +63,7 @@ export type ModelStats = {
   numLoadedModels: number,
   numEnabledModels: undefined,
   numDefinedModels: number,
+  percentageLoaded: number,
   totalSizeFromManifest: number,
   totalSizeWeights: number,
   totalSizeLoading: number,
@@ -79,10 +80,12 @@ export const getModelStats = (instance: Human): ModelStats => {
     totalSizeWeights += m.sizeLoadedWeights;
     totalSizeLoading += m.sizeDesired;
   }
+  const percentageLoaded = totalSizeLoading > 0 ? totalSizeWeights / totalSizeLoading : 0;
   return {
     numLoadedModels: Object.values(modelStats).length,
     numEnabledModels: undefined,
     numDefinedModels: Object.keys(instance.models).length,
+    percentageLoaded,
     totalSizeFromManifest,
     totalSizeWeights,
     totalSizeLoading,

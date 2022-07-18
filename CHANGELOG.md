@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/07/16 mandic00@live.com
+### **HEAD -> main** 2022/07/17 mandic00@live.com
 
+- swtich to release version of tfjs
 - placeholder for face contours
 - improve face compare in main demo
 - add webview support

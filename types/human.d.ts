@@ -817,11 +817,7 @@ declare function getModelArtifactsForJSON(modelJSON: ModelJSON, loadWeights: (we
  */
 declare function getModelArtifactsInfoForJSON(modelArtifacts: ModelArtifacts): ModelArtifactsInfo;
 
-declare const getModelStats: () => {
-    numLoadedModels: number;
-    sizeFromManifest: number;
-    sizeWeights: number;
-};
+declare const getModelStats: (instance: Human) => ModelStats;
 
 declare const getSaveHandlers: (url: string | string[]) => IOHandler[];
 
@@ -1318,11 +1314,7 @@ declare class Human {
      */
     next(result?: Result): Result;
     /** get model loading/loaded stats */
-    getModelStats(): {
-        numLoadedModels: number;
-        sizeFromManifest: number;
-        sizeWeights: number;
-    };
+    getModelStats(): ModelStats;
     /** Warmup method pre-initializes all configured models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
@@ -1740,6 +1732,14 @@ declare interface ModelArtifactsInfo {
     weightDataBytes?: number;
 }
 
+export declare type ModelInfo = {
+    name: string;
+    inCache: boolean;
+    sizeDesired: number;
+    sizeFromManifest: number;
+    sizeLoadedWeights: number;
+};
+
 /**
  * The on-disk format of the `model.json` file.
  *
@@ -1852,10 +1852,22 @@ declare namespace models {
         load,
         validate,
         Models,
+        ModelStats,
         getModelStats
     }
 }
 export { models }
+
+export declare type ModelStats = {
+    numLoadedModels: number;
+    numEnabledModels: undefined;
+    numDefinedModels: number;
+    totalSizeFromManifest: number;
+    totalSizeWeights: number;
+    totalSizeLoading: number;
+    totalSizeEnabled: undefined;
+    modelStats: ModelInfo[];
+};
 
 /**
  * An interface for the manager of a model store.

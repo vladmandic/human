@@ -24,7 +24,7 @@ import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
 import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
-import { modelStats } from './tfjs/load';
+import { modelStats, ModelInfo } from './tfjs/load';
 import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
 
@@ -59,14 +59,36 @@ export class Models {
   antispoof: null | GraphModel | Promise<GraphModel> = null;
 }
 
-export const getModelStats = () => {
-  let sizeFromManifest = 0;
-  let sizeWeights = 0;
+export type ModelStats = {
+  numLoadedModels: number,
+  numEnabledModels: undefined,
+  numDefinedModels: number,
+  totalSizeFromManifest: number,
+  totalSizeWeights: number,
+  totalSizeLoading: number,
+  totalSizeEnabled: undefined,
+  modelStats: ModelInfo[],
+}
+
+export const getModelStats = (instance: Human): ModelStats => {
+  let totalSizeFromManifest = 0;
+  let totalSizeWeights = 0;
+  let totalSizeLoading = 0;
   for (const m of Object.values(modelStats)) {
-    sizeFromManifest += m.manifest;
-    sizeWeights += m.weights;
+    totalSizeFromManifest += m.sizeFromManifest;
+    totalSizeWeights += m.sizeLoadedWeights;
+    totalSizeLoading += m.sizeDesired;
   }
-  return { numLoadedModels: Object.values(modelStats).length, sizeFromManifest, sizeWeights };
+  return {
+    numLoadedModels: Object.values(modelStats).length,
+    numEnabledModels: undefined,
+    numDefinedModels: Object.keys(instance.models).length,
+    totalSizeFromManifest,
+    totalSizeWeights,
+    totalSizeLoading,
+    totalSizeEnabled: undefined,
+    modelStats: Object.values(modelStats),
+  };
 };
 
 export function reset(instance: Human): void {

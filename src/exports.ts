@@ -39,3 +39,7 @@ export type ImageObjects = ImageData | ImageBitmap
 export type ExternalCanvas = typeof env.Canvas;
 /** Defines all possible input types for **Human** detection */
 export type Input = Tensor | AnyCanvas | AnyImage | AnyVideo | ImageObjects | ExternalCanvas;
+/** Defines model stats */
+export type { ModelStats } from './models';
+/** Defines individual model sizes */
+export type { ModelInfo } from './tfjs/load';

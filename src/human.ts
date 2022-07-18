@@ -37,7 +37,7 @@ import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
 import * as warmups from './warmup';
 // type definitions
-import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas } from './exports';
+import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas, ModelStats } from './exports';
 // type exports
 export * from './exports';
 
@@ -330,7 +330,7 @@ export class Human {
   }
 
   /** get model loading/loaded stats */
-  getModelStats() { return models.getModelStats(); }
+  getModelStats(): ModelStats { return models.getModelStats(this); }
 
   /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup

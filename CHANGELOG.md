@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/07/17 mandic00@live.com
+### **HEAD -> main** 2022/07/18 mandic00@live.com
 
+- add load monitor test
+- beta for upcoming major release
 - swtich to release version of tfjs
 - placeholder for face contours
 - improve face compare in main demo

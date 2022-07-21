@@ -23,6 +23,7 @@
   "scripts": {
     "start": "node --no-warnings demo/nodejs/node.js",
     "dev": "build --profile development",
+    "clean": "build --profile clean",
     "build": "rimraf test/build.log && node build.js",
     "test": "node --no-warnings --unhandled-rejections=strict --trace-uncaught test/node.js",
     "lint": "eslint src demo test",
@@ -57,7 +58,7 @@
     "dayjs": "^1.11.4"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.28.4",
+    "@microsoft/api-extractor": "^7.28.5",
     "@tensorflow/tfjs": "^3.18.0",
     "@tensorflow/tfjs-backend-cpu": "^3.18.0",
     "@tensorflow/tfjs-backend-wasm": "^3.18.0",

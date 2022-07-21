@@ -28,6 +28,7 @@ const human = new Human(humanConfig); // create instance of human with overrides
 human.env['perfadd'] = false; // is performance data showing instant or total values
 human.draw.options.font = 'small-caps 18px "Lato"'; // set font used to draw labels when using draw methods
 human.draw.options.lineHeight = 20;
+// human.draw.options.fillPolygons = true;
 
 const dom = { // grab instances of dom objects so we dont have to look them up later
   video: document.getElementById('video') as HTMLVideoElement,

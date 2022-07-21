@@ -9,11 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/07/19 mandic00@live.com
+### **HEAD -> main** 2022/07/21 mandic00@live.com
 
-
-### **origin/main** 2022/07/18 mandic00@live.com
-
+- tflite experiments
 - add load monitor test
 - beta for upcoming major release
 - swtich to release version of tfjs
@@ -25,9 +23,7 @@
 - fix npm v7 compatibility
 - add getmodelstats method
 - rebuild
-
-### **release: 2.8.1** 2022/06/08 mandic00@live.com
-
+- release build
 
 ### **2.8.1** 2022/06/08 mandic00@live.com
 
@@ -46,6 +42,7 @@
 ### **2.7.2** 2022/05/12 mandic00@live.com
 
 - fix demo when used with video files
+- major release
 
 ### **2.7.1** 2022/05/09 mandic00@live.com
 

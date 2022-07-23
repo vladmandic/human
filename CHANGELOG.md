@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/07/21 mandic00@live.com
 
+- release cleanup
 - tflite experiments
 - add load monitor test
 - beta for upcoming major release

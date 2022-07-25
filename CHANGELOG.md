@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-  Version: **2.9.0**  
+  Version: **2.9.1**  
   Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
   
   Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,8 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/07/21 mandic00@live.com
+### **2.9.1** 2022/07/25 mandic00@live.com
 
+
+### **origin/main** 2022/07/23 mandic00@live.com
+
+- full rebuild
 - release cleanup
 - tflite experiments
 - add load monitor test

@@ -25,7 +25,10 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod4, isNodeMode, target) => (target = mod4 != null ? __create(__getProtoOf(mod4)) : {}, __copyProps(isNodeMode || !mod4 || !mod4.__esModule ? __defProp(target, "default", { value: mod4, enumerable: true }) : target, mod4));
+var __toESM = (mod4, isNodeMode, target) => (target = mod4 != null ? __create(__getProtoOf(mod4)) : {}, __copyProps(
+  isNodeMode || !mod4 || !mod4.__esModule ? __defProp(target, "default", { value: mod4, enumerable: true }) : target,
+  mod4
+));
 
 // node_modules/.pnpm/long@4.0.0/node_modules/long/src/long.js
 var require_long = __commonJS({
@@ -614,7 +617,12 @@ var require_long = __commonJS({
       if (!isLong(multiplier))
         multiplier = fromValue(multiplier);
       if (wasm) {
-        var low = wasm.mul(this.low, this.high, multiplier.low, multiplier.high);
+        var low = wasm.mul(
+          this.low,
+          this.high,
+          multiplier.low,
+          multiplier.high
+        );
         return fromBits(low, wasm.get_high(), this.unsigned);
       }
       if (multiplier.isZero())
@@ -673,7 +681,12 @@ var require_long = __commonJS({
         if (!this.unsigned && this.high === -2147483648 && divisor.low === -1 && divisor.high === -1) {
           return this;
         }
-        var low = (this.unsigned ? wasm.div_u : wasm.div_s)(this.low, this.high, divisor.low, divisor.high);
+        var low = (this.unsigned ? wasm.div_u : wasm.div_s)(
+          this.low,
+          this.high,
+          divisor.low,
+          divisor.high
+        );
         return fromBits(low, wasm.get_high(), this.unsigned);
       }
       if (this.isZero())
@@ -735,7 +748,12 @@ var require_long = __commonJS({
       if (!isLong(divisor))
         divisor = fromValue(divisor);
       if (wasm) {
-        var low = (this.unsigned ? wasm.rem_u : wasm.rem_s)(this.low, this.high, divisor.low, divisor.high);
+        var low = (this.unsigned ? wasm.rem_u : wasm.rem_s)(
+          this.low,
+          this.high,
+          divisor.low,
+          divisor.high
+        );
         return fromBits(low, wasm.get_high(), this.unsigned);
       }
       return this.sub(this.div(divisor).mul(divisor));
@@ -844,10 +862,18 @@ var require_long = __commonJS({
       return le ? Long2.fromBytesLE(bytes, unsigned) : Long2.fromBytesBE(bytes, unsigned);
     };
     Long2.fromBytesLE = function fromBytesLE(bytes, unsigned) {
-      return new Long2(bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24, bytes[4] | bytes[5] << 8 | bytes[6] << 16 | bytes[7] << 24, unsigned);
+      return new Long2(
+        bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24,
+        bytes[4] | bytes[5] << 8 | bytes[6] << 16 | bytes[7] << 24,
+        unsigned
+      );
     };
     Long2.fromBytesBE = function fromBytesBE(bytes, unsigned) {
-      return new Long2(bytes[4] << 24 | bytes[5] << 16 | bytes[6] << 8 | bytes[7], bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3], unsigned);
+      return new Long2(
+        bytes[4] << 24 | bytes[5] << 16 | bytes[6] << 8 | bytes[7],
+        bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3],
+        unsigned
+      );
     };
   }
 });
@@ -946,7 +972,11 @@ var require_alea = __commonJS({
       } else {
         this.alea = impl;
       }
-    })(exports, typeof module == "object" && module, typeof define == "function" && define);
+    })(
+      exports,
+      typeof module == "object" && module,
+      typeof define == "function" && define
+    );
   }
 });
 
@@ -1014,7 +1044,11 @@ var require_xor128 = __commonJS({
       } else {
         this.xor128 = impl;
       }
-    })(exports, typeof module == "object" && module, typeof define == "function" && define);
+    })(
+      exports,
+      typeof module == "object" && module,
+      typeof define == "function" && define
+    );
   }
 });
 
@@ -1089,7 +1123,11 @@ var require_xorwow = __commonJS({
       } else {
         this.xorwow = impl;
       }
-    })(exports, typeof module == "object" && module, typeof define == "function" && define);
+    })(
+      exports,
+      typeof module == "object" && module,
+      typeof define == "function" && define
+    );
   }
 });
 
@@ -1180,7 +1218,11 @@ var require_xorshift7 = __commonJS({
       } else {
         this.xorshift7 = impl;
       }
-    })(exports, typeof module == "object" && module, typeof define == "function" && define);
+    })(
+      exports,
+      typeof module == "object" && module,
+      typeof define == "function" && define
+    );
   }
 });
 
@@ -1286,7 +1328,11 @@ var require_xor4096 = __commonJS({
       } else {
         this.xor4096 = impl;
       }
-    })(exports, typeof module == "object" && module, typeof define == "function" && define);
+    })(
+      exports,
+      typeof module == "object" && module,
+      typeof define == "function" && define
+    );
   }
 });
 
@@ -1360,7 +1406,11 @@ var require_tychei = __commonJS({
       } else {
         this.tychei = impl;
       }
-    })(exports, typeof module == "object" && module, typeof define == "function" && define);
+    })(
+      exports,
+      typeof module == "object" && module,
+      typeof define == "function" && define
+    );
   }
 });
 
@@ -1378,7 +1428,10 @@ var require_seedrandom = __commonJS({
       function seedrandom5(seed, options, callback) {
         var key = [];
         options = options == true ? { entropy: true } : options || {};
-        var shortseed = mixkey(flatten4(options.entropy ? [seed, tostring(pool3)] : seed == null ? autoseed() : seed, 3), key);
+        var shortseed = mixkey(flatten4(
+          options.entropy ? [seed, tostring(pool3)] : seed == null ? autoseed() : seed,
+          3
+        ), key);
         var arc4 = new ARC4(key);
         var prng = function() {
           var n2 = arc4.g(chunks), d = startdenom, x = 0;
@@ -1416,7 +1469,12 @@ var require_seedrandom = __commonJS({
             return seed2;
           } else
             return prng2;
-        })(prng, shortseed, "global" in options ? options.global : this == math, options.state);
+        })(
+          prng,
+          shortseed,
+          "global" in options ? options.global : this == math,
+          options.state
+        );
       }
       function ARC4(key) {
         var t2, keylen = key.length, me = this, i2 = 0, j = me.i = me.j = 0, s2 = me.S = [];
@@ -1499,7 +1557,11 @@ var require_seedrandom = __commonJS({
       } else {
         math["seed" + rngname] = seedrandom5;
       }
-    })(typeof self !== "undefined" ? self : exports, [], Math);
+    })(
+      typeof self !== "undefined" ? self : exports,
+      [],
+      Math
+    );
   }
 });
 
@@ -6906,7 +6968,11 @@ var Engine = class {
         const dtype = "float32";
         const gradInputs = { x: dy };
         const attrs = { dtype };
-        return ENGINE.runKernel(Cast, gradInputs, attrs);
+        return ENGINE.runKernel(
+          Cast,
+          gradInputs,
+          attrs
+        );
       }
     });
     const saved = [];
@@ -7000,17 +7066,21 @@ var Engine = class {
     const { inputs, attrs } = kernelParams;
     const backwardsFunc = isRegisteredKernelInvocation(kernelParams) ? null : kernelParams.backwardsFunc;
     let kernelProfile;
-    this.scopedRun(() => this.state.kernelDepth++, () => this.state.kernelDepth--, () => {
-      if (!this.ENV.getBool("DEBUG") && !this.state.profiling) {
-        outputs = kernelFunc3();
-      } else {
-        kernelProfile = this.profiler.profileKernel(kernelOrScopeName, inputs, () => kernelFunc3());
-        if (this.ENV.getBool("DEBUG")) {
-          this.profiler.logKernelProfile(kernelProfile);
+    this.scopedRun(
+      () => this.state.kernelDepth++,
+      () => this.state.kernelDepth--,
+      () => {
+        if (!this.ENV.getBool("DEBUG") && !this.state.profiling) {
+          outputs = kernelFunc3();
+        } else {
+          kernelProfile = this.profiler.profileKernel(kernelOrScopeName, inputs, () => kernelFunc3());
+          if (this.ENV.getBool("DEBUG")) {
+            this.profiler.logKernelProfile(kernelProfile);
+          }
+          outputs = kernelProfile.outputs;
         }
-        outputs = kernelProfile.outputs;
       }
-    });
+    );
     if (isTapeOn) {
       this.addTapeNode(kernelOrScopeName, inputs, outputs, backwardsFunc, saved, attrs);
     }
@@ -7268,7 +7338,12 @@ var Engine = class {
     return this.tidy("backward", () => {
       const accumulatedGradientMap = {};
       accumulatedGradientMap[y.id] = dy == null ? ones(y.shape) : dy;
-      backpropagateGradients(accumulatedGradientMap, filteredTape, (f2) => this.tidy(f2), add);
+      backpropagateGradients(
+        accumulatedGradientMap,
+        filteredTape,
+        (f2) => this.tidy(f2),
+        add
+      );
       const grads2 = xs.map((x) => accumulatedGradientMap[x.id]);
       if (this.state.gradientDepth === 0) {
         this.state.activeTape.forEach((node) => {
@@ -14034,7 +14109,17 @@ function nonMaxSuppressionV3Impl(boxes, scores, maxOutputSize, iouThreshold, sco
   return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, 0);
 }
 function nonMaxSuppressionV4Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, padToMaxOutputSize) {
-  return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, 0, false, padToMaxOutputSize, true);
+  return nonMaxSuppressionImpl_(
+    boxes,
+    scores,
+    maxOutputSize,
+    iouThreshold,
+    scoreThreshold,
+    0,
+    false,
+    padToMaxOutputSize,
+    true
+  );
 }
 function nonMaxSuppressionV5Impl(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma) {
   return nonMaxSuppressionImpl_(boxes, scores, maxOutputSize, iouThreshold, scoreThreshold, softNmsSigma, true);
@@ -23200,7 +23285,10 @@ async function fitDataset(model2, dataset, args) {
   util_exports.assert(args != null, () => `For fitDataset(), the 2nd argument (config) is required, but it is not provided in this call.`);
   util_exports.assert(args.epochs != null && args.epochs > 0 && Number.isInteger(args.epochs), () => `For fitDataset(), config.epochs is expected to be a positive integer, but got ${args.epochs}`);
   util_exports.assert(!hasBatchesPerEpoch || args.batchesPerEpoch > 0 && Number.isInteger(args.batchesPerEpoch), () => `For fitDataset(), config.batchesPerEpoch is expected to be a positive integer if specified, but got ${args.batchesPerEpoch}`);
-  util_exports.assert(args["validationSplit"] == null, () => "`validationSplit` is not supported by `fitDataset()`. Use validationData instead.");
+  util_exports.assert(
+    args["validationSplit"] == null,
+    () => "`validationSplit` is not supported by `fitDataset()`. Use validationData instead."
+  );
   if (model2.isTraining) {
     throw new Error("Cannot start training because another fit() call is ongoing.");
   }
@@ -23228,7 +23316,17 @@ async function fitDataset(model2, dataset, args) {
     }
     const callbacks2 = standardizeCallbacks(args.callbacks, args.yieldEvery);
     const verbose = args.verbose == null ? 1 : args.verbose;
-    const { callbackList, history } = configureCallbacks(callbacks2, verbose, args.epochs, null, null, getStepsPerEpoch(dataset, args), null, doValidation, callbackMetrics);
+    const { callbackList, history } = configureCallbacks(
+      callbacks2,
+      verbose,
+      args.epochs,
+      null,
+      null,
+      getStepsPerEpoch(dataset, args),
+      null,
+      doValidation,
+      callbackMetrics
+    );
     callbackList.setModel(model2);
     model2.history = history;
     await callbackList.onTrainBegin();
@@ -29003,7 +29101,12 @@ function pool2d(x, poolSize, strides, padding, dataFormat, poolMode) {
     if (poolMode === "max") {
       y = maxPool(x, poolSize, strides, paddingString);
     } else {
-      y = avgPool(x, poolSize, strides, paddingString);
+      y = avgPool(
+        x,
+        poolSize,
+        strides,
+        paddingString
+      );
     }
     if (dataFormat === "channelsFirst") {
       y = transpose(y, [0, 3, 1, 2]);
@@ -38129,7 +38232,12 @@ var executeOp5 = (node, tensorMap, context, ops = ops_for_converter_exports) => 
       return [ops.randomStandardNormal(getParamValue("shape", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context), getParamValue("seed", node, tensorMap, context))];
     }
     case "RandomUniform": {
-      return [ops.randomUniform(getParamValue("shape", node, tensorMap, context), getParamValue("minval", node, tensorMap, context), getParamValue("maxval", node, tensorMap, context), getParamValue("dtype", node, tensorMap, context))];
+      return [ops.randomUniform(
+        getParamValue("shape", node, tensorMap, context),
+        getParamValue("minval", node, tensorMap, context),
+        getParamValue("maxval", node, tensorMap, context),
+        getParamValue("dtype", node, tensorMap, context)
+      )];
     }
     case "Range": {
       const start = getParamValue("start", node, tensorMap, context);
@@ -64641,13 +64749,17 @@ function parseResultStruct(backend2, resOffset) {
 // node_modules/.pnpm/@tensorflow+tfjs-backend-wasm@3.19.0_hek32lflchivueqv5i4vgonghu/node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/NonMaxSuppressionV3.js
 var wasmFunc4;
 function setup27(backend2) {
-  wasmFunc4 = backend2.wasm.cwrap(NonMaxSuppressionV3, "number", [
+  wasmFunc4 = backend2.wasm.cwrap(
+    NonMaxSuppressionV3,
     "number",
-    "number",
-    "number",
-    "number",
-    "number"
-  ]);
+    [
+      "number",
+      "number",
+      "number",
+      "number",
+      "number"
+    ]
+  );
 }
 function kernelFunc(args) {
   const { backend: backend2, inputs, attrs } = args;
@@ -64672,14 +64784,18 @@ var nonMaxSuppressionV3Config3 = {
 // node_modules/.pnpm/@tensorflow+tfjs-backend-wasm@3.19.0_hek32lflchivueqv5i4vgonghu/node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/NonMaxSuppressionV4.js
 var wasmFunc5;
 function setup28(backend2) {
-  wasmFunc5 = backend2.wasm.cwrap(NonMaxSuppressionV4, "number", [
+  wasmFunc5 = backend2.wasm.cwrap(
+    NonMaxSuppressionV4,
     "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "bool"
-  ]);
+    [
+      "number",
+      "number",
+      "number",
+      "number",
+      "number",
+      "bool"
+    ]
+  );
 }
 function nonMaxSuppressionV43(args) {
   const { backend: backend2, inputs, attrs } = args;
@@ -64704,14 +64820,18 @@ var nonMaxSuppressionV4Config3 = {
 // node_modules/.pnpm/@tensorflow+tfjs-backend-wasm@3.19.0_hek32lflchivueqv5i4vgonghu/node_modules/@tensorflow/tfjs-backend-wasm/dist/kernels/NonMaxSuppressionV5.js
 var wasmFunc6;
 function setup29(backend2) {
-  wasmFunc6 = backend2.wasm.cwrap(NonMaxSuppressionV5, "number", [
+  wasmFunc6 = backend2.wasm.cwrap(
+    NonMaxSuppressionV5,
     "number",
-    "number",
-    "number",
-    "number",
-    "number",
-    "number"
-  ]);
+    [
+      "number",
+      "number",
+      "number",
+      "number",
+      "number",
+      "number"
+    ]
+  );
 }
 function kernelFunc2(args) {
   const { backend: backend2, inputs, attrs } = args;
@@ -66116,37 +66236,40 @@ for (const kernelConfig of kernelConfigs3) {
 
 // node_modules/.pnpm/@tensorflow+tfjs-backend-wasm@3.19.0_hek32lflchivueqv5i4vgonghu/node_modules/@tensorflow/tfjs-backend-wasm/dist/flags_wasm.js
 var ENV6 = env();
-ENV6.registerFlag("WASM_HAS_SIMD_SUPPORT", async () => WebAssembly.validate(new Uint8Array([
-  0,
-  97,
-  115,
-  109,
-  1,
-  0,
-  0,
-  0,
-  1,
-  4,
-  1,
-  96,
-  0,
-  0,
-  3,
-  2,
-  1,
-  0,
-  10,
-  9,
-  1,
-  7,
-  0,
-  65,
-  0,
-  253,
-  15,
-  26,
-  11
-])));
+ENV6.registerFlag(
+  "WASM_HAS_SIMD_SUPPORT",
+  async () => WebAssembly.validate(new Uint8Array([
+    0,
+    97,
+    115,
+    109,
+    1,
+    0,
+    0,
+    0,
+    1,
+    4,
+    1,
+    96,
+    0,
+    0,
+    3,
+    2,
+    1,
+    0,
+    10,
+    9,
+    1,
+    7,
+    0,
+    65,
+    0,
+    253,
+    15,
+    26,
+    11
+  ]))
+);
 ENV6.registerFlag("WASM_HAS_MULTITHREAD_SUPPORT", async () => {
   if (ENV6.get("IS_NODE")) {
     return false;

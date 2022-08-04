@@ -123,7 +123,7 @@ export async function register(instance: Human): Promise<void> {
       return;
     }
     try {
-      tf.ENV.set('WEBGL_VERSION', 2);
+      if (tf.env().flagRegistry['WEBGL_VERSION']) tf.env().set('WEBGL_VERSION', 2);
     } catch (err) {
       log('error: cannot set WebGL backend flags:', err);
       return;

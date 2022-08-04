@@ -55,11 +55,11 @@
   ],
   "optionalDependencies": {
     "canvas": "^2.9.3",
-    "node-fetch": "^3.2.9",
+    "node-fetch": "^3.2.10",
     "node-webcam": "^0.8.1"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.28.6",
+    "@microsoft/api-extractor": "^7.29.0",
     "@tensorflow/tfjs": "^3.19.0",
     "@tensorflow/tfjs-backend-cpu": "^3.19.0",
     "@tensorflow/tfjs-backend-wasm": "^3.19.0",
@@ -72,15 +72,16 @@
     "@tensorflow/tfjs-node": "^3.19.0",
     "@tensorflow/tfjs-node-gpu": "^3.19.0",
     "@tensorflow/tfjs-tflite": "0.0.1-alpha.8",
-    "@types/node": "^18.6.2",
+    "@types/node": "^18.6.3",
     "@types/offscreencanvas": "^2019.7.0",
-    "@typescript-eslint/eslint-plugin": "^5.31.0",
-    "@typescript-eslint/parser": "^5.31.0",
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
     "@vladmandic/build": "^0.7.8",
     "@vladmandic/pilogger": "^0.4.5",
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
-    "esbuild": "^0.14.51",
-    "eslint": "8.20.0",
+    "@webgpu/types": "^0.1.21",
+    "esbuild": "^0.14.53",
+    "eslint": "8.21.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-html": "^7.1.0",
     "eslint-plugin-import": "^2.26.0",
@@ -90,7 +91,7 @@
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
     "tslib": "^2.4.0",
-    "typedoc": "0.23.9",
+    "typedoc": "0.23.10",
     "typescript": "4.7.4"
   }
 }

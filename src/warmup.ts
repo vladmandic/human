@@ -109,6 +109,7 @@ async function runInference(instance: Human) {
 
 /** Runs pre-compile on all loaded models */
 export async function runCompile(allModels: Models) {
+  if (!tf.env().flagRegistry['ENGINE_COMPILE_ONLY']) return; // tfjs does not support compile-only inference
   const backendType = tf.getBackend();
   const webGLBackend = tf.backend();
   if ((backendType !== 'webgl' && backendType !== 'humangl') || (!webGLBackend || !webGLBackend.checkCompileCompletion)) {

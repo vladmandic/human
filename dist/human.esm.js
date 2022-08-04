@@ -84034,7 +84034,8 @@ async function register(instance) {
       return;
     }
     try {
-      ENV.set("WEBGL_VERSION", 2);
+      if (env().flagRegistry["WEBGL_VERSION"])
+        env().set("WEBGL_VERSION", 2);
     } catch (err) {
       log("error: cannot set WebGL backend flags:", err);
       return;
@@ -84115,10 +84116,8 @@ async function check(instance, force = false) {
       if (instance.config.debug)
         log("setting backend:", instance.config.backend);
       if (instance.config.backend === "wasm") {
-        try {
+        if (env().flagRegistry["CANVAS2D_WILL_READ_FREQUENTLY"])
           env().set("CANVAS2D_WILL_READ_FREQUENTLY", true);
-        } catch (e2) {
-        }
         if (instance.config.debug)
           log("wasm path:", instance.config.wasmPath);
         if (typeof (tfjs_esm_exports == null ? void 0 : tfjs_esm_exports.setWasmPaths) !== "undefined")
@@ -84142,13 +84141,21 @@ async function check(instance, force = false) {
       }
     }
     if (getBackend() === "humangl") {
-      ENV.set("CHECK_COMPUTATION_FOR_ERRORS", false);
-      ENV.set("WEBGL_CPU_FORWARD", true);
-      ENV.set("WEBGL_USE_SHAPES_UNIFORMS", true);
-      ENV.set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
+      if (env().flagRegistry["CHECK_COMPUTATION_FOR_ERRORS"])
+        env().set("CHECK_COMPUTATION_FOR_ERRORS", false);
+      if (env().flagRegistry["WEBGL_CPU_FORWARD"])
+        env().set("WEBGL_CPU_FORWARD", true);
+      if (env().flagRegistry["WEBGL_USE_SHAPES_UNIFORMS"])
+        env().set("WEBGL_USE_SHAPES_UNIFORMS", true);
+      if (env().flagRegistry["CPU_HANDOFF_SIZE_THRESHOLD"])
+        env().set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
+      if (env().flagRegistry["WEBGL_EXP_CONV"])
+        env().set("WEBGL_EXP_CONV", true);
+      if (env().flagRegistry["USE_SETTIMEOUTWPM"])
+        env().set("USE_SETTIMEOUTWPM", true);
       if (typeof instance.config["deallocate"] !== "undefined" && instance.config["deallocate"]) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
-        ENV.set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
+        env().set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
       }
       if (backend().getGPGPUContext) {
         const gl = await backend().getGPGPUContext().gl;
@@ -86218,6 +86225,8 @@ async function runInference(instance) {
   return res;
 }
 async function runCompile(allModels) {
+  if (!env().flagRegistry["ENGINE_COMPILE_ONLY"])
+    return;
   const backendType = getBackend();
   const webGLBackend = backend();
   if (backendType !== "webgl" && backendType !== "humangl" || (!webGLBackend || !webGLBackend.checkCompileCompletion)) {
@@ -86446,20 +86455,23 @@ var Human = class {
   async profile(input2, userConfig) {
     const profile2 = await this.tf.profile(() => this.detect(input2, userConfig));
     const kernels = {};
+    let total = 0;
     for (const kernel of profile2.kernels) {
       if (kernels[kernel.name])
         kernels[kernel.name] += kernel.kernelTimeMs;
       else
         kernels[kernel.name] = kernel.kernelTimeMs;
+      total += kernel.kernelTimeMs;
     }
     const kernelArr = [];
-    Object.entries(kernels).forEach((key) => kernelArr.push({ name: key[0], ms: key[1] }));
-    kernelArr.sort((a, b) => b.ms - a.ms);
+    Object.entries(kernels).forEach((key) => kernelArr.push({ kernel: key[0], time: key[1], perc: 0 }));
+    for (const kernel of kernelArr) {
+      kernel.perc = Math.round(1e3 * kernel.time / total) / 1e3;
+      kernel.time = Math.round(1e3 * kernel.time) / 1e3;
+    }
+    kernelArr.sort((a, b) => b.time - a.time);
     kernelArr.length = 20;
-    const res = {};
-    for (const kernel of kernelArr)
-      res[kernel.name] = kernel.ms;
-    return res;
+    return kernelArr;
   }
   async detect(input2, userConfig) {
     this.state = "detect";

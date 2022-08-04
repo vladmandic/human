@@ -1330,7 +1330,11 @@ declare class Human {
      * - result object will contain total exeuction time information for top-20 kernels
      * - actual detection object can be accessed via `human.result`
      */
-    profile(input: Input, userConfig?: Partial<Config>): Promise<Record<string, number>>;
+    profile(input: Input, userConfig?: Partial<Config>): Promise<Array<{
+        kernel: string;
+        time: number;
+        perc: number;
+    }>>;
     /** Main detection method
      * - Analyze configuration: {@link Config}
      * - Pre-process input: {@link Input}

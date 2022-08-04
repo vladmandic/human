@@ -37,8 +37,8 @@ const dom = { // grab instances of dom objects so we dont have to look them up l
   fps: document.getElementById('status') as HTMLPreElement,
   perf: document.getElementById('performance') as HTMLDivElement,
 };
-const timestamp = { detect: 0, draw: 0, tensors: 0 }; // holds information used to calculate performance and possible memory leaks
-const fps = { detect: 0, draw: 0 }; // holds calculated fps information for both detect and screen refresh
+const timestamp = { detect: 0, draw: 0, tensors: 0, start: 0 }; // holds information used to calculate performance and possible memory leaks
+const fps = { detectFPS: 0, drawFPS: 0, frames: 0, averageMs: 0 }; // holds calculated fps information for both detect and screen refresh
 
 const log = (...msg) => { // helper method to output messages
   dom.log.innerText += msg.join(' ') + '\n';
@@ -72,15 +72,18 @@ async function webCam() { // initialize webcam
 
 async function detectionLoop() { // main detection loop
   if (!dom.video.paused) {
-    // console.log('profiling data:', await human.profile(dom.video));
+    if (timestamp.start === 0) timestamp.start = human.now();
+    // log('profiling data:', await human.profile(dom.video));
     await human.detect(dom.video); // actual detection; were not capturing output in a local variable as it can also be reached via human.result
     const tensors = human.tf.memory().numTensors; // check current tensor usage for memory leaks
     if (tensors - timestamp.tensors !== 0) log('allocated tensors:', tensors - timestamp.tensors); // printed on start and each time there is a tensor leak
     timestamp.tensors = tensors;
+    fps.detectFPS = Math.round(1000 * 1000 / (human.now() - timestamp.detect)) / 1000;
+    fps.frames++;
+    fps.averageMs = Math.round(1000 * (human.now() - timestamp.start) / fps.frames) / 1000;
+    if (fps.frames % 100 === 0 && !dom.video.paused) log('performance', { ...fps, tensors: timestamp.tensors });
   }
-  const now = human.now();
-  fps.detect = 1000 / (now - timestamp.detect);
-  timestamp.detect = now;
+  timestamp.detect = human.now();
   requestAnimationFrame(detectionLoop); // start new frame immediately
 }
 
@@ -93,9 +96,9 @@ async function drawLoop() { // main screen refresh loop
     perf(interpolated.performance); // write performance data
   }
   const now = human.now();
-  fps.draw = 1000 / (now - timestamp.draw);
+  fps.drawFPS = Math.round(1000 * 1000 / (now - timestamp.draw)) / 1000;
   timestamp.draw = now;
-  status(dom.video.paused ? 'paused' : `fps: ${fps.detect.toFixed(1).padStart(5, ' ')} detect | ${fps.draw.toFixed(1).padStart(5, ' ')} draw`); // write status
+  status(dom.video.paused ? 'paused' : `fps: ${fps.detectFPS.toFixed(1).padStart(5, ' ')} detect | ${fps.drawFPS.toFixed(1).padStart(5, ' ')} draw`); // write status
   // requestAnimationFrame(drawLoop); // refresh at screen refresh rate
   setTimeout(drawLoop, 30); // use to slow down refresh from max refresh rate to target of 30 fps
 }

@@ -350,20 +350,24 @@ export class Human {
    * - result object will contain total exeuction time information for top-20 kernels
    * - actual detection object can be accessed via `human.result`
   */
-  async profile(input: Input, userConfig?: Partial<Config>): Promise<Record<string, number>> {
+  async profile(input: Input, userConfig?: Partial<Config>): Promise<Array<{ kernel: string, time: number, perc: number }>> {
     const profile = await this.tf.profile(() => this.detect(input, userConfig));
     const kernels: Record<string, number> = {};
+    let total = 0;
     for (const kernel of profile.kernels) { // sum kernel time values per kernel
       if (kernels[kernel.name]) kernels[kernel.name] += kernel.kernelTimeMs;
       else kernels[kernel.name] = kernel.kernelTimeMs;
+      total += kernel.kernelTimeMs;
     }
-    const kernelArr: Array<{ name: string, ms: number }> = [];
-    Object.entries(kernels).forEach((key) => kernelArr.push({ name: key[0], ms: key[1] as unknown as number })); // convert to array
-    kernelArr.sort((a, b) => b.ms - a.ms); // sort
+    const kernelArr: Array<{ kernel: string, time: number, perc: number }> = [];
+    Object.entries(kernels).forEach((key) => kernelArr.push({ kernel: key[0], time: key[1] as unknown as number, perc: 0 })); // convert to array
+    for (const kernel of kernelArr) {
+      kernel.perc = Math.round(1000 * kernel.time / total) / 1000;
+      kernel.time = Math.round(1000 * kernel.time) / 1000;
+    }
+    kernelArr.sort((a, b) => b.time - a.time); // sort
     kernelArr.length = 20; // crop
-    const res: Record<string, number> = {};
-    for (const kernel of kernelArr) res[kernel.name] = kernel.ms; // create perf objects
-    return res;
+    return kernelArr;
   }
 
   /** Main detection method

@@ -32,22 +32,23 @@ export async function load(config: Config): Promise<GraphModel> {
 }
 
 // performs argmax and max functions on a 2d tensor
-async function max2d(inputs, minScore) {
+async function max2d(inputs, minScore): Promise<[number, number, number]> {
   const [width, height] = inputs.shape;
   const reshaped = tf.reshape(inputs, [height * width]); // combine all data
   const max = tf.max(reshaped, 0);
-  const newScore = (await max.data())[0]; // get highest score
-  tf.dispose([reshaped, max]);
+  const newScore: number = (await max.data())[0]; // get highest score
   if (newScore > minScore) { // skip coordinate calculation is score is too low
     const coordinates = tf.argMax(reshaped, 0);
     const mod = tf.mod(coordinates, width);
     const x = (await mod.data())[0];
-    const div = tf.div(coordinates, tf.scalar(width, 'int32'));
-    const y = (await div.data())[0];
-    tf.dispose([mod, div]);
+    const div = tf.div(coordinates, width);
+    const y: number = (await div.data())[0];
+    tf.dispose([reshaped, max, coordinates, mod, div]);
     return [x, y, newScore];
+  } else {
+    tf.dispose([reshaped, max]);
+    return [0, 0, newScore];
   }
-  return [0, 0, newScore];
 }
 
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
@@ -66,7 +67,6 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
       const norm = tf.sub(enhance, constants.tf1);
       return norm;
     });
-
     let resT;
     if (config.body.enabled) resT = model?.execute(tensor);
     lastTime = now();
@@ -74,11 +74,12 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
 
     if (resT) {
       cache.keypoints.length = 0;
-      const squeeze = resT.squeeze();
+      const squeeze = tf.squeeze(resT);
       tf.dispose(resT);
       // body parts are basically just a stack of 2d tensors
-      const stack = squeeze.unstack(2);
+      const stack = tf.unstack(squeeze, 2);
       tf.dispose(squeeze);
+
       // process each unstacked tensor as a separate body part
       for (let id = 0; id < stack.length; id++) {
         // actual processing to get coordinates and score

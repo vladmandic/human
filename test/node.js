@@ -5,11 +5,12 @@ const { fork } = require('child_process');
 const log = require('@vladmandic/pilogger');
 
 let logFile = 'test.log';
+log.configure({ inspect: { breakLength: 500 } });
 
 const tests = [
   'test-node.js',
-  'test-node-gpu.js',
-  'test-node-wasm.js',
+  // 'test-node-gpu.js',
+  // 'test-node-wasm.js',
 ];
 
 const demos = [

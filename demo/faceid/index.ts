@@ -17,7 +17,8 @@ const humanConfig = { // user configuration for human, used to fine-tune behavio
     enabled: true,
     detector: { rotation: true, return: true, cropFactor: 1.6, mask: false }, // return tensor is used to get detected face image
     description: { enabled: true }, // default model for face descriptor extraction is faceres
-    mobilefacenet: { enabled: false, modelPath: 'https://vladmandic.github.io/human-models/models/mobilefacenet.json' }, // alternative model
+    // mobilefacenet: { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/mobilefacenet.json' }, // alternative model
+    // insightface: { enabled: true, modelPath: 'https://vladmandic.github.io/insightface/models/insightface-mobilenet-swish.json' }, // alternative model
     iris: { enabled: true }, // needed to determine gaze direction
     emotion: { enabled: false }, // not needed
     antispoof: { enabled: true }, // enable optional antispoof module
@@ -142,7 +143,7 @@ async function validationLoop(): Promise<FaceResult> { // main screen refresh lo
     if (ok.blinkDetected && blink.time === 0) blink.time = Math.trunc(blink.end - blink.start);
     ok.facingCenter = gestures.includes('facing center');
     ok.lookingCenter = gestures.includes('looking center'); // must face camera and look at camera
-    ok.faceConfidence = (human.result.face[0].boxScore || 0) > options.minConfidence && (human.result.face[0].faceScore || 0) > options.minConfidence && (human.result.face[0].genderScore || 0) > options.minConfidence;
+    ok.faceConfidence = (human.result.face[0].boxScore || 0) > options.minConfidence && (human.result.face[0].faceScore || 0) > options.minConfidence;
     ok.antispoofCheck = (human.result.face[0].real || 0) > options.minConfidence;
     ok.livenessCheck = (human.result.face[0].live || 0) > options.minConfidence;
     ok.faceSize = human.result.face[0].box[2] >= options.minSize && human.result.face[0].box[3] >= options.minSize;
@@ -184,7 +185,8 @@ async function saveRecords() {
     const image = dom.canvas.getContext('2d')?.getImageData(0, 0, dom.canvas.width, dom.canvas.height) as ImageData;
     const rec = { id: 0, name: dom.name.value, descriptor: current.face?.embedding as number[], image };
     await indexDb.save(rec);
-    log('saved face record:', rec.name);
+    log('saved face record:', rec.name, 'descriptor length:', current.face?.embedding?.length);
+    log('known face records:', await indexDb.count());
   } else {
     log('invalid name');
   }
@@ -209,7 +211,7 @@ async function detectFace() {
     return false;
   }
   const db = await indexDb.load();
-  const descriptors = db.map((rec) => rec.descriptor);
+  const descriptors = db.map((rec) => rec.descriptor).filter((desc) => desc.length > 0);
   const res = await human.match(current.face.embedding, descriptors, matchOptions);
   current.record = db[res.index] || null;
   if (current.record) {
@@ -258,6 +260,7 @@ async function main() { // main entry point
 
 async function init() {
   log('human version:', human.version, '| tfjs version:', human.tf.version['tfjs-core']);
+  log('face embedding model:', humanConfig.face['description']?.enabled ? 'faceres' : '', humanConfig.face['mobilefacenet']?.enabled ? 'mobilefacenet' : '', humanConfig.face['insightface']?.enabled ? 'insightface' : '');
   log('options:', JSON.stringify(options).replace(/{|}|"|\[|\]/g, '').replace(/,/g, ' '));
   printFPS('loading...');
   log('known face records:', await indexDb.count());

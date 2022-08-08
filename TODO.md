@@ -56,8 +56,10 @@ Feature is automatically disabled in **NodeJS** without user impact
   models can be downloaded from <https://github.com/vladmandic/insightface>  
 - Fix **MobileFaceNet** model as alternative for face embedding/descriptor detection  
   configurable using `config.face.mobilefacenet` config section  
-- Fix **EfficientPose** module as alternative body detection
-- Fix **NanoDet** module as alternative object detection
-- Fix `human.match` when using mixed descriptor lengths
+- Fix **EfficientPose** module as alternative body detection  
+- Fix **NanoDet** module as alternative object detection  
+- Fix `human.match` when using mixed descriptor lengths  
+- Increased test coverage   
+  run using `npm run test`  
 - Update profiling methods in `human.profile()`  
 - Update project dependencies  

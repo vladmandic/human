@@ -16,6 +16,7 @@ import * as gear from '../gear/gear';
 import * as ssrnetAge from '../gear/ssrnet-age';
 import * as ssrnetGender from '../gear/ssrnet-gender';
 import * as mobilefacenet from './mobilefacenet';
+import * as insightface from './insightface';
 import type { FaceResult, Emotion, Gender, Race } from '../result';
 import type { Tensor } from '../tfjs/types';
 import type { Human } from '../human';
@@ -32,6 +33,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
   let genderRes: { gender: string, genderScore: number } | Promise<{ gender: string, genderScore: number }> | null;
   let emotionRes: { score: number, emotion: Emotion }[] | Promise<{ score: number, emotion: Emotion }[]>;
   let mobilefacenetRes: number[] | Promise<number[]> | null;
+  let insightfaceRes: number[] | Promise<number[]> | null;
   let antispoofRes: number | Promise<number> | null;
   let livenessRes: number | Promise<number> | null;
   let descRes: DescRes | Promise<DescRes> | null;
@@ -126,7 +128,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     }
     instance.analyze('End SSRNet:');
 
-    // run gear, inherits face from blazeface
+    // run mobilefacenet alternative, inherits face from blazeface
     instance.analyze('Start MobileFaceNet:');
     if (instance.config.async) {
       mobilefacenetRes = instance.config.face['mobilefacenet']?.enabled ? mobilefacenet.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
@@ -138,21 +140,33 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     }
     instance.analyze('End MobileFaceNet:');
 
-    // run emotion, inherits face from blazeface
+    // run insightface alternative, inherits face from blazeface
+    instance.analyze('Start InsightFace:');
+    if (instance.config.async) {
+      insightfaceRes = instance.config.face['insightface']?.enabled ? insightface.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+    } else {
+      instance.state = 'run:mobilefacenet';
+      timeStamp = now();
+      insightfaceRes = instance.config.face['insightface']?.enabled ? await insightface.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      instance.performance.mobilefacenet = Math.trunc(now() - timeStamp);
+    }
+    instance.analyze('End InsightFace:');
+
+    // run faceres, inherits face from blazeface
     instance.analyze('Start Description:');
     if (instance.config.async) {
-      descRes = instance.config.face.description?.enabled ? faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      descRes = faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length);
     } else {
       instance.state = 'run:description';
       timeStamp = now();
-      descRes = instance.config.face.description?.enabled ? await faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      descRes = await faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length);
       instance.performance.description = env.perfadd ? (instance.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze('End Description:');
 
     // if async wait for results
     if (instance.config.async) {
-      [ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, descRes, gearRes, antispoofRes, livenessRes]);
+      [ageRes, genderRes, emotionRes, mobilefacenetRes, insightfaceRes, descRes, gearRes, antispoofRes, livenessRes] = await Promise.all([ageRes, genderRes, emotionRes, mobilefacenetRes, insightfaceRes, descRes, gearRes, antispoofRes, livenessRes]);
     }
     instance.analyze('Finish Face:');
 
@@ -173,8 +187,12 @@ export const detectFace = async (instance: Human /* instance of human */, input:
         race: (gearRes as gear.GearType).race,
       };
     }
-    if (instance.config.face['mobilefacenet']?.enabled && mobilefacenetRes) { // override descriptor if embedding model is used
+    if (instance.config.face['mobilefacenet']?.enabled && mobilefacenetRes) { // override descriptor if mobilefacenet model is used
       (descRes as DescRes).descriptor = mobilefacenetRes as number[];
+    }
+
+    if (instance.config.face['insightface']?.enabled && insightfaceRes) { // override descriptor if insightface model is used
+      (descRes as DescRes).descriptor = insightfaceRes as number[];
     }
 
     // calculate iris distance

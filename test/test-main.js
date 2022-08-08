@@ -254,7 +254,7 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null), url: human.models[model] ? human.models[model].modelUrl : null }));
   const loaded = models.filter((model) => model.loaded);
-  if (models.length === 22 && loaded.length === 12) log('state', 'passed: models loaded', models.length, loaded.length, models);
+  if (models.length === 23 && loaded.length === 12) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
 
   // increase defaults
@@ -292,7 +292,7 @@ async function test(Human, inputConfig) {
   human.reset();
   config.async = true;
   config.cacheSensitivity = 0;
-  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'async');
   if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
   else log('state', 'passed: default result face match', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
 
@@ -301,7 +301,7 @@ async function test(Human, inputConfig) {
   human.reset();
   config.async = false;
   config.cacheSensitivity = 0;
-  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'sync');
   if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default sync', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
   else log('state', 'passed: default sync', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
 
@@ -319,21 +319,25 @@ async function test(Human, inputConfig) {
   else log('state', 'passed: invalid input', res.error || res);
 
   // test face attention
-  /*
   log('info', 'test face attention');
+  config.face.mesh = { enabled: true };
+  res = await testDetect(human, 'samples/in/ai-face.jpg', 'face mesh');
+  if (!res || !res.face[0] || res.face[0].mesh.length !== 478 || Object.keys(res.face[0].annotations).length !== 36) log('error', 'failed: face mesh', { mesh: res.face[0]?.mesh?.length, annotations: Object.keys(res.face[0].annotations).length });
+  else log('state', 'passed: face attention');
   human.models.facemesh = null; // unload model
   config.face.attention = { enabled: true };
-  res = await testDetect(human, 'samples/in/ai-face.jpg', 'default');
-  */
+  res = await testDetect(human, 'samples/in/ai-face.jpg', 'face attention');
+  if (!res || !res.face[0] || res.face[0].mesh.length !== 478 || Object.keys(res.face[0].annotations).length !== 36) log('error', 'failed: face attention', { mesh: res.face[0]?.mesh?.length, annotations: Object.keys(res.face[0].annotations).length });
+  else log('state', 'passed: face attention');
 
   // test face similarity
   log('info', 'test face similarity');
   human.reset();
   config.async = false;
   config.cacheSensitivity = 0;
-  let res1 = await testDetect(human, 'samples/in/ai-face.jpg', 'default');
-  let res2 = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  let res3 = await testDetect(human, 'samples/in/ai-upper.jpg', 'default');
+  let res1 = await testDetect(human, 'samples/in/ai-face.jpg', 'face similarity');
+  let res2 = await testDetect(human, 'samples/in/ai-body.jpg', 'face similarity');
+  let res3 = await testDetect(human, 'samples/in/ai-upper.jpg', 'face similarity');
   const desc1 = res1 && res1.face && res1.face[0] && res1.face[0].embedding ? [...res1.face[0].embedding] : null;
   const desc2 = res2 && res2.face && res2.face[0] && res2.face[0].embedding ? [...res2.face[0].embedding] : null;
   const desc3 = res3 && res3.face && res3.face[0] && res3.face[0].embedding ? [...res3.face[0].embedding] : null;
@@ -344,6 +348,20 @@ async function test(Human, inputConfig) {
   res3 = human.similarity(desc1, desc3);
   if (res1 < 1 || res2 < 0.40 || res3 < 0.40 || res2 > 0.75 || res3 > 0.75) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
   else log('state', 'passed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
+
+  // test alternative face embeddings
+  log('info', 'test face similarity alternative');
+  human.reset();
+  config.async = false;
+  config.cacheSensitivity = 0;
+  config.face['mobilefacenet'] = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/mobilefacenet.json' };
+  res = await testDetect(human, 'samples/in/ai-face.jpg', 'face embeddings');
+  if (!res || !res.face || !res.face[0] || res.face[0].embedding.length !== 192) log('error', 'failed: mobilefacenet', { embedding: res.face[0]?.embedding?.length });
+  else log('state', 'passed: mobilefacenet');
+  config.face['insightface'] = { enabled: true, modelPath: 'https://vladmandic.github.io/insightface/models/insightface-mobilenet-swish.json' };
+  res = await testDetect(human, 'samples/in/ai-face.jpg', 'face embeddings');
+  if (!res || !res.face || !res.face[0] || res.face[0].embedding.length !== 512) log('error', 'failed: insightface', { embedding: res.face[0]?.embedding?.length });
+  else log('state', 'passed: insightface');
 
   // test face matching
   log('info', 'test face matching');
@@ -360,10 +378,16 @@ async function test(Human, inputConfig) {
   // test object detection
   log('info', 'test object');
   human.reset();
-  config.object = { enabled: true };
-  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  if (!res || res?.object?.length !== 1 || res?.object[0]?.label !== 'person') log('error', 'failed: object result mismatch', res?.object?.length);
-  else log('state', 'passed: object result match');
+  config.object = { enabled: true, modelPath: 'mb3-centernet.json' };
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'object');
+  if (!res || res?.object?.length < 1 || res?.object[0]?.label !== 'person') log('error', 'failed: centernet', res?.object);
+  else log('state', 'passed: centernet');
+
+  config.object = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/nanodet.json' };
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'object');
+  if (!res || res?.object?.length < 1 || res?.object[0]?.label !== 'person') log('error', 'failed: nanodet', res?.object);
+  else log('state', 'passed: nanodet');
+  config.object.enabled = false;
 
   // test sensitive config
   log('info', 'test sensitive');
@@ -372,7 +396,7 @@ async function test(Human, inputConfig) {
   config.face = { detector: { minConfidence: 0.0001, maxDetected: 1 } };
   config.body = { minConfidence: 0.0001 };
   config.hand = { minConfidence: 0.0001 };
-  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'sensitive');
   if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 2 || res?.gesture?.length < 8) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
   else log('state', 'passed: sensitive result match');
 
@@ -394,13 +418,39 @@ async function test(Human, inputConfig) {
   if (!hand || hand?.box?.length !== 4 || hand?.keypoints?.length !== 21) log('error', 'failed: sensitive hand result mismatch', hand?.keypoints?.length);
   else log('state', 'passed: sensitive hand result match');
 
+  // test body alternatives
+  log('info', 'test body');
+  human.reset();
+  config.async = false;
+  config.cacheSensitivity = 0;
+
+  config.body = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/blazepose-heavy.json' };
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'blazepose');
+  if (!res || !res.body || !res.body[0] || res.body[0].score < 0.9 || res.body[0].keypoints?.length !== 39) log('error', 'failed: blazepose', { body: res.body[0] });
+  else log('state', 'passed: blazepose');
+
+  config.body = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/efficientpose.json' };
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'efficientpose');
+  if (!res || !res.body || !res.body[0] || res.body[0].score < 0.7 || res.body[0].keypoints?.length !== 13) log('error', 'failed: efficientpose', { body: res.body[0] });
+  else log('state', 'passed: efficientpose');
+
+  config.body = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/posenet.json' };
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'posenet');
+  if (!res || !res.body || !res.body[0] || res.body[0].score < 0.9 || res.body[0].keypoints?.length !== 16) log('error', 'failed: posenet', { body: res.body[0] });
+  else log('state', 'passed: posenet');
+
+  config.body = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/movenet-lightning.json' };
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'movenet');
+  if (!res || !res.body || !res.body[0] || res.body[0].score < 0.9 || res.body[0].keypoints?.length !== 17) log('error', 'failed: movenet', { body: res.body[0] });
+  else log('state', 'passed: movenet');
+
   // test detectors only
   log('info', 'test detectors');
   human.reset();
   config.face = { mesh: { enabled: false }, iris: { enabled: false }, description: { enabled: false }, emotion: { enabled: false } };
   config.hand = { landmarks: false };
-  res = await testDetect(human, 'samples/in/ai-body.jpg', 'default');
-  if (!res || res?.face?.length !== 1 || res?.face[0]?.gender || res?.face[0]?.age || res?.face[0]?.embedding) log('error', 'failed: detectors result face mismatch', res?.face);
+  res = await testDetect(human, 'samples/in/ai-body.jpg', 'detectors');
+  if (!res || res?.face?.length !== 1 || res?.face[0]?.gender !== 'unknown' || res?.face[0]?.age || res?.face[0]?.embedding?.length > 0) log('error', 'failed: detectors result face mismatch', res?.face);
   else log('state', 'passed: detector result face match');
   if (!res || res?.hand?.length !== 1 || res?.hand[0]?.landmarks?.length > 0) log('error', 'failed: detectors result hand mismatch', res?.hand?.length);
   else log('state', 'passed: detector result hand match');
@@ -409,24 +459,24 @@ async function test(Human, inputConfig) {
   log('info', 'test: multi-instance');
   const first = new Human(config);
   const second = new Human(config);
-  await testDetect(human, null, 'default');
+  await testDetect(human, null, 'multi instance');
   log('info', 'test: first instance');
-  await testDetect(first, 'samples/in/ai-upper.jpg', 'default');
+  await testDetect(first, 'samples/in/ai-upper.jpg', 'multi instance');
   log('info', 'test: second instance');
-  await testDetect(second, 'samples/in/ai-upper.jpg', 'default');
+  await testDetect(second, 'samples/in/ai-upper.jpg', 'multi instance');
 
   // test async multiple instances
   log('info', 'test: concurrent');
   await Promise.all([
-    testDetect(human, 'samples/in/ai-face.jpg', 'default', false),
-    testDetect(first, 'samples/in/ai-face.jpg', 'default', false),
-    testDetect(second, 'samples/in/ai-face.jpg', 'default', false),
-    testDetect(human, 'samples/in/ai-body.jpg', 'default', false),
-    testDetect(first, 'samples/in/ai-body.jpg', 'default', false),
-    testDetect(second, 'samples/in/ai-body.jpg', 'default', false),
-    testDetect(human, 'samples/in/ai-upper.jpg', 'default', false),
-    testDetect(first, 'samples/in/ai-upper.jpg', 'default', false),
-    testDetect(second, 'samples/in/ai-upper.jpg', 'default', false),
+    testDetect(human, 'samples/in/ai-face.jpg', 'concurrent', false),
+    testDetect(first, 'samples/in/ai-face.jpg', 'concurrent', false),
+    testDetect(second, 'samples/in/ai-face.jpg', 'concurrent', false),
+    testDetect(human, 'samples/in/ai-body.jpg', 'concurrent', false),
+    testDetect(first, 'samples/in/ai-body.jpg', 'concurrent', false),
+    testDetect(second, 'samples/in/ai-body.jpg', 'concurrent', false),
+    testDetect(human, 'samples/in/ai-upper.jpg', 'concurrent', false),
+    testDetect(first, 'samples/in/ai-upper.jpg', 'concurrent', false),
+    testDetect(second, 'samples/in/ai-upper.jpg', 'concurrent', false),
   ]);
 
   // test monkey-patch

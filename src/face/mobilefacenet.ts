@@ -1,5 +1,5 @@
 /**
- * EfficientPose model implementation
+ * MobileFaceNet model implementation
  *
  * Based on: [**BecauseofAI MobileFace**](https://github.com/becauseofAI/MobileFace)
  *
@@ -46,15 +46,15 @@ const contrast = merge.sub(mean).mul(factor).add(mean);
 
 export async function predict(input: Tensor, config: Config, idx, count): Promise<number[]> {
   if (!model) return [];
-  const skipFrame = skipped < (config.face['embedding']?.skipFrames || 0);
-  const skipTime = (config.face['embedding']?.skipTime || 0) > (now() - lastTime);
+  const skipFrame = skipped < (config.face['mobilefacenet']?.skipFrames || 0);
+  const skipTime = (config.face['mobilefacenet']?.skipTime || 0) > (now() - lastTime);
   if (config.skipAllowed && skipTime && skipFrame && (lastCount === count) && last[idx]) {
     skipped++;
     return last[idx];
   }
   return new Promise(async (resolve) => {
     let data: Array<number> = [];
-    if (config.face['embedding']?.enabled && model?.inputs[0].shape) {
+    if (config.face['mobilefacenet']?.enabled && model?.inputs[0].shape) {
       const t: Record<string, Tensor> = {};
       t.crop = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // just resize to fit the embedding model
       // do a tight crop of image and resize it to fit the model
@@ -75,6 +75,7 @@ export async function predict(input: Tensor, config: Config, idx, count): Promis
       */
       const output = await t.data.data();
       data = Array.from(output); // convert typed array to simple array
+      Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
     }
     last[idx] = data;
     lastCount = count;

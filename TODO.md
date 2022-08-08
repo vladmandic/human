@@ -49,3 +49,15 @@ Feature is automatically disabled in **NodeJS** without user impact
 
 ## Pending Release Changes
 
+- Add **InsightFace** model as alternative for face embedding/descriptor detection  
+  compatible with multiple variations of **InsightFace** models  
+  configurable using `config.face.insightface` config section  
+  see `demo/faceid/index.ts` for usage  
+  models can be downloaded from <https://github.com/vladmandic/insightface>  
+- Fix **MobileFaceNet** model as alternative for face embedding/descriptor detection  
+  configurable using `config.face.mobilefacenet` config section  
+- Fix **EfficientPose** module
+- Fix **NanoDet** module
+- Fix `human.match` when using mixed descriptor lengths
+- Update profiling methods in `human.profile()`  
+- Update project dependencies  

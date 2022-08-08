@@ -54,13 +54,13 @@ export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, opt
  * - `similarity` calculated normalized `similarity` of given descriptor to the best match
 */
 export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options: MatchOptions = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
-  if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0 || descriptor.length !== descriptors[0].length) { // validate input
+  if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0) { // validate input
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }
   let lowestDistance = Number.MAX_SAFE_INTEGER;
   let index = -1;
   for (let i = 0; i < descriptors.length; i++) {
-    const res = distance(descriptor, descriptors[i], options);
+    const res = descriptors[i].length === descriptor.length ? distance(descriptor, descriptors[i], options) : Number.MAX_SAFE_INTEGER;
     if (res < lowestDistance) {
       lowestDistance = res;
       index = i;

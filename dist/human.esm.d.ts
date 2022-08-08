@@ -1849,6 +1849,7 @@ export declare class Models {
     centernet: null | GraphModel | Promise<GraphModel>;
     efficientpose: null | GraphModel | Promise<GraphModel>;
     mobilefacenet: null | GraphModel | Promise<GraphModel>;
+    insightface: null | GraphModel | Promise<GraphModel>;
     emotion: null | GraphModel | Promise<GraphModel>;
     facedetect: null | GraphModel | Promise<GraphModel>;
     faceiris: null | GraphModel | Promise<GraphModel>;

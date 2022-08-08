@@ -38,4 +38,5 @@ designed to serve as a quick check when used together with other indicators:
 **FaceID** is compatible with
 - `faceres.json` (default) perfoms combined age/gender/descriptor analysis
 - `faceres-deep.json` higher resolution variation of `faceres`
+- `insightface` alternative model for face descriptor analysis
 - `mobilefacenet` alternative model for face descriptor analysis

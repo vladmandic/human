@@ -36,56 +36,54 @@ async function process(res: Tensor[], outputShape: [number, number], config: Con
   let results: Array<ObjectResult> = [];
   for (const strideSize of [1, 2, 4]) { // try each stride size as it detects large/medium/small objects
     // find scores, boxes, classes
-    tf.tidy(async () => { // wrap in tidy to automatically deallocate temp tensors
-      const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
-      // find boxes and scores output depending on stride
-      const scoresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) === labels.length)));
-      const featuresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) < labels.length)));
-      const boxesMax = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
-      const boxIdx = await boxesMax.argMax(2).array(); // what we need is indexes of features with highest scores, not values itself
-      const scores = await scoresT.array(); // optionally use exponential scores or just as-is
-      for (let i = 0; i < scoresT.shape[0]; i++) { // total strides (x * y matrix)
-        for (let j = 0; j < scoresT.shape[1]; j++) { // one score for each class
-          const score = scores[i][j]; // get score for current position
-          if (score > (config.object.minConfidence || 0) && j !== 61) {
-            const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
-            const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize; // center.y normalized to range 0..1
-            const boxOffset = boxIdx[i].map((a: number) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
-            const [x, y] = [
-              cx - (scaleBox / strideSize * boxOffset[0]),
-              cy - (scaleBox / strideSize * boxOffset[1]),
-            ];
-            const [w, h] = [
-              cx + (scaleBox / strideSize * boxOffset[2]) - x,
-              cy + (scaleBox / strideSize * boxOffset[3]) - y,
-            ];
-            let boxRaw: Box = [x, y, w, h]; // results normalized to range 0..1
-            boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))) as Box; // fix out-of-bounds coords
-            const box = [ // results normalized to input image pixels
-              boxRaw[0] * outputShape[0],
-              boxRaw[1] * outputShape[1],
-              boxRaw[2] * outputShape[0],
-              boxRaw[3] * outputShape[1],
-            ];
-            const result = {
-              id: id++,
-              // strideSize,
-              score: Math.round(100 * score) / 100,
-              class: j + 1,
-              label: labels[j].label as ObjectType,
-              // center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
-              // centerRaw: [cx, cy],
-              box: box.map((a) => Math.trunc(a)) as Box,
-              boxRaw,
-            };
-            results.push(result);
-          }
+    const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
+    // find boxes and scores output depending on stride
+    const scoresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) === labels.length)));
+    const scores = await scoresT.array(); // optionally use exponential scores or just as-is
+    const featuresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) < labels.length)));
+    const boxesMaxT = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
+    const boxIdxT = boxesMaxT.argMax(2); // what we need is indexes of features with highest scores, not values itself
+    const boxIdx = await boxIdxT.array(); // what we need is indexes of features with highest scores, not values itself
+    for (let i = 0; i < scoresT.shape[0]; i++) { // total strides (x * y matrix)
+      for (let j = 0; j < scoresT.shape[1]; j++) { // one score for each class
+        const score = scores[i][j]; // get score for current position
+        if (score > (config.object.minConfidence || 0) && j !== 61) {
+          const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
+          const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize; // center.y normalized to range 0..1
+          const boxOffset = boxIdx[i].map((a: number) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
+          const [x, y] = [
+            cx - (scaleBox / strideSize * boxOffset[0]),
+            cy - (scaleBox / strideSize * boxOffset[1]),
+          ];
+          const [w, h] = [
+            cx + (scaleBox / strideSize * boxOffset[2]) - x,
+            cy + (scaleBox / strideSize * boxOffset[3]) - y,
+          ];
+          let boxRaw: Box = [x, y, w, h]; // results normalized to range 0..1
+          boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1))) as Box; // fix out-of-bounds coords
+          const box = [ // results normalized to input image pixels
+            boxRaw[0] * outputShape[0],
+            boxRaw[1] * outputShape[1],
+            boxRaw[2] * outputShape[0],
+            boxRaw[3] * outputShape[1],
+          ];
+          const result = {
+            id: id++,
+            // strideSize,
+            score: Math.round(100 * score) / 100,
+            class: j + 1,
+            label: labels[j].label as ObjectType,
+            // center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
+            // centerRaw: [cx, cy],
+            box: box.map((a) => Math.trunc(a)) as Box,
+            boxRaw,
+          };
+          results.push(result);
         }
       }
-    });
+    }
+    tf.dispose([scoresT, featuresT, boxesMaxT, boxIdxT]);
   }
-  // deallocate tensors
-  res.forEach((t) => tf.dispose(t));
 
   // normally nms is run on raw results, but since boxes need to be calculated this way we skip calulcation of
   // unnecessary boxes and run nms only on good candidates (basically it just does IOU analysis as scores are already filtered)
@@ -117,19 +115,17 @@ export async function predict(image: Tensor, config: Config): Promise<ObjectResu
   if (!env.kernels.includes('mod') || !env.kernels.includes('sparsetodense')) return last;
   return new Promise(async (resolve) => {
     const outputSize = [image.shape[2] || 0, image.shape[1] || 0];
-    const resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
-    const norm = tf.div(resize, constants.tf255);
-    const transpose = norm.transpose([0, 3, 1, 2]);
-    tf.dispose(norm);
-    tf.dispose(resize);
+    const resizeT = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
+    const normT = tf.div(resizeT, constants.tf255);
+    const transposeT = tf.transpose(normT, [0, 3, 1, 2]);
 
     let objectT;
-    if (config.object.enabled) objectT = model.execute(transpose);
+    if (config.object.enabled) objectT = model.execute(transposeT);
     lastTime = now();
-    tf.dispose(transpose);
 
     const obj = await process(objectT as Tensor[], outputSize as [number, number], config);
     last = obj;
+    tf.dispose([resizeT, normT, transposeT, ...objectT]);
     resolve(obj);
   });
 }

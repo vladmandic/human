@@ -78,7 +78,7 @@ async function warmupNode(instance: Human): Promise<Result | undefined> {
   if (instance.config.warmup === 'face') img = atob(sample.face);
   else img = atob(sample.body);
   let res;
-  if ('node' in tf) {
+  if (('node' in tf) && (tf.getBackend() === 'tensorflow')) {
     // @ts-ignore tf.node may be undefined
     const data = tf['node'].decodeJpeg(img);
     const expanded = data.expandDims(0);
@@ -126,7 +126,6 @@ export async function runCompile(allModels: Models) {
       if (shape[dim] === -1) shape[dim] = dim === 0 ? 1 : 64; // override batch number and any dynamic dimensions
     }
     const tensor = tf.zeros(shape, dtype);
-    // const res = await model.executeAsync(tensor); // fails with current tfjs
     try {
       const res = model.execute(tensor);
       compiledModels.push(modelName);

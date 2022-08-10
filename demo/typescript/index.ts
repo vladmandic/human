@@ -13,7 +13,7 @@ const humanConfig: Partial<Config> = { // user configuration for human, used to 
   // backend: 'wasm' as const,
   // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.18.0/dist/',
   // cacheSensitivity: 0,
-  async: true,
+  async: false,
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
@@ -99,7 +99,6 @@ async function drawLoop() { // main screen refresh loop
   fps.drawFPS = Math.round(1000 * 1000 / (now - timestamp.draw)) / 1000;
   timestamp.draw = now;
   status(dom.video.paused ? 'paused' : `fps: ${fps.detectFPS.toFixed(1).padStart(5, ' ')} detect | ${fps.drawFPS.toFixed(1).padStart(5, ' ')} draw`); // write status
-  // requestAnimationFrame(drawLoop); // refresh at screen refresh rate
   setTimeout(drawLoop, 30); // use to slow down refresh from max refresh rate to target of 30 fps
 }
 

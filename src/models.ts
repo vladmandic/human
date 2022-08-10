@@ -148,34 +148,53 @@ export async function load(instance: Human): Promise<void> {
   }
 }
 
-export async function validate(instance: Human): Promise<void> {
-  interface Op { name: string, category: string, op: string }
+let instance: Human;
+type Missing = { name: string, url: string, missing: string[], ops: string[] }
+
+export function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): Missing | null {
+  if (newInstance) instance = newInstance;
+  if (!model) return null;
+  if (!instance) log('instance not registred');
+  if (!instance.config.validateModels) return null;
   const simpleOps = ['const', 'placeholder', 'noop', 'pad', 'squeeze', 'add', 'sub', 'mul', 'div'];
+  const ignoreOps = ['biasadd', 'fusedbatchnormv3', 'matmul'];
+  const ops: string[] = [];
+  const missing: string[] = [];
+  interface Op { name: string, category: string, op: string }
+  // @ts-ignore // modelUrl is a private method
+  const url = model.modelUrl;
+  // @ts-ignore // executor is a private method
+  const executor = model.executor;
+  if (executor && executor.graph.nodes) {
+    for (const kernel of Object.values(executor.graph.nodes)) {
+      const op = (kernel as Op).op.toLowerCase();
+      if (!ops.includes(op)) ops.push(op);
+    }
+  } else {
+    if (!executor && instance.config.debug) log('model signature not determined:', name);
+  }
+  for (const op of ops) {
+    if (!simpleOps.includes(op) // exclude simple ops
+      && !ignoreOps.includes(op) // exclude specific ops
+      && !instance.env.kernels.includes(op) // check actual kernel ops
+      && !instance.env.kernels.includes(op.replace('_', '')) // check variation without _
+      && !instance.env.kernels.includes(op.replace('native', '')) // check standard variation
+      && !instance.env.kernels.includes(op.replace('v2', ''))) { // check non-versioned variation
+      missing.push(op);
+    }
+  }
+  if (instance.config.debug && missing.length > 0) log('model validation failed:', name, missing);
+  return missing.length > 0 ? { name, missing, ops, url } : null;
+}
+
+export function validate(newInstance: Human): Array<{ name: string, missing: string[] }> {
+  instance = newInstance;
+  const missing: Array<Missing> = [];
   for (const defined of Object.keys(instance.models)) {
     const model: GraphModel | null = instance.models[defined as keyof Models] as GraphModel | null;
     if (!model) continue;
-    const ops: string[] = [];
-    // @ts-ignore // executor is a private method
-    const executor = model?.executor;
-    if (executor && executor.graph.nodes) {
-      for (const kernel of Object.values(executor.graph.nodes)) {
-        const op = (kernel as Op).op.toLowerCase();
-        if (!ops.includes(op)) ops.push(op);
-      }
-    } else {
-      if (!executor && instance.config.debug) log('model signature not determined:', defined);
-    }
-    const missing: string[] = [];
-    for (const op of ops) {
-      if (!simpleOps.includes(op) // exclude simple ops
-        && !instance.env.kernels.includes(op) // check actual kernel ops
-        && !instance.env.kernels.includes(op.replace('_', '')) // check variation without _
-        && !instance.env.kernels.includes(op.replace('native', '')) // check standard variation
-        && !instance.env.kernels.includes(op.replace('v2', ''))) { // check non-versioned variation
-        missing.push(op);
-      }
-    }
-    // log('model validation ops:', defined, ops);
-    if (instance.config.debug && missing.length > 0) log('model validation failed:', defined, missing);
+    const res = validateModel(instance, model, defined);
+    if (res) missing.push(res);
   }
+  return missing;
 }

@@ -113,7 +113,7 @@ export async function check(instance: Human, force = false) {
       if (tf.env().flagRegistry['WEBGL_USE_SHAPES_UNIFORMS']) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
       if (tf.env().flagRegistry['CPU_HANDOFF_SIZE_THRESHOLD']) tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
       if (tf.env().flagRegistry['WEBGL_EXP_CONV']) tf.env().set('WEBGL_EXP_CONV', true); // <https://github.com/tensorflow/tfjs/issues/6678>
-      if (tf.env().flagRegistry['USE_SETTIMEOUTWPM']) tf.env().set('USE_SETTIMEOUTWPM', true); // <https://github.com/tensorflow/tfjs/issues/6687>
+      if (tf.env().flagRegistry['USE_SETTIMEOUTCUSTOM']) tf.env().set('USE_SETTIMEOUTCUSTOM', true); // <https://github.com/tensorflow/tfjs/issues/6687>
       // if (tf.env().flagRegistry['WEBGL_PACK_DEPTHWISECONV'])  tf.env().set('WEBGL_PACK_DEPTHWISECONV', false);
       // if (if (tf.env().flagRegistry['WEBGL_FORCE_F16_TEXTURES']) && !instance.config.object.enabled) tf.env().set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
       if (typeof instance.config['deallocate'] !== 'undefined' && instance.config['deallocate']) { // hidden param

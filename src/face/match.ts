@@ -11,6 +11,7 @@ export type MatchOptions = { order?: number, threshold?: number, multiplier?: nu
  */
 export function distance(descriptor1: Descriptor, descriptor2: Descriptor, options: MatchOptions = { order: 2, multiplier: 25 }) {
   // general minkowski distance, euclidean distance is limited case where order is 2
+  if (!descriptor1 || !descriptor1) return Number.MAX_SAFE_INTEGER;
   let sum = 0;
   for (let i = 0; i < descriptor1.length; i++) {
     const diff = (!options.order || options.order === 2) ? (descriptor1[i] - descriptor2[i]) : (Math.abs(descriptor1[i] - descriptor2[i]));

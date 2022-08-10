@@ -171,6 +171,8 @@ export class Human {
     this.faceUVMap = facemesh.uvmap;
     // set gl info
     this.gl = humangl.config;
+    // init model validation
+    models.validateModel(this, null, '');
     // include platform info
     this.emit('create');
   }
@@ -208,6 +210,11 @@ export class Human {
   /** Validate current configuration schema */
   validate(userConfig?: Partial<Config>) {
     return validate(defaults, userConfig || this.config);
+  }
+
+  /** Check model for invalid kernel ops for current backend */
+  check() {
+    return models.validate(this);
   }
 
   /** Exports face matching methods {@link match#similarity} */

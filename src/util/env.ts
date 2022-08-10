@@ -117,8 +117,8 @@ export class Env {
     this.wasm.supported = typeof WebAssembly !== 'undefined';
     this.wasm.backend = this.backends.includes('wasm');
     if (this.wasm.supported && this.wasm.backend && tf.getBackend() === 'wasm') {
-      this.wasm.simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT');
-      this.wasm.multithread = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT');
+      this.wasm.simd = tf.env().get('WASM_HAS_SIMD_SUPPORT');
+      this.wasm.multithread = tf.env().get('WASM_HAS_MULTITHREAD_SUPPORT');
     }
     const c = image.canvas(100, 100);
     const ctx = c ? c.getContext('webgl2') : undefined; // causes too many gl contexts
@@ -148,7 +148,7 @@ export class Env {
   }
 
   /** update cpu information */
-  async updateCPU() {
+  updateCPU() {
     const cpu = { model: '', flags: [] };
     if (this.node && this.platform.startsWith('linux')) {
       /*

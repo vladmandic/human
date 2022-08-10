@@ -9,16 +9,21 @@ log.configure({ inspect: { breakLength: 500 } });
 
 const tests = [
   'test-node.js',
-  // 'test-node-gpu.js',
-  // 'test-node-wasm.js',
+  'test-node-gpu.js',
+  'test-node-wasm.js',
+  // 'test-node-cpu.js',
 ];
 
 const demos = [
-  '../demo/nodejs/node.js',
-  '../demo/nodejs/node-canvas.js',
-  '../demo/nodejs/node-env.js',
-  '../demo/nodejs/node-event.js',
-  '../demo/nodejs/node-multiprocess.js',
+  { cmd: '../demo/nodejs/node.js', args: [] },
+  { cmd: '../demo/nodejs/node-simple.js', args: [] },
+  { cmd: '../demo/nodejs/node-fetch.js', args: [] },
+  { cmd: '../demo/nodejs/node-event.js', args: ['samples/in/ai-body.jpg'] },
+  { cmd: '../demo/nodejs/node-similarity.js', args: ['samples/in/ai-face.jpg', 'samples/in/ai-upper.jpg'] },
+  { cmd: '../demo/nodejs/node-canvas.js', args: ['samples/in/ai-body.jpg', 'samples/out/ai-body.jpg'] },
+  { cmd: '../demo/multithread/node-multiprocess.js', args: [] },
+  // { cmd: '../demo/nodejs/node-video.js', args: [] },
+  // { cmd: '../demo/nodejs/node-webcam.js', args: [] },
 ];
 
 const ignoreMessages = [
@@ -61,8 +66,12 @@ function logStdIO(ok, test, buffer) {
   });
   for (const line of filtered) {
     if (line.length < 2) continue;
-    if (ok) log.data(test, 'stdout:', line);
-    else log.warn(test, 'stderr:', line);
+    if (ok) {
+      log.data(test, 'stdout:', line);
+    } else {
+      if (status[test]) status[test].failed = 'critical';
+      log.warn(test, 'stderr:', line);
+    }
   }
 }
 
@@ -84,13 +93,20 @@ async function runTest(test) {
 async function runDemo(demo) {
   log.info();
   log.info(demo, 'start');
+  status[demo.cmd] = { passed: 0, failed: 0 };
   return new Promise((resolve) => {
-    const child = fork(path.join(__dirname, demo), [], { silent: true });
-    child.on('message', (data) => logMessage(demo, data));
-    child.on('error', (data) => log.error(demo, ':', data.message || data));
-    child.on('close', (code) => resolve(code));
-    child.stdout?.on('data', (data) => logStdIO(true, demo, data));
-    child.stderr?.on('data', (data) => logStdIO(false, demo, data));
+    const child = fork(path.join(__dirname, demo.cmd), [...demo.args], { silent: true });
+    child.on('message', (data) => logMessage(demo.cmd, data));
+    child.on('error', (data) => {
+      status[demo.cmd].failed++;
+      log.error(demo.cmd, ':', data.message || data);
+    });
+    child.on('close', (code) => {
+      status[demo.cmd].passed++;
+      resolve(code);
+    });
+    // child.stdout?.on('data', (data) => logStdIO(true, demo.cmd, data));
+    child.stderr?.on('data', (data) => logStdIO(false, demo.cmd, data));
   });
 }
 
@@ -101,15 +117,16 @@ async function testAll() {
   log.header();
   process.on('unhandledRejection', (data) => log.error('nodejs unhandled rejection', data));
   process.on('uncaughtException', (data) => log.error('nodejs unhandled exception', data));
-  log.info('tests:', tests);
   log.info('demos:', demos);
-  // for (const demo of demos) await runDemo(demo);
+  for (const demo of demos) await runDemo(demo);
+  log.info('tests:', tests);
   for (const test of tests) await runTest(test);
-  log.info('all tests complete');
-  log.info('failed:', { count: failedMessages.length, messages: failedMessages });
+  log.state('all tests complete');
   for (const [test, result] of Object.entries(status)) {
-    log.info('status:', { test, ...result });
+    log.info('  status', { test, ...result });
   }
+  log.info('failures', { count: failedMessages.length });
+  for (const msg of failedMessages) log.warn('  failed', { test: msg.test, message: msg.data });
 }
 
 testAll();

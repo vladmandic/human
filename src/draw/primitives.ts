@@ -16,11 +16,10 @@ export const getCanvasContext = (input: AnyCanvas) => {
 
 export const rad2deg = (theta: number) => Math.round((theta * 180) / Math.PI);
 
-export const colorDepth = (z: number | undefined, opt: DrawOptions): string => {
+export const colorDepth = (z: number | undefined, opt: DrawOptions): string => { // performance optimization needed
   if (!opt.useDepth || typeof z === 'undefined') return opt.color;
   const rgb = Uint8ClampedArray.from([127 + (2 * z), 127 - (2 * z), 255]);
-  const color = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opt.alpha})`;
-  return color;
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opt.alpha})`;
 };
 
 export function point(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, x: number, y: number, z: number | undefined, localOptions: DrawOptions) {

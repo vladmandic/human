@@ -481,7 +481,7 @@ export declare class Env {
     /** update backend information */
     updateBackend(): Promise<void>;
     /** update cpu information */
-    updateCPU(): Promise<void>;
+    updateCPU(): void;
 }
 
 export declare const env: Env;

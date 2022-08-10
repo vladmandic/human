@@ -54,12 +54,16 @@ Feature is automatically disabled in **NodeJS** without user impact
   configurable using `config.face.insightface` config section  
   see `demo/faceid/index.ts` for usage  
   models can be downloaded from <https://github.com/vladmandic/insightface>  
+- Add `human.check()` which validates all kernel ops for currently loaded models with currently selected backend
+  Example: `console.error(human.check());`
 - Fix **MobileFaceNet** model as alternative for face embedding/descriptor detection  
   configurable using `config.face.mobilefacenet` config section  
 - Fix **EfficientPose** module as alternative body detection  
 - Fix **NanoDet** module as alternative object detection  
+- Fix `demo/multithread/node-multiprocess.js` demo  
 - Fix `human.match` when using mixed descriptor lengths  
 - Increased test coverage   
   run using `npm run test`  
+- Update **NMS** methods resulting in some performance improvements
 - Update profiling methods in `human.profile()`  
 - Update project dependencies  

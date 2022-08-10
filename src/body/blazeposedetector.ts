@@ -71,7 +71,7 @@ export async function decode(boxesTensor: Tensor, logitsTensor: Tensor, config: 
     detected.push({ box, boxRaw, score: scores[i] });
   }
   /*
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, 1, config.body.detector?.minConfidence || 0.1, config.body.detector?.iouThreshold || 0.1);
+  t.nms = tf.image.nonMaxSuppression(t.boxes, t.scores, 1, config.body.detector?.minConfidence || 0.1, config.body.detector?.iouThreshold || 0.1);
   const boxes = t.boxes.arraySync();
   const scores = t.scores.dataSync();
   const nms = t.nms.dataSync();

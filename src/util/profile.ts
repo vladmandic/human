@@ -11,16 +11,16 @@ export function run(modelName: string, profileData: Record<string, unknown>): vo
   if (!profileData || !profileData.kernels) return;
   const maxDetected = 5;
   // @ts-ignore profileData.kernels is tfjs internal type
-  const time = profileData.kernels
+  const time = (profileData.kernels as Array)
     .filter((a) => a.kernelTimeMs > 0)
     .reduce((a, b) => a += b.kernelTimeMs, 0);
   // @ts-ignore profileData.kernels is tfjs internal type
-  const slowest = profileData.kernels
+  const slowest = (profileData.kernels as Array)
     .map((a, i) => { a.id = i; return a; })
     .filter((a) => a.kernelTimeMs > 0)
     .sort((a, b) => b.kernelTimeMs - a.kernelTimeMs);
   // @ts-ignore profileData.kernels is tfjs internal type
-  const largest = profileData.kernels
+  const largest = (profileData.kernels as Array)
     .map((a, i) => { a.id = i; return a; })
     .filter((a) => a.totalBytesSnapshot > 0)
     .sort((a, b) => b.totalBytesSnapshot - a.totalBytesSnapshot);

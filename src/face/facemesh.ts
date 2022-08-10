@@ -87,6 +87,10 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
     } else if (!model) { // mesh enabled, but not loaded
       if (config.debug) log('face mesh detection requested, but model is not loaded');
     } else { // mesh enabled
+      if (config.face.attention?.enabled && !env.kernels.includes('atan2')) {
+        tf.dispose(face.tensor);
+        return faces;
+      }
       const results = model.execute(face.tensor as Tensor) as Array<Tensor>;
       const confidenceT = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
       const faceConfidence = await confidenceT.data();

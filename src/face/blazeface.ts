@@ -75,7 +75,7 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   t.logits = tf.slice(t.batch, [0, 0], [-1, 1]);
   t.sigmoid = tf.sigmoid(t.logits);
   t.scores = tf.squeeze(t.sigmoid);
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, (config.face.detector?.maxDetected || 0), (config.face.detector?.iouThreshold || 0), (config.face.detector?.minConfidence || 0));
+  t.nms = tf.image.nonMaxSuppression(t.boxes, t.scores, (config.face.detector?.maxDetected || 0), (config.face.detector?.iouThreshold || 0), (config.face.detector?.minConfidence || 0));
   const nms = await t.nms.array() as number[];
   const boxes: Array<DetectBox> = [];
   const scores = await t.scores.data();

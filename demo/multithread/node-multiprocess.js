@@ -13,7 +13,7 @@ const log = require('@vladmandic/pilogger'); // this is my simple logger with fe
 const child_process = require('child_process');
 // note that main process does not import human or tfjs at all, it's all done from worker process
 
-const workerFile = 'demo/nodejs/node-multiprocess-worker.js';
+const workerFile = 'demo/multithread/node-multiprocess-worker.js';
 const imgPathRoot = './assets'; // modify to include your sample images
 const numWorkers = 4; // how many workers will be started
 const workers = []; // this holds worker processes

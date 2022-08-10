@@ -42,7 +42,7 @@ async function process(res: Tensor | null, outputShape: [number, number], config
   t.scores = tf.squeeze(arr[4]);
   t.classes = tf.squeeze(arr[5]);
   tf.dispose([res, ...arr]);
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, config.object.maxDetected, config.object.iouThreshold, (config.object.minConfidence || 0));
+  t.nms = tf.image.nonMaxSuppression(t.boxes, t.scores, config.object.maxDetected, config.object.iouThreshold, (config.object.minConfidence || 0));
   const nms = await t.nms.data();
   let i = 0;
   for (const id of Array.from(nms)) {

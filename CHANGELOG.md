@@ -9,10 +9,11 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/08/08 mandic00@live.com
+
+- add insightface
+
 ### **2.9.2** 2022/08/08 mandic00@live.com
-
-
-### **origin/main** 2022/08/04 mandic00@live.com
 
 
 ### **release: 2.9.1** 2022/07/25 mandic00@live.com

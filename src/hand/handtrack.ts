@@ -121,7 +121,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   t.max = tf.max(t.filtered, 1); // max overall score
   t.argmax = tf.argMax(t.filtered, 1); // class index of max overall score
   let id = 0;
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.max, (config.hand.maxDetected || 0) + 1, config.hand.iouThreshold || 0, config.hand.minConfidence || 1);
+  t.nms = tf.image.nonMaxSuppression(t.boxes, t.max, (config.hand.maxDetected || 0) + 1, config.hand.iouThreshold || 0, config.hand.minConfidence || 1);
   const nms = await t.nms.data();
   const scores = await t.max.data();
   const classNum = await t.argmax.data();

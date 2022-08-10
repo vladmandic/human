@@ -273,6 +273,12 @@ export interface Config {
    */
   cacheModels: boolean,
 
+  /** Validate kernel ops used in model during model load
+   * default: true
+   * any errors will be printed on console but will be treated as non-fatal
+   */
+  validateModels: boolean,
+
   /** Cache sensitivity
    * - values 0..1 where 0.01 means reset cache if input changed more than 1%
    * - set to 0 to disable caching
@@ -314,6 +320,7 @@ const config: Config = {
   backend: '',
   modelBasePath: '',
   cacheModels: true,
+  validateModels: true,
   wasmPath: '',
   wasmPlatformFetch: false,
   debug: false,

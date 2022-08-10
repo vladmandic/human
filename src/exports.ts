@@ -43,3 +43,5 @@ export type Input = Tensor | AnyCanvas | AnyImage | AnyVideo | ImageObjects | Ex
 export type { ModelStats } from './models';
 /** Defines individual model sizes */
 export type { ModelInfo } from './tfjs/load';
+/** Defines model kernel ops */
+export type { KernelOps } from './models';

@@ -8,8 +8,7 @@ const package = require('./package.json');
 const modelsDir = '../human-models/models';
 const modelsOut = 'models/models.json';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const apiExtractorIgnoreList = [
+const apiExtractorIgnoreList = [ // eslint-disable-line @typescript-eslint/no-unused-vars
   'ae-missing-release-tag',
   'tsdoc-param-tag-missing-hyphen',
   'tsdoc-escape-right-brace',

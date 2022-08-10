@@ -200,6 +200,11 @@ export declare interface Config {
      * default: true if indexdb is available (browsers), false if its not (nodejs)
      */
     cacheModels: boolean;
+    /** Validate kernel ops used in model during model load
+     * default: true
+     * any errors will be printed on console but will be treated as non-fatal
+     */
+    validateModels: boolean;
     /** Cache sensitivity
      * - values 0..1 where 0.01 means reset cache if input changed more than 1%
      * - set to 0 to disable caching
@@ -1249,6 +1254,11 @@ declare class Human {
         where: string;
         expected?: string;
     }[];
+    /** Check model for invalid kernel ops for current backend */
+    check(): {
+        name: string;
+        missing: string[];
+    }[];
     /** Exports face matching methods {@link match#similarity} */
     similarity: typeof match.similarity;
     /** Exports face matching methods {@link match#distance} */
@@ -1481,6 +1491,13 @@ declare type IORouter = (url: string | string[], loadOptions?: LoadOptions) => I
 export declare type IrisGesture = 'facing center' | `looking ${'left' | 'right' | 'up' | 'down'}` | 'looking center';
 
 declare function isHTTPScheme(url: string): boolean;
+
+export declare type KernelOps = {
+    name: string;
+    url: string;
+    missing: string[];
+    ops: string[];
+};
 
 /**
  * List all models stored in registered storage mediums.
@@ -1871,10 +1888,12 @@ declare namespace models {
     export {
         reset,
         load,
+        validateModel,
         validate,
         Models,
         ModelStats,
-        getModelStats
+        getModelStats,
+        KernelOps
     }
 }
 export { models }
@@ -2502,7 +2521,12 @@ declare type Url = string | io.IOHandler | io.IOHandlerSync;
 
 declare type UrlIOHandler<T extends Url> = T extends string ? io.IOHandler : T;
 
-declare function validate(instance: Human): Promise<void>;
+declare function validate(newInstance: Human): Array<{
+    name: string;
+    missing: string[];
+}>;
+
+declare function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null;
 
 /**
  * A mutable `tf.Tensor`, useful for persisting state, e.g. for training.

@@ -149,9 +149,9 @@ export async function load(instance: Human): Promise<void> {
 }
 
 let instance: Human;
-type Missing = { name: string, url: string, missing: string[], ops: string[] }
+export type KernelOps = { name: string, url: string, missing: string[], ops: string[] }
 
-export function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): Missing | null {
+export function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null {
   if (newInstance) instance = newInstance;
   if (!model) return null;
   if (!instance) log('instance not registred');
@@ -189,7 +189,7 @@ export function validateModel(newInstance: Human | null, model: GraphModel | nul
 
 export function validate(newInstance: Human): Array<{ name: string, missing: string[] }> {
   instance = newInstance;
-  const missing: Array<Missing> = [];
+  const missing: Array<KernelOps> = [];
   for (const defined of Object.keys(instance.models)) {
     const model: GraphModel | null = instance.models[defined as keyof Models] as GraphModel | null;
     if (!model) continue;

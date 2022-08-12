@@ -22,13 +22,9 @@ N/A
 ## Known Issues
 
 ### Face with Attention
-`FaceMesh-Landmarks` model is supported only with `CPU` and `WebGL` backends due to `TFJS` issues
 
-### WASM
-
-Support for **WASM SIMD** and **WASM MultiThreading** is still disabled by default in **Chromium** based browsers  
-Suggestion is to enable it manually for major performance boost  
-Enable via <chrome://flags/#enable-experimental-webassembly-features>
+`FaceMesh-Attention` is not supported in `Node` or in browser using `WASM` backend due to missing kernel op in **TFJS**  
+Model is supported using `WebGL` backend in browser
 
 ### WebGPU
 
@@ -40,30 +36,43 @@ Enable via <chrome://flags/#enable-unsafe-webgpu>
 Running in **web workers** requires `OffscreenCanvas` which is still disabled by default in **Firefox**  
 Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 
-### Face Detection
+### Face Detection & Hand Detection
 
-Enhanced rotation correction for face detection is not working in **NodeJS** due to missing kernel op in **TFJS**  
+Enhanced rotation correction for face detection and hand detection is not working in **NodeJS** due to missing kernel op in **TFJS**  
 Feature is automatically disabled in **NodeJS** without user impact  
+
+### Object Detection
+
+`NanoDet` model is not supported in `Node` or in browser using `WASM` backend due to missing kernel op in **TFJS**
+Model is supported using `WebGL` backend in browser
 
 <hr><br>
 
 ## Pending Release Changes
 
 - Add **InsightFace** model as alternative for face embedding/descriptor detection  
-  compatible with multiple variations of **InsightFace** models  
-  configurable using `config.face.insightface` config section  
-  see `demo/faceid/index.ts` for usage  
-  models can be downloaded from <https://github.com/vladmandic/insightface>  
-- Add `human.check()` which validates all kernel ops for currently loaded models with currently selected backend
-  Example: `console.error(human.check());`
+  Compatible with multiple variations of **InsightFace** models  
+  Configurable using `config.face.insightface` config section  
+  See `demo/faceid/index.ts` for usage  
+  Models can be downloaded from <https://github.com/vladmandic/insightface>  
+- Add `human.check()` which validates all kernel ops for currently loaded models with currently selected backend  
+  Example: `console.error(human.check());`  
+- Host models in <human-models>  
+  Models can be directly used without downloading to local storage  
+  Example: `modelPath: 'https://vladmandic.github.io/human-models/models/facemesh.json'`  
+- Host models in **Google Cloud Bucket**  
+  Models can be directly used without downloading to local storage  
+  Example: `modelPath: 'https://storage.googleapis.com/human-models/facemesh.json'`  
 - Fix **MobileFaceNet** model as alternative for face embedding/descriptor detection  
-  configurable using `config.face.mobilefacenet` config section  
+  Configurable using `config.face.mobilefacenet` config section  
 - Fix **EfficientPose** module as alternative body detection  
 - Fix **NanoDet** module as alternative object detection  
 - Fix `demo/multithread/node-multiprocess.js` demo  
 - Fix `human.match` when using mixed descriptor lengths  
 - Increased test coverage   
-  run using `npm run test`  
+  Run using `npm run test`  
+- Increase availability of alternative models  
+  See `models/model.json` for full list
 - Update **NMS** methods resulting in some performance improvements
 - Update profiling methods in `human.profile()`  
 - Update project dependencies  

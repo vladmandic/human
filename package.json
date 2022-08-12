@@ -7,6 +7,13 @@
   "module": "dist/human.esm.js",
   "browser": "dist/human.esm.js",
   "types": "types/human.d.ts",
+  "exports": {
+    "require": "./dist/human.node.js",
+    "import": "./dist/human.esm.js",
+    "script": "./dist/human.js",
+    "module": "./dist/human.esm.js",
+    "types": "./types/human.d.ts"
+  },
   "author": "Vladimir Mandic <mandic00@live.com>",
   "bugs": {
     "url": "https://github.com/vladmandic/human/issues"
@@ -59,7 +66,7 @@
     "node-webcam": "^0.8.1"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.29.0",
+    "@microsoft/api-extractor": "^7.29.2",
     "@tensorflow/tfjs": "^3.19.0",
     "@tensorflow/tfjs-backend-cpu": "^3.19.0",
     "@tensorflow/tfjs-backend-wasm": "^3.19.0",
@@ -72,15 +79,15 @@
     "@tensorflow/tfjs-node": "^3.19.0",
     "@tensorflow/tfjs-node-gpu": "^3.19.0",
     "@tensorflow/tfjs-tflite": "0.0.1-alpha.8",
-    "@types/node": "^18.6.4",
+    "@types/node": "^18.7.2",
     "@types/offscreencanvas": "^2019.7.0",
-    "@typescript-eslint/eslint-plugin": "^5.32.0",
-    "@typescript-eslint/parser": "^5.32.0",
-    "@vladmandic/build": "^0.7.8",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "@vladmandic/build": "^0.7.9",
     "@vladmandic/pilogger": "^0.4.6",
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
     "@webgpu/types": "^0.1.21",
-    "esbuild": "^0.14.54",
+    "esbuild": "^0.15.1",
     "eslint": "8.21.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-html": "^7.1.0",

@@ -9,12 +9,13 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/08/10 mandic00@live.com
+
+
 ### **2.9.3** 2022/08/10 mandic00@live.com
 
 - rehault testing framework
-
-### **origin/main** 2022/08/08 mandic00@live.com
-
+- release refresh
 - add insightface
 
 ### **2.9.2** 2022/08/08 mandic00@live.com

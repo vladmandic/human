@@ -73524,10 +73524,12 @@ var env2 = new Env();
 var models_exports = {};
 __export(models_exports, {
   age: () => age,
+  "anti-spoofing": () => anti_spoofing,
   antispoof: () => antispoof,
   blazeface: () => blazeface,
   "blazeface-back": () => blazeface_back,
   "blazeface-front": () => blazeface_front,
+  "blazepose-detect": () => blazepose_detect,
   "blazepose-detector2d": () => blazepose_detector2d,
   "blazepose-detector3d": () => blazepose_detector3d,
   "blazepose-full": () => blazepose_full,
@@ -73535,6 +73537,9 @@ __export(models_exports, {
   "blazepose-lite": () => blazepose_lite,
   default: () => models_default,
   efficientpose: () => efficientpose,
+  "efficientpose-i-lite": () => efficientpose_i_lite,
+  "efficientpose-ii-lite": () => efficientpose_ii_lite,
+  "efficientpose-iv": () => efficientpose_iv,
   emotion: () => emotion,
   faceboxes: () => faceboxes,
   facemesh: () => facemesh,
@@ -73554,104 +73559,144 @@ __export(models_exports, {
   "handlandmark-sparse": () => handlandmark_sparse,
   handskeleton: () => handskeleton,
   handtrack: () => handtrack,
+  "insightface-efficientnet-b0": () => insightface_efficientnet_b0,
+  "insightface-ghostnet-strides1": () => insightface_ghostnet_strides1,
+  "insightface-ghostnet-strides2": () => insightface_ghostnet_strides2,
+  "insightface-mobilenet-emore": () => insightface_mobilenet_emore,
+  "insightface-mobilenet-swish": () => insightface_mobilenet_swish,
   iris: () => iris,
   liveness: () => liveness,
   "mb3-centernet": () => mb3_centernet,
   meet: () => meet,
   mobileface: () => mobileface,
   mobilefacenet: () => mobilefacenet,
+  models: () => models,
   "movenet-lightning": () => movenet_lightning,
   "movenet-multipose": () => movenet_multipose,
   "movenet-thunder": () => movenet_thunder,
   nanodet: () => nanodet,
+  "nanodet-e": () => nanodet_e,
+  "nanodet-g": () => nanodet_g,
+  "nanodet-m": () => nanodet_m,
+  "nanodet-t": () => nanodet_t,
   posenet: () => posenet,
   selfie: () => selfie
 });
-var age = 161240;
 var antispoof = 853098;
+var blazeface = 538928;
+var emotion = 820516;
+var facemesh = 1477958;
+var faceres = 6978814;
+var handlandmark_full = 5431368;
+var handtrack = 2964837;
+var iris = 2599092;
+var liveness = 592976;
+var mb3_centernet = 4030290;
+var models = 0;
+var movenet_lightning = 4650216;
+var selfie = 212886;
+var age = 161240;
 var blazeface_back = 538928;
 var blazeface_front = 402048;
-var blazeface = 538928;
 var blazepose_detector2d = 7499400;
 var blazepose_detector3d = 5928856;
 var blazepose_full = 6338290;
 var blazepose_heavy = 27501554;
 var blazepose_lite = 2725490;
 var efficientpose = 5651240;
-var emotion = 820516;
 var faceboxes = 2013002;
 var facemesh_attention_alt = 2387598;
 var facemesh_attention = 2382414;
 var facemesh_detection_full = 1026192;
 var facemesh_detection_short = 201268;
 var facemesh_orig = 2955780;
-var facemesh = 1477958;
 var faceres_deep = 13957620;
-var faceres = 6978814;
 var gear = 1498916;
 var gender_ssrnet_imdb = 161236;
 var gender = 201808;
 var handdetect = 3515612;
-var handlandmark_full = 5431368;
 var handlandmark_lite = 2023432;
 var handlandmark_sparse = 5286322;
 var handskeleton = 5502280;
-var handtrack = 2964837;
-var iris = 2599092;
-var liveness = 592976;
-var mb3_centernet = 4030290;
 var meet = 372228;
 var mobileface = 2183192;
 var mobilefacenet = 5171976;
-var movenet_lightning = 4650216;
 var movenet_multipose = 9448838;
 var movenet_thunder = 12477112;
 var nanodet = 7574558;
 var posenet = 5032780;
-var selfie = 212886;
+var blazepose_detect = 5928804;
+var anti_spoofing = 853098;
+var efficientpose_i_lite = 2269064;
+var efficientpose_ii_lite = 5651240;
+var efficientpose_iv = 25643252;
+var insightface_efficientnet_b0 = 13013224;
+var insightface_ghostnet_strides1 = 8093408;
+var insightface_ghostnet_strides2 = 8049584;
+var insightface_mobilenet_emore = 6938536;
+var insightface_mobilenet_swish = 12168584;
+var nanodet_e = 12319156;
+var nanodet_g = 7574558;
+var nanodet_m = 1887474;
+var nanodet_t = 5294216;
 var models_default = {
-  age,
   antispoof,
+  blazeface,
+  emotion,
+  facemesh,
+  faceres,
+  "handlandmark-full": handlandmark_full,
+  handtrack,
+  iris,
+  liveness,
+  "mb3-centernet": mb3_centernet,
+  models,
+  "movenet-lightning": movenet_lightning,
+  selfie,
+  age,
   "blazeface-back": blazeface_back,
   "blazeface-front": blazeface_front,
-  blazeface,
   "blazepose-detector2d": blazepose_detector2d,
   "blazepose-detector3d": blazepose_detector3d,
   "blazepose-full": blazepose_full,
   "blazepose-heavy": blazepose_heavy,
   "blazepose-lite": blazepose_lite,
   efficientpose,
-  emotion,
   faceboxes,
   "facemesh-attention-alt": facemesh_attention_alt,
   "facemesh-attention": facemesh_attention,
   "facemesh-detection-full": facemesh_detection_full,
   "facemesh-detection-short": facemesh_detection_short,
   "facemesh-orig": facemesh_orig,
-  facemesh,
   "faceres-deep": faceres_deep,
-  faceres,
   gear,
   "gender-ssrnet-imdb": gender_ssrnet_imdb,
   gender,
   handdetect,
-  "handlandmark-full": handlandmark_full,
   "handlandmark-lite": handlandmark_lite,
   "handlandmark-sparse": handlandmark_sparse,
   handskeleton,
-  handtrack,
-  iris,
-  liveness,
-  "mb3-centernet": mb3_centernet,
   meet,
   mobileface,
   mobilefacenet,
-  "movenet-lightning": movenet_lightning,
   "movenet-multipose": movenet_multipose,
   "movenet-thunder": movenet_thunder,
   nanodet,
   posenet,
-  selfie
+  "blazepose-detect": blazepose_detect,
+  "anti-spoofing": anti_spoofing,
+  "efficientpose-i-lite": efficientpose_i_lite,
+  "efficientpose-ii-lite": efficientpose_ii_lite,
+  "efficientpose-iv": efficientpose_iv,
+  "insightface-efficientnet-b0": insightface_efficientnet_b0,
+  "insightface-ghostnet-strides1": insightface_ghostnet_strides1,
+  "insightface-ghostnet-strides2": insightface_ghostnet_strides2,
+  "insightface-mobilenet-emore": insightface_mobilenet_emore,
+  "insightface-mobilenet-swish": insightface_mobilenet_swish,
+  "nanodet-e": nanodet_e,
+  "nanodet-g": nanodet_g,
+  "nanodet-m": nanodet_m,
+  "nanodet-t": nanodet_t
 };
 
 // src/models.ts
@@ -77669,7 +77714,7 @@ function scale2(box, scaleFact) {
 
 // src/body/blazepose.ts
 var env3 = { initial: true };
-var models = { detector: null, landmarks: null };
+var models2 = { detector: null, landmarks: null };
 var inputSize3 = { detector: [224, 224], landmarks: [256, 256] };
 var skipped5 = Number.MAX_SAFE_INTEGER;
 var outputNodes = {
@@ -77683,28 +77728,28 @@ var lastTime5 = 0;
 var sigmoid6 = (x) => 1 - 1 / (1 + Math.exp(x));
 async function loadDetect(config3) {
   if (env3.initial)
-    models.detector = null;
-  if (!models.detector && config3.body["detector"] && config3.body["detector"]["modelPath"] || "") {
-    models.detector = await loadModel(config3.body["detector"]["modelPath"]);
-    const inputs = Object.values(models.detector.modelSignature["inputs"]);
+    models2.detector = null;
+  if (!models2.detector && config3.body["detector"] && config3.body["detector"]["modelPath"] || "") {
+    models2.detector = await loadModel(config3.body["detector"]["modelPath"]);
+    const inputs = Object.values(models2.detector.modelSignature["inputs"]);
     inputSize3.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize3.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-  } else if (config3.debug && models.detector)
-    log("cached model:", models.detector["modelUrl"]);
+  } else if (config3.debug && models2.detector)
+    log("cached model:", models2.detector["modelUrl"]);
   await createAnchors();
-  return models.detector;
+  return models2.detector;
 }
 async function loadPose(config3) {
   if (env3.initial)
-    models.landmarks = null;
-  if (!models.landmarks) {
-    models.landmarks = await loadModel(config3.body.modelPath);
-    const inputs = Object.values(models.landmarks.modelSignature["inputs"]);
+    models2.landmarks = null;
+  if (!models2.landmarks) {
+    models2.landmarks = await loadModel(config3.body.modelPath);
+    const inputs = Object.values(models2.landmarks.modelSignature["inputs"]);
     inputSize3.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize3.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config3.debug)
-    log("cached model:", models.landmarks["modelUrl"]);
-  return models.landmarks;
+    log("cached model:", models2.landmarks["modelUrl"]);
+  return models2.landmarks;
 }
 async function prepareImage(input2, size2) {
   const t2 = {};
@@ -77779,7 +77824,7 @@ async function fixKeypoints(keypoints) {
 async function detectLandmarks(input2, config3, outputSize2) {
   var _a;
   const t2 = {};
-  [t2.ld, t2.segmentation, t2.heatmap, t2.world, t2.poseflag] = (_a = models.landmarks) == null ? void 0 : _a.execute(input2, outputNodes.landmarks);
+  [t2.ld, t2.segmentation, t2.heatmap, t2.world, t2.poseflag] = (_a = models2.landmarks) == null ? void 0 : _a.execute(input2, outputNodes.landmarks);
   const poseScore = (await t2.poseflag.data())[0];
   const points = await t2.ld.data();
   const distances = await t2.world.data();
@@ -83002,7 +83047,7 @@ function fakeOps(kernelNames, config3) {
 }
 
 // src/hand/handtrack.ts
-var models2 = [null, null];
+var models3 = [null, null];
 var modelOutputNodes = ["StatefulPartitionedCall/Postprocessor/Slice", "StatefulPartitionedCall/Postprocessor/ExpandDims_1"];
 var inputSize7 = [[0, 0], [0, 0]];
 var classes = ["hand", "fist", "pinch", "point", "face", "tip", "pinchtip"];
@@ -83029,33 +83074,33 @@ var fingerMap = {
 async function loadDetect2(config3) {
   var _a;
   if (env2.initial)
-    models2[0] = null;
-  if (!models2[0]) {
+    models3[0] = null;
+  if (!models3[0]) {
     fakeOps(["tensorlistreserve", "enter", "tensorlistfromtensor", "merge", "loopcond", "switch", "exit", "tensorliststack", "nextiteration", "tensorlistsetitem", "tensorlistgetitem", "reciprocal", "shape", "split", "where"], config3);
-    models2[0] = await loadModel((_a = config3.hand.detector) == null ? void 0 : _a.modelPath);
-    const inputs = Object.values(models2[0].modelSignature["inputs"]);
+    models3[0] = await loadModel((_a = config3.hand.detector) == null ? void 0 : _a.modelPath);
+    const inputs = Object.values(models3[0].modelSignature["inputs"]);
     inputSize7[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize7[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config3.debug)
-    log("cached model:", models2[0]["modelUrl"]);
-  return models2[0];
+    log("cached model:", models3[0]["modelUrl"]);
+  return models3[0];
 }
 async function loadSkeleton(config3) {
   var _a;
   if (env2.initial)
-    models2[1] = null;
-  if (!models2[1]) {
-    models2[1] = await loadModel((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath);
-    const inputs = Object.values(models2[1].modelSignature["inputs"]);
+    models3[1] = null;
+  if (!models3[1]) {
+    models3[1] = await loadModel((_a = config3.hand.skeleton) == null ? void 0 : _a.modelPath);
+    const inputs = Object.values(models3[1].modelSignature["inputs"]);
     inputSize7[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize7[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config3.debug)
-    log("cached model:", models2[1]["modelUrl"]);
-  return models2[1];
+    log("cached model:", models3[1]["modelUrl"]);
+  return models3[1];
 }
 async function detectHands(input2, config3) {
   const hands = [];
-  if (!input2 || !models2[0])
+  if (!input2 || !models3[0])
     return hands;
   const t2 = {};
   const ratio = (input2.shape[2] || 1) / (input2.shape[1] || 1);
@@ -83063,7 +83108,7 @@ async function detectHands(input2, config3) {
   const width = Math.round(height * ratio / 8) * 8;
   t2.resize = image.resizeBilinear(input2, [height, width]);
   t2.cast = cast(t2.resize, "int32");
-  [t2.rawScores, t2.rawBoxes] = await models2[0].executeAsync(t2.cast, modelOutputNodes);
+  [t2.rawScores, t2.rawBoxes] = await models3[0].executeAsync(t2.cast, modelOutputNodes);
   t2.boxes = squeeze(t2.rawBoxes, [0, 2]);
   t2.scores = squeeze(t2.rawScores, [0]);
   const classScores = unstack(t2.scores, 1);
@@ -83109,12 +83154,12 @@ async function detectFingers(input2, h, config3) {
     landmarks: {},
     annotations: {}
   };
-  if (input2 && models2[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
+  if (input2 && models3[1] && config3.hand.landmarks && h.score > (config3.hand.minConfidence || 0)) {
     const t2 = {};
     const boxCrop = [h.boxRaw[1], h.boxRaw[0], h.boxRaw[3] + h.boxRaw[1], h.boxRaw[2] + h.boxRaw[0]];
     t2.crop = image.cropAndResize(input2, [boxCrop], [0], [inputSize7[1][0], inputSize7[1][1]], "bilinear");
     t2.div = div(t2.crop, constants.tf255);
-    [t2.score, t2.keypoints] = models2[1].execute(t2.div, ["Identity_1", "Identity"]);
+    [t2.score, t2.keypoints] = models3[1].execute(t2.div, ["Identity_1", "Identity"]);
     const rawScore = (await t2.score.data())[0];
     const score = (100 - Math.trunc(100 / (1 + Math.exp(rawScore)))) / 100;
     if (score >= (config3.hand.minConfidence || 0)) {
@@ -83135,7 +83180,7 @@ async function detectFingers(input2, h, config3) {
 }
 async function predict14(input2, config3) {
   var _a, _b;
-  if (!models2[0] || !models2[1] || !((_a = models2[0]) == null ? void 0 : _a.inputs[0].shape) || !((_b = models2[1]) == null ? void 0 : _b.inputs[0].shape))
+  if (!models3[0] || !models3[1] || !((_a = models3[0]) == null ? void 0 : _a.inputs[0].shape) || !((_b = models3[1]) == null ? void 0 : _b.inputs[0].shape))
     return [];
   outputSize = [input2.shape[2] || 0, input2.shape[1] || 0];
   skipped12++;

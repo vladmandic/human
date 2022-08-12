@@ -6,6 +6,7 @@ const APIExtractor = require('@microsoft/api-extractor');
 const tf = require('@tensorflow/tfjs-node');
 const package = require('./package.json');
 
+const logFile = 'test/build.log';
 const modelsOut = 'models/models.json';
 const modelsFolders = [
   './models',
@@ -71,9 +72,8 @@ async function analyzeModels() {
 }
 
 async function main() {
+  log.logFile(logFile);
   log.data('Build', { name: package.name, version: package.version });
-  // generate model signature
-  await analyzeModels();
   // run production build
   const build = new Build();
   await build.run('production');
@@ -102,7 +102,9 @@ async function main() {
   copy('types/human.d.ts', 'dist/human.node-gpu.d.ts');
   copy('types/human.d.ts', 'dist/human.node.d.ts');
   copy('types/human.d.ts', 'dist/human.node-wasm.d.ts');
-  log.info('Human Build complete...');
+  // generate model signature
+  await analyzeModels();
+  log.info('Human Build complete...', { logFile });
 }
 
 main();

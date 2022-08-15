@@ -5,7 +5,7 @@ const { fork } = require('child_process');
 const log = require('@vladmandic/pilogger');
 
 let logFile = 'test.log';
-log.configure({ inspect: { breakLength: 500 } });
+log.configure({ inspect: { breakLength: 350 } });
 
 const tests = [
   'test-node.js',

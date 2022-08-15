@@ -1,80 +1,412 @@
-14:40:51.744 +00001ms  human tests
-14:40:51.918 +00174ms  {version: 2.9.0}
-14:40:51.918 +00000ms  {tfjs: 3.19.0}
-14:40:51.918 +00000ms  {environment: {browser: true, node: false, worker: false, platform: Windows NT 10.0; Win64; x64, agent: Mozilla/5.0 AppleWebKit/537.36 Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1329.0, backends: [cpu, webgl, wasm, webgpu, humangl], initial: true, tfjs: {version: 3.19.0}, offscreen: true, perfadd: false, wasm: {supported: true, backend: true}, webgl: {supported: true, backend: true, version: WebGL 2.0 (OpenGL ES 3.0 Chromium), renderer: WebKit WebGL}, webgpu: {supported: true, backend: true, adapter: Default}, cpu: {flags: []}, kernels: [_fusedmatmul, abs, acos, acosh, add, addn, all, any, argmax, argmin, asin, asinh, atan, atan2, atanh, avgpool, avgpool3d, avgpool3dgrad, avgpoolgrad, batchmatmul, fusedbatchnorm, batchtospacend, bincount, broadcastargs, cast, ceil, clipbyvalue, complex, complexabs, concat, conv2d, conv2dbackpropfilter, conv2dbackpropinput, conv3d, conv3dbackpropfilterv2, conv3dbackpropinputv2, cos, cosh, cropandresize, cumprod, cumsum, densebincount, depthtospace, depthwiseconv2dnative, depthwiseconv2dnativebackpropfilter, depthwiseconv2dnativebackpropinput, diag, dilation2d, einsum, elu, elugrad, equal, erf, exp, expanddims, expm1, fft, fill, flipleftright, floor, floordiv, frompixels, fusedconv2d, fuseddepthwiseconv2d, gathernd, gatherv2, greater, greaterequal, identity, ifft, imag, isfinite, isinf, isnan, leakyrelu, less, lessequal, linspace, log, log1p, logicaland, logicalnot, logicalor, lrn, lrngrad, max, maximum, maxpool, maxpool3d, maxpool3dgrad, maxpoolgrad, maxpoolwithargmax, mean, min, minimum, mirrorpad, mod, multinomial, multiply, neg, nonmaxsuppressionv3, nonmaxsuppressionv4, nonmaxsuppressionv5, notequal, onehot, oneslike, pack, padv2, pow, prelu, prod, range, real, realdiv, reciprocal, relu, relu6, reshape, resizebilinear, resizebilineargrad, resizenearestneighbor, resizenearestneighborgrad, reverse, rotatewithoffset, round, rsqrt, scatternd, searchsorted, select, selu, sigmoid, sign, sin, sinh, slice, softmax, softplus, spacetobatchnd, sparsefillemptyrows, sparsereshape, sparsesegmentmean, sparsesegmentsum, sparsetodense, splitv, sqrt, square, squareddifference, step, stridedslice, stringngrams, stringsplit, stringtohashbucketfast, sub, sum, tan, tanh, tile, topk, transform, transpose, unique, unpack, unsortedsegmentsum, zeroslike, floormod]}}
-14:40:51.918 +00000ms  {config: {backend: humangl, modelBasePath: ../models/, cacheModels: true, wasmPath: https: //cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.19.0/dist/, wasmPlatformFetch: false, debug: true, async: true, warmup: none, cacheSensitivity: 0, skipAllowed: false, deallocate: false, filter: {enabled: true, equalization: false, width: 0, height: 0, flip: false, return: true, brightness: 0, contrast: 0, sharpness: 0, blur: 0, saturation: 0, hue: 0, negative: false, sepia: false, vintage: false, kodachrome: false, technicolor: false, polaroid: false, pixelate: 0}, gesture: {enabled: true}, face: {enabled: true, detector: {modelPath: blazeface.json, rotation: true, maxDetected: 1, skipFrames: 99, skipTime: 2500, minConfidence: 0.2, iouThreshold: 0.1, mask: false, return: false}, mesh: {enabled: true, modelPath: facemesh.json, keepInvalid: false}, attention: {enabled: false, modelPath: facemesh-attention.json}, iris: {enabled: true, modelPath: iris.json}, emotion: {enabled: true, minConfidence: 0.1, skipFrames: 99, skipTime: 1500, modelPath: emotion.json}, description: {enabled: true, modelPath: faceres.json, skipFrames: 99, skipTime: 3000, minConfidence: 0.1}, antispoof: {enabled: false, skipFrames: 99, skipTime: 4000, modelPath: antispoof.json}, liveness: {enabled: false, skipFrames: 99, skipTime: 4000, modelPath: liveness.json}}, body: {enabled: true, modelPath: movenet-lightning.json, maxDetected: -1, minConfidence: 0.3, skipFrames: 1, skipTime: 200}, hand: {enabled: true, rotation: true, skipFrames: 99, skipTime: 1000, minConfidence: 0.5, iouThreshold: 0.2, maxDetected: -1, landmarks: true, detector: {modelPath: handtrack.json}, skeleton: {modelPath: handlandmark-full.json}}, object: {enabled: true, modelPath: mb3-centernet.json, minConfidence: 0.2, iouThreshold: 0.4, maxDetected: 10, skipFrames: 99, skipTime: 2000}, segmentation: {enabled: false, modelPath: selfie.json, blur: 8}}}
-14:40:52.214 +00296ms  {models: [{name: ssrnetage, loaded: false}, {name: gear, loaded: false}, {name: blazeposedetect, loaded: false}, {name: blazepose, loaded: false}, {name: centernet, loaded: true}, {name: efficientpose, loaded: false}, {name: mobilefacenet, loaded: false}, {name: emotion, loaded: true}, {name: facedetect, loaded: true}, {name: faceiris, loaded: true}, {name: facemesh, loaded: true}, {name: faceres, loaded: true}, {name: ssrnetgender, loaded: false}, {name: handpose, loaded: false}, {name: handskeleton, loaded: true}, {name: handtrack, loaded: true}, {name: liveness, loaded: false}, {name: movenet, loaded: true}, {name: nanodet, loaded: false}, {name: posenet, loaded: false}, {name: segmentation, loaded: false}, {name: antispoof, loaded: false}]}
-14:40:52.214 +00000ms  
-14:40:52.214 +00000ms  test start:wasm
-14:40:53.404 +01190ms  {initialized: wasm}
-14:40:53.404 +00000ms  {memory: {unreliable: false, numTensors: 1761, numDataBuffers: 1761, numBytes: 60948216}}
-14:40:53.404 +00000ms  {validate: []}
-14:40:53.884 +00480ms  {warmup: face}
-14:40:53.967 +00083ms  {input: [1, 1200, 1200, 3]}
-14:40:54.232 +00265ms  {detect: true}
-14:40:54.234 +00002ms  {interpolated: true}
-14:40:54.234 +00000ms  {persons: true}
-14:40:54.234 +00000ms  {summary: {persons: 1, face: 1, body: 1, hand: 1, object: 1, gesture: 6}}
-14:40:54.234 +00000ms  {performance: {initBackend: 1183, loadModels: 295, inputProcess: 2, totalFrames: 2, cachedFrames: 0, cacheCheck: 0, total: 263, warmup: 479}}
-14:40:54.989 +00755ms  {benchmark: {time: 71, cacheSensitivity: 0}, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 52}}
-14:40:55.708 +00719ms  {benchmark: {time: 70, cacheSensitivity: 0.25}, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 55}}
-14:40:56.418 +00710ms  {benchmark: {time: 68, cacheSensitivity: 0.5}, performance: {inputProcess: 1, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 48}}
-14:40:57.108 +00690ms  {benchmark: {time: 66, cacheSensitivity: 0.75}, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 54}}
-14:40:57.484 +00376ms  {benchmark: {time: 34, cacheSensitivity: 10}, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 8, cacheCheck: 0, total: 48}}
-14:40:57.512 +00028ms  {memory: {unreliable: false, numTensors: 1762, numDataBuffers: 1762, numBytes: 61734648}}
-14:40:57.512 +00000ms  
-14:40:57.513 +00001ms  test start:webgl
-14:40:57.550 +00037ms  {initialized: webgl}
-14:40:57.551 +00001ms  {memory: {unreliable: false, numBytesInGPU: 0, numBytesInGPUAllocated: 0, numBytesInGPUFree: 0, numTensors: 1768, numDataBuffers: 1768, numBytes: 61734680}}
-14:40:57.551 +00000ms  {validate: []}
-14:40:59.550 +01999ms  {warmup: face}
-14:40:59.589 +00039ms  {input: [1, 1200, 1200, 3]}
-14:41:01.233 +01644ms  {detect: true}
-14:41:01.234 +00001ms  {interpolated: true}
-14:41:01.234 +00000ms  {persons: true}
-14:41:01.234 +00000ms  {summary: {persons: 0, face: 0, body: 1, hand: 0, object: 0, gesture: 0}}
-14:41:01.234 +00000ms  {performance: {inputProcess: 0, totalFrames: 12, cachedFrames: 9, cacheCheck: 0, total: 1639, initBackend: 0, warmup: 1999}}
-14:41:03.565 +02331ms  {benchmark: {time: 229, cacheSensitivity: 0}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 63}}
-14:41:04.434 +00869ms  {benchmark: {time: 83, cacheSensitivity: 0.25}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 5, total: 54}}
-14:41:05.322 +00888ms  {benchmark: {time: 84, cacheSensitivity: 0.5}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 4, total: 55}}
-14:41:06.268 +00946ms  {benchmark: {time: 91, cacheSensitivity: 0.75}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 11, total: 84}}
-14:41:06.851 +00583ms  {benchmark: {time: 54, cacheSensitivity: 10}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 8, cacheCheck: 16, total: 71}}
-14:41:06.897 +00046ms  {memory: {unreliable: false, numBytesInGPU: 56099560, numBytesInGPUAllocated: 701611228, numBytesInGPUFree: 645511668, numTensors: 1768, numDataBuffers: 1768, numBytes: 61734680}}
-14:41:06.898 +00001ms  
-14:41:06.898 +00000ms  test start:humangl
-14:41:06.947 +00049ms  {initialized: humangl}
-14:41:06.947 +00000ms  {memory: {unreliable: false, numBytesInGPU: 0, numBytesInGPUAllocated: 0, numBytesInGPUFree: 0, numTensors: 1774, numDataBuffers: 1774, numBytes: 61734712}}
-14:41:06.947 +00000ms  {validate: []}
-14:41:09.119 +02172ms  {warmup: face}
-14:41:09.189 +00070ms  {input: [1, 1200, 1200, 3]}
-14:41:09.663 +00474ms  {detect: true}
-14:41:09.665 +00002ms  {interpolated: true}
-14:41:09.666 +00001ms  {persons: true}
-14:41:09.666 +00000ms  {summary: {persons: 1, face: 1, body: 1, hand: 0, object: 0, gesture: 1}}
-14:41:09.666 +00000ms  {performance: {inputProcess: 0, totalFrames: 12, cachedFrames: 9, cacheCheck: 0, total: 473, initBackend: 2, warmup: 2171}}
-14:41:12.296 +02630ms  {benchmark: {time: 263, cacheSensitivity: 0}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 283}}
-14:41:14.946 +02650ms  {benchmark: {time: 260, cacheSensitivity: 0.25}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 15, total: 249}}
-14:41:17.663 +02717ms  {benchmark: {time: 266, cacheSensitivity: 0.5}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 15, total: 250}}
-14:41:20.513 +02850ms  {benchmark: {time: 279, cacheSensitivity: 0.75}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 15, total: 249}}
-14:41:21.796 +01283ms  {benchmark: {time: 122, cacheSensitivity: 10}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 8, cacheCheck: 11, total: 245}}
-14:41:21.857 +00061ms  {memory: {unreliable: false, numBytesInGPU: 56099560, numBytesInGPUAllocated: 701611228, numBytesInGPUFree: 645511668, numTensors: 1774, numDataBuffers: 1774, numBytes: 61734712}}
-14:41:21.857 +00000ms  
-14:41:21.857 +00000ms  test start:webgpu
-14:41:21.966 +00109ms  {initialized: webgpu}
-14:41:21.966 +00000ms  {memory: {numBytesInGPU: 0, numBytesAllocatedInGPU: 0, unreliable: false, numTensors: 1780, numDataBuffers: 1780, numBytes: 61734744}}
-14:41:21.967 +00001ms  {validate: []}
-14:41:37.313 +15346ms  {warmup: face}
-14:41:37.327 +00014ms  {input: [1, 1200, 1200, 3]}
-14:41:38.482 +01155ms  {detect: true}
-14:41:38.483 +00001ms  {interpolated: true}
-14:41:38.483 +00000ms  {persons: true}
-14:41:38.483 +00000ms  {summary: {persons: 1, face: 1, body: 1, hand: 0, object: 0, gesture: 1}}
-14:41:38.484 +00001ms  {performance: {inputProcess: 0, totalFrames: 12, cachedFrames: 9, cacheCheck: 0, total: 1154, initBackend: 89, warmup: 15345}}
-14:41:41.952 +03468ms  {benchmark: {time: 347, cacheSensitivity: 0}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 68}}
-14:41:42.769 +00817ms  {benchmark: {time: 77, cacheSensitivity: 0.25}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 3, total: 75}}
-14:41:43.586 +00817ms  {benchmark: {time: 77, cacheSensitivity: 0.5}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 3, total: 73}}
-14:41:44.400 +00814ms  {benchmark: {time: 76, cacheSensitivity: 0.75}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 3, total: 71}}
-14:41:44.833 +00433ms  {benchmark: {time: 38, cacheSensitivity: 10}, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 8, cacheCheck: 3, total: 77}}
-14:41:44.887 +00054ms  {memory: {numBytesInGPU: 53317336, numBytesAllocatedInGPU: 402364236, unreliable: false, numTensors: 1780, numDataBuffers: 41787, numBytes: 61734744}}
-14:41:44.887 +00000ms  
-14:41:44.887 +00000ms  tests complete
+10:13:35.412 +00001ms   human tests
+10:13:35.517 +00105ms   version 2.9.3
+10:13:35.517 +00000ms   tfjs 3.19.0
+10:13:35.517 +00000ms   environment {
+  browser:  true, 
+  node:  false, 
+  worker:  false, 
+  platform:  Windows NT 10.0; Win64; x64, 
+  agent:  Mozilla/5.0 AppleWebKit/537.36 Chrome/106.0.0.0 Safari/537.36, 
+  backends:  [
+    cpu, 
+    webgl, 
+    wasm, 
+    webgpu, 
+    humangl
+  ], 
+  initial:  true, 
+  tfjs:  {
+    version:  3.19.0
+  }, 
+  offscreen:  true, 
+  perfadd:  false, 
+  wasm:  {
+    supported:  true, 
+    backend:  true
+  }, 
+  webgl:  {
+    supported:  true, 
+    backend:  true, 
+    version:  WebGL 2.0 (OpenGL ES 3.0 Chromium), 
+    renderer:  WebKit WebGL
+  }, 
+  webgpu:  {
+    supported:  true, 
+    backend:  true, 
+    adapter:  Default
+  }, 
+  cpu:  {
+    flags:  []
+  }, 
+  kernels:  [
+    _fusedmatmul, 
+    abs, 
+    acos, 
+    acosh, 
+    add, 
+    addn, 
+    all, 
+    any, 
+    argmax, 
+    argmin, 
+    asin, 
+    asinh, 
+    atan, 
+    atan2, 
+    atanh, 
+    avgpool, 
+    avgpool3d, 
+    avgpool3dgrad, 
+    avgpoolgrad, 
+    batchmatmul, 
+    fusedbatchnorm, 
+    batchtospacend, 
+    bincount, 
+    broadcastargs, 
+    cast, 
+    ceil, 
+    clipbyvalue, 
+    complex, 
+    complexabs, 
+    concat, 
+    conv2d, 
+    conv2dbackpropfilter, 
+    conv2dbackpropinput, 
+    conv3d, 
+    conv3dbackpropfilterv2, 
+    conv3dbackpropinputv2, 
+    cos, 
+    cosh, 
+    cropandresize, 
+    cumprod, 
+    cumsum, 
+    densebincount, 
+    depthtospace, 
+    depthwiseconv2dnative, 
+    depthwiseconv2dnativebackpropfilter, 
+    depthwiseconv2dnativebackpropinput, 
+    diag, 
+    dilation2d, 
+    einsum, 
+    elu, 
+    elugrad, 
+    equal, 
+    erf, 
+    exp, 
+    expanddims, 
+    expm1, 
+    fft, 
+    fill, 
+    flipleftright, 
+    floor, 
+    floordiv, 
+    frompixels, 
+    fusedconv2d, 
+    fuseddepthwiseconv2d, 
+    gathernd, 
+    gatherv2, 
+    greater, 
+    greaterequal, 
+    identity, 
+    ifft, 
+    imag, 
+    isfinite, 
+    isinf, 
+    isnan, 
+    leakyrelu, 
+    less, 
+    lessequal, 
+    linspace, 
+    log, 
+    log1p, 
+    logicaland, 
+    logicalnot, 
+    logicalor, 
+    lrn, 
+    lrngrad, 
+    max, 
+    maximum, 
+    maxpool, 
+    maxpool3d, 
+    maxpool3dgrad, 
+    maxpoolgrad, 
+    maxpoolwithargmax, 
+    mean, 
+    min, 
+    minimum, 
+    mirrorpad, 
+    mod, 
+    multinomial, 
+    multiply, 
+    neg, 
+    nonmaxsuppressionv3, 
+    nonmaxsuppressionv4, 
+    nonmaxsuppressionv5, 
+    notequal, 
+    onehot, 
+    oneslike, 
+    pack, 
+    padv2, 
+    pow, 
+    prelu, 
+    prod, 
+    range, 
+    real, 
+    realdiv, 
+    reciprocal, 
+    relu, 
+    relu6, 
+    reshape, 
+    resizebilinear, 
+    resizebilineargrad, 
+    resizenearestneighbor, 
+    resizenearestneighborgrad, 
+    reverse, 
+    rotatewithoffset, 
+    round, 
+    rsqrt, 
+    scatternd, 
+    searchsorted, 
+    select, 
+    selu, 
+    sigmoid, 
+    sign, 
+    sin, 
+    sinh, 
+    slice, 
+    softmax, 
+    softplus, 
+    spacetobatchnd, 
+    sparsefillemptyrows, 
+    sparsereshape, 
+    sparsesegmentmean, 
+    sparsesegmentsum, 
+    sparsetodense, 
+    splitv, 
+    sqrt, 
+    square, 
+    squareddifference, 
+    step, 
+    stridedslice, 
+    stringngrams, 
+    stringsplit, 
+    stringtohashbucketfast, 
+    sub, 
+    sum, 
+    tan, 
+    tanh, 
+    tile, 
+    topk, 
+    transform, 
+    transpose, 
+    unique, 
+    unpack, 
+    unsortedsegmentsum, 
+    zeroslike, 
+    floormod
+  ]
+}
+10:13:35.527 +00010ms   config {
+  backend:  humangl, 
+  modelBasePath:  ../models/, 
+  cacheModels:  true, 
+  validateModels:  true, 
+  wasmPath:  https: //cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.19.0/dist/, 
+  wasmPlatformFetch:  false, 
+  debug:  true, 
+  async:  true, 
+  warmup:  none, 
+  cacheSensitivity:  0, 
+  skipAllowed:  false, 
+  deallocate:  false, 
+  filter:  {
+    enabled:  true, 
+    equalization:  false, 
+    width:  0, 
+    height:  0, 
+    flip:  false, 
+    return:  true, 
+    brightness:  0, 
+    contrast:  0, 
+    sharpness:  0, 
+    blur:  0, 
+    saturation:  0, 
+    hue:  0, 
+    negative:  false, 
+    sepia:  false, 
+    vintage:  false, 
+    kodachrome:  false, 
+    technicolor:  false, 
+    polaroid:  false, 
+    pixelate:  0
+  }, 
+  gesture:  {
+    enabled:  true
+  }, 
+  face:  {
+    enabled:  true, 
+    detector:  {
+      modelPath:  blazeface.json, 
+      rotation:  true, 
+      maxDetected:  1, 
+      skipFrames:  99, 
+      skipTime:  2500, 
+      minConfidence:  0.2, 
+      iouThreshold:  0.1, 
+      mask:  false, 
+      return:  false
+    }, 
+    mesh:  {
+      enabled:  true, 
+      modelPath:  facemesh.json, 
+      keepInvalid:  false
+    }, 
+    attention:  {
+      enabled:  false, 
+      modelPath:  facemesh-attention.json
+    }, 
+    iris:  {
+      enabled:  true, 
+      modelPath:  iris.json
+    }, 
+    emotion:  {
+      enabled:  true, 
+      minConfidence:  0.1, 
+      skipFrames:  99, 
+      skipTime:  1500, 
+      modelPath:  emotion.json
+    }, 
+    description:  {
+      enabled:  true, 
+      modelPath:  faceres.json, 
+      skipFrames:  99, 
+      skipTime:  3000, 
+      minConfidence:  0.1
+    }, 
+    antispoof:  {
+      enabled:  false, 
+      skipFrames:  99, 
+      skipTime:  4000, 
+      modelPath:  antispoof.json
+    }, 
+    liveness:  {
+      enabled:  false, 
+      skipFrames:  99, 
+      skipTime:  4000, 
+      modelPath:  liveness.json
+    }
+  }, 
+  body:  {
+    enabled:  true, 
+    modelPath:  movenet-lightning.json, 
+    maxDetected:  -1, 
+    minConfidence:  0.3, 
+    skipFrames:  1, 
+    skipTime:  200
+  }, 
+  hand:  {
+    enabled:  true, 
+    rotation:  true, 
+    skipFrames:  99, 
+    skipTime:  1000, 
+    minConfidence:  0.5, 
+    iouThreshold:  0.2, 
+    maxDetected:  -1, 
+    landmarks:  true, 
+    detector:  {
+      modelPath:  handtrack.json
+    }, 
+    skeleton:  {
+      modelPath:  handlandmark-full.json
+    }
+  }, 
+  object:  {
+    enabled:  true, 
+    modelPath:  mb3-centernet.json, 
+    minConfidence:  0.2, 
+    iouThreshold:  0.4, 
+    maxDetected:  10, 
+    skipFrames:  99, 
+    skipTime:  2000
+  }, 
+  segmentation:  {
+    enabled:  false, 
+    modelPath:  selfie.json, 
+    blur:  8
+  }
+}
+10:13:35.838 +00311ms   models [{name: ssrnetage, loaded: false}, {name: gear, loaded: false}, {name: blazeposedetect, loaded: false}, {name: blazepose, loaded: false}, {name: centernet, loaded: true}, {name: efficientpose, loaded: false}, {name: mobilefacenet, loaded: false}, {name: insightface, loaded: false}, {name: emotion, loaded: true}, {name: facedetect, loaded: true}, {name: faceiris, loaded: true}, {name: facemesh, loaded: true}, {name: faceres, loaded: true}, {name: ssrnetgender, loaded: false}, {name: handpose, loaded: false}, {name: handskeleton, loaded: true}, {name: handtrack, loaded: true}, {name: liveness, loaded: false}, {name: movenet, loaded: true}, {name: nanodet, loaded: false}, {name: posenet, loaded: false}, {name: segmentation, loaded: false}, {name: antispoof, loaded: false}]
+10:13:35.871 +00033ms  
+10:13:35.903 +00032ms   test start: wasm
+10:13:36.129 +00226ms   desired wasm detected wasm
+10:13:36.162 +00033ms   memory {unreliable: false, numTensors: 1763, numDataBuffers: 1763, numBytes: 60948232}
+10:13:36.196 +00034ms   validate []
+10:13:37.456 +01260ms   warmup face
+10:13:37.559 +00103ms   input [1, 1200, 1200, 3]
+10:13:38.433 +00874ms   detect
+10:13:38.471 +00038ms   interpolate
+10:13:38.522 +00051ms   persons
+10:13:38.558 +00036ms   summary {persons: 1, face: 1, body: 1, hand: 1, object: 1, gesture: 8}
+10:13:38.595 +00037ms   performance {initBackend: 181, loadModels: 285, inputProcess: 1, totalFrames: 2, cachedFrames: 0, cacheCheck: 0, total: 833, warmup: 1227}
+10:13:39.730 +01135ms   benchmark {time: 109, cacheSensitivity: 0, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 50}}
+10:13:40.410 +00680ms   benchmark {time: 65, cacheSensitivity: 0.25, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 51}}
+10:13:41.083 +00673ms   benchmark {time: 64, cacheSensitivity: 0.5, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 49}}
+10:13:41.758 +00675ms   benchmark {time: 64, cacheSensitivity: 0.75, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 48}}
+10:13:42.121 +00363ms   benchmark {time: 33, cacheSensitivity: 10, performance: {inputProcess: 2, totalFrames: 10, cachedFrames: 8, cacheCheck: 0, total: 48}}
+10:13:42.160 +00039ms   memory {unreliable: false, numTensors: 1764, numDataBuffers: 1764, numBytes: 61734664}
+10:13:42.189 +00029ms  
+10:13:42.219 +00030ms   test start: humangl
+10:13:42.253 +00034ms   desired humangl detected humangl
+10:13:42.281 +00028ms   memory {unreliable: false, numBytesInGPU: 0, numBytesInGPUAllocated: 0, numBytesInGPUFree: 0, numTensors: 1770, numDataBuffers: 1770, numBytes: 61734696}
+10:13:42.311 +00030ms   validate []
+10:13:44.370 +02059ms   warmup face
+10:13:44.433 +00063ms   input [1, 1200, 1200, 3]
+10:13:46.227 +01794ms   detect
+10:13:46.260 +00033ms   interpolate
+10:13:46.301 +00041ms   persons
+10:13:46.329 +00028ms   summary {persons: 0, face: 0, body: 1, hand: 0, object: 0, gesture: 0}
+10:13:46.359 +00030ms   performance {inputProcess: 0, totalFrames: 12, cachedFrames: 9, cacheCheck: 0, total: 1762, initBackend: 0, warmup: 2026}
+10:13:48.486 +02127ms   benchmark {time: 209, cacheSensitivity: 0, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 56}}
+10:13:49.281 +00795ms   benchmark {time: 75, cacheSensitivity: 0.25, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 5, total: 57}}
+10:13:50.135 +00854ms   benchmark {time: 81, cacheSensitivity: 0.5, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 4, total: 64}}
+10:13:51.047 +00912ms   benchmark {time: 87, cacheSensitivity: 0.75, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 5, total: 63}}
+10:13:51.637 +00590ms   benchmark {time: 55, cacheSensitivity: 10, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 8, cacheCheck: 5, total: 61}}
+10:13:51.687 +00050ms   memory {unreliable: false, numBytesInGPU: 56099560, numBytesInGPUAllocated: 701598940, numBytesInGPUFree: 645499380, numTensors: 1770, numDataBuffers: 1770, numBytes: 61734696}
+10:13:51.725 +00038ms  
+10:13:51.758 +00033ms   test start: webgl
+10:13:51.804 +00046ms   desired webgl detected webgl
+10:13:51.845 +00041ms   memory {unreliable: false, numBytesInGPU: 0, numBytesInGPUAllocated: 0, numBytesInGPUFree: 0, numTensors: 1776, numDataBuffers: 1776, numBytes: 61734728}
+10:13:51.893 +00048ms   validate []
+10:13:57.083 +05190ms   warmup face
+10:13:57.160 +00077ms   input [1, 1200, 1200, 3]
+10:13:57.876 +00716ms   detect
+10:13:57.916 +00040ms   interpolate
+10:13:57.960 +00044ms   persons
+10:13:58.003 +00043ms   summary {persons: 1, face: 1, body: 1, hand: 0, object: 0, gesture: 1}
+10:13:58.048 +00045ms   performance {inputProcess: 0, totalFrames: 12, cachedFrames: 9, cacheCheck: 0, total: 668, initBackend: 0, warmup: 5146}
+10:13:59.556 +01508ms   benchmark {time: 146, cacheSensitivity: 0, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 122}}
+10:14:01.012 +01456ms   benchmark {time: 140, cacheSensitivity: 0.25, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 6, total: 130}}
+10:14:02.436 +01424ms   benchmark {time: 137, cacheSensitivity: 0.5, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 5, total: 127}}
+10:14:03.931 +01495ms   benchmark {time: 144, cacheSensitivity: 0.75, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 4, total: 137}}
+10:14:04.695 +00764ms   benchmark {time: 70, cacheSensitivity: 10, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 8, cacheCheck: 5, total: 134}}
+10:14:04.756 +00061ms   memory {unreliable: false, numBytesInGPU: 56099560, numBytesInGPUAllocated: 701598940, numBytesInGPUFree: 645499380, numTensors: 1776, numDataBuffers: 1776, numBytes: 61734728}
+10:14:04.810 +00054ms  
+10:14:04.865 +00055ms   test start: webgpu
+10:14:04.956 +00091ms   desired webgpu detected webgpu
+10:14:05.012 +00056ms   memory {numBytesInGPU: 0, numBytesAllocatedInGPU: 0, unreliable: false, numTensors: 1782, numDataBuffers: 1782, numBytes: 61734760}
+10:14:05.068 +00056ms   validate []
+10:14:18.964 +13896ms   warmup face
+10:14:19.032 +00068ms   input [1, 1200, 1200, 3]
+10:14:20.109 +01077ms   detect
+10:14:20.166 +00057ms   interpolate
+10:14:20.224 +00058ms   persons
+10:14:20.275 +00051ms   summary {persons: 1, face: 1, body: 1, hand: 0, object: 0, gesture: 1}
+10:14:20.329 +00054ms   performance {inputProcess: 0, totalFrames: 12, cachedFrames: 9, cacheCheck: 0, total: 1025, initBackend: 33, warmup: 13840}
+10:14:23.824 +03495ms   benchmark {time: 343, cacheSensitivity: 0, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 0, total: 81}}
+10:14:24.663 +00839ms   benchmark {time: 77, cacheSensitivity: 0.25, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 15, total: 82}}
+10:14:25.583 +00920ms   benchmark {time: 85, cacheSensitivity: 0.5, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 10, total: 81}}
+10:14:26.502 +00919ms   benchmark {time: 85, cacheSensitivity: 0.75, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 0, cacheCheck: 12, total: 85}}
+10:14:27.041 +00539ms   benchmark {time: 46, cacheSensitivity: 10, performance: {inputProcess: 0, totalFrames: 10, cachedFrames: 8, cacheCheck: 9, total: 86}}
+10:14:27.123 +00082ms   memory {numBytesInGPU: 53317336, numBytesAllocatedInGPU: 402350412, unreliable: false, numTensors: 1782, numDataBuffers: 41789, numBytes: 61734760}
+10:14:27.193 +00070ms  
+10:14:27.261 +00068ms   tests complete

@@ -73430,6 +73430,7 @@ var Env = class {
     __publicField(this, "tfjs");
     __publicField(this, "offscreen");
     __publicField(this, "perfadd", false);
+    __publicField(this, "tensorflow", { version: void 0 });
     __publicField(this, "wasm", {
       supported: void 0,
       backend: void 0,
@@ -73478,6 +73479,7 @@ var Env = class {
   }
   async updateBackend() {
     this.backends = Object.keys(engine().registryFactory);
+    this.tensorflow = { version: backend()["binding"] ? backend()["binding"]["TF_Version"] : void 0 };
     this.wasm.supported = typeof WebAssembly !== "undefined";
     this.wasm.backend = this.backends.includes("wasm");
     if (this.wasm.supported && this.wasm.backend && getBackend() === "wasm") {
@@ -77547,7 +77549,7 @@ async function getBoxes(inputImage, config3) {
   t2.logits = slice(t2.batch, [0, 0], [-1, 1]);
   t2.sigmoid = sigmoid(t2.logits);
   t2.scores = squeeze(t2.sigmoid);
-  t2.nms = image.nonMaxSuppression(t2.boxes, t2.scores, ((_a = config3.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = config3.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = config3.face.detector) == null ? void 0 : _c.minConfidence) || 0);
+  t2.nms = await image.nonMaxSuppressionAsync(t2.boxes, t2.scores, ((_a = config3.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = config3.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = config3.face.detector) == null ? void 0 : _c.minConfidence) || 0);
   const nms = await t2.nms.array();
   const boxes = [];
   const scores = await t2.scores.data();
@@ -77991,7 +77993,7 @@ async function process3(res, outputShape, config3) {
   t2.scores = squeeze(arr[4]);
   t2.classes = squeeze(arr[5]);
   dispose([res, ...arr]);
-  t2.nms = image.nonMaxSuppression(t2.boxes, t2.scores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence || 0);
+  t2.nms = await image.nonMaxSuppressionAsync(t2.boxes, t2.scores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence || 0);
   const nms = await t2.nms.data();
   let i2 = 0;
   for (const id of Array.from(nms)) {
@@ -82130,7 +82132,7 @@ var HandDetector = class {
     const scores = await t2.scores.data();
     t2.boxes = slice(t2.predictions, [0, 1], [-1, 4]);
     t2.norm = this.normalizeBoxes(t2.boxes);
-    t2.nms = image.nonMaxSuppression(t2.norm, t2.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
+    t2.nms = await image.nonMaxSuppressionAsync(t2.norm, t2.scores, 3 * config3.hand.maxDetected, config3.hand.iouThreshold, config3.hand.minConfidence);
     const nms = await t2.nms.array();
     const hands = [];
     for (const index2 of nms) {
@@ -82981,12 +82983,18 @@ async function check(instance2, force = false) {
           await setWasmPaths(instance2.config.wasmPath, instance2.config.wasmPlatformFetch);
         else
           throw new Error("backend error: attempting to use wasm backend but wasm path is not set");
-        const simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
-        const mt = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
-        if (instance2.config.debug)
-          log(`wasm execution: ${simd ? "SIMD" : "no SIMD"} ${mt ? "multithreaded" : "singlethreaded"}`);
-        if (instance2.config.debug && !simd)
-          log("warning: wasm simd support is not enabled");
+        let mt = false;
+        let simd = false;
+        try {
+          mt = await env().getAsync("WASM_HAS_MULTITHREAD_SUPPORT");
+          simd = await env().getAsync("WASM_HAS_SIMD_SUPPORT");
+          if (instance2.config.debug)
+            log(`wasm execution: ${simd ? "simd" : "no simd"} ${mt ? "multithreaded" : "singlethreaded"}`);
+          if (instance2.config.debug && !simd)
+            log("warning: wasm simd support is not enabled");
+        } catch (e2) {
+          log("wasm detection failed");
+        }
       }
       try {
         await setBackend(instance2.config.backend);
@@ -83119,7 +83127,7 @@ async function detectHands(input2, config3) {
   t2.max = max(t2.filtered, 1);
   t2.argmax = argMax(t2.filtered, 1);
   let id = 0;
-  t2.nms = image.nonMaxSuppression(t2.boxes, t2.max, (config3.hand.maxDetected || 0) + 1, config3.hand.iouThreshold || 0, config3.hand.minConfidence || 1);
+  t2.nms = await image.nonMaxSuppressionAsync(t2.boxes, t2.max, (config3.hand.maxDetected || 0) + 1, config3.hand.iouThreshold || 0, config3.hand.minConfidence || 1);
   const nms = await t2.nms.data();
   const scores = await t2.max.data();
   const classNum = await t2.argmax.data();
@@ -83614,7 +83622,7 @@ async function process4(res, outputShape, config3) {
   const nmsScores = results.map((a) => a.score);
   let nmsIdx = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
-    const nms = image.nonMaxSuppression(nmsBoxes, nmsScores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
+    const nms = await image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config3.object.maxDetected, config3.object.iouThreshold, config3.object.minConfidence);
     nmsIdx = await nms.data();
     dispose(nms);
   }

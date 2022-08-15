@@ -27,6 +27,10 @@ export class Env {
   offscreen: undefined | boolean;
   /** Are performance counter instant values or additive */
   perfadd: boolean = false;
+  /** If using tfjs-node get version of underlying tensorflow shared library */
+  tensorflow: {
+    version: undefined | string,
+  } = { version: undefined };
   /** WASM detected capabilities */
   wasm: {
     supported: undefined | boolean,
@@ -84,6 +88,7 @@ export class Env {
     this.tfjs = { version: tf.version['tfjs-core'] };
     this.offscreen = typeof OffscreenCanvas !== 'undefined';
     this.initial = true;
+
     // @ts-ignore WorkerGlobalScope evaluated in browser only
     this.worker = this.browser && this.offscreen ? (typeof WorkerGlobalScope !== 'undefined') : undefined;
     if (typeof navigator !== 'undefined') {
@@ -114,6 +119,7 @@ export class Env {
   async updateBackend() {
     // analyze backends
     this.backends = Object.keys(tf.engine().registryFactory);
+    this.tensorflow = { version: (tf.backend()['binding'] ? tf.backend()['binding']['TF_Version'] : undefined) };
     this.wasm.supported = typeof WebAssembly !== 'undefined';
     this.wasm.backend = this.backends.includes('wasm');
     if (this.wasm.supported && this.wasm.backend && tf.getBackend() === 'wasm') {

@@ -1,20 +1,21 @@
+const log = require('@vladmandic/pilogger');
 const tf = require('@tensorflow/tfjs'); // wasm backend requires tfjs to be loaded first
 const wasm = require('@tensorflow/tfjs-backend-wasm'); // wasm backend does not get auto-loaded in nodejs
 const { Canvas, Image } = require('canvas');
-const Human = require('../dist/human.node-wasm.js');
+const H = require('../dist/human.node-wasm.js');
 const test = require('./test-main.js').test;
 
 // @ts-ignore
-Human.env.Canvas = Canvas; // requires monkey-patch as wasm does not have tf.browser namespace
+H.env.Canvas = Canvas; // requires monkey-patch as wasm does not have tf.browser namespace
 // @ts-ignore
-Human.env.Image = Image; // requires monkey-patch as wasm does not have tf.browser namespace
+H.env.Image = Image; // requires monkey-patch as wasm does not have tf.browser namespace
 
 const config = {
   cacheSensitivity: 0,
   modelBasePath: 'https://vladmandic.github.io/human/models/',
   backend: 'wasm',
-  wasmPath: 'node_modules/@tensorflow/tfjs-backend-wasm/dist/',
-  // wasmPath: `cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`,
+  // wasmPath: 'node_modules/@tensorflow/tfjs-backend-wasm/dist/',
+  wasmPath: `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`,
   debug: false,
   async: false,
   face: {
@@ -38,7 +39,9 @@ async function main() {
   wasm.setWasmPaths(config.wasmPath);
   await tf.setBackend('wasm');
   await tf.ready();
-  test(Human.Human, config);
+  H.env.updateBackend();
+  log.info(H.env.wasm);
+  test(H.Human, config);
 }
 
 main();

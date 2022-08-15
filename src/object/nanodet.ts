@@ -91,7 +91,7 @@ async function process(res: Tensor[], outputShape: [number, number], config: Con
   const nmsScores = results.map((a) => a.score);
   let nmsIdx: Array<number> = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
-    const nms = tf.image.nonMaxSuppression(nmsBoxes, nmsScores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
+    const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
     nmsIdx = await nms.data();
     tf.dispose(nms);
   }

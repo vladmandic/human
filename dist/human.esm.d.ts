@@ -449,9 +449,10 @@ export declare class Env {
     offscreen: undefined | boolean;
     /** Are performance counter instant values or additive */
     perfadd: boolean;
-    /** If using tfjs-node get version of underlying tensorflow shared library */
+    /** If using tfjs-node get version of underlying tensorflow shared library and if gpu acceleration is enabled */
     tensorflow: {
         version: undefined | string;
+        gpu: undefined | boolean;
     };
     /** WASM detected capabilities */
     wasm: {

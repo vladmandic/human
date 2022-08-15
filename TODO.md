@@ -57,7 +57,8 @@ Model is supported using `WebGL` backend in browser
   Models can be downloaded from <https://github.com/vladmandic/insightface>  
 - Add `human.check()` which validates all kernel ops for currently loaded models with currently selected backend  
   Example: `console.error(human.check());`  
-- Add underlying tensorflow library version detection to `human.env`  
+- Add underlying **tensorflow** library version detection when running in NodeJS to  
+  `human.env` and check if **GPU** is used for acceleration  
   Example: `console.log(human.env.tensorflow)`  
 - Host models in <human-models>  
   Models can be directly used without downloading to local storage  
@@ -72,10 +73,11 @@ Model is supported using `WebGL` backend in browser
 - Fix `demo/multithread/node-multiprocess.js` demo  
 - Fix `human.match` when using mixed descriptor lengths  
 - Fix WASM feature detection issue in TFJS with Edge/Chromium  
+  Example: `console.log(human.env.wasm)`  
 - Increased test coverage  
-  **NodeJS**: Run using `npm run test`  
-  **Browser**: Run using `demo/browser.html`  
+  **NodeJS**: Run using: `npm run test`  
+  **Browser**: Run using: `demo/browser.html`  
 - Increase availability of alternative models  
   See `models/model.json` for full list  
 - Update profiling methods in `human.profile()`  
-- Update project dependencies  
+- Update project dependencies to latest versions  

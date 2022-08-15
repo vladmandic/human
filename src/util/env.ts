@@ -27,10 +27,14 @@ export class Env {
   offscreen: undefined | boolean;
   /** Are performance counter instant values or additive */
   perfadd: boolean = false;
-  /** If using tfjs-node get version of underlying tensorflow shared library */
+  /** If using tfjs-node get version of underlying tensorflow shared library and if gpu acceleration is enabled */
   tensorflow: {
     version: undefined | string,
-  } = { version: undefined };
+    gpu: undefined | boolean,
+  } = {
+      version: undefined,
+      gpu: undefined,
+    };
   /** WASM detected capabilities */
   wasm: {
     supported: undefined | boolean,
@@ -119,7 +123,10 @@ export class Env {
   async updateBackend() {
     // analyze backends
     this.backends = Object.keys(tf.engine().registryFactory);
-    this.tensorflow = { version: (tf.backend()['binding'] ? tf.backend()['binding']['TF_Version'] : undefined) };
+    this.tensorflow = {
+      version: (tf.backend()['binding'] ? tf.backend()['binding']['TF_Version'] : undefined),
+      gpu: (tf.backend()['binding'] ? tf.backend()['binding'].isUsingGpuDevice() : undefined),
+    };
     this.wasm.supported = typeof WebAssembly !== 'undefined';
     this.wasm.backend = this.backends.includes('wasm');
     if (this.wasm.supported && this.wasm.backend && tf.getBackend() === 'wasm') {

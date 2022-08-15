@@ -73430,7 +73430,10 @@ var Env = class {
     __publicField(this, "tfjs");
     __publicField(this, "offscreen");
     __publicField(this, "perfadd", false);
-    __publicField(this, "tensorflow", { version: void 0 });
+    __publicField(this, "tensorflow", {
+      version: void 0,
+      gpu: void 0
+    });
     __publicField(this, "wasm", {
       supported: void 0,
       backend: void 0,
@@ -73479,7 +73482,10 @@ var Env = class {
   }
   async updateBackend() {
     this.backends = Object.keys(engine().registryFactory);
-    this.tensorflow = { version: backend()["binding"] ? backend()["binding"]["TF_Version"] : void 0 };
+    this.tensorflow = {
+      version: backend()["binding"] ? backend()["binding"]["TF_Version"] : void 0,
+      gpu: backend()["binding"] ? backend()["binding"].isUsingGpuDevice() : void 0
+    };
     this.wasm.supported = typeof WebAssembly !== "undefined";
     this.wasm.backend = this.backends.includes("wasm");
     if (this.wasm.supported && this.wasm.backend && getBackend() === "wasm") {

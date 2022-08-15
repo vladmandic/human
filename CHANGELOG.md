@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/08/12 mandic00@live.com
+### **HEAD -> main** 2022/08/15 mandic00@live.com
 
 - enumerate additional models
 - release refresh

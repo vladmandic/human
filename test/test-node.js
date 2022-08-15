@@ -1,5 +1,6 @@
 process.env.TF_CPP_MIN_LOG_LEVEL = '2';
-const Human = require('../dist/human.node.js').default;
+
+const H = require('../dist/human.node.js');
 const test = require('./test-main.js').test;
 
 const config = {
@@ -25,4 +26,8 @@ const config = {
   filter: { enabled: false },
 };
 
-test(Human, config);
+async function main() {
+  test(H.Human, config);
+}
+
+main();

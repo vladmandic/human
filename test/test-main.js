@@ -12,7 +12,8 @@ const log = (status, ...data) => {
 };
 
 process.on('uncaughtException', (err) => {
-  log('error', 'uncaughtException', lastOp, err);
+  log('error', 'uncaughtException', lastOp, err); // abort immediately
+  process.exit(1);
 });
 
 async function testHTTP() {
@@ -74,12 +75,17 @@ async function testInstance(human) {
   log('info', 'human version:', human.version);
   log('info', 'platform:', human.env.platform, 'agent:', human.env.agent);
   log('info', 'tfjs version:', human.tf.version.tfjs);
-  const bindingVer = human.tf.backend()['binding'] ? human.tf.backend()['binding']['TF_Version'] : null;
-  if (bindingVer) log('info', 'tensorflow binding version:', bindingVer);
+  const env = JSON.parse(JSON.stringify(human.env));
+  env.kernels = human.env.kernels.length;
+  log('info', 'env:', env);
 
   await human.load();
-  if (config.backend === human.tf.getBackend()) log('state', 'passed: set backend:', config.backend);
-  else log('error', 'failed: set backend:', config.backend);
+  if (config.backend === human.tf.getBackend()) {
+    log('state', 'passed: set backend:', config.backend);
+  } else {
+    log('error', 'failed: set backend:', config.backend); // abort immediately
+    return false;
+  }
   log('state', 'tensors', human.tf.memory().numTensors);
 
   if (human.models) {
@@ -296,7 +302,11 @@ async function test(Human, inputConfig) {
 
   // test warmup sequences
   log('info', 'test: warmup');
-  await testInstance(human);
+  res = await testInstance(human);
+  if (!res) {
+    log('error', 'failed: instance backend:', human.tf.getBackend());
+    return;
+  }
   config.cacheSensitivity = 0;
   config.warmup = 'none';
   res = await testWarmup(human, 'default');
@@ -475,7 +485,7 @@ async function test(Human, inputConfig) {
   // test face attention
   log('info', 'test face attention');
   human.models.facemesh = null;
-  config.face.attention = { enabled: true };
+  config.face.attention = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/facemesh-attention.json' };
   res = await testDetect(human, 'samples/in/ai-face.jpg', 'face attention');
   if (!res || !res.face[0] || res.face[0].mesh.length !== 478 || Object.keys(res.face[0].annotations).length !== 36) log('error', 'failed: face attention', { mesh: res.face?.[0]?.mesh?.length, annotations: Object.keys(res.face?.[0]?.annotations | {}).length });
   else log('state', 'passed: face attention');

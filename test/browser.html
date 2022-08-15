@@ -13,9 +13,9 @@
     <style>
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 14px; font-variant: small-caps; }
-      body { margin: 0; background: black; color: white; }
+      body { margin: 0; background: black; color: white; width: 100vw; overflow-x: hidden; }
       .canvas { position: absolute; bottom: 10px; right: 10px; width: 256px; height: 256px; z-index: 99; }
-      .pre { line-height: 150%; }
+      .pre { line-height: 150%; white-space: break-spaces; }
       .events { position: absolute; top: 10px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
       .state { position: absolute; top: 60px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
     </style>
@@ -36,16 +36,16 @@
         object: { enabled: true },
       };
 
-      const backends = ['wasm', 'webgl', 'humangl', 'webgpu'];
+      const backends = ['wasm', 'humangl', 'webgl', 'webgpu'];
 
       const start = performance.now();
 
-      function str(...msg) {
+      function str(long, ...msg) {
         if (!Array.isArray(msg)) return msg;
         let line = '';
         for (const entry of msg) {
-          if (typeof entry === 'object') line += JSON.stringify(entry).replace(/"/g, '').replace(/,/g, ', ').replace(/:/g, ': ');
-          else line += entry;
+          if (typeof entry === 'object') line += ' ' + JSON.stringify(entry, null, long ? 2 : 0).replace(/"/g, '').replace(/,/g, ', ').replace(/:/g, ': ');
+          else line += ' ' + entry;
         }
         return line + '\n';
       }
@@ -55,9 +55,19 @@
         const dt = new Date();
         const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
         const elap = (dt - last).toString().padStart(5, '0');
-        document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms &nbsp' + str(...msgs);
-        // eslint-disable-next-line no-console
-        console.log(ts, elap, ...msgs);
+        document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms &nbsp' + str(false, ...msgs);
+        document.documentElement.scrollTop = document.documentElement.scrollHeight
+        console.log(ts, elap, ...msgs); // eslint-disable-line no-console
+        last = dt;
+      }
+
+      async function detailed(...msgs) {
+        const dt = new Date();
+        const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
+        const elap = (dt - last).toString().padStart(5, '0');
+        document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms &nbsp' + str(true, ...msgs);
+        document.documentElement.scrollTop = document.documentElement.scrollHeight
+        console.log(ts, elap, ...msgs); // eslint-disable-line no-console
         last = dt;
       }
 
@@ -95,37 +105,44 @@
         human.events.addEventListener('image', () => events('image'));
         human.events.addEventListener('detect', () => events('detect'));
         const timer = setInterval(() => { document.getElementById('state').innerText = `State: ${human.state}`; }, 10);
-        log({ version: human.version });
-        log({ tfjs: human.tf.version.tfjs });
-        log({ environment: human.env });
-        log({ config: human.config });
+        log('version', human.version);
+        log('tfjs', human.tf.version.tfjs);
+
+        const env = JSON.parse(JSON.stringify(human.env));
+        env.kernels = human.env.kernels.length;
+        detailed('environment', env);
+
+        detailed('config', human.config);
         await human.load();
         const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
-        log({ models });
+        log('models', models);
         for (const backend of backends) {
           log();
           log('test start:', backend);
           human.config.backend = backend;
           await human.init();
-          log({ initialized: human.tf.getBackend() });
-          log({ memory: human.tf.memory() });
+          log('desired', backend, 'detected', human.tf.getBackend());
+          if (human.tf.getBackend() !== backend) {
+            continue;
+          }
+          log('memory', human.tf.memory());
           res = await human.validate();
-          log({ validate: res });
+          log('validate', res);
           res = await human.warmup({ warmup: 'face' });
           draw(res.canvas);
-          log({ warmup: 'face' });
+          log('warmup', 'face');
           let img = await image('../../samples/in/ai-body.jpg');
           const input = await human.image(img);
-          log({ input: input.tensor.shape });
+          log('input', input.tensor.shape);
           draw(res.canvas);
           res = await human.detect(input.tensor);
-          log({ detect: true });
+          log('detect');
           human.next();
-          log({ interpolated: true });
+          log('interpolate');
           const persons = res.persons;
-          log({ persons: true });
-          log({ summary: { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length } });
-          log({ performance: human.performance });
+          log('persons');
+          log('summary', { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length });
+          log('performance', human.performance);
           human.tf.dispose(input.tensor);
           draw();
 
@@ -138,12 +155,12 @@
               draw(res.canvas);
             }
             const t1 = performance.now();
-            log({ benchmark: { time: Math.round((t1 - t0) / 10), cacheSensitivity: val }, performance: human.performance });
+            log('benchmark', { time: Math.round((t1 - t0) / 10), cacheSensitivity: val, performance: human.performance });
             await wait(10);
           }
           draw();
 
-          log({ memory: human.tf.memory() });
+          log('memory', human.tf.memory());
         }
         clearInterval(timer);
         log();

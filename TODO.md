@@ -63,8 +63,8 @@ Model is supported using `WebGL` backend in browser
 - Host models in <human-models>  
   Models can be directly used without downloading to local storage  
   Example: `modelPath: 'https://vladmandic.github.io/human-models/models/facemesh.json'`  
-- Host models in **Google Cloud Bucket**  
-  Models can be directly used without downloading to local storage  
+- Allow hosting models in **Google Cloud Bucket**  
+  Hosted models can be directly used without downloading to local storage  
   Example: `modelPath: 'https://storage.googleapis.com/human-models/facemesh.json'`  
 - Fix **MobileFaceNet** model as alternative for face embedding/descriptor detection  
   Configurable using `config.face.mobilefacenet` config section  

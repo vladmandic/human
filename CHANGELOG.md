@@ -11,6 +11,8 @@
   
 ### **HEAD -> main** 2022/08/15 mandic00@live.com
 
+- add tensorflow library detection
+- fix wasm detection
 - enumerate additional models
 - release refresh
 

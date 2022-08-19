@@ -14,10 +14,10 @@
       @font-face { font-family: 'Lato'; font-display: swap; font-style: normal; font-weight: 100; src: local('Lato'), url('../../assets/lato-light.woff2') }
       html { font-family: 'Lato', 'Segoe UI'; font-size: 14px; font-variant: small-caps; }
       body { margin: 0; background: black; color: white; width: 100vw; overflow-x: hidden; }
-      .canvas { position: absolute; bottom: 10px; right: 10px; width: 256px; height: 256px; z-index: 99; }
+      .canvas { position: fixed; bottom: 10px; right: 10px; width: 256px; height: 256px; z-index: 99; }
+      .events { position: fixed; top: 10px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
+      .state { position: fixed; top: 60px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
       .pre { line-height: 150%; white-space: break-spaces; }
-      .events { position: absolute; top: 10px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
-      .state { position: absolute; top: 60px; right: 10px; width: 12rem; height: 1.25rem; background-color: grey; padding: 8px; z-index: 99; }
     </style>
   </head>
   <body>
@@ -56,7 +56,7 @@
         const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
         const elap = (dt - last).toString().padStart(5, '0');
         document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms &nbsp' + str(false, ...msgs);
-        document.documentElement.scrollTop = document.documentElement.scrollHeight
+        document.documentElement.scrollTop = document.documentElement.scrollHeight;
         console.log(ts, elap, ...msgs); // eslint-disable-line no-console
         last = dt;
       }
@@ -66,7 +66,7 @@
         const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
         const elap = (dt - last).toString().padStart(5, '0');
         document.getElementById('log').innerHTML += ts + ' +' + elap + 'ms &nbsp' + str(true, ...msgs);
-        document.documentElement.scrollTop = document.documentElement.scrollHeight
+        document.documentElement.scrollTop = document.documentElement.scrollHeight;
         console.log(ts, elap, ...msgs); // eslint-disable-line no-console
         last = dt;
       }

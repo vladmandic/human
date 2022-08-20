@@ -47,6 +47,8 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 ### Browser Demos
 
+*All browser demos are self-contained without any external dependencies*
+
 - **Full** [[*Live*]](https://vladmandic.github.io/human/demo/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo): Main browser demo app that showcases all Human capabilities
 - **Simple** [[*Live*]](https://vladmandic.github.io/human/demo/typescript/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/typescript): Simple demo in WebCam processing demo in TypeScript
 - **Face Match** [[*Live*]](https://vladmandic.github.io/human/demo/facematch/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Extract faces from images, calculates face descriptors and simmilarities and matches them to known database
@@ -60,6 +62,9 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 ### NodeJS Demos
 
+*NodeJS demos may require extra dependencies which are used to decode inputs*  
+*See header of each demo to see its dependencies as they are not automatically installed with `Human`*
+
 - **Main** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Process images from files, folders or URLs using native methods  
 - **Canvas** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Process image from file or URL and draw results to a new image file using `node-canvas`  
 - **Video** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Processing of video input using `ffmpeg`  
@@ -68,7 +73,6 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - **Similarity** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Compares two input images for similarity of detected faces
 - **Face Match** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Parallel processing of face **match** in multiple child worker threads
 - **Multiple Workers** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Runs multiple parallel `human` by dispaching them to pool of pre-created worker processes  
-
 
 ## Project pages
 

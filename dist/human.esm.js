@@ -84318,7 +84318,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version5 = "2.9.3";
+var version5 = "2.9.4";
 
 // src/draw/draw.ts
 var draw_exports = {};

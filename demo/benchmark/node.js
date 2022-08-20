@@ -1,7 +1,6 @@
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node-gpu');
 const log = require('@vladmandic/pilogger');
-const canvasJS = require('canvas');
+const canvasJS = require('canvas'); // eslint-disable-line node/no-missing-require
 const Human = require('../../dist/human.node-gpu.js').default;
 
 const input = './samples/in/group-1.jpg';
@@ -45,7 +44,7 @@ async function main() {
   log.header();
   const human = new Human(myConfig);
   await human.tf.ready();
-  log.info('Human:', human.version);
+  log.info('Human:', human.version, 'TF:', tf.version_core);
   await human.load();
   const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   log.info('Loaded:', loaded);

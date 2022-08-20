@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-  Version: **2.9.3**  
+  Version: **2.9.4**  
   Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
   
   Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,7 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/08/15 mandic00@live.com
+### **2.9.4** 2022/08/20 mandic00@live.com
+
+
+### **origin/main** 2022/08/19 mandic00@live.com
 
 - add tensorflow library detection
 - fix wasm detection

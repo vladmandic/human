@@ -1,3 +1,9 @@
+/**
+ * Human demo app for NodeJS that generates random facial descriptors
+ * and uses NodeJS multi-threading to start multiple threads for face matching
+ * uses `node-match-worker.js` to perform actual face matching analysis
+ */
+
 const fs = require('fs');
 const path = require('path');
 const log = require('@vladmandic/pilogger');

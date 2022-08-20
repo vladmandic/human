@@ -1,4 +1,10 @@
+/**
+ * Human demo for NodeJS using http fetch to get image file
+ *
+ * Requires [node-fetch](https://www.npmjs.com/package/node-fetch) to provide `fetch` functionality in NodeJS environment
+ */
 const fs = require('fs');
+const log = require('@vladmandic/pilogger');
 
 // eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
@@ -11,15 +17,15 @@ const humanConfig = {
 
 async function main(inputFile) {
   // @ts-ignore
-  global.fetch = (await import('node-fetch')).default;
+  global.fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-extraneous-require, node/no-missing-import
   const human = new Human.Human(humanConfig); // create instance of human using default configuration
+  log.info('Human:', human.version, 'TF:', tf.version_core);
   await human.load(); // optional as models would be loaded on-demand first time they are required
   await human.warmup(); // optional as model warmup is performed on-demand first time its executed
   const buffer = fs.readFileSync(inputFile); // read file data into buffer
   const tensor = human.tf.node.decodeImage(buffer); // decode jpg data
   const result = await human.detect(tensor); // run detection; will initialize backend and on-demand load models
-  // eslint-disable-next-line no-console
-  console.log(result.gesture);
+  log.data(result.gesture);
 }
 
 main('samples/in/ai-body.jpg');

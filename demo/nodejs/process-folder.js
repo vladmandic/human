@@ -1,9 +1,18 @@
+/**
+ * Human demo for NodeJS
+ *
+ * Takes input and output folder names parameters and processes all images
+ * found in input folder and creates annotated images in output folder
+ *
+ * Requires [canvas](https://www.npmjs.com/package/canvas) to provide Canvas functionality in NodeJS environment
+ */
+
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
 const log = require('@vladmandic/pilogger');
-const canvas = require('canvas');
-// const tf = require('@tensorflow/tfjs-node-gpu'); // for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+const canvas = require('canvas'); // eslint-disable-line node/no-extraneous-require, node/no-missing-require
+const tf = require('@tensorflow/tfjs-node-gpu'); // for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
 const Human = require('../../dist/human.node-gpu.js'); // this is 'const Human = require('../dist/human.node-gpu.js').default;'
 
 const config = { // just enable all and leave default settings
@@ -24,7 +33,7 @@ async function main() {
   globalThis.ImageData = canvas.ImageData; // patch global namespace with canvas library
 
   const human = new Human.Human(config); // create instance of human
-  log.info('Human:', human.version);
+  log.info('Human:', human.version, 'TF:', tf.version_core);
   const configErrors = await human.validate();
   if (configErrors.length > 0) log.error('Configuration errors:', configErrors);
   await human.load(); // pre-load models

@@ -22,6 +22,7 @@ const demos = [
   { cmd: '../demo/nodejs/node-similarity.js', args: ['samples/in/ai-face.jpg', 'samples/in/ai-upper.jpg'] },
   { cmd: '../demo/nodejs/node-canvas.js', args: ['samples/in/ai-body.jpg', 'samples/out/ai-body.jpg'] },
   { cmd: '../demo/multithread/node-multiprocess.js', args: [] },
+  { cmd: '../demo/facematch/node-match.js', args: [] },
   // { cmd: '../demo/nodejs/node-video.js', args: [] },
   // { cmd: '../demo/nodejs/node-webcam.js', args: [] },
 ];
@@ -91,7 +92,7 @@ async function runTest(test) {
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 async function runDemo(demo) {
-  log.info();
+  // log.info();
   log.info(demo, 'start');
   status[demo.cmd] = { passed: 0, failed: 0 };
   return new Promise((resolve) => {

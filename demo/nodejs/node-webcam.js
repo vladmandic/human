@@ -2,17 +2,14 @@
  * Human demo for NodeJS
  * Unsupported sample of using external utility fswebcam to capture screenshot from attached webcam in regular intervals and process it using Human
  *
- * Note that node-webcam is not part of Human dependencies and should be installed manually
- * Working version of fswebcam must be present on the system
+ * Note that [node-webcam](https://www.npmjs.com/package/node-webcam) is not part of Human dependencies and should be installed manually
+ * Working version of `fswebcam` must be present on the system
 */
 
 let initial = true; // remember if this is the first run to print additional details
 const log = require('@vladmandic/pilogger');
-// @ts-ignore node-webcam is not installed by default
-// eslint-disable-next-line node/no-missing-require
-const nodeWebCam = require('node-webcam');
+const nodeWebCam = require('node-webcam'); // eslint-disable-line node/no-missing-require, node/no-extraneous-require
 
-// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
@@ -29,6 +26,7 @@ const camera = nodeWebCam.create(optionsCamera);
 const optionsHuman = {
   modelBasePath: 'file://models/',
 };
+
 const human = new Human.Human(optionsHuman);
 
 function buffer2tensor(buffer) {
@@ -81,6 +79,7 @@ async function detect() {
 }
 
 async function main() {
+  log.info('human:', human.version, 'tf:', tf.version_core);
   camera.list((list) => {
     log.data('detected camera:', list);
   });

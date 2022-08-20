@@ -7,17 +7,15 @@
  * If you want process at specific intervals, set output fps to some value
  * If you want to process an input stream, set real-time flag and set input as required
  *
- * Note that pipe2jpeg is not part of Human dependencies and should be installed manually
- * Working version of ffmpeg must be present on the system
+ * Note that [pipe2jpeg](https://www.npmjs.com/package/pipe2jpeg) is not part of Human dependencies and should be installed manually
+ * Working version of `ffmpeg` must be present on the system
 */
 
 const spawn = require('child_process').spawn;
 const log = require('@vladmandic/pilogger');
 // @ts-ignore pipe2jpeg is not installed by default
-// eslint-disable-next-line node/no-missing-require
-const Pipe2Jpeg = require('pipe2jpeg');
+const Pipe2Jpeg = require('pipe2jpeg'); // eslint-disable-line node/no-missing-require
 
-// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
@@ -77,7 +75,7 @@ async function main() {
   log.header();
   await human.tf.ready();
   // pre-load models
-  log.info('human:', human.version);
+  log.info('human:', human.version, 'tf:', tf.version_core);
   pipe2jpeg.on('jpeg', (jpegBuffer) => process(jpegBuffer));
 
   const ffmpeg = spawn('ffmpeg', ffmpegParams, { stdio: ['ignore', 'pipe', 'ignore'] });

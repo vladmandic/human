@@ -1,6 +1,8 @@
 /**
  * Human demo for NodeJS
- */
+ *
+ * Requires [node-fetch](https://www.npmjs.com/package/node-fetch) to provide `fetch` functionality in NodeJS environment
+*/
 
 const log = require('@vladmandic/pilogger');
 const fs = require('fs');
@@ -9,7 +11,6 @@ const process = require('process');
 
 let fetch; // fetch is dynamically imported later
 
-// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
 const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
@@ -46,6 +47,7 @@ async function init() {
   human = new Human.Human(myConfig);
   // wait until tf is ready
   await human.tf.ready();
+  log.info('human:', human.version, 'tf:', tf.version_core);
   // pre-load models
   log.info('Human:', human.version);
   // log.info('Active Configuration', human.config);
@@ -189,7 +191,7 @@ async function main() {
   log.configure({ inspect: { breakLength: 265 } });
   log.header();
   log.info('Current folder:', process.env.PWD);
-  fetch = (await import('node-fetch')).default;
+  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-extraneous-require, node/no-missing-import
   await init();
   const f = process.argv[2];
   if (process.argv.length !== 3) {

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const process = require('process');
-const canvasJS = require('canvas');
+const canvasJS = require('canvas'); // eslint-disable-line node/no-extraneous-require, node/no-missing-require
 
 let fetch; // fetch is dynamically imported later
 let config;
@@ -262,7 +262,7 @@ async function verifyCompare(human) {
 async function test(Human, inputConfig) {
   lastOp = `test ${inputConfig}`;
   config = inputConfig;
-  fetch = (await import('node-fetch')).default;
+  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-extraneous-require, node/no-missing-import
   const ok = await testHTTP();
   if (!ok) {
     log('error', 'aborting test');

@@ -1,3 +1,8 @@
+/**
+ * Runs in a worker thread started by `node-match` demo app
+ *
+ */
+
 const threads = require('worker_threads');
 
 let debug = false;

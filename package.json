@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/human",
-  "version": "2.9.3",
+  "version": "2.9.4",
   "description": "Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition",
   "sideEffects": false,
   "main": "dist/human.node.js",
@@ -60,11 +60,6 @@
     "tfjs",
     "tensorflow"
   ],
-  "optionalDependencies": {
-    "canvas": "^2.9.3",
-    "node-fetch": "^3.2.10",
-    "node-webcam": "^0.8.1"
-  },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.29.3",
     "@tensorflow/tfjs": "^3.19.0",
@@ -79,7 +74,7 @@
     "@tensorflow/tfjs-node": "^3.19.0",
     "@tensorflow/tfjs-node-gpu": "^3.19.0",
     "@tensorflow/tfjs-tflite": "0.0.1-alpha.8",
-    "@types/node": "^18.7.6",
+    "@types/node": "^18.7.8",
     "@types/offscreencanvas": "^2019.7.0",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
@@ -87,6 +82,7 @@
     "@vladmandic/pilogger": "^0.4.6",
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
     "@webgpu/types": "^0.1.21",
+    "canvas": "^2.9.3",
     "esbuild": "^0.15.5",
     "eslint": "8.22.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -95,6 +91,7 @@
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
+    "node-fetch": "^3.2.10",
     "rimraf": "^3.0.2",
     "seedrandom": "^3.0.5",
     "tslib": "^2.4.0",

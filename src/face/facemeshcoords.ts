@@ -53,7 +53,7 @@ export const meshAnnotations: Record<string, number[]> = {
 export const meshLandmarks: Record<string, number | number[]> = {
   count: 468,
   mouth: 13,
-  symmetryLine: [13, meshAnnotations['midwayBetweenEyes'][0]],
+  symmetryLine: [13, meshAnnotations.midwayBetweenEyes[0]],
 };
 
 export const blazeFaceLandmarks: Record<string, number | number[]> = {
@@ -66,7 +66,7 @@ export const blazeFaceLandmarks: Record<string, number | number[]> = {
   symmetryLine: [3, 2],
 };
 
-export const irisIndices: Array<{ key: string, indices: number[] }> = [ // A mapping from facemesh model keypoints to iris model keypoints.
+export const irisIndices: { key: string, indices: number[] }[] = [ // A mapping from facemesh model keypoints to iris model keypoints.
   { key: 'EyeUpper0', indices: [9, 10, 11, 12, 13, 14, 15] }, // 7 x 3d
   { key: 'EyeUpper1', indices: [25, 26, 27, 28, 29, 30, 31] }, // 7 x 3d
   { key: 'EyeUpper2', indices: [41, 42, 43, 44, 45, 46, 47] }, // 7 x 3d
@@ -549,7 +549,7 @@ export const UV468: [number, number][] = [
   [0.723330020904541, 0.363372981548309],
 ];
 
-export const TRI468: Array<number> = [
+export const TRI468: number[] = [
   127, 34, 139, 11, 0, 37, 232, 231, 120, 72, 37, 39, 128, 121, 47, 232, 121, 128, 104, 69, 67, 175, 171, 148, 157, 154, 155, 118, 50, 101, 73, 39, 40, 9,
   151, 108, 48, 115, 131, 194, 204, 211, 74, 40, 185, 80, 42, 183, 40, 92, 186, 230, 229, 118, 202, 212, 214, 83, 18, 17, 76, 61, 146, 160, 29, 30, 56,
   157, 173, 106, 204, 194, 135, 214, 192, 203, 165, 98, 21, 71, 68, 51, 45, 4, 144, 24, 23, 77, 146, 91, 205, 50, 187, 201, 200, 18, 91, 106, 182, 90, 91,
@@ -635,7 +635,7 @@ export const TRI468: Array<number> = [
   259, 443, 259, 260, 444, 260, 467, 445, 309, 459, 250, 305, 289, 290, 305, 290, 460, 401, 376, 435, 309, 250, 392, 376, 411, 433, 453, 341, 464, 357,
   453, 465, 343, 357, 412, 437, 343, 399, 344, 360, 440, 420, 437, 456, 360, 420, 363, 361, 401, 288, 265, 372, 353, 390, 339, 249, 339, 448, 255];
 
-export const TRI68: Array<number> = [0, 1, 36, 0, 36, 17, 1, 2, 41, 1, 41, 36, 2, 3, 31, 2, 31, 41, 3, 4, 48, 3, 48, 31, 4, 5, 48, 5, 6, 48, 6, 7, 59, 6, 59, 48, 7, 8, 58, 7, 58, 59,
+export const TRI68: number[] = [0, 1, 36, 0, 36, 17, 1, 2, 41, 1, 41, 36, 2, 3, 31, 2, 31, 41, 3, 4, 48, 3, 48, 31, 4, 5, 48, 5, 6, 48, 6, 7, 59, 6, 59, 48, 7, 8, 58, 7, 58, 59,
   8, 9, 56, 8, 56, 57, 8, 57, 58, 9, 10, 55, 9, 55, 56, 10, 11, 54, 10, 54, 55, 11, 12, 54, 12, 13, 54, 13, 14, 35, 13, 35, 54, 14, 15, 46, 14, 46, 35, 15, 16,
   45, 15, 45, 46, 16, 26, 45, 17, 36, 18, 18, 37, 19, 18, 36, 37, 19, 38, 20, 19, 37, 38, 20, 39, 21, 20, 38, 39, 21, 39, 27, 22, 42, 23, 22, 27, 42, 23, 43, 24,
   23, 42, 43, 24, 44, 25, 24, 43, 44, 25, 45, 26, 25, 44, 45, 27, 39, 28, 27, 28, 42, 28, 39, 29, 28, 29, 42, 29, 31, 30, 29, 30, 35, 29, 40, 31, 29, 35, 47, 29,
@@ -644,7 +644,7 @@ export const TRI68: Array<number> = [0, 1, 36, 0, 36, 17, 1, 2, 41, 1, 41, 36, 2
   48, 59, 60, 49, 61, 50, 49, 60, 61, 50, 62, 51, 50, 61, 62, 51, 62, 52, 52, 63, 53, 52, 62, 63, 53, 64, 54, 53, 63, 64, 54, 64, 55, 55, 65, 56, 55, 64, 65, 56,
   66, 57, 56, 65, 66, 57, 66, 58, 58, 67, 59, 58, 66, 67, 59, 67, 60, 60, 67, 61, 61, 66, 62, 61, 67, 66, 62, 66, 63, 63, 65, 64, 63, 66, 65, 21, 27, 22];
 
-export const TRI33: Array<number> = [
+export const TRI33: number[] = [
   /*  eyes  */ 0, 8, 7, 7, 8, 1, 2, 10, 9, 9, 10, 3,
   /*  brows */ 17, 0, 18, 18, 0, 7, 18, 7, 19, 19, 7, 1, 19, 1, 11, 19, 11, 20, 21, 3, 22, 21, 9, 3, 20, 9, 21, 20, 2, 9, 20, 11, 2,
   /*  4head */ 23, 17, 18, 25, 21, 22, 24, 19, 20, 24, 18, 19, 24, 20, 21, 24, 23, 18, 24, 21, 25,
@@ -655,9 +655,9 @@ export const TRI33: Array<number> = [
   /*  cont  */ 26, 30, 5, 27, 6, 31, 0, 28, 26, 3, 27, 29, 17, 28, 0, 3, 29, 22, 23, 28, 17, 22, 29, 25, 28, 30, 26, 27, 31, 29,
 ];
 
-export const TRI7: Array<number> = [0, 4, 1, 2, 4, 3, 4, 5, 6];
+export const TRI7: number[] = [0, 4, 1, 2, 4, 3, 4, 5, 6];
 
-export const VTX68: Array<number> = [
+export const VTX68: number[] = [
   /* cont  */ 127, 234, 132, 58, 172, 150, 149, 148, 152, 377, 378, 379, 397, 288, 361, 454, 356,
   /* brows */ 70, 63, 105, 66, 107, 336, 296, 334, 293, 300,
   /* nose  */ 168, 6, 195, 4, 98, 97, 2, 326, 327,
@@ -666,9 +666,9 @@ export const VTX68: Array<number> = [
   /* mouth */ 78, 81, 13, 311, 308, 402, 14, 178,
 ];
 
-export const VTX33: Array<number> = [33, 133, 362, 263, 1, 62, 308, 159, 145, 386, 374, 6, 102, 331, 2, 13, 14, 70, 105, 107, 336, 334, 300, 54, 10, 284, 50, 280, 234, 454, 58, 288, 152];
+export const VTX33: number[] = [33, 133, 362, 263, 1, 62, 308, 159, 145, 386, 374, 6, 102, 331, 2, 13, 14, 70, 105, 107, 336, 334, 300, 54, 10, 284, 50, 280, 234, 454, 58, 288, 152];
 
-export const VTX7: Array<number> = [33, 133, 362, 263, 1, 78, 308];
+export const VTX7: number[] = [33, 133, 362, 263, 1, 78, 308];
 
 export const UV68 = VTX68.map((x) => UV468[x]);
 
@@ -679,7 +679,7 @@ export const UV7 = VTX7.map((x) => UV468[x]);
 // https://github.com/tensorflow/tfjs-models/blob/master/face-landmarks-detection/src/constants.ts
 // https://github.com/google/mediapipe/mediapipe/python/solutions/face_mesh_connections.py
 
-type PairArray = Array<[number, number]>;
+type PairArray = [number, number][];
 
 function connectionsToIndices(connections: PairArray) {
   const indices = connections.map((connection) => connection[0]);

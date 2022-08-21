@@ -8,9 +8,8 @@
 
 const fs = require('fs');
 const path = require('path');
-// eslint-disable-next-line import/no-extraneous-dependencies, node/no-unpublished-require
-const log = require('@vladmandic/pilogger'); // this is my simple logger with few extra features
-const child_process = require('child_process');
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+const childProcess = require('child_process'); // eslint-disable-line camelcase
 // note that main process does not import human or tfjs at all, it's all done from worker process
 
 const workerFile = 'demo/multithread/node-multiprocess-worker.js';
@@ -74,7 +73,7 @@ async function main() {
   // manage worker processes
   for (let i = 0; i < numWorkers; i++) {
     // create worker process
-    workers[i] = await child_process.fork(workerFile, ['special']);
+    workers[i] = await childProcess.fork(workerFile, ['special']);
     // parse message that worker process sends back to main
     // if message is ready, dispatch next image in queue
     // if message is processing result, just print how many faces were detected

@@ -23,7 +23,7 @@ export class FaceBoxes {
 
   async estimateFaces(input, config) {
     if (config) this.config = config;
-    const results: Array<{ confidence: number, box: Box, boxRaw: Box, image: Tensor }> = [];
+    const results: { confidence: number, box: Box, boxRaw: Box, image: Tensor }[] = [];
     const resizeT = tf.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
     const castT = resizeT.toInt();
     const [scoresT, boxesT, numT] = await this.model.executeAsync(castT) as Tensor[];
@@ -37,7 +37,7 @@ export class FaceBoxes {
     castT.dispose();
     resizeT.dispose();
     for (const i in boxes) {
-      if (scores[i] && scores[i] > (this.config.face?.detector?.minConfidence || 0.1)) {
+      if (scores[i] && scores[i] > (this.config.face.detector?.minConfidence || 0.1)) {
         const crop = [boxes[i][0] / this.enlarge, boxes[i][1] / this.enlarge, boxes[i][2] * this.enlarge, boxes[i][3] * this.enlarge];
         const boxRaw: Box = [crop[1], crop[0], (crop[3]) - (crop[1]), (crop[2]) - (crop[0])];
         const box: Box = [

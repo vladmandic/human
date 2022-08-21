@@ -5,7 +5,7 @@ import type { BodyResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
 
 /** draw detected bodies */
-export async function body(inCanvas: AnyCanvas, result: Array<BodyResult>, drawOptions?: Partial<DrawOptions>) {
+export async function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -16,7 +16,7 @@ export async function body(inCanvas: AnyCanvas, result: Array<BodyResult>, drawO
     ctx.fillStyle = localOptions.color;
     ctx.lineWidth = localOptions.lineWidth;
     ctx.font = localOptions.font;
-    if (localOptions.drawBoxes && result[i].box && result[i].box?.length === 4) {
+    if (localOptions.drawBoxes && result[i].box && result[i].box.length === 4) {
       rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
       if (localOptions.drawLabels) {
         if (localOptions.shadowColor && localOptions.shadowColor !== '') {

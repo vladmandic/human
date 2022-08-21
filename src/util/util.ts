@@ -8,8 +8,7 @@ import type { Config } from '../exports';
 export function log(...msg): void {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
-  // eslint-disable-next-line no-console
-  if (msg) console.log(ts, 'Human:', ...msg);
+  if (msg) console.log(ts, 'Human:', ...msg); // eslint-disable-line no-console
 }
 
 // helper function: join two paths
@@ -28,7 +27,7 @@ export const now = () => {
 };
 
 // helper function: checks current config validity
-export function validate(defaults: Partial<Config>, config: Partial<Config>, parent = 'config', msgs: Array<{ reason: string, where: string, expected?: string }> = []) {
+export function validate(defaults: Partial<Config>, config: Partial<Config>, parent = 'config', msgs: { reason: string, where: string, expected?: string }[] = []) {
   for (const key of Object.keys(config)) {
     if (typeof config[key] === 'object') {
       validate(defaults[key], config[key], key, msgs);
@@ -60,7 +59,7 @@ export function mergeDeep(...objects) {
 }
 
 // helper function: return min and max from input array
-export const minmax = (data: Array<number>) => data.reduce((acc: Array<number>, val) => {
+export const minmax = (data: number[]) => data.reduce((acc: number[], val) => {
   acc[0] = (acc[0] === undefined || val < acc[0]) ? val : acc[0];
   acc[1] = (acc[1] === undefined || val > acc[1]) ? val : acc[1];
   return acc;

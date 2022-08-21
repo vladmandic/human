@@ -52,18 +52,17 @@ export async function check(instance: Human, force = false) {
 
       // handle webgpu
       if (env.browser && instance.config.backend === 'webgpu') {
-        if (typeof navigator === 'undefined' || typeof navigator['gpu'] === 'undefined') {
+        if (typeof navigator === 'undefined' || typeof navigator.gpu === 'undefined') {
           log('override: backend set to webgpu but browser does not support webgpu');
           instance.config.backend = 'humangl';
         } else {
-          const adapter = await navigator['gpu'].requestAdapter();
+          const adapter = await navigator.gpu.requestAdapter();
           if (instance.config.debug) log('enumerated webgpu adapter:', adapter);
           if (!adapter) {
             log('override: backend set to webgpu but browser reports no available gpu');
             instance.config.backend = 'humangl';
           } else {
             // @ts-ignore requestAdapterInfo is not in tslib
-            // eslint-disable-next-line no-undef
             const adapterInfo = 'requestAdapterInfo' in adapter ? await (adapter as GPUAdapter).requestAdapterInfo() : undefined;
             // if (adapter.features) adapter.features.forEach((feature) => log('webgpu features:', feature));
             log('webgpu adapter info:', adapterInfo);
@@ -86,9 +85,9 @@ export async function check(instance: Human, force = false) {
 
       // customize wasm
       if (instance.config.backend === 'wasm') {
-        if (tf.env().flagRegistry['CANVAS2D_WILL_READ_FREQUENTLY']) tf.env().set('CANVAS2D_WILL_READ_FREQUENTLY', true);
+        if (tf.env().flagRegistry.CANVAS2D_WILL_READ_FREQUENTLY) tf.env().set('CANVAS2D_WILL_READ_FREQUENTLY', true);
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
-        if (typeof tf?.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
+        if (typeof tf.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
         else throw new Error('backend error: attempting to use wasm backend but wasm path is not set');
         let mt = false;
         let simd = false;
@@ -114,15 +113,15 @@ export async function check(instance: Human, force = false) {
 
     // customize humangl
     if (tf.getBackend() === 'humangl') {
-      if (tf.env().flagRegistry['CHECK_COMPUTATION_FOR_ERRORS']) tf.env().set('CHECK_COMPUTATION_FOR_ERRORS', false);
-      if (tf.env().flagRegistry['WEBGL_CPU_FORWARD']) tf.env().set('WEBGL_CPU_FORWARD', true);
-      if (tf.env().flagRegistry['WEBGL_USE_SHAPES_UNIFORMS']) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-      if (tf.env().flagRegistry['CPU_HANDOFF_SIZE_THRESHOLD']) tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
-      if (tf.env().flagRegistry['WEBGL_EXP_CONV']) tf.env().set('WEBGL_EXP_CONV', true); // <https://github.com/tensorflow/tfjs/issues/6678>
-      if (tf.env().flagRegistry['USE_SETTIMEOUTCUSTOM']) tf.env().set('USE_SETTIMEOUTCUSTOM', true); // <https://github.com/tensorflow/tfjs/issues/6687>
+      if (tf.env().flagRegistry.CHECK_COMPUTATION_FOR_ERRORS) tf.env().set('CHECK_COMPUTATION_FOR_ERRORS', false);
+      if (tf.env().flagRegistry.WEBGL_CPU_FORWARD) tf.env().set('WEBGL_CPU_FORWARD', true);
+      if (tf.env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
+      if (tf.env().flagRegistry.CPU_HANDOFF_SIZE_THRESHOLD) tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
+      if (tf.env().flagRegistry.WEBGL_EXP_CONV) tf.env().set('WEBGL_EXP_CONV', true); // <https://github.com/tensorflow/tfjs/issues/6678>
+      if (tf.env().flagRegistry.USE_SETTIMEOUTCUSTOM) tf.env().set('USE_SETTIMEOUTCUSTOM', true); // <https://github.com/tensorflow/tfjs/issues/6687>
       // if (tf.env().flagRegistry['WEBGL_PACK_DEPTHWISECONV'])  tf.env().set('WEBGL_PACK_DEPTHWISECONV', false);
       // if (if (tf.env().flagRegistry['WEBGL_FORCE_F16_TEXTURES']) && !instance.config.object.enabled) tf.env().set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
-      if (typeof instance.config['deallocate'] !== 'undefined' && instance.config['deallocate']) { // hidden param
+      if (typeof instance.config.deallocate !== 'undefined' && instance.config.deallocate) { // hidden param
         log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
         tf.env().set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
       }
@@ -154,7 +153,7 @@ export async function check(instance: Human, force = false) {
 }
 
 // register fake missing tfjs ops
-export function fakeOps(kernelNames: Array<string>, config) {
+export function fakeOps(kernelNames: string[], config) {
   // if (config.debug) log('registerKernel:', kernelNames);
   for (const kernelName of kernelNames) {
     const kernelConfig = {

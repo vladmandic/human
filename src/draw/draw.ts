@@ -24,7 +24,7 @@ export { object } from './object';
 export { gesture } from './gesture';
 
 /** draw combined person results instead of individual detection result objects */
-export async function person(inCanvas: AnyCanvas, result: Array<PersonResult>, drawOptions?: Partial<DrawOptions>) {
+export async function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);

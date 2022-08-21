@@ -4,6 +4,8 @@
  * Based on: [**FingerPose***](https://github.com/andypotato/fingerpose)
  */
 
+/* eslint-disable camelcase */
+
 import { Finger, FingerCurl, FingerDirection } from './fingerdef';
 import Gestures from '../hand/fingergesture';
 
@@ -174,17 +176,17 @@ function calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) 
 
 function estimate(landmarks) {
   // step 1: calculate slopes
-  const slopesXY: Array<number[]> = [];
-  const slopesYZ: Array<number[]> = [];
-  const fingerCurls: Array<number> = [];
-  const fingerDirections: Array<number> = [];
+  const slopesXY: number[][] = [];
+  const slopesYZ: number[][] = [];
+  const fingerCurls: number[] = [];
+  const fingerDirections: number[] = [];
   if (!landmarks) return { curls: fingerCurls, directions: fingerDirections };
 
   // step 1: calculate slopes
   for (const finger of Finger.all) {
     const points = Finger.getPoints(finger);
-    const slopeAtXY: Array<number> = [];
-    const slopeAtYZ: Array<number> = [];
+    const slopeAtXY: number[] = [];
+    const slopeAtYZ: number[] = [];
     for (const point of points) {
       const point1 = landmarks[point[0]];
       const point2 = landmarks[point[1]];
@@ -230,7 +232,7 @@ export function analyze(keypoints) { // get estimations of curl / direction for 
 }
 
 export function match(keypoints) { // compare gesture description to each known gesture
-  const poses: Array<{ name: string, confidence: number }> = [];
+  const poses: { name: string, confidence: number }[] = [];
   if (!keypoints || keypoints.length === 0) return poses;
   const estimatorRes = estimate(keypoints);
   for (const gesture of Gestures) {

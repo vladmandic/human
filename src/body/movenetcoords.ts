@@ -1,4 +1,4 @@
-export const kpt: Array<string> = [ // used to create part labels
+export const kpt: string[] = [ // used to create part labels
   'nose',
   'leftEye',
   'rightEye',
@@ -18,7 +18,7 @@ export const kpt: Array<string> = [ // used to create part labels
   'rightAnkle',
 ];
 
-export const horizontal: Array<string[]> = [ // used to fix left vs right
+export const horizontal: string[][] = [ // used to fix left vs right
   ['leftEye', 'rightEye'],
   ['leftEar', 'rightEar'],
   ['leftShoulder', 'rightShoulder'],
@@ -29,14 +29,14 @@ export const horizontal: Array<string[]> = [ // used to fix left vs right
   ['leftAnkle', 'rightAnkle'],
 ];
 
-export const vertical: Array<string[]> = [ // used to remove unlikely keypoint positions
+export const vertical: string[][] = [ // used to remove unlikely keypoint positions
   ['leftKnee', 'leftShoulder'],
   ['rightKnee', 'rightShoulder'],
   ['leftAnkle', 'leftKnee'],
   ['rightAnkle', 'rightKnee'],
 ];
 
-export const relative: Array<string[][]> = [ // used to match relative body parts
+export const relative: string[][][] = [ // used to match relative body parts
   [['leftHip', 'rightHip'], ['leftShoulder', 'rightShoulder']],
   [['leftElbow', 'rightElbow'], ['leftShoulder', 'rightShoulder']],
 ];

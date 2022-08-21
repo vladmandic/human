@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 /* eslint-disable no-multi-spaces */
 
 /** Generic config type inherited by all module types */

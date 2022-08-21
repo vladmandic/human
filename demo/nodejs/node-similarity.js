@@ -2,12 +2,12 @@
  * Human Person Similarity test for NodeJS
  */
 
-const log = require('@vladmandic/pilogger');
 const fs = require('fs');
 const process = require('process');
 
-// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+// in nodejs environments tfjs-node is required to be loaded before human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
@@ -25,7 +25,7 @@ const myConfig = {
 async function init() {
   human = new Human.Human(myConfig);
   await human.tf.ready();
-  log.info('Human:', human.version);
+  log.info('Human:', human.version, 'TF:', tf.version_core);
   await human.load();
   const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   log.info('Loaded:', loaded);
@@ -34,12 +34,11 @@ async function init() {
 
 async function detect(input) {
   if (!fs.existsSync(input)) {
-    log.error('Cannot load image:', input);
-    process.exit(1);
+    throw new Error('Cannot load image:', input);
   }
   const buffer = fs.readFileSync(input);
   const tensor = human.tf.node.decodeImage(buffer, 3);
-  log.state('Loaded image:', input, tensor['shape']);
+  log.state('Loaded image:', input, tensor.shape);
   const result = await human.detect(tensor, myConfig);
   human.tf.dispose(tensor);
   log.state('Detected faces:', result.face.length);
@@ -50,15 +49,13 @@ async function main() {
   log.configure({ inspect: { breakLength: 265 } });
   log.header();
   if (process.argv.length !== 4) {
-    log.error('Parameters: <first image> <second image> missing');
-    process.exit(1);
+    throw new Error('Parameters: <first image> <second image> missing');
   }
   await init();
   const res1 = await detect(process.argv[2]);
   const res2 = await detect(process.argv[3]);
   if (!res1 || !res1.face || res1.face.length === 0 || !res2 || !res2.face || res2.face.length === 0) {
-    log.error('Could not detect face descriptors');
-    process.exit(1);
+    throw new Error('Could not detect face descriptors');
   }
   const similarity = human.similarity(res1.face[0].embedding, res2.face[0].embedding, { order: 2 });
   log.data('Similarity: ', similarity);

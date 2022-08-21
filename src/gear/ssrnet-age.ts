@@ -13,12 +13,11 @@ import type { Config } from '../config';
 import type { GraphModel, Tensor } from '../tfjs/types';
 
 let model: GraphModel | null;
-const last: Array<{ age: number }> = [];
+const last: { age: number }[] = [];
 let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function load(config: Config) {
   if (env.initial) model = null;
   if (!model) model = await loadModel(config.face['ssrnet'].modelPathAge);
@@ -26,7 +25,6 @@ export async function load(config: Config) {
   return model;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<{ age: number }> {
   if (!model) return { age: 0 };
   const skipFrame = skipped < (config.face['ssrnet']?.skipFrames || 0);
@@ -42,7 +40,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
     t.resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
     t.enhance = tf.mul(t.resize, constants.tf255);
     const obj = { age: 0 };
-    if (config.face['ssrnet'].enabled) t.age = model.execute(t.enhance) as Tensor;
+    if (config.face['ssrnet']?.enabled) t.age = model.execute(t.enhance) as Tensor;
     if (t.age) {
       const data = await t.age.data();
       obj.age = Math.trunc(10 * data[0]) / 10;

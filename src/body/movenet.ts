@@ -22,8 +22,8 @@ let skipped = Number.MAX_SAFE_INTEGER;
 // const boxExpandFact = 1.5; // increase to 150%
 
 const cache: {
-  boxes: Array<Box>, // unused
-  bodies: Array<BodyResult>;
+  boxes: Box[], // unused
+  bodies: BodyResult[];
   last: number,
 } = {
   boxes: [],
@@ -44,7 +44,7 @@ export async function load(config: Config): Promise<GraphModel> {
 
 async function parseSinglePose(res, config, image) {
   const kpt = res[0][0];
-  const keypoints: Array<BodyKeypoint> = [];
+  const keypoints: BodyKeypoint[] = [];
   let score = 0;
   for (let id = 0; id < kpt.length; id++) {
     score = kpt[id][2];
@@ -62,11 +62,11 @@ async function parseSinglePose(res, config, image) {
     }
   }
   score = keypoints.reduce((prev, curr) => (curr.score > prev ? curr.score : prev), 0);
-  const bodies: Array<BodyResult> = [];
+  const bodies: BodyResult[] = [];
   const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
   const annotations: Record<string, Point[][]> = {};
   for (const [name, indexes] of Object.entries(coords.connected)) {
-    const pt: Array<Point[]> = [];
+    const pt: Point[][] = [];
     for (let i = 0; i < indexes.length - 1; i++) {
       const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
       const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
@@ -81,12 +81,12 @@ async function parseSinglePose(res, config, image) {
 }
 
 async function parseMultiPose(res, config, image) {
-  const bodies: Array<BodyResult> = [];
+  const bodies: BodyResult[] = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
     const totalScore = Math.round(100 * kpt[51 + 4]) / 100;
     if (totalScore > config.body.minConfidence) {
-      const keypoints: Array<BodyKeypoint> = [];
+      const keypoints: BodyKeypoint[] = [];
       for (let i = 0; i < 17; i++) {
         const score = kpt[3 * i + 2];
         if (score > config.body.minConfidence) {
@@ -105,7 +105,7 @@ async function parseMultiPose(res, config, image) {
       // const box: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
       const annotations: Record<BodyAnnotation, Point[][]> = {} as Record<BodyAnnotation, Point[][]>;
       for (const [name, indexes] of Object.entries(coords.connected)) {
-        const pt: Array<Point[]> = [];
+        const pt: Point[][] = [];
         for (let i = 0; i < indexes.length - 1; i++) {
           const pt0 = keypoints.find((kp) => kp.part === indexes[i]);
           const pt1 = keypoints.find((kp) => kp.part === indexes[i + 1]);
@@ -124,7 +124,7 @@ async function parseMultiPose(res, config, image) {
 }
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
-  if (!model || !model?.inputs[0].shape) return []; // something is wrong with the model
+  if (!model || !model.inputs[0].shape) return []; // something is wrong with the model
   if (!config.skipAllowed) cache.boxes.length = 0; // allowed to use cache or not
   skipped++; // increment skip frames
   const skipTime = (config.body.skipTime || 0) > (now() - cache.last);

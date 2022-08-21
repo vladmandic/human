@@ -12,11 +12,11 @@
 */
 
 const spawn = require('child_process').spawn;
-const log = require('@vladmandic/pilogger');
-// @ts-ignore pipe2jpeg is not installed by default
-const Pipe2Jpeg = require('pipe2jpeg'); // eslint-disable-line node/no-missing-require
-
-const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+// in nodejs environments tfjs-node is required to be loaded before human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
+// const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
+const Pipe2Jpeg = require('pipe2jpeg'); // eslint-disable-line node/no-missing-require, import/no-unresolved
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 

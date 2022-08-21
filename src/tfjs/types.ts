@@ -4,16 +4,15 @@
  * TensorFlow Tensor type
  * @external
  */
-export type { Tensor, TensorLike, Rank } from '@tensorflow/tfjs-core/dist/index';
+export type { Tensor, TensorLike, Rank } from '@tensorflow/tfjs-core/dist/index'; // eslint-disable-line import/no-extraneous-dependencies
 
 /**
  * TensorFlow GraphModel type
  * @external
  */
-export type { GraphModel } from '@tensorflow/tfjs-converter/dist/index';
+export type { GraphModel } from '@tensorflow/tfjs-converter/dist/index'; // eslint-disable-line import/no-extraneous-dependencies
 
 /** Tensorflow Long type
  * @external long
  */
-// eslint-disable-next-line node/no-missing-import
 // export type { Long } from 'long';

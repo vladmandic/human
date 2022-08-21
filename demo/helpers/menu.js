@@ -119,7 +119,6 @@ class Menu {
 
     this.menu.appendChild(this.container);
     if (typeof parent === 'object') parent.appendChild(this.menu);
-    // @ts-ignore undefined
     else document.getElementById(parent).appendChild(this.menu);
   }
 
@@ -184,7 +183,6 @@ class Menu {
       this.hidden = !this.hidden;
       const all = document.getElementsByClassName('menu');
       for (const item of all) {
-        // @ts-ignore
         item.style.display = this.hidden ? 'none' : 'block';
       }
     });
@@ -241,7 +239,6 @@ class Menu {
     el.addEventListener('change', (evt) => {
       if (evt.target) {
         object[variable] = parseInt(evt.target['value']) === parseFloat(evt.target['value']) ? parseInt(evt.target['value']) : parseFloat(evt.target['value']);
-        // @ts-ignore
         evt.target.setAttribute('value', evt.target['value']);
         if (callback) callback(evt.target['value']);
       }
@@ -286,7 +283,6 @@ class Menu {
     return el;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   updateValue(title, val, suffix = '') {
     const el = document.getElementById(`menu-val-${title}`);
     if (el) el.innerText = `${title}: ${val}${suffix}`;
@@ -303,11 +299,9 @@ class Menu {
     return el;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async updateChart(id, values) {
     if (!values || (values.length === 0)) return;
     /** @type {HTMLCanvasElement} */ 
-    // @ts-ignore undefined
     const canvas = document.getElementById(`menu-canvas-${id}`);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Human demo for browsers
  *
@@ -6,7 +5,7 @@
  */
 
 /** @type {Human} */
-import Human from '../../dist/human.esm.js';
+import { Human } from '../../dist/human.esm.js';
 
 const userConfig = {
   backend: 'humangl',
@@ -46,8 +45,7 @@ const minScore = 0.4;
 function log(...msg) {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
-  // eslint-disable-next-line no-console
-  console.log(ts, ...msg);
+  console.log(ts, ...msg); // eslint-disable-line no-console
 }
 
 function title(msg) {
@@ -181,10 +179,12 @@ async function AddImageElement(index, image, length) {
     const img = new Image(128, 128);
     img.onload = () => { // must wait until image is loaded
       document.getElementById('images').appendChild(img); // and finally we can add it
-      human.detect(img, userConfig).then((res) => {
-        AddFaceCanvas(index, res, image); // then wait until image is analyzed
-        resolve(true);
-      });
+      human.detect(img, userConfig)
+        .then((res) => { // eslint-disable-line promise/always-return
+          AddFaceCanvas(index, res, image); // then wait until image is analyzed
+          resolve(true);
+        })
+        .catch(() => log('human detect error'));
     };
     img.onerror = () => {
       log('Add image error:', index + 1, image);

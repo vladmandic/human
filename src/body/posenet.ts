@@ -134,7 +134,7 @@ function getInstanceScore(existingPoses, keypoints) {
 }
 
 export function decode(offsets, scores, displacementsFwd, displacementsBwd, maxDetected, minConfidence) {
-  const poses: Array<{ keypoints, box: Box, score: number }> = [];
+  const poses: { keypoints, box: Box, score: number }[] = [];
   const queue = buildPartWithScoreQueue(minConfidence, scores);
   // Generate at most maxDetected object instances per image in decreasing root part score order.
   while (poses.length < maxDetected && !queue.empty()) {
@@ -163,7 +163,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
     if (!model.inputs[0].shape) return [];
     const resized = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
     const normalized = tf.sub(tf.div(tf.cast(resized, 'float32'), 127.5), 1.0);
-    const results: Array<Tensor> = model.execute(normalized, poseNetOutputs) as Array<Tensor>;
+    const results: Tensor[] = model.execute(normalized, poseNetOutputs) as Tensor[];
     const results3d = results.map((y) => tf.squeeze(y, [0]));
     results3d[1] = tf.sigmoid(results3d[1]); // apply sigmoid on scores
     return results3d;
@@ -174,7 +174,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
 
   const decoded = await decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
   if (!model.inputs[0].shape) return [];
-  const scaled = utils.scalePoses(decoded, [input.shape[1], input.shape[2]], [model.inputs[0].shape[2], model.inputs[0].shape[1]]) as BodyResult[];
+  const scaled = utils.scalePoses(decoded, [input.shape[1], input.shape[2]], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
   return scaled;
 }
 

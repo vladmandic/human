@@ -64,9 +64,7 @@ function createNode() {
     hideChildren() {
       if (Array.isArray(this.children)) {
         this.children.forEach((item) => {
-          // @ts-ignore
           item['elem']['classList'].add('hide');
-          // @ts-ignore
           if (item['expanded']) item.hideChildren();
         });
       }
@@ -74,9 +72,7 @@ function createNode() {
     showChildren() {
       if (Array.isArray(this.children)) {
         this.children.forEach((item) => {
-          // @ts-ignore
           item['elem']['classList'].remove('hide');
-          // @ts-ignore
           if (item['expanded']) item.showChildren();
         });
       }

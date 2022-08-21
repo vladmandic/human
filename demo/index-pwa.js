@@ -2,6 +2,7 @@
  * PWA Service Worker for Human main demo
  */
 
+/* eslint-disable no-restricted-globals */
 /// <reference lib="webworker" />
 
 const skipCaching = false;
@@ -19,8 +20,7 @@ const stats = { hit: 0, miss: 0 };
 const log = (...msg) => {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
-  // eslint-disable-next-line no-console
-  console.log(ts, 'pwa', ...msg);
+  console.log(ts, 'pwa', ...msg); // eslint-disable-line no-console
 };
 
 async function updateCached(req) {
@@ -28,7 +28,7 @@ async function updateCached(req) {
     .then((update) => {
       // update cache if request is ok
       if (update.ok) {
-        caches
+        caches // eslint-disable-line promise/no-nesting
           .open(cacheName)
           .then((cache) => cache.put(req, update))
           .catch((err) => log('cache update error', err));
@@ -75,14 +75,13 @@ async function getCached(evt) {
 }
 
 function cacheInit() {
-  // eslint-disable-next-line promise/catch-or-return
   caches.open(cacheName)
-    // eslint-disable-next-line promise/no-nesting
-    .then((cache) => cache.addAll(cacheFiles)
+    .then((cache) => cache.addAll(cacheFiles) // eslint-disable-line promise/no-nesting
       .then(
         () => log('cache refresh:', cacheFiles.length, 'files'),
         (err) => log('cache error', err),
-      ));
+      ))
+    .catch(() => log('cache error'));
 }
 
 if (!listening) {
@@ -99,14 +98,12 @@ if (!listening) {
 
   self.addEventListener('install', (evt) => {
     log('install');
-    // @ts-ignore scope for self is ServiceWorkerGlobalScope not Window
     self.skipWaiting();
     evt.waitUntil(cacheInit);
   });
 
   self.addEventListener('activate', (evt) => {
     log('activate');
-    // @ts-ignore scope for self is ServiceWorkerGlobalScope not Window
     evt.waitUntil(self.clients.claim());
   });
 
@@ -114,7 +111,7 @@ if (!listening) {
     const uri = new URL(evt.request.url);
     // if (uri.pathname === '/') { log('cache skip /', evt.request); return; } // skip root access requests
     if (evt.request.cache === 'only-if-cached' && evt.request.mode !== 'same-origin') return; // required due to chrome bug
-    if (uri.origin !== location.origin) return; // skip non-local requests
+    if (uri.origin !== self.location.origin) return; // skip non-local requests
     if (evt.request.method !== 'GET') return; // only cache get requests
     if (evt.request.url.includes('/api/')) return; // don't cache api requests, failures are handled at the time of call
 
@@ -129,7 +126,7 @@ if (!listening) {
     log(`PWA: ${evt.type}`);
     if (refreshed) return;
     refreshed = true;
-    location.reload();
+    self.location.reload();
   });
 
   listening = true;

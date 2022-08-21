@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable */
 
 // explicit copy of @types/offscreencanvas to enable typedef bundling
@@ -11,7 +10,7 @@
 // TypeScript Version: 4.3
 
 // https://html.spec.whatwg.org/multipage/canvas.html#dom-canvas-transfercontroltooffscreen
-interface HTMLCanvasElement {
+export interface HTMLCanvasElement {
   transferControlToOffscreen(): OffscreenCanvas;
 }
 
@@ -63,19 +62,19 @@ declare function createImageBitmap(image: ImageBitmapSource | OffscreenCanvas, s
                                  sw: number, sh: number): Promise<ImageBitmap>;
 
 // OffscreenCanvas should be a part of Transferable => extend all postMessage methods
-interface Worker {
+export interface Worker {
   postMessage(message: any, transfer?: Array<Transferable | OffscreenCanvas>): void;
 }
 
-interface ServiceWorker {
+export interface ServiceWorker {
   postMessage(message: any, transfer?: Array<Transferable | OffscreenCanvas>): void;
 }
 
-interface MessagePort {
+export interface MessagePort {
   postMessage(message: any, transfer?: Array<Transferable | OffscreenCanvas>): void;
 }
 
-interface Window {
+export interface Window {
   postMessage(message: any, targetOrigin: string, transfer?: Array<Transferable | OffscreenCanvas>): void;
 }
 

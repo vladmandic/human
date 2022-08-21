@@ -51,8 +51,8 @@
     "indentSize": 2,
     "tabSize": 2
   },
-  "exclude": ["node_modules/", "types/", "tfjs/", "dist/"],
-  "include": ["src", "types/human.d.ts"],
+  "exclude": ["node_modules/", "types/", "dist/"],
+  "include": ["src", "tfjs/*.ts", "types/human.d.ts", "test/**/*.ts", "demo/**/*.ts"],
   "typedocOptions": {
     "externalPattern": ["node_modules/", "tfjs/"]
   }

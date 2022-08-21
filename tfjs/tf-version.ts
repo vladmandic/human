@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 // get versions of all packages
 import { version as tfjsVersion } from '@tensorflow/tfjs/package.json';
 import { version as tfjsCoreVersion } from '@tensorflow/tfjs-core/package.json';

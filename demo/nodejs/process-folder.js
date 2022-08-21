@@ -10,9 +10,10 @@
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
-const log = require('@vladmandic/pilogger');
-const canvas = require('canvas'); // eslint-disable-line node/no-extraneous-require, node/no-missing-require
-const tf = require('@tensorflow/tfjs-node-gpu'); // for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+const canvas = require('canvas'); // eslint-disable-line node/no-unpublished-require
+// for nodejs, `tfjs-node` or `tfjs-node-gpu` should be loaded before using Human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
 const Human = require('../../dist/human.node-gpu.js'); // this is 'const Human = require('../dist/human.node-gpu.js').default;'
 
 const config = { // just enable all and leave default settings
@@ -72,14 +73,12 @@ async function main() {
     const outputCtx = outputCanvas.getContext('2d');
     const inputImage = await canvas.loadImage(buffer); // load image using canvas library
     outputCtx.drawImage(inputImage, 0, 0); // draw input image onto canvas
-    // @ts-ignore
     human.draw.all(outputCanvas, result); // use human build-in method to draw results as overlays on canvas
     const outFile = path.join(outDir, image);
     const outStream = fs.createWriteStream(outFile); // write canvas to new image file
     outStream.on('finish', () => log.state('Output image:', outFile, outputCanvas.width, outputCanvas.height));
     outStream.on('error', (err) => log.error('Output error:', outFile, err));
     const stream = outputCanvas.createJPEGStream({ quality: 0.5, progressive: true, chromaSubsampling: true });
-    // @ts-ignore
     stream.pipe(outStream);
   }
 }

@@ -1,7 +1,7 @@
 // @tensorflow/tfjs-models/face-landmark-detection/src/constants.ts
 // https://github.com/google/mediapipe/mediapipe/python/solutions/face_mesh_connections.py
 
-type PairArray = Array<[number, number]>;
+type PairArray = [number, number][];
 
 const LIPS_CONNECTIONS: PairArray = [
   [61, 146], [146, 91], [91, 181], [181, 84], [84, 17], [17, 314], [314, 405], [405, 321], [321, 375], [375, 291], [61, 185], [185, 40], [40, 39], [39, 37], [37, 0], [0, 267], [267, 269], [269, 270], [270, 409], [409, 291],
@@ -187,7 +187,7 @@ export const MEDIAPIPE_FACE_MESH_KEYPOINTS_BY_CONTOUR = {
   faceOval: connectionsToIndices(FACE_OVAL_CONNECTIONS),
 };
 
-const indexLabelPairs: Array<[number, string]> = Object.entries(MEDIAPIPE_FACE_MESH_KEYPOINTS_BY_CONTOUR)
+const indexLabelPairs: [number, string][] = Object.entries(MEDIAPIPE_FACE_MESH_KEYPOINTS_BY_CONTOUR)
   .map(([label, indices]) => indices.map((index) => [index, label] as [number, string]))
   .flat();
 

@@ -1,7 +1,7 @@
 /** Draw Options
  * - Accessed via `human.draw.options` or provided per each draw method as the drawOptions optional parameter
  */
-export type DrawOptions = {
+export interface DrawOptions {
   /** draw line color */
   color: string,
   /** alpha value used for lines */

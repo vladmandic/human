@@ -11,7 +11,7 @@ const numLayers = 5;
 const strides = [8, 16, 32, 32, 32];
 
 export async function createAnchors() {
-  const anchors: Array<{ x: number, y: number }> = [];
+  const anchors: { x: number, y: number }[] = [];
   let layerId = 0;
   while (layerId < numLayers) {
     let anchorCount = 0;
@@ -59,10 +59,10 @@ export async function decode(boxesTensor: Tensor, logitsTensor: Tensor, config: 
   t.boxes = decodeBoxes(boxesTensor, anchorTensor);
   t.scores = tf.sigmoid(logitsTensor);
   t.argmax = tf.argMax(t.scores);
-  const i = (await t.argmax.data())[0] as number;
+  const i = (await t.argmax.data())[0];
   const scores = await t.scores.data();
-  const detected: Array<{ box: Box, boxRaw: Box, score: number }> = [];
-  const minScore = (config.body['detector'] && config.body['detector']['minConfidence']) ? config.body['detector']['minConfidence'] : 0;
+  const detected: { box: Box, boxRaw: Box, score: number }[] = [];
+  const minScore = (config.body['detector'] && config.body['detector'].minConfidence) ? config.body['detector'].minConfidence : 0;
   if (scores[i] >= minScore) {
     const boxes = await t.boxes.array();
     const boxRaw: Box = boxes[i];

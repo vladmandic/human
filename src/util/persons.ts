@@ -4,9 +4,9 @@
 
 import type { FaceResult, BodyResult, HandResult, GestureResult, PersonResult, Box } from '../result';
 
-export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands: Array<HandResult>, gestures: Array<GestureResult>, shape: Array<number> | undefined): Array<PersonResult> {
+export function join(faces: FaceResult[], bodies: BodyResult[], hands: HandResult[], gestures: GestureResult[], shape: number[] | undefined): PersonResult[] {
   let id = 0;
-  const persons: Array<PersonResult> = [];
+  const persons: PersonResult[] = [];
   for (const face of faces) { // person is defined primarily by face and then we append other objects as found
     const person: PersonResult = { id: id++, face, body: null, hands: { left: null, right: null }, gestures: [], box: [0, 0, 0, 0] };
     for (const body of bodies) {
@@ -34,11 +34,11 @@ export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands:
       }
     }
     for (const gesture of gestures) { // append all gestures according to ids
-      if (gesture['face'] !== undefined && gesture['face'] === face.id) person.gestures?.push(gesture);
-      else if (gesture['iris'] !== undefined && gesture['iris'] === face.id) person.gestures?.push(gesture);
-      else if (gesture['body'] !== undefined && gesture['body'] === person.body?.id) person.gestures?.push(gesture);
-      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.left?.id) person.gestures?.push(gesture);
-      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands?.right?.id) person.gestures?.push(gesture);
+      if (gesture['face'] !== undefined && gesture['face'] === face.id) person.gestures.push(gesture);
+      else if (gesture['iris'] !== undefined && gesture['iris'] === face.id) person.gestures.push(gesture);
+      else if (gesture['body'] !== undefined && gesture['body'] === person.body?.id) person.gestures.push(gesture);
+      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands.left?.id) person.gestures.push(gesture);
+      else if (gesture['hand'] !== undefined && gesture['hand'] === person.hands.right?.id) person.gestures.push(gesture);
     }
 
     // create new overarching box from all boxes belonging to person
@@ -50,10 +50,10 @@ export function join(faces: Array<FaceResult>, bodies: Array<BodyResult>, hands:
         y.push(box[1], box[1] + box[3]);
       }
     };
-    extractXY(person.face?.box);
+    extractXY(person.face.box);
     extractXY(person.body?.box);
-    extractXY(person.hands?.left?.box);
-    extractXY(person.hands?.right?.box);
+    extractXY(person.hands.left?.box);
+    extractXY(person.hands.right?.box);
     const minX = Math.min(...x);
     const minY = Math.min(...y);
     person.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY]; // create new overarching box

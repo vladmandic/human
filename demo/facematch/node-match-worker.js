@@ -52,7 +52,7 @@ threads.parentPort?.on('message', (msg) => {
   if (msg instanceof SharedArrayBuffer) { // called only once to receive reference to shared array buffer
     buffer = msg;
     view = new Float32Array(buffer); // initialize f64 view into buffer
-    if (debug) threads.parentPort?.postMessage(`buffer: ${buffer?.byteLength}`);
+    if (debug) threads.parentPort?.postMessage(`buffer: ${buffer.byteLength}`);
   }
   if (typeof msg.records !== 'undefined') { // recived every time when number of records changes
     records = msg.records;
@@ -68,7 +68,7 @@ threads.parentPort?.on('message', (msg) => {
   }
   if (typeof msg.shutdown !== 'undefined') { // got message to close worker
     if (debug) threads.parentPort?.postMessage('shutting down');
-    process.exit(0);
+    process.exit(0); // eslint-disable-line no-process-exit
   }
 });
 

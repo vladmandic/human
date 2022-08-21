@@ -22,11 +22,10 @@ import type { Tensor } from '../tfjs/types';
 import type { Human } from '../human';
 import { calculateFaceAngle } from './angles';
 
-type DescRes = { age: number, gender: Gender, genderScore: number, descriptor: number[], race?: { score: number, race: Race }[] };
+interface DescRes { age: number, gender: Gender, genderScore: number, descriptor: number[], race?: { score: number, race: Race }[] }
 
 export const detectFace = async (instance: Human /* instance of human */, input: Tensor): Promise<FaceResult[]> => {
   // run facemesh, includes blazeface and iris
-  // eslint-disable-next-line no-async-promise-executor
   let timeStamp: number = now();
   let ageRes: { age: number } | Promise<{ age: number }> | null;
   let gearRes: gear.GearType | Promise<gear.GearType> | null;
@@ -38,7 +37,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
   let livenessRes: number | Promise<number> | null;
   let descRes: DescRes | Promise<DescRes> | null;
 
-  const faceRes: Array<FaceResult> = [];
+  const faceRes: FaceResult[] = [];
   instance.state = 'run:face';
 
   const faces = await facemesh.predict(input, instance.config);
@@ -51,7 +50,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
 
     // is something went wrong, skip the face
     // @ts-ignore possibly undefied
-    if (!faces[i].tensor || faces[i].tensor['isDisposedInternal']) {
+    if (!faces[i].tensor || faces[i].tensor.isDisposedInternal) {
       log('Face object is disposed:', faces[i].tensor);
       continue;
     }
@@ -60,7 +59,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     if (instance.config.face.detector?.mask) {
       const masked = await mask.mask(faces[i]);
       tf.dispose(faces[i].tensor);
-      faces[i].tensor = masked as Tensor;
+      if (masked) faces[i].tensor = masked;
     }
 
     // calculate face angles
@@ -105,11 +104,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run gear, inherits face from blazeface
     instance.analyze('Start GEAR:');
     if (instance.config.async) {
-      gearRes = instance.config.face['gear']?.enabled ? gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      gearRes = instance.config.face.gear?.enabled ? gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = 'run:gear';
       timeStamp = now();
-      gearRes = instance.config.face['gear']?.enabled ? await gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      gearRes = instance.config.face.gear?.enabled ? await gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
       instance.performance.gear = Math.trunc(now() - timeStamp);
     }
     instance.analyze('End GEAR:');
@@ -178,7 +177,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
         genderScore: (genderRes as { gender: Gender, genderScore: number }).genderScore,
       };
     }
-    if (instance.config.face['gear']?.enabled && gearRes) { // override age/gender/race if gear model is used
+    if (instance.config.face.gear?.enabled && gearRes) { // override age/gender/race if gear model is used
       descRes = {
         ...(descRes as DescRes),
         age: (gearRes as gear.GearType).age,
@@ -218,12 +217,12 @@ export const detectFace = async (instance: Human /* instance of human */, input:
       ...faces[i],
       id: i,
     };
-    if ((descRes as DescRes)?.age) res.age = (descRes as DescRes).age as number;
-    if ((descRes as DescRes)?.gender) res.gender = (descRes as DescRes).gender as Gender;
-    if ((descRes as DescRes)?.genderScore) res.genderScore = (descRes as DescRes)?.genderScore as number;
-    if ((descRes as DescRes)?.descriptor) res.embedding = (descRes as DescRes)?.descriptor as Array<number>;
-    if ((descRes as DescRes)?.race) res.race = (descRes as DescRes)?.race as { score: number, race: Race }[];
-    if (emotionRes) res.emotion = emotionRes as Array<{ score: number, emotion: Emotion }>;
+    if ((descRes as DescRes).age) res.age = (descRes as DescRes).age;
+    if ((descRes as DescRes).gender) res.gender = (descRes as DescRes).gender;
+    if ((descRes as DescRes).genderScore) res.genderScore = (descRes as DescRes).genderScore;
+    if ((descRes as DescRes).descriptor) res.embedding = (descRes as DescRes).descriptor;
+    if ((descRes as DescRes).race) res.race = (descRes as DescRes).race as { score: number, race: Race }[];
+    if (emotionRes) res.emotion = emotionRes as { score: number, emotion: Emotion }[];
     if (antispoofRes) res.real = antispoofRes as number;
     if (livenessRes) res.live = livenessRes as number;
     if (irisSize && irisSize !== 0) res.iris = Math.trunc(500 / irisSize / 11.7) / 100;

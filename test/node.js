@@ -76,7 +76,6 @@ function logStdIO(ok, test, buffer) {
   }
 }
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 async function runTest(test) {
   log.info();
   log.info(test, 'start');
@@ -90,7 +89,6 @@ async function runTest(test) {
   });
 }
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 async function runDemo(demo) {
   // log.info();
   log.info(demo, 'start');

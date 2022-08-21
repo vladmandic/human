@@ -81,7 +81,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   if (input instanceof tf.Tensor) { // if input is tensor use as-is without filters but correct shape as needed
     let tensor: Tensor | null = null;
     if ((input as Tensor)['isDisposedInternal']) throw new Error('input error: attempted to use tensor but it is disposed');
-    if (!(input as Tensor)['shape']) throw new Error('input error: attempted to use tensor without a shape');
+    if (!(input as Tensor).shape) throw new Error('input error: attempted to use tensor without a shape');
     if ((input as Tensor).shape.length === 3) { // [height, width, 3 || 4]
       if ((input as Tensor).shape[2] === 3) { // [height, width, 3] so add batch
         tensor = tf.expandDims(input, 0);
@@ -98,140 +98,139 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       }
     }
     // at the end shape must be [1, height, width, 3]
-    if (tensor == null || tensor.shape.length !== 4 || tensor.shape[0] !== 1 || tensor.shape[3] !== 3) throw new Error(`input error: attempted to use tensor with unrecognized shape: ${input['shape']}`);
-    if ((tensor as Tensor).dtype === 'int32') {
+    if (tensor == null || (tensor as Tensor).shape.length !== 4 || (tensor as Tensor).shape[0] !== 1 || (tensor as Tensor).shape[3] !== 3) throw new Error(`input error: attempted to use tensor with unrecognized shape: ${(input as Tensor).shape}`);
+    if ((tensor).dtype === 'int32') {
       const cast = tf.cast(tensor, 'float32');
       tf.dispose(tensor);
       tensor = cast;
     }
     return { tensor, canvas: (config.filter.return ? outCanvas : null) };
-  } else {
-    // check if resizing will be needed
-    if (typeof input['readyState'] !== 'undefined' && input['readyState'] <= 2) {
-      if (config.debug) log('input stream is not ready');
-      return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
-    }
-    const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
-    const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
-    if (!originalWidth || !originalHeight) {
-      if (config.debug) log('cannot determine input dimensions');
-      return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
-    }
-    let targetWidth = originalWidth;
-    let targetHeight = originalHeight;
-    if (targetWidth > maxSize) {
-      targetWidth = maxSize;
-      targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
-    }
-    if (targetHeight > maxSize) {
-      targetHeight = maxSize;
-      targetWidth = Math.trunc(targetHeight * originalWidth / originalHeight);
-    }
-
-    // create our canvas and resize it if needed
-    if ((config.filter.width || 0) > 0) targetWidth = config.filter.width;
-    else if ((config.filter.height || 0) > 0) targetWidth = originalWidth * ((config.filter.height || 0) / originalHeight);
-    if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
-    else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
-    if (!targetWidth || !targetHeight) throw new Error('input error: cannot determine dimension');
-    if (!inCanvas || (inCanvas?.width !== targetWidth) || (inCanvas?.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
-
-    // draw input to our canvas
-    const inCtx = inCanvas.getContext('2d') as CanvasRenderingContext2D;
-    if ((typeof ImageData !== 'undefined') && (input instanceof ImageData)) {
-      inCtx.putImageData(input, 0, 0);
-    } else {
-      if (config.filter.flip && typeof inCtx.translate !== 'undefined') {
-        inCtx.translate(originalWidth, 0);
-        inCtx.scale(-1, 1);
-        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
-        inCtx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
-      } else {
-        inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas?.width, inCanvas?.height);
-      }
-    }
-
-    if (!outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas?.height !== outCanvas?.height)) outCanvas = canvas(inCanvas.width, inCanvas.height); // init output canvas
-
-    // imagefx transforms using gl from input canvas to output canvas
-    if (config.filter.enabled && env.webgl.supported) {
-      if (!fx) fx = env.browser ? new fxImage.GLImageFilter() : null; // && (typeof document !== 'undefined')
-      env.filter = !!fx;
-      if (!fx || !fx.add) {
-        if (config.debug) log('input process error: cannot initialize filters');
-        env.webgl.supported = false;
-        config.filter.enabled = false;
-        copy(inCanvas, outCanvas); // filter failed to initialize
-        // return { tensor: null, canvas: inCanvas };
-      } else {
-        fx.reset();
-        if (config.filter.brightness !== 0) fx.add('brightness', config.filter.brightness);
-        if (config.filter.contrast !== 0) fx.add('contrast', config.filter.contrast);
-        if (config.filter.sharpness !== 0) fx.add('sharpen', config.filter.sharpness);
-        if (config.filter.blur !== 0) fx.add('blur', config.filter.blur);
-        if (config.filter.saturation !== 0) fx.add('saturation', config.filter.saturation);
-        if (config.filter.hue !== 0) fx.add('hue', config.filter.hue);
-        if (config.filter.negative) fx.add('negative');
-        if (config.filter.sepia) fx.add('sepia');
-        if (config.filter.vintage) fx.add('brownie');
-        if (config.filter.sepia) fx.add('sepia');
-        if (config.filter.kodachrome) fx.add('kodachrome');
-        if (config.filter.technicolor) fx.add('technicolor');
-        if (config.filter.polaroid) fx.add('polaroid');
-        if (config.filter.pixelate !== 0) fx.add('pixelate', config.filter.pixelate);
-        if (fx.get() > 0) outCanvas = fx.apply(inCanvas);
-        else outCanvas = fx.draw(inCanvas);
-      }
-    } else {
-      copy(inCanvas, outCanvas); // if no filters applied, output canvas is input canvas
-      if (fx) fx = null;
-      env.filter = !!fx;
-    }
-
-    if (!getTensor) return { tensor: null, canvas: outCanvas }; // just canvas was requested
-    if (!outCanvas) throw new Error('canvas error: cannot create output');
-
-    // create tensor from image unless input was a tensor already
-    let pixels;
-    let depth = 3;
-    if ((typeof ImageData !== 'undefined' && input instanceof ImageData) || (input['data'] && input['width'] && input['height'])) { // if input is imagedata, just use it
-      if (env.browser && tf.browser) {
-        pixels = tf.browser ? tf.browser.fromPixels(input) : null;
-      } else {
-        depth = input['data'].length / input['height'] / input['width'];
-        // const arr = Uint8Array.from(input['data']);
-        const arr = new Uint8Array(input['data']['buffer']);
-        pixels = tf.tensor(arr, [input['height'], input['width'], depth], 'int32');
-      }
-    } else {
-      if (!tmpCanvas || (outCanvas.width !== tmpCanvas.width) || (outCanvas.height !== tmpCanvas.height)) tmpCanvas = canvas(outCanvas.width, outCanvas.height); // init output canvas
-      if (tf.browser && env.browser) {
-        if (config.backend === 'webgl' || config.backend === 'humangl' || config.backend === 'webgpu') {
-          pixels = tf.browser.fromPixels(outCanvas); // safe to reuse since both backend and context are gl based
-        } else {
-          tmpCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
-          pixels = tf.browser.fromPixels(tmpCanvas);
-        }
-      } else {
-        const tempCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
-        const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-        const tempData = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
-        depth = tempData.data.length / targetWidth / targetHeight;
-        const arr = new Uint8Array(tempData.data.buffer);
-        pixels = tf.tensor(arr, [targetWidth, targetHeight, depth]);
-      }
-    }
-    if (depth === 4) { // rgba to rgb
-      const rgb = tf.slice3d(pixels, [0, 0, 0], [-1, -1, 3]); // strip alpha channel
-      tf.dispose(pixels);
-      pixels = rgb;
-    }
-    if (!pixels) throw new Error('input error: cannot create tensor');
-    const casted = tf.cast(pixels, 'float32');
-    const tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
-    tf.dispose([pixels, casted]);
-    return { tensor, canvas: (config.filter.return ? outCanvas : null) };
   }
+  // check if resizing will be needed
+  if (typeof input['readyState'] !== 'undefined' && (input as HTMLMediaElement).readyState <= 2) {
+    if (config.debug) log('input stream is not ready');
+    return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
+  }
+  const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
+  const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
+  if (!originalWidth || !originalHeight) {
+    if (config.debug) log('cannot determine input dimensions');
+    return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
+  }
+  let targetWidth = originalWidth;
+  let targetHeight = originalHeight;
+  if (targetWidth > maxSize) {
+    targetWidth = maxSize;
+    targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
+  }
+  if (targetHeight > maxSize) {
+    targetHeight = maxSize;
+    targetWidth = Math.trunc(targetHeight * originalWidth / originalHeight);
+  }
+
+  // create our canvas and resize it if needed
+  if ((config.filter.width || 0) > 0) targetWidth = config.filter.width;
+  else if ((config.filter.height || 0) > 0) targetWidth = originalWidth * ((config.filter.height || 0) / originalHeight);
+  if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
+  else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
+  if (!targetWidth || !targetHeight) throw new Error('input error: cannot determine dimension');
+  if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
+
+  // draw input to our canvas
+  const inCtx = inCanvas.getContext('2d') as CanvasRenderingContext2D;
+  if ((typeof ImageData !== 'undefined') && (input instanceof ImageData)) {
+    inCtx.putImageData(input, 0, 0);
+  } else {
+    if (config.filter.flip && typeof inCtx.translate !== 'undefined') {
+      inCtx.translate(originalWidth, 0);
+      inCtx.scale(-1, 1);
+      inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
+      inCtx.setTransform(1, 0, 0, 1, 0, 0); // resets transforms to defaults
+    } else {
+      inCtx.drawImage(input as AnyCanvas, 0, 0, originalWidth, originalHeight, 0, 0, inCanvas.width, inCanvas.height);
+    }
+  }
+
+  if (!outCanvas || (inCanvas.width !== outCanvas.width) || (inCanvas.height !== outCanvas.height)) outCanvas = canvas(inCanvas.width, inCanvas.height); // init output canvas
+
+  // imagefx transforms using gl from input canvas to output canvas
+  if (config.filter.enabled && env.webgl.supported) {
+    if (!fx) fx = env.browser ? new fxImage.GLImageFilter() : null; // && (typeof document !== 'undefined')
+    env.filter = !!fx;
+    if (!fx || !fx.add) {
+      if (config.debug) log('input process error: cannot initialize filters');
+      env.webgl.supported = false;
+      config.filter.enabled = false;
+      copy(inCanvas, outCanvas); // filter failed to initialize
+      // return { tensor: null, canvas: inCanvas };
+    } else {
+      fx.reset();
+      if (config.filter.brightness !== 0) fx.add('brightness', config.filter.brightness);
+      if (config.filter.contrast !== 0) fx.add('contrast', config.filter.contrast);
+      if (config.filter.sharpness !== 0) fx.add('sharpen', config.filter.sharpness);
+      if (config.filter.blur !== 0) fx.add('blur', config.filter.blur);
+      if (config.filter.saturation !== 0) fx.add('saturation', config.filter.saturation);
+      if (config.filter.hue !== 0) fx.add('hue', config.filter.hue);
+      if (config.filter.negative) fx.add('negative');
+      if (config.filter.sepia) fx.add('sepia');
+      if (config.filter.vintage) fx.add('brownie');
+      if (config.filter.sepia) fx.add('sepia');
+      if (config.filter.kodachrome) fx.add('kodachrome');
+      if (config.filter.technicolor) fx.add('technicolor');
+      if (config.filter.polaroid) fx.add('polaroid');
+      if (config.filter.pixelate !== 0) fx.add('pixelate', config.filter.pixelate);
+      if (fx.get() > 0) outCanvas = fx.apply(inCanvas);
+      else outCanvas = fx.draw(inCanvas);
+    }
+  } else {
+    copy(inCanvas, outCanvas); // if no filters applied, output canvas is input canvas
+    if (fx) fx = null;
+    env.filter = !!fx;
+  }
+
+  if (!getTensor) return { tensor: null, canvas: outCanvas }; // just canvas was requested
+  if (!outCanvas) throw new Error('canvas error: cannot create output');
+
+  // create tensor from image unless input was a tensor already
+  let pixels;
+  let depth = 3;
+  if ((typeof ImageData !== 'undefined' && input instanceof ImageData) || ((input as ImageData).data && (input as ImageData).width && (input as ImageData).height)) { // if input is imagedata, just use it
+    if (env.browser && tf.browser) {
+      pixels = tf.browser ? tf.browser.fromPixels(input) : null;
+    } else {
+      depth = (input as ImageData).data.length / (input as ImageData).height / (input as ImageData).width;
+      // const arr = Uint8Array.from(input['data']);
+      const arr = new Uint8Array((input as ImageData).data.buffer);
+      pixels = tf.tensor(arr, [(input as ImageData).height, (input as ImageData).width, depth], 'int32');
+    }
+  } else {
+    if (!tmpCanvas || (outCanvas.width !== tmpCanvas.width) || (outCanvas.height !== tmpCanvas.height)) tmpCanvas = canvas(outCanvas.width, outCanvas.height); // init output canvas
+    if (tf.browser && env.browser) {
+      if (config.backend === 'webgl' || config.backend === 'humangl' || config.backend === 'webgpu') {
+        pixels = tf.browser.fromPixels(outCanvas); // safe to reuse since both backend and context are gl based
+      } else {
+        tmpCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
+        pixels = tf.browser.fromPixels(tmpCanvas);
+      }
+    } else {
+      const tempCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
+      const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+      const tempData = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
+      depth = tempData.data.length / targetWidth / targetHeight;
+      const arr = new Uint8Array(tempData.data.buffer);
+      pixels = tf.tensor(arr, [targetWidth, targetHeight, depth]);
+    }
+  }
+  if (depth === 4) { // rgba to rgb
+    const rgb = tf.slice3d(pixels, [0, 0, 0], [-1, -1, 3]); // strip alpha channel
+    tf.dispose(pixels);
+    pixels = rgb;
+  }
+  if (!pixels) throw new Error('input error: cannot create tensor');
+  const casted = tf.cast(pixels, 'float32');
+  const tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
+  tf.dispose([pixels, casted]);
+  return { tensor, canvas: (config.filter.return ? outCanvas : null) };
 }
 
 /*

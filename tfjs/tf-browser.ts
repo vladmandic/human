@@ -3,6 +3,8 @@
  * @external
  */
 
+/* eslint-disable import/no-extraneous-dependencies */
+
 // export all from build bundle
 export * from '@tensorflow/tfjs/dist/index.js';
 export * from '@tensorflow/tfjs-backend-webgl/dist/index.js';

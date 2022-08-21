@@ -61,7 +61,7 @@ export class Models {
   antispoof: null | GraphModel | Promise<GraphModel> = null;
 }
 
-export type ModelStats = {
+export interface ModelStats {
   numLoadedModels: number,
   numEnabledModels: undefined,
   numDefinedModels: number,
@@ -112,12 +112,11 @@ export async function load(instance: Human): Promise<void> {
       [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
     }
   }
-  if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body?.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
-  // @ts-ignore optional model
-  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body['detector'] && instance.config.body['detector']['modelPath']) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
-  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body?.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
-  if (instance.config.body.enabled && !instance.models.movenet && instance.config.body?.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
-  if (instance.config.body.enabled && !instance.models.posenet && instance.config.body?.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body['detector'] && instance.config.body['detector'].modelPath) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.movenet && instance.config.body.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
+  if (instance.config.body.enabled && !instance.models.posenet && instance.config.body.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);
   if (instance.config.face.enabled && !instance.models.facedetect) instance.models.facedetect = blazeface.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.antispoof?.enabled && !instance.models.antispoof) instance.models.antispoof = antispoof.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.liveness?.enabled && !instance.models.liveness) instance.models.liveness = liveness.load(instance.config);
@@ -125,19 +124,15 @@ export async function load(instance: Human): Promise<void> {
   if (instance.config.face.enabled && instance.config.face.emotion?.enabled && !instance.models.emotion) instance.models.emotion = emotion.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.config.face.attention?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
   if (instance.config.face.enabled && instance.config.face.mesh?.enabled && !instance.models.facemesh) instance.models.facemesh = facemesh.load(instance.config);
-  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['gear']?.enabled && !instance.models.gear) instance.models.gear = gear.load(instance.config);
-  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetage) instance.models.ssrnetage = ssrnetAge.load(instance.config);
-  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetgender) instance.models.ssrnetgender = ssrnetGender.load(instance.config);
-  // @ts-ignore optional model
   if (instance.config.face.enabled && instance.config.face['mobilefacenet']?.enabled && !instance.models.mobilefacenet) instance.models.mobilefacenet = mobilefacenet.load(instance.config);
   if (instance.config.face.enabled && instance.config.face['insightface']?.enabled && !instance.models.insightface) instance.models.insightface = insightface.load(instance.config);
   if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
-  if (instance.config.object.enabled && !instance.models.centernet && instance.config.object?.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);
-  if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object?.modelPath?.includes('nanodet')) instance.models.nanodet = nanodet.load(instance.config);
+  if (instance.config.object.enabled && !instance.models.centernet && instance.config.object.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);
+  if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object.modelPath?.includes('nanodet')) instance.models.nanodet = nanodet.load(instance.config);
   if (instance.config.segmentation.enabled && !instance.models.segmentation) instance.models.segmentation = segmentation.load(instance.config);
 
   // models are loaded in parallel asynchronously so lets wait until they are actually loaded
@@ -149,7 +144,7 @@ export async function load(instance: Human): Promise<void> {
 }
 
 let instance: Human;
-export type KernelOps = { name: string, url: string, missing: string[], ops: string[] }
+export interface KernelOps { name: string, url: string, missing: string[], ops: string[] }
 
 export function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null {
   if (newInstance) instance = newInstance;
@@ -161,10 +156,8 @@ export function validateModel(newInstance: Human | null, model: GraphModel | nul
   const ops: string[] = [];
   const missing: string[] = [];
   interface Op { name: string, category: string, op: string }
-  // @ts-ignore // modelUrl is a private method
-  const url = model.modelUrl;
-  // @ts-ignore // executor is a private method
-  const executor = model.executor;
+  const url = model['modelUrl'] as string;
+  const executor = model['executor'];
   if (executor && executor.graph.nodes) {
     for (const kernel of Object.values(executor.graph.nodes)) {
       const op = (kernel as Op).op.toLowerCase();
@@ -187,9 +180,9 @@ export function validateModel(newInstance: Human | null, model: GraphModel | nul
   return missing.length > 0 ? { name, missing, ops, url } : null;
 }
 
-export function validate(newInstance: Human): Array<{ name: string, missing: string[] }> {
+export function validate(newInstance: Human): { name: string, missing: string[] }[] {
   instance = newInstance;
-  const missing: Array<KernelOps> = [];
+  const missing: KernelOps[] = [];
   for (const defined of Object.keys(instance.models)) {
     const model: GraphModel | null = instance.models[defined as keyof Models] as GraphModel | null;
     if (!model) continue;

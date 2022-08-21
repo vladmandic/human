@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const log = require('@vladmandic/pilogger');
-const Build = require('@vladmandic/build').Build;
-const APIExtractor = require('@microsoft/api-extractor');
-const tf = require('@tensorflow/tfjs-node');
-const package = require('./package.json');
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+const Build = require('@vladmandic/build').Build; // eslint-disable-line node/no-unpublished-require
+const APIExtractor = require('@microsoft/api-extractor'); // eslint-disable-line node/no-unpublished-require
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
+const packageJSON = require('./package.json');
 
 const logFile = 'test/build.log';
 const modelsOut = 'models/models.json';
@@ -19,7 +19,7 @@ const modelsFolders = [
   '../nanodet/models',
 ];
 
-const apiExtractorIgnoreList = [ // eslint-disable-line @typescript-eslint/no-unused-vars
+const apiExtractorIgnoreList = [ // eslint-disable-line no-unused-vars
   'ae-missing-release-tag',
   'tsdoc-param-tag-missing-hyphen',
   'tsdoc-escape-right-brace',
@@ -73,7 +73,7 @@ async function analyzeModels() {
 
 async function main() {
   log.logFile(logFile);
-  log.data('Build', { name: package.name, version: package.version });
+  log.data('Build', { name: packageJSON.name, version: packageJSON.version });
   // run production build
   const build = new Build();
   await build.run('production');

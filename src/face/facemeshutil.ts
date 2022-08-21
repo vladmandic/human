@@ -84,13 +84,13 @@ export const dot = (v1: number[], v2: number[]) => {
 };
 
 export const getColumnFrom2DArr = (arr, columnIndex) => {
-  const column: Array<number> = [];
+  const column: number[] = [];
   for (let i = 0; i < arr.length; i++) column.push(arr[i][columnIndex]);
   return column;
 };
 
 export const multiplyTransformMatrices = (mat1, mat2) => {
-  const product: Array<number[]> = [];
+  const product: number[][] = [];
   const size = mat1.length;
   for (let row = 0; row < size; row++) {
     product.push([]);
@@ -124,7 +124,7 @@ export function generateAnchors(inputSize) {
   const spec = inputSize === 192
     ? { strides: [4], anchors: [1] } // facemesh-detector
     : { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] }; // blazeface
-  const anchors: Array<[number, number]> = [];
+  const anchors: [number, number][] = [];
   for (let i = 0; i < spec.strides.length; i++) {
     const stride = spec.strides[i];
     const gridRows = Math.floor((inputSize + stride - 1) / stride);

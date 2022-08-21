@@ -38,9 +38,9 @@ export interface FaceResult {
   /** detected face box normalized to 0..1 */
   boxRaw: Box,
   /** detected face mesh */
-  mesh: Array<Point>
+  mesh: Point[]
   /** detected face mesh normalized to 0..1 */
-  meshRaw: Array<Point>,
+  meshRaw: Point[],
   /** face contours as array of 2d points normalized to 0..1 */
   // contoursRaw: Array<[number, number]>,
   /** face contours as array of 2d points */
@@ -54,11 +54,11 @@ export interface FaceResult {
   /** gender detection score */
   genderScore?: number,
   /** detected emotions */
-  emotion?: Array<{ score: number, emotion: Emotion }>,
+  emotion?: { score: number, emotion: Emotion }[],
   /** detected race */
-  race?: Array<{ score: number, race: Race }>,
+  race?: { score: number, race: Race }[],
   /** face descriptor */
-  embedding?: Array<number>,
+  embedding?: number[],
   /** face iris distance from camera */
   iris?: number,
   /** face anti-spoofing result confidence */
@@ -111,7 +111,7 @@ export interface BodyResult {
   /** detected body box normalized to 0..1 */
   boxRaw: Box,
   /** detected body keypoints */
-  keypoints: Array<BodyKeypoint>
+  keypoints: BodyKeypoint[]
   /** detected body keypoints combined into annotated parts */
   annotations: Record<BodyAnnotation, Point[][]>,
 }
@@ -136,11 +136,11 @@ export interface HandResult {
   /** detected hand box normalized to 0..1 */
   boxRaw: Box,
   /** detected hand keypoints */
-  keypoints: Array<Point>,
+  keypoints: Point[],
   /** detected hand class */
   label: HandType,
   /** detected hand keypoints combined into annotated parts */
-  annotations: Record<Finger, Array<Point>>,
+  annotations: Record<Finger, Point[]>,
   /** detected hand parts annotated with part gestures */
   landmarks: Record<Finger, { curl: FingerCurl, direction: FingerDirection }>,
 }
@@ -192,7 +192,7 @@ export interface PersonResult {
   /** left and right hand results that belong to this person */
   hands: { left: HandResult | null, right: HandResult | null },
   /** detected gestures specific to this person */
-  gestures: Array<GestureResult>,
+  gestures: GestureResult[],
   /** box that defines the person */
   box: Box,
   /** box that defines the person normalized to 0..1 */
@@ -206,15 +206,15 @@ export interface PersonResult {
  */
 export interface Result {
   /** {@link FaceResult}: detection & analysis results */
-  face: Array<FaceResult>,
+  face: FaceResult[],
   /** {@link BodyResult}: detection & analysis results */
-  body: Array<BodyResult>,
+  body: BodyResult[],
   /** {@link HandResult}: detection & analysis results */
-  hand: Array<HandResult>,
+  hand: HandResult[],
   /** {@link GestureResult}: detection & analysis results */
-  gesture: Array<GestureResult>,
+  gesture: GestureResult[],
   /** {@link ObjectResult}: detection & analysis results */
-  object: Array<ObjectResult>
+  object: ObjectResult[]
   /** global performance object with timing values for each operation */
   performance: Record<string, number>,
   /** optional processed canvas that can be used to draw input on screen */
@@ -222,7 +222,7 @@ export interface Result {
   /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */
   readonly timestamp: number,
   /** getter property that returns unified persons object  */
-  persons: Array<PersonResult>,
+  persons: PersonResult[],
   /** Last known error message */
   error: string | null;
 }

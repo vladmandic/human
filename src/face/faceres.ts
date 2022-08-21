@@ -16,15 +16,15 @@ import type { Tensor, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
 import type { Gender, Race } from '../result';
 
-export type FaceRes = { age: number, gender: Gender, genderScore: number, descriptor: number[], race?: { score: number, race: Race }[] };
+export interface FaceRes { age: number, gender: Gender, genderScore: number, descriptor: number[], race?: { score: number, race: Race }[] }
 
 let model: GraphModel | null;
-const last: Array<{
+const last: {
   age: number,
   gender: Gender,
   genderScore: number,
   descriptor: number[],
-}> = [];
+}[] = [];
 
 let lastTime = 0;
 let lastCount = 0;
@@ -88,7 +88,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
       const genderT = await resT.find((t) => t.shape[1] === 1) as Tensor;
       const gender = await genderT.data();
       const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
-      if (confidence > (config.face.description?.minConfidence || 0)) {
+      if (confidence > (config.face.description.minConfidence || 0)) {
         obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
         obj.genderScore = Math.min(0.99, confidence);
       }

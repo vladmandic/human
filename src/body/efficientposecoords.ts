@@ -1,4 +1,4 @@
-export const kpt: Array<string> = [
+export const kpt: string[] = [
   'head',
   'neck',
   'rightShoulder',

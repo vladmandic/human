@@ -7,7 +7,7 @@ import type { Tensor } from '../tfjs/types';
 const maxJitter = 0.005; // default allowed jitter is within 0.5%
 
 const cache: {
-  keypoints: Array<BodyKeypoint>,
+  keypoints: BodyKeypoint[],
   padding: [number, number][];
 } = {
   keypoints: [],
@@ -57,7 +57,7 @@ export function bodyParts(body: BodyResult) { // model sometimes mixes up left v
   }
 }
 
-export function jitter(keypoints: Array<BodyKeypoint>): Array<BodyKeypoint> {
+export function jitter(keypoints: BodyKeypoint[]): BodyKeypoint[] {
   for (let i = 0; i < keypoints.length; i++) {
     if (keypoints[i] && cache.keypoints[i]) {
       const diff = [Math.abs(keypoints[i].positionRaw[0] - cache.keypoints[i].positionRaw[0]), Math.abs(keypoints[i].positionRaw[1] - cache.keypoints[i].positionRaw[1])];

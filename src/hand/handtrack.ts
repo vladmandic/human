@@ -34,7 +34,7 @@ let skipped = Number.MAX_SAFE_INTEGER;
 let lastTime = 0;
 let outputSize: [number, number] = [0, 0];
 
-type HandDetectResult = {
+interface HandDetectResult {
   id: number,
   score: number,
   box: Box,
@@ -43,8 +43,8 @@ type HandDetectResult = {
 }
 
 const cache: {
-  boxes: Array<HandDetectResult>,
-  hands: Array<HandResult>;
+  boxes: HandDetectResult[],
+  hands: HandResult[];
 } = {
   boxes: [],
   hands: [],
@@ -112,7 +112,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   [t.rawScores, t.rawBoxes] = await models[0].executeAsync(t.cast, modelOutputNodes) as Tensor[];
   t.boxes = tf.squeeze(t.rawBoxes, [0, 2]);
   t.scores = tf.squeeze(t.rawScores, [0]);
-  const classScores: Array<Tensor> = tf.unstack(t.scores, 1); // unstack scores based on classes
+  const classScores: Tensor[] = tf.unstack(t.scores, 1); // unstack scores based on classes
   tf.dispose(classScores[faceIndex]);
   classScores.splice(faceIndex, 1); // remove faces
   t.filtered = tf.stack(classScores, 1); // restack
@@ -182,7 +182,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
 }
 
 export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
-  if (!models[0] || !models[1] || !models[0]?.inputs[0].shape || !models[1]?.inputs[0].shape) return []; // something is wrong with the model
+  if (!models[0] || !models[1] || !models[0].inputs[0].shape || !models[1].inputs[0].shape) return []; // something is wrong with the model
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
   skipped++; // increment skip frames
   const skipTime = (config.hand.skipTime || 0) > (now() - lastTime);

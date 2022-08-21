@@ -20,9 +20,7 @@
 
 // test url <https://human.local/?worker=false&async=false&bench=false&draw=true&warmup=full&backend=humangl>
 
-// @ts-nocheck // typescript checks disabled as this is pure javascript
-
-import Human from '../dist/human.esm.js'; // equivalent of @vladmandic/human
+import { Human } from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 import Menu from './helpers/menu.js';
 import GLBench from './helpers/gl-bench.js';
 import webRTC from './helpers/webrtc.js';
@@ -153,7 +151,7 @@ let bench;
 let lastDetectedResult = {};
 
 // helper function: async pause
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const delay = (ms) => new Promise((resolve) => { setTimeout(resolve, ms); });
 
 // helper function: translates json to human readable string
@@ -171,8 +169,7 @@ function str(...msg) {
 function log(...msg) {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
-  // eslint-disable-next-line no-console
-  if (ui.console) console.log(ts, ...msg);
+  if (ui.console) console.log(ts, ...msg); // eslint-disable-line no-console
 }
 
 let prevStatus = '';
@@ -349,12 +346,10 @@ async function drawResults(input) {
       videoPause();
       ui.drawThread = null;
     }
-  } else {
-    if (ui.drawThread) {
-      log('stopping buffered refresh');
-      cancelAnimationFrame(ui.drawThread);
-      ui.drawThread = null;
-    }
+  } else if (ui.drawThread) {
+    log('stopping buffered refresh');
+    cancelAnimationFrame(ui.drawThread);
+    ui.drawThread = null;
   }
 }
 
@@ -445,8 +440,7 @@ async function setupCamera() {
   ui.menuWidth.input.setAttribute('value', video.videoWidth);
   ui.menuHeight.input.setAttribute('value', video.videoHeight);
   if (live || ui.autoPlay) await videoPlay();
-  // eslint-disable-next-line no-use-before-define
-  if ((live || ui.autoPlay) && !ui.detectThread) runHumanDetect(video, canvas);
+  if ((live || ui.autoPlay) && !ui.detectThread) runHumanDetect(video, canvas); // eslint-disable-line no-use-before-define
   return 'camera stream ready';
 }
 
@@ -500,8 +494,7 @@ function webWorker(input, image, canvas, timestamp) {
       ui.framesDetect++;
       if (!ui.drawThread) drawResults(input);
       if (isLive(input)) {
-        // eslint-disable-next-line no-use-before-define
-        ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
+        ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now)); // eslint-disable-line no-use-before-define
       }
     });
   }
@@ -538,36 +531,39 @@ function runHumanDetect(input, canvas, timestamp) {
     // perform detection in worker
     webWorker(input, data, canvas, timestamp);
   } else {
-    human.detect(input, userConfig).then((result) => {
-      status();
-      /*
-      setTimeout(async () => { // simulate gl context lost 2sec after initial detection
-        const ext = human.gl && human.gl.gl ? human.gl.gl.getExtension('WEBGL_lose_context') : {};
-        if (ext && ext.loseContext) {
-          log('simulate context lost:', human.env.webgl, human.gl, ext);
-          human.gl.gl.getExtension('WEBGL_lose_context').loseContext();
-          await videoPause();
-          status('Exception: WebGL');
+    human.detect(input, userConfig)
+      .then((result) => {
+        status();
+        /*
+        setTimeout(async () => { // simulate gl context lost 2sec after initial detection
+          const ext = human.gl && human.gl.gl ? human.gl.gl.getExtension('WEBGL_lose_context') : {};
+          if (ext && ext.loseContext) {
+            log('simulate context lost:', human.env.webgl, human.gl, ext);
+            human.gl.gl.getExtension('WEBGL_lose_context').loseContext();
+            await videoPause();
+            status('Exception: WebGL');
+          }
+        }, 2000);
+        */
+        if (result.performance && result.performance.total) ui.detectFPS.push(1000 / result.performance.total);
+        if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
+        if (ui.bench) {
+          if (!bench) initPerfMonitor();
+          bench.nextFrame(timestamp);
         }
-      }, 2000);
-      */
-      if (result.performance && result.performance.total) ui.detectFPS.push(1000 / result.performance.total);
-      if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
-      if (ui.bench) {
-        if (!bench) initPerfMonitor();
-        bench.nextFrame(timestamp);
-      }
-      if (document.getElementById('gl-bench')) document.getElementById('gl-bench').style.display = ui.bench ? 'block' : 'none';
-      if (result.error) {
-        log(result.error);
-        document.getElementById('log').innerText += `\nHuman error: ${result.error}`;
-      } else {
-        lastDetectedResult = result;
-        if (!ui.drawThread) drawResults(input);
-        ui.framesDetect++;
-        ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
-      }
-    });
+        if (document.getElementById('gl-bench')) document.getElementById('gl-bench').style.display = ui.bench ? 'block' : 'none';
+        if (result.error) {
+          log(result.error);
+          document.getElementById('log').innerText += `\nHuman error: ${result.error}`;
+        } else {
+          lastDetectedResult = result;
+          if (!ui.drawThread) drawResults(input);
+          ui.framesDetect++;
+          ui.detectThread = requestAnimationFrame((now) => runHumanDetect(input, canvas, now));
+        }
+        return result;
+      })
+      .catch(() => log('human detect error'));
   }
 }
 
@@ -614,8 +610,7 @@ async function processImage(input, title) {
         // copy to clipboard on click
         if (typeof ClipboardItem !== 'undefined' && navigator.clipboard) {
           evt.target.toBlob((blob) => {
-            // eslint-disable-next-line no-undef
-            const item = new ClipboardItem({ 'image/png': blob });
+            const item = new ClipboardItem({ 'image/png': blob }); // eslint-disable-line no-undef
             navigator.clipboard.write([item]);
             log('copied image to clipboard');
           });
@@ -938,10 +933,10 @@ async function pwaRegister() {
       const regs = await navigator.serviceWorker.getRegistrations();
       for (const reg of regs) {
         log('pwa found:', reg.scope);
-        if (reg.scope.startsWith(location.origin)) found = reg;
+        if (reg.scope.startsWith(window.location.origin)) found = reg;
       }
       if (!found) {
-        const reg = await navigator.serviceWorker.register(pwa.scriptFile, { scope: location.pathname });
+        const reg = await navigator.serviceWorker.register(pwa.scriptFile, { scope: window.location.pathname });
         found = reg;
         log('pwa registered:', reg.scope);
       }
@@ -973,8 +968,7 @@ async function main() {
       if (ui.detectThread) cancelAnimationFrame(ui.detectThread);
       if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
       const msg = evt.reason.message || evt.reason || evt;
-      // eslint-disable-next-line no-console
-      console.error(msg);
+      console.error(msg); // eslint-disable-line no-console
       document.getElementById('log').innerHTML = msg;
       status(`exception: ${msg}`);
       evt.preventDefault();
@@ -997,7 +991,7 @@ async function main() {
   await pwaRegister();
 
   // parse url search params
-  const params = new URLSearchParams(location.search);
+  const params = new URLSearchParams(window.location.search);
   log('url options:', params.toString());
   if (params.has('worker')) {
     ui.useWorker = JSON.parse(params.get('worker'));
@@ -1040,10 +1034,8 @@ async function main() {
   // we've merged human defaults with user config and now lets store it back so it can be accessed by methods such as menu
   userConfig = human.config;
   if (typeof tf !== 'undefined') {
-    // eslint-disable-next-line no-undef
-    log('TensorFlow external version:', tf.version);
-    // eslint-disable-next-line no-undef
-    human.tf = tf; // use externally loaded version of tfjs
+    log('TensorFlow external version:', tf.version); // eslint-disable-line no-undef
+    human.tf = tf; // eslint-disable-line no-undef
   }
   log('tfjs version:', human.tf.version.tfjs);
 

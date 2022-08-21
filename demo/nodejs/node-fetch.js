@@ -4,10 +4,10 @@
  * Requires [node-fetch](https://www.npmjs.com/package/node-fetch) to provide `fetch` functionality in NodeJS environment
  */
 const fs = require('fs');
-const log = require('@vladmandic/pilogger');
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 
-// eslint-disable-next-line import/no-extraneous-dependencies, no-unused-vars, @typescript-eslint/no-unused-vars
-const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// in nodejs environments tfjs-node is required to be loaded before human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
@@ -17,7 +17,7 @@ const humanConfig = {
 
 async function main(inputFile) {
   // @ts-ignore
-  global.fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-extraneous-require, node/no-missing-import
+  global.fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-unpublished-import
   const human = new Human.Human(humanConfig); // create instance of human using default configuration
   log.info('Human:', human.version, 'TF:', tf.version_core);
   await human.load(); // optional as models would be loaded on-demand first time they are required

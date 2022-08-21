@@ -10,12 +10,11 @@ import { env } from './util/env';
 import type { Config } from './config';
 import type { Result } from './result';
 import type { Human, Models } from './human';
-import type { Tensor } from './tfjs/types';
 
 async function warmupBitmap(instance: Human): Promise<Result | undefined> {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
-  let blob;
-  let res;
+  let blob: Blob | null;
+  let res: Result | undefined;
   switch (instance.config.warmup) {
     case 'face': blob = await b64toBlob(sample.face); break;
     case 'body':
@@ -32,7 +31,7 @@ async function warmupBitmap(instance: Human): Promise<Result | undefined> {
 
 async function warmupCanvas(instance: Human): Promise<Result | undefined> {
   return new Promise((resolve) => {
-    let src;
+    let src: string;
     // let size = 0;
     switch (instance.config.warmup) {
       case 'face':
@@ -45,7 +44,7 @@ async function warmupCanvas(instance: Human): Promise<Result | undefined> {
         src = 'data:image/jpeg;base64,' + sample.body;
         break;
       default:
-        src = null;
+        src = '';
     }
     // src = encodeURI('../assets/human-sample-upper.jpg');
     let img: HTMLImageElement;
@@ -63,7 +62,7 @@ async function warmupCanvas(instance: Human): Promise<Result | undefined> {
         if (ctx) ctx.drawImage(img, 0, 0);
         // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
         const tensor = await instance.image(canvas);
-        const res = await instance.detect(tensor.tensor as Tensor, instance.config);
+        const res = tensor.tensor ? await instance.detect(tensor.tensor, instance.config) : undefined;
         resolve(res);
       }
     };
@@ -79,8 +78,7 @@ async function warmupNode(instance: Human): Promise<Result | undefined> {
   else img = atob(sample.body);
   let res;
   if (('node' in tf) && (tf.getBackend() === 'tensorflow')) {
-    // @ts-ignore tf.node may be undefined
-    const data = tf['node'].decodeJpeg(img);
+    const data = tf['node'].decodeJpeg(img); // eslint-disable-line import/namespace
     const expanded = data.expandDims(0);
     instance.tf.dispose(data);
     // log('Input:', expanded);
@@ -109,7 +107,7 @@ async function runInference(instance: Human) {
 
 /** Runs pre-compile on all loaded models */
 export async function runCompile(allModels: Models) {
-  if (!tf.env().flagRegistry['ENGINE_COMPILE_ONLY']) return; // tfjs does not support compile-only inference
+  if (!tf.env().flagRegistry.ENGINE_COMPILE_ONLY) return; // tfjs does not support compile-only inference
   const backendType = tf.getBackend();
   const webGLBackend = tf.backend();
   if ((backendType !== 'webgl' && backendType !== 'humangl') || (!webGLBackend || !webGLBackend.checkCompileCompletion)) {

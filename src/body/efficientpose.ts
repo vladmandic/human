@@ -45,10 +45,9 @@ async function max2d(inputs, minScore): Promise<[number, number, number]> {
     const y: number = (await div.data())[0];
     tf.dispose([reshaped, max, coordinates, mod, div]);
     return [x, y, newScore];
-  } else {
-    tf.dispose([reshaped, max]);
-    return [0, 0, newScore];
   }
+  tf.dispose([reshaped, max]);
+  return [0, 0, newScore];
 }
 
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
@@ -84,7 +83,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
       for (let id = 0; id < stack.length; id++) {
         // actual processing to get coordinates and score
         const [x, y, partScore] = await max2d(stack[id], config.body.minConfidence);
-        if (partScore > (config.body?.minConfidence || 0)) {
+        if (partScore > (config.body.minConfidence || 0)) {
           cache.keypoints.push({
             score: Math.round(100 * partScore) / 100,
             part: coords.kpt[id] as BodyLandmark,
@@ -119,7 +118,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
       Math.max(...yRaw) - Math.min(...yRaw),
     ];
     for (const [name, indexes] of Object.entries(coords.connected)) {
-      const pt: Array<Point[]> = [];
+      const pt: Point[][] = [];
       for (let i = 0; i < indexes.length - 1; i++) {
         const pt0 = cache.keypoints.find((kpt) => kpt.part === indexes[i]);
         const pt1 = cache.keypoints.find((kpt) => kpt.part === indexes[i + 1]);

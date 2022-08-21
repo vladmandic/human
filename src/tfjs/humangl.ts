@@ -13,7 +13,7 @@ export const config = {
   priority: 999,
   canvas: <null | AnyCanvas>null,
   gl: <null | WebGL2RenderingContext>null,
-  extensions: <string[]> [],
+  extensions: <string[] | null> [],
   webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
     alpha: false,
     antialias: false,
@@ -33,7 +33,7 @@ function extensions(): void {
   */
   const gl = config.gl;
   if (!gl) return;
-  config.extensions = gl.getSupportedExtensions() as string[];
+  config.extensions = gl.getSupportedExtensions();
   // gl.getExtension('KHR_parallel_shader_compile');
 }
 
@@ -62,7 +62,11 @@ export async function register(instance: Human): Promise<void> {
       return;
     }
     try {
-      config.gl = config.canvas?.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
+      config.gl = config.canvas.getContext('webgl2', config.webGLattr);
+      if (!config.gl) {
+        log('error: cannot get WebGL context');
+        return;
+      }
       const glv2 = config.gl.getParameter(config.gl.VERSION).includes('2.0');
       if (!glv2) {
         log('override: using fallback webgl backend as webgl 2.0 is not detected');
@@ -123,7 +127,7 @@ export async function register(instance: Human): Promise<void> {
       return;
     }
     try {
-      if (tf.env().flagRegistry['WEBGL_VERSION']) tf.env().set('WEBGL_VERSION', 2);
+      if (tf.env().flagRegistry.WEBGL_VERSION) tf.env().set('WEBGL_VERSION', 2);
     } catch (err) {
       log('error: cannot set WebGL backend flags:', err);
       return;

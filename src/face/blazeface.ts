@@ -20,7 +20,7 @@ let anchors: Tensor | null = null;
 let inputSize = 0;
 let inputSizeT: Tensor | null = null;
 
-type DetectBox = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
+interface DetectBox { startPoint: Point, endPoint: Point, landmarks: Point[], confidence: number }
 
 export const size = () => inputSize;
 
@@ -77,7 +77,7 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   t.scores = tf.squeeze(t.sigmoid);
   t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, (config.face.detector?.maxDetected || 0), (config.face.detector?.iouThreshold || 0), (config.face.detector?.minConfidence || 0));
   const nms = await t.nms.array() as number[];
-  const boxes: Array<DetectBox> = [];
+  const boxes: DetectBox[] = [];
   const scores = await t.scores.data();
   for (let i = 0; i < nms.length; i++) {
     const confidence = scores[nms[i]];

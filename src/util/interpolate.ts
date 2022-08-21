@@ -2,7 +2,7 @@
  * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 
-import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, GestureResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation } from '../result';
+import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation } from '../result';
 import type { Config } from '../config';
 
 import * as moveNetCoords from '../body/movenetcoords';
@@ -103,7 +103,7 @@ export function calc(newResult: Result, config: Config): Result {
         annotations = bufferedResult.hand[i].annotations;
       } else if (newResult.hand[i].annotations) {
         for (const key of Object.keys(newResult.hand[i].annotations)) { // update annotations
-          annotations[key] = newResult.hand[i].annotations[key] && newResult.hand[i].annotations[key][0]
+          annotations[key] = newResult.hand[i]?.annotations?.[key]?.[0]
             ? newResult.hand[i].annotations[key]
               .map((val, j: number) => val
                 .map((coord: number, k: number) => ((bufferedFactor - 1) * bufferedResult.hand[i].annotations[key][j][k] + coord) / bufferedFactor))
@@ -173,7 +173,7 @@ export function calc(newResult: Result, config: Config): Result {
   }
 
   // just copy latest gestures without interpolation
-  if (newResult.gesture) bufferedResult.gesture = newResult.gesture as GestureResult[];
+  if (newResult.gesture) bufferedResult.gesture = newResult.gesture;
 
   // append interpolation performance data
   const t1 = now();

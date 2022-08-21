@@ -158,7 +158,7 @@ export function validateModel(newInstance: Human | null, model: GraphModel | nul
   interface Op { name: string, category: string, op: string }
   const url = model['modelUrl'] as string;
   const executor = model['executor'];
-  if (executor && executor.graph.nodes) {
+  if (executor?.graph?.nodes) {
     for (const kernel of Object.values(executor.graph.nodes)) {
       const op = (kernel as Op).op.toLowerCase();
       if (!ops.includes(op)) ops.push(op);

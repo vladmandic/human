@@ -40,8 +40,8 @@ export async function load(config: Config): Promise<GraphModel> {
 export function enhance(input): Tensor {
   const tensor = (input.image || input.tensor || input) as Tensor; // input received from detector is already normalized to 0..1, input is also assumed to be straightened
   if (!model?.inputs[0].shape) return tensor; // model has no shape so no point continuing
-  const crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
-  const norm = tf.mul(crop, constants.tf255);
+  const crop: Tensor = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+  const norm: Tensor = tf.mul(crop, constants.tf255);
   tf.dispose(crop);
   return norm;
   /*
@@ -74,10 +74,10 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
   skipped = 0;
   return new Promise(async (resolve) => {
     const obj = {
-      age: <number>0,
-      gender: <Gender>'unknown',
-      genderScore: <number>0,
-      descriptor: <number[]>[],
+      age: 0 as number,
+      gender: 'unknown' as Gender,
+      genderScore: 0 as number,
+      descriptor: [] as number[],
     };
 
     if (config.face.description?.enabled) {
@@ -85,7 +85,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
       const resT = model?.execute(enhanced) as Tensor[];
       lastTime = now();
       tf.dispose(enhanced);
-      const genderT = await resT.find((t) => t.shape[1] === 1) as Tensor;
+      const genderT = resT.find((t) => t.shape[1] === 1) as Tensor;
       const gender = await genderT.data();
       const confidence = Math.trunc(200 * Math.abs((gender[0] - 0.5))) / 100;
       if (confidence > (config.face.description.minConfidence || 0)) {
@@ -93,7 +93,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
         obj.genderScore = Math.min(0.99, confidence);
       }
       const argmax = tf.argMax(resT.find((t) => t.shape[1] === 100), 1);
-      const age = (await argmax.data())[0];
+      const age: number = (await argmax.data())[0];
       tf.dispose(argmax);
       const ageT = resT.find((t) => t.shape[1] === 100) as Tensor;
       const all = await ageT.data();
@@ -102,7 +102,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
       const desc = resT.find((t) => t.shape[1] === 1024);
       // const reshape = desc.reshape([128, 8]); // reshape large 1024-element descriptor to 128 x 8
       // const reduce = reshape.logSumExp(1); // reduce 2nd dimension by calculating logSumExp on it which leaves us with 128-element descriptor
-      const descriptor = desc ? await desc.data() : <number[]>[];
+      const descriptor = desc ? await desc.data() : [] as number[];
       obj.descriptor = Array.from(descriptor);
       resT.forEach((t) => tf.dispose(t));
     }

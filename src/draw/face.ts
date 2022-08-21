@@ -23,7 +23,7 @@ function drawLabels(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanv
       if (emotion.length > 3) emotion.length = 3;
       labels.push(emotion.join(' '));
     }
-    if (f.rotation && f.rotation.angle && f.rotation.gaze) {
+    if (f.rotation?.angle && f.rotation?.gaze) {
       if (f.rotation.angle.roll) labels.push(`roll: ${rad2deg(f.rotation.angle.roll)}° yaw:${rad2deg(f.rotation.angle.yaw)}° pitch:${rad2deg(f.rotation.angle.pitch)}°`);
       if (f.rotation.gaze.bearing) labels.push(`gaze: ${rad2deg(f.rotation.gaze.bearing)}°`);
     }
@@ -44,7 +44,7 @@ function drawLabels(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanv
 
 function drawIrisElipse(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
   // iris: array[center, left, top, right, bottom]
-  if (f.annotations && f.annotations.leftEyeIris && f.annotations.leftEyeIris[0]) {
+  if (f.annotations?.leftEyeIris && f.annotations?.leftEyeIris[0]) {
     ctx.strokeStyle = opt.useDepth ? 'rgba(255, 200, 255, 0.3)' : opt.color;
     ctx.beginPath();
     const sizeX = Math.abs(f.annotations.leftEyeIris[3][0] - f.annotations.leftEyeIris[1][0]) / 2;
@@ -56,7 +56,7 @@ function drawIrisElipse(f: FaceResult, ctx: CanvasRenderingContext2D | Offscreen
       ctx.fill();
     }
   }
-  if (f.annotations && f.annotations.rightEyeIris && f.annotations.rightEyeIris[0]) {
+  if (f.annotations?.rightEyeIris && f.annotations?.rightEyeIris[0]) {
     ctx.strokeStyle = opt.useDepth ? 'rgba(255, 200, 255, 0.3)' : opt.color;
     ctx.beginPath();
     const sizeX = Math.abs(f.annotations.rightEyeIris[3][0] - f.annotations.rightEyeIris[1][0]) / 2;
@@ -149,7 +149,7 @@ function drawFaceBoxes(f: FaceResult, ctx) {
 }
 
 /** draw detected faces */
-export async function face(inCanvas: AnyCanvas, result: FaceResult[], drawOptions?: Partial<DrawOptions>) {
+export function face(inCanvas: AnyCanvas, result: FaceResult[], drawOptions?: Partial<DrawOptions>) {
   opt = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);

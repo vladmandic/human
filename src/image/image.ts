@@ -25,7 +25,7 @@ const last: { inputSum: number, cacheDiff: number, sumMethod: number, inputTenso
 };
 
 export function canvas(width: number, height: number): AnyCanvas {
-  let c;
+  let c: AnyCanvas;
   if (env.browser) { // browser defines canvas object
     if (env.worker) { // if runing in web  worker use OffscreenCanvas
       if (typeof OffscreenCanvas === 'undefined') throw new Error('canvas error: attempted to run in web worker but OffscreenCanvas is not supported');
@@ -42,6 +42,7 @@ export function canvas(width: number, height: number): AnyCanvas {
     else if (typeof globalThis.Canvas !== 'undefined') c = new globalThis.Canvas(width, height);
     // else throw new Error('canvas error: attempted to use canvas in nodejs without canvas support installed');
   }
+  // @ts-ignore its either defined or we already threw an error
   return c;
 }
 
@@ -98,7 +99,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       }
     }
     // at the end shape must be [1, height, width, 3]
-    if (tensor == null || (tensor as Tensor).shape.length !== 4 || (tensor as Tensor).shape[0] !== 1 || (tensor as Tensor).shape[3] !== 3) throw new Error(`input error: attempted to use tensor with unrecognized shape: ${(input as Tensor).shape}`);
+    if (tensor == null || tensor.shape.length !== 4 || tensor.shape[0] !== 1 || tensor.shape[3] !== 3) throw new Error(`input error: attempted to use tensor with unrecognized shape: ${((input as Tensor).shape).toString()}`);
     if ((tensor).dtype === 'int32') {
       const cast = tf.cast(tensor, 'float32');
       tf.dispose(tensor);
@@ -111,14 +112,14 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     if (config.debug) log('input stream is not ready');
     return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
   }
-  const originalWidth = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
-  const originalHeight = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
+  const originalWidth: number = input['naturalWidth'] || input['videoWidth'] || input['width'] || (input['shape'] && (input['shape'][1] > 0));
+  const originalHeight: number = input['naturalHeight'] || input['videoHeight'] || input['height'] || (input['shape'] && (input['shape'][2] > 0));
   if (!originalWidth || !originalHeight) {
     if (config.debug) log('cannot determine input dimensions');
     return { tensor: null, canvas: inCanvas }; // video may become temporarily unavailable due to onresize
   }
-  let targetWidth = originalWidth;
-  let targetHeight = originalHeight;
+  let targetWidth: number = originalWidth;
+  let targetHeight: number = originalHeight;
   if (targetWidth > maxSize) {
     targetWidth = maxSize;
     targetHeight = Math.trunc(targetWidth * originalHeight / originalWidth);
@@ -129,9 +130,9 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   }
 
   // create our canvas and resize it if needed
-  if ((config.filter.width || 0) > 0) targetWidth = config.filter.width;
-  else if ((config.filter.height || 0) > 0) targetWidth = originalWidth * ((config.filter.height || 0) / originalHeight);
-  if ((config.filter.height || 0) > 0) targetHeight = config.filter.height;
+  if ((config.filter?.width || 0) > 0) targetWidth = config.filter.width as number;
+  else if ((config.filter?.height || 0) > 0) targetWidth = originalWidth * ((config.filter.height || 0) / originalHeight);
+  if ((config.filter.height || 0) > 0) targetHeight = config.filter.height as number;
   else if ((config.filter.width || 0) > 0) targetHeight = originalHeight * ((config.filter.width || 0) / originalWidth);
   if (!targetWidth || !targetHeight) throw new Error('input error: cannot determine dimension');
   if (!inCanvas || (inCanvas.width !== targetWidth) || (inCanvas.height !== targetHeight)) inCanvas = canvas(targetWidth, targetHeight);
@@ -227,8 +228,8 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     pixels = rgb;
   }
   if (!pixels) throw new Error('input error: cannot create tensor');
-  const casted = tf.cast(pixels, 'float32');
-  const tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
+  const casted: Tensor = tf.cast(pixels, 'float32');
+  const tensor: Tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
   tf.dispose([pixels, casted]);
   return { tensor, canvas: (config.filter.return ? outCanvas : null) };
 }

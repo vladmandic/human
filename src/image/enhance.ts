@@ -20,5 +20,5 @@ export async function histogramEqualization(inputImage: Tensor): Promise<Tensor>
   const rgb = tf.stack([enh[0], enh[1], enh[2]], 2);
   const reshape = tf.reshape(rgb, [1, squeeze.shape[0], squeeze.shape[1], 3]);
   tf.dispose([...channels, ...min, ...max, ...sub, ...range, ...fact, ...enh, rgb, squeeze]);
-  return reshape; // output shape is [1, height, width, 3]
+  return reshape as Tensor; // output shape is [1, height, width, 3]
 }

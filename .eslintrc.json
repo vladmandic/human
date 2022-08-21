@@ -22,13 +22,29 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@typescript-eslint/strict",
         "plugin:import/recommended",
         "plugin:promise/recommended"
       ],
       "rules": {
         "@typescript-eslint/ban-ts-comment":"off",
+        "@typescript-eslint/dot-notation":"off",
         "@typescript-eslint/no-empty-interface":"off",
         "@typescript-eslint/no-inferrable-types":"off",
+        "@typescript-eslint/no-misused-promises":"off",
+        "@typescript-eslint/no-unnecessary-condition":"off",
+        "@typescript-eslint/no-unsafe-argument":"off",
+        "@typescript-eslint/no-unsafe-assignment":"off",
+        "@typescript-eslint/no-unsafe-call":"off",
+        "@typescript-eslint/no-unsafe-member-access":"off",
+        "@typescript-eslint/no-unsafe-return":"off",
+        "@typescript-eslint/non-nullable-type-assertion-style":"off",
+        "@typescript-eslint/prefer-for-of":"off",
+        "@typescript-eslint/prefer-nullish-coalescing":"off",
+        "@typescript-eslint/prefer-ts-expect-error":"off",
+        "@typescript-eslint/restrict-plus-operands":"off",
+        "@typescript-eslint/restrict-template-expressions":"off",
         "dot-notation":"off",
         "guard-for-in":"off",
         "import/extensions": ["off", "always"],
@@ -47,6 +63,7 @@
         "no-regex-spaces":"off",
         "no-restricted-syntax":"off",
         "no-return-assign":"off",
+        "no-void":"off",
         "object-curly-newline":"off",
         "prefer-destructuring":"off",
         "prefer-template":"off",
@@ -130,8 +147,8 @@
         "html", "@html-eslint"
       ],
       "rules": {
-        "@html-eslint/indent": ["error", 2],
-        "@html-eslint/element-newline":"off"
+        "@html-eslint/element-newline":"off",
+        "@html-eslint/indent": ["error", 2]
       }
     }
   ],

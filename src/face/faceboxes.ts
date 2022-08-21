@@ -56,11 +56,11 @@ export class FaceBoxes {
   }
 }
 
-export async function load(config) {
+export async function load(config: Config) {
   const model = await loadModel(config.face.detector?.modelPath);
-  if (config.debug) log(`load model: ${config.face.detector.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.detector?.modelPath && config.debug) log(`load model: ${config.face.detector.modelPath?.match(/\/(.*)\./)?.[1] || ''}`);
   const faceboxes = new FaceBoxes(model, config);
-  if (config.face.mesh.enabled && config.debug) log(`load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)[1]}`);
-  if (config.face.iris.enabled && config.debug) log(`load model: ${config.face.iris.modelPath.match(/\/(.*)\./)[1]}`);
+  if (config.face.mesh?.enabled && config.face.mesh?.modelPath && config.debug) log(`load model: ${config.face.mesh.modelPath.match(/\/(.*)\./)?.[1] || ''}`);
+  if (config.face.iris?.enabled && config.face.iris?.modelPath && config.debug) log(`load model: ${config.face.iris.modelPath?.match(/\/(.*)\./)?.[1] || ''}`);
   return faceboxes;
 }

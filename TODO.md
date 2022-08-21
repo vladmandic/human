@@ -66,6 +66,8 @@ Model is supported using `WebGL` backend in browser
 - Allow hosting models in **Google Cloud Bucket**  
   Hosted models can be directly used without downloading to local storage  
   Example: `modelPath: 'https://storage.googleapis.com/human-models/facemesh.json'`  
+- Stricter linting rules for both **TypeScript** and **JavaScript**
+  See `./eslintrc.json` for details
 - Fix **MobileFaceNet** model as alternative for face embedding/descriptor detection  
   Configurable using `config.face.mobilefacenet` config section  
 - Fix **EfficientPose** module as alternative body detection  

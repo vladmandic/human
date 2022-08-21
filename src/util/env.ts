@@ -97,9 +97,9 @@ export class Env {
     this.worker = this.browser && this.offscreen ? (typeof WorkerGlobalScope !== 'undefined') : undefined;
     if (typeof navigator !== 'undefined') {
       const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
-      if (raw && raw[0]) {
+      if (raw?.[0]) {
         const platformMatch = raw[0].match(/\(([^()]+)\)/g);
-        this.platform = (platformMatch && platformMatch[0]) ? platformMatch[0].replace(/\(|\)/g, '') : '';
+        this.platform = (platformMatch?.[0]) ? platformMatch[0].replace(/\(|\)/g, '') : '';
         this.agent = navigator.userAgent.replace(raw[0], '');
         if (this.platform[1]) this.agent = this.agent.replace(raw[1], '');
         this.agent = this.agent.replace(/  /g, ' ');
@@ -156,7 +156,7 @@ export class Env {
       this.webgpu.supported = false;
     }
     try {
-      this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
+      this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => (kernel.kernelName as string).toLowerCase());
     } catch { /**/ }
   }
 

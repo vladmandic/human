@@ -44,23 +44,23 @@ export interface DrawOptions {
 
 /** currently set draw options {@link DrawOptions} */
 export const options: DrawOptions = {
-  color: <string>'rgba(173, 216, 230, 0.6)', // 'lightblue' with light alpha channel
-  labelColor: <string>'rgba(173, 216, 230, 1)', // 'lightblue' with dark alpha channel
-  shadowColor: <string>'black',
-  alpha: 0.5,
-  font: <string>'small-caps 16px "Segoe UI"',
-  lineHeight: <number>18,
-  lineWidth: <number>4,
-  pointSize: <number>2,
-  roundRect: <number>8,
-  drawPoints: <boolean>false,
-  drawLabels: <boolean>true,
-  drawBoxes: <boolean>true,
-  drawAttention: <boolean>true,
-  drawGestures: <boolean>true,
-  drawPolygons: <boolean>true,
-  drawGaze: <boolean>true,
-  fillPolygons: <boolean>false,
-  useDepth: <boolean>true,
-  useCurves: <boolean>false,
+  color: 'rgba(173, 216, 230, 0.6)' as string, // 'lightblue' with light alpha channel
+  labelColor: 'rgba(173, 216, 230, 1)' as string, // 'lightblue' with dark alpha channel
+  shadowColor: 'black' as string,
+  alpha: 0.5 as number,
+  font: 'small-caps 16px "Segoe UI"' as string,
+  lineHeight: 18 as number,
+  lineWidth: 4 as number,
+  pointSize: 2 as number,
+  roundRect: 8 as number,
+  drawPoints: false as boolean,
+  drawLabels: true as boolean,
+  drawBoxes: true as boolean,
+  drawAttention: true as boolean,
+  drawGestures: true as boolean,
+  drawPolygons: true as boolean,
+  drawGaze: true as boolean,
+  fillPolygons: false as boolean,
+  useDepth: true as boolean,
+  useCurves: false as boolean,
 };

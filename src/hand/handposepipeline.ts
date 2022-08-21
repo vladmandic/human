@@ -30,7 +30,7 @@ export class HandPipeline {
   constructor(handDetector, handPoseModel) {
     this.handDetector = handDetector;
     this.handPoseModel = handPoseModel;
-    this.inputSize = this.handPoseModel && this.handPoseModel.inputs[0].shape ? this.handPoseModel.inputs[0].shape[2] : 0;
+    this.inputSize = this.handPoseModel?.inputs?.[0].shape?.[2] || 0;
     this.storedBoxes = [];
     this.skipped = Number.MAX_SAFE_INTEGER;
     this.detectedHands = 0;

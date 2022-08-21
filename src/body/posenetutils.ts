@@ -154,14 +154,14 @@ export class MaxHeap {
   }
 }
 
-export function getOffsetPoint(y, x, keypoint, offsets) {
+export function getOffsetPoint(y, x, keypoint: number, offsets) {
   return {
     y: offsets.get(y, x, keypoint),
     x: offsets.get(y, x, keypoint + count),
   };
 }
 
-export function getImageCoords(part, outputStride, offsets) {
+export function getImageCoords(part, outputStride: number, offsets) {
   const { heatmapY, heatmapX, id: keypoint } = part;
   const { y, x } = getOffsetPoint(heatmapY, heatmapX, keypoint, offsets);
   return {
@@ -190,7 +190,7 @@ export function squaredDistance(y1, x1, y2, x2) {
   return dy * dy + dx * dx;
 }
 
-export function addVectors(a, b) {
+export function addVectors(a: { x: number, y: number }, b: { x: number, y: number }) {
   return { x: a.x + b.x, y: a.y + b.y };
 }
 

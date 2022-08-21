@@ -21,7 +21,7 @@ function registerCustomOps() {
     const kernelMod = {
       kernelName: 'FloorMod',
       backendName: tf.getBackend(),
-      kernelFunc: (op) => tf.tidy(() => tf.floorDiv(op.inputs.a / op.inputs.b) * op.inputs.b + tf.mod(op.inputs.a, op.inputs.b)),
+      kernelFunc: (op) => tf.tidy(() => tf.add(tf.mul(tf.floorDiv(op.inputs.a / op.inputs.b), op.inputs.b), tf.mod(op.inputs.a, op.inputs.b))),
     };
     tf.registerKernel(kernelMod);
     env.kernels.push('floormod');
@@ -71,8 +71,8 @@ export async function check(instance: Human, force = false) {
       }
 
       // check available backends
-      if (instance.config.backend === 'humangl') await humangl.register(instance);
-      const available = Object.keys(tf.engine().registryFactory);
+      if (instance.config.backend === 'humangl') humangl.register(instance);
+      const available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
       if (instance.config.debug) log('available backends:', available);
 
       if (!available.includes(instance.config.backend)) {
@@ -87,7 +87,7 @@ export async function check(instance: Human, force = false) {
       if (instance.config.backend === 'wasm') {
         if (tf.env().flagRegistry.CANVAS2D_WILL_READ_FREQUENTLY) tf.env().set('CANVAS2D_WILL_READ_FREQUENTLY', true);
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
-        if (typeof tf.setWasmPaths !== 'undefined') await tf.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
+        if (typeof tf.setWasmPaths !== 'undefined') tf.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
         else throw new Error('backend error: attempting to use wasm backend but wasm path is not set');
         let mt = false;
         let simd = false;
@@ -127,7 +127,7 @@ export async function check(instance: Human, force = false) {
       }
       if (tf.backend().getGPGPUContext) {
         const gl = await tf.backend().getGPGPUContext().gl;
-        if (instance.config.debug) log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
+        if (instance.config.debug) log(`gl version:${gl.getParameter(gl.VERSION) as string} renderer:${gl.getParameter(gl.RENDERER) as string}`);
       }
     }
 
@@ -165,5 +165,5 @@ export function fakeOps(kernelNames: string[], config) {
     };
     tf.registerKernel(kernelConfig);
   }
-  env.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase()); // re-scan registered ops
+  env.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => (kernel.kernelName as string).toLowerCase()); // re-scan registered ops
 }

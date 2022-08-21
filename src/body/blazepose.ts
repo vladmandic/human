@@ -38,7 +38,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
     inputSize.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug && models.detector) log('cached model:', models.detector['modelUrl']);
-  await detect.createAnchors();
+  detect.createAnchors();
   return models.detector as GraphModel;
 }
 
@@ -59,7 +59,7 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
   return [models.detector, models.landmarks];
 }
 
-async function prepareImage(input: Tensor, size: number): Promise<Tensor> {
+function prepareImage(input: Tensor, size: number): Tensor {
   const t: Record<string, Tensor> = {};
   if (!input.shape || !input.shape[1] || !input.shape[2]) return input;
   let final: Tensor;
@@ -120,7 +120,7 @@ function rescaleKeypoints(keypoints: BodyKeypoint[], outputSize: [number, number
   return keypoints;
 }
 
-async function fixKeypoints(keypoints: BodyKeypoint[]) {
+function fixKeypoints(keypoints: BodyKeypoint[]) {
   // palm z-coord is incorrect around near-zero so we approximate it
   const leftPalm = keypoints.find((k) => k.part === 'leftPalm') as BodyKeypoint;
   const leftWrist = keypoints.find((k) => k.part === 'leftWrist') as BodyKeypoint;
@@ -220,7 +220,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
       const boxes = await detectBoxes(t.detector, config, outputSize);
     }
     */
-    t.landmarks = await prepareImage(input, 256); // padded and resized
+    t.landmarks = prepareImage(input, 256); // padded and resized
     cache = await detectLandmarks(t.landmarks, config, outputSize);
     /*
     cropBox = [0, 0, 1, 1]; // reset crop coordinates

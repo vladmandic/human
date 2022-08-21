@@ -90,7 +90,7 @@ export function padInput(input: Tensor, inputSize: number): Tensor {
 }
 
 export function rescaleBody(body: BodyResult, outputSize: [number, number]): BodyResult {
-  body.keypoints = body.keypoints.filter((kpt) => kpt && kpt.position); // filter invalid keypoints
+  body.keypoints = body.keypoints.filter((kpt) => kpt?.position); // filter invalid keypoints
   for (const kpt of body.keypoints) {
     kpt.position = [
       kpt.position[0] * (outputSize[0] + cache.padding[2][0] + cache.padding[2][1]) / outputSize[0] - cache.padding[2][0],

@@ -59,7 +59,7 @@ export function join(faces: FaceResult[], bodies: BodyResult[], hands: HandResul
     person.box = [minX, minY, Math.max(...x) - minX, Math.max(...y) - minY]; // create new overarching box
 
     // shape is known so we calculate boxRaw as well
-    if (shape && shape[1] && shape[2]) person.boxRaw = [person.box[0] / shape[2], person.box[1] / shape[1], person.box[2] / shape[2], person.box[3] / shape[1]];
+    if (shape?.[1] && shape?.[2]) person.boxRaw = [person.box[0] / shape[2], person.box[1] / shape[1], person.box[2] / shape[2], person.box[3] / shape[1]];
 
     persons.push(person);
   }

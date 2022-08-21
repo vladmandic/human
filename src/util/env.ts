@@ -124,8 +124,8 @@ export class Env {
     // analyze backends
     this.backends = Object.keys(tf.engine().registryFactory);
     this.tensorflow = {
-      version: (tf.backend()['binding'] ? tf.backend()['binding']['TF_Version'] : undefined),
-      gpu: (tf.backend()['binding'] ? tf.backend()['binding'].isUsingGpuDevice() : undefined),
+      version: (tf.backend().binding ? tf.backend().binding.TF_Version : undefined),
+      gpu: (tf.backend().binding ? tf.backend().binding.isUsingGpuDevice() : undefined),
     };
     this.wasm.supported = typeof WebAssembly !== 'undefined';
     this.wasm.backend = this.backends.includes('wasm');
@@ -139,19 +139,19 @@ export class Env {
     this.webgl.supported = typeof ctx !== 'undefined';
     this.webgl.backend = this.backends.includes('webgl');
     if (this.webgl.supported && this.webgl.backend && (tf.getBackend() === 'webgl' || tf.getBackend() === 'humangl')) {
-      // @ts-ignore getGPGPUContext only exists on WebGL backend
       const gl = tf.backend().gpgpu !== 'undefined' ? await tf.backend().getGPGPUContext().gl : null;
       if (gl) {
         this.webgl.version = gl.getParameter(gl.VERSION);
         this.webgl.renderer = gl.getParameter(gl.RENDERER);
       }
     }
-    // @ts-ignore navigator.gpu is only defined when webgpu is available in browser
-    this.webgpu.supported = this.browser && typeof navigator['gpu'] !== 'undefined';
+    this.webgpu.supported = this.browser && typeof navigator.gpu !== 'undefined';
     this.webgpu.backend = this.backends.includes('webgpu');
     try {
-      // @ts-ignore navigator.gpu is only defined when webgpu is available in browser
-      if (this.webgpu.supported) this.webgpu.adapter = (await navigator['gpu'].requestAdapter()).name;
+      if (this.webgpu.supported) {
+        const adapter = await navigator.gpu.requestAdapter();
+        this.webgpu.adapter = adapter ? adapter.name : undefined;
+      }
     } catch {
       this.webgpu.supported = false;
     }
@@ -175,8 +175,8 @@ export class Env {
       } catch { }
       */
     }
-    if (!this['cpu']) Object.defineProperty(this, 'cpu', { value: cpu });
-    else this['cpu'] = cpu;
+    if (!this.cpu) Object.defineProperty(this, 'cpu', { value: cpu });
+    else this.cpu = cpu;
   }
 }
 

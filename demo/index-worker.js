@@ -6,10 +6,9 @@
 /// <reference lib="webworker"/>
 
 // load Human using IIFE script as Chome Mobile does not support Modules as Workers
-self.importScripts('../dist/human.js');
+self.importScripts('../dist/human.js'); // eslint-disable-line no-restricted-globals
 
 let busy = false;
-// @ts-ignore
 // eslint-disable-next-line new-cap, no-undef
 const human = new Human.default();
 

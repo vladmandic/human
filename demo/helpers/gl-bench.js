@@ -1,4 +1,3 @@
-// @ts-nocheck
 // based on: https://github.com/munrocket/gl-bench
 
 const UICSS = `
@@ -43,9 +42,7 @@ class GLBench {
   constructor(gl, settings = {}) {
     this.css = UICSS;
     this.svg = UISVG;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     this.paramLogger = () => {};
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     this.chartLogger = () => {};
     this.chartLen = 20;
     this.chartHz = 20;
@@ -92,7 +89,6 @@ class GLBench {
 
       const addProfiler = (fn, self, target) => {
         const t = self.now();
-        // eslint-disable-next-line prefer-rest-params
         fn.apply(target, arguments);
         if (self.trackGPU) self.finished.push(glFinish(t, self.activeAccums.slice(0)));
       };
@@ -107,13 +103,11 @@ class GLBench {
       if (gl[fn]) {
         gl[fn] = addProfiler(gl[fn], this, gl);
       } else {
-        // eslint-disable-next-line no-console
         console.log('bench: cannot attach to webgl function');
       }
 
       /*
       gl.getExtension = ((fn, self) => {
-        // eslint-disable-next-line prefer-rest-params
         const ext = fn.apply(gl, arguments);
         if (ext) {
           ['drawElementsInstancedANGLE', 'drawBuffersWEBGL'].forEach((fn2) => {
@@ -148,7 +142,6 @@ class GLBench {
         return (i, cpu, gpu, mem, fps, totalTime, frameId) => {
           nodes['gl-cpu'][i].style.strokeDasharray = (cpu * 0.27).toFixed(0) + ' 100';
           nodes['gl-gpu'][i].style.strokeDasharray = (gpu * 0.27).toFixed(0) + ' 100';
-          // eslint-disable-next-line no-nested-ternary
           nodes['gl-mem'][i].innerHTML = names[i] ? names[i] : (mem ? 'mem: ' + mem.toFixed(0) + 'mb' : '');
           nodes['gl-fps'][i].innerHTML = 'FPS: ' + fps.toFixed(1);
           logger(names[i], cpu, gpu, mem, fps, totalTime, frameId);

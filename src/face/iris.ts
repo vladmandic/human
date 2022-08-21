@@ -13,8 +13,8 @@ let inputSize = 0;
 
 const irisEnlarge = 2.3;
 
-const leftOutline = coords.meshAnnotations['leftEyeLower0'];
-const rightOutline = coords.meshAnnotations['rightEyeLower0'];
+const leftOutline = coords.meshAnnotations.leftEyeLower0;
+const rightOutline = coords.meshAnnotations.rightEyeLower0;
 
 const eyeLandmarks = {
   leftBounds: [leftOutline[0], leftOutline[leftOutline.length - 1]],
@@ -80,7 +80,7 @@ export const getEyeBox = (rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIn
 
 // Given a cropped image of an eye, returns the coordinates of the contours surrounding the eye and the iris.
 export const getEyeCoords = (eyeData, eyeBox, eyeBoxSize, flip = false) => {
-  const eyeRawCoords: Array<Point> = [];
+  const eyeRawCoords: Point[] = [];
   for (let i = 0; i < irisLandmarks.numCoordinates; i++) {
     const x = eyeData[i * 3];
     const y = eyeData[i * 3 + 1];

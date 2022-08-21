@@ -6,8 +6,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const log = require('@vladmandic/pilogger');
 const threads = require('worker_threads');
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 
 // global optinos
 const options = {
@@ -160,7 +160,7 @@ async function createBuffer() {
   data.buffer = new SharedArrayBuffer(4 * options.dbMax * options.descLength); // preallocate max number of records as sharedarraybuffers cannot grow
   data.view = new Float32Array(data.buffer); // create view into buffer
   data.labels.length = 0;
-  log.data('created shared buffer:', { maxDescriptors: (data.view?.length || 0) / options.descLength, totalBytes: data.buffer.byteLength, totalElements: data.view?.length });
+  log.data('created shared buffer:', { maxDescriptors: (data.view.length || 0) / options.descLength, totalBytes: data.buffer.byteLength, totalElements: data.view.length });
 }
 
 async function main() {

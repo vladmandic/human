@@ -130,7 +130,7 @@ export class Human {
       ? 'https://vladmandic.github.io/tfjs/dist/'
       : `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`;
     */
-    const tfVersion = (tf.version?.tfjs || tf.version_core).replace(/-(.*)/, '');
+    const tfVersion = (tf.version.tfjs || tf.version_core).replace(/-(.*)/, '');
     defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfVersion}/dist/`;
     defaults.modelBasePath = env.browser ? '../models/' : 'file://models/';
     defaults.backend = env.browser ? 'humangl' : 'tensorflow';
@@ -152,7 +152,7 @@ export class Human {
     this.models = new models.Models();
     // reexport draw methods
     this.draw = {
-      options: draw.options as DrawOptions,
+      options: draw.options,
       canvas: (input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) => draw.canvas(input, output),
       face: (output: AnyCanvas, result: FaceResult[], options?: Partial<DrawOptions>) => draw.face(output, result, options),
       body: (output: AnyCanvas, result: BodyResult[], options?: Partial<DrawOptions>) => draw.body(output, result, options),
@@ -164,7 +164,6 @@ export class Human {
     };
     this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [], error: null };
     // export access to image processing
-    // @ts-ignore eslint-typescript cannot correctly infer type in anonymous function
     this.process = { tensor: null, canvas: null };
     // export raw access to underlying models
     this.faceTriangulation = facemesh.triangulation;
@@ -225,7 +224,7 @@ export class Human {
   public match = match.match;
 
   /** Utility wrapper for performance.now() */
-  now(): number {
+  now(): number { // eslint-disable-line class-methods-use-this
     return now();
   }
 
@@ -258,8 +257,7 @@ export class Human {
    * @param input - Tensor as provided in human.result.face[n].tensor
    * @returns Tensor
    */
-  // eslint-disable-next-line class-methods-use-this
-  enhance(input: Tensor): Tensor | null {
+  enhance(input: Tensor): Tensor | null { // eslint-disable-line class-methods-use-this
     return faceres.enhance(input);
   }
 
@@ -303,7 +301,7 @@ export class Human {
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
         if (this.config.debug) log('environment:', this.env);
-        if (this.config.debug) log('tf flags:', this.tf.ENV['flags']);
+        if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
 
@@ -313,17 +311,17 @@ export class Human {
 
     const loaded = Object.values(this.models).filter((model) => model).length;
     if (loaded !== count) { // number of loaded models changed
-      await models.validate(this); // validate kernel ops used by model against current backend
+      models.validate(this); // validate kernel ops used by model against current backend
       this.emit('load');
     }
 
     const current = Math.trunc(now() - timeStamp);
-    if (current > (this.performance.loadModels as number || 0)) this.performance.loadModels = this.env.perfadd ? (this.performance.loadModels || 0) + current : current;
+    if (current > (this.performance.loadModels || 0)) this.performance.loadModels = this.env.perfadd ? (this.performance.loadModels || 0) + current : current;
   }
 
   /** emit event */
   emit = (event: string) => {
-    if (this.events && this.events.dispatchEvent) this.events?.dispatchEvent(new Event(event));
+    if (this.events && this.events.dispatchEvent) this.events.dispatchEvent(new Event(event));
   };
 
   /** Runs interpolation using last known result and returns smoothened result
@@ -333,7 +331,7 @@ export class Human {
    * @returns result - {@link Result}
    */
   next(result: Result = this.result): Result {
-    return interpolate.calc(result, this.config) as Result;
+    return interpolate.calc(result, this.config);
   }
 
   /** get model loading/loaded stats */
@@ -357,7 +355,7 @@ export class Human {
    * - result object will contain total exeuction time information for top-20 kernels
    * - actual detection object can be accessed via `human.result`
   */
-  async profile(input: Input, userConfig?: Partial<Config>): Promise<Array<{ kernel: string, time: number, perc: number }>> {
+  async profile(input: Input, userConfig?: Partial<Config>): Promise<{ kernel: string, time: number, perc: number }[]> {
     const profile = await this.tf.profile(() => this.detect(input, userConfig));
     const kernels: Record<string, number> = {};
     let total = 0;
@@ -366,7 +364,7 @@ export class Human {
       else kernels[kernel.name] = kernel.kernelTimeMs;
       total += kernel.kernelTimeMs;
     }
-    const kernelArr: Array<{ kernel: string, time: number, perc: number }> = [];
+    const kernelArr: { kernel: string, time: number, perc: number }[] = [];
     Object.entries(kernels).forEach((key) => kernelArr.push({ kernel: key[0], time: key[1] as unknown as number, perc: 0 })); // convert to array
     for (const kernel of kernelArr) {
       kernel.perc = Math.round(1000 * kernel.time / total) / 1000;
@@ -433,7 +431,7 @@ export class Human {
       this.config.skipAllowed = await image.skip(this.config, img.tensor);
       if (!this.performance.totalFrames) this.performance.totalFrames = 0;
       if (!this.performance.cachedFrames) this.performance.cachedFrames = 0;
-      (this.performance.totalFrames as number)++;
+      (this.performance.totalFrames)++;
       if (this.config.skipAllowed) this.performance.cachedFrames++;
       this.performance.cacheCheck = this.env.perfadd ? (this.performance.cacheCheck || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Check Changed:');
@@ -524,7 +522,7 @@ export class Human {
       }
 
       this.performance.total = this.env.perfadd ? (this.performance.total || 0) + Math.trunc(now() - timeStart) : Math.trunc(now() - timeStart);
-      const shape = this.process?.tensor?.shape || [];
+      const shape = this.process.tensor?.shape || [];
       this.result = {
         face: faceRes as FaceResult[],
         body: bodyRes as BodyResult[],

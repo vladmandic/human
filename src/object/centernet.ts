@@ -33,7 +33,7 @@ export async function load(config: Config): Promise<GraphModel> {
 async function process(res: Tensor | null, outputShape: [number, number], config: Config) {
   if (!res) return [];
   const t: Record<string, Tensor> = {};
-  const results: Array<ObjectResult> = [];
+  const results: ObjectResult[] = [];
   const detections = await res.array() as number[][][];
   t.squeeze = tf.squeeze(res);
   const arr = tf.split(t.squeeze, 6, 1) as Tensor[]; // x1, y1, x2, y2, score, class

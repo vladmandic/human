@@ -15,7 +15,7 @@ import { constants } from '../tfjs/constants';
 
 const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
 let model: GraphModel | null;
-const last: Array<Array<{ score: number, emotion: Emotion }>> = [];
+const last: { score: number, emotion: Emotion }[][] = [];
 let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
@@ -27,7 +27,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<Array<{ score: number, emotion: Emotion }>> {
+export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<{ score: number, emotion: Emotion }[]> {
   if (!model) return [];
   const skipFrame = skipped < (config.face.emotion?.skipFrames || 0);
   const skipTime = (config.face.emotion?.skipTime || 0) > (now() - lastTime);
@@ -37,7 +37,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
   }
   skipped = 0;
   return new Promise(async (resolve) => {
-    const obj: Array<{ score: number, emotion: Emotion }> = [];
+    const obj: { score: number, emotion: Emotion }[] = [];
     if (config.face.emotion?.enabled) {
       const t: Record<string, Tensor> = {};
       const inputSize = model?.inputs[0].shape ? model.inputs[0].shape[2] : 0;
@@ -58,7 +58,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
       lastTime = now();
       const data = await t.emotion.data();
       for (let i = 0; i < data.length; i++) {
-        if (data[i] > (config.face.emotion?.minConfidence || 0)) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] as Emotion });
+        if (data[i] > (config.face.emotion.minConfidence || 0)) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] as Emotion });
       }
       obj.sort((a, b) => b.score - a.score);
       Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));

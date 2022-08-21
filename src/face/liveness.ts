@@ -10,7 +10,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
-const cached: Array<number> = [];
+const cached: number[] = [];
 let skipped = Number.MAX_SAFE_INTEGER;
 let lastCount = 0;
 let lastTime = 0;

@@ -13,7 +13,7 @@ const log = (status, ...data) => {
 
 process.on('uncaughtException', (err) => {
   log('error', 'uncaughtException', lastOp, err); // abort immediately
-  process.exit(1);
+  throw new Error(err);
 });
 
 async function testHTTP() {
@@ -23,7 +23,7 @@ async function testHTTP() {
       .then((res) => {
         if (res && res.ok) log('state', 'passed: model server:', config.modelBasePath);
         else log('error', 'failed: model server:', config.modelBasePath);
-        resolve(res && res.ok);
+        resolve(res && res.ok); // eslint-disable-line promise/always-return
       })
       .catch((err) => {
         log('error', 'failed: model server:', err.message);
@@ -262,7 +262,7 @@ async function verifyCompare(human) {
 async function test(Human, inputConfig) {
   lastOp = `test ${inputConfig}`;
   config = inputConfig;
-  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-extraneous-require, node/no-missing-import
+  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-unsupported-features/es-syntax
   const ok = await testHTTP();
   if (!ok) {
     log('error', 'aborting test');
@@ -292,7 +292,7 @@ async function test(Human, inputConfig) {
   // test model loading
   log('info', 'test: model load');
   await human.load();
-  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null), url: human.models[model] ? human.models[model].modelUrl : null }));
+  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null), url: human.models[model] ? human.models[model]['modelUrl'] : null }));
   const loaded = models.filter((model) => model.loaded);
   if (models.length === 23 && loaded.length === 12) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
@@ -339,8 +339,8 @@ async function test(Human, inputConfig) {
   config.async = true;
   config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'async');
-  if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
-  else log('state', 'passed: default result face match', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
+  if (!res || res.face?.length !== 1 || res.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res.face?.length, res.face[0].gender, res.face[0].genderScore);
+  else log('state', 'passed: default result face match', res.face?.length, res.face[0].gender, res.face[0].genderScore);
 
   // test default config sync
   log('info', 'test sync');
@@ -348,8 +348,8 @@ async function test(Human, inputConfig) {
   config.async = false;
   config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'sync');
-  if (!res || res?.face?.length !== 1 || res?.face[0].gender !== 'female') log('error', 'failed: default sync', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
-  else log('state', 'passed: default sync', res?.face?.length, res?.face[0].gender, res?.face[0].genderScore);
+  if (!res || res.face?.length !== 1 || res.face[0].gender !== 'female') log('error', 'failed: default sync', res.face?.length, res.face[0].gender, res.face[0].genderScore);
+  else log('state', 'passed: default sync', res.face?.length, res.face[0].gender, res.face[0].genderScore);
 
   // test image processing
   log('info', 'test: image process');
@@ -387,14 +387,14 @@ async function test(Human, inputConfig) {
   log('info', 'test object');
   config.object = { enabled: true, modelPath: 'mb3-centernet.json' };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'object');
-  if (!res || res?.object?.length < 1 || res?.object[0]?.label !== 'person') log('error', 'failed: centernet', res?.object);
+  if (!res || res.object?.length < 1 || res.object[0]?.label !== 'person') log('error', 'failed: centernet', res.object);
   else log('state', 'passed: centernet');
-  human.models['centernet'] = null;
+  human.models.centernet = null;
   config.object = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/nanodet.json' };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'object');
-  if (!res || res?.object?.length < 1 || res?.object[0]?.label !== 'person') log('error', 'failed: nanodet', res?.object);
+  if (!res || res.object?.length < 1 || res.object[0]?.label !== 'person') log('error', 'failed: nanodet', res.object);
   else log('state', 'passed: nanodet');
-  human.models['nanodet'] = null;
+  human.models.nanodet = null;
   config.object.enabled = false;
 
   // test sensitive config
@@ -405,13 +405,13 @@ async function test(Human, inputConfig) {
   config.body = { minConfidence: 0.0001 };
   config.hand = { minConfidence: 0.0001 };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'sensitive');
-  if (!res || res?.face?.length !== 1 || res?.body?.length !== 1 || res?.hand?.length !== 2 || res?.gesture?.length < 8) log('error', 'failed: sensitive result mismatch', res?.face?.length, res?.body?.length, res?.hand?.length, res?.gesture?.length);
+  if (!res || res.face?.length !== 1 || res.body?.length !== 1 || res.hand?.length !== 2 || res.gesture?.length < 8) log('error', 'failed: sensitive result mismatch', res.face?.length, res.body?.length, res.hand?.length, res.gesture?.length);
   else log('state', 'passed: sensitive result match');
 
   // test sensitive details face
   const face = res && res.face ? res.face[0] : null;
   if (!face || face?.box?.length !== 4 || face?.mesh?.length !== 478 || face?.embedding?.length !== 1024 || face?.rotation?.matrix?.length !== 9) {
-    log('error', 'failed: sensitive face result mismatch', res?.face?.length, face?.box?.length, face?.mesh?.length, face?.embedding?.length, face?.rotation?.matrix?.length);
+    log('error', 'failed: sensitive face result mismatch', res.face?.length, face?.box?.length, face?.mesh?.length, face?.embedding?.length, face?.rotation?.matrix?.length);
   } else log('state', 'passed: sensitive face result match');
   if (!face || face?.emotion?.length < 1 || face.emotion[0].score < 0.30) log('error', 'failed: sensitive face emotion result mismatch', face?.emotion);
   else log('state', 'passed: sensitive face emotion result', face?.emotion);
@@ -469,18 +469,18 @@ async function test(Human, inputConfig) {
   human.reset();
   config.async = false;
   config.cacheSensitivity = 0;
-  config.face['mobilefacenet'] = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/mobilefacenet.json' };
+  config.face.mobilefacenet = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/mobilefacenet.json' };
   res = await testDetect(human, 'samples/in/ai-face.jpg', 'face embeddings');
   if (!res || !res.face || !res.face[0] || res.face[0].embedding?.length !== 192) log('error', 'failed: mobilefacenet', { embedding: res.face?.[0]?.embedding?.length });
   else log('state', 'passed: mobilefacenet', { embedding: res.face?.[0]?.embedding?.length });
-  config.face['insightface'] = { enabled: true, modelPath: 'https://vladmandic.github.io/insightface/models/insightface-mobilenet-swish.json' };
+  config.face.insightface = { enabled: true, modelPath: 'https://vladmandic.github.io/insightface/models/insightface-mobilenet-swish.json' };
   res = await testDetect(human, 'samples/in/ai-face.jpg', 'face embeddings');
   if (!res || !res.face || !res.face[0] || res.face[0]?.embedding?.length !== 512) log('error', 'failed: insightface', { embedding: res.face?.[0]?.embedding?.length });
   else log('state', 'passed: insightface', { embedding: res.face?.[0]?.embedding?.length });
-  human.models['mobilefacenet'] = null;
-  config.face['mobilefacenet'] = { enabled: false };
-  human.models['insightface'] = null;
-  config.face['insightface'] = { enabled: false };
+  human.models.mobilefacenet = null;
+  config.face.mobilefacenet = { enabled: false };
+  human.models.insightface = null;
+  config.face.insightface = { enabled: false };
 
   // test face attention
   log('info', 'test face attention');
@@ -498,9 +498,9 @@ async function test(Human, inputConfig) {
   config.face = { mesh: { enabled: false }, iris: { enabled: false }, description: { enabled: false }, emotion: { enabled: false } };
   config.hand = { landmarks: false };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'detectors');
-  if (!res || res?.face?.length !== 1 || res?.face[0]?.gender !== 'unknown' || res?.face[0]?.age || res?.face[0]?.embedding?.length > 0) log('error', 'failed: detectors result face mismatch', res?.face);
+  if (!res || res.face?.length !== 1 || res.face[0]?.gender !== 'unknown' || res.face[0]?.age || res.face[0]?.embedding?.length > 0) log('error', 'failed: detectors result face mismatch', res.face);
   else log('state', 'passed: detector result face match');
-  if (!res || res?.hand?.length !== 1 || res?.hand[0]?.landmarks?.length > 0) log('error', 'failed: detectors result hand mismatch', res?.hand?.length);
+  if (!res || res.hand?.length !== 1 || res.hand[0]?.landmarks?.length > 0) log('error', 'failed: detectors result hand mismatch', res.hand?.length);
   else log('state', 'passed: detector result hand match');
 
   // test multiple instances

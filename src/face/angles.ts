@@ -4,7 +4,7 @@ type Vector = [number, number, number];
 
 const calculateGaze = (face: FaceResult): { bearing: number, strength: number } => {
   const radians = (pt1: Point, pt2: Point) => Math.atan2(pt1[1] - pt2[1], pt1[0] - pt2[0]); // function to calculate angle between any two points
-  if (!face.annotations['rightEyeIris'] || !face.annotations['leftEyeIris']) return { bearing: 0, strength: 0 };
+  if (!face.annotations.rightEyeIris || !face.annotations.leftEyeIris) return { bearing: 0, strength: 0 };
 
   const offsetIris = [0, -0.1]; // iris center may not align with average of eye extremes
   const eyeRatio = 1; // factor to normalize changes x vs y
@@ -54,8 +54,7 @@ export const calculateFaceAngle = (face: FaceResult, imageSize: [number, number]
   };
   // 3x3 rotation matrix to Euler angles based on https://www.geometrictools.com/Documentation/EulerAngles.pdf
   const rotationMatrixToEulerAngle = (r: number[]): { pitch: number, yaw: number, roll: number } => {
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    const [r00, _r01, _r02, r10, r11, r12, r20, r21, r22] = r;
+    const [r00, _r01, _r02, r10, r11, r12, r20, r21, r22] = r; // eslint-disable-line @typescript-eslint/no-unused-vars
     let thetaX: number;
     let thetaY: number;
     let thetaZ: number;
@@ -74,9 +73,9 @@ export const calculateFaceAngle = (face: FaceResult, imageSize: [number, number]
       thetaY = Math.atan2(r21, r22);
       thetaX = 0;
     }
-    if (isNaN(thetaX)) thetaX = 0;
-    if (isNaN(thetaY)) thetaY = 0;
-    if (isNaN(thetaZ)) thetaZ = 0;
+    if (Number.isNaN(thetaX)) thetaX = 0;
+    if (Number.isNaN(thetaY)) thetaY = 0;
+    if (Number.isNaN(thetaZ)) thetaZ = 0;
     return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
   };
 
@@ -99,18 +98,18 @@ export const calculateFaceAngle = (face: FaceResult, imageSize: [number, number]
   // top, bottom, left, right
   const pts: Point[] = [mesh[10], mesh[152], mesh[234], mesh[454]].map((pt) => [pt[0] * imageSize[0] / size, pt[1] * imageSize[1] / size, pt[2]] as Point); // make the xyz coordinates proportional, independent of the image/box size
 
-  const y_axis = normalize(subVectors(pts[1] as Vector, pts[0] as Vector));
-  let x_axis = normalize(subVectors(pts[3] as Vector, pts[2] as Vector));
-  const z_axis = normalize(crossVectors(x_axis, y_axis));
-  // adjust x_axis to make sure that all axes are perpendicular to each other
-  x_axis = crossVectors(y_axis, z_axis);
+  const yAxis = normalize(subVectors(pts[1] as Vector, pts[0] as Vector));
+  let xAxis = normalize(subVectors(pts[3] as Vector, pts[2] as Vector));
+  const zAxis = normalize(crossVectors(xAxis, yAxis));
+  // adjust xAxis to make sure that all axes are perpendicular to each other
+  xAxis = crossVectors(yAxis, zAxis);
 
   // Rotation Matrix from Axis Vectors - http://renderdan.blogspot.com/2006/05/rotation-matrix-from-axis-vectors.html
   // 3x3 rotation matrix is flatten to array in row-major order. Note that the rotation represented by this matrix is inverted.
   const matrix: [number, number, number, number, number, number, number, number, number] = [
-    x_axis[0], x_axis[1], x_axis[2],
-    y_axis[0], y_axis[1], y_axis[2],
-    z_axis[0], z_axis[1], z_axis[2],
+    xAxis[0], xAxis[1], xAxis[2],
+    yAxis[0], yAxis[1], yAxis[2],
+    zAxis[0], zAxis[1], zAxis[2],
   ];
   const angle = rotationMatrixToEulerAngle(matrix);
   // const angle = meshToEulerAngle(mesh);

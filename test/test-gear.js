@@ -41,14 +41,8 @@ function printResult(obj) {
 
 async function main() {
   log.header();
-  if (process.argv.length !== 3) {
-    log.error('parameters: <input-image> or <input-folder> missing');
-    process.exit(1);
-  }
-  if (!fs.existsSync(process.argv[2])) {
-    log.error(`file not found: ${process.argv[2]}`);
-    process.exit(1);
-  }
+  if (process.argv.length !== 3) throw new Error('parameters: <input-image> or <input-folder> missing');
+  if (!fs.existsSync(process.argv[2])) throw new Error(`file not found: ${process.argv[2]}`);
   const stat = fs.statSync(process.argv[2]);
   const files = [];
   if (stat.isFile()) files.push(process.argv[2]);

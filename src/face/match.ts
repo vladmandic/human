@@ -1,5 +1,5 @@
 /** Face descriptor type as number array */
-export type Descriptor = Array<number>
+export type Descriptor = number[]
 export type MatchOptions = { order?: number, threshold?: number, multiplier?: number, min?: number, max?: number } | undefined;
 
 /** Calculates distance between two descriptors
@@ -54,7 +54,7 @@ export function similarity(descriptor1: Descriptor, descriptor2: Descriptor, opt
  * - `distance` calculated `distance` of given descriptor to the best match
  * - `similarity` calculated normalized `similarity` of given descriptor to the best match
 */
-export function match(descriptor: Descriptor, descriptors: Array<Descriptor>, options: MatchOptions = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
+export function match(descriptor: Descriptor, descriptors: Descriptor[], options: MatchOptions = { order: 2, multiplier: 25, threshold: 0, min: 0.2, max: 0.8 }) {
   if (!Array.isArray(descriptor) || !Array.isArray(descriptors) || descriptor.length < 64 || descriptors.length === 0) { // validate input
     return { index: -1, distance: Number.POSITIVE_INFINITY, similarity: 0 };
   }

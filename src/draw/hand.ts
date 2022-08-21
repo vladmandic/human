@@ -5,7 +5,7 @@ import type { HandResult } from '../result';
 import type { AnyCanvas, DrawOptions, Point } from '../exports';
 
 /** draw detected hands */
-export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawOptions?: Partial<DrawOptions>) {
+export async function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
@@ -36,22 +36,22 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
       }
     }
     if (localOptions.drawLabels && h.annotations) {
-      const addHandLabel = (part: Array<Point>, title: string) => {
+      const addHandLabel = (part: Point[], title: string) => {
         if (!part || part.length === 0 || !part[0]) return;
         const z = part[part.length - 1][2] || -256;
         ctx.fillStyle = colorDepth(z, localOptions);
         ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
       };
       ctx.font = localOptions.font;
-      addHandLabel(h.annotations['index'], 'index');
-      addHandLabel(h.annotations['middle'], 'middle');
-      addHandLabel(h.annotations['ring'], 'ring');
-      addHandLabel(h.annotations['pinky'], 'pinky');
-      addHandLabel(h.annotations['thumb'], 'thumb');
-      addHandLabel(h.annotations['palm'], 'palm');
+      addHandLabel(h.annotations.index, 'index');
+      addHandLabel(h.annotations.middle, 'middle');
+      addHandLabel(h.annotations.ring, 'ring');
+      addHandLabel(h.annotations.pinky, 'pinky');
+      addHandLabel(h.annotations.thumb, 'thumb');
+      addHandLabel(h.annotations.palm, 'palm');
     }
     if (localOptions.drawPolygons && h.annotations) {
-      const addHandLine = (part: Array<Point>) => {
+      const addHandLine = (part: Point[]) => {
         if (!part || part.length === 0 || !part[0]) return;
         for (let i = 0; i < part.length; i++) {
           ctx.beginPath();
@@ -63,11 +63,11 @@ export async function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawO
         }
       };
       ctx.lineWidth = localOptions.lineWidth;
-      addHandLine(h.annotations['index']);
-      addHandLine(h.annotations['middle']);
-      addHandLine(h.annotations['ring']);
-      addHandLine(h.annotations['pinky']);
-      addHandLine(h.annotations['thumb']);
+      addHandLine(h.annotations.index);
+      addHandLine(h.annotations.middle);
+      addHandLine(h.annotations.ring);
+      addHandLine(h.annotations.pinky);
+      addHandLine(h.annotations.thumb);
       // addPart(h.annotations.palm);
     }
   }

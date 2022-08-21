@@ -4,14 +4,15 @@
  * Requires [node-fetch](https://www.npmjs.com/package/node-fetch) to provide `fetch` functionality in NodeJS environment
 */
 
-const log = require('@vladmandic/pilogger');
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
 
 let fetch; // fetch is dynamically imported later
 
-const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// in nodejs environments tfjs-node is required to be loaded before human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
@@ -55,7 +56,7 @@ async function init() {
   const loaded = Object.keys(human.models).filter((a) => human.models[a]);
   log.info('Loaded:', loaded);
   // log.info('Memory state:', human.tf.engine().memory());
-  log.data(tf.backend()['binding'] ? tf.backend()['binding']['TF_Version'] : null);
+  log.data(tf.backend().binding ? tf.backend().binding.TF_Version : null);
 }
 
 async function detect(input) {
@@ -88,7 +89,7 @@ async function detect(input) {
   });
 
   // image shape contains image dimensions and depth
-  log.state('Processing:', tensor['shape']);
+  log.state('Processing:', tensor.shape);
 
   // run actual detection
   let result;
@@ -191,7 +192,7 @@ async function main() {
   log.configure({ inspect: { breakLength: 265 } });
   log.header();
   log.info('Current folder:', process.env.PWD);
-  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-extraneous-require, node/no-missing-import
+  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-unpublished-import
   await init();
   const f = process.argv[2];
   if (process.argv.length !== 3) {
@@ -199,20 +200,18 @@ async function main() {
     await test();
   } else if (!fs.existsSync(f) && !f.startsWith('http')) {
     log.error(`File not found: ${process.argv[2]}`);
-  } else {
-    if (fs.existsSync(f)) {
-      const stat = fs.statSync(f);
-      if (stat.isDirectory()) {
-        const dir = fs.readdirSync(f);
-        for (const file of dir) {
-          await detect(path.join(f, file));
-        }
-      } else {
-        await detect(f);
+  } else if (fs.existsSync(f)) {
+    const stat = fs.statSync(f);
+    if (stat.isDirectory()) {
+      const dir = fs.readdirSync(f);
+      for (const file of dir) {
+        await detect(path.join(f, file));
       }
     } else {
       await detect(f);
     }
+  } else {
+    await detect(f);
   }
 }
 

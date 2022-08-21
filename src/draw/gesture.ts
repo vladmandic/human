@@ -5,7 +5,7 @@ import type { GestureResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
 
 /** draw detected gestures */
-export async function gesture(inCanvas: AnyCanvas, result: Array<GestureResult>, drawOptions?: Partial<DrawOptions>) {
+export async function gesture(inCanvas: AnyCanvas, result: GestureResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (localOptions.drawGestures) {

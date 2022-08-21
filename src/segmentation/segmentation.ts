@@ -26,7 +26,7 @@ export async function load(config: Config): Promise<GraphModel> {
 }
 
 export async function process(input: Input, background: Input | undefined, config: Config)
-: Promise<{ data: Array<number> | Tensor, canvas: AnyCanvas | null, alpha: AnyCanvas | null }> {
+: Promise<{ data: number[] | Tensor, canvas: AnyCanvas | null, alpha: AnyCanvas | null }> {
   if (busy) return { data: [], canvas: null, alpha: null };
   busy = true;
   if (!model) await load(config);
@@ -55,7 +55,7 @@ export async function process(input: Input, background: Input | undefined, confi
   } else {
     t.data = tf.image.resizeBilinear(t.squeeze, [height, width]); // model selfie has a single channel that we can use directly
   }
-  const data = Array.from(await t.data.data()) as number[];
+  const data = Array.from(await t.data.data());
 
   if (env.node && !env.Canvas && (typeof ImageData === 'undefined')) {
     if (config.debug) log('canvas support missing');
@@ -64,7 +64,6 @@ export async function process(input: Input, background: Input | undefined, confi
   }
 
   const alphaCanvas = image.canvas(width, height);
-  // @ts-ignore browser is not defined in tfjs-node
   if (tf.browser) await tf.browser.toPixels(t.data, alphaCanvas);
   const alphaCtx = alphaCanvas.getContext('2d') as CanvasRenderingContext2D;
   if (config.segmentation.blur && config.segmentation.blur > 0) alphaCtx.filter = `blur(${config.segmentation.blur}px)`; // use css filter for bluring, can be done with gaussian blur manually instead

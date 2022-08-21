@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/08/20 mandic00@live.com
+
+
 ### **2.9.4** 2022/08/20 mandic00@live.com
 
-
-### **origin/main** 2022/08/19 mandic00@live.com
-
+- add browser test
 - add tensorflow library detection
 - fix wasm detection
 - enumerate additional models

@@ -68,8 +68,8 @@ export class HandDetector {
     t.norm = this.normalizeBoxes(t.boxes);
     // box detection is flaky so we look for 3x boxes than we need results
     t.nms = await tf.image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * config.hand.maxDetected, config.hand.iouThreshold, config.hand.minConfidence);
-    const nms = await t.nms.array() as Array<number>;
-    const hands: Array<{ startPoint: Point; endPoint: Point; palmLandmarks: Point[]; confidence: number }> = [];
+    const nms = await t.nms.array() as number[];
+    const hands: { startPoint: Point; endPoint: Point; palmLandmarks: Point[]; confidence: number }[] = [];
     for (const index of nms) {
       const p: Record<string, Tensor> = {};
       p.box = tf.slice(t.norm, [index, 0], [1, -1]);

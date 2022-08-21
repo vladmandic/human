@@ -7,10 +7,11 @@
 */
 
 let initial = true; // remember if this is the first run to print additional details
-const log = require('@vladmandic/pilogger');
-const nodeWebCam = require('node-webcam'); // eslint-disable-line node/no-missing-require, node/no-extraneous-require
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+const nodeWebCam = require('node-webcam'); // eslint-disable-line import/no-unresolved, node/no-missing-require
 
-const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+// in nodejs environments tfjs-node is required to be loaded before human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
@@ -59,18 +60,20 @@ async function detect() {
     } else {
       const tensor = buffer2tensor(data); // create tensor from image buffer
       if (initial) log.data('input tensor:', tensor.shape);
-      // eslint-disable-next-line promise/no-promise-in-callback
-      human.detect(tensor).then((result) => {
-        if (result && result.face && result.face.length > 0) {
-          for (let i = 0; i < result.face.length; i++) {
-            const face = result.face[i];
-            const emotion = face.emotion?.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
-            log.data(`detected face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion?.score} emotion:${emotion?.emotion} iris:${face.iris}`);
+      human.detect(tensor) // eslint-disable-line promise/no-promise-in-callback
+        .then((result) => {
+          if (result && result.face && result.face.length > 0) {
+            for (let i = 0; i < result.face.length; i++) {
+              const face = result.face[i];
+              const emotion = face.emotion?.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
+              log.data(`detected face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion?.score} emotion:${emotion?.emotion} iris:${face.iris}`);
+            }
+          } else {
+            log.data('  Face: N/A');
           }
-        } else {
-          log.data('  Face: N/A');
-        }
-      });
+          return result;
+        })
+        .catch(() => log.error('human detect error'));
     }
     initial = false;
   });

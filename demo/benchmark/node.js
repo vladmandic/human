@@ -1,6 +1,7 @@
-const tf = require('@tensorflow/tfjs-node-gpu');
-const log = require('@vladmandic/pilogger');
-const canvasJS = require('canvas'); // eslint-disable-line node/no-missing-require
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+// in nodejs environments tfjs-node is required to be loaded before human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
+const canvasJS = require('canvas'); // eslint-disable-line node/no-unpublished-require
 const Human = require('../../dist/human.node-gpu.js').default;
 
 const input = './samples/in/group-1.jpg';
@@ -50,7 +51,7 @@ async function main() {
   log.info('Loaded:', loaded);
   log.info('Memory state:', human.tf.engine().memory());
   const tensor = await getImage(human);
-  log.state('Processing:', tensor['shape']);
+  log.state('Processing:', tensor.shape);
   const t0 = human.now();
   await human.detect(tensor, myConfig);
   const t1 = human.now();

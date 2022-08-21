@@ -32,8 +32,8 @@ const sigmoid = (x) => (1 - (1 / (1 + Math.exp(x))));
 
 export async function loadDetect(config: Config): Promise<GraphModel> {
   if (env.initial) models.detector = null;
-  if (!models.detector && config.body['detector'] && config.body['detector']['modelPath'] || '') {
-    models.detector = await loadModel(config.body['detector']['modelPath']);
+  if (!models.detector && config.body['detector'] && config.body['detector'].modelPath || '') {
+    models.detector = await loadModel(config.body['detector'].modelPath);
     const inputs = Object.values(models.detector.modelSignature['inputs']);
     inputSize.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
@@ -94,7 +94,7 @@ async function prepareImage(input: Tensor, size: number): Promise<Tensor> {
   return final;
 }
 
-function rescaleKeypoints(keypoints: Array<BodyKeypoint>, outputSize: [number, number]): Array<BodyKeypoint> {
+function rescaleKeypoints(keypoints: BodyKeypoint[], outputSize: [number, number]): BodyKeypoint[] {
   for (const kpt of keypoints) { // first rescale due to padding
     kpt.position = [
       Math.trunc(kpt.position[0] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0] - padding[2][0]),
@@ -120,7 +120,7 @@ function rescaleKeypoints(keypoints: Array<BodyKeypoint>, outputSize: [number, n
   return keypoints;
 }
 
-async function fixKeypoints(keypoints: Array<BodyKeypoint>) {
+async function fixKeypoints(keypoints: BodyKeypoint[]) {
   // palm z-coord is incorrect around near-zero so we approximate it
   const leftPalm = keypoints.find((k) => k.part === 'leftPalm') as BodyKeypoint;
   const leftWrist = keypoints.find((k) => k.part === 'leftWrist') as BodyKeypoint;
@@ -146,7 +146,7 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
   const points = await t.ld.data();
   const distances = await t.world.data();
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor])); // dont need tensors after this
-  const keypointsRelative: Array<BodyKeypoint> = [];
+  const keypointsRelative: BodyKeypoint[] = [];
   const depth = 5; // each points has x,y,z,visibility,presence
   for (let i = 0; i < points.length / depth; i++) {
     const score = sigmoid(points[depth * i + 3]);
@@ -159,12 +159,12 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
   }
   if (poseScore < (config.body.minConfidence || 0)) return null;
   fixKeypoints(keypointsRelative);
-  const keypoints: Array<BodyKeypoint> = rescaleKeypoints(keypointsRelative, outputSize); // keypoints were relative to input image which is padded
+  const keypoints: BodyKeypoint[] = rescaleKeypoints(keypointsRelative, outputSize); // keypoints were relative to input image which is padded
   const kpts = keypoints.map((k) => k.position);
   const boxes = box.calc(kpts, [outputSize[0], outputSize[1]]); // now find boxes based on rescaled keypoints
   const annotations: Record<BodyAnnotation, Point[][]> = {} as Record<BodyAnnotation, Point[][]>;
   for (const [name, indexes] of Object.entries(coords.connected)) {
-    const pt: Array<Point[]> = [];
+    const pt: Point[][] = [];
     for (let i = 0; i < indexes.length - 1; i++) {
       const pt0 = keypoints.find((kpt) => kpt.part === indexes[i]);
       const pt1 = keypoints.find((kpt) => kpt.part === indexes[i + 1]);

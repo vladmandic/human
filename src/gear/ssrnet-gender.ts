@@ -14,7 +14,7 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
-const last: Array<{ gender: Gender, genderScore: number }> = [];
+const last: { gender: Gender, genderScore: number }[] = [];
 let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
@@ -22,15 +22,13 @@ let skipped = Number.MAX_SAFE_INTEGER;
 // tuning values
 const rgb = [0.2989, 0.5870, 0.1140]; // factors for red/green/blue colors when converting to grayscale
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function load(config: Config | any) {
+export async function load(config: Config) {
   if (env.initial) model = null;
-  if (!model) model = await loadModel(config.face['ssrnet'].modelPathGender);
+  if (!model) model = await loadModel(config.face['ssrnet']?.modelPathGender);
   else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function predict(image: Tensor, config: Config, idx, count): Promise<{ gender: Gender, genderScore: number }> {
   if (!model) return { gender: 'unknown', genderScore: 0 };
   const skipFrame = skipped < (config.face['ssrnet']?.skipFrames || 0);
@@ -54,7 +52,7 @@ export async function predict(image: Tensor, config: Config, idx, count): Promis
       return normalize;
     });
     const obj: { gender: Gender, genderScore: number } = { gender: 'unknown', genderScore: 0 };
-    if (config.face['ssrnet'].enabled) t.gender = model.execute(t.enhance) as Tensor;
+    if (config.face['ssrnet']?.enabled) t.gender = model.execute(t.enhance) as Tensor;
     const data = await t.gender.data();
     obj.gender = data[0] > data[1] ? 'female' : 'male'; // returns two values 0..1, bigger one is prediction
     obj.genderScore = data[0] > data[1] ? (Math.trunc(100 * data[0]) / 100) : (Math.trunc(100 * data[1]) / 100);

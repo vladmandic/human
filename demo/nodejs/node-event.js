@@ -2,13 +2,14 @@
  * Human demo for NodeJS
  */
 
-const log = require('@vladmandic/pilogger');
 const fs = require('fs');
 const process = require('process');
 
 let fetch; // fetch is dynamically imported later
 
-const tf = require('@tensorflow/tfjs-node'); // in nodejs environments tfjs-node is required to be loaded before human
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
+// in nodejs environments tfjs-node is required to be loaded before human
+const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Human = require('../../dist/human.node.js'); // use this when using human in dev mode
 
@@ -37,7 +38,7 @@ async function detect(input) {
   let buffer;
   log.info('Loading image:', input);
   if (input.startsWith('http:') || input.startsWith('https:')) {
-    fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-extraneous-require, node/no-missing-import
+    fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-unpublished-import
     const res = await fetch(input);
     if (res && res.ok) buffer = await res.buffer();
     else log.error('Invalid image URL:', input, res.status, res.statusText, res.headers.get('content-type'));

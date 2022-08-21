@@ -13,7 +13,7 @@ const options = {
   modelBasePath: '',
 };
 
-export type ModelInfo = {
+export interface ModelInfo {
   name: string,
   inCache: boolean,
   sizeDesired: number,
@@ -67,7 +67,7 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     modelStats[shortModelName].sizeFromManifest = artifacts?.weightData?.byteLength || 0;
     model.loadSync(artifacts); // load weights
     // @ts-ignore private property
-    modelStats[shortModelName].sizeLoadedWeights = model?.artifacts?.weightData?.byteLength || 0;
+    modelStats[shortModelName].sizeLoadedWeights = model.artifacts?.weightData?.byteLength || 0;
     if (options.verbose) log('load model:', model['modelUrl'], { bytes: modelStats[shortModelName].sizeLoadedWeights }, options);
     loaded = true;
   } catch (err) {

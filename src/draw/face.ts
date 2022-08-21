@@ -44,24 +44,24 @@ function drawLabels(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanv
 
 function drawIrisElipse(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
   // iris: array[center, left, top, right, bottom]
-  if (f.annotations && f.annotations['leftEyeIris'] && f.annotations['leftEyeIris'][0]) {
+  if (f.annotations && f.annotations.leftEyeIris && f.annotations.leftEyeIris[0]) {
     ctx.strokeStyle = opt.useDepth ? 'rgba(255, 200, 255, 0.3)' : opt.color;
     ctx.beginPath();
-    const sizeX = Math.abs(f.annotations['leftEyeIris'][3][0] - f.annotations['leftEyeIris'][1][0]) / 2;
-    const sizeY = Math.abs(f.annotations['leftEyeIris'][4][1] - f.annotations['leftEyeIris'][2][1]) / 2;
-    ctx.ellipse(f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+    const sizeX = Math.abs(f.annotations.leftEyeIris[3][0] - f.annotations.leftEyeIris[1][0]) / 2;
+    const sizeY = Math.abs(f.annotations.leftEyeIris[4][1] - f.annotations.leftEyeIris[2][1]) / 2;
+    ctx.ellipse(f.annotations.leftEyeIris[0][0], f.annotations.leftEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
     ctx.stroke();
     if (opt.fillPolygons) {
       ctx.fillStyle = opt.useDepth ? 'rgba(255, 255, 200, 0.3)' : opt.color;
       ctx.fill();
     }
   }
-  if (f.annotations && f.annotations['rightEyeIris'] && f.annotations['rightEyeIris'][0]) {
+  if (f.annotations && f.annotations.rightEyeIris && f.annotations.rightEyeIris[0]) {
     ctx.strokeStyle = opt.useDepth ? 'rgba(255, 200, 255, 0.3)' : opt.color;
     ctx.beginPath();
-    const sizeX = Math.abs(f.annotations['rightEyeIris'][3][0] - f.annotations['rightEyeIris'][1][0]) / 2;
-    const sizeY = Math.abs(f.annotations['rightEyeIris'][4][1] - f.annotations['rightEyeIris'][2][1]) / 2;
-    ctx.ellipse(f.annotations['rightEyeIris'][0][0], f.annotations['rightEyeIris'][0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
+    const sizeX = Math.abs(f.annotations.rightEyeIris[3][0] - f.annotations.rightEyeIris[1][0]) / 2;
+    const sizeY = Math.abs(f.annotations.rightEyeIris[4][1] - f.annotations.rightEyeIris[2][1]) / 2;
+    ctx.ellipse(f.annotations.rightEyeIris[0][0], f.annotations.rightEyeIris[0][1], sizeX, sizeY, 0, 0, 2 * Math.PI);
     ctx.stroke();
     if (opt.fillPolygons) {
       ctx.fillStyle = opt.useDepth ? 'rgba(255, 255, 200, 0.3)' : opt.color;
@@ -95,19 +95,19 @@ function drawGazeSpheres(f: FaceResult, ctx: CanvasRenderingContext2D | Offscree
 }
 
 function drawGazeArrows(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
-  if (opt.drawGaze && f.rotation?.gaze?.strength && f.rotation?.gaze?.bearing && f.annotations['leftEyeIris'] && f.annotations['rightEyeIris'] && f.annotations['leftEyeIris'][0] && f.annotations['rightEyeIris'][0]) {
+  if (opt.drawGaze && f.rotation?.gaze.strength && f.rotation.gaze.bearing && f.annotations.leftEyeIris && f.annotations.rightEyeIris && f.annotations.leftEyeIris[0] && f.annotations.rightEyeIris[0]) {
     ctx.strokeStyle = 'pink';
     ctx.fillStyle = 'pink';
     const leftGaze = [
-      f.annotations['leftEyeIris'][0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
-      f.annotations['leftEyeIris'][0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
+      f.annotations.leftEyeIris[0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
+      f.annotations.leftEyeIris[0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
     ];
-    arrow(ctx, [f.annotations['leftEyeIris'][0][0], f.annotations['leftEyeIris'][0][1]], [leftGaze[0], leftGaze[1]], 4);
+    arrow(ctx, [f.annotations.leftEyeIris[0][0], f.annotations.leftEyeIris[0][1]], [leftGaze[0], leftGaze[1]], 4);
     const rightGaze = [
-      f.annotations['rightEyeIris'][0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
-      f.annotations['rightEyeIris'][0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
+      f.annotations.rightEyeIris[0][0] + (Math.sin(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[3]),
+      f.annotations.rightEyeIris[0][1] + (Math.cos(f.rotation.gaze.bearing) * f.rotation.gaze.strength * f.box[2]),
     ];
-    arrow(ctx, [f.annotations['rightEyeIris'][0][0], f.annotations['rightEyeIris'][0][1]], [rightGaze[0], rightGaze[1]], 4);
+    arrow(ctx, [f.annotations.rightEyeIris[0][0], f.annotations.rightEyeIris[0][1]], [rightGaze[0], rightGaze[1]], 4);
   }
 }
 
@@ -149,7 +149,7 @@ function drawFaceBoxes(f: FaceResult, ctx) {
 }
 
 /** draw detected faces */
-export async function face(inCanvas: AnyCanvas, result: Array<FaceResult>, drawOptions?: Partial<DrawOptions>) {
+export async function face(inCanvas: AnyCanvas, result: FaceResult[], drawOptions?: Partial<DrawOptions>) {
   opt = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);

@@ -21,7 +21,7 @@ import type { GraphModel, Tensor } from '../tfjs/types';
 import type { FaceResult, FaceLandmark, Point } from '../result';
 import type { Config } from '../config';
 
-type DetectBox = { startPoint: Point, endPoint: Point, landmarks: Array<Point>, confidence: number };
+interface DetectBox { startPoint: Point, endPoint: Point, landmarks: Point[], confidence: number }
 
 const cache = {
   boxes: [] as DetectBox[],
@@ -43,9 +43,10 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
   } else {
     cache.skipped++;
   }
-  const faces: Array<FaceResult> = [];
-  const newCache: Array<DetectBox> = [];
+  const faces: FaceResult[] = [];
+  const newCache: DetectBox[] = [];
   let id = 0;
+  const size = inputSize;
   for (let i = 0; i < cache.boxes.length; i++) {
     const box = cache.boxes[i];
     let angle = 0;
@@ -66,10 +67,10 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
 
     // optional rotation correction based on detector data only if mesh is disabled otherwise perform it later when we have more accurate mesh data. if no rotation correction this function performs crop
     [angle, rotationMatrix, face.tensor] = util.correctFaceRotation(config.face.detector?.rotation, box, input, config.face.mesh?.enabled ? inputSize : blazeface.size());
-    if (config?.filter?.equalization) {
-      const equilized = await histogramEqualization(face.tensor as Tensor);
+    if (config.filter.equalization) {
+      const equilized = face.tensor ? await histogramEqualization(face.tensor) : undefined;
       tf.dispose(face.tensor);
-      face.tensor = equilized;
+      if (equilized) face.tensor = equilized;
     }
     face.boxScore = Math.round(100 * box.confidence) / 100;
     if (!config.face.mesh?.enabled) { // mesh not enabled, return resuts from detector only
@@ -80,7 +81,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         ((box.startPoint[0] + box.endPoint[0])) / 2 + ((box.endPoint[0] + box.startPoint[0]) * pt[0] / blazeface.size()),
         ((box.startPoint[1] + box.endPoint[1])) / 2 + ((box.endPoint[1] + box.startPoint[1]) * pt[1] / blazeface.size()),
       ]);
-      face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
+      face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size]);
       for (const key of Object.keys(coords.blazeFaceLandmarks)) {
         face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
       }
@@ -91,14 +92,14 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         tf.dispose(face.tensor);
         return faces;
       }
-      const results = model.execute(face.tensor as Tensor) as Array<Tensor>;
+      const results = model.execute(face.tensor as Tensor) as Tensor[];
       const confidenceT = results.find((t) => t.shape[t.shape.length - 1] === 1) as Tensor;
       const faceConfidence = await confidenceT.data();
       face.faceScore = Math.round(100 * faceConfidence[0]) / 100;
 
       if (face.faceScore < (config.face.detector?.minConfidence || 1)) { // low confidence in detected mesh
         box.confidence = face.faceScore; // reset confidence of cached box
-        if (config.face.mesh?.keepInvalid) {
+        if (config.face.mesh.keepInvalid) {
           face.box = util.clampBox(box, input);
           face.boxRaw = util.getRawBox(box, input);
           face.score = face.boxScore;
@@ -106,7 +107,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
             ((box.startPoint[0] + box.endPoint[0])) / 2 + ((box.endPoint[0] + box.startPoint[0]) * pt[0] / blazeface.size()),
             ((box.startPoint[1] + box.endPoint[1])) / 2 + ((box.endPoint[1] + box.startPoint[1]) * pt[1] / blazeface.size()),
           ]);
-          face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 1), pt[1] / (input.shape[1] || 1), (pt[2] || 0) / inputSize]);
+          face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 1), pt[1] / (input.shape[1] || 1), (pt[2] || 0) / size]);
           for (const key of Object.keys(coords.blazeFaceLandmarks)) {
             face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
           }
@@ -122,7 +123,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
           rawCoords = await iris.augmentIris(rawCoords, face.tensor, config, inputSize); // run iris model and augment results
         }
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
-        face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / inputSize]);
+        face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size]);
         for (const key of Object.keys(coords.meshAnnotations)) face.annotations[key] = coords.meshAnnotations[key].map((index) => face.mesh[index]); // add annotations
         face.score = face.faceScore;
         const calculatedBox = { ...util.calculateFaceBox(face.mesh, box), confidence: box.confidence, landmarks: box.landmarks };
@@ -148,13 +149,11 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
-  // @ts-ignore private property
-  if (config?.face?.attention?.enabled && model?.signature) {
-    // @ts-ignore private property
-    if (Object.keys(model?.signature?.outputs || {}).length < 6) model = null;
+  if (config.face.attention?.enabled && model?.['signature']) {
+    if (Object.keys(model?.['signature']?.outputs || {}).length < 6) model = null;
   }
   if (!model) {
-    if (config.face.attention?.enabled) model = await loadModel(config.face.attention?.modelPath);
+    if (config.face.attention?.enabled) model = await loadModel(config.face.attention.modelPath);
     else model = await loadModel(config.face.mesh?.modelPath);
   } else if (config.debug) {
     log('cached model:', model['modelUrl']);

@@ -33,7 +33,7 @@
     "clean": "build --profile clean",
     "build": "rimraf test/build.log && node build.js",
     "test": "node --no-warnings --unhandled-rejections=strict --trace-uncaught test/node.js",
-    "lint": "eslint src demo test",
+    "lint": "eslint *.json *.js src demo test models",
     "scan": "npx auditjs@latest ossi --dev --quiet"
   },
   "keywords": [
@@ -61,6 +61,8 @@
     "tensorflow"
   ],
   "devDependencies": {
+    "@html-eslint/eslint-plugin": "^0.13.2",
+    "@html-eslint/parser": "^0.13.2",
     "@microsoft/api-extractor": "^7.29.3",
     "@tensorflow/tfjs": "^3.19.0",
     "@tensorflow/tfjs-backend-cpu": "^3.19.0",

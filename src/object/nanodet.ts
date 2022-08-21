@@ -15,7 +15,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel;
-let last: Array<ObjectResult> = [];
+let last: ObjectResult[] = [];
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
 let inputSize = 0;
@@ -33,7 +33,8 @@ export async function load(config: Config): Promise<GraphModel> {
 
 async function process(res: Tensor[], outputShape: [number, number], config: Config) {
   let id = 0;
-  let results: Array<ObjectResult> = [];
+  let results: ObjectResult[] = [];
+  const size = inputSize;
   for (const strideSize of [1, 2, 4]) { // try each stride size as it detects large/medium/small objects
     // find scores, boxes, classes
     const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
@@ -50,7 +51,7 @@ async function process(res: Tensor[], outputShape: [number, number], config: Con
         if (score > (config.object.minConfidence || 0) && j !== 61) {
           const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
           const cy = (0.5 + Math.trunc(i / baseSize)) / baseSize; // center.y normalized to range 0..1
-          const boxOffset = boxIdx[i].map((a: number) => a * (baseSize / strideSize / inputSize)); // just grab indexes of features with highest scores
+          const boxOffset = boxIdx[i].map((a: number) => a * (baseSize / strideSize / (size))); // just grab indexes of features with highest scores
           const [x, y] = [
             cx - (scaleBox / strideSize * boxOffset[0]),
             cy - (scaleBox / strideSize * boxOffset[1]),
@@ -89,7 +90,7 @@ async function process(res: Tensor[], outputShape: [number, number], config: Con
   // unnecessary boxes and run nms only on good candidates (basically it just does IOU analysis as scores are already filtered)
   const nmsBoxes = results.map((a) => [a.boxRaw[1], a.boxRaw[0], a.boxRaw[3], a.boxRaw[2]]); // switches coordinates from x,y to y,x as expected by tf.nms
   const nmsScores = results.map((a) => a.score);
-  let nmsIdx: Array<number> = [];
+  let nmsIdx: number[] = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
     const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
     nmsIdx = await nms.data();

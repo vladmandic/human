@@ -1,6 +1,6 @@
 import type { Point, Box } from '../result';
 
-export function calc(keypoints: Array<Point>, outputSize: [number, number] = [1, 1]) {
+export function calc(keypoints: Point[], outputSize: [number, number] = [1, 1]) {
   const coords = [keypoints.map((pt) => pt[0]), keypoints.map((pt) => pt[1])]; // all x/y coords
   const min = [Math.min(...coords[0]), Math.min(...coords[1])];
   const max = [Math.max(...coords[0]), Math.max(...coords[1])];
@@ -9,7 +9,7 @@ export function calc(keypoints: Array<Point>, outputSize: [number, number] = [1,
   return { box, boxRaw };
 }
 
-export function square(keypoints: Array<Point>, outputSize: [number, number] = [1, 1]) {
+export function square(keypoints: Point[], outputSize: [number, number] = [1, 1]) {
   const coords = [keypoints.map((pt) => pt[0]), keypoints.map((pt) => pt[1])]; // all x/y coords
   const min = [Math.min(...coords[0]), Math.min(...coords[1])];
   const max = [Math.max(...coords[0]), Math.max(...coords[1])];

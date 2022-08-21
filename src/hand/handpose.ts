@@ -30,7 +30,7 @@ let handPipeline: handpipeline.HandPipeline;
 export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
   const predictions = await handPipeline.estimateHands(input, config);
   if (!predictions) return [];
-  const hands: Array<HandResult> = [];
+  const hands: HandResult[] = [];
   for (let i = 0; i < predictions.length; i++) {
     const annotations = {};
     if (predictions[i].landmarks) {
@@ -38,7 +38,7 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
         annotations[key] = meshAnnotations[key].map((index) => predictions[i].landmarks[index]);
       }
     }
-    const keypoints = predictions[i].landmarks as unknown as Array<Point>;
+    const keypoints = predictions[i].landmarks as unknown as Point[];
     let box: Box = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0, 0]; // maximums so conditionals work
     let boxRaw: Box = [0, 0, 0, 0];
     if (keypoints && keypoints.length > 0) { // if we have landmarks, calculate box based on landmarks

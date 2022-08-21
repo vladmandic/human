@@ -23,7 +23,7 @@ export class HandPipeline {
   handDetector: detector.HandDetector;
   handPoseModel: GraphModel;
   inputSize: number;
-  storedBoxes: Array<{ startPoint: Point; endPoint: Point; palmLandmarks: Point[]; confidence: number } | null>;
+  storedBoxes: ({ startPoint: Point; endPoint: Point; palmLandmarks: Point[]; confidence: number } | null)[];
   skipped: number;
   detectedHands: number;
 
@@ -36,8 +36,7 @@ export class HandPipeline {
     this.detectedHands = 0;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  calculateLandmarksBoundingBox(landmarks) {
+  calculateLandmarksBoundingBox(landmarks) { // eslint-disable-line class-methods-use-this
     const xs = landmarks.map((d) => d[0]);
     const ys = landmarks.map((d) => d[1]);
     const startPoint = [Math.min(...xs), Math.min(...ys)];
@@ -107,7 +106,7 @@ export class HandPipeline {
       // for (const possible of boxes) this.storedBoxes.push(possible);
       if (this.storedBoxes.length > 0) useFreshBox = true;
     }
-    const hands: Array<{ landmarks: Point[], confidence: number, boxConfidence: number, fingerConfidence: number, box: { topLeft: Point, bottomRight: Point } }> = [];
+    const hands: { landmarks: Point[], confidence: number, boxConfidence: number, fingerConfidence: number, box: { topLeft: Point, bottomRight: Point } }[] = [];
 
     // go through working set of boxes
     for (let i = 0; i < this.storedBoxes.length; i++) {
@@ -124,7 +123,7 @@ export class HandPipeline {
         const handImage = tf.div(croppedInput, constants.tf255);
         tf.dispose(croppedInput);
         tf.dispose(rotatedImage);
-        const [confidenceT, keypoints] = this.handPoseModel.execute(handImage) as Array<Tensor>;
+        const [confidenceT, keypoints] = this.handPoseModel.execute(handImage) as Tensor[];
         lastTime = now();
         tf.dispose(handImage);
         const confidence = (await confidenceT.data())[0];

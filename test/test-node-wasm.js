@@ -5,9 +5,7 @@ const { Canvas, Image } = require('canvas'); // eslint-disable-line node/no-extr
 const H = require('../dist/human.node-wasm.js');
 const test = require('./test-main.js').test;
 
-// @ts-ignore
 H.env.Canvas = Canvas; // requires monkey-patch as wasm does not have tf.browser namespace
-// @ts-ignore
 H.env.Image = Image; // requires monkey-patch as wasm does not have tf.browser namespace
 
 const config = {

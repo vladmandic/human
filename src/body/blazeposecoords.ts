@@ -1,6 +1,6 @@
 /* eslint-disable no-multi-spaces */
 
-export const kpt: Array<string> = [
+export const kpt: string[] = [
   'nose',            //  0
   'leftEyeInside',   //  1
   'leftEye',         //  2

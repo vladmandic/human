@@ -7,7 +7,7 @@
  * @license MIT
  */
 
-import { Human, TensorLike, FaceResult } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
+import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 import * as indexDb from './indexdb'; // methods to deal with indexdb
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
@@ -58,7 +58,7 @@ const ok = { // must meet all rules
   elapsedMs: 0, // total time while waiting for valid face
 };
 const allOk = () => ok.faceCount && ok.faceSize && ok.blinkDetected && ok.facingCenter && ok.lookingCenter && ok.faceConfidence && ok.antispoofCheck && ok.livenessCheck;
-const current: { face: FaceResult | null, record: indexDb.FaceRecord | null } = { face: null, record: null }; // current face record and matched database record
+const current: { face: H.FaceResult | null, record: indexDb.FaceRecord | null } = { face: null, record: null }; // current face record and matched database record
 
 const blink = { // internal timers for blink start/end/duration
   start: 0,
@@ -67,9 +67,9 @@ const blink = { // internal timers for blink start/end/duration
 };
 
 // let db: Array<{ name: string, source: string, embedding: number[] }> = []; // holds loaded face descriptor database
-const human = new Human(humanConfig); // create instance of human with overrides from user configuration
+const human = new H.Human(humanConfig); // create instance of human with overrides from user configuration
 
-human.env['perfadd'] = false; // is performance data showing instant or total values
+human.env.perfadd = false; // is performance data showing instant or total values
 human.draw.options.font = 'small-caps 18px "Lato"'; // set font used to draw labels when using draw methods
 human.draw.options.lineHeight = 20;
 
@@ -92,8 +92,7 @@ let startTime = 0;
 
 const log = (...msg) => { // helper method to output messages
   dom.log.innerText += msg.join(' ') + '\n';
-  // eslint-disable-next-line no-console
-  console.log(...msg);
+  console.log(...msg); // eslint-disable-line no-console
 };
 const printFPS = (msg) => dom.fps.innerText = msg; // print status element
 
@@ -126,7 +125,7 @@ async function detectionLoop() { // main detection loop
   }
 }
 
-async function validationLoop(): Promise<FaceResult> { // main screen refresh loop
+async function validationLoop(): Promise<H.FaceResult> { // main screen refresh loop
   const interpolated = await human.next(human.result); // smoothen result using last-known results
   await human.draw.canvas(dom.video, dom.canvas); // draw canvas to screen
   await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
@@ -136,7 +135,7 @@ async function validationLoop(): Promise<FaceResult> { // main screen refresh lo
   printFPS(`fps: ${fps.detect.toFixed(1).padStart(5, ' ')} detect | ${fps.draw.toFixed(1).padStart(5, ' ')} draw`); // write status
   ok.faceCount = human.result.face.length === 1; // must be exactly detected face
   if (ok.faceCount) { // skip the rest if no face
-    const gestures: string[] = Object.values(human.result.gesture).map((gesture) => gesture.gesture); // flatten all gestures
+    const gestures: string[] = Object.values(human.result.gesture).map((gesture) => (gesture as H.GestureResult).gesture); // flatten all gestures
     if (gestures.includes('blink left eye') || gestures.includes('blink right eye')) blink.start = human.now(); // blink starts when eyes get closed
     if (blink.start > 0 && !gestures.includes('blink left eye') && !gestures.includes('blink right eye')) blink.end = human.now(); // if blink started how long until eyes are back open
     ok.blinkDetected = ok.blinkDetected || (Math.abs(blink.end - blink.start) > options.blinkMin && Math.abs(blink.end - blink.start) < options.blinkMax);
@@ -169,15 +168,15 @@ async function validationLoop(): Promise<FaceResult> { // main screen refresh lo
   if (ok.elapsedMs > options.maxTime) { // give up
     dom.video.pause();
     return human.result.face[0];
-  } else { // run again
-    ok.elapsedMs = Math.trunc(human.now() - startTime);
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        const res = await validationLoop(); // run validation loop until conditions are met
-        if (res) resolve(human.result.face[0]); // recursive promise resolve
-      }, 30); // use to slow down refresh from max refresh rate to target of 30 fps
-    });
   }
+  // run again
+  ok.elapsedMs = Math.trunc(human.now() - startTime);
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      const res = await validationLoop(); // run validation loop until conditions are met
+      if (res) resolve(human.result.face[0]); // recursive promise resolve
+    }, 30); // use to slow down refresh from max refresh rate to target of 30 fps
+  });
 }
 
 async function saveRecords() {
@@ -201,9 +200,8 @@ async function deleteRecord() {
 async function detectFace() {
   dom.canvas.getContext('2d')?.clearRect(0, 0, options.minSize, options.minSize);
   if (!current.face || !current.face.tensor || !current.face.embedding) return false;
-  // eslint-disable-next-line no-console
-  console.log('face record:', current.face);
-  human.tf.browser.toPixels(current.face.tensor as unknown as TensorLike, dom.canvas);
+  console.log('face record:', current.face); // eslint-disable-line no-console
+  human.tf.browser.toPixels(current.face.tensor as unknown as H.TensorLike, dom.canvas);
   if (await indexDb.count() === 0) {
     log('face database is empty');
     document.body.style.background = 'black';
@@ -241,8 +239,8 @@ async function main() { // main entry point
   await detectionLoop(); // start detection loop
   startTime = human.now();
   current.face = await validationLoop(); // start validation loop
-  dom.canvas.width = current.face?.tensor?.shape[1] || options.minSize;
-  dom.canvas.height = current.face?.tensor?.shape[0] || options.minSize;
+  dom.canvas.width = current.face.tensor?.shape[1] || options.minSize;
+  dom.canvas.height = current.face.tensor?.shape[0] || options.minSize;
   dom.source.width = dom.canvas.width;
   dom.source.height = dom.canvas.height;
   dom.canvas.style.width = '';
@@ -253,14 +251,13 @@ async function main() { // main entry point
   if (!allOk()) { // is all criteria met?
     log('did not find valid face');
     return false;
-  } else {
-    return detectFace();
   }
+  return detectFace();
 }
 
 async function init() {
   log('human version:', human.version, '| tfjs version:', human.tf.version['tfjs-core']);
-  log('face embedding model:', humanConfig.face['description']?.enabled ? 'faceres' : '', humanConfig.face['mobilefacenet']?.enabled ? 'mobilefacenet' : '', humanConfig.face['insightface']?.enabled ? 'insightface' : '');
+  log('face embedding model:', humanConfig.face.description.enabled ? 'faceres' : '', humanConfig.face['mobilefacenet']?.enabled ? 'mobilefacenet' : '', humanConfig.face['insightface']?.enabled ? 'insightface' : '');
   log('options:', JSON.stringify(options).replace(/{|}|"|\[|\]/g, '').replace(/,/g, ' '));
   printFPS('loading...');
   log('known face records:', await indexDb.count());

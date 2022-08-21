@@ -5,7 +5,7 @@ import type { ObjectResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
 
 /** draw detected objects */
-export async function object(inCanvas: AnyCanvas, result: Array<ObjectResult>, drawOptions?: Partial<DrawOptions>) {
+export async function object(inCanvas: AnyCanvas, result: ObjectResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);

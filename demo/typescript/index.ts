@@ -7,9 +7,9 @@
  * @license MIT
  */
 
-import { Human, Config } from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
+import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
-const humanConfig: Partial<Config> = { // user configuration for human, used to fine-tune behavior
+const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
   // backend: 'wasm' as const,
   // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.18.0/dist/',
   // cacheSensitivity: 0,
@@ -23,9 +23,9 @@ const humanConfig: Partial<Config> = { // user configuration for human, used to 
   gesture: { enabled: true },
 };
 
-const human = new Human(humanConfig); // create instance of human with overrides from user configuration
+const human = new H.Human(humanConfig); // create instance of human with overrides from user configuration
 
-human.env['perfadd'] = false; // is performance data showing instant or total values
+human.env.perfadd = false; // is performance data showing instant or total values
 human.draw.options.font = 'small-caps 18px "Lato"'; // set font used to draw labels when using draw methods
 human.draw.options.lineHeight = 20;
 // human.draw.options.fillPolygons = true;
@@ -42,8 +42,7 @@ const fps = { detectFPS: 0, drawFPS: 0, frames: 0, averageMs: 0 }; // holds calc
 
 const log = (...msg) => { // helper method to output messages
   dom.log.innerText += msg.join(' ') + '\n';
-  // eslint-disable-next-line no-console
-  console.log(...msg);
+  console.log(...msg); // eslint-disable-line no-console
 };
 const status = (msg) => dom.fps.innerText = msg; // print status element
 const perf = (msg) => dom.perf.innerText = 'tensors:' + human.tf.memory().numTensors + ' | performance: ' + JSON.stringify(msg).replace(/"|{|}/g, '').replace(/,/g, ' | '); // print performance element

@@ -28,7 +28,7 @@ declare interface ArrayMap {
 export declare type BackendType = ['cpu', 'wasm', 'webgl', 'humangl', 'tensorflow', 'webgpu'];
 
 /** draw detected bodies */
-declare function body(inCanvas: AnyCanvas, result: Array<BodyResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
 
 export declare type BodyAnnotation = BodyAnnotationBlazePose | BodyAnnotationEfficientPose;
 
@@ -82,7 +82,7 @@ export declare interface BodyResult {
     /** detected body box normalized to 0..1 */
     boxRaw: Box;
     /** detected body keypoints */
-    keypoints: Array<BodyKeypoint>;
+    keypoints: BodyKeypoint[];
     /** detected body keypoints combined into annotated parts */
     annotations: Record<BodyAnnotation, Point[][]>;
 }
@@ -329,7 +329,7 @@ declare function decodeWeights(buffer: ArrayBuffer, specs: WeightsManifestEntry[
 export declare const defaults: Config;
 
 /** Face descriptor type as number array */
-export declare type Descriptor = Array<number>;
+export declare type Descriptor = number[];
 
 /** Calculates distance between two descriptors
  * @param options - calculation options
@@ -358,7 +358,7 @@ export { draw }
 /** Draw Options
  * - Accessed via `human.draw.options` or provided per each draw method as the drawOptions optional parameter
  */
-export declare type DrawOptions = {
+export declare interface DrawOptions {
     /** draw line color */
     color: string;
     /** alpha value used for lines */
@@ -397,7 +397,7 @@ export declare type DrawOptions = {
     useDepth: boolean;
     /** should lines be curved? */
     useCurves: boolean;
-};
+}
 
 export declare type Emotion = 'angry' | 'disgust' | 'fear' | 'happy' | 'sad' | 'surprise' | 'neutral';
 
@@ -509,7 +509,7 @@ export declare type Events = 'create' | 'load' | 'image' | 'result' | 'warmup' |
 export declare type ExternalCanvas = typeof env.Canvas;
 
 /** draw detected faces */
-declare function face(inCanvas: AnyCanvas, result: Array<FaceResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function face(inCanvas: AnyCanvas, result: FaceResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
 
 /** Anti-spoofing part of face configuration */
 export declare interface FaceAntiSpoofConfig extends GenericConfig {
@@ -608,9 +608,9 @@ export declare interface FaceResult {
     /** detected face box normalized to 0..1 */
     boxRaw: Box;
     /** detected face mesh */
-    mesh: Array<Point>;
+    mesh: Point[];
     /** detected face mesh normalized to 0..1 */
-    meshRaw: Array<Point>;
+    meshRaw: Point[];
     /** face contours as array of 2d points normalized to 0..1 */
     /** face contours as array of 2d points */
     /** mesh keypoints combined into annotated results */
@@ -622,17 +622,17 @@ export declare interface FaceResult {
     /** gender detection score */
     genderScore?: number;
     /** detected emotions */
-    emotion?: Array<{
+    emotion?: {
         score: number;
         emotion: Emotion;
-    }>;
+    }[];
     /** detected race */
-    race?: Array<{
+    race?: {
         score: number;
         race: Race;
-    }>;
+    }[];
     /** face descriptor */
-    embedding?: Array<number>;
+    embedding?: number[];
     /** face iris distance from camera */
     iris?: number;
     /** face anti-spoofing result confidence */
@@ -780,7 +780,7 @@ export declare interface GenericConfig {
 }
 
 /** draw detected gestures */
-declare function gesture(inCanvas: AnyCanvas, result: Array<GestureResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function gesture(inCanvas: AnyCanvas, result: GestureResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
 
 /** Controlls gesture detection */
 export declare interface GestureConfig {
@@ -1038,7 +1038,7 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
 }
 
 /** draw detected hands */
-declare function hand(inCanvas: AnyCanvas, result: Array<HandResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
 
 /** Configures all hand detection specific options */
 export declare interface HandConfig extends GenericConfig {
@@ -1080,11 +1080,11 @@ export declare interface HandResult {
     /** detected hand box normalized to 0..1 */
     boxRaw: Box;
     /** detected hand keypoints */
-    keypoints: Array<Point>;
+    keypoints: Point[];
     /** detected hand class */
     label: HandType;
     /** detected hand keypoints combined into annotated parts */
-    annotations: Record<Finger, Array<Point>>;
+    annotations: Record<Finger, Point[]>;
     /** detected hand parts annotated with part gestures */
     landmarks: Record<Finger, {
         curl: FingerCurl;
@@ -1345,11 +1345,11 @@ declare class Human {
      * - result object will contain total exeuction time information for top-20 kernels
      * - actual detection object can be accessed via `human.result`
      */
-    profile(input: Input, userConfig?: Partial<Config>): Promise<Array<{
+    profile(input: Input, userConfig?: Partial<Config>): Promise<{
         kernel: string;
         time: number;
         perc: number;
-    }>>;
+    }[]>;
     /** Main detection method
      * - Analyze configuration: {@link Config}
      * - Pre-process input: {@link Input}
@@ -1497,12 +1497,12 @@ export declare type IrisGesture = 'facing center' | `looking ${'left' | 'right' 
 
 declare function isHTTPScheme(url: string): boolean;
 
-export declare type KernelOps = {
+export declare interface KernelOps {
     name: string;
     url: string;
     missing: string[];
     ops: string[];
-};
+}
 
 /**
  * List all models stored in registered storage mediums.
@@ -1652,7 +1652,7 @@ export { match }
  * - `distance` calculated `distance` of given descriptor to the best match
  * - `similarity` calculated normalized `similarity` of given descriptor to the best match
  */
-declare function match_2(descriptor: Descriptor, descriptors: Array<Descriptor>, options?: MatchOptions): {
+declare function match_2(descriptor: Descriptor, descriptors: Descriptor[], options?: MatchOptions): {
     index: number;
     distance: number;
     similarity: number;
@@ -1774,13 +1774,13 @@ declare interface ModelArtifactsInfo {
     weightDataBytes?: number;
 }
 
-export declare type ModelInfo = {
+export declare interface ModelInfo {
     name: string;
     inCache: boolean;
     sizeDesired: number;
     sizeFromManifest: number;
     sizeLoadedWeights: number;
-};
+}
 
 /**
  * The on-disk format of the `model.json` file.
@@ -1903,7 +1903,7 @@ declare namespace models {
 }
 export { models }
 
-export declare type ModelStats = {
+export declare interface ModelStats {
     numLoadedModels: number;
     numEnabledModels: undefined;
     numDefinedModels: number;
@@ -1913,7 +1913,7 @@ export declare type ModelStats = {
     totalSizeLoading: number;
     totalSizeEnabled: undefined;
     modelStats: ModelInfo[];
-};
+}
 
 /**
  * An interface for the manager of a model store.
@@ -2022,7 +2022,7 @@ declare type NamedTensorsMap = {
 declare type NumericDataType = 'float32' | 'int32' | 'bool' | 'complex64';
 
 /** draw detected objects */
-declare function object(inCanvas: AnyCanvas, result: Array<ObjectResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function object(inCanvas: AnyCanvas, result: ObjectResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
 
 /** Configures all object detection specific options */
 export declare interface ObjectConfig extends GenericConfig {
@@ -2065,7 +2065,7 @@ declare type OnProgressCallback = (fraction: number) => void;
 declare const options: DrawOptions;
 
 /** draw combined person results instead of individual detection result objects */
-declare function person(inCanvas: AnyCanvas, result: Array<PersonResult>, drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
 
 /** Person getter
  * - Triggers combining all individual results into a virtual person object
@@ -2083,7 +2083,7 @@ export declare interface PersonResult {
         right: HandResult | null;
     };
     /** detected gestures specific to this person */
-    gestures: Array<GestureResult>;
+    gestures: GestureResult[];
     /** box that defines the person */
     box: Box;
     /** box that defines the person normalized to 0..1 */
@@ -2167,15 +2167,15 @@ declare function reset(instance: Human): void;
  */
 export declare interface Result {
     /** {@link FaceResult}: detection & analysis results */
-    face: Array<FaceResult>;
+    face: FaceResult[];
     /** {@link BodyResult}: detection & analysis results */
-    body: Array<BodyResult>;
+    body: BodyResult[];
     /** {@link HandResult}: detection & analysis results */
-    hand: Array<HandResult>;
+    hand: HandResult[];
     /** {@link GestureResult}: detection & analysis results */
-    gesture: Array<GestureResult>;
+    gesture: GestureResult[];
     /** {@link ObjectResult}: detection & analysis results */
-    object: Array<ObjectResult>;
+    object: ObjectResult[];
     /** global performance object with timing values for each operation */
     performance: Record<string, number>;
     /** optional processed canvas that can be used to draw input on screen */
@@ -2183,7 +2183,7 @@ export declare interface Result {
     /** timestamp of detection representing the milliseconds elapsed since the UNIX epoch */
     readonly timestamp: number;
     /** getter property that returns unified persons object  */
-    persons: Array<PersonResult>;
+    persons: PersonResult[];
     /** Last known error message */
     error: string | null;
 }
@@ -2526,10 +2526,10 @@ declare type Url = string | io.IOHandler | io.IOHandlerSync;
 
 declare type UrlIOHandler<T extends Url> = T extends string ? io.IOHandler : T;
 
-declare function validate(newInstance: Human): Array<{
+declare function validate(newInstance: Human): {
     name: string;
     missing: string[];
-}>;
+}[];
 
 declare function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null;
 

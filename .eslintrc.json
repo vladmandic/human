@@ -1,93 +1,146 @@
 {
   "globals": {},
-  "env": {
-      "browser": true,
-      "commonjs": true,
-      "node": true,
-      "es2021": true
-  },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2021
-  },
-  "plugins": [
-    "@typescript-eslint",
-    "html"
-  ],
-  "extends": [
-    "airbnb-base",
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:json/recommended-with-comments",
-    "plugin:node/recommended",
-    "plugin:promise/recommended"
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "env": {
+        "browser": true,
+        "commonjs": false,
+        "node": false,
+        "es2021": true
+      },
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": "latest",
+        "project": ["./tsconfig.json"]
+      },
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "extends": [
+        "airbnb-base",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/recommended",
+        "plugin:promise/recommended"
+      ],
+      "rules": {
+        "@typescript-eslint/ban-ts-comment":"off",
+        "@typescript-eslint/no-empty-interface":"off",
+        "@typescript-eslint/no-inferrable-types":"off",
+        "dot-notation":"off",
+        "guard-for-in":"off",
+        "import/extensions": ["off", "always"],
+        "import/no-unresolved":"off",
+        "import/prefer-default-export":"off",
+        "lines-between-class-members":"off",
+        "max-len": [1, 275, 3],
+        "no-async-promise-executor":"off",
+        "no-await-in-loop":"off",
+        "no-bitwise":"off",
+        "no-continue":"off",
+        "no-lonely-if":"off",
+        "no-mixed-operators":"off",
+        "no-param-reassign":"off",
+        "no-plusplus":"off",
+        "no-regex-spaces":"off",
+        "no-restricted-syntax":"off",
+        "no-return-assign":"off",
+        "object-curly-newline":"off",
+        "prefer-destructuring":"off",
+        "prefer-template":"off",
+        "radix":"off"
+       }
+    },
+    {
+      "files": ["**/*.js"],
+      "env": {
+        "browser": true,
+        "commonjs": true,
+        "node": true,
+        "es2021": true
+      },
+      "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "plugins": [
+      ],
+      "extends": [
+        "airbnb-base",
+        "eslint:recommended",
+        "plugin:node/recommended",
+        "plugin:promise/recommended"
+      ],
+      "rules": {
+        "dot-notation":"off",
+        "import/extensions": ["error", "always"],
+        "import/no-extraneous-dependencies":"off",
+        "max-len": [1, 275, 3],
+        "no-await-in-loop":"off",
+        "no-bitwise":"off",
+        "no-continue":"off",
+        "no-mixed-operators":"off",
+        "no-param-reassign":"off",
+        "no-plusplus":"off",
+        "no-regex-spaces":"off",
+        "no-restricted-syntax":"off",
+        "no-return-assign":"off",
+        "node/no-unsupported-features/es-syntax":"off",
+        "object-curly-newline":"off",
+        "prefer-destructuring":"off",
+        "prefer-template":"off",
+        "radix":"off"
+       }
+    },
+    {
+      "files": ["**/*.json"],
+      "env": {
+        "browser": false,
+        "commonjs": false,
+        "node": false,
+        "es2021": false
+      },
+      "parserOptions": {
+        "ecmaVersion": "latest"
+      },
+      "plugins": [
+        "json"
+      ],
+      "extends": [
+        "plugin:json/recommended"
+      ] 
+    },
+    {
+      "files": ["**/*.html"],
+      "env": {
+        "browser": true,
+        "commonjs": false,
+        "node": false,
+        "es2021": false
+      },
+      "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "parser": "@html-eslint/parser",
+      "extends": ["plugin:@html-eslint/recommended"],
+      "plugins": [
+        "html", "@html-eslint"
+      ],
+      "rules": {
+        "@html-eslint/indent": ["error", 2],
+        "@html-eslint/element-newline":"off"
+      }
+    }
   ],
   "ignorePatterns": [
+    "node_modules",
     "assets",
+    "dist",
     "demo/helpers/*.js",
     "demo/typescript/*.js",
-    "demo/faceid/*.js",
-    "dist",
-    "media",
-    "models",
-    "node_modules",
-    "types/human.d.ts"
-  ],
-  "rules": {
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-shadow": "error",
-    "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/prefer-as-const": "off",
-    "@typescript-eslint/triple-slash-reference": "off",
-    "@typescript-eslint/no-inferrable-types": "off",
-    "@typescript-eslint/no-empty-interface": ["error", { "allowSingleExtends": true }],
-    "camelcase": "off",
-    "class-methods-use-this": "off",
-    "dot-notation": "off",
-    "func-names": "off",
-    "guard-for-in": "off",
-    "import/extensions": "off",
-    "import/named": "off",
-    "import/no-extraneous-dependencies": "off",
-    "import/no-named-as-default": "off",
-    "import/no-unresolved": "off",
-    "import/prefer-default-export": "off",
-    "lines-between-class-members": "off",
-    "max-len": [1, 275, 3],
-    "newline-per-chained-call": "off",
-    "no-async-promise-executor": "off",
-    "no-await-in-loop": "off",
-    "no-bitwise": "off",
-    "no-case-declarations":"off",
-    "no-continue": "off",
-    "no-else-return": "off",
-    "no-lonely-if": "off",
-    "no-loop-func": "off",
-    "no-mixed-operators": "off",
-    "no-param-reassign":"off",
-    "no-plusplus": "off",
-    "no-process-exit": "off",
-    "no-regex-spaces": "off",
-    "no-restricted-globals": "off",
-    "no-restricted-syntax": "off",
-    "no-return-assign": "off",
-    "no-shadow": "off",
-    "no-underscore-dangle": "off",
-    "node/no-missing-import": ["error", { "tryExtensions": [".js", ".json", ".ts"] }],
-    "node/no-unpublished-import": "off",
-    "node/no-unpublished-require": "off",
-    "node/no-unsupported-features/es-syntax": "off",
-    "node/shebang": "off",
-    "object-curly-newline": "off",
-    "prefer-destructuring": "off",
-    "prefer-template":"off",
-    "promise/always-return": "off",
-    "promise/catch-or-return": "off",
-    "promise/no-nesting": "off",
-    "radix": "off"
-  }
+    "demo/faceid/*.js"
+  ]
 }

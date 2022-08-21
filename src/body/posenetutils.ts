@@ -68,7 +68,7 @@ export function getBoundingBox(keypoints): [number, number, number, number] {
   return [coord.minX, coord.minY, coord.maxX - coord.minX, coord.maxY - coord.minY];
 }
 
-export function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]): Array<BodyResult> {
+export function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolutionWidth]): BodyResult[] {
   const scaleY = height / inputResolutionHeight;
   const scaleX = width / inputResolutionWidth;
   const scalePose = (pose, i): BodyResult => ({
@@ -90,7 +90,7 @@ export function scalePoses(poses, [height, width], [inputResolutionHeight, input
 
 // algorithm based on Coursera Lecture from Algorithms, Part 1: https://www.coursera.org/learn/algorithms-part1/lecture/ZjoSM/heapsort
 export class MaxHeap {
-  priorityQueue: Array<unknown>; // don't touch
+  priorityQueue: unknown[]; // don't touch
   numberOfElements: number;
   getElementValue: unknown; // function call
 

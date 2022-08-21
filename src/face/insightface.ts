@@ -14,7 +14,7 @@ import type { Config } from '../config';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
-const last: Array<number[]> = [];
+const last: number[][] = [];
 let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
@@ -35,14 +35,14 @@ export async function predict(input: Tensor, config: Config, idx, count): Promis
     return last[idx];
   }
   return new Promise(async (resolve) => {
-    let data: Array<number> = [];
+    let data: number[] = [];
     if (config.face['insightface']?.enabled && model?.inputs[0].shape) {
       const t: Record<string, Tensor> = {};
       t.crop = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false); // just resize to fit the embedding model
       // do a tight crop of image and resize it to fit the model
       // const box = [[0.05, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
       // t.crop = tf.image.cropAndResize(input, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
-      t.data = model?.execute(t.crop) as Tensor;
+      t.data = model.execute(t.crop) as Tensor;
       const output = await t.data.data();
       data = Array.from(output); // convert typed array to simple array
       Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));

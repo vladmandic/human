@@ -3,6 +3,8 @@
  * Based on: [WebGLImageFilter](https://github.com/phoboslab/WebGLImageFilter)
  */
 
+/* eslint-disable func-names */
+
 import * as shaders from './imagefxshaders';
 import { canvas } from './image';
 import { log } from '../util/util';
@@ -47,7 +49,7 @@ class GLProgram {
   }
 
   compile = (source, type): WebGLShader | null => {
-    const shader = this.gl.createShader(type) as WebGLShader;
+    const shader = this.gl.createShader(type);
     if (!shader) {
       log('filter: could not create shader');
       return null;
@@ -107,11 +109,11 @@ export function GLImageFilter() {
   }
 
   function createFramebufferTexture(width, height) {
-    const fbo = gl.createFramebuffer() as WebGLFramebuffer;
+    const fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     const renderbuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
-    const texture = gl.createTexture() as WebGLTexture;
+    const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -154,7 +156,7 @@ export function GLImageFilter() {
     if (shaderProgramCache[fragmentSource]) {
       currentProgram = shaderProgramCache[fragmentSource];
       gl.useProgram((currentProgram ? currentProgram.id : null) || null);
-      return currentProgram as GLProgram;
+      return currentProgram;
     }
     currentProgram = new GLProgram(gl, shaders.vertexIdentity, fragmentSource);
     if (!currentProgram) {
@@ -168,7 +170,7 @@ export function GLImageFilter() {
     gl.enableVertexAttribArray(currentProgram.attribute['uv']);
     gl.vertexAttribPointer(currentProgram.attribute['uv'], 2, gl.FLOAT, false, vertSize, 2 * floatSize);
     shaderProgramCache[fragmentSource] = currentProgram;
-    return currentProgram as GLProgram;
+    return currentProgram;
   }
 
   const filter = {
@@ -397,8 +399,7 @@ export function GLImageFilter() {
 
   // @ts-ignore this
   this.add = function (name) {
-    // eslint-disable-next-line prefer-rest-params
-    const args = Array.prototype.slice.call(arguments, 1);
+    const args = Array.prototype.slice.call(arguments, 1); // eslint-disable-line prefer-rest-params
     const func = filter[name];
     filterChain.push({ func, args });
   };

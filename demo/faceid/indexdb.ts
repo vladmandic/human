@@ -3,10 +3,9 @@ let db: IDBDatabase; // instance of indexdb
 const database = 'human';
 const table = 'person';
 
-export type FaceRecord = { id: number, name: string, descriptor: number[], image: ImageData };
+export interface FaceRecord { id: number, name: string, descriptor: number[], image: ImageData }
 
-// eslint-disable-next-line no-console
-const log = (...msg) => console.log('indexdb', ...msg);
+const log = (...msg) => console.log('indexdb', ...msg); // eslint-disable-line no-console
 
 export async function open() {
   if (db) return true;
@@ -19,7 +18,7 @@ export async function open() {
       db.createObjectStore(table, { keyPath: 'id', autoIncrement: true });
     };
     request.onsuccess = (evt) => { // open
-      db = (evt.target as IDBOpenDBRequest).result as IDBDatabase;
+      db = (evt.target as IDBOpenDBRequest).result;
       log('open:', db);
       resolve(true);
     };
@@ -27,7 +26,7 @@ export async function open() {
 }
 
 export async function load(): Promise<FaceRecord[]> {
-  const faceDB: Array<FaceRecord> = [];
+  const faceDB: FaceRecord[] = [];
   if (!db) await open(); // open or create if not already done
   return new Promise((resolve) => {
     const cursor: IDBRequest = db.transaction([table], 'readwrite').objectStore(table).openCursor(null, 'next');

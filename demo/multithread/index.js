@@ -5,7 +5,7 @@
  *
  */
 
-import Human from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
+import { Human } from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 import GLBench from '../helpers/gl-bench.js';
 
 const workerJS = './worker.js';
@@ -130,8 +130,7 @@ const result = { // initialize empty result object which will be partially fille
 function log(...msg) {
   const dt = new Date();
   const ts = `${dt.getHours().toString().padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt.getSeconds().toString().padStart(2, '0')}.${dt.getMilliseconds().toString().padStart(3, '0')}`;
-  // eslint-disable-next-line no-console
-  console.log(ts, ...msg);
+  console.log(ts, ...msg); // eslint-disable-line no-console
 }
 
 async function drawResults() {
@@ -203,7 +202,9 @@ async function setupCamera() {
     },
   };
   // enumerate devices for diag purposes
-  navigator.mediaDevices.enumerateDevices().then((devices) => log('enumerated devices:', devices));
+  navigator.mediaDevices.enumerateDevices()
+    .then((devices) => log('enumerated devices:', devices))
+    .catch(() => log('mediaDevices error'));
   log('camera constraints', constraints);
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -230,7 +231,7 @@ async function setupCamera() {
     };
   });
   // attach input to video element
-  if (stream && video) video['srcObject'] = stream;
+  if (stream && video) video.srcObject = stream;
   return promise;
 }
 

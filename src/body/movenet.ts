@@ -42,7 +42,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-async function parseSinglePose(res, config, image) {
+function parseSinglePose(res, config, image) {
   const kpt = res[0][0];
   const keypoints: BodyKeypoint[] = [];
   let score = 0;
@@ -80,7 +80,7 @@ async function parseSinglePose(res, config, image) {
   return bodies;
 }
 
-async function parseMultiPose(res, config, image) {
+function parseMultiPose(res, config, image) {
   const bodies: BodyResult[] = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
@@ -174,8 +174,8 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
     cache.last = now();
     const res = await t.res.array();
     cache.bodies = (t.res.shape[2] === 17)
-      ? await parseSinglePose(res, config, input)
-      : await parseMultiPose(res, config, input);
+      ? parseSinglePose(res, config, input)
+      : parseMultiPose(res, config, input);
     for (const body of cache.bodies) {
       fix.rescaleBody(body, [input.shape[2] || 1, input.shape[1] || 1]);
       fix.jitter(body.keypoints);

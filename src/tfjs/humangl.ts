@@ -11,9 +11,9 @@ import type { AnyCanvas } from '../exports';
 export const config = {
   name: 'humangl',
   priority: 999,
-  canvas: <null | AnyCanvas>null,
-  gl: <null | WebGL2RenderingContext>null,
-  extensions: <string[] | null> [],
+  canvas: null as null | AnyCanvas,
+  gl: null as null | WebGL2RenderingContext,
+  extensions: [] as string[] | null,
   webGLattr: { // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
     alpha: false,
     antialias: false,
@@ -42,7 +42,7 @@ function extensions(): void {
  *
  * @returns void
  */
-export async function register(instance: Human): Promise<void> {
+export function register(instance: Human): void {
   // force backend reload if gl context is not valid
   if (instance.config.backend !== 'humangl') return;
   if ((config.name in tf.engine().registry) && (!config.gl || !config.gl.getParameter(config.gl.VERSION))) {
@@ -56,7 +56,7 @@ export async function register(instance: Human): Promise<void> {
   }
   if (!tf.findBackend(config.name)) {
     try {
-      config.canvas = await image.canvas(100, 100);
+      config.canvas = image.canvas(100, 100);
     } catch (err) {
       log('error: cannot create canvas:', err);
       return;
@@ -74,7 +74,7 @@ export async function register(instance: Human): Promise<void> {
         return;
       }
       if (config.canvas) {
-        config.canvas.addEventListener('webglcontextlost', async (e) => {
+        config.canvas.addEventListener('webglcontextlost', (e) => {
           log('error: humangl:', e.type);
           log('possible browser memory leak using webgl or conflict with multiple backend registrations');
           instance.emit('error');
@@ -121,7 +121,7 @@ export async function register(instance: Human): Promise<void> {
     }
     const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
     if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
+      log(`humangl webgl version:${current.getParameter(current.VERSION) as string} renderer:${current.getParameter(current.RENDERER) as string}`);
     } else {
       log('error: no current gl context:', current, config.gl);
       return;

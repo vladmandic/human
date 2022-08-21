@@ -96,7 +96,7 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
     if (config.debug) log('cached model:', handDetectorModel['modelUrl']);
     if (config.debug) log('cached model:', handPoseModel['modelUrl']);
   }
-  const handDetector = new handdetector.HandDetector(handDetectorModel);
-  handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel);
+  const handDetector = handDetectorModel ? new handdetector.HandDetector(handDetectorModel) : undefined;
+  if (handDetector && handPoseModel) handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel);
   return [handDetectorModel, handPoseModel];
 }

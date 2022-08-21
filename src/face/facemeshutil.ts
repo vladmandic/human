@@ -69,7 +69,7 @@ export const calculateLandmarksBoundingBox = (landmarks) => {
 
 export const fixedRotationMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 
-export const normalizeRadians = (angle) => angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
+export const normalizeRadians = (angle: number) => angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
 
 export const computeRotation = (point1, point2) => normalizeRadians(Math.PI / 2 - Math.atan2(-(point2[1] - point1[1]), point2[0] - point1[0]));
 
@@ -120,7 +120,7 @@ export const rotatePoint = (homogeneousCoordinate, rotationMatrix) => [dot(homog
 
 export const xyDistanceBetweenPoints = (a, b) => Math.sqrt(((a[0] - b[0]) ** 2) + ((a[1] - b[1]) ** 2));
 
-export function generateAnchors(inputSize) {
+export function generateAnchors(inputSize: number) {
   const spec = inputSize === 192
     ? { strides: [4], anchors: [1] } // facemesh-detector
     : { strides: [inputSize / 16, inputSize / 8], anchors: [2, 6] }; // blazeface

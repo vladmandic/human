@@ -295,7 +295,7 @@ export class Human {
 
     if (this.env.initial) { // print version info on first run and check for correct backend setup
       if (this.config.debug) log(`version: ${this.version}`);
-      if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core']}`);
+      if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core'] as string}`);
       if (!await backend.check(this)) log('error: backend check failed');
       await tf.ready();
       if (this.env.browser) {
@@ -321,7 +321,7 @@ export class Human {
 
   /** emit event */
   emit = (event: string) => {
-    if (this.events && this.events.dispatchEvent) this.events.dispatchEvent(new Event(event));
+    if (this.events?.dispatchEvent) this.events.dispatchEvent(new Event(event));
   };
 
   /** Runs interpolation using last known result and returns smoothened result

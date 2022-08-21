@@ -45,7 +45,7 @@ const log = (...msg) => { // helper method to output messages
   console.log(...msg); // eslint-disable-line no-console
 };
 const status = (msg) => dom.fps.innerText = msg; // print status element
-const perf = (msg) => dom.perf.innerText = 'tensors:' + human.tf.memory().numTensors + ' | performance: ' + JSON.stringify(msg).replace(/"|{|}/g, '').replace(/,/g, ' | '); // print performance element
+const perf = (msg) => dom.perf.innerText = 'tensors:' + (human.tf.memory().numTensors as number).toString() + ' | performance: ' + JSON.stringify(msg).replace(/"|{|}/g, '').replace(/,/g, ' | '); // print performance element
 
 async function webCam() { // initialize webcam
   status('starting webcam...');
@@ -54,7 +54,7 @@ async function webCam() { // initialize webcam
   const stream: MediaStream = await navigator.mediaDevices.getUserMedia(options);
   const ready = new Promise((resolve) => { dom.video.onloadeddata = () => resolve(true); });
   dom.video.srcObject = stream;
-  dom.video.play();
+  void dom.video.play();
   await ready;
   dom.canvas.width = dom.video.videoWidth;
   dom.canvas.height = dom.video.videoHeight;
@@ -64,7 +64,7 @@ async function webCam() { // initialize webcam
   const constraints: MediaTrackConstraints | string = track.getConstraints ? track.getConstraints() : '';
   log('video:', dom.video.videoWidth, dom.video.videoHeight, track.label, { stream, track, settings, constraints, capabilities });
   dom.canvas.onclick = () => { // pause when clicked on screen and resume on next click
-    if (dom.video.paused) dom.video.play();
+    if (dom.video.paused) void dom.video.play();
     else dom.video.pause();
   };
 }
@@ -88,9 +88,9 @@ async function detectionLoop() { // main detection loop
 
 async function drawLoop() { // main screen refresh loop
   if (!dom.video.paused) {
-    const interpolated = await human.next(human.result); // smoothen result using last-known results
-    if (human.config.filter.flip) await human.draw.canvas(interpolated.canvas as HTMLCanvasElement, dom.canvas); // draw processed image to screen canvas
-    else await human.draw.canvas(dom.video, dom.canvas); // draw original video to screen canvas // better than using procesed image as this loop happens faster than processing loop
+    const interpolated = human.next(human.result); // smoothen result using last-known results
+    if (human.config.filter.flip) human.draw.canvas(interpolated.canvas as HTMLCanvasElement, dom.canvas); // draw processed image to screen canvas
+    else human.draw.canvas(dom.video, dom.canvas); // draw original video to screen canvas // better than using procesed image as this loop happens faster than processing loop
     await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
     perf(interpolated.performance); // write performance data
   }

@@ -7,15 +7,15 @@ import { log } from './util';
 
 export const data = {};
 
-export type ProfileData = {
+export interface ProfileData {
   newBytes: number,
   peakBytes: number,
   newTensors: number,
-  kernels: Array<{
+  kernels: {
     id: number,
     kernelTimeMs: number,
     totalBytesSnapshot: number,
-  }>,
+  }[],
 }
 
 export function run(modelName: string, profileData: ProfileData): void { // profileData is tfjs internal type

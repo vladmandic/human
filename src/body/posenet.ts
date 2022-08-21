@@ -19,7 +19,7 @@ const localMaximumRadius = 1;
 const outputStride = 16;
 const squaredNmsRadius = 50 ** 2;
 
-function traverse(edgeId, sourceKeypoint, targetId, scores, offsets, displacements, offsetRefineStep = 2) {
+function traverse(edgeId: number, sourceKeypoint, targetId, scores, offsets, displacements, offsetRefineStep = 2) {
   const getDisplacement = (point) => ({
     y: displacements.get(point.y, point.x, edgeId),
     x: displacements.get(point.y, point.x, (displacements.shape[2] / 2) + edgeId),
@@ -81,8 +81,8 @@ export function decodePose(root, scores, offsets, displacementsFwd, displacement
   return keypoints;
 }
 
-function scoreIsMaximumInLocalWindow(keypointId, score, heatmapY, heatmapX, scores) {
-  const [height, width] = scores.shape;
+function scoreIsMaximumInLocalWindow(keypointId, score: number, heatmapY: number, heatmapX: number, scores) {
+  const [height, width]: [number, number] = scores.shape;
   let localMaximum = true;
   const yStart = Math.max(heatmapY - localMaximumRadius, 0);
   const yEnd = Math.min(heatmapY + localMaximumRadius + 1, height);
@@ -172,7 +172,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
   const buffers = await Promise.all(res.map((tensor: Tensor) => tensor.buffer()));
   for (const t of res) tf.dispose(t);
 
-  const decoded = await decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
+  const decoded = decode(buffers[0], buffers[1], buffers[2], buffers[3], config.body.maxDetected, config.body.minConfidence);
   if (!model.inputs[0].shape) return [];
   const scaled = utils.scalePoses(decoded, [input.shape[1], input.shape[2]], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
   return scaled;

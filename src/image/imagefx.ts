@@ -9,7 +9,7 @@ import * as shaders from './imagefxshaders';
 import { canvas } from './image';
 import { log } from '../util/util';
 
-const collect = (source, prefix, collection) => {
+const collect = (source, prefix: string, collection) => {
   const r = new RegExp('\\b' + prefix + ' \\w+ (\\w+)', 'ig');
   source.replace(r, (match, name) => {
     collection[name] = 0;
@@ -37,7 +37,7 @@ class GLProgram {
     this.gl.attachShader(this.id, fragmentShader);
     this.gl.linkProgram(this.id);
     if (!this.gl.getProgramParameter(this.id, this.gl.LINK_STATUS)) {
-      log(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id)}`);
+      log(`filter: gl link failed: ${this.gl.getProgramInfoLog(this.id) || 'unknown'}`);
       return;
     }
     this.gl.useProgram(this.id);
@@ -57,7 +57,7 @@ class GLProgram {
     this.gl.shaderSource(shader, source);
     this.gl.compileShader(shader);
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      log(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader)}`);
+      log(`filter: gl compile failed: ${this.gl.getShaderInfoLog(shader) || 'unknown'}`);
       return null;
     }
     return shader;
@@ -174,7 +174,7 @@ export function GLImageFilter() {
   }
 
   const filter = {
-    colorMatrix: (matrix) => { // general color matrix filter
+    colorMatrix: (matrix: number[]) => { // general color matrix filter
       const m = new Float32Array(matrix);
       m[4] /= 255;
       m[9] /= 255;
@@ -189,7 +189,7 @@ export function GLImageFilter() {
       draw();
     },
 
-    brightness: (brightness) => {
+    brightness: (brightness: number) => {
       const b = (brightness || 0) + 1;
       filter.colorMatrix([
         b, 0, 0, 0, 0,
@@ -199,7 +199,7 @@ export function GLImageFilter() {
       ]);
     },
 
-    saturation: (amount) => {
+    saturation: (amount: number) => {
       const x = (amount || 0) * 2 / 3 + 1;
       const y = ((x - 1) * -0.5);
       filter.colorMatrix([
@@ -214,7 +214,7 @@ export function GLImageFilter() {
       filter.saturation(-1);
     },
 
-    contrast: (amount) => {
+    contrast: (amount: number) => {
       const v = (amount || 0) + 1;
       const o = -128 * (v - 1);
       filter.colorMatrix([
@@ -229,7 +229,7 @@ export function GLImageFilter() {
       filter.contrast(-2);
     },
 
-    hue: (rotation) => {
+    hue: (rotation: number) => {
       rotation = (rotation || 0) / 180 * Math.PI;
       const cos = Math.cos(rotation);
       const sin = Math.sin(rotation);
@@ -316,7 +316,7 @@ export function GLImageFilter() {
       ]);
     },
 
-    convolution: (matrix) => { // general convolution Filter
+    convolution: (matrix: number[]) => { // general convolution Filter
       const m = new Float32Array(matrix);
       const pixelSizeX = 1 / fxcanvas.width;
       const pixelSizeY = 1 / fxcanvas.height;
@@ -364,7 +364,7 @@ export function GLImageFilter() {
       ]);
     },
 
-    emboss: (size) => {
+    emboss: (size: number) => {
       const s = size || 1;
       // @ts-ignore this
       filter.convolution.call(this, [
@@ -374,7 +374,7 @@ export function GLImageFilter() {
       ]);
     },
 
-    blur: (size) => {
+    blur: (size: number) => {
       const blurSizeX = (size / 7) / fxcanvas.width;
       const blurSizeY = (size / 7) / fxcanvas.height;
       const program = compileShader(shaders.blur);
@@ -387,7 +387,7 @@ export function GLImageFilter() {
       draw();
     },
 
-    pixelate: (size) => {
+    pixelate: (size: number) => {
       const blurSizeX = (size) / fxcanvas.width;
       const blurSizeY = (size) / fxcanvas.height;
       const program = compileShader(shaders.pixelate);

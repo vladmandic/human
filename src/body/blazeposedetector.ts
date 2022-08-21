@@ -10,7 +10,7 @@ let anchorTensor: { x, y };
 const numLayers = 5;
 const strides = [8, 16, 32, 32, 32];
 
-export async function createAnchors() {
+export function createAnchors() {
   const anchors: { x: number, y: number }[] = [];
   let layerId = 0;
   while (layerId < numLayers) {
@@ -62,7 +62,7 @@ export async function decode(boxesTensor: Tensor, logitsTensor: Tensor, config: 
   const i = (await t.argmax.data())[0];
   const scores = await t.scores.data();
   const detected: { box: Box, boxRaw: Box, score: number }[] = [];
-  const minScore = (config.body['detector'] && config.body['detector'].minConfidence) ? config.body['detector'].minConfidence : 0;
+  const minScore = config.body?.['detector']?.minConfidence || 0;
   if (scores[i] >= minScore) {
     const boxes = await t.boxes.array();
     const boxRaw: Box = boxes[i];

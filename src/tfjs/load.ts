@@ -23,7 +23,7 @@ export interface ModelInfo {
 
 export const modelStats: Record<string, ModelInfo> = {};
 
-async function httpHandler(url, init?): Promise<Response | null> {
+async function httpHandler(url: string, init?: RequestInit): Promise<Response | null> {
   if (options.debug) log('load model fetch:', url, init);
   return fetch(url, init);
 }
@@ -55,7 +55,7 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     options.cacheSupported = false;
   }
   modelStats[shortModelName].inCache = (options.cacheSupported && options.cacheModels) && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
-  const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url, init?) => httpHandler(url, init) };
+  const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url: string, init?: RequestInit) => httpHandler(url, init) };
   const model: GraphModel = new tf.GraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
   let loaded = false;
   try {
@@ -81,6 +81,6 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
       log('error saving model:', modelUrl, err);
     }
   }
-  validateModel(null, model, `${modelPath}`);
+  validateModel(null, model, `${modelPath || ''}`);
   return model;
 }

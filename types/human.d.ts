@@ -28,7 +28,7 @@ declare interface ArrayMap {
 export declare type BackendType = ['cpu', 'wasm', 'webgl', 'humangl', 'tensorflow', 'webgpu'];
 
 /** draw detected bodies */
-declare function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>): void;
 
 export declare type BodyAnnotation = BodyAnnotationBlazePose | BodyAnnotationEfficientPose;
 
@@ -140,7 +140,7 @@ declare function browserFiles(files: File[]): IOHandler;
 declare function browserHTTPRequest(path: string, loadOptions?: LoadOptions): IOHandler;
 
 /** draw processed canvas */
-declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas): Promise<void>;
+declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas): void;
 
 /**
  * Concatenate a number of ArrayBuffers into one.
@@ -509,7 +509,7 @@ export declare type Events = 'create' | 'load' | 'image' | 'result' | 'warmup' |
 export declare type ExternalCanvas = typeof env.Canvas;
 
 /** draw detected faces */
-declare function face(inCanvas: AnyCanvas, result: FaceResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function face(inCanvas: AnyCanvas, result: FaceResult[], drawOptions?: Partial<DrawOptions>): void;
 
 /** Anti-spoofing part of face configuration */
 export declare interface FaceAntiSpoofConfig extends GenericConfig {
@@ -780,7 +780,7 @@ export declare interface GenericConfig {
 }
 
 /** draw detected gestures */
-declare function gesture(inCanvas: AnyCanvas, result: GestureResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function gesture(inCanvas: AnyCanvas, result: GestureResult[], drawOptions?: Partial<DrawOptions>): void;
 
 /** Controlls gesture detection */
 export declare interface GestureConfig {
@@ -1038,7 +1038,7 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
 }
 
 /** draw detected hands */
-declare function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Partial<DrawOptions>): void;
 
 /** Configures all hand detection specific options */
 export declare interface HandConfig extends GenericConfig {
@@ -2022,7 +2022,7 @@ declare type NamedTensorsMap = {
 declare type NumericDataType = 'float32' | 'int32' | 'bool' | 'complex64';
 
 /** draw detected objects */
-declare function object(inCanvas: AnyCanvas, result: ObjectResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function object(inCanvas: AnyCanvas, result: ObjectResult[], drawOptions?: Partial<DrawOptions>): void;
 
 /** Configures all object detection specific options */
 export declare interface ObjectConfig extends GenericConfig {
@@ -2065,7 +2065,7 @@ declare type OnProgressCallback = (fraction: number) => void;
 declare const options: DrawOptions;
 
 /** draw combined person results instead of individual detection result objects */
-declare function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?: Partial<DrawOptions>): Promise<void>;
+declare function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?: Partial<DrawOptions>): void;
 
 /** Person getter
  * - Triggers combining all individual results into a virtual person object

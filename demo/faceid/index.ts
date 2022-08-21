@@ -103,20 +103,20 @@ async function webCam() { // initialize webcam
   const stream: MediaStream = await navigator.mediaDevices.getUserMedia(cameraOptions);
   const ready = new Promise((resolve) => { dom.video.onloadeddata = () => resolve(true); });
   dom.video.srcObject = stream;
-  dom.video.play();
+  void dom.video.play();
   await ready;
   dom.canvas.width = dom.video.videoWidth;
   dom.canvas.height = dom.video.videoHeight;
   if (human.env.initial) log('video:', dom.video.videoWidth, dom.video.videoHeight, '|', stream.getVideoTracks()[0].label);
   dom.canvas.onclick = () => { // pause when clicked on screen and resume on next click
-    if (dom.video.paused) dom.video.play();
+    if (dom.video.paused) void dom.video.play();
     else dom.video.pause();
   };
 }
 
 async function detectionLoop() { // main detection loop
   if (!dom.video.paused) {
-    if (current.face && current.face.tensor) human.tf.dispose(current.face.tensor); // dispose previous tensor
+    if (current.face?.tensor) human.tf.dispose(current.face.tensor); // dispose previous tensor
     await human.detect(dom.video); // actual detection; were not capturing output in a local variable as it can also be reached via human.result
     const now = human.now();
     fps.detect = 1000 / (now - timestamp.detect);
@@ -126,8 +126,8 @@ async function detectionLoop() { // main detection loop
 }
 
 async function validationLoop(): Promise<H.FaceResult> { // main screen refresh loop
-  const interpolated = await human.next(human.result); // smoothen result using last-known results
-  await human.draw.canvas(dom.video, dom.canvas); // draw canvas to screen
+  const interpolated = human.next(human.result); // smoothen result using last-known results
+  human.draw.canvas(dom.video, dom.canvas); // draw canvas to screen
   await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
   const now = human.now();
   fps.draw = 1000 / (now - timestamp.draw);
@@ -135,7 +135,7 @@ async function validationLoop(): Promise<H.FaceResult> { // main screen refresh 
   printFPS(`fps: ${fps.detect.toFixed(1).padStart(5, ' ')} detect | ${fps.draw.toFixed(1).padStart(5, ' ')} draw`); // write status
   ok.faceCount = human.result.face.length === 1; // must be exactly detected face
   if (ok.faceCount) { // skip the rest if no face
-    const gestures: string[] = Object.values(human.result.gesture).map((gesture) => (gesture as H.GestureResult).gesture); // flatten all gestures
+    const gestures: string[] = Object.values(human.result.gesture).map((gesture: H.GestureResult) => gesture.gesture); // flatten all gestures
     if (gestures.includes('blink left eye') || gestures.includes('blink right eye')) blink.start = human.now(); // blink starts when eyes get closed
     if (blink.start > 0 && !gestures.includes('blink left eye') && !gestures.includes('blink right eye')) blink.end = human.now(); // if blink started how long until eyes are back open
     ok.blinkDetected = ok.blinkDetected || (Math.abs(blink.end - blink.start) > options.blinkMin && Math.abs(blink.end - blink.start) < options.blinkMax);
@@ -173,8 +173,8 @@ async function validationLoop(): Promise<H.FaceResult> { // main screen refresh 
   ok.elapsedMs = Math.trunc(human.now() - startTime);
   return new Promise((resolve) => {
     setTimeout(async () => {
-      const res = await validationLoop(); // run validation loop until conditions are met
-      if (res) resolve(human.result.face[0]); // recursive promise resolve
+      await validationLoop(); // run validation loop until conditions are met
+      resolve(human.result.face[0]); // recursive promise resolve
     }, 30); // use to slow down refresh from max refresh rate to target of 30 fps
   });
 }
@@ -210,7 +210,7 @@ async function detectFace() {
   }
   const db = await indexDb.load();
   const descriptors = db.map((rec) => rec.descriptor).filter((desc) => desc.length > 0);
-  const res = await human.match(current.face.embedding, descriptors, matchOptions);
+  const res = human.match(current.face.embedding, descriptors, matchOptions);
   current.record = db[res.index] || null;
   if (current.record) {
     log(`best match: ${current.record.name} | id: ${current.record.id} | similarity: ${Math.round(1000 * res.similarity) / 10}%`);

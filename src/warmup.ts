@@ -10,6 +10,7 @@ import { env } from './util/env';
 import type { Config } from './config';
 import type { Result } from './result';
 import type { Human, Models } from './human';
+import type { Tensor } from './exports';
 
 async function warmupBitmap(instance: Human): Promise<Result | undefined> {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
@@ -76,10 +77,10 @@ async function warmupNode(instance: Human): Promise<Result | undefined> {
   let img;
   if (instance.config.warmup === 'face') img = atob(sample.face);
   else img = atob(sample.body);
-  let res;
+  let res: Result;
   if (('node' in tf) && (tf.getBackend() === 'tensorflow')) {
-    const data = tf['node'].decodeJpeg(img); // eslint-disable-line import/namespace
-    const expanded = data.expandDims(0);
+    const data: Tensor = tf['node'].decodeJpeg(img); // eslint-disable-line import/namespace
+    const expanded: Tensor = tf.expandDims(data, 0);
     instance.tf.dispose(data);
     // log('Input:', expanded);
     res = await instance.detect(expanded, instance.config);
@@ -94,6 +95,7 @@ async function warmupNode(instance: Human): Promise<Result | undefined> {
     res = await instance.detect(input, instance.config);
     */
   }
+  // @ts-ignore
   return res;
 }
 
@@ -118,8 +120,8 @@ export async function runCompile(allModels: Models) {
   const numTensorsStart = tf.engine().state.numTensors;
   const compiledModels: string[] = [];
   for (const [modelName, model] of Object.entries(allModels).filter(([key, val]) => (key !== null && val !== null))) {
-    const shape = (model.inputs && model.inputs[0] && model.inputs[0].shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
-    const dtype = (model.inputs && model.inputs[0] && model.inputs[0].dtype) ? model.inputs[0].dtype : 'float32';
+    const shape = (model.inputs?.[0]?.shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
+    const dtype: string = (model.inputs?.[0]?.dtype) ? model.inputs[0].dtype : 'float32';
     for (let dim = 0; dim < shape.length; dim++) {
       if (shape[dim] === -1) shape[dim] = dim === 0 ? 1 : 64; // override batch number and any dynamic dimensions
     }

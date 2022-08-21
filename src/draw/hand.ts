@@ -5,8 +5,8 @@ import type { HandResult } from '../result';
 import type { AnyCanvas, DrawOptions, Point } from '../exports';
 
 /** draw detected hands */
-export async function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Partial<DrawOptions>) {
-  const localOptions = mergeDeep(options, drawOptions);
+export function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Partial<DrawOptions>) {
+  const localOptions: DrawOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
   if (!ctx) return;

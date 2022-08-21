@@ -5,8 +5,8 @@ import type { BodyResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
 
 /** draw detected bodies */
-export async function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>) {
-  const localOptions = mergeDeep(options, drawOptions);
+export function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>) {
+  const localOptions: DrawOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   const ctx = getCanvasContext(inCanvas);
   if (!ctx) return;

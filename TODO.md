@@ -50,6 +50,7 @@ Model is supported using `WebGL` backend in browser
 
 ## Pending Release Changes
 
+- Update TFJS to **3.20.0**
 - Add **InsightFace** model as alternative for face embedding/descriptor detection  
   Compatible with multiple variations of **InsightFace** models  
   Configurable using `config.face.insightface` config section  

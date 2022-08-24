@@ -158,7 +158,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   if (config.filter.enabled && env.webgl.supported) {
     if (!fx) fx = env.browser ? new fxImage.GLImageFilter() : null; // && (typeof document !== 'undefined')
     env.filter = !!fx;
-    if (!fx || !fx.add) {
+    if (!fx?.add) {
       if (config.debug) log('input process error: cannot initialize filters');
       env.webgl.supported = false;
       config.filter.enabled = false;

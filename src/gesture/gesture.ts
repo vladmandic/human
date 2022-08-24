@@ -79,7 +79,7 @@ export const iris = (res: FaceResult[]): GestureResult[] => {
   if (!res) return [];
   const gestures: { iris: number, gesture: IrisGesture }[] = [];
   for (let i = 0; i < res.length; i++) {
-    if (!res[i].annotations || !res[i].annotations.leftEyeIris || !res[i].annotations.leftEyeIris[0] || !res[i].annotations.rightEyeIris || !res[i].annotations.rightEyeIris[0]) continue;
+    if (!res[i].annotations?.leftEyeIris?.[0] || !res[i].annotations?.rightEyeIris?.[0]) continue;
     const sizeXLeft = res[i].annotations.leftEyeIris[3][0] - res[i].annotations.leftEyeIris[1][0];
     const sizeYLeft = res[i].annotations.leftEyeIris[4][1] - res[i].annotations.leftEyeIris[2][1];
     const areaLeft = Math.abs(sizeXLeft * sizeYLeft);

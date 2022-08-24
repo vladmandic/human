@@ -24,7 +24,7 @@ function log(...msg) {
 
 const myConfig = {
   modelBasePath: 'https://vladmandic.github.io/human/models',
-  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.18.0/dist/',
+  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.20.0/dist/',
   debug: true,
   async: true,
   cacheSensitivity: 0,

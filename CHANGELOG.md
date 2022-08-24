@@ -11,6 +11,8 @@
   
 ### **HEAD -> main** 2022/08/21 mandic00@live.com
 
+- expand type safety
+- full eslint rule rewrite
 
 ### **2.9.4** 2022/08/20 mandic00@live.com
 

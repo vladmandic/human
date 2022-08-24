@@ -61,7 +61,7 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
 
 function prepareImage(input: Tensor, size: number): Tensor {
   const t: Record<string, Tensor> = {};
-  if (!input.shape || !input.shape[1] || !input.shape[2]) return input;
+  if (!input?.shape?.[1] || !input?.shape?.[2]) return input;
   let final: Tensor;
   if (cropBox) {
     t.cropped = tf.image.cropAndResize(input, [cropBox], [0], [input.shape[1], input.shape[2]]); // if we have cached box use it to crop input

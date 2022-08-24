@@ -45,7 +45,7 @@ function extensions(): void {
 export function register(instance: Human): void {
   // force backend reload if gl context is not valid
   if (instance.config.backend !== 'humangl') return;
-  if ((config.name in tf.engine().registry) && (!config.gl || !config.gl.getParameter(config.gl.VERSION))) {
+  if ((config.name in tf.engine().registry) && !config?.gl?.getParameter(config.gl.VERSION)) {
     log('error: humangl backend invalid context');
     models.reset(instance);
     /*

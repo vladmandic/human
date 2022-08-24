@@ -61,7 +61,7 @@ export function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, o
 
 /** meta-function that performs draw for: canvas, face, body, hand */
 export async function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>) {
-  if (!result || !result.performance || !result || !inCanvas) return null;
+  if (!result?.performance || !inCanvas) return null;
   const timeStamp = now();
   const localOptions = mergeDeep(options, drawOptions);
   const promise = Promise.all([

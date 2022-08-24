@@ -11,7 +11,7 @@ import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
 const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
   // backend: 'wasm' as const,
-  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.18.0/dist/',
+  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.20.0/dist/',
   // cacheSensitivity: 0,
   async: false,
   modelBasePath: '../../models',

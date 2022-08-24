@@ -112,7 +112,7 @@ export async function runCompile(allModels: Models) {
   if (!tf.env().flagRegistry.ENGINE_COMPILE_ONLY) return; // tfjs does not support compile-only inference
   const backendType = tf.getBackend();
   const webGLBackend = tf.backend();
-  if ((backendType !== 'webgl' && backendType !== 'humangl') || (!webGLBackend || !webGLBackend.checkCompileCompletion)) {
+  if ((backendType !== 'webgl' && backendType !== 'humangl') || !webGLBackend?.checkCompileCompletion) {
     // log('compile pass: skip');
     return;
   }

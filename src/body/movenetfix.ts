@@ -75,7 +75,7 @@ export function jitter(keypoints: BodyKeypoint[]): BodyKeypoint[] {
 
 export function padInput(input: Tensor, inputSize: number): Tensor {
   const t: Record<string, Tensor> = {};
-  if (!input.shape || !input.shape[1] || !input.shape[2]) return input;
+  if (!input?.shape?.[1] || !input?.shape?.[2]) return input;
   cache.padding = [
     [0, 0], // dont touch batch
     [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0], // height before&after

@@ -19,7 +19,7 @@ export interface ProfileData {
 }
 
 export function run(modelName: string, profileData: ProfileData): void { // profileData is tfjs internal type
-  if (!profileData || !profileData.kernels) return;
+  if (!profileData?.kernels) return;
   const maxDetected = 5;
   const time = (profileData.kernels)
     .filter((a) => a.kernelTimeMs > 0)

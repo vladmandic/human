@@ -296,6 +296,8 @@ async function test(Human, inputConfig) {
   const loaded = models.filter((model) => model.loaded);
   if (models.length === 23 && loaded.length === 12) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
+  log('info', 'memory:', { memory: human.tf.memory() });
+  log('info', 'state:', { state: human.tf.engine().state });
 
   // increase defaults
   config.face = { detector: { maxDetected: 20 } };

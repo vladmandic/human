@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/08/21 mandic00@live.com
+### **HEAD -> main** 2022/08/24 mandic00@live.com
 
 - expand type safety
 - full eslint rule rewrite

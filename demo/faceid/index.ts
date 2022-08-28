@@ -199,7 +199,7 @@ async function deleteRecord() {
 
 async function detectFace() {
   dom.canvas.getContext('2d')?.clearRect(0, 0, options.minSize, options.minSize);
-  if (!current.face || !current.face.tensor || !current.face.embedding) return false;
+  if (!current?.face?.tensor || !current?.face?.embedding) return false;
   console.log('face record:', current.face); // eslint-disable-line no-console
   human.tf.browser.toPixels(current.face.tensor as unknown as H.TensorLike, dom.canvas);
   if (await indexDb.count() === 0) {

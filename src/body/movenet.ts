@@ -37,7 +37,7 @@ export async function load(config: Config): Promise<GraphModel> {
     fakeOps(['size'], config);
     model = await loadModel(config.body.modelPath);
   } else if (config.debug) log('cached model:', model['modelUrl']);
-  inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
+  inputSize = (model?.['executor'] && model?.inputs?.[0].shape) ? model.inputs[0].shape[2] : 0;
   if (inputSize < 64) inputSize = 256;
   return model;
 }
@@ -124,7 +124,7 @@ function parseMultiPose(res, config, image) {
 }
 
 export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
-  if (!model?.inputs?.[0].shape) return []; // something is wrong with the model
+  if (!model?.['executor'] || !model?.inputs?.[0].shape) return []; // something is wrong with the model
   if (!config.skipAllowed) cache.boxes.length = 0; // allowed to use cache or not
   skipped++; // increment skip frames
   const skipTime = (config.body.skipTime || 0) > (now() - cache.last);

@@ -34,7 +34,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
   if (env.initial) models.detector = null;
   if (!models.detector && config.body['detector'] && config.body['detector'].modelPath || '') {
     models.detector = await loadModel(config.body['detector'].modelPath);
-    const inputs = Object.values(models.detector.modelSignature['inputs']);
+    const inputs = models.detector?.['executor'] ? Object.values(models.detector.modelSignature['inputs']) : undefined;
     inputSize.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug && models.detector) log('cached model:', models.detector['modelUrl']);
@@ -46,7 +46,7 @@ export async function loadPose(config: Config): Promise<GraphModel> {
   if (env.initial) models.landmarks = null;
   if (!models.landmarks) {
     models.landmarks = await loadModel(config.body.modelPath);
-    const inputs = Object.values(models.landmarks.modelSignature['inputs']);
+    const inputs = models.landmarks?.['executor'] ? Object.values(models.landmarks.modelSignature['inputs']) : undefined;
     inputSize.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug) log('cached model:', models.landmarks['modelUrl']);
@@ -140,6 +140,7 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
    * t.world: 39 keypoints [x,y,z] normalized to -1..1
    * t.poseflag: body score
   */
+  if (!models.landmarks?.['executor']) return null;
   const t: Record<string, Tensor> = {};
   [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = models.landmarks?.execute(input, outputNodes.landmarks) as Tensor[]; // run model
   const poseScore = (await t.poseflag.data())[0];

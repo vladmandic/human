@@ -28,7 +28,7 @@ export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) model = await loadModel(config.face.detector?.modelPath);
   else if (config.debug) log('cached model:', model['modelUrl']);
-  inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
+  inputSize = (model['executor'] && model.inputs[0].shape) ? model.inputs[0].shape[2] : 256;
   inputSizeT = tf.scalar(inputSize, 'int32') as Tensor;
   anchors = tf.tensor2d(util.generateAnchors(inputSize)) as Tensor;
   return model;

@@ -33,6 +33,7 @@ let model: GraphModel | null = null;
 let inputSize = 0;
 
 export async function predict(input: Tensor, config: Config): Promise<FaceResult[]> {
+  if (!model?.['executor']) return [];
   // reset cached boxes
   const skipTime = (config.face.detector?.skipTime || 0) > (now() - cache.timestamp);
   const skipFrame = cache.skipped < (config.face.detector?.skipFrames || 0);
@@ -120,7 +121,7 @@ export async function predict(input: Tensor, config: Config): Promise<FaceResult
         if (config.face.attention?.enabled) {
           rawCoords = await attention.augment(rawCoords, results); // augment iris results using attention model results
         } else if (config.face.iris?.enabled) {
-          rawCoords = await iris.augmentIris(rawCoords, face.tensor, config, inputSize); // run iris model and augment results
+          rawCoords = await iris.augmentIris(rawCoords, face.tensor, inputSize); // run iris model and augment results
         }
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size]);
@@ -158,7 +159,7 @@ export async function load(config: Config): Promise<GraphModel> {
   } else if (config.debug) {
     log('cached model:', model['modelUrl']);
   }
-  inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
+  inputSize = (model['executor'] && model?.inputs?.[0].shape) ? model?.inputs?.[0].shape[2] : 256;
   return model;
 }
 

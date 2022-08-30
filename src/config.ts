@@ -286,6 +286,11 @@ export interface Config {
   */
   cacheSensitivity: number;
 
+  /** Software Kernels
+   * Registers software kernel ops running on CPU when accelerated version of kernel is not found in the current backend
+  */
+  softwareKernels: boolean,
+
   /** Perform immediate garbage collection on deallocated tensors instead of caching them */
   deallocate: boolean;
 
@@ -328,6 +333,7 @@ const config: Config = {
   cacheSensitivity: 0.70,
   skipAllowed: false,
   deallocate: false,
+  softwareKernels: false,
   filter: {
     enabled: true,
     equalization: false,

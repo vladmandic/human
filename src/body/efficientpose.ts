@@ -51,6 +51,7 @@ async function max2d(inputs, minScore): Promise<[number, number, number]> {
 }
 
 export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
+  if (!model?.['executor']) return [];
   const skipTime = (config.body.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.body.skipFrames || 0);
   if (config.skipAllowed && skipTime && skipFrame && Object.keys(cache.keypoints).length > 0) {

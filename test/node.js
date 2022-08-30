@@ -8,10 +8,12 @@ let logFile = 'test.log';
 log.configure({ inspect: { breakLength: 350 } });
 
 const tests = [
-  'test-node.js',
-  'test-node-gpu.js',
-  'test-node-wasm.js',
-  // 'test-node-cpu.js',
+  'test-node-load.js',
+  'test-node-gear.js',
+  'test-backend-node.js',
+  'test-backend-node-gpu.js',
+  'test-backend-node-wasm.js',
+  // 'test-backend-node-cpu.js',
 ];
 
 const demos = [

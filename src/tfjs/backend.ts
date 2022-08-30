@@ -1,30 +1,67 @@
 /** TFJS backend initialization and customization */
 
-import type { Human } from '../human';
+import type { Human, Config } from '../human';
 import { log, now } from '../util/util';
 import { env } from '../util/env';
 import * as humangl from './humangl';
 import * as tf from '../../dist/tfjs.esm.js';
 import * as constants from './constants';
 
-function registerCustomOps() {
+function registerCustomOps(config: Config) {
   if (!env.kernels.includes('mod')) {
     const kernelMod = {
       kernelName: 'Mod',
       backendName: tf.getBackend(),
       kernelFunc: (op) => tf.tidy(() => tf.sub(op.inputs.a, tf.mul(tf.div(op.inputs.a, op.inputs.b), op.inputs.b))),
     };
+    if (config.debug) log('registered kernel:', 'Mod');
     tf.registerKernel(kernelMod);
     env.kernels.push('mod');
   }
   if (!env.kernels.includes('floormod')) {
-    const kernelMod = {
+    const kernelFloorMod = {
       kernelName: 'FloorMod',
       backendName: tf.getBackend(),
       kernelFunc: (op) => tf.tidy(() => tf.add(tf.mul(tf.floorDiv(op.inputs.a / op.inputs.b), op.inputs.b), tf.mod(op.inputs.a, op.inputs.b))),
     };
-    tf.registerKernel(kernelMod);
+    if (config.debug) log('registered kernel:', 'FloorMod');
+    tf.registerKernel(kernelFloorMod);
     env.kernels.push('floormod');
+  }
+  /*
+  if (!env.kernels.includes('atan2') && config.softwareKernels) {
+    const kernelAtan2 = {
+      kernelName: 'Atan2',
+      backendName: tf.getBackend(),
+      kernelFunc: (op) => tf.tidy(() => {
+        const backend = tf.getBackend();
+        tf.setBackend('cpu');
+        const t = tf.atan2(op.inputs.a, op.inputs.b);
+        tf.setBackend(backend);
+        return t;
+      }),
+    };
+    if (config.debug) log('registered kernel:', 'atan2');
+    log('registered kernel:', 'atan2');
+    tf.registerKernel(kernelAtan2);
+    env.kernels.push('atan2');
+  }
+  */
+  if (!env.kernels.includes('rotatewithoffset') && config.softwareKernels) {
+    const kernelRotateWithOffset = {
+      kernelName: 'RotateWithOffset',
+      backendName: tf.getBackend(),
+      kernelFunc: (op) => tf.tidy(() => {
+        const backend = tf.getBackend();
+        tf.setBackend('cpu');
+        const t = tf.image.rotateWithOffset(op.inputs.image, op.attrs.radians, op.attrs.fillValue, op.attrs.center);
+        tf.setBackend(backend);
+        return t;
+      }),
+    };
+    if (config.debug) log('registered kernel:', 'RotateWithOffset');
+    tf.registerKernel(kernelRotateWithOffset);
+    env.kernels.push('rotatewithoffset');
   }
 }
 
@@ -146,7 +183,7 @@ export async function check(instance: Human, force = false) {
     instance.config.backend = tf.getBackend();
 
     await env.updateBackend(); // update env on backend init
-    registerCustomOps();
+    registerCustomOps(instance.config);
     // await env.updateBackend(); // update env on backend init
   }
   return true;

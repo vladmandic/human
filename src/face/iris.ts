@@ -32,7 +32,7 @@ export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
   if (!model) model = await loadModel(config.face.iris?.modelPath);
   else if (config.debug) log('cached model:', model['modelUrl']);
-  inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
+  inputSize = (model?.['executor'] && model.inputs?.[0].shape) ? model.inputs[0].shape[2] : 0;
   if (inputSize === -1) inputSize = 64;
   return model;
 }
@@ -110,11 +110,8 @@ export const getAdjustedIrisCoords = (rawCoords, irisCoords, direction) => {
   });
 };
 
-export async function augmentIris(rawCoords, face, config, meshSize) {
-  if (!model) {
-    if (config.debug) log('face mesh iris detection requested, but model is not loaded');
-    return rawCoords;
-  }
+export async function augmentIris(rawCoords, face, meshSize) {
+  if (!model?.['executor']) return rawCoords;
   const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], meshSize, true);
   const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], meshSize, true);
   const combined = tf.concat([leftEyeCrop, rightEyeCrop]);

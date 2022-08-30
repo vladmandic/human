@@ -11,13 +11,16 @@ const log = (status, ...data) => {
 process.env.TF_CPP_MIN_LOG_LEVEL = '2';
 const humanConfig = {
   backend: 'tensorflow',
+  debug: false,
+  cacheSensitivity: 0,
+  modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   face: {
-    detector: { enabled: true, modelPath: 'file://../human-models/models/blazeface-back.json', cropFactor: 1.6 },
+    detector: { enabled: true, modelPath: 'blazeface-back.json', cropFactor: 1.6 },
     mesh: { enabled: true },
     iris: { enabled: false },
-    description: { enabled: true, modelPath: 'file://../human-models/models/faceres.json' },
-    gear: { enabled: true, modelPath: 'file://../human-models/models/gear.json' },
-    ssrnet: { enabled: true, modelPathAge: 'file://../human-models/models/age.json', modelPathGender: 'file://../human-models/models/gender.json' },
+    description: { enabled: true, modelPath: 'faceres.json' },
+    gear: { enabled: true, modelPath: 'gear.json' },
+    ssrnet: { enabled: true, modelPathAge: 'age.json', modelPathGender: 'gender.json' },
     emotion: { enabled: false },
   },
   body: { enabled: false },

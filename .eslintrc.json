@@ -158,6 +158,7 @@
     "dist",
     "demo/helpers/*.js",
     "demo/typescript/*.js",
-    "demo/faceid/*.js"
+    "demo/faceid/*.js",
+    "typedoc"
   ]
 }

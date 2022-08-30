@@ -212,6 +212,10 @@ export declare interface Config {
      * default: 0.7
      */
     cacheSensitivity: number;
+    /** Software Kernels
+     * Registers software kernel ops running on CPU when accelerated version of kernel is not found in the current backend
+     */
+    softwareKernels: boolean;
     /** Perform immediate garbage collection on deallocated tensors instead of caching them */
     deallocate: boolean;
     /** Internal Variable */

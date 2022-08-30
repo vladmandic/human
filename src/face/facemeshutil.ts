@@ -169,7 +169,7 @@ export function correctFaceRotation(rotate, box, input, inputSize) {
   let rotationMatrix = fixedRotationMatrix; // default
   let face; // default
 
-  if (rotate && env.kernels.includes('rotatewithoffset')) { // rotateWithOffset is not defined for tfjs-node
+  if (rotate && env.kernels.includes('rotatewithoffset')) {
     angle = computeRotation(box.landmarks[symmetryLine[0]], box.landmarks[symmetryLine[1]]);
     const largeAngle = angle && (angle !== 0) && (Math.abs(angle) > 0.2);
     if (largeAngle) { // perform rotation only if angle is sufficiently high

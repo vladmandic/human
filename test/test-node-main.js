@@ -487,6 +487,7 @@ async function test(Human, inputConfig) {
   // test face attention
   log('info', 'test face attention');
   human.models.facemesh = null;
+  config.softwareKernels = true;
   config.face.attention = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/facemesh-attention.json' };
   res = await testDetect(human, 'samples/in/ai-face.jpg', 'face attention');
   if (!res || !res.face[0] || res.face[0].mesh.length !== 478 || Object.keys(res.face[0].annotations).length !== 36) log('error', 'failed: face attention', { mesh: res.face?.[0]?.mesh?.length, annotations: Object.keys(res.face?.[0]?.annotations | {}).length });

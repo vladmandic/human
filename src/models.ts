@@ -164,7 +164,9 @@ export function validateModel(newInstance: Human | null, model: GraphModel | nul
       if (!ops.includes(op)) ops.push(op);
     }
   } else {
-    if (!executor && instance.config.debug) log('model signature not determined:', name);
+    if (!executor && instance.config.debug) {
+      log('model not loaded', name);
+    }
   }
   for (const op of ops) {
     if (!simpleOps.includes(op) // exclude simple ops

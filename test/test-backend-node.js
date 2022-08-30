@@ -1,7 +1,7 @@
 process.env.TF_CPP_MIN_LOG_LEVEL = '2';
 
 const H = require('../dist/human.node.js');
-const test = require('./test-main.js').test;
+const test = require('./test-node-main.js').test;
 
 const config = {
   cacheSensitivity: 0,
@@ -11,7 +11,7 @@ const config = {
   async: true,
   face: {
     enabled: true,
-    detector: { rotation: true },
+    detector: { rotation: false },
     mesh: { enabled: true },
     iris: { enabled: true },
     description: { enabled: true },
@@ -30,4 +30,4 @@ async function main() {
   test(H.Human, config);
 }
 
-main();
+if (require.main === module) main();

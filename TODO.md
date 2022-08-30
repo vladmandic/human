@@ -23,8 +23,11 @@ N/A
 
 ### Face with Attention
 
-`FaceMesh-Attention` is not supported in `Node` or in browser using `WASM` backend due to missing kernel op in **TFJS**  
-Model is supported using `WebGL` backend in browser
+`FaceMesh-Attention` is not supported in browser using `WASM` backend due to missing kernel op in **TFJS**  
+
+### Object Detection
+
+`NanoDet` model is not supported in in browser using `WASM` backend due to missing kernel op in **TFJS**  
 
 ### WebGPU
 
@@ -36,21 +39,12 @@ Enable via <chrome://flags/#enable-unsafe-webgpu>
 Running in **web workers** requires `OffscreenCanvas` which is still disabled by default in **Firefox**  
 Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 
-### Face Detection & Hand Detection
-
-Enhanced rotation correction for face detection and hand detection is not working in **NodeJS** due to missing kernel op in **TFJS**  
-Feature is automatically disabled in **NodeJS** without user impact  
-
-### Object Detection
-
-`NanoDet` model is not supported in `Node` or in browser using `WASM` backend due to missing kernel op in **TFJS**
-Model is supported using `WebGL` backend in browser
-
 <hr><br>
 
 ## Pending Release Changes
 
-- Update TFJS to **3.20.0**
+- Update **TFJS** to **3.20.0**
+- Update **TypeScript** to **4.8**
 - Add **InsightFace** model as alternative for face embedding/descriptor detection  
   Compatible with multiple variations of **InsightFace** models  
   Configurable using `config.face.insightface` config section  
@@ -58,9 +52,14 @@ Model is supported using `WebGL` backend in browser
   Models can be downloaded from <https://github.com/vladmandic/insightface>  
 - Add `human.check()` which validates all kernel ops for currently loaded models with currently selected backend  
   Example: `console.error(human.check());`  
+- Add `config.softwareKernels` config option which uses **CPU** implementation for missing ops  
+  Disabled by default  
+  If enabled, it is used by face and hand rotation correction (`config.face.rotation` and `config.hand.rotation`)  
 - Add underlying **tensorflow** library version detection when running in NodeJS to  
   `human.env` and check if **GPU** is used for acceleration  
   Example: `console.log(human.env.tensorflow)`  
+- Treat models that cannot be found & loaded as non-critical error  
+  Instead of creating runtime exception, `human` will now report that model could not be loaded  
 - Host models in <human-models>  
   Models can be directly used without downloading to local storage  
   Example: `modelPath: 'https://vladmandic.github.io/human-models/models/facemesh.json'`  

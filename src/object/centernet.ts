@@ -24,7 +24,7 @@ export async function load(config: Config): Promise<GraphModel> {
   if (!model) {
     // fakeOps(['floormod'], config);
     model = await loadModel(config.object.modelPath);
-    const inputs = Object.values(model.modelSignature['inputs']);
+    const inputs = model?.['executor'] ? Object.values(model.modelSignature['inputs']) : undefined;
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;
@@ -72,6 +72,7 @@ async function process(res: Tensor | null, outputShape: [number, number], config
 }
 
 export async function predict(input: Tensor, config: Config): Promise<ObjectResult[]> {
+  if (!model?.['executor']) return [];
   const skipTime = (config.object.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.object.skipFrames || 0);
   if (config.skipAllowed && skipTime && skipFrame && (last.length > 0)) {

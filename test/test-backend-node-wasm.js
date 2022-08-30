@@ -3,7 +3,7 @@ const tf = require('@tensorflow/tfjs'); // wasm backend requires tfjs to be load
 const wasm = require('@tensorflow/tfjs-backend-wasm'); // wasm backend does not get auto-loaded in nodejs
 const { Canvas, Image } = require('canvas'); // eslint-disable-line node/no-extraneous-require, node/no-missing-require
 const H = require('../dist/human.node-wasm.js');
-const test = require('./test-main.js').test;
+const test = require('./test-node-main.js').test;
 
 H.env.Canvas = Canvas; // requires monkey-patch as wasm does not have tf.browser namespace
 H.env.Image = Image; // requires monkey-patch as wasm does not have tf.browser namespace
@@ -16,6 +16,7 @@ const config = {
   wasmPath: `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tf.version_core}/dist/`,
   debug: false,
   async: false,
+  softwareKernels: true,
   face: {
     enabled: true,
     detector: { rotation: false },
@@ -42,4 +43,4 @@ async function main() {
   test(H.Human, config);
 }
 
-main();
+if (require.main === module) main();

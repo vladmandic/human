@@ -159,6 +159,7 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
   /** posenet is mostly obsolete
    * caching is not implemented
    */
+  if (!model?.['executor']) return [];
   const res = tf.tidy(() => {
     if (!model.inputs[0].shape) return [];
     const resized = tf.image.resizeBilinear(input, [model.inputs[0].shape[2], model.inputs[0].shape[1]]);

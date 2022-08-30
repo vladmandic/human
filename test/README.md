@@ -7,9 +7,6 @@ Not required for normal funcioning of library
 ### NodeJS using TensorFlow library
 
 - Image filters are disabled due to lack of Canvas and WebGL access
-- Face rotation is disabled for `NodeJS` platform:  
-  `Kernel 'RotateWithOffset' not registered for backend 'tensorflow'`  
-  <https://github.com/tensorflow/tfjs/issues/4606>
 
 ### NodeJS using WASM
 

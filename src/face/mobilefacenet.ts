@@ -45,7 +45,7 @@ const contrast = merge.sub(mean).mul(factor).add(mean);
 */
 
 export async function predict(input: Tensor, config: Config, idx, count): Promise<number[]> {
-  if (!model) return [];
+  if (!model?.['executor']) return [];
   const skipFrame = skipped < (config.face['mobilefacenet']?.skipFrames || 0);
   const skipTime = (config.face['mobilefacenet']?.skipTime || 0) > (now() - lastTime);
   if (config.skipAllowed && skipTime && skipFrame && (lastCount === count) && last[idx]) {

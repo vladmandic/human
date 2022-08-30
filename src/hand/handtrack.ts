@@ -76,7 +76,7 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
     // ideally need to prune the model itself
     fakeOps(['tensorlistreserve', 'enter', 'tensorlistfromtensor', 'merge', 'loopcond', 'switch', 'exit', 'tensorliststack', 'nextiteration', 'tensorlistsetitem', 'tensorlistgetitem', 'reciprocal', 'shape', 'split', 'where'], config);
     models[0] = await loadModel(config.hand.detector?.modelPath);
-    const inputs = Object.values(models[0].modelSignature['inputs']);
+    const inputs = models[0]['executor'] ? Object.values(models[0].modelSignature['inputs']) : undefined;
     inputSize[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug) log('cached model:', models[0]['modelUrl']);
@@ -87,7 +87,7 @@ export async function loadSkeleton(config: Config): Promise<GraphModel> {
   if (env.initial) models[1] = null;
   if (!models[1]) {
     models[1] = await loadModel(config.hand.skeleton?.modelPath);
-    const inputs = Object.values(models[1].modelSignature['inputs']);
+    const inputs = models[1]['executor'] ? Object.values(models[1].modelSignature['inputs']) : undefined;
     inputSize[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
     inputSize[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug) log('cached model:', models[1]['modelUrl']);
@@ -182,7 +182,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
 }
 
 export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
-  if (!models[0] || !models[1] || !models[0].inputs[0].shape || !models[1].inputs[0].shape) return []; // something is wrong with the model
+  if (!models[0]?.['executor'] || !models[1]?.['executor'] || !models[0].inputs[0].shape || !models[1].inputs[0].shape) return []; // something is wrong with the model
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
   skipped++; // increment skip frames
   const skipTime = (config.hand.skipTime || 0) > (now() - lastTime);

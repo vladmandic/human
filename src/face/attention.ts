@@ -5,12 +5,15 @@ export async function augment(rawCoords, results: Tensor[]) {
   const t: Record<string, Float32Array> = { // all attention models produce 2d results so it needs to be later augmented with correct z-coords
     // mesh: results[0], // already have it in rawCoords // output_mesh_identity
     // flag: results[1], // already processed in parent // conv_faceflag
-    lips: await results.filter((r) => r.size === 160)[0].data() as Float32Array, // 80 x 2d = 160 // output_lips
-    irisL: await results.filter((r) => r.size === 10)[0].data() as Float32Array, // 5 x 2d = 10 // output_right_iris
-    eyeL: await results.filter((r) => r.size === 142)[0].data() as Float32Array, // 71 x 2d = 142 // output_right_eye
-    irisR: await results.filter((r) => r.size === 10)[1].data() as Float32Array, // 5 x 2d = 10 // output_left_iris
-    eyeR: await results.filter((r) => r.size === 142)[1].data() as Float32Array, // 71 x 2d = 142// output_left_eye
+    lips: await results.filter((r) => r.size === 160)?.[0]?.data() as Float32Array, // 80 x 2d = 160 // output_lips
+    irisL: await results.filter((r) => r.size === 10)?.[0]?.data() as Float32Array, // 5 x 2d = 10 // output_right_iris
+    eyeL: await results.filter((r) => r.size === 142)?.[0]?.data() as Float32Array, // 71 x 2d = 142 // output_right_eye
+    irisR: await results.filter((r) => r.size === 10)?.[1]?.data() as Float32Array, // 5 x 2d = 10 // output_left_iris
+    eyeR: await results.filter((r) => r.size === 142)?.[1]?.data() as Float32Array, // 71 x 2d = 142// output_left_eye
   };
+  for (const val of Object.values(t)) {
+    if (!val) return rawCoords; // could not find tensor
+  }
 
   // augment iris: adds additional 5 keypoints per eye
   const irisLDepth = constants.LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG.reduce((prev, curr) => prev += rawCoords[curr][2], 0) / constants.LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG.length; // get average z-coord for iris

@@ -204,11 +204,15 @@ export class Human {
     const currentBackend = this.config.backend; // save backend;
     this.config = JSON.parse(JSON.stringify(defaults));
     this.config.backend = currentBackend;
+    image.reset();
+    env.initial = true;
   }
 
   /** Validate current configuration schema */
   validate(userConfig?: Partial<Config>) {
-    return validate(defaults, userConfig || this.config);
+    const msgs = validate(defaults, userConfig || this.config);
+    if (msgs.length === 0) this.config = mergeDeep(this.config, userConfig) as Config;
+    return msgs;
   }
 
   /** Check model for invalid kernel ops for current backend */
@@ -280,6 +284,7 @@ export class Human {
   async init(): Promise<void> {
     await backend.check(this, true);
     await this.tf.ready();
+    image.reset();
   }
 
   /** Load method preloads all configured models on-demand

@@ -48,6 +48,7 @@ async function process(res: Tensor | null, outputShape: [number, number], config
   for (const id of Array.from(nms)) {
     const score = Math.trunc(100 * detections[0][id][4]) / 100;
     const classVal = detections[0][id][5];
+    if (Number.isNaN(classVal)) continue;
     const label = labels[classVal].label as ObjectType;
     const [x, y] = [
       detections[0][id][0] / inputSize,

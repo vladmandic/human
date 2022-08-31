@@ -66,10 +66,7 @@ async function testDefault(title, testConfig = {}) {
   const t0 = human.now();
   let res;
   for (const model of Object.keys(human.models)) { // unload models
-    if (human.models[model]) {
-      // if (human.models[model].dispose) human.models[model].dispose();
-      human.models[model] = null;
-    }
+    if (human.models[model]) human.models[model] = null;
   }
   human.reset();
   res = human.validate(testConfig); // validate
@@ -91,8 +88,6 @@ async function testDefault(title, testConfig = {}) {
   human.next(); // run interpolation
   const persons = res.persons; // run persons getter
   log('  summary', { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length });
-  // log('  memory', human.tf.memory());
-  // log('  performance', human.performance);
   human.tf.dispose(input.tensor);
   log(`  finished ${title}/${human.tf.getBackend()}`, { init: Math.round(t1 - t0), detect: Math.round(t2 - t1) });
   return res;
@@ -123,11 +118,7 @@ async function runBenchmark() {
 
 async function main() {
   log('human tests');
-
-  // create instance
   human = new Human({ debug: true });
-
-  // explicit init
   await human.init();
   human.events.addEventListener('warmup', () => events('warmup'));
   human.events.addEventListener('image', () => events('image'));
@@ -139,7 +130,6 @@ async function main() {
   const env = JSON.parse(JSON.stringify(human.env));
   env.kernels = human.env.kernels.length;
   detailed('environment', env);
-  // detailed('config', human.config);
 
   for (const backend of backends) {
     human.config.backend = backend;

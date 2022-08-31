@@ -11,9 +11,8 @@
   
 ### **HEAD -> main** 2022/08/30 mandic00@live.com
 
-
-### **origin/main** 2022/08/28 mandic00@live.com
-
+- add model load exception handling
+- add softwarekernels config option
 - expand type safety
 - full eslint rule rewrite
 

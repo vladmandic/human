@@ -60,6 +60,7 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
   Example: `console.log(human.env.tensorflow)`  
 - Treat models that cannot be found & loaded as non-critical error  
   Instead of creating runtime exception, `human` will now report that model could not be loaded  
+- Improve `human.reset()` method to reset all config values to defaults
 - Host models in <human-models>  
   Models can be directly used without downloading to local storage  
   Example: `modelPath: 'https://vladmandic.github.io/human-models/models/facemesh.json'`  

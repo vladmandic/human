@@ -1,12 +1,6 @@
 import { Human } from '../dist/human.esm.js';
 
-const config = {
-  async: true,
-  warmup: 'none',
-  debug: true,
-  cacheSensitivity: 0,
-  object: { enabled: true },
-};
+let human;
 
 const backends = ['wasm', 'humangl', 'webgl', 'webgpu'];
 
@@ -68,10 +62,72 @@ async function events(event) {
   document.getElementById('events').innerText = `${Math.round(performance.now() - start)}ms Event: ${event}`;
 }
 
+async function testDefault(title, testConfig = {}) {
+  const t0 = human.now();
+  let res;
+  for (const model of Object.keys(human.models)) { // unload models
+    if (human.models[model]) {
+      // if (human.models[model].dispose) human.models[model].dispose();
+      human.models[model] = null;
+    }
+  }
+  human.reset();
+  res = human.validate(testConfig); // validate
+  if (res && res.length > 0) log('  invalid configuration', res);
+  log(`test ${title}/${human.tf.getBackend()}`, human.config);
+  await human.load();
+  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
+  log('  models', models);
+  const ops = await human.check();
+  if (ops && ops.length > 0) log('  missing ops', ops);
+  const img = await image('../../samples/in/ai-body.jpg');
+  const input = await human.image(img); // process image
+  draw(input.canvas);
+  res = await human.warmup({ warmup: 'face' }); // warmup
+  draw(res.canvas);
+  const t1 = human.now();
+  res = await human.detect(input.tensor, testConfig); // run detect
+  const t2 = human.now();
+  human.next(); // run interpolation
+  const persons = res.persons; // run persons getter
+  log('  summary', { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length });
+  // log('  memory', human.tf.memory());
+  // log('  performance', human.performance);
+  human.tf.dispose(input.tensor);
+  log(`  finished ${title}/${human.tf.getBackend()}`, { init: Math.round(t1 - t0), detect: Math.round(t2 - t1) });
+  return res;
+}
+
+async function runBenchmark() {
+  const img = await image('../../samples/in/ai-face.jpg');
+  human.reset();
+  const s0 = human.now();
+  await human.load();
+  await human.warmup();
+  const s1 = human.now();
+  for (const val of [0, 0.25, 0.5, 0.75, 10]) {
+    human.performance = {};
+    const t0 = performance.now();
+    for (let i = 0; i < 10; i++) {
+      const res = await human.detect(img, { cacheSensitivity: val, filter: { pixelate: 5 * i }, object: { enabled: true } }); // run detect with increased pixelization on each iteration
+      draw(res.canvas);
+    }
+    const t1 = performance.now();
+    log('  benchmark', { time: Math.round((t1 - t0) / 10), backend: human.tf.getBackend(), cacheSensitivity: val, performance: human.performance });
+    await wait(1);
+  }
+  const s2 = human.now();
+  log('  total', human.tf.getBackend(), { detect: Math.round(s2 - s1), init: Math.round(s1 - s0) });
+  draw();
+}
+
 async function main() {
   log('human tests');
-  let res;
-  const human = new Human(config);
+
+  // create instance
+  human = new Human({ debug: true });
+
+  // explicit init
   await human.init();
   human.events.addEventListener('warmup', () => events('warmup'));
   human.events.addEventListener('image', () => events('image'));
@@ -83,60 +139,36 @@ async function main() {
   const env = JSON.parse(JSON.stringify(human.env));
   env.kernels = human.env.kernels.length;
   detailed('environment', env);
+  // detailed('config', human.config);
 
-  detailed('config', human.config);
-  await human.load();
-  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
-  log('models', models);
   for (const backend of backends) {
-    log();
-    log('test start:', backend);
+    human.config.backend = backend;
+    await human.init(); // init
+    if (human.tf.getBackend() !== backend) {
+      log('desired', backend, 'detected', human.tf.getBackend());
+      continue; // wrong backend
+    }
+    await testDefault('default', { debug: true });
+    await testDefault('sync', { debug: true, async: false });
+    await testDefault('none', { debug: true, async: true, face: { enabled: false }, body: { enabled: false }, hand: { enabled: false }, gesture: { enabled: false }, segmentation: { enabled: false }, object: { enabled: false } });
+    await testDefault('object', { debug: true, async: true, face: { enabled: false }, body: { enabled: false }, hand: { enabled: false }, gesture: { enabled: false }, segmentation: { enabled: false }, object: { enabled: true } });
+    // TBD detectors only
+    // TBD segmentation
+    // TBD face match
+    // TBD non-default models
+    // TBD web workers
+    // TBD multiple instances
+  }
+  log('tests complete');
+  for (const backend of backends) {
+    log('benchmark backend:', backend);
     human.config.backend = backend;
     await human.init();
-    log('desired', backend, 'detected', human.tf.getBackend());
-    if (human.tf.getBackend() !== backend) {
-      continue;
-    }
-    log('memory', human.tf.memory());
-    res = await human.validate();
-    log('validate', res);
-    res = await human.warmup({ warmup: 'face' });
-    draw(res.canvas);
-    log('warmup', 'face');
-    let img = await image('../../samples/in/ai-body.jpg');
-    const input = await human.image(img);
-    log('input', input.tensor.shape);
-    draw(res.canvas);
-    res = await human.detect(input.tensor);
-    log('detect');
-    human.next();
-    log('interpolate');
-    const persons = res.persons;
-    log('persons');
-    log('summary', { persons: persons.length, face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length });
-    log('performance', human.performance);
-    human.tf.dispose(input.tensor);
-    draw();
-
-    img = await image('../../samples/in/ai-face.jpg');
-    for (const val of [0, 0.25, 0.5, 0.75, 10]) {
-      human.performance = {};
-      const t0 = performance.now();
-      for (let i = 0; i < 10; i++) {
-        res = await human.detect(img, { cacheSensitivity: val, filter: { pixelate: 5 * i }, object: { enabled: false } });
-        draw(res.canvas);
-      }
-      const t1 = performance.now();
-      log('benchmark', { time: Math.round((t1 - t0) / 10), cacheSensitivity: val, performance: human.performance });
-      await wait(10);
-    }
-    draw();
-
-    log('memory', human.tf.memory());
+    if (human.tf.getBackend() !== backend) continue; // wrong backend
+    await runBenchmark();
   }
+  log('benchmarks complete');
   clearInterval(timer);
-  log();
-  log('tests complete');
 }
 
 main();

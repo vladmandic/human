@@ -24,6 +24,13 @@ const last: { inputSum: number, cacheDiff: number, sumMethod: number, inputTenso
   inputTensor: undefined,
 };
 
+export function reset() {
+  last.inputSum = 0;
+  last.cacheDiff = 1;
+  last.sumMethod = 0;
+  last.inputTensor = undefined;
+}
+
 export function canvas(width: number, height: number): AnyCanvas {
   let c: AnyCanvas;
   if (env.browser) { // browser defines canvas object

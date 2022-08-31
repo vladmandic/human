@@ -61,12 +61,12 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 - Treat models that cannot be found & loaded as non-critical error  
   Instead of creating runtime exception, `human` will now report that model could not be loaded  
 - Improve `human.reset()` method to reset all config values to defaults
-- Host models in <human-models>  
+- Host models in <https://github.com/vladmandic/human-models>  
   Models can be directly used without downloading to local storage  
-  Example: `modelPath: 'https://vladmandic.github.io/human-models/models/facemesh.json'`  
+  Example: `modelBasePath: 'https://vladmandic.github.io/human-models/models/'`  
 - Allow hosting models in **Google Cloud Bucket**  
   Hosted models can be directly used without downloading to local storage  
-  Example: `modelPath: 'https://storage.googleapis.com/human-models/facemesh.json'`  
+  Example: `modelBasePath: 'https://storage.googleapis.com/human-models/'`  
 - Stricter linting rules for both **TypeScript** and **JavaScript**  
   See `./eslintrc.json` for details  
 - Enhanced type safety across entire library  
@@ -76,7 +76,7 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 - Fix **NanoDet** module as alternative object detection  
 - Fix `demo/multithread/node-multiprocess.js` demo  
 - Fix `human.match` when using mixed descriptor lengths  
-- Fix WASM feature detection issue in TFJS with Edge/Chromium  
+- Fix **WASM** feature detection issue in TFJS with Edge/Chromium  
   Example: `console.log(human.env.wasm)`  
 - Increased test coverage  
   **NodeJS**: Run using: `npm run test`  

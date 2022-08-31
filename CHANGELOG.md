@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/08/30 mandic00@live.com
+### **HEAD -> main** 2022/08/31 mandic00@live.com
 
+- extend release tests
 - add model load exception handling
 - add softwarekernels config option
 - expand type safety

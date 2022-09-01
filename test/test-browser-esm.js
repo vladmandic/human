@@ -71,7 +71,7 @@ async function testDefault(title, testConfig = {}) {
   human.reset();
   res = human.validate(testConfig); // validate
   if (res && res.length > 0) log('  invalid configuration', res);
-  log(`test ${title}/${human.tf.getBackend()}`, human.config);
+  log(`test ${title}/${human.tf.getBackend()}`);
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   log('  models', models);
@@ -91,6 +91,54 @@ async function testDefault(title, testConfig = {}) {
   human.tf.dispose(input.tensor);
   log(`  finished ${title}/${human.tf.getBackend()}`, { init: Math.round(t1 - t0), detect: Math.round(t2 - t1) });
   return res;
+}
+
+async function testMatch() {
+  human.reset();
+  await human.warmup({ warmup: 'face' });
+  const img1 = await image('../../samples/in/ai-body.jpg');
+  const input1 = await human.image(img1);
+  const img2 = await image('../../samples/in/ai-face.jpg');
+  const input2 = await human.image(img2);
+  const res1 = await human.detect(input1.tensor);
+  const res2 = await human.detect(input2.tensor);
+  const desc1 = res1?.face?.[0]?.embedding;
+  const desc2 = res2?.face?.[0]?.embedding;
+  const similarity = await human.similarity(desc1, desc2);
+  const descArray = [];
+  for (let i = 0; i < 100; i++) descArray.push(desc2);
+  const match = await human.match(desc1, descArray);
+  log(`test similarity/${human.tf.getBackend()}`, match, similarity);
+}
+
+async function testWorker() {
+  log(`test webworker/${human.tf.getBackend()}`);
+  const img = await image('../../samples/in/ai-body.jpg');
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const worker = new Worker('test-browser-worker.js');
+  let res;
+  const userConfig = {
+    backend: human.tf.getBackend(),
+    debug: true,
+    face: { enabled: false },
+    hand: { enabled: false },
+    body: { enabled: true },
+    object: { enabled: false },
+  };
+  return new Promise((resolve) => {
+    worker.addEventListener('message', (msg) => {
+      res = msg.data.result;
+      log('  summary', { face: res.face.length, body: res.body.length, hand: res.hand.length, object: res.object.length, gesture: res.gesture.length });
+      resolve();
+    });
+    // pass image data as arraybuffer to worker by reference to avoid copy
+    worker.postMessage({ image: imageData.data.buffer, width: canvas.width, height: canvas.height, userConfig }, [imageData.data.buffer]);
+  });
 }
 
 async function runBenchmark() {
@@ -142,12 +190,11 @@ async function main() {
     await testDefault('sync', { debug: true, async: false });
     await testDefault('none', { debug: true, async: true, face: { enabled: false }, body: { enabled: false }, hand: { enabled: false }, gesture: { enabled: false }, segmentation: { enabled: false }, object: { enabled: false } });
     await testDefault('object', { debug: true, async: true, face: { enabled: false }, body: { enabled: false }, hand: { enabled: false }, gesture: { enabled: false }, segmentation: { enabled: false }, object: { enabled: true } });
+    await testMatch();
+    await testWorker();
     // TBD detectors only
     // TBD segmentation
-    // TBD face match
     // TBD non-default models
-    // TBD web workers
-    // TBD multiple instances
   }
   log('tests complete');
   for (const backend of backends) {

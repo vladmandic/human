@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/08/31 mandic00@live.com
 
+- minor bug fixes and increased test coverage
 - extend release tests
 - add model load exception handling
 - add softwarekernels config option

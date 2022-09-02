@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/08/31 mandic00@live.com
+### **HEAD -> main** 2022/09/01 mandic00@live.com
 
+- add browser iife tests
 - minor bug fixes and increased test coverage
 - extend release tests
 - add model load exception handling

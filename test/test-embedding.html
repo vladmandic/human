@@ -48,7 +48,7 @@
       }
 
       async function main() {
-      const human = new Human(testConfig);
+        const human = new Human(testConfig);
         const ops = await human.check();
         if (ops && ops.length > 0) log(backend, { backend: human.tf.getBackend(), ops });
         const env = JSON.parse(JSON.stringify(human.env));

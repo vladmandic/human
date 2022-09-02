@@ -6,10 +6,11 @@ import { log, now, mergeDeep } from './util/util';
 import * as sample from './sample';
 import * as tf from '../dist/tfjs.esm.js';
 import * as image from './image/image';
+import * as backend from './tfjs/backend';
 import { env } from './util/env';
 import type { Config } from './config';
 import type { Result } from './result';
-import type { Human, Models } from './human';
+import { Human, models } from './human';
 import type { Tensor } from './exports';
 
 async function warmupBitmap(instance: Human): Promise<Result | undefined> {
@@ -108,7 +109,7 @@ async function runInference(instance: Human) {
 }
 
 /** Runs pre-compile on all loaded models */
-export async function runCompile(allModels: Models) {
+export async function runCompile(instance: Human) {
   if (!tf.env().flagRegistry.ENGINE_COMPILE_ONLY) return; // tfjs does not support compile-only inference
   const backendType = tf.getBackend();
   const webGLBackend = tf.backend();
@@ -119,7 +120,7 @@ export async function runCompile(allModels: Models) {
   tf.env().set('ENGINE_COMPILE_ONLY', true);
   const numTensorsStart = tf.engine().state.numTensors;
   const compiledModels: string[] = [];
-  for (const [modelName, model] of Object.entries(allModels).filter(([key, val]) => (key !== null && val !== null))) {
+  for (const [modelName, model] of Object.entries(instance.models).filter(([key, val]) => (key !== null && val !== null))) {
     const shape = (model.inputs?.[0]?.shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
     const dtype: string = (model.inputs?.[0]?.dtype) ? model.inputs[0].dtype : 'float32';
     for (let dim = 0; dim < shape.length; dim++) {
@@ -138,8 +139,7 @@ export async function runCompile(allModels: Models) {
   }
   const kernels = await webGLBackend.checkCompileCompletionAsync();
   webGLBackend.getUniformLocations();
-  log('compile pass models:', compiledModels);
-  log('compile pass kernels:', kernels.length);
+  if (instance.config.debug) log('compile pass:', { models: compiledModels, kernels: kernels.length });
   tf.env().set('ENGINE_COMPILE_ONLY', false);
   const numTensorsEnd = tf.engine().state.numTensors;
   if ((numTensorsEnd - numTensorsStart) > 0) log('tensor leak:', numTensorsEnd - numTensorsStart);
@@ -151,6 +151,7 @@ export async function runCompile(allModels: Models) {
  * @param userConfig?: Config
 */
 export async function warmup(instance: Human, userConfig?: Partial<Config>): Promise<Result | undefined> {
+  await backend.check(instance, false);
   const t0 = now();
   instance.state = 'warmup';
   if (userConfig) instance.config = mergeDeep(instance.config, userConfig) as Config;
@@ -158,7 +159,8 @@ export async function warmup(instance: Human, userConfig?: Partial<Config>): Pro
     return { face: [], body: [], hand: [], gesture: [], object: [], performance: instance.performance, timestamp: now(), persons: [], error: null };
   }
   return new Promise(async (resolve) => {
-    await runCompile(instance.models);
+    await models.load(instance);
+    await runCompile(instance);
     const res = await runInference(instance);
     const t1 = now();
     if (instance.config.debug) log('warmup', instance.config.warmup, Math.round(t1 - t0), 'ms');

@@ -69,7 +69,7 @@ export function register(instance: Human): void {
       }
       const glv2 = config.gl.getParameter(config.gl.VERSION).includes('2.0');
       if (!glv2) {
-        log('override: using fallback webgl backend as webgl 2.0 is not detected');
+        log('backend override: using fallback webgl backend as webgl 2.0 is not detected');
         instance.config.backend = 'webgl';
         return;
       }
@@ -128,7 +128,7 @@ export function register(instance: Human): void {
     extensions();
     const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
     if (current) {
-      log('humangl backend registered', { webgl: current.getParameter(current.VERSION) as string, renderer: current.getParameter(current.RENDERER) as string });
+      if (instance.config.debug) log('humangl backend registered:', { webgl: current.getParameter(current.VERSION) as string, renderer: current.getParameter(current.RENDERER) as string });
     } else {
       log('humangl error: no current gl context:', current, config.gl);
     }

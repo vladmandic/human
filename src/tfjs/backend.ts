@@ -8,15 +8,16 @@ import * as tf from '../../dist/tfjs.esm.js';
 import * as constants from './constants';
 
 function registerCustomOps(config: Config) {
+  const newKernels: string[] = [];
   if (!env.kernels.includes('mod')) {
     const kernelMod = {
       kernelName: 'Mod',
       backendName: tf.getBackend(),
       kernelFunc: (op) => tf.tidy(() => tf.sub(op.inputs.a, tf.mul(tf.div(op.inputs.a, op.inputs.b), op.inputs.b))),
     };
-    if (config.debug) log('registered kernel:', 'Mod');
     tf.registerKernel(kernelMod);
     env.kernels.push('mod');
+    newKernels.push('mod');
   }
   if (!env.kernels.includes('floormod')) {
     const kernelFloorMod = {
@@ -24,9 +25,9 @@ function registerCustomOps(config: Config) {
       backendName: tf.getBackend(),
       kernelFunc: (op) => tf.tidy(() => tf.add(tf.mul(tf.floorDiv(op.inputs.a / op.inputs.b), op.inputs.b), tf.mod(op.inputs.a, op.inputs.b))),
     };
-    if (config.debug) log('registered kernel:', 'FloorMod');
     tf.registerKernel(kernelFloorMod);
     env.kernels.push('floormod');
+    newKernels.push('floormod');
   }
   /*
   if (!env.kernels.includes('atan2') && config.softwareKernels) {
@@ -45,6 +46,7 @@ function registerCustomOps(config: Config) {
     log('registered kernel:', 'atan2');
     tf.registerKernel(kernelAtan2);
     env.kernels.push('atan2');
+    newKernels.push('atan2');
   }
   */
   if (!env.kernels.includes('rotatewithoffset') && config.softwareKernels) {
@@ -59,15 +61,18 @@ function registerCustomOps(config: Config) {
         return t;
       }),
     };
-    if (config.debug) log('registered kernel:', 'RotateWithOffset');
     tf.registerKernel(kernelRotateWithOffset);
     env.kernels.push('rotatewithoffset');
+    newKernels.push('rotatewithoffset');
   }
+  if ((newKernels.length > 0) && config.debug) log('registered kernels:', newKernels);
 }
+
+let defaultFlags: Record<string, unknown> = {};
 
 export async function check(instance: Human, force = false) {
   instance.state = 'backend';
-  if (force || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
+  if (force || env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
     const timeStamp = now();
 
     if (instance.config.backend && instance.config.backend.length > 0) {
@@ -121,11 +126,10 @@ export async function check(instance: Human, force = false) {
         if (instance.config.debug) log(`override: setting backend ${instance.config.backend}`);
       }
 
-      if (instance.config.debug) log('setting backend:', instance.config.backend);
+      if (instance.config.debug) log('setting backend:', [instance.config.backend]);
 
       // customize wasm
       if (instance.config.backend === 'wasm') {
-        if (instance.config.debug) log('backend wasm: set custom params');
         if (tf.env().flagRegistry.CANVAS2D_WILL_READ_FREQUENTLY) tf.env().set('CANVAS2D_WILL_READ_FREQUENTLY', true);
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
         if (typeof tf.setWasmPaths !== 'undefined') tf.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
@@ -145,16 +149,15 @@ export async function check(instance: Human, force = false) {
       try {
         await tf.setBackend(instance.config.backend);
         await tf.ready();
-        constants.init();
       } catch (err) {
         log('error: cannot set backend:', instance.config.backend, err);
         return false;
       }
+      if (instance.config.debug) defaultFlags = JSON.parse(JSON.stringify(tf.env().flags));
     }
 
     // customize humangl
     if (tf.getBackend() === 'humangl') {
-      if (instance.config.debug) log('backend humangl: set custom params');
       if (tf.env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true); // default=false <https://github.com/tensorflow/tfjs/issues/5205>
       if (tf.env().flagRegistry.WEBGL_EXP_CONV) tf.env().set('WEBGL_EXP_CONV', true); // default=false <https://github.com/tensorflow/tfjs/issues/6678>
       // if (tf.env().flagRegistry['WEBGL_PACK_DEPTHWISECONV'])  tf.env().set('WEBGL_PACK_DEPTHWISECONV', false); // default=true <https://github.com/tensorflow/tfjs/pull/4909>
@@ -169,22 +172,29 @@ export async function check(instance: Human, force = false) {
 
     // customize webgpu
     if (tf.getBackend() === 'webgpu') {
-      if (instance.config.debug) log('backend webgpu: set custom params');
       // if (tf.env().flagRegistry['WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD']) tf.env().set('WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD', 512);
       // if (tf.env().flagRegistry['WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE']) tf.env().set('WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE', 0);
       // if (tf.env().flagRegistry['WEBGPU_CPU_FORWARD']) tf.env().set('WEBGPU_CPU_FORWARD', true);
     }
 
-    // wait for ready
-    tf.enableProdMode();
-    await tf.ready();
+    if (instance.config.debug) {
+      const newFlags = tf.env().flags;
+      const updatedFlags = {};
+      for (const key of Object.keys(newFlags)) {
+        if (defaultFlags[key] === newFlags[key]) continue;
+        updatedFlags[key] = newFlags[key];
+      }
+      if (Object.keys(updatedFlags).length > 0) log('backend:', tf.getBackend(), 'set flags:', updatedFlags);
+    }
 
+    tf.enableProdMode();
+    constants.init();
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
     instance.config.backend = tf.getBackend();
-
     await env.updateBackend(); // update env on backend init
     registerCustomOps(instance.config);
     // await env.updateBackend(); // update env on backend init
+    env.initial = false;
   }
   return true;
 }

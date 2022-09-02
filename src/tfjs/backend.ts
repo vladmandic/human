@@ -122,6 +122,7 @@ export async function check(instance: Human, force = false) {
 
       // customize wasm
       if (instance.config.backend === 'wasm') {
+        if (instance.config.debug) log('backend wasm: set custom params');
         if (tf.env().flagRegistry.CANVAS2D_WILL_READ_FREQUENTLY) tf.env().set('CANVAS2D_WILL_READ_FREQUENTLY', true);
         if (instance.config.debug) log('wasm path:', instance.config.wasmPath);
         if (typeof tf.setWasmPaths !== 'undefined') tf.setWasmPaths(instance.config.wasmPath, instance.config.wasmPlatformFetch);
@@ -150,14 +151,13 @@ export async function check(instance: Human, force = false) {
 
     // customize humangl
     if (tf.getBackend() === 'humangl') {
-      if (tf.env().flagRegistry.CHECK_COMPUTATION_FOR_ERRORS) tf.env().set('CHECK_COMPUTATION_FOR_ERRORS', false);
-      if (tf.env().flagRegistry.WEBGL_CPU_FORWARD) tf.env().set('WEBGL_CPU_FORWARD', true);
-      if (tf.env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-      if (tf.env().flagRegistry.CPU_HANDOFF_SIZE_THRESHOLD) tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
-      if (tf.env().flagRegistry.WEBGL_EXP_CONV) tf.env().set('WEBGL_EXP_CONV', true); // <https://github.com/tensorflow/tfjs/issues/6678>
-      if (tf.env().flagRegistry.USE_SETTIMEOUTCUSTOM) tf.env().set('USE_SETTIMEOUTCUSTOM', true); // <https://github.com/tensorflow/tfjs/issues/6687>
-      // if (tf.env().flagRegistry['WEBGL_PACK_DEPTHWISECONV'])  tf.env().set('WEBGL_PACK_DEPTHWISECONV', false);
-      // if (if (tf.env().flagRegistry['WEBGL_FORCE_F16_TEXTURES']) && !instance.config.object.enabled) tf.env().set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
+      if (instance.config.debug) log('backend humangl: set custom params');
+      if (tf.env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true); // default=false <https://github.com/tensorflow/tfjs/issues/5205>
+      if (tf.env().flagRegistry.WEBGL_EXP_CONV) tf.env().set('WEBGL_EXP_CONV', true); // default=false <https://github.com/tensorflow/tfjs/issues/6678>
+      // if (tf.env().flagRegistry['WEBGL_PACK_DEPTHWISECONV'])  tf.env().set('WEBGL_PACK_DEPTHWISECONV', false); // default=true <https://github.com/tensorflow/tfjs/pull/4909>
+      // if (tf.env().flagRegistry.USE_SETTIMEOUTCUSTOM) tf.env().set('USE_SETTIMEOUTCUSTOM', true); // default=false <https://github.com/tensorflow/tfjs/issues/6687>
+      // if (tf.env().flagRegistry.CPU_HANDOFF_SIZE_THRESHOLD) tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 1024); // default=1000
+      // if (tf.env().flagRegistry['WEBGL_FORCE_F16_TEXTURES'] && !instance.config.object.enabled) tf.env().set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
       if (typeof instance.config.deallocate !== 'undefined' && instance.config.deallocate) { // hidden param
         log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
         tf.env().set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
@@ -170,6 +170,7 @@ export async function check(instance: Human, force = false) {
 
     // customize webgpu
     if (tf.getBackend() === 'webgpu') {
+      if (instance.config.debug) log('backend webgpu: set custom params');
       // if (tf.env().flagRegistry['WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD']) tf.env().set('WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD', 512);
       // if (tf.env().flagRegistry['WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE']) tf.env().set('WEBGPU_DEFERRED_SUBMIT_BATCH_SIZE', 0);
       // if (tf.env().flagRegistry['WEBGPU_CPU_FORWARD']) tf.env().set('WEBGPU_CPU_FORWARD', true);

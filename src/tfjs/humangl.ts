@@ -21,8 +21,8 @@ export const config = {
     preserveDrawingBuffer: false,
     depth: false,
     stencil: false,
-    failIfMajorPerformanceCaveat: false,
-    desynchronized: true,
+    failIfMajorPerformanceCaveat: false, // default=true
+    desynchronized: true, // default=undefined
   },
 };
 

@@ -83885,6 +83885,8 @@ async function check(instance2, force = false) {
       if (instance2.config.debug)
         log("setting backend:", instance2.config.backend);
       if (instance2.config.backend === "wasm") {
+        if (instance2.config.debug)
+          log("backend wasm: set custom params");
         if (env().flagRegistry.CANVAS2D_WILL_READ_FREQUENTLY)
           env().set("CANVAS2D_WILL_READ_FREQUENTLY", true);
         if (instance2.config.debug)
@@ -83916,18 +83918,12 @@ async function check(instance2, force = false) {
       }
     }
     if (getBackend() === "humangl") {
-      if (env().flagRegistry.CHECK_COMPUTATION_FOR_ERRORS)
-        env().set("CHECK_COMPUTATION_FOR_ERRORS", false);
-      if (env().flagRegistry.WEBGL_CPU_FORWARD)
-        env().set("WEBGL_CPU_FORWARD", true);
+      if (instance2.config.debug)
+        log("backend humangl: set custom params");
       if (env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS)
         env().set("WEBGL_USE_SHAPES_UNIFORMS", true);
-      if (env().flagRegistry.CPU_HANDOFF_SIZE_THRESHOLD)
-        env().set("CPU_HANDOFF_SIZE_THRESHOLD", 256);
       if (env().flagRegistry.WEBGL_EXP_CONV)
         env().set("WEBGL_EXP_CONV", true);
-      if (env().flagRegistry.USE_SETTIMEOUTCUSTOM)
-        env().set("USE_SETTIMEOUTCUSTOM", true);
       if (typeof instance2.config.deallocate !== "undefined" && instance2.config.deallocate) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         env().set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
@@ -83939,6 +83935,8 @@ async function check(instance2, force = false) {
       }
     }
     if (getBackend() === "webgpu") {
+      if (instance2.config.debug)
+        log("backend webgpu: set custom params");
     }
     enableProdMode();
     await ready();

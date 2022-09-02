@@ -5,20 +5,22 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, shrink-to-fit=yes">
     <style>
-      html { font-size: 14px; font-variant: small-caps; }
+      html { font-size: 10px; font-variant: small-caps; }
       body { margin: 0; background: black; color: white; width: 100vw; }
     </style>
   </head>
   <body>
     <pre id="log" style="line-height: 150%; overflow-x: hidden; white-space: pre-wrap"></pre>
     <script type="module">
-      import { Human } from 'https://vladmandic.github.io/human/dist/human.esm.js';
+      /// import { Human } from 'https://vladmandic.github.io/human/dist/human.esm.js';
+      import { Human } from '../dist/human.esm.js';
 
       const testConfig = {
         debug: true,
         async: false,
         modelBasePath: 'https://vladmandic.github.io/human-models/models/',
         cacheSensitivity: 0,
+        cacheModels: false,
         warmup: 'face',
         face: { iris: { enabled: false }, emotion: { enabled: false } },
         body: { enabled: false },
@@ -47,31 +49,30 @@
       async function main() {
         const human = new Human(testConfig);
         log('human', human.version, { config: human.config });
-        for (const backend of ['wasm', 'webgl', 'humangl', 'webgpu', 'test1', 'test2', 'test3', 'test4']) {
+        // for (const backend of ['wasm', 'webgl', 'humangl', 'webgpu', 'test1', 'test2', 'test3', 'test4']) {
+        // for (const backend of ['webgl']) {
+        for (const backend of ['webgl', 'humangl', 'test1', 'test2', 'test3', 'test4']) {
+          human.reset();
           if (backend === 'test1') {
             human.config.backend = 'humangl';
             await human.init();
-            human.tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
-            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-            human.tf.env().set('WEBGL_EXP_CONV', true);
+            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', false);
+            human.tf.env().set('WEBGL_EXP_CONV', false);
           } else if (backend === 'test2') {
             human.config.backend = 'humangl';
             await human.init();
-            human.tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
             human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-            // human.tf.env().set('WEBGL_EXP_CONV', true);
+            human.tf.env().set('WEBGL_EXP_CONV', false);
           } else if (backend === 'test3') {
             human.config.backend = 'humangl';
             await human.init();
-            human.tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
-            // human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-            // human.tf.env().set('WEBGL_EXP_CONV', true);
+            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', false);
+            human.tf.env().set('WEBGL_EXP_CONV', true);
           } else if (backend === 'test4') {
             human.config.backend = 'humangl';
             await human.init();
-            // human.tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 256);
-            // human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-            // human.tf.env().set('WEBGL_EXP_CONV', true);
+            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
+            human.tf.env().set('WEBGL_EXP_CONV', true);
           } else {
             human.config.backend = backend;
             await human.init();
@@ -80,17 +81,18 @@
               continue; // wrong backend
             }
           }
-          human.reset();
           let res;
+          /*
           for (const model of Object.keys(human.models)) {
             if (human.models[model]) human.models[model] = null;
           }
           await human.load(testConfig);
+          */
           const ops = await human.check();
           if (ops && ops.length > 0) log(backend, { backend: human.tf.getBackend(), ops });
           const env = JSON.parse(JSON.stringify(human.env));
           env.kernels = human.env.kernels.length;
-          log(backend, { backend: human.tf.getBackend(), env });
+          log(backend, { backend: human.tf.getBackend(), env, tfjs: human.tf.env().flags });
           for (const warmup of ['none', 'face', 'body']) {
             testConfig.warmup = warmup;
             res = await human.warmup(testConfig);

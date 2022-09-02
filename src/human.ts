@@ -174,8 +174,13 @@ export class Human {
     models.validateModel(this, null, '');
     // include platform info
     this.emit('create');
-    if (this.config.debug) log(`version: ${this.version}`);
+    if (this.config.debug || this.env.browser) log(`version: ${this.version}`);
     if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core'] as string}`);
+    const envTemp = JSON.parse(JSON.stringify(this.env));
+    delete envTemp.kernels;
+    delete envTemp.initial;
+    delete envTemp.perfadd;
+    if (this.config.debug) log('environment:', envTemp);
   }
 
   /** internal function to measure tensor leaks */
@@ -301,11 +306,10 @@ export class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
     if (this.env.initial) { // print version info on first run and check for correct backend setup
-      if (!await backend.check(this)) log('error: backend check failed');
+      if (!await backend.check(this, false)) log('error: backend check failed');
       await tf.ready();
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
-        if (this.config.debug) log('environment:', this.env);
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
@@ -410,9 +414,6 @@ export class Human {
       }
 
       const timeStart = now();
-
-      // configure backend if needed
-      await backend.check(this);
 
       // load models if enabled
       await this.load();

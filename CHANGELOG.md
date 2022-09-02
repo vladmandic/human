@@ -11,6 +11,9 @@
   
 ### **HEAD -> main** 2022/09/02 mandic00@live.com
 
+- reorder backend init code
+- test embedding
+- embedding test
 - add browser iife tests
 - minor bug fixes and increased test coverage
 - extend release tests

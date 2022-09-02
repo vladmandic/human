@@ -78,6 +78,7 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 - Fix `human.match` when using mixed descriptor lengths  
 - Fix **WASM** feature detection issue in TFJS with Edge/Chromium  
   Example: `console.log(human.env.wasm)`  
+- Reorganized init & load order for faster library startup
 - Increased **NodeJS** test coverage  
   Run using: `npm run test`  
   Runs tests for `tfjs-node`, `tfjs-node-gpu` and `wasm`  

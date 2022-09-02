@@ -93,20 +93,20 @@ export function register(instance: Human): void {
         });
       }
     } catch (err) {
-      log('error: cannot get WebGL context:', err);
+      log('error: cannot get webgl context:', err);
       return;
     }
     try {
       tf.setWebGLContext(2, config.gl);
     } catch (err) {
-      log('error: cannot set WebGL context:', err);
+      log('error: cannot set webgl context:', err);
       return;
     }
     try {
       const ctx = new tf.GPGPUContext(config.gl);
       tf.registerBackend(config.name, () => new tf.MathBackendWebGL(ctx), config.priority);
     } catch (err) {
-      log('error: cannot register WebGL backend:', err);
+      log('error: cannot register webgl backend:', err);
       return;
     }
     try {

@@ -51,28 +51,20 @@
         log('human', human.version, { config: human.config });
         // for (const backend of ['wasm', 'webgl', 'humangl', 'webgpu', 'test1', 'test2', 'test3', 'test4']) {
         // for (const backend of ['webgl']) {
-        for (const backend of ['webgl', 'humangl', 'test1', 'test2', 'test3', 'test4']) {
+        for (const backend of ['webgl', 'humangl', 'test1', 'test2']) {
           human.reset();
           if (backend === 'test1') {
             human.config.backend = 'humangl';
             await human.init();
-            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', false);
-            human.tf.env().set('WEBGL_EXP_CONV', false);
           } else if (backend === 'test2') {
             human.config.backend = 'humangl';
             await human.init();
-            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-            human.tf.env().set('WEBGL_EXP_CONV', false);
           } else if (backend === 'test3') {
             human.config.backend = 'humangl';
             await human.init();
-            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', false);
-            human.tf.env().set('WEBGL_EXP_CONV', true);
           } else if (backend === 'test4') {
             human.config.backend = 'humangl';
             await human.init();
-            human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-            human.tf.env().set('WEBGL_EXP_CONV', true);
           } else {
             human.config.backend = backend;
             await human.init();
@@ -92,8 +84,9 @@
           if (ops && ops.length > 0) log(backend, { backend: human.tf.getBackend(), ops });
           const env = JSON.parse(JSON.stringify(human.env));
           env.kernels = human.env.kernels.length;
-          log(backend, { backend: human.tf.getBackend(), env, tfjs: human.tf.env().flags });
-          for (const warmup of ['none', 'face', 'body']) {
+          // log(backend, { backend: human.tf.getBackend(), env, tfjs: human.tf.env().flags });
+          log(backend, { backend: human.tf.getBackend() });
+          for (const warmup of ['face', 'body']) {
             testConfig.warmup = warmup;
             res = await human.warmup(testConfig);
             if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;

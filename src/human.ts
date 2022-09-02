@@ -174,6 +174,8 @@ export class Human {
     models.validateModel(this, null, '');
     // include platform info
     this.emit('create');
+    if (this.config.debug) log(`version: ${this.version}`);
+    if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core'] as string}`);
   }
 
   /** internal function to measure tensor leaks */
@@ -299,8 +301,6 @@ export class Human {
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
     if (this.env.initial) { // print version info on first run and check for correct backend setup
-      if (this.config.debug) log(`version: ${this.version}`);
-      if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core'] as string}`);
       if (!await backend.check(this)) log('error: backend check failed');
       await tf.ready();
       if (this.env.browser) {

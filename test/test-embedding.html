@@ -22,7 +22,7 @@
         cacheSensitivity: 0,
         cacheModels: false,
         warmup: 'face',
-        face: { iris: { enabled: false }, emotion: { enabled: false } },
+        face: { iris: { enabled: false }, emotion: { enabled: false }, mesh: { enabled: true }, descriptior: { enabled: true } },
         body: { enabled: false },
         hand: { enabled: false },
         object: { enabled: false },
@@ -47,52 +47,15 @@
       }
 
       async function main() {
-        const human = new Human(testConfig);
-        log('human', human.version, { config: human.config });
-        // for (const backend of ['wasm', 'webgl', 'humangl', 'webgpu', 'test1', 'test2', 'test3', 'test4']) {
-        // for (const backend of ['webgl']) {
-        for (const backend of ['webgl', 'humangl', 'test1', 'test2']) {
-          human.reset();
-          if (backend === 'test1') {
-            human.config.backend = 'humangl';
-            await human.init();
-          } else if (backend === 'test2') {
-            human.config.backend = 'humangl';
-            await human.init();
-          } else if (backend === 'test3') {
-            human.config.backend = 'humangl';
-            await human.init();
-          } else if (backend === 'test4') {
-            human.config.backend = 'humangl';
-            await human.init();
-          } else {
-            human.config.backend = backend;
-            await human.init();
-            if (human.tf.getBackend() !== backend) {
-              log(backend, { desired: backend, detected: human.tf.getBackend() });
-              continue; // wrong backend
-            }
-          }
-          let res;
-          /*
-          for (const model of Object.keys(human.models)) {
-            if (human.models[model]) human.models[model] = null;
-          }
-          await human.load(testConfig);
-          */
-          const ops = await human.check();
-          if (ops && ops.length > 0) log(backend, { backend: human.tf.getBackend(), ops });
-          const env = JSON.parse(JSON.stringify(human.env));
-          env.kernels = human.env.kernels.length;
-          // log(backend, { backend: human.tf.getBackend(), env, tfjs: human.tf.env().flags });
-          log(backend, { backend: human.tf.getBackend() });
-          for (const warmup of ['face', 'body']) {
-            testConfig.warmup = warmup;
-            res = await human.warmup(testConfig);
-            if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
-            log(backend, { backend: human.tf.getBackend(), warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
-          }
-        }
+      const human = new Human(testConfig);
+        const ops = await human.check();
+        if (ops && ops.length > 0) log(backend, { backend: human.tf.getBackend(), ops });
+        const env = JSON.parse(JSON.stringify(human.env));
+        env.kernels = human.env.kernels.length;
+        // log(backend, { backend: human.tf.getBackend(), env, tfjs: human.tf.env().flags });
+        const res = await human.warmup();
+        if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
+        log({ backend: human.tf.getBackend(), gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
       }
 
       main();

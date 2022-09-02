@@ -83721,20 +83721,20 @@ function register(instance2) {
   if (instance2.config.backend !== "humangl")
     return;
   if (config2.name in engine().registry && !((_a = config2 == null ? void 0 : config2.gl) == null ? void 0 : _a.getParameter(config2.gl.VERSION))) {
-    log("error: humangl backend invalid context");
+    log("humangl error: backend invalid context");
     reset2(instance2);
   }
   if (!findBackend(config2.name)) {
     try {
       config2.canvas = canvas(100, 100);
     } catch (err) {
-      log("error: cannot create canvas:", err);
+      log("humangl error: cannot create canvas:", err);
       return;
     }
     try {
       config2.gl = config2.canvas.getContext("webgl2", config2.webGLattr);
       if (!config2.gl) {
-        log("error: cannot get WebGL context");
+        log("humangl error: cannot get webgl context");
         return;
       }
       const glv2 = config2.gl.getParameter(config2.gl.VERSION).includes("2.0");
@@ -83745,33 +83745,33 @@ function register(instance2) {
       }
       if (config2.canvas) {
         config2.canvas.addEventListener("webglcontextlost", (e) => {
-          log("error: humangl:", e.type);
+          log("humangl error:", e.type);
           log("possible browser memory leak using webgl or conflict with multiple backend registrations");
           instance2.emit("error");
           throw new Error("backend error: webgl context lost");
         });
         config2.canvas.addEventListener("webglcontextrestored", (e) => {
-          log("error: humangl context restored:", e);
+          log("humangl error: context restored:", e);
         });
         config2.canvas.addEventListener("webglcontextcreationerror", (e) => {
-          log("error: humangl context create:", e);
+          log("humangl error: context create:", e);
         });
       }
     } catch (err) {
-      log("error: cannot get webgl context:", err);
+      log("humangl error: cannot get webgl context:", err);
       return;
     }
     try {
       setWebGLContext(2, config2.gl);
     } catch (err) {
-      log("error: cannot set webgl context:", err);
+      log("humangl error: cannot set webgl context:", err);
       return;
     }
     try {
       const ctx = new GPGPUContext(config2.gl);
       registerBackend(config2.name, () => new MathBackendWebGL(ctx), config2.priority);
     } catch (err) {
-      log("error: cannot register webgl backend:", err);
+      log("humangl error: cannot register webgl backend:", err);
       return;
     }
     try {
@@ -83781,25 +83781,23 @@ function register(instance2) {
         registerKernel(newKernelConfig);
       });
     } catch (err) {
-      log("error: cannot update WebGL backend registration:", err);
-      return;
-    }
-    const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
-    if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION)} renderer:${current.getParameter(current.RENDERER)}`);
-    } else {
-      log("error: no current gl context:", current, config2.gl);
+      log("humangl error: cannot update webgl backend registration:", err);
       return;
     }
     try {
       if (env().flagRegistry.WEBGL_VERSION)
         env().set("WEBGL_VERSION", 2);
     } catch (err) {
-      log("error: cannot set WebGL backend flags:", err);
+      log("humangl error: cannot set WebGL backend flags:", err);
       return;
     }
     extensions();
-    log("backend registered:", config2.name);
+    const current = backend().getGPGPUContext ? backend().getGPGPUContext().gl : null;
+    if (current) {
+      log("humangl backend registered", { webgl: current.getParameter(current.VERSION), renderer: current.getParameter(current.RENDERER) });
+    } else {
+      log("humangl error: no current gl context:", current, config2.gl);
+    }
   }
 }
 
@@ -83847,7 +83845,7 @@ function registerCustomOps(config3) {
 }
 async function check(instance2, force = false) {
   instance2.state = "backend";
-  if (force || env2.initial || instance2.config.backend && instance2.config.backend.length > 0 && getBackend() !== instance2.config.backend) {
+  if (force || instance2.config.backend && instance2.config.backend.length > 0 && getBackend() !== instance2.config.backend) {
     const timeStamp = now();
     if (instance2.config.backend && instance2.config.backend.length > 0) {
       if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance2.config.debug) {
@@ -83881,9 +83879,11 @@ async function check(instance2, force = false) {
           }
         }
       }
-      if (instance2.config.backend === "humangl")
+      let available = Object.keys(engine().registryFactory);
+      if (instance2.config.backend === "humangl" && !available.includes("humangl")) {
         register(instance2);
-      const available = Object.keys(engine().registryFactory);
+        available = Object.keys(engine().registryFactory);
+      }
       if (instance2.config.debug)
         log("available backends:", available);
       if (!available.includes(instance2.config.backend)) {
@@ -83937,11 +83937,6 @@ async function check(instance2, force = false) {
       if (typeof instance2.config.deallocate !== "undefined" && instance2.config.deallocate) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         env().set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
-      }
-      if (backend().getGPGPUContext) {
-        const gl = await backend().getGPGPUContext().gl;
-        if (instance2.config.debug)
-          log(`gl version:${gl.getParameter(gl.VERSION)} renderer:${gl.getParameter(gl.RENDERER)}`);
       }
     }
     if (getBackend() === "webgpu") {
@@ -87447,6 +87442,10 @@ var Human = class {
     this.gl = config2;
     validateModel(this, null, "");
     this.emit("create");
+    if (this.config.debug)
+      log(`version: ${this.version}`);
+    if (this.config.debug)
+      log(`tfjs version: ${this.tf.version["tfjs-core"]}`);
   }
   reset() {
     const currentBackend = this.config.backend;
@@ -87491,10 +87490,6 @@ var Human = class {
     if (userConfig)
       this.config = mergeDeep(this.config, userConfig);
     if (this.env.initial) {
-      if (this.config.debug)
-        log(`version: ${this.version}`);
-      if (this.config.debug)
-        log(`tfjs version: ${this.tf.version["tfjs-core"]}`);
       if (!await check(this))
         log("error: backend check failed");
       await ready();

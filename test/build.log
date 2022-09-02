@@ -631,3 +631,15 @@
 2022-09-02 11:57:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2662,"url":"/test/test-embedding.html","remote":"::1"} 
 2022-09-02 11:57:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3103557,"url":"/dist/human.esm.js","remote":"::1"} 
 2022-09-02 11:57:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-09-02 12:01:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2690,"url":"/test/test-embedding.html","remote":"::1"} 
+2022-09-02 12:01:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3103557,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-09-02 12:01:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-09-02 12:03:09 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2734,"url":"/test/test-embedding.html","remote":"::1"} 
+2022-09-02 12:03:09 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3103557,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-09-02 12:03:09 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-09-02 12:03:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2751,"url":"/test/test-embedding.html","remote":"::1"} 
+2022-09-02 12:03:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3103557,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-09-02 12:03:37 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-09-02 12:04:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2736,"url":"/test/test-embedding.html","remote":"::1"} 
+2022-09-02 12:04:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3103557,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-09-02 12:04:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 

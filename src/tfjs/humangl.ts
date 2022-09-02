@@ -46,7 +46,7 @@ export function register(instance: Human): void {
   // force backend reload if gl context is not valid
   if (instance.config.backend !== 'humangl') return;
   if ((config.name in tf.engine().registry) && !config?.gl?.getParameter(config.gl.VERSION)) {
-    log('error: humangl backend invalid context');
+    log('humangl error: backend invalid context');
     models.reset(instance);
     /*
     log('resetting humangl backend');
@@ -58,13 +58,13 @@ export function register(instance: Human): void {
     try {
       config.canvas = image.canvas(100, 100);
     } catch (err) {
-      log('error: cannot create canvas:', err);
+      log('humangl error: cannot create canvas:', err);
       return;
     }
     try {
       config.gl = config.canvas.getContext('webgl2', config.webGLattr);
       if (!config.gl) {
-        log('error: cannot get WebGL context');
+        log('humangl error: cannot get webgl context');
         return;
       }
       const glv2 = config.gl.getParameter(config.gl.VERSION).includes('2.0');
@@ -75,7 +75,7 @@ export function register(instance: Human): void {
       }
       if (config.canvas) {
         config.canvas.addEventListener('webglcontextlost', (e) => {
-          log('error: humangl:', e.type);
+          log('humangl error:', e.type);
           log('possible browser memory leak using webgl or conflict with multiple backend registrations');
           instance.emit('error');
           throw new Error('backend error: webgl context lost');
@@ -86,27 +86,27 @@ export function register(instance: Human): void {
           // await register(instance); // re-register
         });
         config.canvas.addEventListener('webglcontextrestored', (e) => {
-          log('error: humangl context restored:', e);
+          log('humangl error: context restored:', e);
         });
         config.canvas.addEventListener('webglcontextcreationerror', (e) => {
-          log('error: humangl context create:', e);
+          log('humangl error: context create:', e);
         });
       }
     } catch (err) {
-      log('error: cannot get webgl context:', err);
+      log('humangl error: cannot get webgl context:', err);
       return;
     }
     try {
       tf.setWebGLContext(2, config.gl);
     } catch (err) {
-      log('error: cannot set webgl context:', err);
+      log('humangl error: cannot set webgl context:', err);
       return;
     }
     try {
       const ctx = new tf.GPGPUContext(config.gl);
       tf.registerBackend(config.name, () => new tf.MathBackendWebGL(ctx), config.priority);
     } catch (err) {
-      log('error: cannot register webgl backend:', err);
+      log('humangl error: cannot register webgl backend:', err);
       return;
     }
     try {
@@ -116,23 +116,21 @@ export function register(instance: Human): void {
         tf.registerKernel(newKernelConfig);
       });
     } catch (err) {
-      log('error: cannot update WebGL backend registration:', err);
-      return;
-    }
-    const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
-    if (current) {
-      log(`humangl webgl version:${current.getParameter(current.VERSION) as string} renderer:${current.getParameter(current.RENDERER) as string}`);
-    } else {
-      log('error: no current gl context:', current, config.gl);
+      log('humangl error: cannot update webgl backend registration:', err);
       return;
     }
     try {
       if (tf.env().flagRegistry.WEBGL_VERSION) tf.env().set('WEBGL_VERSION', 2);
     } catch (err) {
-      log('error: cannot set WebGL backend flags:', err);
+      log('humangl error: cannot set WebGL backend flags:', err);
       return;
     }
     extensions();
-    log('backend registered:', config.name);
+    const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
+    if (current) {
+      log('humangl backend registered', { webgl: current.getParameter(current.VERSION) as string, renderer: current.getParameter(current.RENDERER) as string });
+    } else {
+      log('humangl error: no current gl context:', current, config.gl);
+    }
   }
 }

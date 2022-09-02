@@ -67,7 +67,7 @@ function registerCustomOps(config: Config) {
 
 export async function check(instance: Human, force = false) {
   instance.state = 'backend';
-  if (force || env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
+  if (force || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
     const timeStamp = now();
 
     if (instance.config.backend && instance.config.backend.length > 0) {
@@ -108,8 +108,11 @@ export async function check(instance: Human, force = false) {
       }
 
       // check available backends
-      if (instance.config.backend === 'humangl') humangl.register(instance);
-      const available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
+      let available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
+      if (instance.config.backend === 'humangl' && !available.includes('humangl')) {
+        humangl.register(instance);
+        available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
+      }
       if (instance.config.debug) log('available backends:', available);
 
       if (!available.includes(instance.config.backend)) {
@@ -161,10 +164,6 @@ export async function check(instance: Human, force = false) {
       if (typeof instance.config.deallocate !== 'undefined' && instance.config.deallocate) { // hidden param
         log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
         tf.env().set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
-      }
-      if (tf.backend().getGPGPUContext) {
-        const gl = await tf.backend().getGPGPUContext().gl;
-        if (instance.config.debug) log(`gl version:${gl.getParameter(gl.VERSION) as string} renderer:${gl.getParameter(gl.RENDERER) as string}`);
       }
     }
 

@@ -81,7 +81,7 @@ async function main() {
   log.state('Copy:', { input: 'tfjs/tfjs.esm.d.ts' });
   copy('tfjs/tfjs.esm.d.ts', 'types/lib/dist/tfjs.esm.d.ts');
   // run api-extractor to create typedef rollup
-  const extractorConfig = APIExtractor.ExtractorConfig.loadFileAndPrepare('api-extractor.json');
+  const extractorConfig = APIExtractor.ExtractorConfig.loadFileAndPrepare('.api-extractor.json');
   const extractorResult = APIExtractor.Extractor.invoke(extractorConfig, {
     localBuild: true,
     showVerboseMessages: false,

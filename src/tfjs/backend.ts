@@ -85,7 +85,7 @@ export async function check(instance: Human, force = false) {
       // force browser vs node backend
       if (env.browser && instance.config.backend === 'tensorflow') {
         if (instance.config.debug) log('override: backend set to tensorflow while running in browser');
-        instance.config.backend = 'humangl';
+        instance.config.backend = 'webgl';
       }
       if (env.node && (instance.config.backend === 'webgl' || instance.config.backend === 'humangl')) {
         if (instance.config.debug) log(`override: backend set to ${instance.config.backend} while running in nodejs`);
@@ -96,13 +96,13 @@ export async function check(instance: Human, force = false) {
       if (env.browser && instance.config.backend === 'webgpu') {
         if (typeof navigator === 'undefined' || typeof navigator.gpu === 'undefined') {
           log('override: backend set to webgpu but browser does not support webgpu');
-          instance.config.backend = 'humangl';
+          instance.config.backend = 'webgl';
         } else {
           const adapter = await navigator.gpu.requestAdapter();
           if (instance.config.debug) log('enumerated webgpu adapter:', adapter);
           if (!adapter) {
             log('override: backend set to webgpu but browser reports no available gpu');
-            instance.config.backend = 'humangl';
+            instance.config.backend = 'webgl';
           } else {
             // @ts-ignore requestAdapterInfo is not in tslib
             const adapterInfo = 'requestAdapterInfo' in adapter ? await (adapter as GPUAdapter).requestAdapterInfo() : undefined;
@@ -157,7 +157,7 @@ export async function check(instance: Human, force = false) {
     }
 
     // customize humangl
-    if (tf.getBackend() === 'humangl') {
+    if (tf.getBackend() === 'humangl' || tf.getBackend() === 'webgl') {
       if (tf.env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true); // default=false <https://github.com/tensorflow/tfjs/issues/5205>
       if (tf.env().flagRegistry.WEBGL_EXP_CONV) tf.env().set('WEBGL_EXP_CONV', true); // default=false <https://github.com/tensorflow/tfjs/issues/6678>
       // if (tf.env().flagRegistry['WEBGL_PACK_DEPTHWISECONV'])  tf.env().set('WEBGL_PACK_DEPTHWISECONV', false); // default=true <https://github.com/tensorflow/tfjs/pull/4909>
@@ -184,7 +184,7 @@ export async function check(instance: Human, force = false) {
         if (defaultFlags[key] === newFlags[key]) continue;
         updatedFlags[key] = newFlags[key];
       }
-      if (Object.keys(updatedFlags).length > 0) log('backend:', tf.getBackend(), 'set flags:', updatedFlags);
+      if (Object.keys(updatedFlags).length > 0) log('backend:', tf.getBackend(), 'flags:', updatedFlags);
     }
 
     tf.enableProdMode();

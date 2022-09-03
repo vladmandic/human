@@ -224,7 +224,7 @@ export interface Config {
    * valid build-in backends are:
    * - Browser: `cpu`, `wasm`, `webgl`, `humangl`, `webgpu`
    * - NodeJS: `cpu`, `wasm`, `tensorflow`
-   * default: `humangl` for browser and `tensorflow` for nodejs
+   * default: `webgl` for browser and `tensorflow` for nodejs
   */
   backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu',
 

@@ -133,7 +133,7 @@ export class Human {
     const tfVersion = (tf.version.tfjs || tf.version_core).replace(/-(.*)/, '');
     defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfVersion}/dist/`;
     defaults.modelBasePath = env.browser ? '../models/' : 'file://models/';
-    defaults.backend = env.browser ? 'humangl' : 'tensorflow';
+    defaults.backend = env.browser ? 'webgl' : 'tensorflow';
     this.version = app.version; // expose version property on instance of class
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     this.config = JSON.parse(JSON.stringify(defaults));

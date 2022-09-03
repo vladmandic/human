@@ -83849,7 +83849,7 @@ async function check(instance2, force = false) {
       if (env2.browser && instance2.config.backend === "tensorflow") {
         if (instance2.config.debug)
           log("override: backend set to tensorflow while running in browser");
-        instance2.config.backend = "humangl";
+        instance2.config.backend = "webgl";
       }
       if (env2.node && (instance2.config.backend === "webgl" || instance2.config.backend === "humangl")) {
         if (instance2.config.debug)
@@ -83859,14 +83859,14 @@ async function check(instance2, force = false) {
       if (env2.browser && instance2.config.backend === "webgpu") {
         if (typeof navigator === "undefined" || typeof navigator.gpu === "undefined") {
           log("override: backend set to webgpu but browser does not support webgpu");
-          instance2.config.backend = "humangl";
+          instance2.config.backend = "webgl";
         } else {
           const adapter = await navigator.gpu.requestAdapter();
           if (instance2.config.debug)
             log("enumerated webgpu adapter:", adapter);
           if (!adapter) {
             log("override: backend set to webgpu but browser reports no available gpu");
-            instance2.config.backend = "humangl";
+            instance2.config.backend = "webgl";
           } else {
             const adapterInfo = "requestAdapterInfo" in adapter ? await adapter.requestAdapterInfo() : void 0;
             log("webgpu adapter info:", adapterInfo);
@@ -83920,7 +83920,7 @@ async function check(instance2, force = false) {
       if (instance2.config.debug)
         defaultFlags = JSON.parse(JSON.stringify(env().flags));
     }
-    if (getBackend() === "humangl") {
+    if (getBackend() === "humangl" || getBackend() === "webgl") {
       if (env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS)
         env().set("WEBGL_USE_SHAPES_UNIFORMS", true);
       if (env().flagRegistry.WEBGL_EXP_CONV)
@@ -83941,7 +83941,7 @@ async function check(instance2, force = false) {
         updatedFlags[key] = newFlags[key];
       }
       if (Object.keys(updatedFlags).length > 0)
-        log("backend:", getBackend(), "set flags:", updatedFlags);
+        log("backend:", getBackend(), "flags:", updatedFlags);
     }
     enableProdMode();
     init2();
@@ -85236,7 +85236,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version5 = "2.9.4";
+var version5 = "2.10.0";
 
 // src/draw/draw.ts
 var draw_exports = {};
@@ -87410,7 +87410,7 @@ var Human2 = class {
     const tfVersion = (V.tfjs || version).replace(/-(.*)/, "");
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfVersion}/dist/`;
     config.modelBasePath = env2.browser ? "../models/" : "file://models/";
-    config.backend = env2.browser ? "humangl" : "tensorflow";
+    config.backend = env2.browser ? "webgl" : "tensorflow";
     this.version = version5;
     Object.defineProperty(this, "version", { value: version5 });
     this.config = JSON.parse(JSON.stringify(config));

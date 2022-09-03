@@ -13,7 +13,7 @@ const workerJS = './worker.js';
 const config = {
   main: { // processes input and runs gesture analysis
     warmup: 'none',
-    backend: 'humangl',
+    backend: 'webgl',
     modelBasePath: '../../models/',
     async: false,
     filter: { enabled: true },
@@ -26,7 +26,7 @@ const config = {
   },
   face: { // runs all face models
     warmup: 'none',
-    backend: 'humangl',
+    backend: 'webgl',
     modelBasePath: '../../models/',
     async: false,
     filter: { enabled: false },
@@ -39,7 +39,7 @@ const config = {
   },
   body: { // runs body model
     warmup: 'none',
-    backend: 'humangl',
+    backend: 'webgl',
     modelBasePath: '../../models/',
     async: false,
     filter: { enabled: false },
@@ -52,7 +52,7 @@ const config = {
   },
   hand: { // runs hands model
     warmup: 'none',
-    backend: 'humangl',
+    backend: 'webgl',
     modelBasePath: '../../models/',
     async: false,
     filter: { enabled: false },
@@ -65,7 +65,7 @@ const config = {
   },
   object: { // runs object model
     warmup: 'none',
-    backend: 'humangl',
+    backend: 'webgl',
     modelBasePath: '../../models/',
     async: false,
     filter: { enabled: false },

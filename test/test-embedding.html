@@ -12,13 +12,11 @@
   <body>
     <pre id="log" style="line-height: 150%; overflow-x: hidden; white-space: pre-wrap"></pre>
     <script type="module">
-      /// import { Human } from 'https://vladmandic.github.io/human/dist/human.esm.js';
       import { Human } from '../dist/human.esm.js';
 
       const testConfig = {
         debug: true,
         async: false,
-        backend: 'humangl',
         modelBasePath: 'https://vladmandic.github.io/human-models/models/',
         cacheSensitivity: 0,
         cacheModels: false,
@@ -54,9 +52,16 @@
         const env = JSON.parse(JSON.stringify(human.env));
         env.kernels = human.env.kernels.length;
         // log(backend, { backend: human.tf.getBackend(), env, tfjs: human.tf.env().flags });
-        const res = await human.warmup();
+        let res;
+        res = await human.warmup({ warmup: 'none' });
         if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
-        log({ backend: human.tf.getBackend(), webgl: human.tf.env().flags['WEBGL_VERSION'], gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
+        log({ backend: human.tf.getBackend(), warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
+        res = await human.warmup({ warmup: 'face' });
+        if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
+        log({ backend: human.tf.getBackend(), warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
+        res = await human.warmup({ warmup: 'body' });
+        if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
+        log({ backend: human.tf.getBackend(), warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
       }
 
       main();

@@ -34,7 +34,7 @@ let userConfig = {
   // hand: { enabled: false },
   /*
   warmup: 'none',
-  backend: 'humangl',
+  backend: 'webgl',
   debug: true,
   wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.9.0/dist/',
   async: false,
@@ -1094,7 +1094,7 @@ async function main() {
   }
 
   if (human.config.debug) log('environment:', human.env);
-  if (human.config.backend === 'humangl' && human.config.debug) log('backend:', human.gl);
+  if (human.config.backend === 'webgl' && human.config.debug) log('backend:', human.gl);
 }
 
 window.onload = main;

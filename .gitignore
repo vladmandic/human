@@ -1,5 +1,4 @@
-.vscode
-pnpm-lock.yaml
-*.swp
 node_modules/
 types/lib
+pnpm-lock.yaml
+*.swp

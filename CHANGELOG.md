@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/09/02 mandic00@live.com
+### **HEAD -> main** 2022/09/03 mandic00@live.com
 
+- release preview
+- optimize startup sequence
 - reorder backend init code
 - test embedding
 - embedding test

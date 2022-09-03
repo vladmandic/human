@@ -10,6 +10,13 @@
     </style>
   </head>
   <body>
+    <div style="position: fixed; top: 20px; right: 20px; background: #333333; padding: 10px">
+      <input type="checkbox" id="glShapesUniform" name="glShapesUniform" value="glShapesUniform">
+      <label for="glShapesUniform">Enable WebGL Uniforms for Shapes</label><br>
+      <input type="checkbox" id="glExpandedConv" name="glExpandedConv" value="glExpandedConv">
+      <label for="glExpandedConv">Enable WebGL Expanded Convolutions</label><br><br>
+      <button id="run">Run Test</button>
+    </div>
     <pre id="log" style="line-height: 150%; overflow-x: hidden; white-space: pre-wrap"></pre>
     <script type="module">
       import { Human } from '../dist/human.esm.js';
@@ -46,25 +53,34 @@
       }
 
       async function main() {
+        document.getElementById('run').disabled = true;
         const human = new Human(testConfig);
-        const ops = await human.check();
-        if (ops && ops.length > 0) log(backend, { backend: human.tf.getBackend(), ops });
-        const env = JSON.parse(JSON.stringify(human.env));
-        env.kernels = human.env.kernels.length;
-        // log(backend, { backend: human.tf.getBackend(), env, tfjs: human.tf.env().flags });
+        await human.init();
+        const glShapesUniform = document.getElementById('glShapesUniform').checked;
+        const glExpandedConv = document.getElementById('glExpandedConv').checked
+        if (glShapesUniform) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
+        if (glExpandedConv) tf.env().set('WEBGL_EXP_CONV', true);
+        await human.load();
+        await human.check();
         let res;
         res = await human.warmup({ warmup: 'none' });
         if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
-        log({ backend: human.tf.getBackend(), warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
+        const pass0 = res?.face?.[0]?.embedding?.[0] === 0 ? true : false;
+        log({ backend: human.tf.getBackend(), pass: pass0, warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
         res = await human.warmup({ warmup: 'face' });
         if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
-        log({ backend: human.tf.getBackend(), warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
+        console.log('EEEE', res?.face?.[0]?.embedding?.[0]);
+        const pass1 = res?.face?.[0]?.embedding?.[0] === 0 ? true : false;
+        log({ backend: human.tf.getBackend(), pass: pass1, warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
         res = await human.warmup({ warmup: 'body' });
         if (Array.isArray(res?.face?.[0]?.embedding) && (res?.face?.[0]?.embedding.length === 1024)) res.face[0].embedding.length = 10;
-        log({ backend: human.tf.getBackend(), warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
+        const pass2 = res?.face?.[0]?.embedding?.[0] === 0 ? true : false;
+        log({ backend: human.tf.getBackend(), pass: pass2, warmup: human.config.warmup, gender: res?.face?.[0]?.gender, genderScore: res?.face?.[0]?.genderScore, age: res?.face?.[0]?.age, embedding: res?.face?.[0]?.embedding });
+        const pass = !pass0 && pass1 && pass2;
+        log({ test: 'complete', pass, glShapesUniform, glExpandedConv });
       }
 
-      main();
+      document.getElementById('run').addEventListener('click', main);
     </script>
   </body>
 </html>

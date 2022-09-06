@@ -101,6 +101,7 @@ var config = {
   cacheSensitivity: 0.7,
   skipAllowed: false,
   deallocate: false,
+  flags: {},
   softwareKernels: false,
   filter: {
     enabled: true,
@@ -83921,7 +83922,7 @@ async function check(instance2, force = false) {
         defaultFlags = JSON.parse(JSON.stringify(env().flags));
     }
     if (getBackend() === "humangl" || getBackend() === "webgl") {
-      if (typeof instance2.config.deallocate !== "undefined" && instance2.config.deallocate) {
+      if (instance2.config.debug && typeof instance2.config.deallocate !== "undefined" && instance2.config.deallocate) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         env().set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
       }
@@ -83936,8 +83937,15 @@ async function check(instance2, force = false) {
           continue;
         updatedFlags[key] = newFlags[key];
       }
-      if (Object.keys(updatedFlags).length > 0)
+      if (instance2.config.debug && Object.keys(updatedFlags).length > 0)
         log("backend:", getBackend(), "flags:", updatedFlags);
+    }
+    if (instance2.config.flags && Object.keys(instance2.config.flags).length > 0) {
+      if (instance2.config.debug)
+        log("flags:", instance2.config["flags"]);
+      for (const [key, val] of Object.entries(instance2.config.flags)) {
+        env().set(key, val);
+      }
     }
     enableProdMode();
     init2();

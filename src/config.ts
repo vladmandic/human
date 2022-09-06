@@ -286,6 +286,9 @@ export interface Config {
   */
   cacheSensitivity: number;
 
+  /** Explicit flags passed to initialize TFJS */
+  flags: Record<string, unknown>,
+
   /** Software Kernels
    * Registers software kernel ops running on CPU when accelerated version of kernel is not found in the current backend
   */
@@ -333,6 +336,7 @@ const config: Config = {
   cacheSensitivity: 0.70,
   skipAllowed: false,
   deallocate: false,
+  flags: {},
   softwareKernels: false,
   filter: {
     enabled: true,

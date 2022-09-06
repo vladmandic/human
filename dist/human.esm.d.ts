@@ -212,6 +212,8 @@ export declare interface Config {
      * default: 0.7
      */
     cacheSensitivity: number;
+    /** Explicit flags passed to initialize TFJS */
+    flags: Record<string, unknown>;
     /** Software Kernels
      * Registers software kernel ops running on CPU when accelerated version of kernel is not found in the current backend
      */

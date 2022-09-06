@@ -164,7 +164,7 @@ export async function check(instance: Human, force = false) {
       // if (tf.env().flagRegistry.USE_SETTIMEOUTCUSTOM) tf.env().set('USE_SETTIMEOUTCUSTOM', true); // default=false <https://github.com/tensorflow/tfjs/issues/6687>
       // if (tf.env().flagRegistry.CPU_HANDOFF_SIZE_THRESHOLD) tf.env().set('CPU_HANDOFF_SIZE_THRESHOLD', 1024); // default=1000
       // if (tf.env().flagRegistry['WEBGL_FORCE_F16_TEXTURES'] && !instance.config.object.enabled) tf.env().set('WEBGL_FORCE_F16_TEXTURES', true); // safe to use 16bit precision
-      if (typeof instance.config.deallocate !== 'undefined' && instance.config.deallocate) { // hidden param
+      if (instance.config.debug && typeof instance.config.deallocate !== 'undefined' && instance.config.deallocate) { // hidden param
         log('changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:', true);
         tf.env().set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
       }
@@ -184,7 +184,14 @@ export async function check(instance: Human, force = false) {
         if (defaultFlags[key] === newFlags[key]) continue;
         updatedFlags[key] = newFlags[key];
       }
-      if (Object.keys(updatedFlags).length > 0) log('backend:', tf.getBackend(), 'flags:', updatedFlags);
+      if (instance.config.debug && Object.keys(updatedFlags).length > 0) log('backend:', tf.getBackend(), 'flags:', updatedFlags);
+    }
+
+    if (instance.config.flags && Object.keys(instance.config.flags).length > 0) {
+      if (instance.config.debug) log('flags:', instance.config['flags']);
+      for (const [key, val] of Object.entries(instance.config.flags)) {
+        tf.env().set(key, val);
+      }
     }
 
     tf.enableProdMode();

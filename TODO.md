@@ -88,6 +88,7 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
   Run using: `demo/browser.html`  
   Runs tests for `webgl`, `humangl`, `webgpu` and `wasm`  
   Runs tests for ESM and IIFE versions of library  
+- Add `config.flags` settings to allow setting of custom **TFJS** flags during backend configuration
 - Increase availability of alternative models  
   See `models/model.json` for full list  
 - Update profiling methods in `human.profile()`  

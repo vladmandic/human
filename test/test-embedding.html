@@ -58,8 +58,8 @@
         await human.init();
         const glShapesUniform = document.getElementById('glShapesUniform').checked;
         const glExpandedConv = document.getElementById('glExpandedConv').checked
-        if (glShapesUniform) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
-        if (glExpandedConv) tf.env().set('WEBGL_EXP_CONV', true);
+        if (glShapesUniform) human.tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
+        if (glExpandedConv) human.tf.env().set('WEBGL_EXP_CONV', true);
         await human.load();
         await human.check();
         let res;

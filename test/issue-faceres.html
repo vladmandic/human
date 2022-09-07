@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FaceRes Tests</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, shrink-to-fit=yes">
+  </head>
+  <body style="font-size: 12px; margin: 0; background: black; color: white; width: 100vw; line-height: 200%">
+    <pre id="log"></pre>
+    <script type="module">
+      import 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.20.0/dist/tf.es2017.js'
+
+      async function log(msg) {
+        document.getElementById('log').innerHTML += (typeof msg === 'object' ? JSON.stringify(msg, null, 0) : msg) + '<br>';
+        console.log(msg);
+      }
+
+      async function image2tensor(url) {
+        const img = document.createElement('img');
+        const loaded = new Promise((resolve) => { img.onload = () => resolve(true); });
+        img.src = url;
+        await loaded;
+        const tensor = tf.browser.fromPixels(img, 3).expandDims(0).cast('float32');
+        return tensor;
+      }
+
+
+      async function main() {
+        log({ version: tf.version });
+        tf.enableDebugMode();
+        tf.setBackend('webgl');
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('uniforms')) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', true);
+        await tf.ready();
+        log({ backend: tf.getBackend() });
+        log({ flags: tf.env().flags });
+        log({ uniforms: tf.env().flags['WEBGL_USE_SHAPES_UNIFORMS'] ? true : false })
+        const model = await tf.loadGraphModel('https://vladmandic.github.io/human/models/faceres.json');
+        log({ model: model.modelUrl });
+        // const input = tf.randomUniform([1, 224, 224, 3], 0, 1, 'float32');
+        const input = await image2tensor(imgDataUrl);
+        log({ input: input.shape });
+        const res = model.execute(input);
+        const data = res.map((t) => Array.from(t.dataSync()));
+        for (let i = 0; i < res.length; i++) {
+          log({ result: i, tensor: res[i] })
+          log({ result: i, data: data[i] })
+          log({ result: i, status: (data[i][0] && data[i].reduce((prev, curr) => (prev && (curr >= 0)), true)) ? 'pass' : 'fail' })
+        }
+      }
+
+      const imgDataUrl = 'data:image/jpeg;base64,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'
+
+      window.onload = main;
+    </script>
+  </body>
+</html>

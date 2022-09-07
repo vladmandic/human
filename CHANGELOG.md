@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/09/03 mandic00@live.com
+### **HEAD -> main** 2022/09/06 mandic00@live.com
 
+- add config flags
+- test update
 - release preview
 - optimize startup sequence
 - reorder backend init code

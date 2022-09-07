@@ -83922,6 +83922,10 @@ async function check(instance2, force = false) {
         defaultFlags = JSON.parse(JSON.stringify(env().flags));
     }
     if (getBackend() === "humangl" || getBackend() === "webgl") {
+      if (env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS)
+        env().set("WEBGL_USE_SHAPES_UNIFORMS", true);
+      if (env().flagRegistry.WEBGL_EXP_CONV)
+        env().set("WEBGL_EXP_CONV", true);
       if (instance2.config.debug && typeof instance2.config.deallocate !== "undefined" && instance2.config.deallocate) {
         log("changing webgl: WEBGL_DELETE_TEXTURE_THRESHOLD:", true);
         env().set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);

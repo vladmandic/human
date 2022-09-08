@@ -85206,7 +85206,7 @@ async function loadModel(modelPath) {
     sizeDesired: models_exports[shortModelName],
     inCache: false
   };
-  options2.cacheSupported = typeof window !== "undefined" && typeof window.localStorage !== "undefined" && typeof window.indexedDB !== "undefined";
+  options2.cacheSupported = typeof indexedDB !== "undefined";
   let cachedModels = {};
   try {
     cachedModels = options2.cacheSupported && options2.cacheModels ? await io_exports.listModels() : {};
@@ -85234,7 +85234,8 @@ async function loadModel(modelPath) {
   if (loaded && options2.cacheModels && options2.cacheSupported && !modelStats[shortModelName].inCache) {
     try {
       const saveResult = await model20.save(cachedModelName);
-      log("model saved:", cachedModelName, saveResult);
+      if (options2.debug)
+        log("model saved:", cachedModelName, saveResult);
     } catch (err) {
       log("error saving model:", modelUrl, err);
     }

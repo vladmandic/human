@@ -47,7 +47,7 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     sizeDesired: modelsDefs[shortModelName],
     inCache: false,
   };
-  options.cacheSupported = (typeof window !== 'undefined') && (typeof window.localStorage !== 'undefined') && (typeof window.indexedDB !== 'undefined'); // check if running in browser and if indexedb is available
+  options.cacheSupported = (typeof indexedDB !== 'undefined'); // check if localStorage and indexedb are available
   let cachedModels = {};
   try {
     cachedModels = (options.cacheSupported && options.cacheModels) ? await tf.io.listModels() : {}; // list all models already in cache // this fails for webview although localStorage is defined
@@ -76,7 +76,7 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
   if (loaded && options.cacheModels && options.cacheSupported && !modelStats[shortModelName].inCache) { // save model to cache
     try {
       const saveResult = await model.save(cachedModelName);
-      log('model saved:', cachedModelName, saveResult);
+      if (options.debug) log('model saved:', cachedModelName, saveResult);
     } catch (err) {
       log('error saving model:', modelUrl, err);
     }

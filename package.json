@@ -8,6 +8,11 @@
   "browser": "dist/human.esm.js",
   "types": "types/human.d.ts",
   "exports": {
+    "node": {
+      "require": "./dist/human.node.js",
+      "import": "./dist/human.node.js",
+      "module": "./dist/human.node.js"
+    },
     "require": "./dist/human.node.js",
     "import": "./dist/human.esm.js",
     "script": "./dist/human.js",

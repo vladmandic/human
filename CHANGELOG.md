@@ -12,8 +12,12 @@
 ### **HEAD -> main** 2022/09/07 mandic00@live.com
 
 
-### **origin/main** 2022/09/07 mandic00@live.com
+### **release: 2.10.1** 2022/09/07 mandic00@live.com
 
+
+### **2.10.1** 2022/09/07 mandic00@live.com
+
+- release candidate
 - add config flags
 - test update
 - release preview

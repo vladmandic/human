@@ -81,15 +81,15 @@
     "@tensorflow/tfjs-node": "^3.20.0",
     "@tensorflow/tfjs-node-gpu": "^3.20.0",
     "@tensorflow/tfjs-tflite": "0.0.1-alpha.8",
-    "@types/node": "^18.7.15",
+    "@types/node": "^18.7.16",
     "@types/offscreencanvas": "^2019.7.0",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
-    "@vladmandic/build": "^0.7.11",
+    "@vladmandic/build": "^0.7.12",
     "@vladmandic/pilogger": "^0.4.6",
     "@vladmandic/tfjs": "github:vladmandic/tfjs",
     "@webgpu/types": "^0.1.21",
-    "canvas": "^2.10.0",
+    "canvas": "^2.10.1",
     "esbuild": "^0.15.7",
     "eslint": "8.23.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -103,6 +103,6 @@
     "seedrandom": "^3.0.5",
     "tslib": "^2.4.0",
     "typedoc": "0.23.14",
-    "typescript": "4.8.2"
+    "typescript": "4.8.3"
   }
 }

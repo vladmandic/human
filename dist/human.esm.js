@@ -85245,7 +85245,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version5 = "2.10.1";
+var version5 = "2.10.2";
 
 // src/draw/draw.ts
 var draw_exports = {};

@@ -44,3 +44,4 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 ## Pending Release Changes
 
 - Enable model cache when using web workers
+- Improve NodeJS resolver when using ESM

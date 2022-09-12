@@ -1,7 +1,9 @@
 {
   "search.exclude": {
     "dist/*": true,
-    "node_modules/*": true
+    "node_modules/*": true,
+    "types": true,
+    "typedoc": true,
   },
   "search.useGlobalIgnoreFiles": true,
   "search.useParentIgnoreFiles": true

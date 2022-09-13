@@ -21,8 +21,9 @@ JavaScript module using TensorFlow/JS Machine Learning library
   Compatible with *WebWorker* execution  
   Compatible with *WebView*  
 - **NodeJS**:  
-  Compatible with both software *tfjs-node* and  
-  GPU accelerated backends *tfjs-node-gpu* using CUDA libraries  
+  Compatibile with *WASM* backend for executions on architectures where *tensorflow* binaries are not available  
+  Compatible with *tfjs-node* using software execution via *tensorflow* shared libraries  
+  Compatible with *tfjs-node* using GPU-accelerated execution via *tensorflow* shared libraries and nVidia CUDA  
 
 <br>
 
@@ -33,7 +34,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - To start video detection, simply press *Play*  
 - To process images, simply drag & drop in your Browser window  
 - Note: For optimal performance, select only models you'd like to use
-- Note: If you have modern GPU, WebGL (default) backend is preferred, otherwise select WASM backend
+- Note: If you have modern GPU, *WebGL* (default) backend is preferred, otherwise select *WASM* backend
 
 <br>
 
@@ -57,7 +58,6 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - **NextJS** [[*Live*]](https://vladmandic.github.io/human-next/out/index.html) [[*Details*]](https://github.com/vladmandic/human-next): Use Human with TypeScript, NextJS and ReactJS
 - **ElectronJS** [[*Details*]](https://github.com/vladmandic/human-electron): Use Human with TypeScript and ElectonJS to create standalone cross-platform apps
 - **3D Analysis** [[*Live*]](https://vladmandic.github.io/human-motion/src/index.html) [[*Details*]](https://github.com/vladmandic/human-motion): 3D tracking and visualization of heead, face, eye, body and hand
-- **Avatar Bone Mapping** [[*Live*]](https://vladmandic.github.io/human-vrm/src/human-avatar.html) [[*Details*]](https://github.com/vladmandic/human-avatar): Human skeleton with full bone mapping using look and inverse kinematics controllers
 - **Virtual Model Tracking** [[*Live*]](https://vladmandic.github.io/human-vrm/src/human-vrm.html) [[*Details*]](https://github.com/vladmandic/human-vrm): VR model with head, face, eye, body and hand tracking  
 
 ### NodeJS Demos
@@ -123,8 +123,8 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 ## Examples
 
-Visit [Examples galery](https://vladmandic.github.io/human/samples/samples.html) for more examples  
-<https://vladmandic.github.io/human/samples/samples.html>
+Visit [Examples gallery](https://vladmandic.github.io/human/samples/index.html) for more examples  
+<https://vladmandic.github.io/human/samples/index.html>
 
 ![samples](assets/samples.jpg)
 
@@ -338,7 +338,7 @@ Default models in Human library are:
 - **Object Detection**: CenterNet with MobileNet v3
 
 Note that alternative models are provided and can be enabled via configuration  
-For example, `PoseNet` model can be switched for `BlazePose`, `EfficientPose` or `MoveNet` model depending on the use case  
+For example, body pose detection by default uses `MoveNet Lightning`, but can be switched to `MultiNet Thunder` for higher precision or `Multinet MultiPose` for multi-person detection or even `PoseNet`, `BlazePose` or `EfficientPose` depending on the use case  
 
 For more info, see [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration) and [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
 

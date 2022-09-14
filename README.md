@@ -11,9 +11,20 @@
 **Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis,**  
 **Age & Gender & Emotion Prediction, Gaze Tracking, Gesture Recognition, Body Segmentation**  
 
+JavaScript module using TensorFlow/JS Machine Learning library  
+## Highlights
+
+- Compatible with most server-side and client-side environments and frameworks  
+- Combines multiple machine learning models which can be switched on-demand depending on the use-case  
+- Related models are executed in an attention pipeline to provide details when needed  
+- Optimized input pre-processing that can enhance image quality of any type of inputs  
+- Detection of frame changes to trigger only required models for improved performance  
+- Intelligent temporal interpolation to provide smooth results regardless of processing performance  
+- Simple unified API  
+
 <br>
 
-JavaScript module using TensorFlow/JS Machine Learning library  
+## Compatibility
 
 - **Browser**:  
   Compatible with both desktop and mobile platforms  
@@ -27,6 +38,11 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 <br>
 
+## Releases
+- [Release Notes](https://github.com/vladmandic/human/releases)
+- [NPM Link](https://www.npmjs.com/package/@vladmandic/human)
+## Demos
+
 *Check out [**Simple Live Demo**](https://vladmandic.github.io/human/demo/typescript/index.html) fully annotated app as a good start starting point ([html](https://github.com/vladmandic/human/blob/main/demo/typescript/index.html))([code](https://github.com/vladmandic/human/blob/main/demo/typescript/index.ts))*  
 
 *Check out [**Main Live Demo**](https://vladmandic.github.io/human/demo/index.html) app for advanced processing of of webcam, video stream or images static images with all possible tunable options*  
@@ -38,10 +54,6 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 <br>
 
-## Releases
-- [Release Notes](https://github.com/vladmandic/human/releases)
-- [NPM Link](https://www.npmjs.com/package/@vladmandic/human)
-## Demos
 
 - [**List of all Demo applications**](https://github.com/vladmandic/human/wiki/Demos)
 - [**Live Examples galery**](https://vladmandic.github.io/human/samples/index.html)

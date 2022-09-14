@@ -9,11 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/09/11 mandic00@live.com
+### **HEAD -> main** 2022/09/13 mandic00@live.com
 
 
-### **origin/main** 2022/09/08 g@bygeorgenet.me
+### **2.10.2** 2022/09/11 mandic00@live.com
 
+- add node.js esm compatibility (#292)
 
 ### **release: 2.10.1** 2022/09/07 mandic00@live.com
 

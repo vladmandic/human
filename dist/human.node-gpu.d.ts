@@ -1367,6 +1367,16 @@ declare class Human {
      * @returns result - {@link Result}
      */
     detect(input: Input, userConfig?: Partial<Config>): Promise<Result>;
+    /** Helper function
+     * @param ms - sleep time in miliseconds
+     */
+    sleep(ms: number): Promise<void>;
+    /** Continously detect video frames
+     * @param element - HTMLVideoElement input
+     * @param run - boolean run continously or stop if already running, default true
+     * @param delay - number delay detection between frames for number of miliseconds, default 0
+     */
+    video(element: HTMLVideoElement, run?: boolean, delay?: number): Promise<void>;
 }
 export { Human }
 export default Human;

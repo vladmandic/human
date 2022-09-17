@@ -87363,7 +87363,7 @@ async function warmup(instance2, userConfig) {
 }
 
 // src/human.ts
-var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity;
+var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity, _loops;
 var Human2 = class {
   constructor(userConfig) {
     __publicField(this, "version");
@@ -87415,6 +87415,7 @@ var Human2 = class {
       if ((_a = this.events) == null ? void 0 : _a.dispatchEvent)
         this.events.dispatchEvent(new Event(event));
     });
+    __privateAdd(this, _loops, {});
     this.env = env2;
     const tfVersion = (V.tfjs || version).replace(/-(.*)/, "");
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfVersion}/dist/`;
@@ -87721,11 +87722,36 @@ var Human2 = class {
       resolve(this.result);
     });
   }
+  async sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+  async video(element, run = true, delay = 0) {
+    if (run) {
+      if (!__privateGet(this, _loops)[element.id]) {
+        if (this.config.debug)
+          log("video start", element.id);
+        __privateGet(this, _loops)[element.id] = true;
+      }
+      if (!element.paused && __privateGet(this, _loops)[element.id] && element.readyState >= 2)
+        await this.detect(element);
+      if (delay > 0)
+        await this.sleep(delay);
+      if (__privateGet(this, _loops)[element.id])
+        requestAnimationFrame(() => this.video(element, run, delay));
+    } else {
+      if (this.config.debug)
+        log("video stop", element.id);
+      __privateGet(this, _loops)[element.id] = false;
+    }
+  }
 };
 _numTensors = new WeakMap();
 _analyzeMemoryLeaks = new WeakMap();
 _checkSanity = new WeakMap();
 _sanity = new WeakMap();
+_loops = new WeakMap();
 export {
   Human2 as Human,
   Human2 as default,

@@ -64,6 +64,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 - **Full** [[*Live*]](https://vladmandic.github.io/human/demo/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo): Main browser demo app that showcases all Human capabilities
 - **Simple** [[*Live*]](https://vladmandic.github.io/human/demo/typescript/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/typescript): Simple demo in WebCam processing demo in TypeScript
+- **Embedded** [[*Live*]](https://vladmandic.github.io/human/demo/video/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/video/index.html): Even simpler demo with tiny code embedded in HTML file
 - **Face Match** [[*Live*]](https://vladmandic.github.io/human/demo/facematch/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Extract faces from images, calculates face descriptors and simmilarities and matches them to known database
 - **Face ID** [[*Live*]](https://vladmandic.github.io/human/demo/faceid/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/faceid): Runs multiple checks to validate webcam input before performing face match to faces in IndexDB
 - **Multi-thread** [[*Live*]](https://vladmandic.github.io/human/demo/multithread/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/multithread): Runs each Human module in a separate web worker for highest possible performance  
@@ -321,7 +322,7 @@ async function detectVideo() {
 
 async function drawVideo() {
   if (result) { // check if result is available
-    const interpolated = human.next(result); // calculate next interpolated frame
+    const interpolated = human.next(result); // get smoothened result using last-known results
     human.draw.all(outputCanvas, interpolated); // draw the frame
   }
   requestAnimationFrame(drawVideo); // run draw loop
@@ -329,6 +330,23 @@ async function drawVideo() {
 
 detectVideo(); // start detection loop
 drawVideo(); // start draw loop
+```
+
+or same, but using built-in full video processing instead of running manual frame-by-frame loop:
+
+```js
+const human = new Human(); // create instance of Human
+const inputVideo = document.getElementById('video-id');
+const outputCanvas = document.getElementById('canvas-id');
+
+async function drawResults() {
+  const interpolated = human.next(); // get smoothened result using last-known results
+  human.draw.all(outputCanvas, interpolated); // draw the frame
+  requestAnimationFrame(drawVideo); // run draw loop
+}
+
+human.video(inputVideo); // start detection loop which continously updates results
+drawResults(); // start draw loop
 ```
 
 And for even better results, you can run detection in a separate web worker thread

@@ -551,6 +551,35 @@ export class Human {
       resolve(this.result);
     });
   }
+
+  /** Helper function
+   * @param ms - sleep time in miliseconds
+   */
+  async sleep(ms: number): Promise<void> { // eslint-disable-line class-methods-use-this
+    return new Promise((resolve) => { setTimeout(resolve, ms); });
+  }
+
+  /** internal structure that keeps track of processed videos @hidden */
+  #loops: Record<string, boolean> = {};
+  /** Continously detect video frames
+   * @param element - HTMLVideoElement input
+   * @param run - boolean run continously or stop if already running, default true
+   * @param delay - number delay detection between frames for number of miliseconds, default 0
+   */
+  async video(element: HTMLVideoElement, run: boolean = true, delay: number = 0) {
+    if (run) {
+      if (!this.#loops[element.id]) {
+        if (this.config.debug) log('video start', element.id);
+        this.#loops[element.id] = true;
+      }
+      if (!element.paused && this.#loops[element.id] && (element.readyState >= 2)) await this.detect(element);
+      if (delay > 0) await this.sleep(delay);
+      if (this.#loops[element.id]) requestAnimationFrame(() => this.video(element, run, delay));
+    } else {
+      if (this.config.debug) log('video stop', element.id);
+      this.#loops[element.id] = false;
+    }
+  }
 }
 
 /** Class Human as default export */

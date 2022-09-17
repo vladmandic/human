@@ -43,5 +43,8 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 
 ## Pending Release Changes
 
-- Enable model cache when using web workers
-- Improve NodeJS resolver when using ESM
+- New API [`human.video()`](https://vladmandic.github.io/human/typedoc/classes/Human.html#video)  
+  Runs continous detection of an input video instead of processing each frame manually  
+- New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html)
+- Enable model cache when using web workers  
+- Improve NodeJS resolver when using ESM  

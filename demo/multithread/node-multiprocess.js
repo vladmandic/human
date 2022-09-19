@@ -13,7 +13,7 @@ const childProcess = require('child_process'); // eslint-disable-line camelcase
 // note that main process does not import human or tfjs at all, it's all done from worker process
 
 const workerFile = 'demo/multithread/node-multiprocess-worker.js';
-const imgPathRoot = './assets'; // modify to include your sample images
+const imgPathRoot = './samples/in'; // modify to include your sample images
 const numWorkers = 4; // how many workers will be started
 const workers = []; // this holds worker processes
 const images = []; // this holds queue of enumerated images
@@ -22,7 +22,7 @@ let numImages;
 
 // trigered by main when worker sends ready message
 // if image pool is empty, signal worker to exit otherwise dispatch image to worker and remove image from queue
-async function detect(worker) {
+async function submitDetect(worker) {
   if (!t[2]) t[2] = process.hrtime.bigint(); // first time do a timestamp so we can measure initial latency
   if (images.length === numImages) worker.send({ test: true }); // for first image in queue just measure latency
   if (images.length === 0) worker.send({ exit: true }); // nothing left in queue
@@ -79,7 +79,7 @@ async function main() {
     // if message is processing result, just print how many faces were detected
     // otherwise it's an unknown message
     workers[i].on('message', (msg) => {
-      if (msg.ready) detect(workers[i]);
+      if (msg.ready) submitDetect(workers[i]);
       else if (msg.image) log.data('Main: worker finished:', workers[i].pid, 'detected faces:', msg.detected.face?.length, 'bodies:', msg.detected.body?.length, 'hands:', msg.detected.hand?.length, 'objects:', msg.detected.object?.length);
       else if (msg.test) measureLatency();
       else log.data('Main: worker message:', workers[i].pid, msg);

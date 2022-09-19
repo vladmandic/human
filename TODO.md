@@ -48,3 +48,5 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 - New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html)
 - Enable model cache when using web workers  
 - Improve NodeJS resolver when using ESM  
+- Update demo `demo/nodejs/process-folder.js`  
+  and re-process `/samples`

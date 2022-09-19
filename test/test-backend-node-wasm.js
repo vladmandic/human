@@ -39,7 +39,7 @@ async function main() {
   await tf.setBackend('wasm');
   await tf.ready();
   H.env.updateBackend();
-  log.info(H.env.wasm);
+  log.info(H.env.wasm, config.wasmPath);
   test(H.Human, config);
 }
 

@@ -85192,7 +85192,7 @@ function setModelLoadOptions(config3) {
   options2.modelBasePath = config3.modelBasePath;
 }
 async function loadModel(modelPath) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d;
   let modelUrl = join(options2.modelBasePath, modelPath || "");
   if (!modelUrl.toLowerCase().endsWith(".json"))
     modelUrl += ".json";
@@ -85215,16 +85215,23 @@ async function loadModel(modelPath) {
   }
   modelStats[shortModelName].inCache = options2.cacheSupported && options2.cacheModels && Object.keys(cachedModels).includes(cachedModelName);
   const tfLoadOptions = typeof fetch === "undefined" ? {} : { fetchFunc: (url, init3) => httpHandler(url, init3) };
-  const model20 = new GraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions);
+  let model20 = new GraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions);
   let loaded = false;
   try {
     model20.findIOHandler();
     if (options2.debug)
       log("model load handler:", model20["handler"]);
-    const artifacts = await model20.handler.load();
-    modelStats[shortModelName].sizeFromManifest = ((_a = artifacts == null ? void 0 : artifacts.weightData) == null ? void 0 : _a.byteLength) || 0;
-    model20.loadSync(artifacts);
-    modelStats[shortModelName].sizeLoadedWeights = ((_c = (_b = model20.artifacts) == null ? void 0 : _b.weightData) == null ? void 0 : _c.byteLength) || 0;
+  } catch (err) {
+    log("error finding model i/o handler:", modelUrl, err);
+  }
+  try {
+    const artifacts = await ((_a = model20.handler) == null ? void 0 : _a.load()) || null;
+    modelStats[shortModelName].sizeFromManifest = ((_b = artifacts == null ? void 0 : artifacts.weightData) == null ? void 0 : _b.byteLength) || 0;
+    if (artifacts)
+      model20.loadSync(artifacts);
+    else
+      model20 = await loadGraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions);
+    modelStats[shortModelName].sizeLoadedWeights = ((_d = (_c = model20.artifacts) == null ? void 0 : _c.weightData) == null ? void 0 : _d.byteLength) || 0;
     if (options2.verbose)
       log("load:", { model: shortModelName, url: model20["modelUrl"], bytes: modelStats[shortModelName].sizeLoadedWeights });
     loaded = true;

@@ -56,16 +56,21 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
   }
   modelStats[shortModelName].inCache = (options.cacheSupported && options.cacheModels) && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
   const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url: string, init?: RequestInit) => httpHandler(url, init) };
-  const model: GraphModel = new tf.GraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
+  let model: GraphModel = new tf.GraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
   let loaded = false;
   try {
     // @ts-ignore private function
     model.findIOHandler(); // decide how to actually load a model
     if (options.debug) log('model load handler:', model['handler']);
+  } catch (err) {
+    log('error finding model i/o handler:', modelUrl, err);
+  }
+  try {
     // @ts-ignore private property
-    const artifacts = await model.handler.load(); // load manifest
+    const artifacts = await model.handler?.load() || null; // load manifest
     modelStats[shortModelName].sizeFromManifest = artifacts?.weightData?.byteLength || 0;
-    model.loadSync(artifacts); // load weights
+    if (artifacts) model.loadSync(artifacts); // load weights
+    else model = await tf.loadGraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel;
     // @ts-ignore private property
     modelStats[shortModelName].sizeLoadedWeights = model.artifacts?.weightData?.byteLength || 0;
     if (options.verbose) log('load:', { model: shortModelName, url: model['modelUrl'], bytes: modelStats[shortModelName].sizeLoadedWeights });

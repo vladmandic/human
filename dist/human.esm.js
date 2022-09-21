@@ -85252,7 +85252,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version5 = "2.10.2";
+var version5 = "2.10.3";
 
 // src/draw/draw.ts
 var draw_exports = {};
@@ -86253,7 +86253,7 @@ var hand2 = (res) => {
 var bufferedResult = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
 var interpolateTime = 0;
 function calc2(newResult, config3) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w;
   const t0 = now();
   if (!newResult)
     return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
@@ -86343,17 +86343,18 @@ function calc2(newResult, config3) {
         const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
         rotation.matrix = (_g = newResult.face[i2].rotation) == null ? void 0 : _g.matrix;
         rotation.angle = {
-          roll: ((bufferedFactor - 1) * (((_h = bufferedResult.face[i2].rotation) == null ? void 0 : _h.angle.roll) || 0) + (((_i = newResult.face[i2].rotation) == null ? void 0 : _i.angle.roll) || 0)) / bufferedFactor,
-          yaw: ((bufferedFactor - 1) * (((_j = bufferedResult.face[i2].rotation) == null ? void 0 : _j.angle.yaw) || 0) + (((_k = newResult.face[i2].rotation) == null ? void 0 : _k.angle.yaw) || 0)) / bufferedFactor,
-          pitch: ((bufferedFactor - 1) * (((_l = bufferedResult.face[i2].rotation) == null ? void 0 : _l.angle.pitch) || 0) + (((_m = newResult.face[i2].rotation) == null ? void 0 : _m.angle.pitch) || 0)) / bufferedFactor
+          roll: ((bufferedFactor - 1) * (((_i = (_h = bufferedResult.face[i2].rotation) == null ? void 0 : _h.angle) == null ? void 0 : _i.roll) || 0) + (((_k = (_j = newResult.face[i2].rotation) == null ? void 0 : _j.angle) == null ? void 0 : _k.roll) || 0)) / bufferedFactor,
+          yaw: ((bufferedFactor - 1) * (((_m = (_l = bufferedResult.face[i2].rotation) == null ? void 0 : _l.angle) == null ? void 0 : _m.yaw) || 0) + (((_o = (_n = newResult.face[i2].rotation) == null ? void 0 : _n.angle) == null ? void 0 : _o.yaw) || 0)) / bufferedFactor,
+          pitch: ((bufferedFactor - 1) * (((_q = (_p = bufferedResult.face[i2].rotation) == null ? void 0 : _p.angle) == null ? void 0 : _q.pitch) || 0) + (((_s = (_r = newResult.face[i2].rotation) == null ? void 0 : _r.angle) == null ? void 0 : _s.pitch) || 0)) / bufferedFactor
         };
         rotation.gaze = {
-          bearing: ((bufferedFactor - 1) * (((_n = bufferedResult.face[i2].rotation) == null ? void 0 : _n.gaze.bearing) || 0) + (((_o = newResult.face[i2].rotation) == null ? void 0 : _o.gaze.bearing) || 0)) / bufferedFactor,
-          strength: ((bufferedFactor - 1) * (((_p = bufferedResult.face[i2].rotation) == null ? void 0 : _p.gaze.strength) || 0) + (((_q = newResult.face[i2].rotation) == null ? void 0 : _q.gaze.strength) || 0)) / bufferedFactor
+          bearing: ((bufferedFactor - 1) * (((_t = bufferedResult.face[i2].rotation) == null ? void 0 : _t.gaze.bearing) || 0) + (((_u = newResult.face[i2].rotation) == null ? void 0 : _u.gaze.bearing) || 0)) / bufferedFactor,
+          strength: ((bufferedFactor - 1) * (((_v = bufferedResult.face[i2].rotation) == null ? void 0 : _v.gaze.strength) || 0) + (((_w = newResult.face[i2].rotation) == null ? void 0 : _w.gaze.strength) || 0)) / bufferedFactor
         };
         bufferedResult.face[i2] = { ...newResult.face[i2], rotation, box, boxRaw };
+      } else {
+        bufferedResult.face[i2] = { ...newResult.face[i2], box, boxRaw };
       }
-      bufferedResult.face[i2] = { ...newResult.face[i2], box, boxRaw };
     }
   }
   if (!bufferedResult.object || newResult.object.length !== bufferedResult.object.length) {

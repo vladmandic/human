@@ -22,13 +22,15 @@ export function calc(newResult: Result, config: Config): Result {
   // thus mixing by-reference and by-value assignments to minimize memory operations
 
   const elapsed = Date.now() - newResult.timestamp;
-  // curve fitted: buffer = 8 - ln(delay)
-  // interpolation formula: current = ((buffer - 1) * previous + live) / buffer
-  // - at  50ms delay buffer = ~4.1 => 28% towards live data
-  // - at 250ms delay buffer = ~2.5 => 40% towards live data
-  // - at 500ms delay buffer = ~1.8 => 55% towards live data
-  // - at 750ms delay buffer = ~1.4 => 71% towards live data
-  // - at  1sec delay buffer = 1 which means live data is used
+
+  /* curve fitted: buffer = 8 - ln(delay)
+     interpolation formula: current = ((buffer - 1) * previous + live) / buffer
+    - at  50ms delay buffer = ~4.1 => 28% towards live data
+    - at 250ms delay buffer = ~2.5 => 40% towards live data
+    - at 500ms delay buffer = ~1.8 => 55% towards live data
+    - at 750ms delay buffer = ~1.4 => 71% towards live data
+    - at  1sec delay buffer = 1 which means live data is used
+  */
   const bufferedFactor = elapsed < 1000 ? 8 - Math.log(elapsed + 1) : 1;
 
   if (newResult.canvas) bufferedResult.canvas = newResult.canvas;
@@ -131,9 +133,9 @@ export function calc(newResult: Result, config: Config): Result {
         } = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
         rotation.matrix = newResult.face[i].rotation?.matrix as [number, number, number, number, number, number, number, number, number];
         rotation.angle = {
-          roll: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle.roll || 0) + (newResult.face[i].rotation?.angle.roll || 0)) / bufferedFactor,
-          yaw: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle.yaw || 0) + (newResult.face[i].rotation?.angle.yaw || 0)) / bufferedFactor,
-          pitch: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle.pitch || 0) + (newResult.face[i].rotation?.angle.pitch || 0)) / bufferedFactor,
+          roll: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.roll || 0) + (newResult.face[i].rotation?.angle?.roll || 0)) / bufferedFactor,
+          yaw: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.yaw || 0) + (newResult.face[i].rotation?.angle?.yaw || 0)) / bufferedFactor,
+          pitch: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.angle?.pitch || 0) + (newResult.face[i].rotation?.angle?.pitch || 0)) / bufferedFactor,
         };
         rotation.gaze = {
           // not fully correct due projection on circle, also causes wrap-around draw on jump from negative to positive
@@ -141,8 +143,9 @@ export function calc(newResult: Result, config: Config): Result {
           strength: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze.strength || 0) + (newResult.face[i].rotation?.gaze.strength || 0)) / bufferedFactor,
         };
         bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw }; // shallow clone plus updated values
+      } else {
+        bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw }; // shallow clone plus updated values
       }
-      bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw }; // shallow clone plus updated values
     }
   }
 

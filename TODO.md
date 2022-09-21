@@ -47,6 +47,7 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
   Runs continous detection of an input video instead of processing each frame manually  
 - New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html)
 - Enable model cache when using web workers  
+- Fix for `face.rotation` interpolation
 - Improve NodeJS resolver when using ESM  
 - Update demo `demo/nodejs/process-folder.js`  
   and re-process `/samples`

@@ -45,9 +45,10 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 
 - New API [`human.video()`](https://vladmandic.github.io/human/typedoc/classes/Human.html#video)  
   Runs continous detection of an input video instead of processing each frame manually  
-- New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html)
+- New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html)  
+- New advanced demo using BabylonJS <https://vladmandic.github.io/human-bjs-vrm>  
 - Enable model cache when using web workers  
-- Fix for `face.rotation` interpolation
+- Fix for `face.rotation` interpolation  
 - Improve NodeJS resolver when using ESM  
 - Update demo `demo/nodejs/process-folder.js`  
-  and re-process `/samples`
+  and re-process `/samples`  

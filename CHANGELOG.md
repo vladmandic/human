@@ -11,8 +11,9 @@
   
 ### **HEAD -> main** 2022/09/21 mandic00@live.com
 
+- fix rotation interpolation
 
-### **origin/main** 2022/09/19 mandic00@live.com
+### **2.10.3** 2022/09/21 mandic00@live.com
 
 - add human.video method
 

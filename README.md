@@ -135,7 +135,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 
 <hr><br>
 
-## Examples
+## App Examples
 
 Visit [Examples gallery](https://vladmandic.github.io/human/samples/index.html) for more examples  
 <https://vladmandic.github.io/human/samples/index.html>
@@ -181,8 +181,8 @@ and optionally matches detected face with database of known people to guess thei
 <br>
 
 3. **VR Model Tracking:**  
-> [human-three-vrm](https://github.com/vladmandic/human-three-vrm)
-> [human-bjs-vrm](https://github.com/vladmandic/human-bjs-vrm)
+> [human-three-vrm](https://github.com/vladmandic/human-three-vrm)  
+> [human-bjs-vrm](https://github.com/vladmandic/human-bjs-vrm)  
 
 ![ThreeVRM](https://github.com/vladmandic/human-three-vrm/raw/main/assets/human-vrm-screenshot.jpg)
 
@@ -225,18 +225,16 @@ Additionally, `HTMLVideoElement`, `HTMLMediaElement` can be a standard `<video>`
 
 - WebCam on user's system
 - Any supported video type  
-  For example: `.mp4`, `.avi`, etc.
+  e.g. `.mp4`, `.avi`, etc.
 - Additional video types supported via *HTML5 Media Source Extensions*  
-  Live streaming examples:
-  - **HLS** (*HTTP Live Streaming*) using `hls.js`
-  - **DASH** (Dynamic Adaptive Streaming over HTTP) using `dash.js`
+  e.g.: **HLS** (*HTTP Live Streaming*) using `hls.js` or **DASH** (*Dynamic Adaptive Streaming over HTTP*) using `dash.js`
 - **WebRTC** media track using built-in support  
 
 <br>
 
-## Example
+## Code Examples
 
-Example simple app that uses Human to process video input and  
+Simple app that uses Human to process video input and  
 draw output on screen using internal draw helper functions
 
 ```js

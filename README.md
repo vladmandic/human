@@ -1,3 +1,4 @@
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/vladmandic)
 ![Git Version](https://img.shields.io/github/package-json/v/vladmandic/human?style=flat-square&svg=true&label=git)
 ![NPM Version](https://img.shields.io/npm/v/@vladmandic/human.png?style=flat-square)
 ![Last Commit](https://img.shields.io/github/last-commit/vladmandic/human?style=flat-square&svg=true)
@@ -354,18 +355,18 @@ And for even better results, you can run detection in a separate web worker thre
 
 Default models in Human library are:
 
-- **Face Detection**: MediaPipe BlazeFace Back variation
-- **Face Mesh**: MediaPipe FaceMesh
-- **Face Iris Analysis**: MediaPipe Iris
-- **Face Description**: HSE FaceRes
-- **Emotion Detection**: Oarriaga Emotion
-- **Body Analysis**: MoveNet Lightning variation
-- **Hand Analysis**: HandTrack & MediaPipe HandLandmarks
-- **Body Segmentation**: Google Selfie
-- **Object Detection**: CenterNet with MobileNet v3
+- **Face Detection**: *MediaPipe BlazeFace Back variation*
+- **Face Mesh**: *MediaPipe FaceMesh*
+- **Face Iris Analysis**: *MediaPipe Iris*
+- **Face Description**: *HSE FaceRes*
+- **Emotion Detection**: *Oarriaga Emotion*
+- **Body Analysis**: *MoveNet Lightning variation*
+- **Hand Analysis**: *HandTrack & MediaPipe HandLandmarks*
+- **Body Segmentation**: *Google Selfie*
+- **Object Detection**: *CenterNet with MobileNet v3*
 
 Note that alternative models are provided and can be enabled via configuration  
-For example, body pose detection by default uses `MoveNet Lightning`, but can be switched to `MultiNet Thunder` for higher precision or `Multinet MultiPose` for multi-person detection or even `PoseNet`, `BlazePose` or `EfficientPose` depending on the use case  
+For example, body pose detection by default uses *MoveNet Lightning*, but can be switched to *MultiNet Thunder* for higher precision or *Multinet MultiPose* for multi-person detection or even *PoseNet*, *BlazePose* or *EfficientPose* depending on the use case  
 
 For more info, see [**Configuration Details**](https://github.com/vladmandic/human/wiki/Configuration) and [**List of Models**](https://github.com/vladmandic/human/wiki/Models)
 
@@ -388,6 +389,7 @@ and [**API Specification**](https://vladmandic.github.io/human/typedoc/classes/H
 
 <br>
 
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/vladmandic)
 ![Stars](https://img.shields.io/github/stars/vladmandic/human?style=flat-square&svg=true)
 ![Forks](https://badgen.net/github/forks/vladmandic/human)
 ![Code Size](https://img.shields.io/github/languages/code-size/vladmandic/human?style=flat-square&svg=true)

@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/09/21 mandic00@live.com
+### **HEAD -> main** 2022/09/25 mandic00@live.com
 
+- create funding.yml
 - fix rotation interpolation
 
 ### **2.10.3** 2022/09/21 mandic00@live.com

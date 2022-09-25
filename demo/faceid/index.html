@@ -19,14 +19,23 @@
       body { margin: 0; padding: 16px; background: black; color: white; overflow-x: hidden; width: 100vw; height: 100vh; }
       body::-webkit-scrollbar { display: none; }
       .button { padding: 2px; cursor: pointer; box-shadow: 2px 2px black; width: 64px; text-align: center; place-content: center; margin-left: 16px; height: 16px; display: none }
-      .ok { position: absolute; top: 64px; right: 20px; width: 100px; background-color: grey; padding: 4px; color: black; font-size: 14px }
+      .ok { position: absolute; top: 64px; right: 20px; width: 150px; background-color: grey; padding: 4px; color: black; font-size: 14px }
     </style>
   </head>
   <body>
+    <div style="padding: 8px">
+      <h1 style="margin: 0">faceid demo using human library</h1>
+      look directly at camera and make sure that detection passes all of the required tests noted on the right hand side of the screen<br>
+      if input does not satisfies tests within specific timeout, no image will be selected<br>
+      once face image is approved, it will be compared with existing face database<br>
+      you can also store face descriptor with label in a browser's indexdb for future usage<br>
+      <br>
+      <i>note: this is not equivalent to full faceid methods as used by modern mobile phones or windows hello<br>
+        as they rely on additional infrared sensors and depth-sensing and not just camera image for additional levels of security</i>
+    </div>
     <canvas id="canvas" style="padding: 8px"></canvas>
     <canvas id="source" style="padding: 8px"></canvas>
     <video id="video" playsinline style="display: none"></video>
-    <pre id="fps" style="position: absolute; bottom: 16px; right: 20px; background-color: grey; padding: 8px; box-shadow: 2px 2px black"></pre>
     <pre id="log" style="padding: 8px"></pre>
     <div id="match" style="display: none; padding: 8px">
       <label for="name">name:</label>
@@ -34,7 +43,7 @@
       <span id="save" class="button" style="background-color: royalblue">save</span>
       <span id="delete" class="button" style="background-color: lightcoral">delete</span>
     </div>
-    <div id="retry" class="button" style="background-color: darkslategray; width: 350px; margin-top: 32px; padding: 4px">retry</div>
+    <div id="retry" class="button" style="background-color: darkslategray; width: 93%; margin-top: 32px; padding: 12px">retry</div>
     <div id="ok"></div>
   </body>
 </html>

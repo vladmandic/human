@@ -170,9 +170,15 @@ and optionally matches detected face with database of known people to guess thei
 
 ![Face Matching](assets/screenshot-facematch.jpg)
 
+2. **Face ID:**  
+Performs validation check on a webcam input to detect a real face and matches it to known faces stored in database
+> [demo/faceid](demo/faceid/index.html)  
+
+![Face Matching](assets/screenshot-faceid.jpg)
+
 <br>
 
-2. **3D Rendering:**  
+3. **3D Rendering:**  
 > [human-motion](https://github.com/vladmandic/human-motion)
 
 ![Face3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg)
@@ -181,14 +187,14 @@ and optionally matches detected face with database of known people to guess thei
 
 <br>
 
-3. **VR Model Tracking:**  
+4. **VR Model Tracking:**  
 > [human-three-vrm](https://github.com/vladmandic/human-three-vrm)  
 > [human-bjs-vrm](https://github.com/vladmandic/human-bjs-vrm)  
 
 ![ThreeVRM](https://github.com/vladmandic/human-three-vrm/raw/main/assets/human-vrm-screenshot.jpg)
 
 
-4. **Human as OS native application:**
+5. **Human as OS native application:**
 > [human-electron](https://github.com/vladmandic/human-electron)
 
 <br>

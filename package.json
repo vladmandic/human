@@ -81,7 +81,7 @@
     "@tensorflow/tfjs-node": "^3.20.0",
     "@tensorflow/tfjs-node-gpu": "^3.20.0",
     "@tensorflow/tfjs-tflite": "0.0.1-alpha.8",
-    "@types/node": "^18.7.20",
+    "@types/node": "^18.7.21",
     "@types/offscreencanvas": "^2019.7.0",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",

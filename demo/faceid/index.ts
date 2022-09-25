@@ -11,6 +11,7 @@ import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 import * as indexDb from './indexdb'; // methods to deal with indexdb
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
+  cacheSensitivity: 0,
   modelBasePath: '../../models',
   filter: { equalization: true }, // lets run with histogram equilizer
   face: {
@@ -36,7 +37,7 @@ const matchOptions = { order: 2, multiplier: 25, min: 0.2, max: 0.8 }; // for fa
 const options = {
   minConfidence: 0.6, // overal face confidence for box, face, gender, real, live
   minSize: 224, // min input to face descriptor model before degradation
-  maxTime: 10000, // max time before giving up
+  maxTime: 30000, // max time before giving up
   blinkMin: 10, // minimum duration of a valid blink
   blinkMax: 800, // maximum duration of a valid blink
   threshold: 0.5, // minimum similarity
@@ -46,18 +47,36 @@ const options = {
   ...matchOptions,
 };
 
-const ok = { // must meet all rules
-  faceCount: false,
-  faceConfidence: false,
-  facingCenter: false,
-  lookingCenter: false,
-  blinkDetected: false,
-  faceSize: false,
-  antispoofCheck: false,
-  livenessCheck: false,
-  elapsedMs: 0, // total time while waiting for valid face
+const ok: Record<string, { status: boolean | undefined, val: number }> = { // must meet all rules
+  faceCount: { status: false, val: 0 },
+  faceConfidence: { status: false, val: 0 },
+  facingCenter: { status: false, val: 0 },
+  lookingCenter: { status: false, val: 0 },
+  blinkDetected: { status: false, val: 0 },
+  faceSize: { status: false, val: 0 },
+  antispoofCheck: { status: false, val: 0 },
+  livenessCheck: { status: false, val: 0 },
+  age: { status: false, val: 0 },
+  gender: { status: false, val: 0 },
+  timeout: { status: true, val: 0 },
+  descriptor: { status: false, val: 0 },
+  elapsedMs: { status: undefined, val: 0 }, // total time while waiting for valid face
+  detectFPS: { status: undefined, val: 0 }, // mark detection fps performance
+  drawFPS: { status: undefined, val: 0 }, // mark redraw fps performance
 };
-const allOk = () => ok.faceCount && ok.faceSize && ok.blinkDetected && ok.facingCenter && ok.lookingCenter && ok.faceConfidence && ok.antispoofCheck && ok.livenessCheck;
+
+const allOk = () => ok.faceCount.status
+  && ok.faceSize.status
+  && ok.blinkDetected.status
+  && ok.facingCenter.status
+  && ok.lookingCenter.status
+  && ok.faceConfidence.status
+  && ok.antispoofCheck.status
+  && ok.livenessCheck.status
+  && ok.descriptor.status
+  && ok.age.status
+  && ok.gender.status;
+
 const current: { face: H.FaceResult | null, record: indexDb.FaceRecord | null } = { face: null, record: null }; // current face record and matched database record
 
 const blink = { // internal timers for blink start/end/duration
@@ -87,17 +106,14 @@ const dom = { // grab instances of dom objects so we dont have to look them up l
   ok: document.getElementById('ok') as HTMLDivElement,
 };
 const timestamp = { detect: 0, draw: 0 }; // holds information used to calculate performance and possible memory leaks
-const fps = { detect: 0, draw: 0 }; // holds calculated fps information for both detect and screen refresh
 let startTime = 0;
 
 const log = (...msg) => { // helper method to output messages
   dom.log.innerText += msg.join(' ') + '\n';
   console.log(...msg); // eslint-disable-line no-console
 };
-const printFPS = (msg) => dom.fps.innerText = msg; // print status element
 
 async function webCam() { // initialize webcam
-  printFPS('starting webcam...');
   // @ts-ignore resizeMode is not yet defined in tslib
   const cameraOptions: MediaStreamConstraints = { audio: false, video: { facingMode: 'user', resizeMode: 'none', width: { ideal: document.body.clientWidth } } };
   const stream: MediaStream = await navigator.mediaDevices.getUserMedia(cameraOptions);
@@ -107,6 +123,8 @@ async function webCam() { // initialize webcam
   await ready;
   dom.canvas.width = dom.video.videoWidth;
   dom.canvas.height = dom.video.videoHeight;
+  dom.canvas.style.width = '50%';
+  dom.canvas.style.height = '50%';
   if (human.env.initial) log('video:', dom.video.videoWidth, dom.video.videoHeight, '|', stream.getVideoTracks()[0].label);
   dom.canvas.onclick = () => { // pause when clicked on screen and resume on next click
     if (dom.video.paused) void dom.video.play();
@@ -119,9 +137,28 @@ async function detectionLoop() { // main detection loop
     if (current.face?.tensor) human.tf.dispose(current.face.tensor); // dispose previous tensor
     await human.detect(dom.video); // actual detection; were not capturing output in a local variable as it can also be reached via human.result
     const now = human.now();
-    fps.detect = 1000 / (now - timestamp.detect);
+    ok.detectFPS.val = Math.round(10000 / (now - timestamp.detect)) / 10;
     timestamp.detect = now;
     requestAnimationFrame(detectionLoop); // start new frame immediately
+  }
+}
+
+function drawValidationTests() {
+  let y = 32;
+  for (const [key, val] of Object.entries(ok)) {
+    let el = document.getElementById(`ok-${key}`);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = `ok-${key}`;
+      el.innerText = key;
+      el.className = 'ok';
+      el.style.top = `${y}px`;
+      dom.ok.appendChild(el);
+    }
+    if (typeof val.status === 'boolean') el.style.backgroundColor = val.status ? 'lightgreen' : 'lightcoral';
+    const status = val.status ? 'ok' : 'fail';
+    el.innerText = `${key}: ${val.val === 0 ? status : val.val}`;
+    y += 28;
   }
 }
 
@@ -130,47 +167,41 @@ async function validationLoop(): Promise<H.FaceResult> { // main screen refresh 
   human.draw.canvas(dom.video, dom.canvas); // draw canvas to screen
   await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
   const now = human.now();
-  fps.draw = 1000 / (now - timestamp.draw);
+  ok.drawFPS.val = Math.round(10000 / (now - timestamp.draw)) / 10;
   timestamp.draw = now;
-  printFPS(`fps: ${fps.detect.toFixed(1).padStart(5, ' ')} detect | ${fps.draw.toFixed(1).padStart(5, ' ')} draw`); // write status
-  ok.faceCount = human.result.face.length === 1; // must be exactly detected face
-  if (ok.faceCount) { // skip the rest if no face
+  ok.faceCount.val = human.result.face.length;
+  ok.faceCount.status = ok.faceCount.val === 1; // must be exactly detected face
+  if (ok.faceCount.status) { // skip the rest if no face
     const gestures: string[] = Object.values(human.result.gesture).map((gesture: H.GestureResult) => gesture.gesture); // flatten all gestures
     if (gestures.includes('blink left eye') || gestures.includes('blink right eye')) blink.start = human.now(); // blink starts when eyes get closed
     if (blink.start > 0 && !gestures.includes('blink left eye') && !gestures.includes('blink right eye')) blink.end = human.now(); // if blink started how long until eyes are back open
-    ok.blinkDetected = ok.blinkDetected || (Math.abs(blink.end - blink.start) > options.blinkMin && Math.abs(blink.end - blink.start) < options.blinkMax);
-    if (ok.blinkDetected && blink.time === 0) blink.time = Math.trunc(blink.end - blink.start);
-    ok.facingCenter = gestures.includes('facing center');
-    ok.lookingCenter = gestures.includes('looking center'); // must face camera and look at camera
-    ok.faceConfidence = (human.result.face[0].boxScore || 0) > options.minConfidence && (human.result.face[0].faceScore || 0) > options.minConfidence;
-    ok.antispoofCheck = (human.result.face[0].real || 0) > options.minConfidence;
-    ok.livenessCheck = (human.result.face[0].live || 0) > options.minConfidence;
-    ok.faceSize = human.result.face[0].box[2] >= options.minSize && human.result.face[0].box[3] >= options.minSize;
-  }
-  let y = 32;
-  for (const [key, val] of Object.entries(ok)) {
-    let el = document.getElementById(`ok-${key}`);
-    if (!el) {
-      el = document.createElement('div');
-      el.innerText = key;
-      el.className = 'ok';
-      el.style.top = `${y}px`;
-      dom.ok.appendChild(el);
-    }
-    if (typeof val === 'boolean') el.style.backgroundColor = val ? 'lightgreen' : 'lightcoral';
-    else el.innerText = `${key}:${val}`;
-    y += 28;
-  }
-  if (allOk()) { // all criteria met
-    dom.video.pause();
-    return human.result.face[0];
-  }
-  if (ok.elapsedMs > options.maxTime) { // give up
-    dom.video.pause();
-    return human.result.face[0];
+    ok.blinkDetected.status = ok.blinkDetected.status || (Math.abs(blink.end - blink.start) > options.blinkMin && Math.abs(blink.end - blink.start) < options.blinkMax);
+    if (ok.blinkDetected.status && blink.time === 0) blink.time = Math.trunc(blink.end - blink.start);
+    ok.facingCenter.status = gestures.includes('facing center');
+    ok.lookingCenter.status = gestures.includes('looking center'); // must face camera and look at camera
+    ok.faceConfidence.val = human.result.face[0].faceScore || human.result.face[0].boxScore || 0;
+    ok.faceConfidence.status = ok.faceConfidence.val >= options.minConfidence;
+    ok.antispoofCheck.val = human.result.face[0].real || 0;
+    ok.antispoofCheck.status = ok.antispoofCheck.val >= options.minConfidence;
+    ok.livenessCheck.val = human.result.face[0].live || 0;
+    ok.livenessCheck.status = ok.livenessCheck.val >= options.minConfidence;
+    ok.faceSize.val = Math.min(human.result.face[0].box[2], human.result.face[0].box[3]);
+    ok.faceSize.status = ok.faceSize.val >= options.minSize;
+    ok.descriptor.val = human.result.face[0].embedding?.length || 0;
+    ok.descriptor.status = ok.descriptor.val > 0;
+    ok.age.val = human.result.face[0].age || 0;
+    ok.age.status = ok.age.val > 0;
+    ok.gender.val = human.result.face[0].genderScore || 0;
+    ok.gender.status = ok.gender.val >= options.minConfidence;
   }
   // run again
-  ok.elapsedMs = Math.trunc(human.now() - startTime);
+  ok.timeout.status = ok.elapsedMs.val <= options.maxTime;
+  drawValidationTests();
+  if (allOk() || !ok.timeout.status) { // all criteria met
+    dom.video.pause();
+    return human.result.face[0];
+  }
+  ok.elapsedMs.val = Math.trunc(human.now() - startTime);
   return new Promise((resolve) => {
     setTimeout(async () => {
       await validationLoop(); // run validation loop until conditions are met
@@ -198,12 +229,14 @@ async function deleteRecord() {
 }
 
 async function detectFace() {
+  dom.canvas.style.height = '';
   dom.canvas.getContext('2d')?.clearRect(0, 0, options.minSize, options.minSize);
   if (!current?.face?.tensor || !current?.face?.embedding) return false;
   console.log('face record:', current.face); // eslint-disable-line no-console
+  log(`detected face: ${current.face.gender} ${current.face.age || 0}y distance ${current.face.iris || 0}cm/${Math.round(100 * (current.face.iris || 0) / 2.54) / 100}in`);
   human.tf.browser.toPixels(current.face.tensor as unknown as H.TensorLike, dom.canvas);
   if (await indexDb.count() === 0) {
-    log('face database is empty');
+    log('face database is empty: nothing to compare face with');
     document.body.style.background = 'black';
     dom.delete.style.display = 'none';
     return false;
@@ -223,17 +256,20 @@ async function detectFace() {
 }
 
 async function main() { // main entry point
-  ok.faceCount = false;
-  ok.faceConfidence = false;
-  ok.facingCenter = false;
-  ok.blinkDetected = false;
-  ok.faceSize = false;
-  ok.antispoofCheck = false;
-  ok.livenessCheck = false;
-  ok.elapsedMs = 0;
+  ok.faceCount.status = false;
+  ok.faceConfidence.status = false;
+  ok.facingCenter.status = false;
+  ok.blinkDetected.status = false;
+  ok.faceSize.status = false;
+  ok.antispoofCheck.status = false;
+  ok.livenessCheck.status = false;
+  ok.age.status = false;
+  ok.gender.status = false;
+  ok.elapsedMs.val = 0;
   dom.match.style.display = 'none';
   dom.retry.style.display = 'none';
   dom.source.style.display = 'none';
+  dom.canvas.style.height = '50%';
   document.body.style.background = 'black';
   await webCam();
   await detectionLoop(); // start detection loop
@@ -257,13 +293,15 @@ async function main() { // main entry point
 
 async function init() {
   log('human version:', human.version, '| tfjs version:', human.tf.version['tfjs-core']);
-  log('face embedding model:', humanConfig.face.description.enabled ? 'faceres' : '', humanConfig.face['mobilefacenet']?.enabled ? 'mobilefacenet' : '', humanConfig.face['insightface']?.enabled ? 'insightface' : '');
   log('options:', JSON.stringify(options).replace(/{|}|"|\[|\]/g, '').replace(/,/g, ' '));
-  printFPS('loading...');
-  log('known face records:', await indexDb.count());
+  log('initializing webcam...');
   await webCam(); // start webcam
+  log('loading human models...');
   await human.load(); // preload all models
-  printFPS('initializing...');
+  log('initializing human...');
+  log('face embedding model:', humanConfig.face.description.enabled ? 'faceres' : '', humanConfig.face['mobilefacenet']?.enabled ? 'mobilefacenet' : '', humanConfig.face['insightface']?.enabled ? 'insightface' : '');
+  log('loading face database...');
+  log('known face records:', await indexDb.count());
   dom.retry.addEventListener('click', main);
   dom.save.addEventListener('click', saveRecords);
   dom.delete.addEventListener('click', deleteRecord);

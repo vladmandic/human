@@ -8,13 +8,14 @@ N/A
 
 ## Exploring
 
-- Optical flow for intelligent temporal interpolation  
+- **Optical flow** for intelligent temporal interpolation  
   <https://docs.opencv.org/3.3.1/db/d7f/tutorial_js_lucas_kanade.html>
-- Advanced histogram equalization for optimization of badly lit scenes  
-  **Adaptive**, **Contrast Limited**, **CLAHE**
-- TFLite models  
+- **CLAHE** advanced histogram equalization for optimization of badly lit scenes  
+- **TFLite** models  
   <https://js.tensorflow.org/api_tflite/0.0.1-alpha.4/>
-- Body segmentation with temporal analysis  
+- **Principal Components Analysis** for reduction of descriptor complexity  
+  <https://github.com/vladmandic/human-match/blob/main/src/pca.js>  
+- **Temporal guidance** for face/body segmentation  
   <https://github.com/PeterL1n/RobustVideoMatting>
 
 <hr><br>

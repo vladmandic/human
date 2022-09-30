@@ -170,7 +170,7 @@ export declare interface Config {
     wasmPath: string;
     /** Force WASM loader to use platform fetch
      *
-     * default: auto-detects to link to CDN `jsdelivr` when running in browser
+     * default: false
      */
     wasmPlatformFetch: boolean;
     /** Print debug statements to console
@@ -1323,6 +1323,10 @@ declare class Human {
      *  - Use when changing backend during runtime
      */
     init(): Promise<void>;
+    /** WebCam helper methods
+     *
+     */
+    webcam: webcam.WebCam;
     /** Load method preloads all configured models on-demand
      * - Not explicitly required as any required model is load implicitly on it's first run
      *
@@ -2572,6 +2576,68 @@ declare class Variable<R extends Rank = Rank> extends Tensor<R> {
 
 /** Possible values for `human.warmup` */
 export declare type WarmupType = ['' | 'none' | 'face' | 'full' | 'body'];
+
+export declare class WebCam {
+    /** current webcam configuration */
+    config: WebCamConfig;
+    /** instance of dom element associated with webcam stream */
+    element: HTMLVideoElement | undefined;
+    /** active webcam stream */
+    stream: MediaStream | undefined;
+    constructor();
+    /** get active webcam stream track */
+    get track(): MediaStreamTrack | undefined;
+    /** get webcam capabilities */
+    get capabilities(): MediaTrackCapabilities | undefined;
+    /** get webcam constraints */
+    get constraints(): MediaTrackConstraints | undefined;
+    /** get webcam settings */
+    get settings(): MediaTrackSettings | undefined;
+    /** get webcam label */
+    get label(): string;
+    /** is webcam paused */
+    get paused(): boolean;
+    /** webcam current width */
+    get width(): number;
+    /** webcam current height */
+    get height(): number;
+    /** start method initializizes webcam stream and associates it with a dom video element */
+    start: (webcamConfig?: Partial<WebCamConfig>) => Promise<void>;
+    /** pause webcam video method */
+    pause: () => void;
+    /** play webcam video method */
+    play: () => Promise<void>;
+    /** stop method stops active webcam stream track and disconnects webcam */
+    stop: () => void;
+}
+
+declare namespace webcam {
+    export {
+        WebCamConfig,
+        WebCam
+    }
+}
+
+/** WebCam configuration */
+export declare interface WebCamConfig {
+    /**
+     * element can be:
+     * - string which indicates dom element id
+     * - actual HTMLVideo dom element
+     * - undefined in which case a new HTMLVideoElement will be created
+     */
+    element: string | HTMLVideoElement | undefined;
+    /** print messages on console */
+    debug: boolean;
+    /** use front or back camera */
+    mode: 'front' | 'back';
+    /** camera crop mode */
+    crop: boolean;
+    /** desired webcam width */
+    width: number;
+    /** desired webcam height */
+    height: number;
+}
 
 /**
  * Group to which the weight belongs.

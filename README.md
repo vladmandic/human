@@ -22,6 +22,7 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - Detection of frame changes to trigger only required models for improved performance  
 - Intelligent temporal interpolation to provide smooth results regardless of processing performance  
 - Simple unified API  
+- Built-in Image, Video and WebCam handling
 
 <br>
 
@@ -94,7 +95,8 @@ JavaScript module using TensorFlow/JS Machine Learning library
 - [**Code Repository**](https://github.com/vladmandic/human)
 - [**NPM Package**](https://www.npmjs.com/package/@vladmandic/human)
 - [**Issues Tracker**](https://github.com/vladmandic/human/issues)
-- [**TypeDoc API Specification**](https://vladmandic.github.io/human/typedoc/classes/Human.html)
+- [**TypeDoc API Specification - Main class**](https://vladmandic.github.io/human/typedoc/classes/Human.html)
+- [**TypeDoc API Specification - Full**](https://vladmandic.github.io/human/typedoc/)
 - [**Change Log**](https://github.com/vladmandic/human/blob/main/CHANGELOG.md)
 - [**Current To-do List**](https://github.com/vladmandic/human/blob/main/TODO.md)
 
@@ -346,10 +348,28 @@ const outputCanvas = document.getElementById('canvas-id');
 async function drawResults() {
   const interpolated = human.next(); // get smoothened result using last-known results
   human.draw.all(outputCanvas, interpolated); // draw the frame
-  requestAnimationFrame(drawVideo); // run draw loop
+  requestAnimationFrame(drawResults); // run draw loop
 }
 
 human.video(inputVideo); // start detection loop which continously updates results
+drawResults(); // start draw loop
+```
+
+or using built-in webcam helper methods that take care of video handling completely:
+
+```js
+const human = new Human(); // create instance of Human
+const outputCanvas = document.getElementById('canvas-id');
+
+async function drawResults() {
+  const interpolated = human.next(); // get smoothened result using last-known results
+  human.draw.canvas(outputCanvas, human.webcam.element); // draw current webcam frame
+  human.draw.all(outputCanvas, interpolated); // draw the frame detectgion results
+  requestAnimationFrame(drawResults); // run draw loop
+}
+
+await human.webcam.start({ crop: true });
+human.video(human.webcam.element); // start detection loop which continously updates results
 drawResults(); // start draw loop
 ```
 

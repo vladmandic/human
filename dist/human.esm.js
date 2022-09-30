@@ -85252,7 +85252,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version5 = "2.10.3";
+var version5 = "2.11.0";
 
 // src/draw/draw.ts
 var draw_exports = {};
@@ -87370,6 +87370,169 @@ async function warmup(instance2, userConfig) {
   });
 }
 
+// src/util/webcam.ts
+var WebCam = class {
+  constructor() {
+    __publicField(this, "config");
+    __publicField(this, "element");
+    __publicField(this, "stream");
+    __publicField(this, "start", async (webcamConfig) => {
+      if (webcamConfig == null ? void 0 : webcamConfig.debug)
+        this.config.debug = webcamConfig == null ? void 0 : webcamConfig.debug;
+      if (webcamConfig == null ? void 0 : webcamConfig.crop)
+        this.config.crop = webcamConfig == null ? void 0 : webcamConfig.crop;
+      if (webcamConfig == null ? void 0 : webcamConfig.mode)
+        this.config.mode = webcamConfig == null ? void 0 : webcamConfig.mode;
+      if (webcamConfig == null ? void 0 : webcamConfig.width)
+        this.config.width = webcamConfig == null ? void 0 : webcamConfig.width;
+      if (webcamConfig == null ? void 0 : webcamConfig.height)
+        this.config.height = webcamConfig == null ? void 0 : webcamConfig.height;
+      if (webcamConfig == null ? void 0 : webcamConfig.element) {
+        if (typeof webcamConfig.element === "string") {
+          const el = document.getElementById(webcamConfig.element);
+          if (el && el instanceof HTMLVideoElement) {
+            this.element = el;
+          } else {
+            if (this.config.debug)
+              log("webcam", "cannot get dom element", webcamConfig.element);
+            return;
+          }
+        } else if (webcamConfig.element instanceof HTMLVideoElement) {
+          this.element = webcamConfig.element;
+        } else {
+          if (this.config.debug)
+            log("webcam", "unknown dom element", webcamConfig.element);
+          return;
+        }
+      } else {
+        this.element = document.createElement("video");
+      }
+      const requestedConstraints = {
+        audio: false,
+        video: {
+          facingMode: this.config.mode === "front" ? "user" : "environment",
+          resizeMode: this.config.crop ? "crop-and-scale" : "none",
+          width: { ideal: this.config.width > 0 ? this.config.width : window.innerWidth },
+          height: { ideal: this.config.height > 0 ? this.config.height : window.innerHeight }
+        }
+      };
+      this.element.addEventListener("play", () => {
+        if (this.config.debug)
+          log("webcam", "play");
+      });
+      this.element.addEventListener("pause", () => {
+        if (this.config.debug)
+          log("webcam", "pause");
+      });
+      this.element.addEventListener("click", async () => {
+        if (!this.element || !this.stream)
+          return;
+        if (this.element.paused)
+          await this.element.play();
+        else
+          this.element.pause();
+      });
+      if (!(navigator == null ? void 0 : navigator.mediaDevices)) {
+        if (this.config.debug)
+          log("webcam", "no devices");
+        return;
+      }
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia(requestedConstraints);
+      } catch (err) {
+        log("webcam", err);
+        return;
+      }
+      if (!this.stream) {
+        if (this.config.debug)
+          log("webcam", "no stream");
+        return;
+      }
+      this.element.srcObject = this.stream;
+      const ready2 = new Promise((resolve) => {
+        if (!this.element)
+          resolve(false);
+        else
+          this.element.onloadeddata = () => resolve(true);
+      });
+      await ready2;
+      await this.element.play();
+      if (this.config.debug) {
+        log("webcam", {
+          width: this.width,
+          height: this.height,
+          label: this.label,
+          stream: this.stream,
+          track: this.track,
+          settings: this.settings,
+          constraints: this.constraints,
+          capabilities: this.capabilities
+        });
+      }
+    });
+    __publicField(this, "pause", () => {
+      if (this.element)
+        this.element.pause();
+    });
+    __publicField(this, "play", async () => {
+      if (this.element)
+        await this.element.play();
+    });
+    __publicField(this, "stop", () => {
+      if (this.config.debug)
+        log("webcam", "stop");
+      if (this.track)
+        this.track.stop();
+    });
+    this.config = {
+      element: void 0,
+      debug: true,
+      mode: "front",
+      crop: false,
+      width: 0,
+      height: 0
+    };
+  }
+  get track() {
+    if (!this.stream)
+      return void 0;
+    return this.stream.getVideoTracks()[0];
+  }
+  get capabilities() {
+    if (!this.track)
+      return void 0;
+    return this.track.getCapabilities ? this.track.getCapabilities() : void 0;
+  }
+  get constraints() {
+    if (!this.track)
+      return void 0;
+    return this.track.getConstraints ? this.track.getConstraints() : void 0;
+  }
+  get settings() {
+    if (!this.stream)
+      return void 0;
+    const track = this.stream.getVideoTracks()[0];
+    return track.getSettings ? track.getSettings() : void 0;
+  }
+  get label() {
+    if (!this.track)
+      return "";
+    return this.track.label;
+  }
+  get paused() {
+    var _a;
+    return ((_a = this.element) == null ? void 0 : _a.paused) || false;
+  }
+  get width() {
+    var _a;
+    return ((_a = this.element) == null ? void 0 : _a.videoWidth) || 0;
+  }
+  get height() {
+    var _a;
+    return ((_a = this.element) == null ? void 0 : _a.videoHeight) || 0;
+  }
+};
+
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity, _loops;
 var Human2 = class {
@@ -87418,6 +87581,7 @@ var Human2 = class {
     __publicField(this, "similarity", similarity);
     __publicField(this, "distance", distance);
     __publicField(this, "match", match2);
+    __publicField(this, "webcam", new WebCam());
     __publicField(this, "emit", (event) => {
       var _a;
       if ((_a = this.events) == null ? void 0 : _a.dispatchEvent)

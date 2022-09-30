@@ -16,6 +16,7 @@ export type { Models } from './models';
 export type { Env } from './util/env';
 export type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 export type { Emotion, Finger, FingerCurl, FingerDirection, HandType, Gender, Race, FaceLandmark, BodyLandmark, BodyAnnotation, ObjectType } from './result';
+export type { WebCamConfig } from './util/webcam';
 export { env } from './util/env';
 
 /** Events dispatched by `human.events`
@@ -39,6 +40,8 @@ export type ImageObjects = ImageData | ImageBitmap
 export type ExternalCanvas = typeof env.Canvas;
 /** Defines all possible input types for **Human** detection */
 export type Input = Tensor | AnyCanvas | AnyImage | AnyVideo | ImageObjects | ExternalCanvas;
+/** WebCam helper class */
+export type { WebCam } from './util/webcam';
 /** Defines model stats */
 export type { ModelStats } from './models';
 /** Defines individual model sizes */

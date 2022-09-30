@@ -13,13 +13,14 @@ const humanConfig: Partial<H.Config> = { // user configuration for human, used t
   // backend: 'wasm' as const,
   // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.20.0/dist/',
   // cacheSensitivity: 0,
-  async: false,
+  // async: false,
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
   body: { enabled: true },
   hand: { enabled: true },
   object: { enabled: false },
+  segmentation: { enabled: false },
   gesture: { enabled: true },
 };
 
@@ -46,28 +47,6 @@ const log = (...msg) => { // helper method to output messages
 };
 const status = (msg) => dom.fps.innerText = msg; // print status element
 const perf = (msg) => dom.perf.innerText = 'tensors:' + (human.tf.memory().numTensors as number).toString() + ' | performance: ' + JSON.stringify(msg).replace(/"|{|}/g, '').replace(/,/g, ' | '); // print performance element
-
-async function webCam() { // initialize webcam
-  status('starting webcam...');
-  // @ts-ignore resizeMode is not yet defined in tslib
-  const options: MediaStreamConstraints = { audio: false, video: { facingMode: 'user', resizeMode: 'none', width: { ideal: document.body.clientWidth }, height: { ideal: document.body.clientHeight } } };
-  const stream: MediaStream = await navigator.mediaDevices.getUserMedia(options);
-  const ready = new Promise((resolve) => { dom.video.onloadeddata = () => resolve(true); });
-  dom.video.srcObject = stream;
-  void dom.video.play();
-  await ready;
-  dom.canvas.width = dom.video.videoWidth;
-  dom.canvas.height = dom.video.videoHeight;
-  const track: MediaStreamTrack = stream.getVideoTracks()[0];
-  const capabilities: MediaTrackCapabilities | string = track.getCapabilities ? track.getCapabilities() : '';
-  const settings: MediaTrackSettings | string = track.getSettings ? track.getSettings() : '';
-  const constraints: MediaTrackConstraints | string = track.getConstraints ? track.getConstraints() : '';
-  log('video:', dom.video.videoWidth, dom.video.videoHeight, track.label, { stream, track, settings, constraints, capabilities });
-  dom.canvas.onclick = () => { // pause when clicked on screen and resume on next click
-    if (dom.video.paused) void dom.video.play();
-    else dom.video.pause();
-  };
-}
 
 async function detectionLoop() { // main detection loop
   if (!dom.video.paused) {
@@ -99,6 +78,16 @@ async function drawLoop() { // main screen refresh loop
   timestamp.draw = now;
   status(dom.video.paused ? 'paused' : `fps: ${fps.detectFPS.toFixed(1).padStart(5, ' ')} detect | ${fps.drawFPS.toFixed(1).padStart(5, ' ')} draw`); // write status
   setTimeout(drawLoop, 30); // use to slow down refresh from max refresh rate to target of 30 fps
+}
+
+async function webCam() {
+  await human.webcam.start({ element: dom.video, crop: true }); // use human webcam helper methods and associate webcam stream with a dom element
+  dom.canvas.width = human.webcam.width;
+  dom.canvas.height = human.webcam.height;
+  dom.canvas.onclick = async () => { // pause when clicked on screen and resume on next click
+    if (human.webcam.paused) await human.webcam.play();
+    else human.webcam.pause();
+  };
 }
 
 async function main() { // main entry point

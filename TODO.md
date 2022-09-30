@@ -44,13 +44,17 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 
 ## Pending Release Changes
 
-- New API [`human.video()`](https://vladmandic.github.io/human/typedoc/classes/Human.html#video)  
-  Runs continous detection of an input video instead of processing each frame manually  
+- New methods [`human.webcam.*`](https://vladmandic.github.io/human/typedoc/classes/WebCam.html)  
+  Directgly configures and controls WebCam streams
+- New method [`human.video()`](https://vladmandic.github.io/human/typedoc/classes/Human.html#video)  
+  Runs continous detection of an input video instead of processing each frame manually using `human.detect()`  
 - New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html)  
+  Full HTML and JavaScript code in less than a screen  
 - New advanced demo using BabylonJS <https://vladmandic.github.io/human-bjs-vrm>  
 - Enable model cache when using web workers  
 - Fix for `face.rotation` interpolation  
 - Improve NodeJS resolver when using ESM  
+- Update demo `demo/typescript`  
 - Update demo `demo/faceid`  
 - Update demo `demo/nodejs/process-folder.js`  
   and re-process `/samples`  

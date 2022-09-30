@@ -36,6 +36,8 @@ import * as persons from './util/persons';
 import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
 import * as warmups from './warmup';
+import * as webcam from './util/webcam';
+
 // type definitions
 import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas, ModelStats } from './exports';
 // type exports
@@ -293,6 +295,11 @@ export class Human {
     await this.tf.ready();
     image.reset();
   }
+
+  /** WebCam helper methods
+   *
+   */
+  public webcam = new webcam.WebCam();
 
   /** Load method preloads all configured models on-demand
    * - Not explicitly required as any required model is load implicitly on it's first run

@@ -24,11 +24,11 @@ N/A
 
 ### Face with Attention
 
-`FaceMesh-Attention` is not supported in browser using `WASM` backend due to missing kernel op in **TFJS**  
+`FaceMesh-Attention` is not supported when using `WASM` backend due to missing kernel op in **TFJS**  
 
 ### Object Detection
 
-`NanoDet` model is not supported in in browser using `WASM` backend due to missing kernel op in **TFJS**  
+`NanoDet` model is not supported when using `WASM` backend due to missing kernel op in **TFJS**  
 
 ### WebGPU
 
@@ -45,16 +45,20 @@ Enable via `about:config` -> `gfx.offscreencanvas.enabled`
 ## Pending Release Changes
 
 - New methods [`human.webcam.*`](https://vladmandic.github.io/human/typedoc/classes/WebCam.html)  
-  Directgly configures and controls WebCam streams
+  Enables built-in configuration and control of **WebCam** streams  
 - New method [`human.video()`](https://vladmandic.github.io/human/typedoc/classes/Human.html#video)  
-  Runs continous detection of an input video instead of processing each frame manually using `human.detect()`  
-- New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html)  
-  Full HTML and JavaScript code in less than a screen  
-- New advanced demo using BabylonJS <https://vladmandic.github.io/human-bjs-vrm>  
-- Enable model cache when using web workers  
-- Fix for `face.rotation` interpolation  
+  Runs continous detection of an input **video**  
+  instead of processing each frame manually using `human.detect()`  
+- New simple demo [*Live*](https://vladmandic.github.io/human/demo/video/index.html) | [*Code*](https://github.com/vladmandic/human/blob/main/demo/video/index.html)  
+  *Full HTML and JavaScript code in less than a screen*  
+- New advanced demo using **BabylonJS and VRM** [*Live*](https://vladmandic.github.io/human-bjs-vrm) | [*Code*](https://github.com/vladmandic/human-bjs-vrm)
+- Update **TypeDoc** generation [*Link*](https://vladmandic.github.io/human/typedoc)  
+- Update **TypeDefs** bundle generation [*Link*](https://github.com/vladmandic/human/blob/main/types/human.d.ts)  
+  No external dependencies  
+- Fix model caching when using web workers  
+- Fix `face.rotation` when using interpolation  
 - Improve NodeJS resolver when using ESM  
 - Update demo `demo/typescript`  
 - Update demo `demo/faceid`  
 - Update demo `demo/nodejs/process-folder.js`  
-  and re-process `/samples`  
+  and re-process `/samples` [*Link*](https://vladmandic.github.io/human/samples)  

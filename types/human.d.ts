@@ -1,5 +1,3 @@
-/// <reference types="@webgpu/types/dist" />
-/// <reference types="offscreencanvas" />
 
 /** meta-function that performs draw for: canvas, face, body, hand */
 declare function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Partial<DrawOptions>): Promise<[void, void, void, void, void] | null>;
@@ -25,7 +23,7 @@ declare interface ArrayMap {
 }
 
 /** Possible TensorFlow backends */
-export declare type BackendType = ['cpu', 'wasm', 'webgl', 'humangl', 'tensorflow', 'webgpu'];
+export declare type BackendEnum = '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
 
 /** draw detected bodies */
 declare function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>): void;
@@ -162,7 +160,7 @@ export declare interface Config {
      * - NodeJS: `cpu`, `wasm`, `tensorflow`
      * default: `webgl` for browser and `tensorflow` for nodejs
      */
-    backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
+    backend: BackendEnum;
     /** Path to *.wasm files if backend is set to `wasm`
      *
      * default: auto-detects to link to CDN `jsdelivr` when running in browser
@@ -189,7 +187,7 @@ export declare interface Config {
      *
      * default: `full`
      */
-    warmup: '' | 'none' | 'face' | 'full' | 'body';
+    warmup: WarmupEnum;
     /** Base model path (typically starting with file://, http:// or https://) for all models
      * - individual modelPath values are relative to this path
      *
@@ -335,7 +333,7 @@ declare function decodeWeights(buffer: ArrayBuffer, specs: WeightsManifestEntry[
 export declare const defaults: Config;
 
 /** Face descriptor type as number array */
-export declare type Descriptor = number[];
+declare type Descriptor = number[];
 
 /** Calculates distance between two descriptors
  * @param options - calculation options
@@ -833,7 +831,7 @@ declare function getModelArtifactsForJSON(modelJSON: ModelJSON, loadWeights: (we
  */
 declare function getModelArtifactsInfoForJSON(modelArtifacts: ModelArtifacts): ModelArtifactsInfo;
 
-declare const getModelStats: (instance: Human) => ModelStats;
+declare const getModelStats: (currentInstance: Human) => ModelStats;
 
 declare const getSaveHandlers: (url: string | string[]) => IOHandler[];
 
@@ -1230,7 +1228,7 @@ declare class Human {
     };
     /** Currently loaded models
      * @internal
-     * {@link Models}
+     * {@link models#Models}
      */
     models: models.Models;
     /** Container for events dispatched by Human
@@ -1326,7 +1324,7 @@ declare class Human {
     /** WebCam helper methods
      *
      */
-    webcam: webcam.WebCam;
+    webcam: WebCam;
     /** Load method preloads all configured models on-demand
      * - Not explicitly required as any required model is load implicitly on it's first run
      *
@@ -1343,7 +1341,7 @@ declare class Human {
      */
     next(result?: Result): Result;
     /** get model loading/loaded stats */
-    getModelStats(): ModelStats;
+    getModelStats(): models.ModelStats;
     /** Warmup method pre-initializes all configured models for faster inference
      * - can take significant time on startup
      * - only used for `webgl` and `humangl` backends
@@ -1517,7 +1515,7 @@ export declare type IrisGesture = 'facing center' | `looking ${'left' | 'right' 
 
 declare function isHTTPScheme(url: string): boolean;
 
-export declare interface KernelOps {
+declare interface KernelOps {
     name: string;
     url: string;
     missing: string[];
@@ -1564,7 +1562,7 @@ declare function listModels(): Promise<{
 }>;
 
 /** Load method preloads all instance.configured models on-demand */
-declare function load(instance: Human): Promise<void>;
+declare function load(currentInstance: Human): Promise<void>;
 
 /**
  * Type definition for handlers of loading operations.
@@ -1883,7 +1881,7 @@ declare interface ModelPredictConfig {
  * - initialized implicity on first call to `human.detect()`
  * - each model can be `null` if not loaded, instance of `GraphModel` if loaded or `Promise` if loading
  */
-export declare class Models {
+declare class Models {
     ssrnetage: null | GraphModel | Promise<GraphModel>;
     gear: null | GraphModel | Promise<GraphModel>;
     blazeposedetect: null | GraphModel | Promise<GraphModel>;
@@ -1923,7 +1921,8 @@ declare namespace models {
 }
 export { models }
 
-export declare interface ModelStats {
+/** structure that holds global stats for currently loaded models */
+declare interface ModelStats {
     numLoadedModels: number;
     numEnabledModels: undefined;
     numDefinedModels: number;
@@ -2178,7 +2177,7 @@ declare interface RequestDetails {
     isBinary?: boolean;
 }
 
-declare function reset(instance: Human): void;
+declare function reset(currentInstance: Human): void;
 
 /**
  * Result interface definition for **Human** library
@@ -2546,12 +2545,12 @@ declare type Url = string | io.IOHandler | io.IOHandlerSync;
 
 declare type UrlIOHandler<T extends Url> = T extends string ? io.IOHandler : T;
 
-declare function validate(newInstance: Human): {
+declare function validate(currentInstance: Human): {
     name: string;
     missing: string[];
 }[];
 
-declare function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null;
+declare function validateModel(currentInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null;
 
 /**
  * A mutable `tf.Tensor`, useful for persisting state, e.g. for training.
@@ -2575,7 +2574,7 @@ declare class Variable<R extends Rank = Rank> extends Tensor<R> {
 }
 
 /** Possible values for `human.warmup` */
-export declare type WarmupType = ['' | 'none' | 'face' | 'full' | 'body'];
+export declare type WarmupEnum = '' | 'none' | 'face' | 'full' | 'body';
 
 export declare class WebCam {
     /** current webcam configuration */
@@ -2609,13 +2608,6 @@ export declare class WebCam {
     play: () => Promise<void>;
     /** stop method stops active webcam stream track and disconnects webcam */
     stop: () => void;
-}
-
-declare namespace webcam {
-    export {
-        WebCamConfig,
-        WebCam
-    }
 }
 
 /** WebCam configuration */

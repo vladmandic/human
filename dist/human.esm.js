@@ -74384,6 +74384,169 @@ var Env = class {
 };
 var env2 = new Env();
 
+// src/util/webcam.ts
+var WebCam = class {
+  constructor() {
+    __publicField(this, "config");
+    __publicField(this, "element");
+    __publicField(this, "stream");
+    __publicField(this, "start", async (webcamConfig) => {
+      if (webcamConfig == null ? void 0 : webcamConfig.debug)
+        this.config.debug = webcamConfig == null ? void 0 : webcamConfig.debug;
+      if (webcamConfig == null ? void 0 : webcamConfig.crop)
+        this.config.crop = webcamConfig == null ? void 0 : webcamConfig.crop;
+      if (webcamConfig == null ? void 0 : webcamConfig.mode)
+        this.config.mode = webcamConfig == null ? void 0 : webcamConfig.mode;
+      if (webcamConfig == null ? void 0 : webcamConfig.width)
+        this.config.width = webcamConfig == null ? void 0 : webcamConfig.width;
+      if (webcamConfig == null ? void 0 : webcamConfig.height)
+        this.config.height = webcamConfig == null ? void 0 : webcamConfig.height;
+      if (webcamConfig == null ? void 0 : webcamConfig.element) {
+        if (typeof webcamConfig.element === "string") {
+          const el = document.getElementById(webcamConfig.element);
+          if (el && el instanceof HTMLVideoElement) {
+            this.element = el;
+          } else {
+            if (this.config.debug)
+              log("webcam", "cannot get dom element", webcamConfig.element);
+            return;
+          }
+        } else if (webcamConfig.element instanceof HTMLVideoElement) {
+          this.element = webcamConfig.element;
+        } else {
+          if (this.config.debug)
+            log("webcam", "unknown dom element", webcamConfig.element);
+          return;
+        }
+      } else {
+        this.element = document.createElement("video");
+      }
+      const requestedConstraints = {
+        audio: false,
+        video: {
+          facingMode: this.config.mode === "front" ? "user" : "environment",
+          resizeMode: this.config.crop ? "crop-and-scale" : "none",
+          width: { ideal: this.config.width > 0 ? this.config.width : window.innerWidth },
+          height: { ideal: this.config.height > 0 ? this.config.height : window.innerHeight }
+        }
+      };
+      this.element.addEventListener("play", () => {
+        if (this.config.debug)
+          log("webcam", "play");
+      });
+      this.element.addEventListener("pause", () => {
+        if (this.config.debug)
+          log("webcam", "pause");
+      });
+      this.element.addEventListener("click", async () => {
+        if (!this.element || !this.stream)
+          return;
+        if (this.element.paused)
+          await this.element.play();
+        else
+          this.element.pause();
+      });
+      if (!(navigator == null ? void 0 : navigator.mediaDevices)) {
+        if (this.config.debug)
+          log("webcam", "no devices");
+        return;
+      }
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia(requestedConstraints);
+      } catch (err) {
+        log("webcam", err);
+        return;
+      }
+      if (!this.stream) {
+        if (this.config.debug)
+          log("webcam", "no stream");
+        return;
+      }
+      this.element.srcObject = this.stream;
+      const ready2 = new Promise((resolve) => {
+        if (!this.element)
+          resolve(false);
+        else
+          this.element.onloadeddata = () => resolve(true);
+      });
+      await ready2;
+      await this.element.play();
+      if (this.config.debug) {
+        log("webcam", {
+          width: this.width,
+          height: this.height,
+          label: this.label,
+          stream: this.stream,
+          track: this.track,
+          settings: this.settings,
+          constraints: this.constraints,
+          capabilities: this.capabilities
+        });
+      }
+    });
+    __publicField(this, "pause", () => {
+      if (this.element)
+        this.element.pause();
+    });
+    __publicField(this, "play", async () => {
+      if (this.element)
+        await this.element.play();
+    });
+    __publicField(this, "stop", () => {
+      if (this.config.debug)
+        log("webcam", "stop");
+      if (this.track)
+        this.track.stop();
+    });
+    this.config = {
+      element: void 0,
+      debug: true,
+      mode: "front",
+      crop: false,
+      width: 0,
+      height: 0
+    };
+  }
+  get track() {
+    if (!this.stream)
+      return void 0;
+    return this.stream.getVideoTracks()[0];
+  }
+  get capabilities() {
+    if (!this.track)
+      return void 0;
+    return this.track.getCapabilities ? this.track.getCapabilities() : void 0;
+  }
+  get constraints() {
+    if (!this.track)
+      return void 0;
+    return this.track.getConstraints ? this.track.getConstraints() : void 0;
+  }
+  get settings() {
+    if (!this.stream)
+      return void 0;
+    const track = this.stream.getVideoTracks()[0];
+    return track.getSettings ? track.getSettings() : void 0;
+  }
+  get label() {
+    if (!this.track)
+      return "";
+    return this.track.label;
+  }
+  get paused() {
+    var _a;
+    return ((_a = this.element) == null ? void 0 : _a.paused) || false;
+  }
+  get width() {
+    var _a;
+    return ((_a = this.element) == null ? void 0 : _a.videoWidth) || 0;
+  }
+  get height() {
+    var _a;
+    return ((_a = this.element) == null ? void 0 : _a.videoHeight) || 0;
+  }
+};
+
 // models/models.json
 var models_exports = {};
 __export(models_exports, {
@@ -85033,7 +85196,12 @@ var Models = class {
     __publicField(this, "antispoof", null);
   }
 };
-var getModelStats = (instance2) => {
+var instance;
+var getModelStats = (currentInstance) => {
+  if (currentInstance)
+    instance = currentInstance;
+  if (!instance)
+    log("instance not registred");
   let totalSizeFromManifest = 0;
   let totalSizeWeights = 0;
   let totalSizeLoading = 0;
@@ -85046,7 +85214,7 @@ var getModelStats = (instance2) => {
   return {
     numLoadedModels: Object.values(modelStats).length,
     numEnabledModels: void 0,
-    numDefinedModels: Object.keys(instance2.models).length,
+    numDefinedModels: Object.keys(instance.models).length,
     percentageLoaded,
     totalSizeFromManifest,
     totalSizeWeights,
@@ -85055,82 +85223,87 @@ var getModelStats = (instance2) => {
     modelStats: Object.values(modelStats)
   };
 };
-function reset2(instance2) {
-  for (const model20 of Object.keys(instance2.models))
-    instance2.models[model20] = null;
+function reset2(currentInstance) {
+  if (currentInstance)
+    instance = currentInstance;
+  for (const model20 of Object.keys(instance.models))
+    instance.models[model20] = null;
 }
-async function load20(instance2) {
+async function load20(currentInstance) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
-  if (env2.initial)
-    reset2(instance2);
-  if (instance2.config.hand.enabled) {
-    if (!instance2.models.handpose && ((_b = (_a = instance2.config.hand.detector) == null ? void 0 : _a.modelPath) == null ? void 0 : _b.includes("handdetect"))) {
-      [instance2.models.handpose, instance2.models.handskeleton] = await load14(instance2.config);
-    }
-    if (!instance2.models.handskeleton && instance2.config.hand.landmarks && ((_d = (_c = instance2.config.hand.detector) == null ? void 0 : _c.modelPath) == null ? void 0 : _d.includes("handdetect"))) {
-      [instance2.models.handpose, instance2.models.handskeleton] = await load14(instance2.config);
-    }
-  }
-  if (instance2.config.body.enabled && !instance2.models.blazepose && ((_e = instance2.config.body.modelPath) == null ? void 0 : _e.includes("blazepose")))
-    instance2.models.blazepose = loadPose(instance2.config);
-  if (instance2.config.body.enabled && !instance2.models.blazeposedetect && instance2.config.body["detector"] && instance2.config.body["detector"].modelPath)
-    instance2.models.blazeposedetect = loadDetect(instance2.config);
-  if (instance2.config.body.enabled && !instance2.models.efficientpose && ((_f = instance2.config.body.modelPath) == null ? void 0 : _f.includes("efficientpose")))
-    instance2.models.efficientpose = load7(instance2.config);
-  if (instance2.config.body.enabled && !instance2.models.movenet && ((_g = instance2.config.body.modelPath) == null ? void 0 : _g.includes("movenet")))
-    instance2.models.movenet = load16(instance2.config);
-  if (instance2.config.body.enabled && !instance2.models.posenet && ((_h = instance2.config.body.modelPath) == null ? void 0 : _h.includes("posenet")))
-    instance2.models.posenet = load18(instance2.config);
-  if (instance2.config.face.enabled && !instance2.models.facedetect)
-    instance2.models.facedetect = load5(instance2.config);
-  if (instance2.config.face.enabled && ((_i = instance2.config.face.antispoof) == null ? void 0 : _i.enabled) && !instance2.models.antispoof)
-    instance2.models.antispoof = load4(instance2.config);
-  if (instance2.config.face.enabled && ((_j = instance2.config.face.liveness) == null ? void 0 : _j.enabled) && !instance2.models.liveness)
-    instance2.models.liveness = load15(instance2.config);
-  if (instance2.config.face.enabled && ((_k = instance2.config.face.description) == null ? void 0 : _k.enabled) && !instance2.models.faceres)
-    instance2.models.faceres = load13(instance2.config);
-  if (instance2.config.face.enabled && ((_l = instance2.config.face.emotion) == null ? void 0 : _l.enabled) && !instance2.models.emotion)
-    instance2.models.emotion = load8(instance2.config);
-  if (instance2.config.face.enabled && ((_m = instance2.config.face.iris) == null ? void 0 : _m.enabled) && !((_n = instance2.config.face.attention) == null ? void 0 : _n.enabled) && !instance2.models.faceiris)
-    instance2.models.faceiris = load11(instance2.config);
-  if (instance2.config.face.enabled && ((_o = instance2.config.face.mesh) == null ? void 0 : _o.enabled) && !instance2.models.facemesh)
-    instance2.models.facemesh = load12(instance2.config);
-  if (instance2.config.face.enabled && ((_p = instance2.config.face["gear"]) == null ? void 0 : _p.enabled) && !instance2.models.gear)
-    instance2.models.gear = load(instance2.config);
-  if (instance2.config.face.enabled && ((_q = instance2.config.face["ssrnet"]) == null ? void 0 : _q.enabled) && !instance2.models.ssrnetage)
-    instance2.models.ssrnetage = load2(instance2.config);
-  if (instance2.config.face.enabled && ((_r = instance2.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && !instance2.models.ssrnetgender)
-    instance2.models.ssrnetgender = load3(instance2.config);
-  if (instance2.config.face.enabled && ((_s = instance2.config.face["mobilefacenet"]) == null ? void 0 : _s.enabled) && !instance2.models.mobilefacenet)
-    instance2.models.mobilefacenet = load9(instance2.config);
-  if (instance2.config.face.enabled && ((_t = instance2.config.face["insightface"]) == null ? void 0 : _t.enabled) && !instance2.models.insightface)
-    instance2.models.insightface = load10(instance2.config);
-  if (instance2.config.hand.enabled && !instance2.models.handtrack && ((_v = (_u = instance2.config.hand.detector) == null ? void 0 : _u.modelPath) == null ? void 0 : _v.includes("handtrack")))
-    instance2.models.handtrack = loadDetect2(instance2.config);
-  if (instance2.config.hand.enabled && instance2.config.hand.landmarks && !instance2.models.handskeleton && ((_x = (_w = instance2.config.hand.detector) == null ? void 0 : _w.modelPath) == null ? void 0 : _x.includes("handtrack")))
-    instance2.models.handskeleton = loadSkeleton(instance2.config);
-  if (instance2.config.object.enabled && !instance2.models.centernet && ((_y = instance2.config.object.modelPath) == null ? void 0 : _y.includes("centernet")))
-    instance2.models.centernet = load6(instance2.config);
-  if (instance2.config.object.enabled && !instance2.models.nanodet && ((_z = instance2.config.object.modelPath) == null ? void 0 : _z.includes("nanodet")))
-    instance2.models.nanodet = load17(instance2.config);
-  if (instance2.config.segmentation.enabled && !instance2.models.segmentation)
-    instance2.models.segmentation = load19(instance2.config);
-  for await (const model20 of Object.keys(instance2.models)) {
-    if (instance2.models[model20] && typeof instance2.models[model20] !== "undefined") {
-      instance2.models[model20] = await instance2.models[model20];
-    }
-  }
-}
-var instance;
-function validateModel(newInstance, model20, name) {
-  var _a;
-  if (newInstance)
-    instance = newInstance;
-  if (!model20)
-    return null;
+  if (currentInstance)
+    instance = currentInstance;
   if (!instance)
     log("instance not registred");
-  if (!instance.config.validateModels)
+  if (env2.initial)
+    reset2(instance);
+  if (instance.config.hand.enabled) {
+    if (!instance.models.handpose && ((_b = (_a = instance.config.hand.detector) == null ? void 0 : _a.modelPath) == null ? void 0 : _b.includes("handdetect"))) {
+      [instance.models.handpose, instance.models.handskeleton] = await load14(instance.config);
+    }
+    if (!instance.models.handskeleton && instance.config.hand.landmarks && ((_d = (_c = instance.config.hand.detector) == null ? void 0 : _c.modelPath) == null ? void 0 : _d.includes("handdetect"))) {
+      [instance.models.handpose, instance.models.handskeleton] = await load14(instance.config);
+    }
+  }
+  if (instance.config.body.enabled && !instance.models.blazepose && ((_e = instance.config.body.modelPath) == null ? void 0 : _e.includes("blazepose")))
+    instance.models.blazepose = loadPose(instance.config);
+  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body["detector"] && instance.config.body["detector"].modelPath)
+    instance.models.blazeposedetect = loadDetect(instance.config);
+  if (instance.config.body.enabled && !instance.models.efficientpose && ((_f = instance.config.body.modelPath) == null ? void 0 : _f.includes("efficientpose")))
+    instance.models.efficientpose = load7(instance.config);
+  if (instance.config.body.enabled && !instance.models.movenet && ((_g = instance.config.body.modelPath) == null ? void 0 : _g.includes("movenet")))
+    instance.models.movenet = load16(instance.config);
+  if (instance.config.body.enabled && !instance.models.posenet && ((_h = instance.config.body.modelPath) == null ? void 0 : _h.includes("posenet")))
+    instance.models.posenet = load18(instance.config);
+  if (instance.config.face.enabled && !instance.models.facedetect)
+    instance.models.facedetect = load5(instance.config);
+  if (instance.config.face.enabled && ((_i = instance.config.face.antispoof) == null ? void 0 : _i.enabled) && !instance.models.antispoof)
+    instance.models.antispoof = load4(instance.config);
+  if (instance.config.face.enabled && ((_j = instance.config.face.liveness) == null ? void 0 : _j.enabled) && !instance.models.liveness)
+    instance.models.liveness = load15(instance.config);
+  if (instance.config.face.enabled && ((_k = instance.config.face.description) == null ? void 0 : _k.enabled) && !instance.models.faceres)
+    instance.models.faceres = load13(instance.config);
+  if (instance.config.face.enabled && ((_l = instance.config.face.emotion) == null ? void 0 : _l.enabled) && !instance.models.emotion)
+    instance.models.emotion = load8(instance.config);
+  if (instance.config.face.enabled && ((_m = instance.config.face.iris) == null ? void 0 : _m.enabled) && !((_n = instance.config.face.attention) == null ? void 0 : _n.enabled) && !instance.models.faceiris)
+    instance.models.faceiris = load11(instance.config);
+  if (instance.config.face.enabled && ((_o = instance.config.face.mesh) == null ? void 0 : _o.enabled) && !instance.models.facemesh)
+    instance.models.facemesh = load12(instance.config);
+  if (instance.config.face.enabled && ((_p = instance.config.face["gear"]) == null ? void 0 : _p.enabled) && !instance.models.gear)
+    instance.models.gear = load(instance.config);
+  if (instance.config.face.enabled && ((_q = instance.config.face["ssrnet"]) == null ? void 0 : _q.enabled) && !instance.models.ssrnetage)
+    instance.models.ssrnetage = load2(instance.config);
+  if (instance.config.face.enabled && ((_r = instance.config.face["ssrnet"]) == null ? void 0 : _r.enabled) && !instance.models.ssrnetgender)
+    instance.models.ssrnetgender = load3(instance.config);
+  if (instance.config.face.enabled && ((_s = instance.config.face["mobilefacenet"]) == null ? void 0 : _s.enabled) && !instance.models.mobilefacenet)
+    instance.models.mobilefacenet = load9(instance.config);
+  if (instance.config.face.enabled && ((_t = instance.config.face["insightface"]) == null ? void 0 : _t.enabled) && !instance.models.insightface)
+    instance.models.insightface = load10(instance.config);
+  if (instance.config.hand.enabled && !instance.models.handtrack && ((_v = (_u = instance.config.hand.detector) == null ? void 0 : _u.modelPath) == null ? void 0 : _v.includes("handtrack")))
+    instance.models.handtrack = loadDetect2(instance.config);
+  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && ((_x = (_w = instance.config.hand.detector) == null ? void 0 : _w.modelPath) == null ? void 0 : _x.includes("handtrack")))
+    instance.models.handskeleton = loadSkeleton(instance.config);
+  if (instance.config.object.enabled && !instance.models.centernet && ((_y = instance.config.object.modelPath) == null ? void 0 : _y.includes("centernet")))
+    instance.models.centernet = load6(instance.config);
+  if (instance.config.object.enabled && !instance.models.nanodet && ((_z = instance.config.object.modelPath) == null ? void 0 : _z.includes("nanodet")))
+    instance.models.nanodet = load17(instance.config);
+  if (instance.config.segmentation.enabled && !instance.models.segmentation)
+    instance.models.segmentation = load19(instance.config);
+  for await (const model20 of Object.keys(instance.models)) {
+    if (instance.models[model20] && typeof instance.models[model20] !== "undefined") {
+      instance.models[model20] = await instance.models[model20];
+    }
+  }
+}
+function validateModel(currentInstance, model20, name) {
+  var _a, _b;
+  if (!model20)
+    return null;
+  if (currentInstance)
+    instance = currentInstance;
+  if (!instance)
+    log("instance not registred");
+  if (!((_a = instance == null ? void 0 : instance.config) == null ? void 0 : _a.validateModels))
     return null;
   const simpleOps = ["const", "placeholder", "noop", "pad", "squeeze", "add", "sub", "mul", "div"];
   const ignoreOps = ["biasadd", "fusedbatchnormv3", "matmul"];
@@ -85138,7 +85311,7 @@ function validateModel(newInstance, model20, name) {
   const missing = [];
   const url = model20["modelUrl"];
   const executor = model20["executor"];
-  if ((_a = executor == null ? void 0 : executor.graph) == null ? void 0 : _a.nodes) {
+  if ((_b = executor == null ? void 0 : executor.graph) == null ? void 0 : _b.nodes) {
     for (const kernel of Object.values(executor.graph.nodes)) {
       const op2 = kernel.op.toLowerCase();
       if (!ops.includes(op2))
@@ -85158,14 +85331,17 @@ function validateModel(newInstance, model20, name) {
     log("model validation failed:", name, missing);
   return missing.length > 0 ? { name, missing, ops, url } : null;
 }
-function validate2(newInstance) {
-  instance = newInstance;
+function validate2(currentInstance) {
+  if (currentInstance)
+    instance = currentInstance;
+  if (!instance)
+    log("instance not registred");
   const missing = [];
-  for (const defined of Object.keys(instance.models)) {
-    const model20 = instance.models[defined];
+  for (const defined of Object.keys(currentInstance.models)) {
+    const model20 = currentInstance.models[defined];
     if (!model20)
       continue;
-    const res = validateModel(instance, model20, defined);
+    const res = validateModel(currentInstance, model20, defined);
     if (res)
       missing.push(res);
   }
@@ -87370,169 +87546,6 @@ async function warmup(instance2, userConfig) {
   });
 }
 
-// src/util/webcam.ts
-var WebCam = class {
-  constructor() {
-    __publicField(this, "config");
-    __publicField(this, "element");
-    __publicField(this, "stream");
-    __publicField(this, "start", async (webcamConfig) => {
-      if (webcamConfig == null ? void 0 : webcamConfig.debug)
-        this.config.debug = webcamConfig == null ? void 0 : webcamConfig.debug;
-      if (webcamConfig == null ? void 0 : webcamConfig.crop)
-        this.config.crop = webcamConfig == null ? void 0 : webcamConfig.crop;
-      if (webcamConfig == null ? void 0 : webcamConfig.mode)
-        this.config.mode = webcamConfig == null ? void 0 : webcamConfig.mode;
-      if (webcamConfig == null ? void 0 : webcamConfig.width)
-        this.config.width = webcamConfig == null ? void 0 : webcamConfig.width;
-      if (webcamConfig == null ? void 0 : webcamConfig.height)
-        this.config.height = webcamConfig == null ? void 0 : webcamConfig.height;
-      if (webcamConfig == null ? void 0 : webcamConfig.element) {
-        if (typeof webcamConfig.element === "string") {
-          const el = document.getElementById(webcamConfig.element);
-          if (el && el instanceof HTMLVideoElement) {
-            this.element = el;
-          } else {
-            if (this.config.debug)
-              log("webcam", "cannot get dom element", webcamConfig.element);
-            return;
-          }
-        } else if (webcamConfig.element instanceof HTMLVideoElement) {
-          this.element = webcamConfig.element;
-        } else {
-          if (this.config.debug)
-            log("webcam", "unknown dom element", webcamConfig.element);
-          return;
-        }
-      } else {
-        this.element = document.createElement("video");
-      }
-      const requestedConstraints = {
-        audio: false,
-        video: {
-          facingMode: this.config.mode === "front" ? "user" : "environment",
-          resizeMode: this.config.crop ? "crop-and-scale" : "none",
-          width: { ideal: this.config.width > 0 ? this.config.width : window.innerWidth },
-          height: { ideal: this.config.height > 0 ? this.config.height : window.innerHeight }
-        }
-      };
-      this.element.addEventListener("play", () => {
-        if (this.config.debug)
-          log("webcam", "play");
-      });
-      this.element.addEventListener("pause", () => {
-        if (this.config.debug)
-          log("webcam", "pause");
-      });
-      this.element.addEventListener("click", async () => {
-        if (!this.element || !this.stream)
-          return;
-        if (this.element.paused)
-          await this.element.play();
-        else
-          this.element.pause();
-      });
-      if (!(navigator == null ? void 0 : navigator.mediaDevices)) {
-        if (this.config.debug)
-          log("webcam", "no devices");
-        return;
-      }
-      try {
-        this.stream = await navigator.mediaDevices.getUserMedia(requestedConstraints);
-      } catch (err) {
-        log("webcam", err);
-        return;
-      }
-      if (!this.stream) {
-        if (this.config.debug)
-          log("webcam", "no stream");
-        return;
-      }
-      this.element.srcObject = this.stream;
-      const ready2 = new Promise((resolve) => {
-        if (!this.element)
-          resolve(false);
-        else
-          this.element.onloadeddata = () => resolve(true);
-      });
-      await ready2;
-      await this.element.play();
-      if (this.config.debug) {
-        log("webcam", {
-          width: this.width,
-          height: this.height,
-          label: this.label,
-          stream: this.stream,
-          track: this.track,
-          settings: this.settings,
-          constraints: this.constraints,
-          capabilities: this.capabilities
-        });
-      }
-    });
-    __publicField(this, "pause", () => {
-      if (this.element)
-        this.element.pause();
-    });
-    __publicField(this, "play", async () => {
-      if (this.element)
-        await this.element.play();
-    });
-    __publicField(this, "stop", () => {
-      if (this.config.debug)
-        log("webcam", "stop");
-      if (this.track)
-        this.track.stop();
-    });
-    this.config = {
-      element: void 0,
-      debug: true,
-      mode: "front",
-      crop: false,
-      width: 0,
-      height: 0
-    };
-  }
-  get track() {
-    if (!this.stream)
-      return void 0;
-    return this.stream.getVideoTracks()[0];
-  }
-  get capabilities() {
-    if (!this.track)
-      return void 0;
-    return this.track.getCapabilities ? this.track.getCapabilities() : void 0;
-  }
-  get constraints() {
-    if (!this.track)
-      return void 0;
-    return this.track.getConstraints ? this.track.getConstraints() : void 0;
-  }
-  get settings() {
-    if (!this.stream)
-      return void 0;
-    const track = this.stream.getVideoTracks()[0];
-    return track.getSettings ? track.getSettings() : void 0;
-  }
-  get label() {
-    if (!this.track)
-      return "";
-    return this.track.label;
-  }
-  get paused() {
-    var _a;
-    return ((_a = this.element) == null ? void 0 : _a.paused) || false;
-  }
-  get width() {
-    var _a;
-    return ((_a = this.element) == null ? void 0 : _a.videoWidth) || 0;
-  }
-  get height() {
-    var _a;
-    return ((_a = this.element) == null ? void 0 : _a.videoHeight) || 0;
-  }
-};
-
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity, _loops;
 var Human2 = class {
@@ -87925,6 +87938,7 @@ _checkSanity = new WeakMap();
 _sanity = new WeakMap();
 _loops = new WeakMap();
 export {
+  Env,
   Human2 as Human,
   Human2 as default,
   config as defaults,

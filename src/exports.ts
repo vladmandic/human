@@ -9,15 +9,17 @@ export * from './result';
 /* Explict reexport of main @tensorflow/tfjs types */
 export type { Tensor, TensorLike, GraphModel, Rank } from './tfjs/types';
 
+// re-export types
 export type { DrawOptions } from './draw/options';
-export type { Descriptor } from './face/match';
 export type { Box, Point } from './result';
-export type { Models } from './models';
-export type { Env } from './util/env';
+export { env, Env } from './util/env';
 export type { FaceGesture, BodyGesture, HandGesture, IrisGesture } from './gesture/gesture';
 export type { Emotion, Finger, FingerCurl, FingerDirection, HandType, Gender, Race, FaceLandmark, BodyLandmark, BodyAnnotation, ObjectType } from './result';
-export type { WebCamConfig } from './util/webcam';
-export { env } from './util/env';
+export type { WebCam, WebCamConfig } from './util/webcam';
+// export type { Models, ModelStats, KernelOps } from './models';
+export type { ModelInfo } from './tfjs/load';
+
+// define enum types
 
 /** Events dispatched by `human.events`
  * - `create`: triggered when Human object is instantiated
@@ -27,7 +29,6 @@ export { env } from './util/env';
  * - `warmup`: triggered when warmup is complete
  */
 export type Events = 'create' | 'load' | 'image' | 'result' | 'warmup' | 'error';
-
 /** Defines all possible canvas types */
 export type AnyCanvas = HTMLCanvasElement | OffscreenCanvas;
 /** Defines all possible image types */
@@ -40,11 +41,3 @@ export type ImageObjects = ImageData | ImageBitmap
 export type ExternalCanvas = typeof env.Canvas;
 /** Defines all possible input types for **Human** detection */
 export type Input = Tensor | AnyCanvas | AnyImage | AnyVideo | ImageObjects | ExternalCanvas;
-/** WebCam helper class */
-export type { WebCam } from './util/webcam';
-/** Defines model stats */
-export type { ModelStats } from './models';
-/** Defines individual model sizes */
-export type { ModelInfo } from './tfjs/load';
-/** Defines model kernel ops */
-export type { KernelOps } from './models';

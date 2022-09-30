@@ -37,6 +37,21 @@ function copy(src, dst) {
   fs.writeFileSync(dst, buffer);
 }
 
+function write(str, dst) {
+  fs.writeFileSync(dst, str);
+}
+
+function filter(str, src) {
+  if (!fs.existsSync(src)) return;
+  const buffer = fs.readFileSync(src, 'UTF-8');
+  const lines = buffer.split(/\r?\n/);
+  const out = [];
+  for (const line of lines) {
+    if (!line.includes(str)) out.push(line);
+  }
+  fs.writeFileSync(src, out.join('\n'));
+}
+
 async function analyzeModels() {
   log.info('Analyze models:', { folders: modelsFolders.length, result: modelsOut });
   let totalSize = 0;
@@ -95,13 +110,24 @@ async function main() {
   });
   log.state('API-Extractor:', { succeeeded: extractorResult.succeeded, errors: extractorResult.errorCount, warnings: extractorResult.warningCount });
   // distribute typedefs
-  log.state('Copy:', { input: 'types/human.d.ts' });
-  copy('types/human.d.ts', 'dist/human.esm-nobundle.d.ts');
-  copy('types/human.d.ts', 'dist/human.esm.d.ts');
-  copy('types/human.d.ts', 'dist/human.d.ts');
-  copy('types/human.d.ts', 'dist/human.node-gpu.d.ts');
-  copy('types/human.d.ts', 'dist/human.node.d.ts');
-  copy('types/human.d.ts', 'dist/human.node-wasm.d.ts');
+  // log.state('Copy:', { input: 'types/human.d.ts' });
+  // copy('types/human.d.ts', 'dist/human.esm-nobundle.d.ts');
+  // copy('types/human.d.ts', 'dist/human.esm.d.ts');
+  // copy('types/human.d.ts', 'dist/human.d.ts');
+  // copy('types/human.d.ts', 'dist/human.node-gpu.d.ts');
+  // copy('types/human.d.ts', 'dist/human.node.d.ts');
+  // copy('types/human.d.ts', 'dist/human.node-wasm.d.ts');
+  log.state('Filter:', { input: 'types/human.d.ts' });
+  filter('reference types', 'types/human.d.ts');
+  log.state('Link:', { input: 'types/human.d.ts' });
+  write('export * from \'../types/human\';', 'dist/human.esm-nobundle.d.ts');
+  write('export * from \'../types/human\';', 'dist/human.esm.d.ts');
+  write('export * from \'../types/human\';', 'dist/human.d.ts');
+  write('export * from \'../types/human\';', 'dist/human.node-gpu.d.ts');
+  write('export * from \'../types/human\';', 'dist/human.node.d.ts');
+  write('export * from \'../types/human\';', 'dist/human.node-wasm.d.ts');
+  // export * from '../types/human';
+
   // generate model signature
   await analyzeModels();
   log.info('Human Build complete...', { logFile });

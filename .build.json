@@ -108,7 +108,7 @@
         "format": "esm",
         "input": "src/human.ts",
         "output": "dist/human.esm-nobundle.js",
-        "sourcemap": true,
+        "sourcemap": false,
         "external": ["@tensorflow"]
       },
       {

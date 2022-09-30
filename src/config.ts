@@ -209,10 +209,10 @@ export interface GestureConfig {
   enabled: boolean,
 }
 /** Possible TensorFlow backends */
-export type BackendType = ['cpu', 'wasm', 'webgl', 'humangl', 'tensorflow', 'webgpu'];
+export type BackendEnum = '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
 
 /** Possible values for `human.warmup` */
-export type WarmupType = ['' | 'none' | 'face' | 'full' | 'body'];
+export type WarmupEnum = '' | 'none' | 'face' | 'full' | 'body';
 
 /**
  * Configuration interface definition for **Human** library
@@ -226,7 +226,7 @@ export interface Config {
    * - NodeJS: `cpu`, `wasm`, `tensorflow`
    * default: `webgl` for browser and `tensorflow` for nodejs
   */
-  backend: '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu',
+  backend: BackendEnum,
 
   /** Path to *.wasm files if backend is set to `wasm`
    *
@@ -258,7 +258,7 @@ export interface Config {
    *
    * default: `full`
   */
-  warmup: '' | 'none' | 'face' | 'full' | 'body',
+  warmup: WarmupEnum,
 
   /** Base model path (typically starting with file://, http:// or https://) for all models
    * - individual modelPath values are relative to this path

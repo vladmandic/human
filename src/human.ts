@@ -11,6 +11,7 @@
 import { log, now, mergeDeep, validate } from './util/util';
 import { defaults } from './config';
 import { env, Env } from './util/env';
+import { WebCam } from './util/webcam';
 import { setModelLoadOptions } from './tfjs/load';
 import * as tf from '../dist/tfjs.esm.js';
 import * as app from '../package.json';
@@ -36,10 +37,9 @@ import * as persons from './util/persons';
 import * as posenet from './body/posenet';
 import * as segmentation from './segmentation/segmentation';
 import * as warmups from './warmup';
-import * as webcam from './util/webcam';
 
 // type definitions
-import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas, ModelStats } from './exports';
+import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas } from './exports';
 // type exports
 export * from './exports';
 
@@ -95,7 +95,7 @@ export class Human {
 
   /** Currently loaded models
    * @internal
-   * {@link Models}
+   * {@link models#Models}
   */
   models: models.Models;
 
@@ -177,7 +177,7 @@ export class Human {
     // include platform info
     this.emit('create');
     if (this.config.debug || this.env.browser) log(`version: ${this.version}`);
-    if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core'] as string}`);
+    if (this.config.debug) log(`tfjs version: ${this.tf.version['tfjs-core']}`);
     const envTemp = JSON.parse(JSON.stringify(this.env));
     delete envTemp.kernels;
     delete envTemp.initial;
@@ -299,7 +299,7 @@ export class Human {
   /** WebCam helper methods
    *
    */
-  public webcam = new webcam.WebCam();
+  public webcam = new WebCam();
 
   /** Load method preloads all configured models on-demand
    * - Not explicitly required as any required model is load implicitly on it's first run
@@ -351,7 +351,7 @@ export class Human {
   }
 
   /** get model loading/loaded stats */
-  getModelStats(): ModelStats { return models.getModelStats(this); }
+  getModelStats(): models.ModelStats { return models.getModelStats(this); }
 
   /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup

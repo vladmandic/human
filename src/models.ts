@@ -61,6 +61,7 @@ export class Models {
   antispoof: null | GraphModel | Promise<GraphModel> = null;
 }
 
+/** structure that holds global stats for currently loaded models */
 export interface ModelStats {
   numLoadedModels: number,
   numEnabledModels: undefined,
@@ -73,7 +74,11 @@ export interface ModelStats {
   modelStats: ModelInfo[],
 }
 
-export const getModelStats = (instance: Human): ModelStats => {
+let instance: Human;
+
+export const getModelStats = (currentInstance: Human): ModelStats => {
+  if (currentInstance) instance = currentInstance;
+  if (!instance) log('instance not registred');
   let totalSizeFromManifest = 0;
   let totalSizeWeights = 0;
   let totalSizeLoading = 0;
@@ -96,13 +101,16 @@ export const getModelStats = (instance: Human): ModelStats => {
   };
 };
 
-export function reset(instance: Human): void {
+export function reset(currentInstance: Human): void {
+  if (currentInstance) instance = currentInstance;
   // if (instance.config.debug) log('resetting loaded models');
   for (const model of Object.keys(instance.models)) instance.models[model as keyof Models] = null;
 }
 
 /** Load method preloads all instance.configured models on-demand */
-export async function load(instance: Human): Promise<void> {
+export async function load(currentInstance: Human): Promise<void> {
+  if (currentInstance) instance = currentInstance;
+  if (!instance) log('instance not registred');
   if (env.initial) reset(instance);
   if (instance.config.hand.enabled) { // handpose model is a combo that must be loaded as a whole
     if (!instance.models.handpose && instance.config.hand.detector?.modelPath?.includes('handdetect')) {
@@ -143,14 +151,13 @@ export async function load(instance: Human): Promise<void> {
   }
 }
 
-let instance: Human;
 export interface KernelOps { name: string, url: string, missing: string[], ops: string[] }
 
-export function validateModel(newInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null {
-  if (newInstance) instance = newInstance;
+export function validateModel(currentInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null {
   if (!model) return null;
+  if (currentInstance) instance = currentInstance;
   if (!instance) log('instance not registred');
-  if (!instance.config.validateModels) return null;
+  if (!instance?.config?.validateModels) return null;
   const simpleOps = ['const', 'placeholder', 'noop', 'pad', 'squeeze', 'add', 'sub', 'mul', 'div'];
   const ignoreOps = ['biasadd', 'fusedbatchnormv3', 'matmul'];
   const ops: string[] = [];
@@ -182,13 +189,14 @@ export function validateModel(newInstance: Human | null, model: GraphModel | nul
   return missing.length > 0 ? { name, missing, ops, url } : null;
 }
 
-export function validate(newInstance: Human): { name: string, missing: string[] }[] {
-  instance = newInstance;
+export function validate(currentInstance: Human): { name: string, missing: string[] }[] {
+  if (currentInstance) instance = currentInstance;
+  if (!instance) log('instance not registred');
   const missing: KernelOps[] = [];
-  for (const defined of Object.keys(instance.models)) {
-    const model: GraphModel | null = instance.models[defined as keyof Models] as GraphModel | null;
+  for (const defined of Object.keys(currentInstance.models)) {
+    const model: GraphModel | null = currentInstance.models[defined as keyof Models] as GraphModel | null;
     if (!model) continue;
-    const res = validateModel(instance, model, defined);
+    const res = validateModel(currentInstance, model, defined);
     if (res) missing.push(res);
   }
   return missing;

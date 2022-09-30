@@ -71,6 +71,54 @@
        }
     },
     {
+      "files": ["**/*.d.ts"],
+      "env": {
+        "browser": true,
+        "commonjs": false,
+        "node": false,
+        "es2021": true
+      },
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": "latest",
+        "project": ["./tsconfig.json"]
+      },
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "extends": [
+        "airbnb-base",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@typescript-eslint/strict",
+        "plugin:import/recommended",
+        "plugin:promise/recommended"
+      ],
+      "rules": {
+        "@typescript-eslint/array-type":"off",
+        "@typescript-eslint/ban-types":"off",
+        "@typescript-eslint/consistent-indexed-object-style":"off",
+        "@typescript-eslint/consistent-type-definitions":"off",
+        "@typescript-eslint/no-empty-interface":"off",
+        "@typescript-eslint/no-explicit-any":"off",
+        "@typescript-eslint/no-invalid-void-type":"off",
+        "@typescript-eslint/no-unnecessary-type-arguments":"off",
+        "@typescript-eslint/no-unnecessary-type-constraint":"off",
+        "comma-dangle":"off",
+        "indent":"off",
+        "lines-between-class-members":"off",
+        "max-classes-per-file":"off",
+        "max-len":"off",
+        "no-multiple-empty-lines":"off",
+        "no-shadow":"off",
+        "no-use-before-define":"off",
+        "quotes":"off",
+        "semi":"off"
+       }
+    },
+    {
       "files": ["**/*.js"],
       "env": {
         "browser": true,

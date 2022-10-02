@@ -54,9 +54,6 @@ async function main() {
 
     // run detection
     const result = await human.detect(imageData);
-    // run segmentation
-    // const seg = await human.segmentation(inputCanvas);
-    // log.data('Segmentation:', { data: seg.data.length, alpha: typeof seg.alpha, canvas: typeof seg.canvas });
 
     // print results summary
     const persons = result.persons; // invoke persons getter, only used to print summary on console

@@ -21,7 +21,7 @@ const config = {
   hand: { enabled: true },
   body: { enabled: true },
   object: { enabled: true },
-  segmentation: { enabled: true },
+  segmentation: { enabled: false },
   filter: { enabled: false },
 };
 

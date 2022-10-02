@@ -1,5 +1,14 @@
 /* eslint-disable no-multi-spaces */
 
+/** Possible TensorFlow backends */
+export type BackendEnum = '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
+
+/** Possible values for `human.warmup` */
+export type WarmupEnum = '' | 'none' | 'face' | 'full' | 'body';
+
+/** Possible segmentation model behavior */
+export type SegmentationEnum = 'default' | 'alpha' | 'foreground' | 'state'
+
 /** Generic config type inherited by all module types */
 export interface GenericConfig {
   /** is module enabled? */
@@ -144,8 +153,10 @@ export interface ObjectConfig extends GenericConfig {
  * remove background or replace it with user-provided background
 */
 export interface SegmentationConfig extends GenericConfig {
-  /** blur segmentation output by <number> pixels for more realistic image */
-  blur: number,
+  /** downsample ratio, adjust to reflect approximately how much of input is taken by body */
+  ratio: number,
+  /** possible rvm segmentation mode */
+  mode: SegmentationEnum,
 }
 
 /** Run input through image filters before inference
@@ -208,12 +219,6 @@ export interface GestureConfig {
   /** is gesture detection enabled? */
   enabled: boolean,
 }
-/** Possible TensorFlow backends */
-export type BackendEnum = '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
-
-/** Possible values for `human.warmup` */
-export type WarmupEnum = '' | 'none' | 'face' | 'full' | 'body';
-
 /**
  * Configuration interface definition for **Human** library
  * Contains all configurable parameters
@@ -450,8 +455,9 @@ const config: Config = {
   },
   segmentation: {
     enabled: false,
-    modelPath: 'selfie.json',
-    blur: 8,
+    modelPath: 'rvm.json',
+    ratio: 0.5,
+    mode: 'default',
   },
 };
 

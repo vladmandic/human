@@ -111,7 +111,6 @@ const ui = {
   results: false, // show results tree
   lastFrame: 0, // time of last frame processing
   viewportSet: false, // internal, has custom viewport been set
-  background: null, // holds instance of segmentation background image
   transferCanvas: null, // canvas used to transfer data to and from worker
 
   // webrtc
@@ -263,21 +262,7 @@ async function drawResults(input) {
   // draw fps chart
   await menu.process.updateChart('FPS', ui.detectFPS);
 
-  document.getElementById('segmentation-container').style.display = userConfig.segmentation.enabled ? 'block' : 'none';
-  if (userConfig.segmentation.enabled && ui.buffered) { // refresh segmentation if using buffered output
-    const seg = await human.segmentation(input, ui.background);
-    if (seg.alpha) {
-      const canvasSegMask = document.getElementById('segmentation-mask');
-      const ctxSegMask = canvasSegMask.getContext('2d');
-      ctxSegMask.clearRect(0, 0, canvasSegMask.width, canvasSegMask.height); // need to clear as seg.alpha is alpha based canvas so it adds
-      ctxSegMask.drawImage(seg.alpha, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, canvasSegMask.width, canvasSegMask.height);
-      const canvasSegCanvas = document.getElementById('segmentation-canvas');
-      const ctxSegCanvas = canvasSegCanvas.getContext('2d');
-      ctxSegCanvas.clearRect(0, 0, canvasSegCanvas.width, canvasSegCanvas.height); // need to clear as seg.alpha is alpha based canvas so it adds
-      ctxSegCanvas.drawImage(seg.canvas, 0, 0, seg.alpha.width, seg.alpha.height, 0, 0, canvasSegCanvas.width, canvasSegCanvas.height);
-    }
-    // result.canvas = seg.alpha;
-  } else if (!result.canvas || ui.buffered) { // refresh with input if using buffered output or if missing canvas
+  if (!result.canvas || ui.buffered) { // refresh with input if using buffered output or if missing canvas
     const image = await human.image(input, false);
     result.canvas = image.canvas;
     human.tf.dispose(image.tensor);
@@ -743,7 +728,6 @@ function setupMenu() {
   menu.image.addBool('technicolor', userConfig.filter, 'technicolor', (val) => userConfig.filter.technicolor = val);
   menu.image.addBool('polaroid', userConfig.filter, 'polaroid', (val) => userConfig.filter.polaroid = val);
   menu.image.addHTML('<input type="file" id="file-input" class="input-file"></input> &nbsp input');
-  menu.image.addHTML('<input type="file" id="file-background" class="input-file"></input> &nbsp background');
 
   menu.process = new Menu(document.body, '', { top, left: x[2] });
   menu.process.addList('backend', ['cpu', 'webgl', 'wasm', 'humangl'], userConfig.backend, (val) => userConfig.backend = val);
@@ -790,8 +774,6 @@ function setupMenu() {
   menu.models.addBool('hand pose', userConfig.hand, 'enabled', (val) => userConfig.hand.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('gestures', userConfig.gesture, 'enabled', (val) => userConfig.gesture.enabled = val);
-  menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
-  menu.models.addBool('body segmentation', userConfig.segmentation, 'enabled', (val) => userConfig.segmentation.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
   menu.models.addBool('object detection', userConfig.object, 'enabled', (val) => userConfig.object.enabled = val);
   menu.models.addHTML('<hr style="border-style: inset; border-color: dimgray">');
@@ -860,40 +842,10 @@ async function processDataURL(f, action) {
         if (e.target.result.startsWith('data:video')) await processVideo(e.target.result, f.name);
         document.getElementById('canvas').style.display = 'none';
       }
-      if (action === 'background') {
-        const image = new Image();
-        image.onerror = async () => status('image loading error');
-        image.onload = async () => {
-          ui.background = image;
-          if (document.getElementById('canvas').style.display === 'block') { // replace canvas used for video
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            const seg = await human.segmentation(canvas, ui.background, userConfig);
-            if (seg.canvas) ctx.drawImage(seg.canvas, 0, 0);
-          } else {
-            const canvases = document.getElementById('samples-container').children; // replace loaded images
-            for (const canvas of canvases) {
-              const ctx = canvas.getContext('2d');
-              const seg = await human.segmentation(canvas, ui.background, userConfig);
-              if (seg.canvas) ctx.drawImage(seg.canvas, 0, 0);
-            }
-          }
-        };
-        image.src = e.target.result;
-      }
       resolve(true);
     };
     reader.readAsDataURL(f);
   });
-}
-
-async function runSegmentation() {
-  document.getElementById('file-background').onchange = async (evt) => {
-    userConfig.segmentation.enabled = true;
-    evt.preventDefault();
-    if (evt.target.files.length < 2) ui.columns = 1;
-    for (const f of evt.target.files) await processDataURL(f, 'background');
-  };
 }
 
 async function dragAndDrop() {
@@ -1070,9 +1022,6 @@ async function main() {
 
   // init drag & drop
   await dragAndDrop();
-
-  // init segmentation
-  await runSegmentation();
 
   if (params.has('image')) {
     try {

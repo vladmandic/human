@@ -1,14 +1,10 @@
 /** Creates tfjs bundle used by Human browser build target
  * @external
  */
-// export * from '@vladmandic/tfjs';
-
-/**
- * Creates tfjs bundle used by Human browser build target
- * @external
- */
 
 /* eslint-disable import/no-extraneous-dependencies */
+
+// export * from '@vladmandic/tfjs';
 
 // export all from build bundle
 export * from '@tensorflow/tfjs/dist/index.js';

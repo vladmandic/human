@@ -52,7 +52,7 @@
     "tabSize": 2
   },
   "exclude": ["node_modules/", "types/", "dist/**/*.js"],
-  "include": ["src", "tfjs/*.ts", "types/human.d.ts", "test/**/*.ts", "demo/**/*.ts"],
+  "include": ["src", "tfjs/*.ts", "types/human.d.ts", "test/**/*.ts", "demo/**/*.ts", "demo/segmentation/index.js", "demo/index.js"],
   "typedocOptions": {
     "externalPattern": ["node_modules/", "tfjs/"]
   }

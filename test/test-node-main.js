@@ -294,7 +294,7 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null), url: human.models[model] ? human.models[model]['modelUrl'] : null }));
   const loaded = models.filter((model) => model.loaded);
-  if (models.length === 23 && loaded.length === 12) log('state', 'passed: models loaded', models.length, loaded.length, models);
+  if (models.length === 25 && loaded.length === 11) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
   log('info', 'memory:', { memory: human.tf.memory() });
   log('info', 'state:', { state: human.tf.engine().state });
@@ -539,14 +539,18 @@ async function test(Human, inputConfig) {
   const ctx = inputCanvas.getContext('2d');
   ctx.drawImage(inputImage, 0, 0); // draw input image onto canvas
   res = await human.detect(inputCanvas);
-  if (!res || res?.face?.length !== 1) log('error', 'failed: monkey patch');
+  if (res?.face?.length !== 1) log('error', 'failed: monkey patch');
   else log('state', 'passed: monkey patch');
 
   // test segmentation
-  res = await human.segmentation(inputCanvas, inputCanvas);
-  if (!res || !res.data || !res.canvas) log('error', 'failed: segmentation');
-  else log('state', 'passed: segmentation', [res.data.length]);
-  human.env.Canvas = undefined;
+  config.segmentation = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/rvm.json' };
+  res = await human.segmentation(inputCanvas, config);
+  if (res?.shape?.length !== 3) log('error', 'failed: segmentation');
+  else log('state', 'passed: segmentation', [res.size]);
+  human.tf.dispose(res);
+  config.segmentation = { enabled: false };
+
+  human.env.Canvas = null; // disable canvas monkey-patch
 
   // check if all instances reported same
   const tensors1 = human.tf.engine().state.numTensors;

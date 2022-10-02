@@ -3,7 +3,7 @@ import * as tf from '../../dist/tfjs.esm.js';
 import type { GraphModel } from './types';
 import type { Config } from '../config';
 import * as modelsDefs from '../../models/models.json';
-import { validateModel } from '../models';
+// import { validateModel } from '../models';
 
 const options = {
   cacheModels: true,
@@ -86,6 +86,6 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
       log('error saving model:', modelUrl, err);
     }
   }
-  validateModel(null, model, `${modelPath || ''}`);
+  // validateModel(null, model, `${modelPath || ''}`);
   return model;
 }

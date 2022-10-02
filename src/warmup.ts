@@ -133,7 +133,7 @@ export async function runCompile(instance: Human) {
       if (Array.isArray(res)) res.forEach((t) => tf.dispose(t));
       else tf.dispose(res);
     } catch {
-      log('compile fail model:', modelName);
+      if (instance.config.debug) log('compile fail model:', modelName);
     }
     tf.dispose(tensor);
   }

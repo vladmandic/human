@@ -16,9 +16,9 @@ import { setModelLoadOptions } from './tfjs/load';
 import * as tf from '../dist/tfjs.esm.js';
 import * as app from '../package.json';
 import * as backend from './tfjs/backend';
+import * as draw from './draw/draw';
 import * as blazepose from './body/blazepose';
 import * as centernet from './object/centernet';
-import * as draw from './draw/draw';
 import * as efficientpose from './body/efficientpose';
 import * as face from './face/face';
 import * as facemesh from './face/facemesh';
@@ -29,13 +29,15 @@ import * as handtrack from './hand/handtrack';
 import * as humangl from './tfjs/humangl';
 import * as image from './image/image';
 import * as interpolate from './util/interpolate';
+import * as meet from './segmentation/meet';
 import * as match from './face/match';
 import * as models from './models';
 import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
 import * as persons from './util/persons';
 import * as posenet from './body/posenet';
-import * as segmentation from './segmentation/segmentation';
+import * as rvm from './segmentation/rvm';
+import * as selfie from './segmentation/selfie';
 import * as warmups from './warmup';
 
 // type definitions
@@ -251,18 +253,23 @@ export class Human {
     return image.process(input, this.config, getTensor);
   }
 
-  /** Segmentation method takes any input and returns processed canvas with body segmentation
-   *  - Segmentation is not triggered as part of detect process
+  /** Segmentation method takes any input and returns RGBA tensor
+   * Note: Segmentation is not triggered as part of detect process
+   *
    * @param input - {@link Input}
-   * @param background - {@link Input}
-   *  - Optional parameter background is used to fill the background with specific input
-   *  Returns:
-   *  - `data` as raw data array with per-pixel segmentation values
-   *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
-   *  - `alpha` as grayscale canvas that represents segmentation alpha values
+   * Returns tensor which contains image data in RGBA format
    */
-  async segmentation(input: Input, background?: Input): Promise<{ data: number[] | Tensor, canvas: AnyCanvas | null, alpha: AnyCanvas | null }> {
-    return segmentation.process(input, background, this.config);
+  async segmentation(input: Input, userConfig?: Partial<Config>): Promise<Tensor | null> {
+    if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
+    if (!this.config.segmentation.enabled) return null;
+    const processed = await image.process(input, this.config);
+    if (!processed.tensor) return null;
+    let tensor: Tensor | null = null;
+    if (this.config.segmentation.modelPath?.includes('rvm')) tensor = await rvm.predict(processed.tensor, this.config);
+    if (this.config.segmentation.modelPath?.includes('meet')) tensor = await meet.predict(processed.tensor, this.config);
+    if (this.config.segmentation.modelPath?.includes('selfie')) tensor = await selfie.predict(processed.tensor, this.config);
+    tf.dispose(processed.tensor);
+    return tensor;
   }
 
   /** Enhance method performs additional enhacements to face image previously detected for futher processing

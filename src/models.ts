@@ -4,27 +4,29 @@
 
 import { env } from './util/env';
 import { log } from './util/util';
-import * as gear from './gear/gear';
-import * as ssrnetAge from './gear/ssrnet-age';
-import * as ssrnetGender from './gear/ssrnet-gender';
 import * as antispoof from './face/antispoof';
 import * as blazeface from './face/blazeface';
 import * as blazepose from './body/blazepose';
 import * as centernet from './object/centernet';
 import * as efficientpose from './body/efficientpose';
 import * as emotion from './gear/emotion';
-import * as mobilefacenet from './face/mobilefacenet';
-import * as insightface from './face/insightface';
 import * as facemesh from './face/facemesh';
 import * as faceres from './face/faceres';
+import * as gear from './gear/gear';
 import * as handpose from './hand/handpose';
 import * as handtrack from './hand/handtrack';
+import * as insightface from './face/insightface';
 import * as iris from './face/iris';
 import * as liveness from './face/liveness';
+import * as meet from './segmentation/meet';
+import * as mobilefacenet from './face/mobilefacenet';
 import * as movenet from './body/movenet';
 import * as nanodet from './object/nanodet';
 import * as posenet from './body/posenet';
-import * as segmentation from './segmentation/segmentation';
+import * as rvm from './segmentation/rvm';
+import * as selfie from './segmentation/selfie';
+import * as ssrnetAge from './gear/ssrnet-age';
+import * as ssrnetGender from './gear/ssrnet-gender';
 import { modelStats, ModelInfo } from './tfjs/load';
 import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
@@ -54,17 +56,18 @@ export class Models {
   handskeleton: null | GraphModel | Promise<GraphModel> = null;
   handtrack: null | GraphModel | Promise<GraphModel> = null;
   liveness: null | GraphModel | Promise<GraphModel> = null;
+  meet: null | GraphModel | Promise<GraphModel> = null;
   movenet: null | GraphModel | Promise<GraphModel> = null;
   nanodet: null | GraphModel | Promise<GraphModel> = null;
   posenet: null | GraphModel | Promise<GraphModel> = null;
-  segmentation: null | GraphModel | Promise<GraphModel> = null;
+  selfie: null | GraphModel | Promise<GraphModel> = null;
+  rvm: null | GraphModel | Promise<GraphModel> = null;
   antispoof: null | GraphModel | Promise<GraphModel> = null;
 }
 
 /** structure that holds global stats for currently loaded models */
 export interface ModelStats {
   numLoadedModels: number,
-  numEnabledModels: undefined,
   numDefinedModels: number,
   percentageLoaded: number,
   totalSizeFromManifest: number,
@@ -90,7 +93,6 @@ export const getModelStats = (currentInstance: Human): ModelStats => {
   const percentageLoaded = totalSizeLoading > 0 ? totalSizeWeights / totalSizeLoading : 0;
   return {
     numLoadedModels: Object.values(modelStats).length,
-    numEnabledModels: undefined,
     numDefinedModels: Object.keys(instance.models).length,
     percentageLoaded,
     totalSizeFromManifest,
@@ -141,7 +143,9 @@ export async function load(currentInstance: Human): Promise<void> {
   if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
   if (instance.config.object.enabled && !instance.models.centernet && instance.config.object.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);
   if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object.modelPath?.includes('nanodet')) instance.models.nanodet = nanodet.load(instance.config);
-  if (instance.config.segmentation.enabled && !instance.models.segmentation) instance.models.segmentation = segmentation.load(instance.config);
+  if (instance.config.segmentation.enabled && !instance.models.selfie && instance.config.segmentation.modelPath?.includes('selfie')) instance.models.selfie = selfie.load(instance.config);
+  if (instance.config.segmentation.enabled && !instance.models.meet && instance.config.segmentation.modelPath?.includes('meet')) instance.models.meet = meet.load(instance.config);
+  if (instance.config.segmentation.enabled && !instance.models.rvm && instance.config.segmentation.modelPath?.includes('rvm')) instance.models.rvm = rvm.load(instance.config);
 
   // models are loaded in parallel asynchronously so lets wait until they are actually loaded
   for await (const model of Object.keys(instance.models)) {
@@ -159,7 +163,7 @@ export function validateModel(currentInstance: Human | null, model: GraphModel |
   if (!instance) log('instance not registred');
   if (!instance?.config?.validateModels) return null;
   const simpleOps = ['const', 'placeholder', 'noop', 'pad', 'squeeze', 'add', 'sub', 'mul', 'div'];
-  const ignoreOps = ['biasadd', 'fusedbatchnormv3', 'matmul'];
+  const ignoreOps = ['biasadd', 'fusedbatchnormv3', 'matmul', 'switch', 'shape', 'merge', 'split', 'broadcastto'];
   const ops: string[] = [];
   const missing: string[] = [];
   interface Op { name: string, category: string, op: string }

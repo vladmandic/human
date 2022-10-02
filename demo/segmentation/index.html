@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Human Demo</title>
+    <meta name="viewport" content="width=device-width, shrink-to-fit=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Human Demo">
+    <meta name="keywords" content="Human Demo">
+    <meta name="description" content="Human Demo; Author: Vladimir Mandic <mandic00@live.com>">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="icon" sizes="256x256" href="../assets/icons/dash-256.png">
+    <link rel="apple-touch-icon" href="../assets/icons/dash-256.png">
+    <link rel="apple-touch-startup-image" href="../assets/icons/dash-256.png">
+    <style>
+      @font-face { font-family: 'CenturyGothic'; font-display: swap; font-style: normal; font-weight: 400; src: local('CenturyGothic'), url('../assets/century-gothic.ttf') format('truetype'); }
+      html { font-size: 18px; }
+      body { font-size: 1rem; font-family: "CenturyGothic", "Segoe UI", sans-serif; font-variant: small-caps; width: -webkit-fill-available; height: 100%; background: black; color: white; overflow: hidden; margin: 0; }
+      select { font-size: 1rem; font-family: "CenturyGothic", "Segoe UI", sans-serif; font-variant: small-caps; background: gray; color: white; border: none; }
+    </style>
+  <script src="index.js" type="module"></script>
+  </head>
+  <body>
+    <noscript><h1>javascript is required</h1></noscript>
+    <nav>
+      <div id="nav" class="nav"></div>
+    </nav>
+    <header>
+      <div id="header" class="header" style="position: fixed; top: 0; right: 0; padding: 4px; margin: 16px; background: rgba(0, 0, 0, 0.5); z-index: 10; line-height: 2rem;">
+        <label for="mode">mode</label>
+        <select id="mode" name="mode">
+          <option value="default">remove background</option>
+          <option value="alpha">draw alpha channel</option>
+          <option value="foreground">full foreground</option>
+          <option value="state">recurrent state</option>
+        </select><br>
+        <label for="composite">composite</label>
+        <select id="composite" name="composite"></select><br>
+        <label for="ratio">downsample ratio</label>
+        <input type="range" name="ratio" id="ratio" min="0.1" max="1" value="0.5" step="0.05">
+        <div id="fps" style="margin-top: 8px"></div>
+      </div>
+    </header>
+    <main>
+      <div id="main" class="main">
+        <video id="webcam" style="position: fixed; top: 0; left: 0; width: 50vw; height: 50vh"></video>
+        <video id="video" style="position: fixed; top: 0; right: 0; width: 50vw; height: 50vh" controls></video>
+        <canvas id="output" style="position: fixed; bottom: 0; left: 0; width: 50vw; height: 50vh"></canvas>
+        <canvas id="merge" style="position: fixed; bottom: 0; right: 0; width: 50vw; height: 50vh"></canvas>
+      </div>
+    </main>
+    <footer>
+      <div id="footer" class="footer"></div>
+    </footer>
+    <aside>
+      <div id="aside" class="aside"></div>
+    </aside>
+  </body>
+</html>

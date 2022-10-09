@@ -10,10 +10,6 @@
 import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
 const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
-  // backend: 'wasm',
-  // wasmPath: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.20.0/dist/',
-  // cacheSensitivity: 0,
-  // async: false,
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },

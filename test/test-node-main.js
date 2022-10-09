@@ -572,3 +572,4 @@ async function test(Human, inputConfig) {
 }
 
 exports.test = test;
+exports.log = log;

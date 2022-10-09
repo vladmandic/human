@@ -112,7 +112,7 @@ export declare type Box = [number, number, number, number];
  *   loading from files that contain Keras-style models (i.e., `tf.Model`s), for
  *   which an `Array` of `File`s is expected (in that order):
  *   - A JSON file containing the model topology and weight manifest.
- *   - Optionally, One or more binary files containing the binary weights.
+ *   - Optionally, one or more binary files containing the binary weights.
  *     These files must have names that match the paths in the `weightsManifest`
  *     contained by the aforementioned JSON file, or errors will be thrown
  *     during loading. These weights files have the same format as the ones
@@ -825,6 +825,19 @@ declare const getLoadHandlers: (url: string | string[], loadOptions?: LoadOption
 declare function getModelArtifactsForJSON(modelJSON: ModelJSON, loadWeights: (weightsManifest: WeightsManifestConfig) => Promise<[WeightsManifestEntry[], /* weightData */ ArrayBuffer]>): Promise<ModelArtifacts>;
 
 /**
+ * Create `ModelArtifacts` from a JSON file and weights.
+ *
+ * @param modelJSON Object containing the parsed JSON of `model.json`
+ * @param weightSpecs The list of WeightsManifestEntry for the model. Must be
+ *     passed if the modelJSON has a weightsManifest.
+ * @param weightData An ArrayBuffer of weight data for the model corresponding
+ *     to the weights in weightSpecs. Must be passed if the modelJSON has a
+ *     weightsManifest.
+ * @returns A Promise of the `ModelArtifacts`, as described by the JSON file.
+ */
+declare function getModelArtifactsForJSONSync(modelJSON: ModelJSON, weightSpecs?: WeightsManifestEntry[], weightData?: ArrayBuffer): ModelArtifacts;
+
+/**
  * Populate ModelArtifactsInfo fields for a model with JSON topology.
  * @param modelArtifacts
  * @returns A ModelArtifactsInfo object.
@@ -834,6 +847,15 @@ declare function getModelArtifactsInfoForJSON(modelArtifacts: ModelArtifacts): M
 declare const getModelStats: (currentInstance: Human) => ModelStats;
 
 declare const getSaveHandlers: (url: string | string[]) => IOHandler[];
+
+/**
+ * Concatenate the weights stored in a WeightsManifestConfig into a list of
+ * WeightsManifestEntry
+ *
+ * @param weightsManifest The WeightsManifestConfig to extract weights from.
+ * @returns A list of WeightsManifestEntry of the weights in the weightsManifest
+ */
+declare function getWeightSpecs(weightsManifest: WeightsManifestConfig): WeightsManifestEntry[];
 
 declare interface GPUData {
     tensorRef: Tensor;
@@ -988,7 +1010,7 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
      * Executes inference for the model for given input tensors.
      * @param inputs tensor, tensor array or tensor map of the inputs for the
      * model, keyed by the input node names.
-     * @param outputs output node name from the Tensorflow model, if no
+     * @param outputs output node name from the TensorFlow model, if no
      * outputs are specified, the default outputs of the model would be used.
      * You can inspect intermediate nodes of the model by adding them to the
      * outputs array.
@@ -1006,7 +1028,7 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
      * fashion, use this method when your model contains control flow ops.
      * @param inputs tensor, tensor array or tensor map of the inputs for the
      * model, keyed by the input node names.
-     * @param outputs output node name from the Tensorflow model, if no outputs
+     * @param outputs output node name from the TensorFlow model, if no outputs
      * are specified, the default outputs of the model would be used. You can
      * inspect intermediate nodes of the model by adding them to the outputs
      * array.
@@ -1134,7 +1156,7 @@ export declare type HandType = 'hand' | 'fist' | 'pinch' | 'point' | 'face' | 't
  * https://gist.github.com/dsmilkov/1b6046fd6132d7408d5257b0976f7864
  * implements a server based on [flask](https://github.com/pallets/flask) that
  * can receive the request. Upon receiving the model artifacts via the requst,
- * this particular server reconsistutes instances of [Keras
+ * this particular server reconstitutes instances of [Keras
  * Models](https://keras.io/models/model/) in memory.
  *
  *
@@ -1286,21 +1308,13 @@ declare class Human {
         tensor: Tensor<Rank> | null;
         canvas: AnyCanvas | null;
     }>;
-    /** Segmentation method takes any input and returns processed canvas with body segmentation
-     *  - Segmentation is not triggered as part of detect process
+    /** Segmentation method takes any input and returns RGBA tensor
+     * Note: Segmentation is not triggered as part of detect process
+     *
      * @param input - {@link Input}
-     * @param background - {@link Input}
-     *  - Optional parameter background is used to fill the background with specific input
-     *  Returns:
-     *  - `data` as raw data array with per-pixel segmentation values
-     *  - `canvas` as canvas which is input image filtered with segementation data and optionally merged with background image. canvas alpha values are set to segmentation values for easy merging
-     *  - `alpha` as grayscale canvas that represents segmentation alpha values
+     * Returns tensor which contains image data in RGBA format
      */
-    segmentation(input: Input, background?: Input): Promise<{
-        data: number[] | Tensor;
-        canvas: AnyCanvas | null;
-        alpha: AnyCanvas | null;
-    }>;
+    segmentation(input: Input, userConfig?: Partial<Config>): Promise<Tensor | null>;
     /** Enhance method performs additional enhacements to face image previously detected for futher processing
      *
      * @param input - Tensor as provided in human.result.face[n].tensor
@@ -1456,8 +1470,10 @@ declare namespace io {
         fromMemorySync,
         getLoadHandlers,
         getModelArtifactsForJSON,
+        getModelArtifactsForJSONSync,
         getModelArtifactsInfoForJSON,
         getSaveHandlers,
+        getWeightSpecs,
         http,
         IOHandler,
         IOHandlerSync,
@@ -1900,10 +1916,12 @@ declare class Models {
     handskeleton: null | GraphModel | Promise<GraphModel>;
     handtrack: null | GraphModel | Promise<GraphModel>;
     liveness: null | GraphModel | Promise<GraphModel>;
+    meet: null | GraphModel | Promise<GraphModel>;
     movenet: null | GraphModel | Promise<GraphModel>;
     nanodet: null | GraphModel | Promise<GraphModel>;
     posenet: null | GraphModel | Promise<GraphModel>;
-    segmentation: null | GraphModel | Promise<GraphModel>;
+    selfie: null | GraphModel | Promise<GraphModel>;
+    rvm: null | GraphModel | Promise<GraphModel>;
     antispoof: null | GraphModel | Promise<GraphModel>;
 }
 
@@ -1924,7 +1942,6 @@ export { models }
 /** structure that holds global stats for currently loaded models */
 declare interface ModelStats {
     numLoadedModels: number;
-    numEnabledModels: undefined;
     numDefinedModels: number;
     percentageLoaded: number;
     totalSizeFromManifest: number;
@@ -2133,7 +2150,7 @@ declare const registerLoadRouter: (loudRouter: IORouter) => void;
 declare const registerSaveRouter: (loudRouter: IORouter) => void;
 
 /**
- * Remove a model specified by URL from a reigstered storage medium.
+ * Remove a model specified by URL from a registered storage medium.
  *
  * ```js
  * // First create and save a model.
@@ -2261,9 +2278,14 @@ declare interface SaveResult {
  * remove background or replace it with user-provided background
  */
 export declare interface SegmentationConfig extends GenericConfig {
-    /** blur segmentation output by <number> pixels for more realistic image */
-    blur: number;
+    /** downsample ratio, adjust to reflect approximately how much of input is taken by body */
+    ratio: number;
+    /** possible rvm segmentation mode */
+    mode: SegmentationEnum;
 }
+
+/** Possible segmentation model behavior */
+export declare type SegmentationEnum = 'default' | 'alpha' | 'foreground' | 'state';
 
 /**
  * @license
@@ -2398,7 +2420,7 @@ export declare class Tensor<R extends Rank = Rank> {
      * This means that the texture will use the RGBA channels to store value.
      *
      * For WebGPU backend, the data will be stored on a buffer. There is no
-     * parameter, so can not use an user defined size to create the buffer.
+     * parameter, so can not use a user-defined size to create the buffer.
      *
      * @param options:
      *     For WebGL,

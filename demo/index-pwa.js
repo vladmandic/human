@@ -28,10 +28,10 @@ async function updateCached(req) {
     .then((update) => {
       // update cache if request is ok
       if (update.ok) {
-        caches // eslint-disable-line promise/no-nesting
+        caches
           .open(cacheName)
           .then((cache) => cache.put(req, update))
-          .catch((err) => log('cache update error', err));
+          .catch((err) => log('cache update error', err)); // eslint-disable-line promise/no-nesting
       }
       return true;
     })
@@ -76,8 +76,8 @@ async function getCached(evt) {
 
 function cacheInit() {
   caches.open(cacheName)
-    .then((cache) => cache.addAll(cacheFiles) // eslint-disable-line promise/no-nesting
-      .then(
+    .then((cache) => cache.addAll(cacheFiles)
+      .then( // eslint-disable-line promise/no-nesting
         () => log('cache refresh:', cacheFiles.length, 'files'),
         (err) => log('cache error', err),
       ))

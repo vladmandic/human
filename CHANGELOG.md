@@ -12,8 +12,9 @@
 ### **HEAD -> main** 2022/10/09 mandic00@live.com
 
 
-### **origin/main** 2022/10/02 mandic00@live.com
+### **2.11.1** 2022/10/09 mandic00@live.com
 
+- add rvm segmentation model
 - add human.webcam methods
 - create funding.yml
 - fix rotation interpolation

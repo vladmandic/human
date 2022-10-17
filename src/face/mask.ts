@@ -1,6 +1,6 @@
 import type { Tensor } from '../tfjs/types';
 import type { FaceResult } from '../result';
-import * as tf from '../../dist/tfjs.esm.js';
+// import * as tf from 'dist/tfjs.esm.js';
 import { meshAnnotations } from './facemeshcoords';
 
 const expandFact = 0.1;
@@ -36,6 +36,6 @@ export async function mask(face: FaceResult): Promise<Tensor | undefined> {
     }
   }
   const output = buffer.toTensor();
-  tf.dispose(buffer);
+  // tf.dispose(buffer);
   return output;
 }

@@ -2,12 +2,12 @@
  * BlazePose model implementation
  */
 
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
 import { log, now } from '../util/util';
 import type { BodyKeypoint, BodyResult, BodyLandmark, Box, Point, BodyAnnotation } from '../result';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import * as coords from './blazeposecoords';
 import * as detect from './blazeposedetector';
@@ -59,7 +59,7 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
   return [models.detector, models.landmarks];
 }
 
-function prepareImage(input: Tensor, size: number): Tensor {
+function prepareImage(input: Tensor4D, size: number): Tensor {
   const t: Record<string, Tensor> = {};
   if (!input?.shape?.[1] || !input?.shape?.[2]) return input;
   let final: Tensor;
@@ -82,10 +82,10 @@ function prepareImage(input: Tensor, size: number): Tensor {
       [0, 0], // dont touch rbg
     ];
     t.pad = tf.pad(t.cropped || input, padding); // use cropped box if it exists
-    t.resize = tf.image.resizeBilinear(t.pad, [size, size]);
+    t.resize = tf.image.resizeBilinear(t.pad as Tensor4D, [size, size]);
     final = tf.div(t.resize, constants.tf255);
   } else if (input.shape[1] !== size) { // if input needs resizing
-    t.resize = tf.image.resizeBilinear(t.cropped || input, [size, size]);
+    t.resize = tf.image.resizeBilinear(t.cropped as Tensor4D || input, [size, size]);
     final = tf.div(t.resize, constants.tf255);
   } else { // if input is already in a correct resolution just normalize it
     final = tf.div(t.cropped || input, constants.tf255);
@@ -142,7 +142,7 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
   */
   if (!models.landmarks?.['executor']) return null;
   const t: Record<string, Tensor> = {};
-  [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = models.landmarks?.execute(input, outputNodes.landmarks) as Tensor[]; // run model
+  [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = models.landmarks?.execute(input, outputNodes.landmarks) as unknown as Tensor[]; // run model
   const poseScore = (await t.poseflag.data())[0];
   const points = await t.ld.data();
   const distances = await t.world.data();
@@ -207,7 +207,7 @@ async function detectBoxes(input: Tensor, config: Config, outputSize: [number, n
 }
 */
 
-export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
+export async function predict(input: Tensor4D, config: Config): Promise<BodyResult[]> {
   const outputSize: [number, number] = [input.shape[2] || 0, input.shape[1] || 0];
   const skipTime = (config.body.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.body.skipFrames || 0);

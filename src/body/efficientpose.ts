@@ -4,13 +4,13 @@
  * Based on: [**EfficientPose**](https://github.com/daniegr/EfficientPose)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import * as coords from './efficientposecoords';
 import { constants } from '../tfjs/constants';
 import type { BodyResult, Point, BodyLandmark, BodyAnnotation } from '../result';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
@@ -50,8 +50,8 @@ async function max2d(inputs, minScore): Promise<[number, number, number]> {
   return [0, 0, newScore];
 }
 
-export async function predict(image: Tensor, config: Config): Promise<BodyResult[]> {
-  if (!model?.['executor']) return [];
+export async function predict(image: Tensor4D, config: Config): Promise<BodyResult[]> {
+  if (!model?.['executor'] || !model?.inputs[0].shape) return [];
   const skipTime = (config.body.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.body.skipFrames || 0);
   if (config.skipAllowed && skipTime && skipFrame && Object.keys(cache.keypoints).length > 0) {
@@ -61,8 +61,7 @@ export async function predict(image: Tensor, config: Config): Promise<BodyResult
   skipped = 0;
   return new Promise(async (resolve) => {
     const tensor = tf.tidy(() => {
-      if (!model?.inputs[0].shape) return null;
-      const resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+      const resize = tf.image.resizeBilinear(image, [model?.inputs[0].shape?.[2] || 0, model?.inputs[0].shape?.[1] || 0], false);
       const enhance = tf.mul(resize, constants.tf2);
       const norm = tf.sub(enhance, constants.tf1);
       return norm;

@@ -2,16 +2,16 @@
  * Warmup algorithm that uses embedded images to exercise loaded models for faster future inference
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now, mergeDeep } from './util/util';
 import * as sample from './sample';
-import * as tf from '../dist/tfjs.esm.js';
 import * as image from './image/image';
 import * as backend from './tfjs/backend';
 import { env } from './util/env';
 import type { Config } from './config';
 import type { Result } from './result';
 import { Human, models } from './human';
-import type { Tensor } from './exports';
+import type { Tensor, DataType, MathBackendWebGL } from './tfjs/types';
 
 async function warmupBitmap(instance: Human): Promise<Result | undefined> {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
@@ -110,10 +110,11 @@ async function runInference(instance: Human) {
 
 /** Runs pre-compile on all loaded models */
 export async function runCompile(instance: Human) {
+  // @ts-ignore private property
   if (!tf.env().flagRegistry.ENGINE_COMPILE_ONLY) return; // tfjs does not support compile-only inference
   const backendType = tf.getBackend();
-  const webGLBackend = tf.backend();
-  if ((backendType !== 'webgl' && backendType !== 'humangl') || !webGLBackend?.checkCompileCompletion) {
+  const webGLBackend = tf.backend() as MathBackendWebGL;
+  if ((backendType !== 'webgl' && backendType !== 'humangl') || !webGLBackend?.['checkCompileCompletion']) {
     // log('compile pass: skip');
     return;
   }
@@ -122,7 +123,7 @@ export async function runCompile(instance: Human) {
   const compiledModels: string[] = [];
   for (const [modelName, model] of Object.entries(instance.models).filter(([key, val]) => (key !== null && val !== null))) {
     const shape = (model.inputs?.[0]?.shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
-    const dtype: string = (model.inputs?.[0]?.dtype) ? model.inputs[0].dtype : 'float32';
+    const dtype: DataType = (model.inputs?.[0]?.dtype) ? model.inputs[0].dtype : 'float32';
     for (let dim = 0; dim < shape.length; dim++) {
       if (shape[dim] === -1) shape[dim] = dim === 0 ? 1 : 64; // override batch number and any dynamic dimensions
     }

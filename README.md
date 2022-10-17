@@ -12,7 +12,8 @@
 **Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis,**  
 **Age & Gender & Emotion Prediction, Gaze Tracking, Gesture Recognition, Body Segmentation**  
 
-JavaScript module using TensorFlow/JS Machine Learning library  
+<br>
+
 ## Highlights
 
 - Compatible with most server-side and client-side environments and frameworks  
@@ -239,7 +240,7 @@ Additionally, `HTMLVideoElement`, `HTMLMediaElement` can be a standard `<video>`
   e.g.: **HLS** (*HTTP Live Streaming*) using `hls.js` or **DASH** (*Dynamic Adaptive Streaming over HTTP*) using `dash.js`
 - **WebRTC** media track using built-in support  
 
-<br>
+<br><hr><br>
 
 ## Code Examples
 
@@ -377,6 +378,27 @@ And for even better results, you can run detection in a separate web worker thre
 
 <br><hr><br>
 
+## TypeDefs
+
+`Human` is written using TypeScript strong typing and ships with full **TypeDefs** for all classes defined by the library bundled in `types/human.d.ts` and enabled by default  
+
+*Note*: This does not include embedded `tfjs`  
+If you want to use embedded `tfjs` inside `Human` (`human.tf` namespace) and still full **typedefs**, add this code:
+
+```js
+import type * as tfjs from '@vladmandic/human/dist/tfjs.esm';
+...
+const tf = human.tf as typeof tfjs;
+```
+
+This is not enabled by default as `Human` does not ship with full **TFJS TypeDefs** due to size considerations  
+Enabling `tfjs` TypeDefs as above creates additional project (dev-only as only types are required) dependencies as defined in `@vladmandic/human/dist/tfjs.esm.d.ts`:
+
+    @tensorflow/tfjs-core, @tensorflow/tfjs-converter, @tensorflow/tfjs-backend-wasm, @tensorflow/tfjs-backend-webgl
+
+
+<br><hr><br>
+
 ## Default models
 
 Default models in Human library are:
@@ -404,9 +426,9 @@ For more info, see [**Configuration Details**](https://github.com/vladmandic/hum
 
 <br><hr><br>
 
-`Human` library is written in `TypeScript` [4.8](https://www.typescriptlang.org/docs/handbook/intro.html)  
-Conforming to latest `JavaScript` [ECMAScript version 2022](https://262.ecma-international.org/) standard  
-Build target is `JavaScript` [EMCAScript version 2018](https://262.ecma-international.org/11.0/)  
+`Human` library is written in [TypeScript](https://www.typescriptlang.org/docs/handbook/intro.html) **4.8** using [TensorFlow/JS](https://www.tensorflow.org/js/) **4.0** and conforming to latest `JavaScript` [ECMAScript version 2022](https://262.ecma-international.org/) standard  
+
+Build target for distributables is `JavaScript` [EMCAScript version 2018](https://262.ecma-international.org/9.0/)  
 
 <br>
 

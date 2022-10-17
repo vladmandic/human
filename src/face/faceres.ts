@@ -7,12 +7,12 @@
  * Based on: [**HSE-FaceRes**](https://github.com/HSE-asavchenko/HSE_FaceRec_tf)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
 import { env } from '../util/env';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
-import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, GraphModel, Tensor4D, Tensor1D } from '../tfjs/types';
 import type { Config } from '../config';
 import type { Gender, Race } from '../result';
 
@@ -33,7 +33,7 @@ export async function load(config: Config): Promise<GraphModel> {
 }
 
 export function enhance(input): Tensor {
-  const tensor = (input.image || input.tensor || input) as Tensor; // input received from detector is already normalized to 0..1, input is also assumed to be straightened
+  const tensor = (input.image || input.tensor || input) as Tensor4D; // input received from detector is already normalized to 0..1, input is also assumed to be straightened
   if (!model?.inputs[0].shape) return tensor; // model has no shape so no point continuing
   const crop: Tensor = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
   const norm: Tensor = tf.mul(crop, constants.tf255);
@@ -58,7 +58,7 @@ export function enhance(input): Tensor {
   */
 }
 
-export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<FaceRes> {
+export async function predict(image: Tensor4D, config: Config, idx: number, count: number): Promise<FaceRes> {
   const obj: FaceRes = {
     age: 0 as number,
     gender: 'unknown' as Gender,
@@ -86,7 +86,7 @@ export async function predict(image: Tensor, config: Config, idx: number, count:
         obj.gender = gender[0] <= 0.5 ? 'female' : 'male';
         obj.genderScore = Math.min(0.99, confidence);
       }
-      const argmax = tf.argMax(resT.find((t) => t.shape[1] === 100), 1);
+      const argmax = tf.argMax(resT.find((t) => t.shape[1] === 100) as Tensor1D, 1);
       const ageIdx: number = (await argmax.data())[0];
       tf.dispose(argmax);
       const ageT = resT.find((t) => t.shape[1] === 100) as Tensor;

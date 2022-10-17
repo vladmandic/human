@@ -2,11 +2,11 @@
  * Anti-spoofing model implementation
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
 import { loadModel } from '../tfjs/load';
 import type { Config } from '../config';
-import type { GraphModel, Tensor } from '../tfjs/types';
-import * as tf from '../../dist/tfjs.esm.js';
+import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 import { env } from '../util/env';
 
 let model: GraphModel | null;
@@ -22,7 +22,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<number> {
+export async function predict(image: Tensor4D, config: Config, idx: number, count: number): Promise<number> {
   if (!model?.['executor']) return 0;
   const skipTime = (config.face.liveness?.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.face.liveness?.skipFrames || 0);

@@ -1,6 +1,6 @@
+import * as tf from 'dist/tfjs.esm.js';
 import * as coords from './facemeshcoords';
 import * as util from './facemeshutil';
-import * as tf from '../../dist/tfjs.esm.js';
 import type { Tensor, GraphModel } from '../tfjs/types';
 import { env } from '../util/env';
 import { log } from '../util/util';

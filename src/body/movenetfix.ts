@@ -1,8 +1,8 @@
+import * as tf from 'dist/tfjs.esm.js';
 import type { BodyKeypoint, BodyResult } from '../result';
 import * as box from '../util/box';
 import * as coords from './movenetcoords';
-import * as tf from '../../dist/tfjs.esm.js';
-import type { Tensor } from '../tfjs/types';
+import type { Tensor, Tensor3D } from '../tfjs/types';
 
 const maxJitter = 0.005; // default allowed jitter is within 0.5%
 
@@ -83,7 +83,7 @@ export function padInput(input: Tensor, inputSize: number): Tensor {
     [0, 0], // dont touch rbg
   ];
   t.pad = tf.pad(input, cache.padding);
-  t.resize = tf.image.resizeBilinear(t.pad, [inputSize, inputSize]);
+  t.resize = tf.image.resizeBilinear(t.pad as Tensor3D, [inputSize, inputSize]);
   const final = tf.cast(t.resize, 'int32');
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return final;

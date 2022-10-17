@@ -4,13 +4,13 @@
  * Based on: [**SSR-Net**](https://github.com/shamangary/SSR-Net)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { env } from '../util/env';
 import { constants } from '../tfjs/constants';
 import type { Config } from '../config';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 
 let model: GraphModel | null;
 const last: { age: number }[] = [];
@@ -25,7 +25,7 @@ export async function load(config: Config) {
   return model;
 }
 
-export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<{ age: number }> {
+export async function predict(image: Tensor4D, config: Config, idx: number, count: number): Promise<{ age: number }> {
   if (!model) return { age: 0 };
   const skipFrame = skipped < (config.face['ssrnet']?.skipFrames || 0);
   const skipTime = (config.face['ssrnet']?.skipTime || 0) > (now() - lastTime);

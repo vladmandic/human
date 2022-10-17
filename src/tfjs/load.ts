@@ -1,5 +1,5 @@
+import * as tf from 'dist/tfjs.esm.js';
 import { log, join } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import type { GraphModel } from './types';
 import type { Config } from '../config';
 import * as modelsDefs from '../../models/models.json';

@@ -234,7 +234,7 @@ async function detectFace() {
   if (!current?.face?.tensor || !current?.face?.embedding) return false;
   console.log('face record:', current.face); // eslint-disable-line no-console
   log(`detected face: ${current.face.gender} ${current.face.age || 0}y distance ${current.face.iris || 0}cm/${Math.round(100 * (current.face.iris || 0) / 2.54) / 100}in`);
-  human.tf.browser.toPixels(current.face.tensor as unknown as H.TensorLike, dom.canvas);
+  await human.tf.browser.toPixels(current.face.tensor, dom.canvas);
   if (await indexDb.count() === 0) {
     log('face database is empty: nothing to compare face with');
     document.body.style.background = 'black';

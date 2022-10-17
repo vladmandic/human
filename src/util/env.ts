@@ -1,5 +1,6 @@
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import * as image from '../image/image';
+import type { MathBackendWebGL } from '../tfjs/types';
 
 /** Env class that holds detected capabilities */
 export class Env {
@@ -124,14 +125,14 @@ export class Env {
     // analyze backends
     this.backends = Object.keys(tf.engine().registryFactory);
     this.tensorflow = {
-      version: (tf.backend().binding ? tf.backend().binding.TF_Version : undefined),
-      gpu: (tf.backend().binding ? tf.backend().binding.isUsingGpuDevice() : undefined),
+      version: (tf.backend()['binding'] ? tf.backend()['binding'].TF_Version : undefined),
+      gpu: (tf.backend()['binding'] ? tf.backend()['binding'].isUsingGpuDevice() : undefined),
     };
     this.wasm.supported = typeof WebAssembly !== 'undefined';
     this.wasm.backend = this.backends.includes('wasm');
     if (this.wasm.supported && this.wasm.backend && tf.getBackend() === 'wasm') {
-      this.wasm.simd = tf.env().get('WASM_HAS_SIMD_SUPPORT');
-      this.wasm.multithread = tf.env().get('WASM_HAS_MULTITHREAD_SUPPORT');
+      this.wasm.simd = tf.env().get('WASM_HAS_SIMD_SUPPORT') as boolean;
+      this.wasm.multithread = tf.env().get('WASM_HAS_MULTITHREAD_SUPPORT') as boolean;
     }
     const c = image.canvas(100, 100);
     const ctx = c ? c.getContext('webgl2') : undefined; // causes too many gl contexts
@@ -139,7 +140,8 @@ export class Env {
     this.webgl.supported = typeof ctx !== 'undefined';
     this.webgl.backend = this.backends.includes('webgl');
     if (this.webgl.supported && this.webgl.backend && (tf.getBackend() === 'webgl' || tf.getBackend() === 'humangl')) {
-      const gl = tf.backend().gpgpu !== 'undefined' ? await tf.backend().getGPGPUContext().gl : null;
+      const backend = tf.backend() as MathBackendWebGL;
+      const gl = typeof backend['gpgpu'] !== 'undefined' ? backend.getGPGPUContext().gl : null;
       if (gl) {
         this.webgl.version = gl.getParameter(gl.VERSION);
         this.webgl.renderer = gl.getParameter(gl.RENDERER);
@@ -156,7 +158,7 @@ export class Env {
       this.webgpu.supported = false;
     }
     try {
-      this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => (kernel.kernelName as string).toLowerCase());
+      this.kernels = tf.getKernelsForBackend(tf.getBackend()).map((kernel) => kernel.kernelName.toLowerCase());
     } catch { /**/ }
   }
 

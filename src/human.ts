@@ -8,12 +8,12 @@
  */
 
 // module imports
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now, mergeDeep, validate } from './util/util';
 import { defaults } from './config';
 import { env, Env } from './util/env';
 import { WebCam } from './util/webcam';
 import { setModelLoadOptions } from './tfjs/load';
-import * as tf from '../dist/tfjs.esm.js';
 import * as app from '../package.json';
 import * as backend from './tfjs/backend';
 import * as draw from './draw/draw';
@@ -41,9 +41,11 @@ import * as selfie from './segmentation/selfie';
 import * as warmups from './warmup';
 
 // type definitions
-import type { Input, Tensor, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas } from './exports';
+import type { Input, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas } from './exports';
+import type { Tensor, Tensor4D } from './tfjs/types';
 // type exports
 export * from './exports';
+// tfjs re-export
 
 /** **Human** library main class
  *
@@ -324,6 +326,7 @@ export class Human {
       await tf.ready();
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
+        // @ts-ignore private property
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
@@ -379,13 +382,15 @@ export class Human {
    * - actual detection object can be accessed via `human.result`
   */
   async profile(input: Input, userConfig?: Partial<Config>): Promise<{ kernel: string, time: number, perc: number }[]> {
+    // @ts-ignore profile wraps method return values
     const profile = await this.tf.profile(() => this.detect(input, userConfig));
     const kernels: Record<string, number> = {};
     let total = 0;
     for (const kernel of profile.kernels) { // sum kernel time values per kernel
-      if (kernels[kernel.name]) kernels[kernel.name] += kernel.kernelTimeMs;
-      else kernels[kernel.name] = kernel.kernelTimeMs;
-      total += kernel.kernelTimeMs;
+      const ms = Number(kernel.kernelTimeMs) || 0;
+      if (kernels[kernel.name]) kernels[kernel.name] += ms;
+      else kernels[kernel.name] = ms;
+      total += ms;
     }
     const kernelArr: { kernel: string, time: number, perc: number }[] = [];
     Object.entries(kernels).forEach((key) => kernelArr.push({ kernel: key[0], time: key[1] as unknown as number, perc: 0 })); // convert to array
@@ -434,7 +439,7 @@ export class Human {
 
       timeStamp = now();
       this.state = 'image';
-      const img = await image.process(input, this.config) as { canvas: AnyCanvas, tensor: Tensor };
+      const img = await image.process(input, this.config) as { canvas: AnyCanvas, tensor: Tensor4D };
       this.process = img;
       this.performance.inputProcess = this.env.perfadd ? (this.performance.inputProcess || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
       this.analyze('Get Image:');

@@ -2,9 +2,10 @@
  * Image Processing algorithm implementation
  */
 
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import * as fxImage from './imagefx';
-import type { Input, AnyCanvas, Tensor, Config } from '../exports';
+import type { Input, AnyCanvas, Config } from '../exports';
+import type { Tensor, Tensor3D, Tensor4D } from '../tfjs/types';
 import { env } from '../util/env';
 import { log } from '../util/util';
 import * as enhance from './enhance';
@@ -64,7 +65,7 @@ export function copy(input: AnyCanvas, output?: AnyCanvas) {
 // process input image and return tensor
 // input can be tensor, imagedata, htmlimageelement, htmlvideoelement
 // input is resized and run through imagefx filter
-export async function process(input: Input, config: Config, getTensor: boolean = true): Promise<{ tensor: Tensor | null, canvas: AnyCanvas | null }> {
+export async function process(input: Input, config: Config, getTensor: boolean = true): Promise<{ tensor: Tensor4D | null, canvas: AnyCanvas | null }> {
   if (!input) {
     // throw new Error('input is missing');
     if (config.debug) log('input error: input is missing');
@@ -88,13 +89,13 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   }
   if (input instanceof tf.Tensor) { // if input is tensor use as-is without filters but correct shape as needed
     let tensor: Tensor | null = null;
-    if ((input as Tensor)['isDisposedInternal']) throw new Error('input error: attempted to use tensor but it is disposed');
+    if (input['isDisposedInternal']) throw new Error('input error: attempted to use tensor but it is disposed');
     if (!(input as Tensor).shape) throw new Error('input error: attempted to use tensor without a shape');
     if ((input as Tensor).shape.length === 3) { // [height, width, 3 || 4]
       if ((input as Tensor).shape[2] === 3) { // [height, width, 3] so add batch
         tensor = tf.expandDims(input, 0);
       } else if ((input as Tensor).shape[2] === 4) { // [height, width, 4] so strip alpha and add batch
-        const rgb = tf.slice3d(input, [0, 0, 0], [-1, -1, 3]);
+        const rgb = tf.slice3d(input as Tensor3D, [0, 0, 0], [-1, -1, 3]);
         tensor = tf.expandDims(rgb, 0);
         tf.dispose(rgb);
       }
@@ -102,7 +103,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       if ((input as Tensor).shape[3] === 3) { // [1, width, height, 3] just clone
         tensor = tf.clone(input);
       } else if ((input as Tensor).shape[3] === 4) { // [1, width, height, 4] so strip alpha
-        tensor = tf.slice4d(input, [0, 0, 0, 0], [-1, -1, -1, 3]);
+        tensor = tf.slice4d(input as Tensor4D, [0, 0, 0, 0], [-1, -1, -1, 3]);
       }
     }
     // at the end shape must be [1, height, width, 3]
@@ -112,7 +113,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       tf.dispose(tensor);
       tensor = cast;
     }
-    return { tensor, canvas: (config.filter.return ? outCanvas : null) };
+    return { tensor: tensor as Tensor4D, canvas: (config.filter.return ? outCanvas : null) };
   }
   // check if resizing will be needed
   if (typeof input['readyState'] !== 'undefined' && (input as HTMLMediaElement).readyState <= 2) {
@@ -204,7 +205,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   let depth = 3;
   if ((typeof ImageData !== 'undefined' && input instanceof ImageData) || ((input as ImageData).data && (input as ImageData).width && (input as ImageData).height)) { // if input is imagedata, just use it
     if (env.browser && tf.browser) {
-      pixels = tf.browser ? tf.browser.fromPixels(input) : null;
+      pixels = tf.browser ? tf.browser.fromPixels(input as ImageData) : null;
     } else {
       depth = (input as ImageData).data.length / (input as ImageData).height / (input as ImageData).width;
       // const arr = Uint8Array.from(input['data']);
@@ -215,10 +216,10 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     if (!tmpCanvas || (outCanvas.width !== tmpCanvas.width) || (outCanvas.height !== tmpCanvas.height)) tmpCanvas = canvas(outCanvas.width, outCanvas.height); // init output canvas
     if (tf.browser && env.browser) {
       if (config.backend === 'webgl' || config.backend === 'humangl' || config.backend === 'webgpu') {
-        pixels = tf.browser.fromPixels(outCanvas); // safe to reuse since both backend and context are gl based
+        pixels = tf.browser.fromPixels(outCanvas as HTMLCanvasElement); // safe to reuse since both backend and context are gl based
       } else {
         tmpCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
-        pixels = tf.browser.fromPixels(tmpCanvas);
+        pixels = tf.browser.fromPixels(tmpCanvas as HTMLCanvasElement);
       }
     } else {
       const tempCanvas = copy(outCanvas); // cannot use output canvas as it already has gl context so we do a silly one more canvas
@@ -238,7 +239,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   const casted: Tensor = tf.cast(pixels, 'float32');
   const tensor: Tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
   tf.dispose([pixels, casted]);
-  return { tensor, canvas: (config.filter.return ? outCanvas : null) };
+  return { tensor: tensor as Tensor4D, canvas: (config.filter.return ? outCanvas : null) };
 }
 
 /*
@@ -317,7 +318,7 @@ export async function compare(config: Partial<Config>, input1: Tensor, input2: T
     return 0;
   }
   t.input1 = tf.clone(input1);
-  t.input2 = (input1.shape[1] !== input2.shape[1] || input1.shape[2] !== input2.shape[2]) ? tf.image.resizeBilinear(input2, [input1.shape[1], input1.shape[2]]) : tf.clone(input2);
+  t.input2 = (input1.shape[1] !== input2.shape[1] || input1.shape[2] !== input2.shape[2]) ? tf.image.resizeBilinear(input2 as Tensor3D, [input1.shape[1], input1.shape[2]]) : tf.clone(input2);
   t.diff = tf.sub(t.input1, t.input2);
   t.squared = tf.mul(t.diff, t.diff);
   t.sum = tf.sum(t.squared);

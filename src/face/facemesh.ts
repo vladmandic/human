@@ -7,9 +7,9 @@
  * - Eye Iris Details: [**MediaPipe Iris**](https://drive.google.com/file/d/1bsWbokp9AklH2ANjCfmjqEzzxO1CNbMu/view)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
 import { loadModel } from '../tfjs/load';
-import * as tf from '../../dist/tfjs.esm.js';
 import * as blazeface from './blazeface';
 import * as util from './facemeshutil';
 import * as coords from './facemeshcoords';
@@ -17,7 +17,7 @@ import * as iris from './iris';
 import * as attention from './attention';
 import { histogramEqualization } from '../image/enhance';
 import { env } from '../util/env';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 import type { FaceResult, FaceLandmark, Point } from '../result';
 import type { Config } from '../config';
 
@@ -32,7 +32,7 @@ const cache = {
 let model: GraphModel | null = null;
 let inputSize = 0;
 
-export async function predict(input: Tensor, config: Config): Promise<FaceResult[]> {
+export async function predict(input: Tensor4D, config: Config): Promise<FaceResult[]> {
   if (!model?.['executor']) return [];
   // reset cached boxes
   const skipTime = (config.face.detector?.skipTime || 0) > (now() - cache.timestamp);

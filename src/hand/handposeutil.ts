@@ -1,4 +1,4 @@
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import type { Point } from '../result';
 
 export function getBoxSize(box) {

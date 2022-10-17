@@ -4,11 +4,11 @@
  * Based on: [**PoseNet**](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import type { BodyResult, BodyLandmark, Box } from '../result';
-import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, GraphModel, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 import * as utils from './posenetutils';
@@ -155,7 +155,7 @@ export function decode(offsets, scores, displacementsFwd, displacementsBwd, maxD
   return poses;
 }
 
-export async function predict(input: Tensor, config: Config): Promise<BodyResult[]> {
+export async function predict(input: Tensor4D, config: Config): Promise<BodyResult[]> {
   /** posenet is mostly obsolete
    * caching is not implemented
    */

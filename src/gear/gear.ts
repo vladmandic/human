@@ -4,12 +4,12 @@
  * Based on: [**GEAR Predictor**](https://github.com/Udolf15/GEAR-Predictor)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import type { Gender, Race } from '../result';
 import type { Config } from '../config';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 import { env } from '../util/env';
 
 export interface GearType { age: number, gender: Gender, genderScore: number, race: { score: number, race: Race }[] }
@@ -28,7 +28,7 @@ export async function load(config: Config) {
   return model;
 }
 
-export async function predict(image: Tensor, config: Config, idx: number, count: number): Promise<GearType> {
+export async function predict(image: Tensor4D, config: Config, idx: number, count: number): Promise<GearType> {
   if (!model) return { age: 0, gender: 'unknown', genderScore: 0, race: [] };
   const skipFrame = skipped < (config.face.gear?.skipFrames || 0);
   const skipTime = (config.face.gear?.skipTime || 0) > (now() - lastTime);

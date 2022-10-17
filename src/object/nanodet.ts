@@ -4,13 +4,13 @@
  * Based on: [**MB3-CenterNet**](https://github.com/610265158/mobilenetv3_centernet)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
 import { labels } from './labels';
 import type { ObjectResult, ObjectType, Box } from '../result';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor2D, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
@@ -39,14 +39,14 @@ async function process(res: Tensor[], outputShape: [number, number], config: Con
     // find scores, boxes, classes
     const baseSize = strideSize * 13; // 13x13=169, 26x26=676, 52x52=2704
     // find boxes and scores output depending on stride
-    const scoresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) === labels.length)));
+    const scoresT = tf.squeeze(res.find((a) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) === labels.length)) as Tensor2D);
     const scores = await scoresT.array(); // optionally use exponential scores or just as-is
-    const featuresT = tf.squeeze(res.find((a: Tensor) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) < labels.length)));
-    const boxesMaxT = featuresT.reshape([-1, 4, featuresT.shape[1] / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
-    const boxIdxT = boxesMaxT.argMax(2); // what we need is indexes of features with highest scores, not values itself
+    const featuresT = tf.squeeze(res.find((a) => (a.shape[1] === (baseSize ** 2) && (a.shape[2] || 0) < labels.length)) as Tensor2D);
+    const boxesMaxT = tf.reshape(featuresT, [-1, 4, (featuresT.shape?.[1] || 0) / 4]); // reshape [output] to [4, output / 4] where number is number of different features inside each stride
+    const boxIdxT = tf.argMax(boxesMaxT, 2); // what we need is indexes of features with highest scores, not values itself
     const boxIdx = await boxIdxT.array(); // what we need is indexes of features with highest scores, not values itself
     for (let i = 0; i < scoresT.shape[0]; i++) { // total strides (x * y matrix)
-      for (let j = 0; j < scoresT.shape[1]; j++) { // one score for each class
+      for (let j = 0; j < (scoresT.shape?.[1] || 0); j++) { // one score for each class
         const score = scores[i][j]; // get score for current position
         if (score > (config.object.minConfidence || 0) && j !== 61) {
           const cx = (0.5 + Math.trunc(i % baseSize)) / baseSize; // center.x normalized to range 0..1
@@ -92,8 +92,8 @@ async function process(res: Tensor[], outputShape: [number, number], config: Con
   const nmsScores = results.map((a) => a.score);
   let nmsIdx: number[] = [];
   if (nmsBoxes && nmsBoxes.length > 0) {
-    const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxDetected, config.object.iouThreshold, config.object.minConfidence);
-    nmsIdx = await nms.data();
+    const nms = await tf.image.nonMaxSuppressionAsync(nmsBoxes, nmsScores, config.object.maxDetected || 0, config.object.iouThreshold, config.object.minConfidence);
+    nmsIdx = Array.from(await nms.data());
     tf.dispose(nms);
   }
 
@@ -105,7 +105,7 @@ async function process(res: Tensor[], outputShape: [number, number], config: Con
   return results;
 }
 
-export async function predict(image: Tensor, config: Config): Promise<ObjectResult[]> {
+export async function predict(image: Tensor4D, config: Config): Promise<ObjectResult[]> {
   if (!model?.['executor']) return [];
   const skipTime = (config.object.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.object.skipFrames || 0);

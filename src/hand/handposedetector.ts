@@ -3,11 +3,11 @@
  * See `handpose.ts` for entry point
  */
 
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import * as util from './handposeutil';
 import * as anchors from './handposeanchors';
 import { constants } from '../tfjs/constants';
-import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, Tensor1D, Tensor2D, Tensor4D, GraphModel } from '../tfjs/types';
 import type { Point } from '../result';
 import type { Config } from '../config';
 
@@ -39,22 +39,22 @@ export class HandDetector {
     t.startPoints = tf.mul(t.sub, this.inputSizeTensor);
     t.add = tf.add(t.boxCenterPoints, t.halfBoxSizes);
     t.endPoints = tf.mul(t.add, this.inputSizeTensor);
-    const res = tf.concat2d([t.startPoints, t.endPoints], 1);
+    const res = tf.concat2d([t.startPoints as Tensor2D, t.endPoints as Tensor2D], 1);
     Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
     return res as Tensor;
   }
 
-  normalizeLandmarks(rawPalmLandmarks, index: number) {
+  normalizeLandmarks(rawPalmLandmarks, index: number): Tensor {
     const t: Record<string, Tensor> = {};
     t.reshape = tf.reshape(rawPalmLandmarks, [-1, 7, 2]);
     t.div = tf.div(t.reshape, this.inputSizeTensor);
     t.landmarks = tf.add(t.div, this.anchors[index] ? this.anchors[index] : 0);
     const res = tf.mul(t.landmarks, this.inputSizeTensor);
     Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-    return res as Tensor;
+    return res;
   }
 
-  async predict(input: Tensor, config: Config): Promise<{ startPoint: Point; endPoint: Point, palmLandmarks: Point[]; confidence: number }[]> {
+  async predict(input: Tensor4D, config: Config): Promise<{ startPoint: Point; endPoint: Point, palmLandmarks: Point[]; confidence: number }[]> {
     const t: Record<string, Tensor> = {};
     t.resize = tf.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
     t.div = tf.div(t.resize, constants.tf127);
@@ -68,7 +68,7 @@ export class HandDetector {
     t.boxes = tf.slice(t.predictions, [0, 1], [-1, 4]);
     t.norm = this.normalizeBoxes(t.boxes);
     // box detection is flaky so we look for 3x boxes than we need results
-    t.nms = await tf.image.nonMaxSuppressionAsync(t.norm, t.scores, 3 * (config.hand?.maxDetected || 1), config.hand.iouThreshold, config.hand.minConfidence);
+    t.nms = await tf.image.nonMaxSuppressionAsync(t.norm as Tensor2D, t.scores as Tensor1D, 3 * (config.hand?.maxDetected || 1), config.hand.iouThreshold, config.hand.minConfidence);
     const nms = await t.nms.array() as number[];
     const hands: { startPoint: Point; endPoint: Point; palmLandmarks: Point[]; confidence: number }[] = [];
     for (const index of nms) {

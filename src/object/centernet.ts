@@ -4,12 +4,12 @@
  * Based on: [**NanoDet**](https://github.com/RangiLyu/nanodet)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { labels } from './labels';
 import type { ObjectResult, ObjectType, Box } from '../result';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor1D, Tensor2D, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
@@ -36,13 +36,13 @@ async function process(res: Tensor | null, outputShape: [number, number], config
   const results: ObjectResult[] = [];
   const detections = await res.array() as number[][][];
   t.squeeze = tf.squeeze(res);
-  const arr = tf.split(t.squeeze, 6, 1) as Tensor[]; // x1, y1, x2, y2, score, class
+  const arr = tf.split(t.squeeze, 6, 1); // x1, y1, x2, y2, score, class
   t.stack = tf.stack([arr[1], arr[0], arr[3], arr[2]], 1); // reorder dims as tf.nms expects y, x
   t.boxes = tf.squeeze(t.stack);
   t.scores = tf.squeeze(arr[4]);
   t.classes = tf.squeeze(arr[5]);
   tf.dispose([res, ...arr]);
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, config.object.maxDetected, config.object.iouThreshold, (config.object.minConfidence || 0));
+  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes as Tensor2D, t.scores as Tensor1D, config.object.maxDetected || 0, config.object.iouThreshold, (config.object.minConfidence || 0));
   const nms = await t.nms.data();
   let i = 0;
   for (const id of Array.from(nms)) {
@@ -72,7 +72,7 @@ async function process(res: Tensor | null, outputShape: [number, number], config
   return results;
 }
 
-export async function predict(input: Tensor, config: Config): Promise<ObjectResult[]> {
+export async function predict(input: Tensor4D, config: Config): Promise<ObjectResult[]> {
   if (!model?.['executor']) return [];
   const skipTime = (config.object.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.object.skipFrames || 0);

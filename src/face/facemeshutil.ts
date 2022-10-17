@@ -3,7 +3,7 @@
  * See `facemesh.ts` for entry point
  */
 
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import * as coords from './facemeshcoords';
 import { constants } from '../tfjs/constants';
 import type { Box, Point } from '../result';
@@ -175,7 +175,7 @@ export function correctFaceRotation(rotate, box, input, inputSize) {
     if (largeAngle) { // perform rotation only if angle is sufficiently high
       const center: Point = getBoxCenter(box);
       const centerRaw: Point = [center[0] / input.shape[2], center[1] / input.shape[1]];
-      const rotated = tf.image.rotateWithOffset(input, angle, 0, centerRaw);
+      const rotated = tf.image.rotateWithOffset(input, angle, 0, [centerRaw[0], centerRaw[1]]);
       rotationMatrix = buildRotationMatrix(-angle, center);
       face = cutAndResize(box, rotated, [inputSize, inputSize]);
       tf.dispose(rotated);

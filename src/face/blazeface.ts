@@ -3,13 +3,13 @@
  * See `facemesh.ts` for entry point
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import * as util from './facemeshutil';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
 import type { Config } from '../config';
-import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, GraphModel, Tensor1D, Tensor2D, Tensor4D } from '../tfjs/types';
 import { env } from '../util/env';
 import type { Point } from '../result';
 
@@ -35,6 +35,7 @@ export async function load(config: Config): Promise<GraphModel> {
 }
 
 function decodeBoxes(boxOutputs: Tensor) {
+  if (!anchors || !inputSizeT) return tf.zeros([0, 0]);
   const t: Record<string, Tensor> = {};
   t.boxStarts = tf.slice(boxOutputs, [0, 1], [-1, 2]);
   t.centers = tf.add(t.boxStarts, anchors);
@@ -46,12 +47,12 @@ function decodeBoxes(boxOutputs: Tensor) {
   t.ends = tf.add(t.centersNormalized, t.halfBoxSize);
   t.startNormalized = tf.mul(t.starts, inputSizeT);
   t.endNormalized = tf.mul(t.ends, inputSizeT);
-  const boxes = tf.concat2d([t.startNormalized, t.endNormalized], 1);
+  const boxes = tf.concat2d([t.startNormalized as Tensor2D, t.endNormalized as Tensor2D], 1);
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
   return boxes;
 }
 
-export async function getBoxes(inputImage: Tensor, config: Config) {
+export async function getBoxes(inputImage: Tensor4D, config: Config) {
   // sanity check on input
   if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return [];
   const t: Record<string, Tensor> = {};
@@ -64,7 +65,7 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
     t.concat384 = tf.concat([sorted[0], sorted[2]], 2); // dim: 384, 1 + 16
     t.concat512 = tf.concat([sorted[1], sorted[3]], 2); // dim: 512, 1 + 16
     t.concat = tf.concat([t.concat512, t.concat384], 1);
-    t.batch = tf.squeeze(t.concat, 0);
+    t.batch = tf.squeeze(t.concat, [0]);
   } else if (Array.isArray(res)) { // new facemesh-detection tfhub model
     t.batch = tf.squeeze(res[0]);
   } else { // original blazeface tfhub model
@@ -75,7 +76,7 @@ export async function getBoxes(inputImage: Tensor, config: Config) {
   t.logits = tf.slice(t.batch, [0, 0], [-1, 1]);
   t.sigmoid = tf.sigmoid(t.logits);
   t.scores = tf.squeeze(t.sigmoid);
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, (config.face.detector?.maxDetected || 0), (config.face.detector?.iouThreshold || 0), (config.face.detector?.minConfidence || 0));
+  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes as Tensor2D, t.scores as Tensor1D, (config.face.detector?.maxDetected || 0), (config.face.detector?.iouThreshold || 0), (config.face.detector?.minConfidence || 0));
   const nms = await t.nms.array() as number[];
   const boxes: DetectBox[] = [];
   const scores = await t.scores.data();

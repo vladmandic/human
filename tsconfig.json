@@ -54,6 +54,7 @@
   "exclude": ["node_modules/", "types/", "dist/**/*.js"],
   "include": ["src", "tfjs/*.ts", "types/human.d.ts", "test/**/*.ts", "demo/**/*.ts"],
   "typedocOptions": {
-    "externalPattern": ["node_modules/", "tfjs/"]
+    "excludeExternals": true,
+    "externalPattern": ["**/node_modules/**", "tfjs/"]
   }
 }

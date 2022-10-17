@@ -1,7 +1,7 @@
 // https://github.com/TropComplique/FaceBoxes-tensorflow
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import type { GraphModel, Tensor } from '../tfjs/types';
 import type { Config } from '../config';
@@ -29,14 +29,14 @@ export class FaceBoxes {
     const [scoresT, boxesT, numT] = await this.model.executeAsync(castT) as Tensor[];
     const scores = await scoresT.data();
     const squeezeT = tf.squeeze(boxesT);
-    const boxes = squeezeT.arraySync();
+    const boxes = squeezeT.arraySync() as number[][];
     scoresT.dispose();
     boxesT.dispose();
     squeezeT.dispose();
     numT.dispose();
     castT.dispose();
     resizeT.dispose();
-    for (const i in boxes) {
+    for (let i = 0; i < boxes.length; i++) {
       if (scores[i] && scores[i] > (this.config.face.detector?.minConfidence || 0.1)) {
         const crop = [boxes[i][0] / this.enlarge, boxes[i][1] / this.enlarge, boxes[i][2] * this.enlarge, boxes[i][3] * this.enlarge];
         const boxRaw: Box = [crop[1], crop[0], (crop[3]) - (crop[1]), (crop[2]) - (crop[0])];

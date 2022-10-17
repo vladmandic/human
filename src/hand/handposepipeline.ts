@@ -3,7 +3,7 @@
  * See `handpose.ts` for entry point
  */
 
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import * as util from './handposeutil';
 import type * as detector from './handposedetector';
 import { constants } from '../tfjs/constants';
@@ -115,7 +115,7 @@ export class HandPipeline {
       if (config.hand.landmarks) {
         const angle = config.hand.rotation ? util.computeRotation(currentBox.palmLandmarks[palmLandmarksPalmBase], currentBox.palmLandmarks[palmLandmarksMiddleFingerBase]) : 0;
         const palmCenter = util.getBoxCenter(currentBox);
-        const palmCenterNormalized = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
+        const palmCenterNormalized: [number, number] = [palmCenter[0] / image.shape[2], palmCenter[1] / image.shape[1]];
         const rotatedImage = config.hand.rotation && env.kernels.includes('rotatewithoffset') ? tf.image.rotateWithOffset(image, angle, 0, palmCenterNormalized) : image.clone();
         const rotationMatrix = util.buildRotationMatrix(-angle, palmCenter);
         const newBox = useFreshBox ? this.getBoxForPalmLandmarks(currentBox.palmLandmarks, rotationMatrix) : currentBox;

@@ -3,9 +3,9 @@
  * Uses FaceMesh, Emotion and FaceRes models to create a unified pipeline
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
 import { env } from '../util/env';
-import * as tf from '../../dist/tfjs.esm.js';
 import * as facemesh from './facemesh';
 import * as emotion from '../gear/emotion';
 import * as faceres from './faceres';
@@ -18,13 +18,13 @@ import * as ssrnetGender from '../gear/ssrnet-gender';
 import * as mobilefacenet from './mobilefacenet';
 import * as insightface from './insightface';
 import type { FaceResult, Emotion, Gender, Race } from '../result';
-import type { Tensor } from '../tfjs/types';
+import type { Tensor4D } from '../tfjs/types';
 import type { Human } from '../human';
 import { calculateFaceAngle } from './angles';
 
 interface DescRes { age: number, gender: Gender, genderScore: number, descriptor: number[], race?: { score: number, race: Race }[] }
 
-export const detectFace = async (instance: Human /* instance of human */, input: Tensor): Promise<FaceResult[]> => {
+export const detectFace = async (instance: Human /* instance of human */, input: Tensor4D): Promise<FaceResult[]> => {
   // run facemesh, includes blazeface and iris
   let timeStamp: number = now();
   let ageRes: { age: number } | Promise<{ age: number }> | null;
@@ -68,11 +68,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run emotion, inherits face from blazeface
     instance.analyze('Start Emotion:');
     if (instance.config.async) {
-      emotionRes = instance.config.face.emotion?.enabled ? emotion.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : [];
+      emotionRes = instance.config.face.emotion?.enabled ? emotion.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : [];
     } else {
       instance.state = 'run:emotion';
       timeStamp = now();
-      emotionRes = instance.config.face.emotion?.enabled ? await emotion.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : [];
+      emotionRes = instance.config.face.emotion?.enabled ? await emotion.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : [];
       instance.performance.emotion = env.perfadd ? (instance.performance.emotion || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze('End Emotion:');
@@ -80,11 +80,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run antispoof, inherits face from blazeface
     instance.analyze('Start AntiSpoof:');
     if (instance.config.async) {
-      antispoofRes = instance.config.face.antispoof?.enabled ? antispoof.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : 0;
+      antispoofRes = instance.config.face.antispoof?.enabled ? antispoof.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : 0;
     } else {
       instance.state = 'run:antispoof';
       timeStamp = now();
-      antispoofRes = instance.config.face.antispoof?.enabled ? await antispoof.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : 0;
+      antispoofRes = instance.config.face.antispoof?.enabled ? await antispoof.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : 0;
       instance.performance.antispoof = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze('End AntiSpoof:');
@@ -92,11 +92,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run liveness, inherits face from blazeface
     instance.analyze('Start Liveness:');
     if (instance.config.async) {
-      livenessRes = instance.config.face.liveness?.enabled ? liveness.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : 0;
+      livenessRes = instance.config.face.liveness?.enabled ? liveness.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : 0;
     } else {
       instance.state = 'run:liveness';
       timeStamp = now();
-      livenessRes = instance.config.face.liveness?.enabled ? await liveness.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : 0;
+      livenessRes = instance.config.face.liveness?.enabled ? await liveness.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : 0;
       instance.performance.liveness = env.perfadd ? (instance.performance.antispoof || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze('End Liveness:');
@@ -104,11 +104,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run gear, inherits face from blazeface
     instance.analyze('Start GEAR:');
     if (instance.config.async) {
-      gearRes = instance.config.face.gear?.enabled ? gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      gearRes = instance.config.face.gear?.enabled ? gear.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = 'run:gear';
       timeStamp = now();
-      gearRes = instance.config.face.gear?.enabled ? await gear.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      gearRes = instance.config.face.gear?.enabled ? await gear.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
       instance.performance.gear = Math.trunc(now() - timeStamp);
     }
     instance.analyze('End GEAR:');
@@ -116,13 +116,13 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run gear, inherits face from blazeface
     instance.analyze('Start SSRNet:');
     if (instance.config.async) {
-      ageRes = instance.config.face['ssrnet']?.enabled ? ssrnetAge.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
-      genderRes = instance.config.face['ssrnet']?.enabled ? ssrnetGender.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      ageRes = instance.config.face['ssrnet']?.enabled ? ssrnetAge.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
+      genderRes = instance.config.face['ssrnet']?.enabled ? ssrnetGender.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = 'run:ssrnet';
       timeStamp = now();
-      ageRes = instance.config.face['ssrnet']?.enabled ? await ssrnetAge.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
-      genderRes = instance.config.face['ssrnet']?.enabled ? await ssrnetGender.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      ageRes = instance.config.face['ssrnet']?.enabled ? await ssrnetAge.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
+      genderRes = instance.config.face['ssrnet']?.enabled ? await ssrnetGender.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
       instance.performance.ssrnet = Math.trunc(now() - timeStamp);
     }
     instance.analyze('End SSRNet:');
@@ -130,11 +130,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run mobilefacenet alternative, inherits face from blazeface
     instance.analyze('Start MobileFaceNet:');
     if (instance.config.async) {
-      mobilefacenetRes = instance.config.face['mobilefacenet']?.enabled ? mobilefacenet.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      mobilefacenetRes = instance.config.face['mobilefacenet']?.enabled ? mobilefacenet.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = 'run:mobilefacenet';
       timeStamp = now();
-      mobilefacenetRes = instance.config.face['mobilefacenet']?.enabled ? await mobilefacenet.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      mobilefacenetRes = instance.config.face['mobilefacenet']?.enabled ? await mobilefacenet.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
       instance.performance.mobilefacenet = Math.trunc(now() - timeStamp);
     }
     instance.analyze('End MobileFaceNet:');
@@ -142,11 +142,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run insightface alternative, inherits face from blazeface
     instance.analyze('Start InsightFace:');
     if (instance.config.async) {
-      insightfaceRes = instance.config.face['insightface']?.enabled ? insightface.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      insightfaceRes = instance.config.face['insightface']?.enabled ? insightface.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
     } else {
       instance.state = 'run:mobilefacenet';
       timeStamp = now();
-      insightfaceRes = instance.config.face['insightface']?.enabled ? await insightface.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length) : null;
+      insightfaceRes = instance.config.face['insightface']?.enabled ? await insightface.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;
       instance.performance.mobilefacenet = Math.trunc(now() - timeStamp);
     }
     instance.analyze('End InsightFace:');
@@ -154,11 +154,11 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     // run faceres, inherits face from blazeface
     instance.analyze('Start Description:');
     if (instance.config.async) {
-      descRes = faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length);
+      descRes = faceres.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length);
     } else {
       instance.state = 'run:description';
       timeStamp = now();
-      descRes = await faceres.predict(faces[i].tensor || tf.tensor([]), instance.config, i, faces.length);
+      descRes = await faceres.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length);
       instance.performance.description = env.perfadd ? (instance.performance.description || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
     }
     instance.analyze('End Description:');
@@ -207,7 +207,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
       : 0; // note: average human iris size is 11.7mm
 
     // optionally return tensor
-    const tensor = instance.config.face.detector?.return ? tf.squeeze(faces[i].tensor) : null;
+    const tensor = instance.config.face.detector?.return ? tf.squeeze(faces[i].tensor as Tensor4D) : null;
     // dispose original face tensor
     tf.dispose(faces[i].tensor);
     // delete temp face image

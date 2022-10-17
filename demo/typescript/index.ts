@@ -42,7 +42,7 @@ const log = (...msg) => { // helper method to output messages
   console.log(...msg); // eslint-disable-line no-console
 };
 const status = (msg) => dom.fps.innerText = msg; // print status element
-const perf = (msg) => dom.perf.innerText = 'tensors:' + (human.tf.memory().numTensors as number).toString() + ' | performance: ' + JSON.stringify(msg).replace(/"|{|}/g, '').replace(/,/g, ' | '); // print performance element
+const perf = (msg) => dom.perf.innerText = 'tensors:' + human.tf.memory().numTensors.toString() + ' | performance: ' + JSON.stringify(msg).replace(/"|{|}/g, '').replace(/,/g, ' | '); // print performance element
 
 async function detectionLoop() { // main detection loop
   if (!dom.video.paused) {

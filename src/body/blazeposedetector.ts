@@ -1,4 +1,4 @@
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import type { Tensor } from '../tfjs/types';
 import type { Box } from '../result';
 import type { Config } from '../config';

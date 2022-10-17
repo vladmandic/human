@@ -6,10 +6,10 @@
  * Alternative face embedding detection
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
-import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, Tensor4D, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
@@ -26,7 +26,7 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export async function predict(input: Tensor, config: Config, idx, count): Promise<number[]> {
+export async function predict(input: Tensor4D, config: Config, idx, count): Promise<number[]> {
   if (!model?.['executor']) return [];
   const skipFrame = skipped < (config.face['insightface']?.skipFrames || 0);
   const skipTime = (config.face['insightface']?.skipTime || 0) > (now() - lastTime);

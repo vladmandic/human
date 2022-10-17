@@ -4,9 +4,9 @@
  * Based on: [**MoveNet**](https://blog.tensorflow.org/2021/05/next-generation-pose-detection-with-movenet-and-tensorflowjs.html)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
 import * as box from '../util/box';
-import * as tf from '../../dist/tfjs.esm.js';
 import * as coords from './movenetcoords';
 import * as fix from './movenetfix';
 import { loadModel } from '../tfjs/load';

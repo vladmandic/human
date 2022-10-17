@@ -6,10 +6,10 @@
  * Obsolete and replaced by `faceres` that performs age/gender/descriptor analysis
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
-import type { Tensor, GraphModel } from '../tfjs/types';
+import type { Tensor, Tensor4D, GraphModel } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
@@ -44,7 +44,7 @@ const factor = 5;
 const contrast = merge.sub(mean).mul(factor).add(mean);
 */
 
-export async function predict(input: Tensor, config: Config, idx, count): Promise<number[]> {
+export async function predict(input: Tensor4D, config: Config, idx, count): Promise<number[]> {
   if (!model?.['executor']) return [];
   const skipFrame = skipped < (config.face['mobilefacenet']?.skipFrames || 0);
   const skipTime = (config.face['mobilefacenet']?.skipTime || 0) > (now() - lastTime);

@@ -1,11 +1,12 @@
 /** TFJS custom backend registration */
 
+import * as tf from 'dist/tfjs.esm.js';
 import type { Human } from '../human';
 import { log } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import * as image from '../image/image';
 import * as models from '../models';
 import type { AnyCanvas } from '../exports';
+import type { MathBackendWebGL } from './types';
 // import { env } from '../env';
 
 export const config = {
@@ -120,13 +121,15 @@ export function register(instance: Human): void {
       return;
     }
     try {
+      // @ts-ignore private property
       if (tf.env().flagRegistry.WEBGL_VERSION) tf.env().set('WEBGL_VERSION', 2);
     } catch (err) {
       log('humangl error: cannot set WebGL backend flags:', err);
       return;
     }
     extensions();
-    const current = tf.backend().getGPGPUContext ? tf.backend().getGPGPUContext().gl : null;
+    const backend = tf.backend() as MathBackendWebGL;
+    const current = typeof backend['gpgpu'] !== 'undefined' ? backend.getGPGPUContext().gl : null;
     if (current) {
       if (instance.config.debug) log('humangl backend registered:', { webgl: current.getParameter(current.VERSION) as string, renderer: current.getParameter(current.RENDERER) as string });
     } else {

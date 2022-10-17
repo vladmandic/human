@@ -6,12 +6,12 @@
  * - Hand Tracking: [**HandTracking**](https://github.com/victordibia/handtracking)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log, now } from '../util/util';
 import * as box from '../util/box';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import type { HandResult, HandType, Box, Point } from '../result';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor1D, Tensor2D, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 import * as fingerPose from './fingerpose';
@@ -100,7 +100,7 @@ export async function load(config: Config): Promise<[GraphModel | null, GraphMod
   return models;
 }
 
-async function detectHands(input: Tensor, config: Config): Promise<HandDetectResult[]> {
+async function detectHands(input: Tensor4D, config: Config): Promise<HandDetectResult[]> {
   const hands: HandDetectResult[] = [];
   if (!input || !models[0]) return hands;
   const t: Record<string, Tensor> = {};
@@ -121,7 +121,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   t.max = tf.max(t.filtered, 1); // max overall score
   t.argmax = tf.argMax(t.filtered, 1); // class index of max overall score
   let id = 0;
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.max, (config.hand.maxDetected || 0) + 1, config.hand.iouThreshold || 0, config.hand.minConfidence || 1);
+  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes as Tensor2D, t.max as Tensor1D, (config.hand.maxDetected || 0) + 1, config.hand.iouThreshold || 0, config.hand.minConfidence || 1);
   const nms = await t.nms.data();
   const scores = await t.max.data();
   const classNum = await t.argmax.data();
@@ -143,7 +143,7 @@ async function detectHands(input: Tensor, config: Config): Promise<HandDetectRes
   return hands;
 }
 
-async function detectFingers(input: Tensor, h: HandDetectResult, config: Config): Promise<HandResult> {
+async function detectFingers(input: Tensor4D, h: HandDetectResult, config: Config): Promise<HandResult> {
   const hand: HandResult = { // initial values inherited from hand detect
     id: h.id,
     score: Math.round(100 * h.score) / 100,
@@ -181,7 +181,7 @@ async function detectFingers(input: Tensor, h: HandDetectResult, config: Config)
   return hand;
 }
 
-export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
+export async function predict(input: Tensor4D, config: Config): Promise<HandResult[]> {
   if (!models[0]?.['executor'] || !models[1]?.['executor'] || !models[0].inputs[0].shape || !models[1].inputs[0].shape) return []; // something is wrong with the model
   outputSize = [input.shape[2] || 0, input.shape[1] || 0];
   skipped++; // increment skip frames

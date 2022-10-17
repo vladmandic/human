@@ -1,4 +1,4 @@
-import * as tf from '../../dist/tfjs.esm.js';
+import * as tf from 'dist/tfjs.esm.js';
 import type { Tensor } from './types';
 
 export const constants: Record<string, Tensor | number | number[]> = {

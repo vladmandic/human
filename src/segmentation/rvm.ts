@@ -5,11 +5,11 @@
  * - [**Robust Video Matting**](https://github.com/PeterL1n/RobustVideoMatting)
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { log } from '../util/util';
-import * as tf from '../../dist/tfjs.esm.js';
 import { loadModel } from '../tfjs/load';
 import { constants } from '../tfjs/constants';
-import type { GraphModel, Tensor } from '../tfjs/types';
+import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import { env } from '../util/env';
 
@@ -37,11 +37,11 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-const normalize = (r: Tensor) => tf.tidy(() => {
+const normalize = (r: Tensor): Tensor => tf.tidy(() => {
   const squeeze = tf.squeeze(r, ([0]));
   const mul = tf.mul(squeeze, constants.tf255);
   const cast = tf.cast(mul, 'int32');
-  return cast as Tensor;
+  return cast;
 });
 
 function getRGBA(fgr: Tensor | null, pha: Tensor | null): Tensor { // gets rgba // either fgr or pha must be present
@@ -68,13 +68,13 @@ function getState(state: Tensor): Tensor { // gets internal recurrent states
     r.add = tf.add(r.expand, 1);
     r.mul = tf.mul(r.add, 127.5);
     r.cast = tf.cast(r.mul, 'int32');
-    r.tile = tf.tile(r.cast, [1, 1, 3]) as Tensor;
-    r.alpha = tf.fill([r.tile.shape[0] || 0, r.tile.shape[1] || 0, 1], 255, 'int32');
-    return tf.concat([r.tile, r.alpha], -1) as Tensor;
+    r.tile = tf.tile(r.cast, [1, 1, 3]);
+    r.alpha = tf.fill([(r.tile as Tensor).shape[0] || 0, (r.tile as Tensor).shape[1] || 0, 1], 255, 'int32'); // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
+    return tf.concat([r.tile, r.alpha], -1);
   });
 }
 
-export async function predict(input: Tensor, config: Config): Promise<Tensor | null> {
+export async function predict(input: Tensor4D, config: Config): Promise<Tensor | null> {
   if (!model) model = await load(config);
   if (!model?.['executor']) return null;
   // const expand = tf.expandDims(input, 0);

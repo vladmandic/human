@@ -1,15 +1,11 @@
 /**
  * Human demo for NodeJS
- *
- * Requires [node-fetch](https://www.npmjs.com/package/node-fetch) to provide `fetch` functionality in NodeJS environment
 */
 
 const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
-
-let fetch; // fetch is dynamically imported later
 
 // in nodejs environments tfjs-node is required to be loaded before human
 const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
@@ -65,11 +61,12 @@ async function detect(input) {
   log.info('Loading image:', input);
   if (input.startsWith('http:') || input.startsWith('https:')) {
     const res = await fetch(input);
-    if (res && res.ok) buffer = await res.buffer();
+    if (res && res.ok) buffer = Buffer.from(await res.arrayBuffer());
     else log.error('Invalid image URL:', input, res.status, res.statusText, res.headers.get('content-type'));
   } else {
     buffer = fs.readFileSync(input);
   }
+  log.data('Image bytes:', buffer?.length, 'buffer:', buffer?.slice(0, 32));
 
   // decode image using tfjs-node so we don't need external depenencies
   // can also be done using canvas.js or some other 3rd party image library
@@ -192,7 +189,6 @@ async function main() {
   log.configure({ inspect: { breakLength: 265 } });
   log.header();
   log.info('Current folder:', process.env.PWD);
-  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-unpublished-import
   await init();
   const f = process.argv[2];
   if (process.argv.length !== 3) {

@@ -1,5 +1,6 @@
 const log = require('@vladmandic/pilogger');
-const tf = require('@tensorflow/tfjs'); // wasm backend requires tfjs to be loaded first
+const tf = require('@tensorflow/tfjs-core'); // wasm backend requires tfjs to be loaded first
+require('@tensorflow/tfjs-converter');
 const wasm = require('@tensorflow/tfjs-backend-wasm'); // wasm backend does not get auto-loaded in nodejs
 const { Canvas, Image } = require('canvas'); // eslint-disable-line node/no-extraneous-require, node/no-missing-require
 const H = require('../dist/human.node-wasm.js');

@@ -5,8 +5,6 @@
 const fs = require('fs');
 const process = require('process');
 
-let fetch; // fetch is dynamically imported later
-
 const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 // in nodejs environments tfjs-node is required to be loaded before human
 const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
@@ -38,13 +36,13 @@ async function detect(input) {
   let buffer;
   log.info('Loading image:', input);
   if (input.startsWith('http:') || input.startsWith('https:')) {
-    fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-unpublished-import
     const res = await fetch(input);
-    if (res && res.ok) buffer = await res.buffer();
+    if (res && res.ok) buffer = Buffer.from(await res.arrayBuffer());
     else log.error('Invalid image URL:', input, res.status, res.statusText, res.headers.get('content-type'));
   } else {
     buffer = fs.readFileSync(input);
   }
+  log.data('Image bytes:', buffer?.length, 'buffer:', buffer?.slice(0, 32));
 
   // decode image using tfjs-node so we don't need external depenencies
   if (!buffer) return;

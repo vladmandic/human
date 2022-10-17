@@ -1,6 +1,5 @@
 import * as tf from 'dist/tfjs.esm.js';
 import * as image from '../image/image';
-import type { MathBackendWebGL } from '../tfjs/types';
 
 /** Env class that holds detected capabilities */
 export class Env {
@@ -140,8 +139,8 @@ export class Env {
     this.webgl.supported = typeof ctx !== 'undefined';
     this.webgl.backend = this.backends.includes('webgl');
     if (this.webgl.supported && this.webgl.backend && (tf.getBackend() === 'webgl' || tf.getBackend() === 'humangl')) {
-      const backend = tf.backend() as MathBackendWebGL;
-      const gl = typeof backend['gpgpu'] !== 'undefined' ? backend.getGPGPUContext().gl : null;
+      const backend = tf.backend();
+      const gl = typeof backend['gpgpu'] !== 'undefined' ? backend['getGPGPUContext']().gl : null;
       if (gl) {
         this.webgl.version = gl.getParameter(gl.VERSION);
         this.webgl.renderer = gl.getParameter(gl.RENDERER);

@@ -39,6 +39,13 @@
       "banner": { "js": "/*\n  Human\n  homepage: <https://github.com/vladmandic/human>\n  author: <https://github.com/vladmandic>'\n*/\n" }
     },
     "targets": [
+      { 
+        "name": "tfjs/browser/version",
+        "platform": "browser",
+        "format": "esm",
+        "input": "tfjs/tf-version.ts",
+        "output": "dist/tfjs.version.js"
+      },
       {
         "name": "tfjs/nodejs/cpu",
         "platform": "node",
@@ -77,6 +84,7 @@
         "format": "cjs",
         "input": "tfjs/tf-node-wasm.ts",
         "output": "dist/tfjs.esm.js",
+        "minify": false,
         "external": ["@tensorflow"]
       },
       {
@@ -86,13 +94,6 @@
         "input": "src/human.ts",
         "output": "dist/human.node-wasm.js",
         "external": ["@tensorflow"]
-      },
-      { 
-        "name": "tfjs/browser/version",
-        "platform": "browser",
-        "format": "esm",
-        "input": "tfjs/tf-version.ts",
-        "output": "dist/tfjs.version.js"
       },
       {
         "name": "tfjs/browser/esm/nobundle",
@@ -112,13 +113,13 @@
         "external": ["@tensorflow"]
       },
       {
-        "name": "tfjs/browser/esm/custom",
+        "name": "tfjs/browser/esm/bundle",
         "platform": "browser",
         "format": "esm",
-        "input": "tfjs/tf-custom.ts",
+        "input": "tfjs/tf-browser.ts",
         "output": "dist/tfjs.esm.js",
         "sourcemap": false,
-        "minify": false
+        "minify": true
       },
       {
         "name": "human/browser/iife/bundle",

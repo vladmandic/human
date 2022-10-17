@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 
 export declare const version: {
@@ -17,3 +18,7 @@ export * from '@tensorflow/tfjs-converter';
 // export * from '@tensorflow/tfjs-backend-cpu';
 export * from '@tensorflow/tfjs-backend-wasm';
 export * from '@tensorflow/tfjs-backend-webgl';
+// export * from '@tensorflow/tfjs-backend-webgpu';
+
+// export * from 'types/tfjs-core.esm';
+// export * from 'types/tfjs.esm';

@@ -19,7 +19,6 @@ const tests = [
 const demos = [
   { cmd: '../demo/nodejs/node.js', args: [] },
   { cmd: '../demo/nodejs/node-simple.js', args: [] },
-  { cmd: '../demo/nodejs/node-fetch.js', args: [] },
   { cmd: '../demo/nodejs/node-event.js', args: ['samples/in/ai-body.jpg'] },
   { cmd: '../demo/nodejs/node-similarity.js', args: ['samples/in/ai-face.jpg', 'samples/in/ai-upper.jpg'] },
   { cmd: '../demo/nodejs/node-canvas.js', args: ['samples/in/ai-body.jpg', 'samples/out/ai-body.jpg'] },

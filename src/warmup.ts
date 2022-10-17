@@ -11,7 +11,7 @@ import { env } from './util/env';
 import type { Config } from './config';
 import type { Result } from './result';
 import { Human, models } from './human';
-import type { Tensor, DataType, MathBackendWebGL } from './tfjs/types';
+import type { Tensor, DataType } from './tfjs/types';
 
 async function warmupBitmap(instance: Human): Promise<Result | undefined> {
   const b64toBlob = (base64: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
@@ -113,7 +113,7 @@ export async function runCompile(instance: Human) {
   // @ts-ignore private property
   if (!tf.env().flagRegistry.ENGINE_COMPILE_ONLY) return; // tfjs does not support compile-only inference
   const backendType = tf.getBackend();
-  const webGLBackend = tf.backend() as MathBackendWebGL;
+  const webGLBackend = tf.backend();
   if ((backendType !== 'webgl' && backendType !== 'humangl') || !webGLBackend?.['checkCompileCompletion']) {
     // log('compile pass: skip');
     return;
@@ -138,8 +138,8 @@ export async function runCompile(instance: Human) {
     }
     tf.dispose(tensor);
   }
-  const kernels = await webGLBackend.checkCompileCompletionAsync();
-  webGLBackend.getUniformLocations();
+  const kernels = await webGLBackend['checkCompileCompletionAsync']();
+  webGLBackend['getUniformLocations']();
   if (instance.config.debug) log('compile pass:', { models: compiledModels, kernels: kernels.length });
   tf.env().set('ENGINE_COMPILE_ONLY', false);
   const numTensorsEnd = tf.engine().state.numTensors;

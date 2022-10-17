@@ -2,7 +2,6 @@ const fs = require('fs');
 const process = require('process');
 const canvasJS = require('canvas'); // eslint-disable-line node/no-extraneous-require, node/no-missing-require
 
-let fetch; // fetch is dynamically imported later
 let config;
 let lastOp = 'unknown';
 
@@ -12,8 +11,10 @@ const log = (status, ...data) => {
 };
 
 process.on('uncaughtException', (err) => {
-  log('error', 'uncaughtException', lastOp, err); // abort immediately
-  throw new Error(err);
+  log('error', 'failed:', lastOp);
+  log('error', 'uncaughtException', { name: err.name, message: err.message, cause: err.cause, stack: err.stack?.split('\n') });
+  process.exit(1); // eslint-disable-line no-process-exit
+  // throw new Error(err);
 });
 
 async function testHTTP() {
@@ -145,6 +146,7 @@ async function testDetect(human, input, title, checkLeak = true) {
     log('error', 'failed: detect: input is null', { input, title });
     return false;
   }
+  lastOp = `testDetect ${title}`;
   let detect = {};
   try {
     detect = await human.detect(image, config);
@@ -262,7 +264,6 @@ async function verifyCompare(human) {
 async function test(Human, inputConfig) {
   lastOp = `test ${inputConfig}`;
   config = inputConfig;
-  fetch = (await import('node-fetch')).default; // eslint-disable-line node/no-unsupported-features/es-syntax
   const ok = await testHTTP();
   if (!ok) {
     log('error', 'aborting test');

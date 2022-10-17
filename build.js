@@ -93,8 +93,12 @@ async function main() {
   const build = new Build();
   await build.run('production');
   // patch tfjs typedefs
-  log.state('Copy:', { input: 'src/tfjs/tfjs.esm.d.ts', output: 'dist/tfjs.esm.d.ts' });
+  log.state('Copy:', { input: 'src/tfjs', output: 'dist/tfjs.esm.d.ts' });
   copy('src/tfjs/tfjs.esm.d.ts', 'dist/tfjs.esm.d.ts');
+  // log.state('Copy:', { input: '@vladmandic/tfjs/types', output: 'types/tfjs-core.esm.d.ts' });
+  // copy('node_modules/@vladmandic/tfjs/types/tfjs-core.d.ts', 'types/tfjs-core.esm.d.ts');
+  // log.state('Copy:', { input: '@vladmandic/tfjs/types', output: 'types/tfjs.esm.d.ts' });
+  // copy('node_modules/@vladmandic/tfjs/types/tfjs.d.ts', 'types/tfjs.esm.d.ts');
   // run api-extractor to create typedef rollup
   const extractorConfig = APIExtractor.ExtractorConfig.loadFileAndPrepare('.api-extractor.json');
   const extractorResult = APIExtractor.Extractor.invoke(extractorConfig, {

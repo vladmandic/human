@@ -6,7 +6,6 @@ import { log } from '../util/util';
 import * as image from '../image/image';
 import * as models from '../models';
 import type { AnyCanvas } from '../exports';
-import type { MathBackendWebGL } from './types';
 // import { env } from '../env';
 
 export const config = {
@@ -105,6 +104,7 @@ export function register(instance: Human): void {
     }
     try {
       const ctx = new tf.GPGPUContext(config.gl);
+      // @ts-ignore uncompatible kernelMs timing info
       tf.registerBackend(config.name, () => new tf.MathBackendWebGL(ctx), config.priority);
     } catch (err) {
       log('humangl error: cannot register webgl backend:', err);
@@ -128,8 +128,8 @@ export function register(instance: Human): void {
       return;
     }
     extensions();
-    const backend = tf.backend() as MathBackendWebGL;
-    const current = typeof backend['gpgpu'] !== 'undefined' ? backend.getGPGPUContext().gl : null;
+    const backend = tf.backend();
+    const current = typeof backend['gpgpu'] !== 'undefined' ? backend['getGPGPUContext']().gl : null;
     if (current) {
       if (instance.config.debug) log('humangl backend registered:', { webgl: current.getParameter(current.VERSION) as string, renderer: current.getParameter(current.RENDERER) as string });
     } else {

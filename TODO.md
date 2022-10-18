@@ -51,3 +51,9 @@ No support for running in **web workers** as Safari still does not support `Offs
 
 ## Pending Release Changes
 
+- Upgrade to TFJS 4.0 with **strong typing**  
+  see [notes](https://github.com/vladmandic/human#typedefs) on how to use  
+- `TypeDef` refactoring  
+- Add [draw label templates](https://github.com/vladmandic/human/wiki/Draw)  
+- Reduce build dependencies  
+  `Human` is now 30% smaller :)

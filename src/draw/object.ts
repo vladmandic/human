@@ -1,5 +1,5 @@
 import { mergeDeep } from '../util/util';
-import { getCanvasContext, rect } from './primitives';
+import { getCanvasContext, rect, replace, labels } from './primitives';
 import { options } from './options';
 import type { ObjectResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
@@ -17,14 +17,11 @@ export function object(inCanvas: AnyCanvas, result: ObjectResult[], drawOptions?
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
-      if (localOptions.drawLabels) {
-        const label = `${h.label} ${Math.round(100 * h.score)}%`;
-        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(label, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]);
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(label, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]);
+      if (localOptions.drawLabels && (localOptions.objectLabels?.length > 0)) {
+        let l = localOptions.objectLabels.slice();
+        l = replace(l, '[label]', h.label);
+        l = replace(l, '[score]', 100 * h.score);
+        labels(ctx, l, h.box[0], h.box[1], localOptions);
       }
       ctx.stroke();
     }

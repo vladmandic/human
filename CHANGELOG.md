@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/10/16 mandic00@live.com
+### **HEAD -> main** 2022/10/17 mandic00@live.com
 
+- tensor rank strong typechecks
 
 ### **origin/main** 2022/10/13 mandic00@live.com
 

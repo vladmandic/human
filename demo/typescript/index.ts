@@ -10,9 +10,10 @@
 import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
 const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
+  // backend: 'wasm',
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false, flip: false },
-  face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true } },
+  face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
   body: { enabled: true },
   hand: { enabled: true },
   object: { enabled: false },
@@ -66,7 +67,9 @@ async function drawLoop() { // main screen refresh loop
     const interpolated = human.next(human.result); // smoothen result using last-known results
     if (human.config.filter.flip) human.draw.canvas(interpolated.canvas as HTMLCanvasElement, dom.canvas); // draw processed image to screen canvas
     else human.draw.canvas(dom.video, dom.canvas); // draw original video to screen canvas // better than using procesed image as this loop happens faster than processing loop
-    await human.draw.all(dom.canvas, interpolated); // draw labels, boxes, lines, etc.
+
+    const opt: Partial<H.DrawOptions> = { bodyLabels: `person confidence [score] and ${human.result?.body?.[0]?.keypoints.length} keypoints` };
+    await human.draw.all(dom.canvas, interpolated, opt); // draw labels, boxes, lines, etc.
     perf(interpolated.performance); // write performance data
   }
   const now = human.now();
@@ -94,6 +97,7 @@ async function main() { // main entry point
   log('backend:', human.tf.getBackend(), '| available:', human.env.backends);
   log('models stats:', human.getModelStats());
   log('models loaded:', Object.values(human.models).filter((model) => model !== null).length);
+  log('environment', human.env);
   status('initializing...');
   await human.warmup(); // warmup function to initialize backend for future faster detection
   await webCam(); // start webcam

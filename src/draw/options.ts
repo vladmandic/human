@@ -1,6 +1,7 @@
 /** Draw Options
  * - Accessed via `human.draw.options` or provided per each draw method as the drawOptions optional parameter
  */
+
 export interface DrawOptions {
   /** draw line color */
   color: string,
@@ -40,6 +41,20 @@ export interface DrawOptions {
   useDepth: boolean,
   /** should lines be curved? */
   useCurves: boolean,
+  /** string template for face labels */
+  faceLabels: string,
+  /** string template for body labels */
+  bodyLabels: string,
+  /** string template for body part labels */
+  bodyPartLabels: string,
+  /** string template for hand labels */
+  handLabels: string,
+  /** string template for hand labels */
+  fingerLabels: string,
+  /** string template for object labels */
+  objectLabels: string,
+  /** string template for gesture labels */
+  gestureLabels: string,
 }
 
 /** currently set draw options {@link DrawOptions} */
@@ -63,4 +78,11 @@ export const options: DrawOptions = {
   fillPolygons: false as boolean,
   useDepth: true as boolean,
   useCurves: false as boolean,
+  faceLabels: '' as string,
+  bodyLabels: '' as string,
+  bodyPartLabels: '' as string,
+  objectLabels: '' as string,
+  handLabels: '' as string,
+  fingerLabels: '' as string,
+  gestureLabels: '' as string,
 };

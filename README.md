@@ -108,6 +108,7 @@
 - [**Usage & Functions**](https://github.com/vladmandic/human/wiki/Usage)
 - [**Configuration Details**](https://github.com/vladmandic/human/wiki/Config)
 - [**Result Details**](https://github.com/vladmandic/human/wiki/Result)
+- [**Customizing Draw Methods**](https://github.com/vladmandic/human/wiki/Draw)
 - [**Caching & Smoothing**](https://github.com/vladmandic/human/wiki/Caching)
 - [**Input Processing**](https://github.com/vladmandic/human/wiki/Image)
 - [**Face Recognition & Face Description**](https://github.com/vladmandic/human/wiki/Embedding)

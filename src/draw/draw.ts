@@ -11,6 +11,7 @@ import { body } from './body';
 import { hand } from './hand';
 import { object } from './object';
 import { gesture } from './gesture';
+import { defaultLabels } from './labels';
 import type { Result, PersonResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
 
@@ -75,4 +76,15 @@ export async function all(inCanvas: AnyCanvas, result: Result, drawOptions?: Par
   drawTime = env.perfadd ? drawTime + Math.round(now() - timeStamp) : Math.round(now() - timeStamp);
   result.performance.draw = drawTime;
   return promise;
+}
+
+/** sets default label templates for face/body/hand/object/gestures */
+export function init() {
+  options.faceLabels = defaultLabels.face;
+  options.bodyLabels = defaultLabels.body;
+  options.bodyPartLabels = defaultLabels.bodyPart;
+  options.handLabels = defaultLabels.hand;
+  options.fingerLabels = defaultLabels.finger;
+  options.objectLabels = defaultLabels.object;
+  options.gestureLabels = defaultLabels.gesture;
 }

@@ -1,5 +1,5 @@
 import { mergeDeep } from '../util/util';
-import { getCanvasContext, rect, point, colorDepth } from './primitives';
+import { getCanvasContext, rect, point, colorDepth, replace, labels } from './primitives';
 import { options } from './options';
 import type { HandResult } from '../result';
 import type { AnyCanvas, DrawOptions, Point } from '../exports';
@@ -17,13 +17,11 @@ export function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Pa
       ctx.strokeStyle = localOptions.color;
       ctx.fillStyle = localOptions.color;
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
-      if (localOptions.drawLabels) {
-        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 3, 1 + h.box[1] + localOptions.lineHeight, h.box[2]); // can use h.label
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(`hand:${Math.trunc(100 * h.score)}%`, h.box[0] + 2, 0 + h.box[1] + localOptions.lineHeight, h.box[2]); // can use h.label
+      if (localOptions.drawLabels && (localOptions.handLabels?.length > 0)) {
+        let l = localOptions.handLabels.slice();
+        l = replace(l, '[label]', h.label);
+        l = replace(l, '[score]', 100 * h.score);
+        labels(ctx, l, h.box[0], h.box[1], localOptions);
       }
       ctx.stroke();
     }
@@ -35,20 +33,12 @@ export function hand(inCanvas: AnyCanvas, result: HandResult[], drawOptions?: Pa
         }
       }
     }
-    if (localOptions.drawLabels && h.annotations) {
-      const addHandLabel = (part: Point[], title: string) => {
-        if (!part || part.length === 0 || !part[0]) return;
-        const z = part[part.length - 1][2] || -256;
-        ctx.fillStyle = colorDepth(z, localOptions);
-        ctx.fillText(title, part[part.length - 1][0] + 4, part[part.length - 1][1] + 4);
-      };
-      ctx.font = localOptions.font;
-      addHandLabel(h.annotations.index, 'index');
-      addHandLabel(h.annotations.middle, 'middle');
-      addHandLabel(h.annotations.ring, 'ring');
-      addHandLabel(h.annotations.pinky, 'pinky');
-      addHandLabel(h.annotations.thumb, 'thumb');
-      addHandLabel(h.annotations.palm, 'palm');
+    if (localOptions.drawLabels && h.annotations && (localOptions.fingerLabels?.length > 0)) {
+      for (const [part, pt] of Object.entries(h.annotations)) {
+        let l = localOptions.fingerLabels.slice();
+        l = replace(l, '[label]', part);
+        labels(ctx, l, pt[pt.length - 1][0], pt[pt.length - 1][1], localOptions);
+      }
     }
     if (localOptions.drawPolygons && h.annotations) {
       const addHandLine = (part: Point[]) => {

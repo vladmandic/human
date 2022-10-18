@@ -16,11 +16,27 @@ export const getCanvasContext = (input: AnyCanvas) => {
 
 export const rad2deg = (theta: number) => Math.round((theta * 180) / Math.PI);
 
+export const replace = (str: string, source: string, target: string | number) => str.replace(source, typeof target === 'number' ? target.toFixed(1) : target);
+
 export const colorDepth = (z: number | undefined, opt: DrawOptions): string => { // performance optimization needed
   if (!opt.useDepth || typeof z === 'undefined') return opt.color;
   const rgb = Uint8ClampedArray.from([127 + (2 * z), 127 - (2 * z), 255]);
   return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${opt.alpha})`;
 };
+
+export function labels(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, str: string, startX: number, startY: number, localOptions: DrawOptions) {
+  const line: string[] = str.replace(/\[.*\]/g, '').split('\n').map((l) => l.trim()); // remove unmatched templates and split into array
+  const x = Math.max(0, startX);
+  for (let i = line.length - 1; i >= 0; i--) {
+    const y = i * localOptions.lineHeight + startY;
+    if (localOptions.shadowColor && localOptions.shadowColor !== '') {
+      ctx.fillStyle = localOptions.shadowColor;
+      ctx.fillText(line[i], x + 5, y + 16);
+    }
+    ctx.fillStyle = localOptions.labelColor;
+    ctx.fillText(line[i], x + 4, y + 15);
+  }
+}
 
 export function point(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, x: number, y: number, z: number | undefined, localOptions: DrawOptions) {
   ctx.fillStyle = colorDepth(z, localOptions);

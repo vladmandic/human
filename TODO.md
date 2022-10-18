@@ -2,8 +2,6 @@
 
 ## Work-in-Progress
 
-- `src/tfjs/tfjs.esm.d.ts`
-- `src/tfjs/long.d.ts`
 
 <hr><br>
 

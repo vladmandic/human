@@ -1,5 +1,5 @@
 import { mergeDeep } from '../util/util';
-import { getCanvasContext, rect, point, curves, colorDepth } from './primitives';
+import { getCanvasContext, rect, point, curves, colorDepth, replace, labels } from './primitives';
 import { options } from './options';
 import type { BodyResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
@@ -18,13 +18,10 @@ export function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Pa
     ctx.font = localOptions.font;
     if (localOptions.drawBoxes && result[i].box && result[i].box.length === 4) {
       rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
-      if (localOptions.drawLabels) {
-        if (localOptions.shadowColor && localOptions.shadowColor !== '') {
-          ctx.fillStyle = localOptions.shadowColor;
-          ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 3, 1 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
-        }
-        ctx.fillStyle = localOptions.labelColor;
-        ctx.fillText(`body ${100 * result[i].score}%`, result[i].box[0] + 2, 0 + result[i].box[1] + localOptions.lineHeight, result[i].box[2]);
+      if (localOptions.drawLabels && (localOptions.bodyLabels?.length > 0)) {
+        let l = localOptions.bodyLabels.slice();
+        l = replace(l, '[score]', 100 * result[i].score);
+        labels(ctx, l, result[i].box[0], result[i].box[1], localOptions);
       }
     }
     if (localOptions.drawPoints && result[i].keypoints) {
@@ -34,12 +31,14 @@ export function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Pa
         point(ctx, result[i].keypoints[pt].position[0], result[i].keypoints[pt].position[1], 0, localOptions);
       }
     }
-    if (localOptions.drawLabels && result[i].keypoints) {
+    if (localOptions.drawLabels && (localOptions.bodyPartLabels?.length > 0) && result[i].keypoints) {
       ctx.font = localOptions.font;
       for (const pt of result[i].keypoints) {
         if (!pt.score || (pt.score === 0)) continue;
-        ctx.fillStyle = colorDepth(pt.position[2], localOptions);
-        ctx.fillText(`${pt.part} ${Math.trunc(100 * pt.score)}%`, pt.position[0] + 4, pt.position[1] + 4);
+        let l = localOptions.bodyPartLabels.slice();
+        l = replace(l, '[label]', pt.part);
+        l = replace(l, '[score]', 100 * pt.score);
+        labels(ctx, l, pt.position[0], pt.position[1], localOptions);
       }
     }
     if (localOptions.drawPolygons && result[i].keypoints && result[i].annotations) {

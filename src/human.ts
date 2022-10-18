@@ -157,6 +157,7 @@ export class Human {
     // object that contains all initialized models
     this.models = new models.Models();
     // reexport draw methods
+    draw.init();
     this.draw = {
       options: draw.options,
       canvas: (input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) => draw.canvas(input, output),

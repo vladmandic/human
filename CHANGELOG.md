@@ -9,12 +9,12 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/10/17 mandic00@live.com
+### **HEAD -> main** 2022/10/18 mandic00@live.com
 
+- add draw label templates
+- reduce dev dependencies
 - tensor rank strong typechecks
-
-### **origin/main** 2022/10/13 mandic00@live.com
-
+- rebuild dependencies
 
 ### **release: 2.11.1** 2022/10/09 mandic00@live.com
 

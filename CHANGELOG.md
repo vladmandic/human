@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/10/18 mandic00@live.com
+### **HEAD -> main** 2022/10/24 mandic00@live.com
 
 - add draw label templates
 - reduce dev dependencies

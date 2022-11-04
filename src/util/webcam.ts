@@ -118,7 +118,7 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
     }
 
     // set constraints to use
-    const requestedConstraints: DisplayMediaStreamConstraints = {
+    const requestedConstraints: MediaStreamConstraints = {
       audio: false,
       video: {
         facingMode: this.config.mode === 'front' ? 'user' : 'environment',

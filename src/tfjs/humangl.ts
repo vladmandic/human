@@ -62,7 +62,7 @@ export function register(instance: Human): void {
       return;
     }
     try {
-      config.gl = config.canvas.getContext('webgl2', config.webGLattr);
+      config.gl = config.canvas.getContext('webgl2', config.webGLattr) as WebGL2RenderingContext;
       if (!config.gl) {
         log('humangl error: cannot get webgl context');
         return;

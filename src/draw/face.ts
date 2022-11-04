@@ -140,7 +140,7 @@ function drawFaceBoxes(f: FaceResult, ctx) {
 export function face(inCanvas: AnyCanvas, result: FaceResult[], drawOptions?: Partial<DrawOptions>) {
   localOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  const ctx = getCanvasContext(inCanvas);
+  const ctx = getCanvasContext(inCanvas) as CanvasRenderingContext2D;
   if (!ctx) return;
   ctx.font = localOptions.font;
   ctx.strokeStyle = localOptions.color;

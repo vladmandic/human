@@ -8,7 +8,7 @@ import type { AnyCanvas, DrawOptions } from '../exports';
 export function object(inCanvas: AnyCanvas, result: ObjectResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions: DrawOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  const ctx = getCanvasContext(inCanvas);
+  const ctx = getCanvasContext(inCanvas) as CanvasRenderingContext2D;
   if (!ctx) return;
   ctx.lineJoin = 'round';
   ctx.font = localOptions.font;

@@ -28,7 +28,7 @@ export { gesture } from './gesture';
 export function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions: DrawOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  const ctx = getCanvasContext(inCanvas);
+  const ctx = getCanvasContext(inCanvas) as CanvasRenderingContext2D;
   if (!ctx) return;
   ctx.lineJoin = 'round';
   ctx.font = localOptions.font;
@@ -55,7 +55,7 @@ export function person(inCanvas: AnyCanvas, result: PersonResult[], drawOptions?
 /** draw processed canvas */
 export function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) {
   if (!input || !output) return;
-  const ctx = getCanvasContext(output);
+  const ctx = getCanvasContext(output) as CanvasRenderingContext2D;
   if (!ctx) return;
   ctx.drawImage(input, 0, 0);
 }

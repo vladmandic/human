@@ -57,4 +57,4 @@ No support for running in **web workers** as Safari still does not support `Offs
 - Add [draw label templates](https://github.com/vladmandic/human/wiki/Draw)  
 - Reduce build dependencies  
   `Human` is now 30% smaller :)  
-- Add named export for improved bundler support  
+- Add named export for improved bundler support when using non-default imports  

@@ -8,7 +8,7 @@ import type { AnyCanvas, DrawOptions } from '../exports';
 export function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Partial<DrawOptions>) {
   const localOptions: DrawOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
-  const ctx = getCanvasContext(inCanvas);
+  const ctx = getCanvasContext(inCanvas) as CanvasRenderingContext2D;
   if (!ctx) return;
   ctx.lineJoin = 'round';
   for (let i = 0; i < result.length; i++) {

@@ -9,7 +9,7 @@ export function gesture(inCanvas: AnyCanvas, result: GestureResult[], drawOption
   const localOptions: DrawOptions = mergeDeep(options, drawOptions);
   if (!result || !inCanvas) return;
   if (localOptions.drawGestures && (localOptions.gestureLabels?.length > 0)) {
-    const ctx = getCanvasContext(inCanvas);
+    const ctx = getCanvasContext(inCanvas) as CanvasRenderingContext2D;
     if (!ctx) return;
     ctx.font = localOptions.font;
     ctx.fillStyle = localOptions.color;

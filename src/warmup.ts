@@ -60,7 +60,7 @@ async function warmupCanvas(instance: Human): Promise<Result | undefined> {
         log('Warmup: Canvas not found');
         resolve(undefined);
       } else {
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         if (ctx) ctx.drawImage(img, 0, 0);
         // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
         const tensor = await instance.image(canvas);
@@ -80,6 +80,7 @@ async function warmupNode(instance: Human): Promise<Result | undefined> {
   else img = atob(sample.body);
   let res: Result;
   if (('node' in tf) && (tf.getBackend() === 'tensorflow')) {
+    // @ts-ignore
     const data: Tensor = tf['node'].decodeJpeg(img); // eslint-disable-line import/namespace
     const expanded: Tensor = tf.expandDims(data, 0);
     instance.tf.dispose(data);

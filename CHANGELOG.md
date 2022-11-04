@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/10/24 mandic00@live.com
+### **HEAD -> main** 2022/10/28 mandic00@live.com
 
+- add named exports
 - add draw label templates
 - reduce dev dependencies
 - tensor rank strong typechecks

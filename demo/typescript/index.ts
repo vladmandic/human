@@ -9,11 +9,13 @@
 
 import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 
+const width = 1920; // used by webcam config as well as human maximum resultion // can be anything, but resolutions higher than 4k will disable internal optimizations
+
 const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
-  // backend: 'wasm',
+  // backend: 'webgpu',
   modelBasePath: '../../models',
-  filter: { enabled: true, equalization: false, flip: false },
-  face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
+  filter: { enabled: true, equalization: false, flip: false, width },
+  face: { enabled: true, detector: { rotation: true }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
   body: { enabled: true },
   hand: { enabled: true },
   object: { enabled: false },
@@ -65,8 +67,8 @@ async function detectionLoop() { // main detection loop
 async function drawLoop() { // main screen refresh loop
   if (!dom.video.paused) {
     const interpolated = human.next(human.result); // smoothen result using last-known results
-    if (human.config.filter.flip) human.draw.canvas(interpolated.canvas as HTMLCanvasElement, dom.canvas); // draw processed image to screen canvas
-    else human.draw.canvas(dom.video, dom.canvas); // draw original video to screen canvas // better than using procesed image as this loop happens faster than processing loop
+    const processed = await human.image(dom.video); // get current video frame, but enhanced with human.filters
+    human.draw.canvas(processed.canvas as HTMLCanvasElement, dom.canvas);
 
     const opt: Partial<H.DrawOptions> = { bodyLabels: `person confidence [score] and ${human.result?.body?.[0]?.keypoints.length} keypoints` };
     await human.draw.all(dom.canvas, interpolated, opt); // draw labels, boxes, lines, etc.
@@ -80,7 +82,7 @@ async function drawLoop() { // main screen refresh loop
 }
 
 async function webCam() {
-  await human.webcam.start({ element: dom.video, crop: true }); // use human webcam helper methods and associate webcam stream with a dom element
+  await human.webcam.start({ element: dom.video, crop: true, width }); // use human webcam helper methods and associate webcam stream with a dom element
   dom.canvas.width = human.webcam.width;
   dom.canvas.height = human.webcam.height;
   dom.canvas.onclick = async () => { // pause when clicked on screen and resume on next click

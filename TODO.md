@@ -51,10 +51,29 @@ No support for running in **web workers** as Safari still does not support `Offs
 
 ## Pending Release Changes
 
+Optimizations:
+- Enabled high-resolution optimizations  
+  Internal limits are increased from **2k** to **4k**
+- Enhanced device capabilities detection  
+  See `human.env.[agent, wasm, webgl, webgpu]` for details  
+- If `config.backend` is not set, Human will auto-select best backend  
+  based on device capabilities  
+- Enhanced support for `webgpu`  
+
+Features:
+- Add [draw label templates](https://github.com/vladmandic/human/wiki/Draw)  
+- Add `config.filter.autoBrightness` (*enabled by default*)  
+  Per-frame video on-the-fly brightness adjustments  
+  Which significantly increases performance and precision in poorly lit scenes  
+- Improved `config.filter.equalization` (*disabled by default*)  
+  Image and video on-demand histogram equalization  
+
+Architecture:
 - Upgrade to TFJS 4.0 with **strong typing**  
   see [notes](https://github.com/vladmandic/human#typedefs) on how to use  
 - `TypeDef` refactoring  
-- Add [draw label templates](https://github.com/vladmandic/human/wiki/Draw)  
 - Reduce build dependencies  
   `Human` is now 30% smaller :)  
+  As usual, `Human` has **zero** runtime dependencies,  
+  all *devDependencies* are only to rebuild `Human` itself
 - Add named export for improved bundler support when using non-default imports  

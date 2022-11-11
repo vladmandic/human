@@ -186,6 +186,8 @@ export interface FilterConfig {
   return: boolean,
   /** flip input as mirror image */
   flip: boolean,
+  /** apply auto-brighness */
+  autoBrightness: boolean,
   /** range: -1 (darken) to 1 (lighten) */
   brightness: number,
   /** range: -1 (reduce contrast) to 1 (increase contrast) */
@@ -350,6 +352,7 @@ const config: Config = {
     height: 0,
     flip: false,
     return: true,
+    autoBrightness: true,
     brightness: 0,
     contrast: 0,
     sharpness: 0,

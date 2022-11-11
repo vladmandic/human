@@ -8,6 +8,15 @@ import * as humangl from './humangl';
 import * as constants from './constants';
 import type { TensorInfo } from './types';
 
+export async function getBestBackend(): Promise<BackendEnum> {
+  await env.updateBackend(); // update env on backend init
+  if (!env.browser) return 'tensorflow';
+  if (env.webgpu.supported && env.webgpu.backend) return 'webgpu';
+  if (env.webgl.supported && env.webgl.backend) return 'webgl';
+  if (env.wasm.supported && env.wasm.backend) return 'wasm';
+  return 'cpu';
+}
+
 function registerCustomOps(config: Config) {
   const newKernels: string[] = [];
   if (!env.kernels.includes('mod')) {
@@ -73,6 +82,7 @@ let defaultFlags: Record<string, unknown> = {};
 
 export async function check(instance: Human, force = false) {
   instance.state = 'backend';
+  if (instance.config.backend?.length === 0) instance.config.backend = await getBestBackend();
   if (force || env.initial || (instance.config.backend && (instance.config.backend.length > 0) && (tf.getBackend() !== instance.config.backend))) {
     const timeStamp = now();
 

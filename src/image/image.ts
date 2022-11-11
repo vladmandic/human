@@ -188,7 +188,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
       if (config.filter.technicolor) fx.add('technicolor');
       if (config.filter.polaroid) fx.add('polaroid');
       if (config.filter.pixelate !== 0) fx.add('pixelate', config.filter.pixelate);
-      if (fx.get() > 0) outCanvas = fx.apply(inCanvas);
+      if (fx.get()?.length > 1) outCanvas = fx.apply(inCanvas);
       else outCanvas = fx.draw(inCanvas);
     }
   } else {
@@ -238,6 +238,14 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   if (!pixels) throw new Error('input error: cannot create tensor');
   const casted: Tensor = tf.cast(pixels, 'float32');
   const tensor: Tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
+
+  if (config.filter.autoBrightness) {
+    const max = tf.max(tensor);
+    const maxVal = await max.data();
+    config.filter.brightness = maxVal[0] > 1 ? (1 - maxVal[0] / 255) : (1 - maxVal[0]);
+    tf.dispose(max);
+  }
+
   tf.dispose([pixels, casted]);
   return { tensor: tensor as Tensor4D, canvas: (config.filter.return ? outCanvas : null) };
 }
@@ -274,7 +282,7 @@ const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js
 
 export async function skip(config: Partial<Config>, input: Tensor) {
   let skipFrame = false;
-  if (config.cacheSensitivity === 0 || !input.shape || input.shape.length !== 4 || input.shape[1] > 2048 || input.shape[2] > 2048) return skipFrame; // cache disabled or input is invalid or too large for cache analysis
+  if (config.cacheSensitivity === 0 || !input.shape || input.shape.length !== 4 || input.shape[1] > 3840 || input.shape[2] > 2160) return skipFrame; // cache disabled or input is invalid or too large for cache analysis
 
   /*
   const checkSum = await checksum(input);

@@ -139,7 +139,6 @@ export class Human {
     const tfVersion = (tf.version.tfjs || tf.version_core).replace(/-(.*)/, '');
     defaults.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfVersion}/dist/`;
     defaults.modelBasePath = env.browser ? '../models/' : 'file://models/';
-    defaults.backend = env.browser ? 'webgl' : 'tensorflow';
     this.version = app.version; // expose version property on instance of class
     Object.defineProperty(this, 'version', { value: app.version }); // expose version property directly on class itself
     this.config = JSON.parse(JSON.stringify(defaults));
@@ -252,7 +251,7 @@ export class Human {
    * @param getTensor - should image processing also return tensor or just canvas
    * Returns object with `tensor` and `canvas`
    */
-  image(input: Input, getTensor: boolean = true) {
+  image(input: Input, getTensor: boolean = false) {
     return image.process(input, this.config, getTensor);
   }
 
@@ -455,6 +454,7 @@ export class Human {
 
       timeStamp = now();
       this.config.skipAllowed = await image.skip(this.config, img.tensor);
+      this.config.filter.autoBrightness = (this.config.filter.autoBrightness || false) && this.config.skipAllowed; // disable autoBrightness on scene change
       if (!this.performance.totalFrames) this.performance.totalFrames = 0;
       if (!this.performance.cachedFrames) this.performance.cachedFrames = 0;
       (this.performance.totalFrames)++;

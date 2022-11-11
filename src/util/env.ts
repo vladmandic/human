@@ -53,17 +53,21 @@ export class Env {
     backend: undefined | boolean,
     version: undefined | string,
     renderer: undefined | string,
+    shader: undefined | string,
+    vendor: undefined | string,
   } = {
       supported: undefined,
       backend: undefined,
       version: undefined,
       renderer: undefined,
+      shader: undefined,
+      vendor: undefined,
     };
   /** WebGPU detected capabilities */
   webgpu: {
     supported: undefined | boolean,
     backend: undefined | boolean,
-    adapter: undefined | string,
+    adapter: undefined | GPUAdapterInfo,
   } = {
       supported: undefined,
       backend: undefined,
@@ -123,35 +127,36 @@ export class Env {
   async updateBackend() {
     // analyze backends
     this.backends = Object.keys(tf.engine().registryFactory);
-    this.tensorflow = {
-      version: (tf.backend()['binding'] ? tf.backend()['binding'].TF_Version : undefined),
-      gpu: (tf.backend()['binding'] ? tf.backend()['binding'].isUsingGpuDevice() : undefined),
-    };
+    try {
+      this.tensorflow = {
+        version: (tf.backend()['binding'] ? tf.backend()['binding'].TF_Version : undefined),
+        gpu: (tf.backend()['binding'] ? tf.backend()['binding'].isUsingGpuDevice() : undefined),
+      };
+    } catch { /**/ }
     this.wasm.supported = typeof WebAssembly !== 'undefined';
     this.wasm.backend = this.backends.includes('wasm');
-    if (this.wasm.supported && this.wasm.backend && tf.getBackend() === 'wasm') {
-      this.wasm.simd = tf.env().get('WASM_HAS_SIMD_SUPPORT') as boolean;
-      this.wasm.multithread = tf.env().get('WASM_HAS_MULTITHREAD_SUPPORT') as boolean;
+    if (this.wasm.supported && this.wasm.backend) {
+      this.wasm.simd = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT') as boolean;
+      this.wasm.multithread = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT') as boolean;
     }
     const c = image.canvas(100, 100);
     const ctx = c ? c.getContext('webgl2') : undefined; // causes too many gl contexts
     // const ctx = typeof tf.backend().getGPGPUContext !== undefined ? tf.backend().getGPGPUContext : null;
     this.webgl.supported = typeof ctx !== 'undefined';
     this.webgl.backend = this.backends.includes('webgl');
-    if (this.webgl.supported && this.webgl.backend && (tf.getBackend() === 'webgl' || tf.getBackend() === 'humangl')) {
-      const backend = tf.backend();
-      const gl = typeof backend['gpgpu'] !== 'undefined' ? backend['getGPGPUContext']().gl : null;
-      if (gl) {
-        this.webgl.version = gl.getParameter(gl.VERSION);
-        this.webgl.renderer = gl.getParameter(gl.RENDERER);
-      }
+    if (this.webgl.supported && this.webgl.backend) {
+      const gl = ctx as WebGL2RenderingContext;
+      this.webgl.version = gl.getParameter(gl.VERSION);
+      this.webgl.vendor = gl.getParameter(gl.VENDOR);
+      this.webgl.renderer = gl.getParameter(gl.RENDERER);
+      this.webgl.shader = gl.getParameter(gl.SHADING_LANGUAGE_VERSION);
     }
     this.webgpu.supported = this.browser && typeof navigator.gpu !== 'undefined';
     this.webgpu.backend = this.backends.includes('webgpu');
     try {
       if (this.webgpu.supported) {
         const adapter = await navigator.gpu.requestAdapter();
-        this.webgpu.adapter = adapter ? adapter.name : undefined;
+        this.webgpu.adapter = await adapter?.requestAdapterInfo();
       }
     } catch {
       this.webgpu.supported = false;

@@ -15,7 +15,7 @@ const options = {
   dbMax: 10000, // maximum number of records to hold in memory
   threadPoolSize: 12, // number of worker threads to create in thread pool
   workerSrc: './node-match-worker.js', // code that executes in the worker thread
-  debug: false, // verbose messages
+  debug: true, // verbose messages
   minThreshold: 0.5, // match returns first record that meets the similarity threshold, set to 0 to always scan all records
   descLength: 1024, // descriptor length
 };

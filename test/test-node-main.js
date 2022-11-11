@@ -356,8 +356,8 @@ async function test(Human, inputConfig) {
 
   // test image processing
   log('info', 'test: image process');
-  const img1 = await human.image(null);
-  const img2 = await human.image(await getImage(human, 'samples/in/ai-face.jpg'));
+  const img1 = await human.image(null, true);
+  const img2 = await human.image(await getImage(human, 'samples/in/ai-face.jpg'), true);
   if (!img1 || !img2 || img1.tensor !== null || img2.tensor?.shape?.length !== 4) log('error', 'failed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
   else log('state', 'passed: image input', img1?.tensor?.shape, img2?.tensor?.shape);
 

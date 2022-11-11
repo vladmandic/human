@@ -97,11 +97,12 @@ async function testMatch() {
   human.reset();
   await human.warmup({ warmup: 'face' });
   const img1 = await image('../../samples/in/ai-body.jpg');
-  const input1 = await human.image(img1);
+  const input1 = await human.image(img1, true);
   const img2 = await image('../../samples/in/ai-face.jpg');
-  const input2 = await human.image(img2);
+  const input2 = await human.image(img2, true);
   const res1 = await human.detect(input1.tensor);
   const res2 = await human.detect(input2.tensor);
+  human.tf.dispose(input1.tensor, input2.tensor);
   const desc1 = res1?.face?.[0]?.embedding;
   const desc2 = res2?.face?.[0]?.embedding;
   const similarity = await human.similarity(desc1, desc2);

@@ -44,7 +44,7 @@ async function main() {
   // set defaults
   dom.fps.innerText = 'initializing';
   dom.ratio.valueAsNumber = human.config.segmentation.ratio;
-  dom.video.src = '../assets/rijeka.mp4';
+  dom.video.src = 'https://vladmandic.github.io/segmentation/assets/rijeka.mp4';
   dom.composite.innerHTML = ['source-atop', 'color', 'color-burn', 'color-dodge', 'copy', 'darken', 'destination-atop', 'destination-in', 'destination-out', 'destination-over', 'difference', 'exclusion', 'hard-light', 'hue', 'lighten', 'lighter', 'luminosity', 'multiply', 'overlay', 'saturation', 'screen', 'soft-light', 'source-in', 'source-out', 'source-over', 'xor'].map((gco) => `<option value="${gco}">${gco}</option>`).join(''); // eslint-disable-line max-len
   const ctxMerge = dom.merge.getContext('2d');
 

@@ -13,7 +13,8 @@ import * as indexDb from './indexdb'; // methods to deal with indexdb
 const humanConfig = { // user configuration for human, used to fine-tune behavior
   cacheSensitivity: 0,
   modelBasePath: '../../models',
-  filter: { equalization: true }, // lets run with histogram equilizer
+  filter: { enabled: true, equalization: true }, // lets run with histogram equilizer
+  debug: true,
   face: {
     enabled: true,
     detector: { rotation: true, return: true, cropFactor: 1.6, mask: false }, // return tensor is used to get detected face image
@@ -275,8 +276,8 @@ async function main() { // main entry point
   await detectionLoop(); // start detection loop
   startTime = human.now();
   current.face = await validationLoop(); // start validation loop
-  dom.canvas.width = current.face.tensor?.shape[1] || options.minSize;
-  dom.canvas.height = current.face.tensor?.shape[0] || options.minSize;
+  dom.canvas.width = current.face?.tensor?.shape[1] || options.minSize;
+  dom.canvas.height = current.face?.tensor?.shape[0] || options.minSize;
   dom.source.width = dom.canvas.width;
   dom.source.height = dom.canvas.height;
   dom.canvas.style.width = '';

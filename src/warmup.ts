@@ -63,7 +63,7 @@ async function warmupCanvas(instance: Human): Promise<Result | undefined> {
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         if (ctx) ctx.drawImage(img, 0, 0);
         // const data = ctx?.getImageData(0, 0, canvas.height, canvas.width);
-        const tensor = await instance.image(canvas);
+        const tensor = await instance.image(canvas, true);
         const res = tensor.tensor ? await instance.detect(tensor.tensor, instance.config) : undefined;
         resolve(res);
       }

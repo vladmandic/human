@@ -73,7 +73,7 @@ async function testDefault(title, testConfig = {}) {
   const ops = await human.check();
   if (ops && ops.length > 0) log('  missing ops', ops);
   const img = await image('../../samples/in/ai-body.jpg');
-  const input = await human.image(img); // process image
+  const input = await human.image(img, true); // process image
   draw(input.canvas);
   res = await human.warmup({ warmup: 'face' }); // warmup
   draw(res.canvas);

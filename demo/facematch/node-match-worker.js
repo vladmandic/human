@@ -38,7 +38,8 @@ function match(descBuffer, options = { order: 2, multiplier: 20 }) {
     if (best < threshold || best === 0) break; // short circuit
   }
   best = (options.order === 2) ? Math.sqrt(best) : best ** (1 / options.order);
-  return { index, distance: best, similarity: Math.max(0, 100 - best) / 100.0 };
+  const similarity = Math.round(100 * Math.max(0, 100 - best) / 100.0) / 100;
+  return { index, distance: best, similarity };
 }
 
 threads.parentPort?.on('message', (msg) => {

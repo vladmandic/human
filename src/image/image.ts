@@ -238,6 +238,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   if (!pixels) throw new Error('input error: cannot create tensor');
   const casted: Tensor = tf.cast(pixels, 'float32');
   const tensor: Tensor = config.filter.equalization ? await enhance.histogramEqualization(casted) : tf.expandDims(casted, 0);
+  tf.dispose([pixels, casted]);
 
   if (config.filter.autoBrightness) {
     const max = tf.max(tensor);
@@ -246,7 +247,6 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     tf.dispose(max);
   }
 
-  tf.dispose([pixels, casted]);
   return { tensor: tensor as Tensor4D, canvas: (config.filter.return ? outCanvas : null) };
 }
 

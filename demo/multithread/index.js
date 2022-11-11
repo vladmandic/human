@@ -8,7 +8,7 @@
 import { Human } from '../../dist/human.esm.js'; // equivalent of @vladmandic/human
 import GLBench from '../helpers/gl-bench.js';
 
-const workerJS = './worker.js';
+const workerJS = '../multithread/worker.js';
 
 const config = {
   main: { // processes input and runs gesture analysis

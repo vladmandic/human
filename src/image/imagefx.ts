@@ -82,7 +82,7 @@ export function GLImageFilter() {
   let filterChain: Record<string, unknown>[] = [];
   let vertexBuffer: WebGLBuffer | null = null;
   let currentProgram: GLProgram | null = null;
-  const fxcanvas = canvas(100, 100);
+  const fxcanvas = canvas(100, 100) as HTMLCanvasElement;
   const shaderProgramCache = { }; // key is the shader program source, value is the compiled program
   const DRAW = { INTERMEDIATE: 1 };
   const gl = fxcanvas.getContext('webgl') as WebGLRenderingContext;

@@ -6,7 +6,6 @@ import { log } from '../util/util';
 import * as image from '../image/image';
 import * as models from '../models';
 import type { AnyCanvas } from '../exports';
-// import { env } from '../env';
 
 export const config = {
   name: 'humangl',
@@ -79,11 +78,6 @@ export function register(instance: Human): void {
           log('possible browser memory leak using webgl or conflict with multiple backend registrations');
           instance.emit('error');
           throw new Error('backend error: webgl context lost');
-          // log('resetting humangl backend');
-          // env.initial = true;
-          // models.reset(instance);
-          // await tf.removeBackend(config.name);
-          // await register(instance); // re-register
         });
         config.canvas.addEventListener('webglcontextrestored', (e) => {
           log('humangl error: context restored:', e);

@@ -99,7 +99,7 @@ export class Env {
 
     // @ts-ignore WorkerGlobalScope evaluated in browser only
     this.worker = this.browser && this.offscreen ? (typeof WorkerGlobalScope !== 'undefined') : undefined;
-    if (typeof navigator !== 'undefined') {
+    if (typeof navigator !== 'undefined') { // TBD replace with navigator.userAgentData once in mainline
       const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
       if (raw?.[0]) {
         const platformMatch = raw[0].match(/\(([^()]+)\)/g);
@@ -107,15 +107,6 @@ export class Env {
         this.agent = navigator.userAgent.replace(raw[0], '');
         if (this.platform[1]) this.agent = this.agent.replace(raw[1], '');
         this.agent = this.agent.replace(/  /g, ' ');
-        // chrome offscreencanvas gpu memory leak
-        /*
-        const isChrome = env.agent.match(/Chrome\/.[0-9]/g);
-        const verChrome = isChrome && isChrome[0] ? isChrome[0].split('/')[1] : 0;
-        if (verChrome > 92 && verChrome < 96) {
-          log('disabling offscreenCanvas due to browser error:', isChrome ? isChrome[0] : 'unknown');
-          this.offscreen = false;
-        }
-        */
       }
     } else if (typeof process !== 'undefined') {
       this.platform = `${process.platform} ${process.arch}`;

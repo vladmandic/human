@@ -21,8 +21,6 @@ export type { WebCam, WebCamConfig } from './util/webcam';
 // export type { Models, ModelStats, KernelOps } from './models';
 export type { ModelInfo } from './tfjs/load';
 
-// define enum types
-
 /** Events dispatched by `human.events`
  * - `create`: triggered when Human object is instantiated
  * - `load`: triggered when models are loaded (explicitly or on-demand)

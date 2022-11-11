@@ -45,7 +45,6 @@ import type { Input, DrawOptions, Config, Result, FaceResult, HandResult, BodyRe
 import type { Tensor, Tensor4D } from './tfjs/types';
 // type exports
 export * from './exports';
-// tfjs re-export
 
 /** **Human** library main class
  *

@@ -32,17 +32,26 @@ const apiExtractorIgnoreList = [ // eslint-disable-line no-unused-vars
 ];
 
 function copy(src, dst) {
-  if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(src)) {
+    log.warn('Copy:', { input: src, output: dst });
+    return;
+  }
+  log.state('Copy:', { input: src, output: dst });
   const buffer = fs.readFileSync(src);
   fs.writeFileSync(dst, buffer);
 }
 
 function write(str, dst) {
+  log.state('Write:', { output: dst });
   fs.writeFileSync(dst, str);
 }
 
 function filter(str, src) {
-  if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(src)) {
+    log.warn('Filter:', { src });
+    return;
+  }
+  log.state('Filter:', { input: src });
   const buffer = fs.readFileSync(src, 'UTF-8');
   const lines = buffer.split(/\r?\n/);
   const out = [];
@@ -89,16 +98,19 @@ async function analyzeModels() {
 async function main() {
   log.logFile(logFile);
   log.data('Build', { name: packageJSON.name, version: packageJSON.version });
+
   // run production build
   const build = new Build();
   await build.run('production');
+
   // patch tfjs typedefs
-  log.state('Copy:', { input: 'src/tfjs', output: 'dist/tfjs.esm.d.ts' });
   copy('src/tfjs/tfjs.esm.d.ts', 'dist/tfjs.esm.d.ts');
-  // log.state('Copy:', { input: '@vladmandic/tfjs/types', output: 'types/tfjs-core.esm.d.ts' });
-  // copy('node_modules/@vladmandic/tfjs/types/tfjs-core.d.ts', 'types/tfjs-core.esm.d.ts');
-  // log.state('Copy:', { input: '@vladmandic/tfjs/types', output: 'types/tfjs.esm.d.ts' });
-  // copy('node_modules/@vladmandic/tfjs/types/tfjs.d.ts', 'types/tfjs.esm.d.ts');
+  copy('node_modules/@vladmandic/tfjs/types/tfjs-core.d.ts', 'types/tfjs-core.d.ts');
+  copy('node_modules/@vladmandic/tfjs/types/tfjs.d.ts', 'types/tfjs.esm.d.ts');
+  copy('tfjs/types-tsconfig.json', 'types/tsconfig.json');
+  copy('tfjs/types-eslint.json', 'types/.eslintrc.json');
+  filter('reference types', 'types/tfjs-core.d.ts');
+
   // run api-extractor to create typedef rollup
   const extractorConfig = APIExtractor.ExtractorConfig.loadFileAndPrepare('.api-extractor.json');
   const extractorResult = APIExtractor.Extractor.invoke(extractorConfig, {
@@ -113,24 +125,13 @@ async function main() {
     },
   });
   log.state('API-Extractor:', { succeeeded: extractorResult.succeeded, errors: extractorResult.errorCount, warnings: extractorResult.warningCount });
-  // distribute typedefs
-  // log.state('Copy:', { input: 'types/human.d.ts' });
-  // copy('types/human.d.ts', 'dist/human.esm-nobundle.d.ts');
-  // copy('types/human.d.ts', 'dist/human.esm.d.ts');
-  // copy('types/human.d.ts', 'dist/human.d.ts');
-  // copy('types/human.d.ts', 'dist/human.node-gpu.d.ts');
-  // copy('types/human.d.ts', 'dist/human.node.d.ts');
-  // copy('types/human.d.ts', 'dist/human.node-wasm.d.ts');
-  log.state('Filter:', { input: 'types/human.d.ts' });
   filter('reference types', 'types/human.d.ts');
-  log.state('Link:', { input: 'types/human.d.ts' });
   write('export * from \'../types/human\';', 'dist/human.esm-nobundle.d.ts');
   write('export * from \'../types/human\';', 'dist/human.esm.d.ts');
   write('export * from \'../types/human\';', 'dist/human.d.ts');
   write('export * from \'../types/human\';', 'dist/human.node-gpu.d.ts');
   write('export * from \'../types/human\';', 'dist/human.node.d.ts');
   write('export * from \'../types/human\';', 'dist/human.node-wasm.d.ts');
-  // export * from '../types/human';
 
   // generate model signature
   await analyzeModels();

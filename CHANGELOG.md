@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/04 mandic00@live.com
+### **HEAD -> main** 2022/11/10 mandic00@live.com
 
+- refresh dependencies
 - add named exports
 - add draw label templates
 - reduce dev dependencies

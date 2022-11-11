@@ -127,7 +127,7 @@ export class Env {
   async updateBackend() {
     // analyze backends
     this.backends = Object.keys(tf.engine().registryFactory);
-    try {
+    try { // backend may not be initialized
       this.tensorflow = {
         version: (tf.backend()['binding'] ? tf.backend()['binding'].TF_Version : undefined),
         gpu: (tf.backend()['binding'] ? tf.backend()['binding'].isUsingGpuDevice() : undefined),
@@ -140,12 +140,10 @@ export class Env {
       this.wasm.multithread = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT') as boolean;
     }
     const c = image.canvas(100, 100);
-    const ctx = c ? c.getContext('webgl2') : undefined; // causes too many gl contexts
-    // const ctx = typeof tf.backend().getGPGPUContext !== undefined ? tf.backend().getGPGPUContext : null;
-    this.webgl.supported = typeof ctx !== 'undefined';
+    const gl = c ? c.getContext('webgl2') as WebGL2RenderingContext : undefined; // causes too many gl contexts
+    this.webgl.supported = typeof gl !== 'undefined';
     this.webgl.backend = this.backends.includes('webgl');
-    if (this.webgl.supported && this.webgl.backend) {
-      const gl = ctx as WebGL2RenderingContext;
+    if (this.webgl.supported && this.webgl.backend && gl) {
       this.webgl.version = gl.getParameter(gl.VERSION);
       this.webgl.vendor = gl.getParameter(gl.VENDOR);
       this.webgl.renderer = gl.getParameter(gl.RENDERER);

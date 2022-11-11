@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/10 mandic00@live.com
+### **HEAD -> main** 2022/11/11 mandic00@live.com
 
+- include project files for types
+- architectural improvements
 - refresh dependencies
 - add named exports
 - add draw label templates

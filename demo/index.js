@@ -18,7 +18,10 @@
  * ui={}: contains all variables exposed in the UI
  */
 
-// test url <https://human.local/?worker=false&async=false&bench=false&draw=true&warmup=full&backend=humangl>
+// WARNING!!!
+// This demo is written using older code style and a lot of manual setup
+// Newer versions of Human have richer functionality allowing for much cleaner & easier usage
+// It is recommended to use other demos such as `demo/typescript` for usage examples
 
 import { Human } from '../dist/human.esm.js'; // equivalent of @vladmandic/human
 import Menu from './helpers/menu.js';
@@ -83,7 +86,7 @@ const ui = {
   facing: true, // camera facing front or back
   baseBackground: 'rgba(50, 50, 50, 1)', // 'grey'
   columns: 2, // when processing sample images create this many columns
-  useWorker: true, // use web workers for processing
+  useWorker: false, // use web workers for processing
   worker: 'index-worker.js',
   maxFPSframes: 10, // keep fps history for how many frames
   modelsPreload: false, // preload human models on startup
@@ -182,7 +185,7 @@ function status(msg) {
     prevStatus = msg;
   } else {
     const video = document.getElementById('video');
-    const playing = (video.srcObject !== null) && !video.paused;
+    const playing = isLive(video) && !video.paused; // eslint-disable-line no-use-before-define
     document.getElementById('play').style.display = playing ? 'none' : 'block';
     document.getElementById('loader').style.display = 'none';
     div.innerText = '';
@@ -192,7 +195,6 @@ function status(msg) {
 async function videoPlay(videoElement = document.getElementById('video')) {
   document.getElementById('btnStartText').innerHTML = 'pause video';
   await videoElement.play();
-  // status();
 }
 
 async function videoPause() {
@@ -519,17 +521,6 @@ function runHumanDetect(input, canvas, timestamp) {
     human.detect(input, userConfig)
       .then((result) => {
         status();
-        /*
-        setTimeout(async () => { // simulate gl context lost 2sec after initial detection
-          const ext = human.gl && human.gl.gl ? human.gl.gl.getExtension('WEBGL_lose_context') : {};
-          if (ext && ext.loseContext) {
-            log('simulate context lost:', human.env.webgl, human.gl, ext);
-            human.gl.gl.getExtension('WEBGL_lose_context').loseContext();
-            await videoPause();
-            status('Exception: WebGL');
-          }
-        }, 2000);
-        */
         if (result.performance && result.performance.total) ui.detectFPS.push(1000 / result.performance.total);
         if (ui.detectFPS.length > ui.maxFPSframes) ui.detectFPS.shift();
         if (ui.bench) {
@@ -623,21 +614,15 @@ async function processImage(input, title) {
 
 async function processVideo(input, title) {
   status(`processing video: ${title}`);
-  // const video = document.getElementById('video-file') || document.createElement('video');
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
-  // video.id = 'video-file';
-  // video.controls = true;
-  // video.loop = true;
-  // video.style.display = 'none';
-  // document.body.appendChild(video);
   video.addEventListener('error', () => status(`video loading error: ${video.error.message}`));
   video.addEventListener('canplay', async () => {
     for (const m of Object.values(menu)) m.hide();
     document.getElementById('samples-container').style.display = 'none';
     canvas.style.display = 'block';
     await videoPlay();
-    if (!ui.detectThread) runHumanDetect(video, canvas);
+    runHumanDetect(video, canvas);
   });
   video.srcObject = null;
   video.src = input;
@@ -650,9 +635,8 @@ async function detectVideo() {
   const canvas = document.getElementById('canvas');
   canvas.style.display = 'block';
   cancelAnimationFrame(ui.detectThread);
-  if ((video.srcObject !== null) && !video.paused) {
+  if (isLive(video) && !video.paused) {
     await videoPause();
-    // if (ui.drawThread) cancelAnimationFrame(ui.drawThread);
   } else {
     const cameraError = await setupCamera();
     if (!cameraError) {
@@ -794,6 +778,7 @@ function setupMenu() {
 
 async function resize() {
   window.onresize = null;
+  log('resize');
   // best setting for mobile, ignored for desktop
   // can set dynamic value such as Math.min(1, Math.round(100 * window.innerWidth / 960) / 100);
   const viewportScale = 0.7;

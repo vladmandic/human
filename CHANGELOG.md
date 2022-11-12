@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/11 mandic00@live.com
+### **HEAD -> main** 2022/11/12 mandic00@live.com
 
+- prepare external typedefs
+- rebuild all
 - include project files for types
 - architectural improvements
 - refresh dependencies

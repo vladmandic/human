@@ -29,6 +29,7 @@
     "@typescript-eslint/no-unused-vars":"off",
     "@typescript-eslint/prefer-function-type":"off",
     "@typescript-eslint/unified-signatures":"off",
+    "@typescript-eslint/triple-slash-reference":"off",
     "camelcase":"off",
     "comma-dangle":"off",
     "import/extensions":"off",

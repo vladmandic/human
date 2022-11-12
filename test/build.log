@@ -1,377 +1,50 @@
-2022-11-11 16:18:41 [32mDATA: [39m Build {"name":"@vladmandic/human","version":"3.0.0"} 
-2022-11-11 16:18:41 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"3.0.0"} 
-2022-11-11 16:18:41 [36mINFO: [39m Environment: {"profile":"production","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
-2022-11-11 16:18:41 [36mINFO: [39m Toolchain: {"build":"0.7.14","esbuild":"0.15.13","typescript":"4.8.4","typedoc":"0.23.20","eslint":"8.27.0"} 
-2022-11-11 16:18:41 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
-2022-11-11 16:18:41 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":361} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":569,"outputBytes":924} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":79,"inputBytes":673330,"outputBytes":316862} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":577,"outputBytes":928} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":79,"inputBytes":673334,"outputBytes":316866} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":665,"outputBytes":1876} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":79,"inputBytes":674282,"outputBytes":316977} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1375,"outputBytes":670} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":79,"inputBytes":673076,"outputBytes":315471} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":1375,"outputBytes":1144900} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":79,"inputBytes":1817306,"outputBytes":1457057} 
-2022-11-11 16:18:41 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":79,"inputBytes":1817306,"outputBytes":1914726} 
-2022-11-11 16:18:45 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types/lib","files":15} 
-2022-11-11 16:18:47 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":76,"generated":true} 
-2022-11-11 16:18:47 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5981,"outputBytes":2862} 
-2022-11-11 16:18:47 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17166,"outputBytes":9243} 
-2022-11-11 16:18:56 [35mSTATE:[39m Lint: {"locations":["*.json","src/**/*.ts","test/**/*.js","demo/**/*.js"],"files":117,"errors":0,"warnings":0} 
-2022-11-11 16:18:56 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Copy: {"input":"src/tfjs/tfjs.esm.d.ts","output":"dist/tfjs.esm.d.ts"} 
-2022-11-11 16:18:56 [36mINFO: [39m Done... 
-2022-11-11 16:18:56 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs-core.d.ts","output":"types/tfjs-core.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs.d.ts","output":"types/tfjs.esm.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Copy: {"input":"tfjs/types-tsconfig.json","output":"types/tsconfig.json"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Copy: {"input":"tfjs/types-eslint.json","output":"types/.eslintrc.json"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Filter: {"input":"types/tfjs-core.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m API-Extractor: {"succeeeded":true,"errors":0,"warnings":195} 
-2022-11-11 16:18:56 [35mSTATE:[39m Filter: {"input":"types/human.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Write: {"output":"dist/human.esm-nobundle.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Write: {"output":"dist/human.esm.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Write: {"output":"dist/human.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Write: {"output":"dist/human.node-gpu.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Write: {"output":"dist/human.node.d.ts"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Write: {"output":"dist/human.node-wasm.d.ts"} 
-2022-11-11 16:18:56 [36mINFO: [39m Analyze models: {"folders":8,"result":"models/models.json"} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"./models","models":12} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"../human-models/models","models":43} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"../blazepose/model/","models":4} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"../anti-spoofing/model","models":1} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"../efficientpose/models","models":3} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"../insightface/models","models":5} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"../movenet/models","models":3} 
-2022-11-11 16:18:56 [35mSTATE:[39m Models {"folder":"../nanodet/models","models":4} 
-2022-11-11 16:18:57 [35mSTATE:[39m Models: {"count":58,"totalSize":386543911} 
-2022-11-11 16:18:57 [36mINFO: [39m Human Build complete... {"logFile":"test/build.log"} 
-2022-11-12 08:53:57 [36mINFO: [39m @vladmandic/human version 3.0.0 
-2022-11-12 08:53:57 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v18.10.0 
-2022-11-12 08:53:57 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"3.0.0"} 
-2022-11-12 08:53:57 [36mINFO: [39m Environment: {"profile":"development","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
-2022-11-12 08:53:57 [36mINFO: [39m Toolchain: {"build":"0.7.14","esbuild":"0.15.13","typescript":"4.8.4","typedoc":"0.23.20","eslint":"8.27.0"} 
-2022-11-12 08:53:57 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
-2022-11-12 08:53:57 [35mSTATE:[39m WebServer: {"ssl":false,"port":8000,"root":"."} 
-2022-11-12 08:53:57 [35mSTATE:[39m WebServer: {"ssl":true,"port":8001,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
-2022-11-12 08:53:58 [35mSTATE:[39m Watch: {"locations":["src/**/*","tfjs/**/*","demo/**/*.ts"]} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":79,"inputBytes":674192,"outputBytes":504851} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":79,"inputBytes":674216,"outputBytes":504871} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":79,"inputBytes":674398,"outputBytes":505062} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":79,"inputBytes":673329,"outputBytes":507104} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1144900} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":79,"inputBytes":1817306,"outputBytes":1457057} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":79,"inputBytes":1817306,"outputBytes":1914726} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5981,"outputBytes":4119} 
-2022-11-12 08:53:58 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17166,"outputBytes":13640} 
-2022-11-12 08:53:58 [36mINFO: [39m Listening... 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45999,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:54:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:54:34 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1809,"url":"/index-worker.js","remote":"::1"} 
-2022-11-12 08:54:34 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1457057,"url":"/dist/human.js","remote":"::1"} 
-2022-11-12 08:54:35 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:54:35 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:54:38 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45999,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:55:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45999,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:55:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46016,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:57:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46019,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:57:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 08:58:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46019,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:58:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46041,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:59:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46041,"url":"/index.js","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 08:59:57 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 08:59:58 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 08:59:58 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 08:59:58 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 08:59:58 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 08:59:58 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46016,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:01:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:01:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1809,"url":"/index-worker.js","remote":"::1"} 
-2022-11-12 09:01:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1457057,"url":"/dist/human.js","remote":"::1"} 
-2022-11-12 09:04:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:04:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:04:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46014,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:04:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:04:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:04:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1809,"url":"/index-worker.js","remote":"::1"} 
-2022-11-12 09:04:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1457057,"url":"/dist/human.js","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46016,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:05:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:05:28 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:05:28 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:05:28 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:05:28 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:05:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1809,"url":"/index-worker.js","remote":"::1"} 
-2022-11-12 09:05:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1457057,"url":"/dist/human.js","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":46017,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:11:50 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45561,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:16:23 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45611,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:17:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45589,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:18:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45589,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:19:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45567,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:20:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:20:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:20:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:20:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:20:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45632,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:21:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:21:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:21:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:21:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:21:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:21:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45598,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:23:30 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45626,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:26:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":7551,"url":"/","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/css","size":107884,"url":"/icons.css","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":45182,"url":"/index.js","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1914726,"url":"/dist/human.esm.js","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":14308,"url":"/helpers/menu.js","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":10535,"url":"/helpers/gl-bench.js","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":3397,"url":"/helpers/webrtc.js","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":5689,"url":"/helpers/jsonview.js","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3373298,"url":"/dist/human.esm.js.map","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/manifest.webmanifest","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
-2022-11-12 09:29:29 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4033,"url":"/index-pwa.js","remote":"::1"} 
+2022-11-12 12:48:06 [32mDATA: [39m Build {"name":"@vladmandic/human","version":"3.0.0"} 
+2022-11-12 12:48:06 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"3.0.0"} 
+2022-11-12 12:48:06 [36mINFO: [39m Environment: {"profile":"production","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
+2022-11-12 12:48:06 [36mINFO: [39m Toolchain: {"build":"0.7.14","esbuild":"0.15.13","typescript":"4.8.4","typedoc":"0.23.20","eslint":"8.27.0"} 
+2022-11-12 12:48:06 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2022-11-12 12:48:06 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2022-11-12 12:48:06 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":361} 
+2022-11-12 12:48:06 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":569,"outputBytes":924} 
+2022-11-12 12:48:06 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":79,"inputBytes":673330,"outputBytes":316862} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":577,"outputBytes":928} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":79,"inputBytes":673334,"outputBytes":316866} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":665,"outputBytes":1876} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":79,"inputBytes":674282,"outputBytes":316977} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1375,"outputBytes":670} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":79,"inputBytes":673076,"outputBytes":315471} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":1375,"outputBytes":1144900} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":79,"inputBytes":1817306,"outputBytes":1457057} 
+2022-11-12 12:48:07 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":79,"inputBytes":1817306,"outputBytes":1914726} 
+2022-11-12 12:48:11 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types/lib","files":15} 
+2022-11-12 12:48:13 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":76,"generated":true} 
+2022-11-12 12:48:13 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":5981,"outputBytes":2862} 
+2022-11-12 12:48:13 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17166,"outputBytes":9243} 
+2022-11-12 12:48:21 [35mSTATE:[39m Lint: {"locations":["*.json","src/**/*.ts","test/**/*.js","demo/**/*.js"],"files":113,"errors":0,"warnings":0} 
+2022-11-12 12:48:21 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2022-11-12 12:48:21 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs-core.d.ts","output":"types/tfjs-core.d.ts"} 
+2022-11-12 12:48:21 [36mINFO: [39m Done... 
+2022-11-12 12:48:21 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs.d.ts","output":"types/tfjs.esm.d.ts"} 
+2022-11-12 12:48:21 [35mSTATE:[39m Copy: {"input":"src/types/tsconfig.json","output":"types/tsconfig.json"} 
+2022-11-12 12:48:21 [35mSTATE:[39m Copy: {"input":"src/types/eslint.json","output":"types/.eslintrc.json"} 
+2022-11-12 12:48:21 [35mSTATE:[39m Copy: {"input":"src/types/tfjs.esm.d.ts","output":"dist/tfjs.esm.d.ts"} 
+2022-11-12 12:48:21 [35mSTATE:[39m Filter: {"input":"types/tfjs-core.d.ts"} 
+2022-11-12 12:48:22 [35mSTATE:[39m API-Extractor: {"succeeeded":true,"errors":0,"warnings":195} 
+2022-11-12 12:48:22 [35mSTATE:[39m Filter: {"input":"types/human.d.ts"} 
+2022-11-12 12:48:22 [35mSTATE:[39m Write: {"output":"dist/human.esm-nobundle.d.ts"} 
+2022-11-12 12:48:22 [35mSTATE:[39m Write: {"output":"dist/human.esm.d.ts"} 
+2022-11-12 12:48:22 [35mSTATE:[39m Write: {"output":"dist/human.d.ts"} 
+2022-11-12 12:48:22 [35mSTATE:[39m Write: {"output":"dist/human.node-gpu.d.ts"} 
+2022-11-12 12:48:22 [35mSTATE:[39m Write: {"output":"dist/human.node.d.ts"} 
+2022-11-12 12:48:22 [35mSTATE:[39m Write: {"output":"dist/human.node-wasm.d.ts"} 
+2022-11-12 12:48:22 [36mINFO: [39m Analyze models: {"folders":8,"result":"models/models.json"} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"./models","models":12} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"../human-models/models","models":43} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"../blazepose/model/","models":4} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"../anti-spoofing/model","models":1} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"../efficientpose/models","models":3} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"../insightface/models","models":5} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"../movenet/models","models":3} 
+2022-11-12 12:48:22 [35mSTATE:[39m Models {"folder":"../nanodet/models","models":4} 
+2022-11-12 12:48:23 [35mSTATE:[39m Models: {"count":58,"totalSize":386543911} 
+2022-11-12 12:48:23 [36mINFO: [39m Human Build complete... {"logFile":"test/build.log"} 

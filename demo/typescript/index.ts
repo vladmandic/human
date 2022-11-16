@@ -17,7 +17,8 @@ const humanConfig: Partial<H.Config> = { // user configuration for human, used t
   filter: { enabled: true, equalization: false, flip: false, width },
   face: { enabled: true, detector: { rotation: true }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
   body: { enabled: true },
-  hand: { enabled: true },
+  // hand: { enabled: true },
+  hand: { enabled: false },
   object: { enabled: false },
   segmentation: { enabled: false },
   gesture: { enabled: true },
@@ -82,7 +83,9 @@ async function drawLoop() { // main screen refresh loop
 }
 
 async function webCam() {
-  await human.webcam.start({ element: dom.video, crop: true, width }); // use human webcam helper methods and associate webcam stream with a dom element
+  const devices = await human.webcam.enumerate();
+  const id = devices[0].deviceId; // use first available video source
+  await human.webcam.start({ element: dom.video, crop: true, width, id }); // use human webcam helper methods and associate webcam stream with a dom element
   dom.canvas.width = human.webcam.width;
   dom.canvas.height = human.webcam.height;
   dom.canvas.onclick = async () => { // pause when clicked on screen and resume on next click

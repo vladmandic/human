@@ -123,8 +123,8 @@ export async function runCompile(instance: Human) {
   const numTensorsStart = tf.engine().state.numTensors;
   const compiledModels: string[] = [];
   for (const [modelName, model] of Object.entries(instance.models).filter(([key, val]) => (key !== null && val !== null))) {
-    const shape = (model.inputs?.[0]?.shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
-    const dtype: DataType = (model.inputs?.[0]?.dtype) ? model.inputs[0].dtype : 'float32';
+    const shape = (model?.modelSignature && model?.inputs?.[0]?.shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
+    const dtype: DataType = (model?.modelSignature && model?.inputs?.[0]?.dtype) ? model.inputs[0].dtype : 'float32';
     for (let dim = 0; dim < shape.length; dim++) {
       if (shape[dim] === -1) shape[dim] = dim === 0 ? 1 : 64; // override batch number and any dynamic dimensions
     }

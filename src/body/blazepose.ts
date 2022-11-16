@@ -10,56 +10,38 @@ import type { BodyKeypoint, BodyResult, BodyLandmark, Box, Point, BodyAnnotation
 import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 import type { Config } from '../config';
 import * as coords from './blazeposecoords';
-import * as detect from './blazeposedetector';
+import { loadDetector, detectBoxes, DetectedBox } from './blazeposedetector';
 import * as box from '../util/box';
+import { env } from '../util/env';
 
-const env = { initial: true };
 // const models: [GraphModel | null, GraphModel | null] = [null, null];
-const models: { detector: GraphModel | null, landmarks: GraphModel | null } = { detector: null, landmarks: null };
-const inputSize: { detector: [number, number], landmarks: [number, number] } = { detector: [224, 224], landmarks: [256, 256] };
+let model: GraphModel | null;
+let inputSize = 256;
 let skipped = Number.MAX_SAFE_INTEGER;
 const outputNodes: { detector: string[], landmarks: string[] } = {
   landmarks: ['ld_3d', 'activation_segmentation', 'activation_heatmap', 'world_3d', 'output_poseflag'],
   detector: [],
 };
 
-let cache: BodyResult | null = null;
-let cropBox: Box | undefined;
+const cache: BodyResult[] = [];
 let padding: [number, number][] = [[0, 0], [0, 0], [0, 0], [0, 0]];
 let lastTime = 0;
 
 const sigmoid = (x) => (1 - (1 / (1 + Math.exp(x))));
 
-export async function loadDetect(config: Config): Promise<GraphModel> {
-  if (env.initial) models.detector = null;
-  if (!models.detector && config.body['detector'] && config.body['detector'].modelPath || '') {
-    models.detector = await loadModel(config.body['detector'].modelPath);
-    const inputs = models.detector?.['executor'] ? Object.values(models.detector.modelSignature['inputs']) : undefined;
-    inputSize.detector[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
-    inputSize.detector[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-  } else if (config.debug && models.detector) log('cached model:', models.detector['modelUrl']);
-  detect.createAnchors();
-  return models.detector as GraphModel;
-}
+export const loadDetect = (config: Config): Promise<GraphModel> => loadDetector(config);
 
 export async function loadPose(config: Config): Promise<GraphModel> {
-  if (env.initial) models.landmarks = null;
-  if (!models.landmarks) {
-    models.landmarks = await loadModel(config.body.modelPath);
-    const inputs = models.landmarks?.['executor'] ? Object.values(models.landmarks.modelSignature['inputs']) : undefined;
-    inputSize.landmarks[0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
-    inputSize.landmarks[1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
-  } else if (config.debug) log('cached model:', models.landmarks['modelUrl']);
-  return models.landmarks;
+  if (env.initial) model = null;
+  if (!model) {
+    model = await loadModel(config.body.modelPath);
+    const inputs = model?.['executor'] ? Object.values(model.modelSignature['inputs']) : undefined;
+    inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+  } else if (config.debug) log('cached model:', model['modelUrl']);
+  return model;
 }
 
-export async function load(config: Config): Promise<[GraphModel | null, GraphModel | null]> {
-  if (!models.detector) await loadDetect(config);
-  if (!models.landmarks) await loadPose(config);
-  return [models.detector, models.landmarks];
-}
-
-function prepareImage(input: Tensor4D, size: number): Tensor {
+function prepareImage(input: Tensor4D, size: number, cropBox?: Box): Tensor {
   const t: Record<string, Tensor> = {};
   if (!input?.shape?.[1] || !input?.shape?.[2]) return input;
   let final: Tensor;
@@ -94,7 +76,7 @@ function prepareImage(input: Tensor4D, size: number): Tensor {
   return final;
 }
 
-function rescaleKeypoints(keypoints: BodyKeypoint[], outputSize: [number, number]): BodyKeypoint[] {
+function rescaleKeypoints(keypoints: BodyKeypoint[], outputSize: [number, number], cropBox?: Box): BodyKeypoint[] {
   for (const kpt of keypoints) { // first rescale due to padding
     kpt.position = [
       Math.trunc(kpt.position[0] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0] - padding[2][0]),
@@ -104,10 +86,12 @@ function rescaleKeypoints(keypoints: BodyKeypoint[], outputSize: [number, number
     kpt.positionRaw = [kpt.position[0] / outputSize[0], kpt.position[1] / outputSize[1], 2 * (kpt.position[2] as number) / (outputSize[0] + outputSize[1])];
   }
   if (cropBox) { // second rescale due to cropping
+    const width = cropBox[2] - cropBox[0];
+    const height = cropBox[3] - cropBox[1];
     for (const kpt of keypoints) {
       kpt.positionRaw = [
-        kpt.positionRaw[0] + cropBox[1], // correct offset due to crop
-        kpt.positionRaw[1] + cropBox[0], // correct offset due to crop
+        kpt.positionRaw[0] / height + cropBox[1], // correct offset due to crop
+        kpt.positionRaw[1] / width + cropBox[0], // correct offset due to crop
         kpt.positionRaw[2] as number,
       ];
       kpt.position = [
@@ -140,9 +124,9 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
    * t.world: 39 keypoints [x,y,z] normalized to -1..1
    * t.poseflag: body score
   */
-  if (!models.landmarks?.['executor']) return null;
+  if (!model?.['executor']) return null;
   const t: Record<string, Tensor> = {};
-  [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = models.landmarks?.execute(input, outputNodes.landmarks) as unknown as Tensor[]; // run model
+  [t.ld/* 1,195(39*5) */, t.segmentation/* 1,256,256,1 */, t.heatmap/* 1,64,64,39 */, t.world/* 1,117(39*3) */, t.poseflag/* 1,1 */] = model?.execute(input, outputNodes.landmarks) as Tensor[]; // run model
   const poseScore = (await t.poseflag.data())[0];
   const points = await t.ld.data();
   const distances = await t.world.data();
@@ -153,7 +137,7 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
     const score = sigmoid(points[depth * i + 3]);
     const presence = sigmoid(points[depth * i + 4]);
     const adjScore = Math.trunc(100 * score * presence * poseScore) / 100;
-    const positionRaw: Point = [points[depth * i + 0] / inputSize.landmarks[0], points[depth * i + 1] / inputSize.landmarks[1], points[depth * i + 2] + 0];
+    const positionRaw: Point = [points[depth * i + 0] / inputSize, points[depth * i + 1] / inputSize, points[depth * i + 2] + 0];
     const position: Point = [Math.trunc(outputSize[0] * positionRaw[0]), Math.trunc(outputSize[1] * positionRaw[1]), positionRaw[2] as number];
     const distance: Point = [distances[depth * i + 0], distances[depth * i + 1], distances[depth * i + 2] + 0];
     keypointsRelative.push({ part: coords.kpt[i] as BodyLandmark, positionRaw, position, distance, score: adjScore });
@@ -177,36 +161,6 @@ async function detectLandmarks(input: Tensor, config: Config, outputSize: [numbe
   return body;
 }
 
-/*
-interface DetectedBox { box: Box, boxRaw: Box, score: number }
-
-function rescaleBoxes(boxes: Array<DetectedBox>, outputSize: [number, number]): Array<DetectedBox> {
-  for (const b of boxes) {
-    b.box = [
-      Math.trunc(b.box[0] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0]),
-      Math.trunc(b.box[1] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1]),
-      Math.trunc(b.box[2] * (outputSize[0] + padding[2][0] + padding[2][1]) / outputSize[0]),
-      Math.trunc(b.box[3] * (outputSize[1] + padding[1][0] + padding[1][1]) / outputSize[1]),
-    ];
-    b.boxRaw = [b.box[0] / outputSize[0], b.box[1] / outputSize[1], b.box[2] / outputSize[0], b.box[3] / outputSize[1]];
-  }
-  return boxes;
-}
-
-async function detectBoxes(input: Tensor, config: Config, outputSize: [number, number]) {
-  const t: Record<string, Tensor> = {};
-  t.res = models.detector?.execute(input, ['Identity']) as Tensor; //
-  t.logitsRaw = tf.slice(t.res, [0, 0, 0], [1, -1, 1]);
-  t.boxesRaw = tf.slice(t.res, [0, 0, 1], [1, -1, -1]);
-  t.logits = tf.squeeze(t.logitsRaw);
-  t.boxes = tf.squeeze(t.boxesRaw);
-  const boxes = await detect.decode(t.boxes, t.logits, config, outputSize);
-  rescaleBoxes(boxes, outputSize);
-  Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-  return boxes;
-}
-*/
-
 export async function predict(input: Tensor4D, config: Config): Promise<BodyResult[]> {
   const outputSize: [number, number] = [input.shape[2] || 0, input.shape[1] || 0];
   const skipTime = (config.body.skipTime || 0) > (now() - lastTime);
@@ -214,15 +168,24 @@ export async function predict(input: Tensor4D, config: Config): Promise<BodyResu
   if (config.skipAllowed && skipTime && skipFrame && cache !== null) {
     skipped++;
   } else {
-    const t: Record<string, Tensor> = {};
-    /*
-    if (config.body['detector'] && config.body['detector']['enabled']) {
-      t.detector = await prepareImage(input, 224);
-      const boxes = await detectBoxes(t.detector, config, outputSize);
+    let boxes: DetectedBox[] = [];
+    if (config.body?.['detector']?.['enabled']) {
+      const preparedImage = prepareImage(input, 224);
+      boxes = await detectBoxes(preparedImage, config, outputSize);
+      tf.dispose(preparedImage);
+    } else {
+      boxes = [{ box: [0, 0, 0, 0] as Box, boxRaw: [0, 0, 1, 1], score: 0 }]; // running without detector
     }
-    */
-    t.landmarks = prepareImage(input, 256); // padded and resized
-    cache = await detectLandmarks(t.landmarks, config, outputSize);
+    for (let i = 0; i < boxes.length; i++) {
+      const preparedBox = prepareImage(input, 256, boxes[i]?.boxRaw); // padded and resized
+      cache.length = 0;
+      const bodyResult = await detectLandmarks(preparedBox, config, outputSize);
+      tf.dispose(preparedBox);
+      if (!bodyResult) continue;
+      bodyResult.id = i;
+      // bodyResult.score = 0; // TBD
+      cache.push(bodyResult);
+    }
     /*
     cropBox = [0, 0, 1, 1]; // reset crop coordinates
     if (cache?.boxRaw && config.skipAllowed) {
@@ -237,9 +200,8 @@ export async function predict(input: Tensor4D, config: Config): Promise<BodyResu
       }
     }
     */
-    Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
     lastTime = now();
     skipped = 0;
   }
-  return cache ? [cache] : [];
+  return cache;
 }

@@ -23,7 +23,7 @@ export async function load(config: Config): Promise<GraphModel> {
 }
 
 export async function predict(image: Tensor4D, config: Config, idx: number, count: number): Promise<number> {
-  if (!model || !model?.['executor']) return 0;
+  if (!model?.['executor']) return 0;
   const skipTime = (config.face.antispoof?.skipTime || 0) > (now() - lastTime);
   const skipFrame = skipped < (config.face.antispoof?.skipFrames || 0);
   if (config.skipAllowed && skipTime && skipFrame && (lastCount === count) && cached[idx]) {

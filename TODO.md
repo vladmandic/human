@@ -67,13 +67,17 @@ Features:
   Which significantly increases performance and precision in poorly lit scenes  
 - Improved `config.filter.equalization` (*disabled by default*)  
   Image and video on-demand histogram equalization  
+- Support selecting specific video source when multiple cameras are present  
+  See `human.webcam.enumerate()`  
 
 Architecture:
 - Reduce build dependencies  
   `Human` is now 30% smaller :)  
   As usual, `Human` has **zero** runtime dependencies,  
   all *devDependencies* are only to rebuild `Human` itself
-- Upgrade to TFJS 4.0 with **strong typing**  
+- Upgrade to **TFJS 4.0** with **strong typing**  
   see [notes](https://github.com/vladmandic/human#typedefs) on how to use  
 - `TypeDef` refactoring  
 - Add named export for improved bundler support when using non-default imports  
+- Support for `NodeJS` v19  
+- Upgrade to **TypeScript 4.9**  

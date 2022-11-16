@@ -1,11 +1,15 @@
 import * as tf from 'dist/tfjs.esm.js';
-import type { Tensor } from '../tfjs/types';
+import { log } from '../util/util';
+import { env } from '../util/env';
+import { loadModel } from '../tfjs/load';
 import type { Box } from '../result';
 import type { Config } from '../config';
+import type { GraphModel, Tensor, Tensor1D, Tensor2D } from '../tfjs/types';
 
-interface DetectedBox { box: Box, boxRaw: Box, score: number }
+export interface DetectedBox { box: Box, boxRaw: Box, score: number }
 
-const inputSize = 224;
+let model: GraphModel | null;
+let inputSize = 224;
 let anchorTensor: { x, y };
 const numLayers = 5;
 const strides = [8, 16, 32, 32, 32];
@@ -35,8 +39,19 @@ export function createAnchors() {
   anchorTensor = { x: tf.tensor1d(anchors.map((a) => a.x)), y: tf.tensor1d(anchors.map((a) => a.y)) };
 }
 
+export async function loadDetector(config: Config): Promise<GraphModel> {
+  if (env.initial) model = null;
+  if (!model && config.body['detector'] && config.body['detector'].modelPath || '') {
+    model = await loadModel(config.body['detector'].modelPath);
+    const inputs = model?.['executor'] ? Object.values(model.modelSignature['inputs']) : undefined;
+    inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+  } else if (config.debug && model) log('cached model:', model['modelUrl']);
+  createAnchors();
+  return model as GraphModel;
+}
+
 const cropFactor = [5.0, 5.0];
-function decodeBoxes(boxesTensor, anchor): Tensor {
+export function decodeBoxes(boxesTensor, anchor) {
   return tf.tidy(() => {
     const split = tf.split(boxesTensor, 12, 1); // first 4 are box data [x,y,w,h] and 4 are keypoints data [x,y] for total of 12
     let xCenter = tf.squeeze(split[0]);
@@ -49,39 +64,41 @@ function decodeBoxes(boxesTensor, anchor): Tensor {
     height = tf.mul(tf.div(height, inputSize), cropFactor[1]);
     const xMin = tf.sub(xCenter, tf.div(width, 2));
     const yMin = tf.sub(yCenter, tf.div(height, 2));
-    const boxes = tf.stack([xMin, yMin, width, height], 1);
+    const xMax = tf.add(xMin, width);
+    const yMax = tf.add(yMin, height);
+    const boxes = tf.stack([xMin, yMin, xMax, yMax], 1);
     return boxes;
   });
 }
 
-export async function decode(boxesTensor: Tensor, logitsTensor: Tensor, config: Config, outputSize: [number, number]): Promise<DetectedBox[]> {
+async function decodeResults(boxesTensor: Tensor, logitsTensor: Tensor, config: Config, outputSize: [number, number]): Promise<DetectedBox[]> {
+  const detectedBoxes: DetectedBox[] = [];
   const t: Record<string, Tensor> = {};
   t.boxes = decodeBoxes(boxesTensor, anchorTensor);
   t.scores = tf.sigmoid(logitsTensor);
-  t.argmax = tf.argMax(t.scores);
-  const i = (await t.argmax.data())[0];
+  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes as Tensor2D, t.scores as Tensor1D, 1, config.body['detector']?.minConfidence || 0.1, config.body['detector']?.iouThreshold || 0.1);
+  const nms = await t.nms.data();
   const scores = await t.scores.data();
-  const detected: { box: Box, boxRaw: Box, score: number }[] = [];
-  const minScore = config.body?.['detector']?.minConfidence || 0;
-  if (scores[i] >= minScore) {
-    const boxes = await t.boxes.array();
-    const boxRaw: Box = boxes[i];
-    const box: Box = [boxRaw[0] * outputSize[0], boxRaw[1] * outputSize[1], boxRaw[2] * outputSize[0], boxRaw[3] * outputSize[1]];
-    // console.log(box);
-    detected.push({ box, boxRaw, score: scores[i] });
-  }
-  /*
-  t.nms = await tf.image.nonMaxSuppressionAsync(t.boxes, t.scores, 1, config.body.detector?.minConfidence || 0.1, config.body.detector?.iouThreshold || 0.1);
-  const boxes = t.boxes.arraySync();
-  const scores = t.scores.dataSync();
-  const nms = t.nms.dataSync();
-  const detected: Array<DetectedBox> = [];
+  const boxes = await t.boxes.array();
   for (const i of Array.from(nms)) {
+    const score = scores[i];
     const boxRaw: Box = boxes[i];
-    const box: Box = [boxRaw[0] * outputSize[0], boxRaw[0] * outputSize[1], boxRaw[3] * outputSize[0], boxRaw[2] * outputSize[1]];
-    detected.push({ box, boxRaw, score: scores[i] });
+    const box: Box = [Math.round(boxRaw[0] * outputSize[0]), Math.round(boxRaw[1] * outputSize[1]), Math.round(boxRaw[2] * outputSize[0]), Math.round(boxRaw[3] * outputSize[1])];
+    const detectedBox: DetectedBox = { score, boxRaw, box };
+    detectedBoxes.push(detectedBox);
   }
-  */
   Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-  return detected;
+  return detectedBoxes;
+}
+
+export async function detectBoxes(input: Tensor, config: Config, outputSize: [number, number]) {
+  const t: Record<string, Tensor> = {};
+  t.res = model?.execute(input, ['Identity']) as Tensor; //
+  t.logitsRaw = tf.slice(t.res, [0, 0, 0], [1, -1, 1]);
+  t.boxesRaw = tf.slice(t.res, [0, 0, 1], [1, -1, -1]);
+  t.logits = tf.squeeze(t.logitsRaw);
+  t.boxes = tf.squeeze(t.boxesRaw);
+  const boxes = await decodeResults(t.boxes, t.logits, config, outputSize);
+  Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
+  return boxes;
 }

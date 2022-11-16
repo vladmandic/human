@@ -21,6 +21,8 @@ export interface WebCamConfig {
   width: number,
   /** desired webcam height */
   height: number,
+  /** deviceId of the video device to use */
+  id?: string,
 }
 
 export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-class
@@ -30,6 +32,8 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
   element: HTMLVideoElement | undefined;
   /** active webcam stream */
   stream: MediaStream | undefined;
+  /** enumerated video devices */
+  devices: MediaDeviceInfo[] = [];
 
   constructor() {
     this.config = {
@@ -88,6 +92,16 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
     return this.element?.videoHeight || 0;
   }
 
+  public enumerate = async (): Promise<MediaDeviceInfo[]> => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      this.devices = devices.filter((device) => device.kind === 'videoinput');
+    } catch {
+      this.devices = [];
+    }
+    return this.devices;
+  };
+
   /** start method initializizes webcam stream and associates it with a dom video element */
   public start = async (webcamConfig?: Partial<WebCamConfig>): Promise<void> => {
     // set config
@@ -96,6 +110,7 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
     if (webcamConfig?.mode) this.config.mode = webcamConfig?.mode;
     if (webcamConfig?.width) this.config.width = webcamConfig?.width;
     if (webcamConfig?.height) this.config.height = webcamConfig?.height;
+    if (webcamConfig?.id) this.config.id = webcamConfig?.id;
 
     // use or create dom element
     if (webcamConfig?.element) {
@@ -128,6 +143,7 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
         height: { ideal: this.config.height > 0 ? this.config.height : window.innerHeight },
       },
     };
+    if (this.config.id) (requestedConstraints.video as MediaTrackConstraintSet).deviceId = this.config.id;
 
     // set default event listeners
     this.element.addEventListener('play', () => { if (this.config.debug) log('webcam', 'play'); });

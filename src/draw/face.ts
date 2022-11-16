@@ -15,7 +15,7 @@ function drawLabels(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanv
   if (f.gender) l = replace(l, '[gender]', f.gender);
   if (f.genderScore) l = replace(l, '[genderScore]', 100 * f.genderScore);
   if (f.age) l = replace(l, '[age]', f.age);
-  if (f.iris) l = replace(l, '[distance]', f.iris);
+  if (f.iris) l = replace(l, '[distance]', 100 * f.iris);
   if (f.real) l = replace(l, '[real]', 100 * f.real);
   if (f.live) l = replace(l, '[live]', 100 * f.live);
   if (f.emotion && f.emotion.length > 0) {

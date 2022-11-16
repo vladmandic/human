@@ -21,6 +21,7 @@ import type { FaceResult, Emotion, Gender, Race } from '../result';
 import type { Tensor4D } from '../tfjs/types';
 import type { Human } from '../human';
 import { calculateFaceAngle } from './angles';
+import { calculateCameraDistance } from './anthropometry';
 
 interface DescRes { age: number, gender: Gender, genderScore: number, descriptor: number[], race?: { score: number, race: Race }[] }
 
@@ -40,7 +41,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
   const faceRes: FaceResult[] = [];
   instance.state = 'run:face';
 
-  const faces = await facemesh.predict(input, instance.config);
+  const faces: FaceResult[] = await facemesh.predict(input, instance.config);
   instance.performance.face = env.perfadd ? (instance.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   if (!input.shape || input.shape.length !== 4) return [];
   if (!faces) return [];
@@ -194,17 +195,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
       (descRes as DescRes).descriptor = insightfaceRes as number[];
     }
 
-    // calculate iris distance
-    // iris: array[ center, left, top, right, bottom]
-    if (!instance.config.face.iris?.enabled) {
-      // if (faces[i]?.annotations?.leftEyeIris) delete faces[i].annotations.leftEyeIris;
-      // if (faces[i]?.annotations?.rightEyeIris) delete faces[i].annotations.rightEyeIris;
-    }
-    const irisSize = (faces[i]?.annotations?.leftEyeIris?.[0] && faces[i]?.annotations?.rightEyeIris?.[0]
-      && (faces[i].annotations.leftEyeIris.length > 0) && (faces[i].annotations.rightEyeIris.length > 0)
-      && (faces[i].annotations.leftEyeIris[0] !== null) && (faces[i].annotations.rightEyeIris[0] !== null))
-      ? Math.max(Math.abs(faces[i].annotations.leftEyeIris[3][0] - faces[i].annotations.leftEyeIris[1][0]), Math.abs(faces[i].annotations.rightEyeIris[4][1] - faces[i].annotations.rightEyeIris[2][1])) / input.shape[2]
-      : 0; // note: average human iris size is 11.7mm
+    const irisSize = instance.config.face.iris?.enabled ? calculateCameraDistance(faces[i], input.shape[2]) : 0;
 
     // optionally return tensor
     const tensor = instance.config.face.detector?.return ? tf.squeeze(faces[i].tensor as Tensor4D) : null;
@@ -225,7 +216,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     if (emotionRes) res.emotion = emotionRes as { score: number, emotion: Emotion }[];
     if (antispoofRes) res.real = antispoofRes as number;
     if (livenessRes) res.live = livenessRes as number;
-    if (irisSize && irisSize !== 0) res.iris = Math.trunc(500 / irisSize / 11.7) / 100;
+    if (irisSize > 0) res.iris = irisSize;
     if (rotation) res.rotation = rotation;
     if (tensor) res.tensor = tensor;
     faceRes.push(res);

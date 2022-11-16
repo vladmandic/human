@@ -189,7 +189,7 @@ async function verifyDetails(human) {
   verify(res.face.length === 1, 'details face length', res.face.length);
   for (const face of res.face) {
     verify(face.score > 0.9 && face.boxScore > 0.9 && face.faceScore > 0.9, 'details face score', face.score, face.boxScore, face.faceScore);
-    verify(face.age > 23 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 70 && face.iris < 105, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
+    verify(face.age > 23 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 0.5 && face.iris < 2.5, 'details face age/gender', face.age, face.gender, face.genderScore, face.iris);
     verify(face.box.length === 4 && face.boxRaw.length === 4 && face.mesh.length === 478 && face.meshRaw.length === 478 && face.embedding.length === 1024, 'details face arrays', face.box.length, face.mesh.length, face.embedding.length);
     verify(face.emotion.length >= 2 && face.emotion[0].score > 0.30 && face.emotion[0].emotion === 'angry', 'details face emotion', face.emotion.length, face.emotion[0]);
     verify(face.real > 0.55, 'details face anti-spoofing', face.real);

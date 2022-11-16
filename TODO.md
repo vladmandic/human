@@ -69,6 +69,8 @@ Features:
   Image and video on-demand histogram equalization  
 - Support selecting specific video source when multiple cameras are present  
   See `human.webcam.enumerate()`  
+- Updated algorithm to determine distance from camera based on iris size  
+  See `human.result.face[n].iris`  
 
 Architecture:
 - Reduce build dependencies  

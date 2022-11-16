@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/12 mandic00@live.com
+### **HEAD -> main** 2022/11/16 mandic00@live.com
 
+- include external typedefs
 - prepare external typedefs
 - rebuild all
 - include project files for types

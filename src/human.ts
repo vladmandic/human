@@ -41,7 +41,7 @@ import * as selfie from './segmentation/selfie';
 import * as warmups from './warmup';
 
 // type definitions
-import type { Input, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas } from './exports';
+import { Input, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas, emptyResult } from './exports';
 import type { Tensor, Tensor4D } from './tfjs/types';
 // type exports
 export * from './exports';
@@ -167,7 +167,7 @@ export class Human {
       person: (output: AnyCanvas, result: PersonResult[], options?: Partial<DrawOptions>) => draw.person(output, result, options),
       all: (output: AnyCanvas, result: Result, options?: Partial<DrawOptions>) => draw.all(output, result, options),
     };
-    this.result = { face: [], body: [], hand: [], gesture: [], object: [], performance: {}, timestamp: 0, persons: [], error: null };
+    this.result = emptyResult();
     // export access to image processing
     this.process = { tensor: null, canvas: null };
     // export raw access to underlying models
@@ -428,7 +428,7 @@ export class Human {
       if (error) {
         log(error, input);
         this.emit('error');
-        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error });
+        resolve(emptyResult(error));
       }
 
       const timeStart = now();
@@ -446,7 +446,7 @@ export class Human {
       if (!img.tensor) {
         if (this.config.debug) log('could not convert input to tensor');
         this.emit('error');
-        resolve({ face: [], body: [], hand: [], gesture: [], object: [], performance: this.performance, timestamp: now(), persons: [], error: 'could not convert input to tensor' });
+        resolve(emptyResult('could not convert input to tensor'));
         return;
       }
       this.emit('image');
@@ -547,7 +547,7 @@ export class Human {
       }
 
       this.performance.total = this.env.perfadd ? (this.performance.total || 0) + Math.trunc(now() - timeStart) : Math.trunc(now() - timeStart);
-      const shape = this.process.tensor?.shape || [];
+      const shape = this.process.tensor?.shape || [0, 0, 0, 0];
       this.result = {
         face: faceRes as FaceResult[],
         body: bodyRes as BodyResult[],
@@ -558,6 +558,8 @@ export class Human {
         canvas: this.process.canvas,
         timestamp: Date.now(),
         error: null,
+        width: shape[2],
+        height: shape[1],
         get persons() { return persons.join(faceRes as FaceResult[], bodyRes as BodyResult[], handRes as HandResult[], gestureRes, shape); },
       };
 

@@ -59,8 +59,8 @@ export interface FaceResult {
   race?: { score: number, race: Race }[],
   /** face descriptor */
   embedding?: number[],
-  /** face iris distance from camera */
-  iris?: number,
+  /** face distance from camera */
+  distance?: number,
   /** face anti-spoofing result confidence */
   real?: number,
   /** face liveness result confidence */
@@ -225,4 +225,10 @@ export interface Result {
   persons: PersonResult[],
   /** Last known error message */
   error: string | null;
+  /** Resolution width */
+  width: number,
+  /** Resolution height */
+  height: number,
 }
+
+export const emptyResult = (error: string | null = null): Result => ({ face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, width: 0, height: 0, error });

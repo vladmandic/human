@@ -216,7 +216,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     if (emotionRes) res.emotion = emotionRes as { score: number, emotion: Emotion }[];
     if (antispoofRes) res.real = antispoofRes as number;
     if (livenessRes) res.live = livenessRes as number;
-    if (irisSize > 0) res.iris = irisSize;
+    if (irisSize > 0) res.distance = irisSize;
     if (rotation) res.rotation = rotation;
     if (tensor) res.tensor = tensor;
     faceRes.push(res);

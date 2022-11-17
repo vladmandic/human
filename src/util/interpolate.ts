@@ -2,7 +2,7 @@
  * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 
-import type { Result, FaceResult, BodyResult, HandResult, ObjectResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation } from '../result';
+import { Result, FaceResult, BodyResult, HandResult, ObjectResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation, emptyResult } from '../result';
 import type { Config } from '../config';
 
 import * as moveNetCoords from '../body/movenetcoords';
@@ -11,12 +11,12 @@ import * as efficientPoseCoords from '../body/efficientposecoords';
 import { now } from './util';
 import { env } from './env';
 
-const bufferedResult: Result = { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
+const bufferedResult: Result = emptyResult();
 let interpolateTime = 0;
 
 export function calc(newResult: Result, config: Config): Result {
   const t0 = now();
-  if (!newResult) return { face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, error: null };
+  if (!newResult) return emptyResult();
   // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
   // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
   // thus mixing by-reference and by-value assignments to minimize memory operations
@@ -175,8 +175,12 @@ export function calc(newResult: Result, config: Config): Result {
     }
   }
 
-  // just copy latest gestures without interpolation
+  // copy latest gestures without interpolation
   if (newResult.gesture) bufferedResult.gesture = newResult.gesture;
+
+  // copy resolution info
+  bufferedResult.width = newResult.width;
+  bufferedResult.height = newResult.height;
 
   // append interpolation performance data
   const t1 = now();

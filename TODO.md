@@ -70,7 +70,7 @@ Features:
 - Support selecting specific video source when multiple cameras are present  
   See `human.webcam.enumerate()`  
 - Updated algorithm to determine distance from camera based on iris size  
-  See `human.result.face[n].iris`  
+  See `human.result.face[n].distance`  
 
 Architecture:
 - Reduce build dependencies  

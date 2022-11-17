@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/11/16 mandic00@live.com
 
+- added webcam id specification
 - include external typedefs
 - prepare external typedefs
 - rebuild all

@@ -42,6 +42,8 @@ const options = {
   blinkMin: 10, // minimum duration of a valid blink
   blinkMax: 800, // maximum duration of a valid blink
   threshold: 0.5, // minimum similarity
+  distanceMin: 0.4, // closest that face is allowed to be to the cammera in cm
+  distanceMax: 1.0, // farthest that face is allowed to be to the cammera in cm
   mask: humanConfig.face.detector.mask,
   rotation: humanConfig.face.detector.rotation,
   cropFactor: humanConfig.face.detector.cropFactor,
@@ -57,6 +59,7 @@ const ok: Record<string, { status: boolean | undefined, val: number }> = { // mu
   faceSize: { status: false, val: 0 },
   antispoofCheck: { status: false, val: 0 },
   livenessCheck: { status: false, val: 0 },
+  distance: { status: false, val: 0 },
   age: { status: false, val: 0 },
   gender: { status: false, val: 0 },
   timeout: { status: true, val: 0 },
@@ -74,6 +77,7 @@ const allOk = () => ok.faceCount.status
   && ok.faceConfidence.status
   && ok.antispoofCheck.status
   && ok.livenessCheck.status
+  && ok.distance.status
   && ok.descriptor.status
   && ok.age.status
   && ok.gender.status;
@@ -188,6 +192,8 @@ async function validationLoop(): Promise<H.FaceResult> { // main screen refresh 
     ok.livenessCheck.status = ok.livenessCheck.val >= options.minConfidence;
     ok.faceSize.val = Math.min(human.result.face[0].box[2], human.result.face[0].box[3]);
     ok.faceSize.status = ok.faceSize.val >= options.minSize;
+    ok.distance.val = human.result.face[0].distance || 0;
+    ok.distance.status = (ok.distance.val >= options.distanceMin) && (ok.distance.val <= options.distanceMax);
     ok.descriptor.val = human.result.face[0].embedding?.length || 0;
     ok.descriptor.status = ok.descriptor.val > 0;
     ok.age.val = human.result.face[0].age || 0;
@@ -234,7 +240,7 @@ async function detectFace() {
   dom.canvas.getContext('2d')?.clearRect(0, 0, options.minSize, options.minSize);
   if (!current?.face?.tensor || !current?.face?.embedding) return false;
   console.log('face record:', current.face); // eslint-disable-line no-console
-  log(`detected face: ${current.face.gender} ${current.face.age || 0}y distance ${current.face.iris || 0}cm/${Math.round(100 * (current.face.iris || 0) / 2.54) / 100}in`);
+  log(`detected face: ${current.face.gender} ${current.face.age || 0}y distance ${100 * (current.face.distance || 0)}cm/${Math.round(100 * (current.face.distance || 0) / 2.54)}in`);
   await human.tf.browser.toPixels(current.face.tensor, dom.canvas);
   if (await indexDb.count() === 0) {
     log('face database is empty: nothing to compare face with');

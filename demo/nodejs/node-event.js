@@ -78,7 +78,7 @@ async function main() {
       const persons = human.result.persons;
       for (let i = 0; i < persons.length; i++) {
         const face = persons[i].face;
-        const faceTxt = face ? `score:${face.score} age:${face.age} gender:${face.gender} iris:${face.iris}` : null;
+        const faceTxt = face ? `score:${face.score} age:${face.age} gender:${face.gender} iris:${face.distance}` : null;
         const body = persons[i].body;
         const bodyTxt = body ? `score:${body.score} keypoints:${body.keypoints?.length}` : null;
         log.data(`  #${i}: Face:${faceTxt} Body:${bodyTxt} LeftHand:${persons[i].hands.left ? 'yes' : 'no'} RightHand:${persons[i].hands.right ? 'yes' : 'no'} Gestures:${persons[i].gestures.length}`);

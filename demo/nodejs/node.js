@@ -105,7 +105,7 @@ async function detect(input) {
     for (let i = 0; i < result.face.length; i++) {
       const face = result.face[i];
       const emotion = face.emotion.reduce((prev, curr) => (prev.score > curr.score ? prev : curr));
-      log.data(`  Face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} iris:${face.iris}`);
+      log.data(`  Face: #${i} boxScore:${face.boxScore} faceScore:${face.faceScore} age:${face.age} genderScore:${face.genderScore} gender:${face.gender} emotionScore:${emotion.score} emotion:${emotion.emotion} distance:${face.distance}`);
     }
   } else {
     log.data('  Face: N/A');

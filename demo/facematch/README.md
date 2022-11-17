@@ -11,7 +11,7 @@
 ## Browser Face Recognition Demo
 
 - `demo/facematch`: Demo for Browsers that uses all face description and embedding features to  
-detect, extract and identify all faces plus calculate simmilarity between them
+detect, extract and identify all faces plus calculate similarity between them
 
 It highlights functionality such as:
 

@@ -80,6 +80,15 @@ Architecture:
 - Upgrade to **TFJS 4.0** with **strong typing**  
   see [notes](https://github.com/vladmandic/human#typedefs) on how to use  
 - `TypeDef` refactoring  
+- Re-architect `human.models` namespace for better dynamic model handling  
+  Added additional methods `load`, `list`, `loaded`, `reset`  
 - Add named export for improved bundler support when using non-default imports  
-- Support for `NodeJS` v19  
+- Support for **NodeJS v19**  
 - Upgrade to **TypeScript 4.9**  
+
+Breaking changes:
+- Replaced `result.face[n].iris` with `result.face[n].distance`  
+- Replaced `human.getModelStats()` with `human.models.stats()`  
+- Moved `human.similarity`, `human.distance` and `human.match` to namespace `human.match.*`  
+- Obsolete `human.enhance()`  
+- Obsolete `human.gl`  

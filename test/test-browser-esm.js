@@ -75,7 +75,7 @@ async function testDefault(title, testConfig = {}) {
   await human.load();
   const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
   log('  models', models);
-  const ops = await human.check();
+  const ops = await human.models.validate();
   if (ops && ops.length > 0) log('  missing ops', ops);
   const img = await image('../../samples/in/ai-body.jpg');
   const input = await human.image(img); // process image
@@ -108,7 +108,7 @@ async function testMatch() {
   const similarity = await human.similarity(desc1, desc2);
   const descArray = [];
   for (let i = 0; i < 100; i++) descArray.push(desc2);
-  const match = await human.match(desc1, descArray);
+  const match = await human.match.find(desc1, descArray);
   log(`test similarity/${human.tf.getBackend()}`, match, similarity);
 }
 

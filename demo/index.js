@@ -222,21 +222,13 @@ async function calcSimmilarity(result) {
     compare.original = result;
     log('setting face compare baseline:', result.face[0]);
     if (result.face[0].tensor) {
-      const enhanced = human.enhance(result.face[0]);
-      if (enhanced) {
-        const c = document.getElementById('orig');
-        const squeeze = human.tf.squeeze(enhanced);
-        const norm = human.tf.div(squeeze, 255);
-        human.tf.browser.toPixels(norm, c);
-        human.tf.dispose(enhanced);
-        human.tf.dispose(squeeze);
-        human.tf.dispose(norm);
-      }
+      const c = document.getElementById('orig');
+      human.tf.browser.toPixels(result.face[0].tensor, c);
     } else {
       document.getElementById('compare-canvas').getContext('2d').drawImage(compare.original.canvas, 0, 0, 200, 200);
     }
   }
-  const similarity = human.similarity(compare.original.face[0].embedding, result.face[0].embedding);
+  const similarity = human.match.similarity(compare.original.face[0].embedding, result.face[0].embedding);
   document.getElementById('similarity').innerText = `similarity: ${Math.trunc(1000 * similarity) / 10}%`;
 }
 

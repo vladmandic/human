@@ -22,11 +22,9 @@ import * as centernet from './object/centernet';
 import * as efficientpose from './body/efficientpose';
 import * as face from './face/face';
 import * as facemesh from './face/facemesh';
-import * as faceres from './face/faceres';
 import * as gesture from './gesture/gesture';
 import * as handpose from './hand/handpose';
 import * as handtrack from './hand/handtrack';
-import * as humangl from './tfjs/humangl';
 import * as image from './image/image';
 import * as interpolate from './util/interpolate';
 import * as meet from './segmentation/meet';
@@ -41,7 +39,7 @@ import * as selfie from './segmentation/selfie';
 import * as warmups from './warmup';
 
 // type definitions
-import { Input, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, PersonResult, AnyCanvas, emptyResult } from './exports';
+import { Input, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, AnyCanvas, emptyResult } from './exports';
 import type { Tensor, Tensor4D } from './tfjs/types';
 // type exports
 export * from './exports';
@@ -94,7 +92,15 @@ export class Human {
    * - options: are global settings for all draw operations, can be overriden for each draw method {@link DrawOptions}
    * - face, body, hand, gesture, object, person: draws detected results as overlays on canvas
    */
-  draw: { canvas: typeof draw.canvas, face: typeof draw.face, body: typeof draw.body, hand: typeof draw.hand, gesture: typeof draw.gesture, object: typeof draw.object, person: typeof draw.person, all: typeof draw.all, options: DrawOptions };
+  // draw: { canvas: typeof draw.canvas, face: typeof draw.face, body: typeof draw.body, hand: typeof draw.hand, gesture: typeof draw.gesture, object: typeof draw.object, person: typeof draw.person, all: typeof draw.all, options: DrawOptions };
+  draw: typeof draw = draw;
+
+  /** Face Matching
+   * - similarity: compare two face descriptors and return similarity index
+   * - distance: compare two face descriptors and return raw calculated differences
+   * - find: compare face descriptor to array of face descriptors and return best match
+   */
+  match: typeof match = match;
 
   /** Currently loaded models
    * @internal
@@ -121,8 +127,6 @@ export class Human {
   #numTensors: number;
   #analyzeMemoryLeaks: boolean;
   #checkSanity: boolean;
-  /** WebGL debug info */
-  gl: Record<string, unknown>;
   // definition end
 
   /** Constructor for **Human** library that is futher used for all operations
@@ -153,28 +157,15 @@ export class Human {
     this.performance = {};
     this.events = (typeof EventTarget !== 'undefined') ? new EventTarget() : undefined;
     // object that contains all initialized models
-    this.models = new models.Models();
+    this.models = new models.Models(this);
     // reexport draw methods
     draw.init();
-    this.draw = {
-      options: draw.options,
-      canvas: (input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas) => draw.canvas(input, output),
-      face: (output: AnyCanvas, result: FaceResult[], options?: Partial<DrawOptions>) => draw.face(output, result, options),
-      body: (output: AnyCanvas, result: BodyResult[], options?: Partial<DrawOptions>) => draw.body(output, result, options),
-      hand: (output: AnyCanvas, result: HandResult[], options?: Partial<DrawOptions>) => draw.hand(output, result, options),
-      gesture: (output: AnyCanvas, result: GestureResult[], options?: Partial<DrawOptions>) => draw.gesture(output, result, options),
-      object: (output: AnyCanvas, result: ObjectResult[], options?: Partial<DrawOptions>) => draw.object(output, result, options),
-      person: (output: AnyCanvas, result: PersonResult[], options?: Partial<DrawOptions>) => draw.person(output, result, options),
-      all: (output: AnyCanvas, result: Result, options?: Partial<DrawOptions>) => draw.all(output, result, options),
-    };
     this.result = emptyResult();
     // export access to image processing
     this.process = { tensor: null, canvas: null };
     // export raw access to underlying models
     this.faceTriangulation = facemesh.triangulation;
     this.faceUVMap = facemesh.uvmap;
-    // set gl info
-    this.gl = humangl.config;
     // init model validation
     models.validateModel(this, null, '');
     // include platform info
@@ -227,18 +218,6 @@ export class Human {
     return msgs;
   }
 
-  /** Check model for invalid kernel ops for current backend */
-  check() {
-    return models.validate(this);
-  }
-
-  /** Exports face matching methods {@link match#similarity} */
-  public similarity = match.similarity;
-  /** Exports face matching methods {@link match#distance} */
-  public distance = match.distance;
-  /** Exports face matching methods {@link match#match} */
-  public match = match.match;
-
   /** Utility wrapper for performance.now() */
   now(): number { // eslint-disable-line class-methods-use-this
     return now();
@@ -273,16 +252,7 @@ export class Human {
     return tensor;
   }
 
-  /** Enhance method performs additional enhacements to face image previously detected for futher processing
-   *
-   * @param input - Tensor as provided in human.result.face[n].tensor
-   * @returns Tensor
-   */
-  enhance(input: Tensor): Tensor | null { // eslint-disable-line class-methods-use-this
-    return faceres.enhance(input);
-  }
-
-  /** Compare two input tensors for pixel simmilarity
+  /** Compare two input tensors for pixel similarity
    * - use `human.image` to process any valid input and get a tensor that can be used for compare
    * - when passing manually generated tensors:
    *  - both input tensors must be in format [1, height, width, 3]
@@ -325,18 +295,17 @@ export class Human {
       await tf.ready();
       if (this.env.browser) {
         if (this.config.debug) log('configuration:', this.config);
-        // @ts-ignore private property
         if (this.config.debug) log('tf flags:', this.tf.ENV.flags);
       }
     }
 
-    await models.load(this); // actually loads models
+    await this.models.load(); // actually loads models
     if (this.env.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
     this.env.initial = false;
 
     const loaded = Object.values(this.models).filter((model) => model).length;
     if (loaded !== count) { // number of loaded models changed
-      models.validate(this); // validate kernel ops used by model against current backend
+      this.models.validate(); // validate kernel ops used by model against current backend
       this.emit('load');
     }
 
@@ -358,9 +327,6 @@ export class Human {
   next(result: Result = this.result): Result {
     return interpolate.calc(result, this.config);
   }
-
-  /** get model loading/loaded stats */
-  getModelStats(): models.ModelStats { return models.getModelStats(this); }
 
   /** Warmup method pre-initializes all configured models for faster inference
    * - can take significant time on startup

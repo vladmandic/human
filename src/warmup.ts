@@ -8,9 +8,9 @@ import * as sample from './sample';
 import * as image from './image/image';
 import * as backend from './tfjs/backend';
 import { env } from './util/env';
-import type { Config } from './config';
 import { emptyResult, Result } from './result';
-import { Human, models } from './human';
+import type { Config } from './config';
+import type { Human } from './human';
 import type { Tensor, DataType } from './tfjs/types';
 
 async function warmupBitmap(instance: Human): Promise<Result | undefined> {
@@ -161,7 +161,7 @@ export async function warmup(instance: Human, userConfig?: Partial<Config>): Pro
     return emptyResult();
   }
   return new Promise(async (resolve) => {
-    await models.load(instance);
+    await instance.models.load();
     await runCompile(instance);
     const res = await runInference(instance);
     const t1 = now();

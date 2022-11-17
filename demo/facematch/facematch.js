@@ -1,7 +1,7 @@
 /**
  * Human demo for browsers
  *
- * Demo for face descriptor analysis and face simmilarity analysis
+ * Demo for face descriptor analysis and face similarity analysis
  */
 
 /** @type {Human} */
@@ -70,6 +70,9 @@ async function SelectFaceCanvas(face) {
   document.getElementById('orig').style.filter = 'blur(16px)';
   if (face.tensor) {
     title('Sorting Faces by Similarity');
+    const c = document.getElementById('orig');
+    await human.tf.browser.toPixels(face.tensor, c);
+    /*
     const enhanced = human.enhance(face);
     if (enhanced) {
       const c = document.getElementById('orig');
@@ -81,8 +84,9 @@ async function SelectFaceCanvas(face) {
       ctx.font = 'small-caps 0.4rem "Lato"';
       ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     }
+    */
     const arr = db.map((rec) => rec.embedding);
-    const res = await human.match(face.embedding, arr);
+    const res = await human.match.find(face.embedding, arr);
     log('Match:', db[res.index].name);
     const emotion = face.emotion[0] ? `${Math.round(100 * face.emotion[0].score)}% ${face.emotion[0].emotion}` : 'N/A';
     document.getElementById('desc').innerHTML = `
@@ -103,7 +107,7 @@ async function SelectFaceCanvas(face) {
   for (const canvas of canvases) {
     // calculate similarity from selected face to current one in the loop
     const current = all[canvas.tag.sample][canvas.tag.face];
-    const similarity = human.similarity(face.embedding, current.embedding);
+    const similarity = human.match.similarity(face.embedding, current.embedding);
     canvas.tag.similarity = similarity;
     // get best match
     // draw the canvas
@@ -120,7 +124,7 @@ async function SelectFaceCanvas(face) {
     ctx.font = 'small-caps 1rem "Lato"';
     const start = human.now();
     const arr = db.map((rec) => rec.embedding);
-    const res = await human.match(current.embedding, arr);
+    const res = await human.match.find(current.embedding, arr);
     time += (human.now() - start);
     if (res.similarity > minScore) ctx.fillText(`DB: ${(100 * res.similarity).toFixed(1)}% ${db[res.index].name}`, 4, canvas.height - 30);
   }
@@ -161,7 +165,7 @@ async function AddFaceCanvas(index, res, fileName) {
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
     const arr = db.map((rec) => rec.embedding);
-    const result = human.match(res.face[i].embedding, arr);
+    const result = human.match.find(res.face[i].embedding, arr);
     ctx.font = 'small-caps 1rem "Lato"';
     if (result.similarity && res.similarity > minScore) ctx.fillText(`${(100 * result.similarity).toFixed(1)}% ${db[result.index].name}`, 4, canvas.height - 30);
     document.getElementById('faces').appendChild(canvas);
@@ -256,7 +260,7 @@ async function main() {
   title('');
   log('Ready');
   human.validate(userConfig);
-  human.similarity([], []);
+  human.match.similarity([], []);
 }
 
 window.onload = main;

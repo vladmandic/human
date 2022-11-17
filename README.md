@@ -68,7 +68,7 @@
 - **Full** [[*Live*]](https://vladmandic.github.io/human/demo/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo): Main browser demo app that showcases all Human capabilities
 - **Simple** [[*Live*]](https://vladmandic.github.io/human/demo/typescript/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/typescript): Simple demo in WebCam processing demo in TypeScript
 - **Embedded** [[*Live*]](https://vladmandic.github.io/human/demo/video/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/video/index.html): Even simpler demo with tiny code embedded in HTML file
-- **Face Match** [[*Live*]](https://vladmandic.github.io/human/demo/facematch/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Extract faces from images, calculates face descriptors and simmilarities and matches them to known database
+- **Face Match** [[*Live*]](https://vladmandic.github.io/human/demo/facematch/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Extract faces from images, calculates face descriptors and similarities and matches them to known database
 - **Face ID** [[*Live*]](https://vladmandic.github.io/human/demo/faceid/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/faceid): Runs multiple checks to validate webcam input before performing face match to faces in IndexDB
 - **Multi-thread** [[*Live*]](https://vladmandic.github.io/human/demo/multithread/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/multithread): Runs each Human module in a separate web worker for highest possible performance  
 - **NextJS** [[*Live*]](https://vladmandic.github.io/human-next/out/index.html) [[*Details*]](https://github.com/vladmandic/human-next): Use Human with TypeScript, NextJS and ReactJS
@@ -376,6 +376,16 @@ drawResults(); // start draw loop
 ```
 
 And for even better results, you can run detection in a separate web worker thread
+
+<br><hr><br>
+
+## Detailed Usage
+
+- [**Wiki Home**](https://github.com/vladmandic/human/wiki)
+- [**List of all available methods, properies and namespaces**](https://github.com/vladmandic/human/wiki/Usage)
+- [**TypeDoc API Specification - Main class**](https://vladmandic.github.io/human/typedoc/classes/Human.html)
+- [**TypeDoc API Specification - Full**](https://vladmandic.github.io/human/typedoc/)
+
 
 <br><hr><br>
 

@@ -31,136 +31,10 @@ import { modelStats, ModelInfo } from './tfjs/load';
 import type { GraphModel } from './tfjs/types';
 import type { Human } from './human';
 
-/** Instances of all possible TFJS Graph Models used by Human
- * - loaded as needed based on configuration
- * - initialized explictly with `human.load()` method
- * - initialized implicity on first call to `human.detect()`
- * - each model can be `null` if not loaded, instance of `GraphModel` if loaded or `Promise` if loading
- */
-export class Models {
-  ssrnetage: null | GraphModel | Promise<GraphModel> = null;
-  gear: null | GraphModel | Promise<GraphModel> = null;
-  blazeposedetect: null | GraphModel | Promise<GraphModel> = null;
-  blazepose: null | GraphModel | Promise<GraphModel> = null;
-  centernet: null | GraphModel | Promise<GraphModel> = null;
-  efficientpose: null | GraphModel | Promise<GraphModel> = null;
-  mobilefacenet: null | GraphModel | Promise<GraphModel> = null;
-  insightface: null | GraphModel | Promise<GraphModel> = null;
-  emotion: null | GraphModel | Promise<GraphModel> = null;
-  facedetect: null | GraphModel | Promise<GraphModel> = null;
-  faceiris: null | GraphModel | Promise<GraphModel> = null;
-  facemesh: null | GraphModel | Promise<GraphModel> = null;
-  faceres: null | GraphModel | Promise<GraphModel> = null;
-  ssrnetgender: null | GraphModel | Promise<GraphModel> = null;
-  handpose: null | GraphModel | Promise<GraphModel> = null;
-  handskeleton: null | GraphModel | Promise<GraphModel> = null;
-  handtrack: null | GraphModel | Promise<GraphModel> = null;
-  liveness: null | GraphModel | Promise<GraphModel> = null;
-  meet: null | GraphModel | Promise<GraphModel> = null;
-  movenet: null | GraphModel | Promise<GraphModel> = null;
-  nanodet: null | GraphModel | Promise<GraphModel> = null;
-  posenet: null | GraphModel | Promise<GraphModel> = null;
-  selfie: null | GraphModel | Promise<GraphModel> = null;
-  rvm: null | GraphModel | Promise<GraphModel> = null;
-  antispoof: null | GraphModel | Promise<GraphModel> = null;
-}
-
-/** structure that holds global stats for currently loaded models */
-export interface ModelStats {
-  numLoadedModels: number,
-  numDefinedModels: number,
-  percentageLoaded: number,
-  totalSizeFromManifest: number,
-  totalSizeWeights: number,
-  totalSizeLoading: number,
-  totalSizeEnabled: undefined,
-  modelStats: ModelInfo[],
-}
-
-let instance: Human;
-
-export const getModelStats = (currentInstance: Human): ModelStats => {
-  if (currentInstance) instance = currentInstance;
-  if (!instance) log('instance not registred');
-  let totalSizeFromManifest = 0;
-  let totalSizeWeights = 0;
-  let totalSizeLoading = 0;
-  for (const m of Object.values(modelStats)) {
-    totalSizeFromManifest += m.sizeFromManifest;
-    totalSizeWeights += m.sizeLoadedWeights;
-    totalSizeLoading += m.sizeDesired;
-  }
-  const percentageLoaded = totalSizeLoading > 0 ? totalSizeWeights / totalSizeLoading : 0;
-  return {
-    numLoadedModels: Object.values(modelStats).length,
-    numDefinedModels: Object.keys(instance.models).length,
-    percentageLoaded,
-    totalSizeFromManifest,
-    totalSizeWeights,
-    totalSizeLoading,
-    totalSizeEnabled: undefined,
-    modelStats: Object.values(modelStats),
-  };
-};
-
-export function reset(currentInstance: Human): void {
-  if (currentInstance) instance = currentInstance;
-  // if (instance.config.debug) log('resetting loaded models');
-  for (const model of Object.keys(instance.models)) instance.models[model as keyof Models] = null;
-}
-
-/** Load method preloads all instance.configured models on-demand */
-export async function load(currentInstance: Human): Promise<void> {
-  if (currentInstance) instance = currentInstance;
-  if (!instance) log('instance not registred');
-  if (env.initial) reset(instance);
-  if (instance.config.hand.enabled) { // handpose model is a combo that must be loaded as a whole
-    if (!instance.models.handpose && instance.config.hand.detector?.modelPath?.includes('handdetect')) {
-      [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
-    }
-    if (!instance.models.handskeleton && instance.config.hand.landmarks && instance.config.hand.detector?.modelPath?.includes('handdetect')) {
-      [instance.models.handpose, instance.models.handskeleton] = await handpose.load(instance.config);
-    }
-  }
-  if (instance.config.body.enabled && !instance.models.blazepose && instance.config.body.modelPath?.includes('blazepose')) instance.models.blazepose = blazepose.loadPose(instance.config);
-  if (instance.config.body.enabled && !instance.models.blazeposedetect && instance.config.body['detector'] && instance.config.body['detector'].modelPath) instance.models.blazeposedetect = blazepose.loadDetect(instance.config);
-  if (instance.config.body.enabled && !instance.models.efficientpose && instance.config.body.modelPath?.includes('efficientpose')) instance.models.efficientpose = efficientpose.load(instance.config);
-  if (instance.config.body.enabled && !instance.models.movenet && instance.config.body.modelPath?.includes('movenet')) instance.models.movenet = movenet.load(instance.config);
-  if (instance.config.body.enabled && !instance.models.posenet && instance.config.body.modelPath?.includes('posenet')) instance.models.posenet = posenet.load(instance.config);
-  if (instance.config.face.enabled && !instance.models.facedetect) instance.models.facedetect = blazeface.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face.antispoof?.enabled && !instance.models.antispoof) instance.models.antispoof = antispoof.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face.liveness?.enabled && !instance.models.liveness) instance.models.liveness = liveness.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face.description?.enabled && !instance.models.faceres) instance.models.faceres = faceres.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face.emotion?.enabled && !instance.models.emotion) instance.models.emotion = emotion.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face.iris?.enabled && !instance.config.face.attention?.enabled && !instance.models.faceiris) instance.models.faceiris = iris.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face.mesh?.enabled && (!instance.models.facemesh)) instance.models.facemesh = facemesh.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face['gear']?.enabled && !instance.models.gear) instance.models.gear = gear.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetage) instance.models.ssrnetage = ssrnetAge.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face['ssrnet']?.enabled && !instance.models.ssrnetgender) instance.models.ssrnetgender = ssrnetGender.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face['mobilefacenet']?.enabled && !instance.models.mobilefacenet) instance.models.mobilefacenet = mobilefacenet.load(instance.config);
-  if (instance.config.face.enabled && instance.config.face['insightface']?.enabled && !instance.models.insightface) instance.models.insightface = insightface.load(instance.config);
-  if (instance.config.hand.enabled && !instance.models.handtrack && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handtrack = handtrack.loadDetect(instance.config);
-  if (instance.config.hand.enabled && instance.config.hand.landmarks && !instance.models.handskeleton && instance.config.hand.detector?.modelPath?.includes('handtrack')) instance.models.handskeleton = handtrack.loadSkeleton(instance.config);
-  if (instance.config.object.enabled && !instance.models.centernet && instance.config.object.modelPath?.includes('centernet')) instance.models.centernet = centernet.load(instance.config);
-  if (instance.config.object.enabled && !instance.models.nanodet && instance.config.object.modelPath?.includes('nanodet')) instance.models.nanodet = nanodet.load(instance.config);
-  if (instance.config.segmentation.enabled && !instance.models.selfie && instance.config.segmentation.modelPath?.includes('selfie')) instance.models.selfie = selfie.load(instance.config);
-  if (instance.config.segmentation.enabled && !instance.models.meet && instance.config.segmentation.modelPath?.includes('meet')) instance.models.meet = meet.load(instance.config);
-  if (instance.config.segmentation.enabled && !instance.models.rvm && instance.config.segmentation.modelPath?.includes('rvm')) instance.models.rvm = rvm.load(instance.config);
-
-  // models are loaded in parallel asynchronously so lets wait until they are actually loaded
-  for await (const model of Object.keys(instance.models)) {
-    if (instance.models[model as keyof Models] && typeof instance.models[model as keyof Models] !== 'undefined') {
-      instance.models[model as keyof Models] = await instance.models[model as keyof Models];
-    }
-  }
-}
-
 export interface KernelOps { name: string, url: string, missing: string[], ops: string[] }
 
-export function validateModel(currentInstance: Human | null, model: GraphModel | null, name: string): KernelOps | null {
+export function validateModel(instance: Human | null, model: GraphModel | null, name: string): KernelOps | null {
   if (!model) return null;
-  if (currentInstance) instance = currentInstance;
-  if (!instance) log('instance not registred');
   if (!instance?.config?.validateModels) return null;
   const simpleOps = ['const', 'placeholder', 'noop', 'pad', 'squeeze', 'add', 'sub', 'mul', 'div'];
   const ignoreOps = ['biasadd', 'fusedbatchnormv3', 'matmul', 'switch', 'shape', 'merge', 'split', 'broadcastto'];
@@ -193,15 +67,124 @@ export function validateModel(currentInstance: Human | null, model: GraphModel |
   return missing.length > 0 ? { name, missing, ops, url } : null;
 }
 
-export function validate(currentInstance: Human): { name: string, missing: string[] }[] {
-  if (currentInstance) instance = currentInstance;
-  if (!instance) log('instance not registred');
-  const missing: KernelOps[] = [];
-  for (const defined of Object.keys(currentInstance.models)) {
-    const model: GraphModel | null = currentInstance.models[defined as keyof Models] as GraphModel | null;
-    if (!model) continue;
-    const res = validateModel(currentInstance, model, defined);
-    if (res) missing.push(res);
+/** structure that holds global stats for currently loaded models */
+export interface ModelStats {
+  numLoadedModels: number,
+  numDefinedModels: number,
+  percentageLoaded: number,
+  totalSizeFromManifest: number,
+  totalSizeWeights: number,
+  totalSizeLoading: number,
+  modelStats: ModelInfo[],
+}
+
+/** Models class used by Human
+ * - models: record of all GraphModels
+ * - list: returns list of configured models with their stats
+ * - loaded: returns array of loaded models
+ * - reset: unloads all models
+ * - validate: checks loaded models for valid kernel ops vs current backend
+ * - stats: live detailed model stats that can be checked during model load phase
+ */
+export class Models {
+  instance: Human;
+  models: Record<string, null | GraphModel>;
+
+  constructor(currentInstance: Human) {
+    this.models = {};
+    this.instance = currentInstance;
   }
-  return missing;
+
+  stats(): ModelStats {
+    let totalSizeFromManifest = 0;
+    let totalSizeWeights = 0;
+    let totalSizeLoading = 0;
+    for (const m of Object.values(modelStats)) {
+      totalSizeFromManifest += m.sizeFromManifest;
+      totalSizeWeights += m.sizeLoadedWeights;
+      totalSizeLoading += m.sizeDesired;
+    }
+    const percentageLoaded = totalSizeLoading > 0 ? totalSizeWeights / totalSizeLoading : 0;
+    return {
+      numLoadedModels: Object.values(modelStats).length,
+      numDefinedModels: Object.keys(this.models).length,
+      percentageLoaded,
+      totalSizeFromManifest,
+      totalSizeWeights,
+      totalSizeLoading,
+      modelStats: Object.values(modelStats),
+    };
+  }
+
+  reset(): void {
+    for (const model of Object.keys(this.models)) this.models[model] = null;
+  }
+
+  async load(): Promise<void> {
+    if (env.initial) this.reset();
+    const m: Record<string, null | GraphModel | Promise<GraphModel>> = {};
+    // face main models
+    m.blazeface = (this.instance.config.face.enabled && !this.models.blazeface) ? blazeface.load(this.instance.config) : null;
+    m.antispoof = (this.instance.config.face.enabled && this.instance.config.face.antispoof?.enabled && !this.models.antispoof) ? antispoof.load(this.instance.config) : null;
+    m.liveness = (this.instance.config.face.enabled && this.instance.config.face.liveness?.enabled && !this.models.liveness) ? liveness.load(this.instance.config) : null;
+    m.faceres = (this.instance.config.face.enabled && this.instance.config.face.description?.enabled && !this.models.faceres) ? faceres.load(this.instance.config) : null;
+    m.emotion = (this.instance.config.face.enabled && this.instance.config.face.emotion?.enabled && !this.models.emotion) ? emotion.load(this.instance.config) : null;
+    m.iris = (this.instance.config.face.enabled && this.instance.config.face.iris?.enabled && !this.instance.config.face.attention?.enabled && !this.models.iris) ? iris.load(this.instance.config) : null;
+    m.facemesh = (this.instance.config.face.enabled && this.instance.config.face.mesh?.enabled && (!this.models.facemesh)) ? facemesh.load(this.instance.config) : null;
+    // face alternatives
+    m.gear = (this.instance.config.face.enabled && this.instance.config.face['gear']?.enabled && !this.models.gear) ? gear.load(this.instance.config) : null;
+    m.ssrnetage = (this.instance.config.face.enabled && this.instance.config.face['ssrnet']?.enabled && !this.models.ssrnetage) ? ssrnetAge.load(this.instance.config) : null;
+    m.ssrnetgender = (this.instance.config.face.enabled && this.instance.config.face['ssrnet']?.enabled && !this.models.ssrnetgender) ? ssrnetGender.load(this.instance.config) : null;
+    m.mobilefacenet = (this.instance.config.face.enabled && this.instance.config.face['mobilefacenet']?.enabled && !this.models.mobilefacenet) ? mobilefacenet.load(this.instance.config) : null;
+    m.insightface = (this.instance.config.face.enabled && this.instance.config.face['insightface']?.enabled && !this.models.insightface) ? insightface.load(this.instance.config) : null;
+    // body alterinatives
+    m.blazepose = (this.instance.config.body.enabled && !this.models.blazepose && this.instance.config.body.modelPath?.includes('blazepose')) ? blazepose.loadPose(this.instance.config) : null;
+    m.blazeposedetect = (this.instance.config.body.enabled && !this.models.blazeposedetect && this.instance.config.body['detector'] && this.instance.config.body['detector'].modelPath) ? blazepose.loadDetect(this.instance.config) : null;
+    m.efficientpose = (this.instance.config.body.enabled && !this.models.efficientpose && this.instance.config.body.modelPath?.includes('efficientpose')) ? efficientpose.load(this.instance.config) : null;
+    m.movenet = (this.instance.config.body.enabled && !this.models.movenet && this.instance.config.body.modelPath?.includes('movenet')) ? movenet.load(this.instance.config) : null;
+    m.posenet = (this.instance.config.body.enabled && !this.models.posenet && this.instance.config.body.modelPath?.includes('posenet')) ? posenet.load(this.instance.config) : null;
+    // hand alternatives
+    m.handtrack = (this.instance.config.hand.enabled && !this.models.handtrack && this.instance.config.hand.detector?.modelPath?.includes('handtrack')) ? handtrack.loadDetect(this.instance.config) : null;
+    m.handskeleton = (this.instance.config.hand.enabled && this.instance.config.hand.landmarks && !this.models.handskeleton && this.instance.config.hand.detector?.modelPath?.includes('handtrack')) ? handtrack.loadSkeleton(this.instance.config) : null;
+    if (this.instance.config.hand.detector?.modelPath?.includes('handdetect')) [m.handpose, m.handskeleton] = (!this.models.handpose) ? await handpose.load(this.instance.config) : [null, null];
+    // object detection alternatives
+    m.centernet = (this.instance.config.object.enabled && !this.models.centernet && this.instance.config.object.modelPath?.includes('centernet')) ? centernet.load(this.instance.config) : null;
+    m.nanodet = (this.instance.config.object.enabled && !this.models.nanodet && this.instance.config.object.modelPath?.includes('nanodet')) ? nanodet.load(this.instance.config) : null;
+    // segmentation alternatives
+    m.selfie = (this.instance.config.segmentation.enabled && !this.models.selfie && this.instance.config.segmentation.modelPath?.includes('selfie')) ? selfie.load(this.instance.config) : null;
+    m.meet = (this.instance.config.segmentation.enabled && !this.models.meet && this.instance.config.segmentation.modelPath?.includes('meet')) ? meet.load(this.instance.config) : null;
+    m.rvm = (this.instance.config.segmentation.enabled && !this.models.rvm && this.instance.config.segmentation.modelPath?.includes('rvm')) ? rvm.load(this.instance.config) : null;
+
+    // models are loaded in parallel asynchronously so lets wait until they are actually loaded
+    await Promise.all([...Object.values(m)]);
+    for (const model of Object.keys(m)) this.models[model] = m[model] as GraphModel || this.models[model] || null; // only update actually loaded models
+  }
+
+  list() {
+    const models = Object.keys(this.models).map((model) => ({ name: model, loaded: (this.models[model] !== null), size: 0, url: this.models[model] ? this.models[model]?.['modelUrl'] : null }));
+    for (const m of models) {
+      const stats = Object.keys(modelStats).find((s) => s.startsWith(m.name));
+      if (!stats) continue;
+      m.size = modelStats[stats].sizeLoadedWeights;
+      m.url = modelStats[stats].url;
+    }
+    return models;
+  }
+
+  loaded() {
+    const list = this.list();
+    const loaded = list.filter((model) => model.loaded).map((model) => model.name);
+    return loaded;
+  }
+
+  validate(): { name: string, missing: string[] }[] {
+    const missing: KernelOps[] = [];
+    for (const defined of Object.keys(this.models)) {
+      const model: GraphModel | null = this.models[defined as keyof Models];
+      if (!model) continue;
+      const res = validateModel(this.instance, model, defined);
+      if (res) missing.push(res);
+    }
+    return missing;
+  }
 }

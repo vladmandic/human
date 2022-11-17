@@ -2,7 +2,7 @@
  * FaceRes model implementation
  *
  * Returns Age, Gender, Descriptor
- * Implements Face simmilarity function
+ * Implements Face similarity function
  *
  * Based on: [**HSE-FaceRes**](https://github.com/HSE-asavchenko/HSE_FaceRec_tf)
  */

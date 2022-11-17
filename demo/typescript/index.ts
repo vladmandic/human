@@ -100,7 +100,7 @@ async function main() { // main entry point
   status('loading...');
   await human.load(); // preload all models
   log('backend:', human.tf.getBackend(), '| available:', human.env.backends);
-  log('models stats:', human.getModelStats());
+  log('models stats:', human.models.stats());
   log('models loaded:', Object.values(human.models).filter((model) => model !== null).length);
   log('environment', human.env);
   status('initializing...');

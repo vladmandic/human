@@ -9,22 +9,21 @@ const log = (status, ...data) => {
 async function main() {
   const human = new Human.Human(); // create instance of human using default configuration
   const startTime = new Date();
-  log('info', 'load start', { human: human.version, tf: tf.version_core, progress: human.getModelStats().percentageLoaded });
+  log('info', 'load start', { human: human.version, tf: tf.version_core, progress: human.models.stats().percentageLoaded });
 
   async function monitor() {
-    const progress = human.getModelStats().percentageLoaded;
+    const progress = human.models.stats().percentageLoaded;
     log('data', 'load interval', { elapsed: new Date() - startTime, progress });
     if (progress < 1) setTimeout(monitor, 10);
   }
 
   monitor();
-  // setInterval(() => log('interval', { elapsed: new Date() - startTime, progress: human.getModelStats().percentageLoaded }));
   const loadPromise = human.load();
   loadPromise
-    .then(() => log('state', 'passed', { progress: human.getModelStats().percentageLoaded }))
+    .then(() => log('state', 'passed', { progress: human.models.stats().percentageLoaded }))
     .catch(() => log('error', 'load promise'));
   await loadPromise;
-  log('info', 'load final', { progress: human.getModelStats().percentageLoaded });
+  log('info', 'load final', { progress: human.models.stats().percentageLoaded });
   await human.warmup(); // optional as model warmup is performed on-demand first time its executed
 }
 

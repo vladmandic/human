@@ -82,7 +82,7 @@ node demo/nodejs/node.js
     detector: { modelPath: 'handdetect.json' },
     skeleton: { modelPath: 'handskeleton.json' }
   },
-  object: { enabled: true, modelPath: 'mb3-centernet.json', minConfidence: 0.2, iouThreshold: 0.4, maxDetected: 10, skipFrames: 19 }
+  object: { enabled: true, modelPath: 'centernet.json', minConfidence: 0.2, iouThreshold: 0.4, maxDetected: 10, skipFrames: 19 }
 }
 08:52:15.673 Human: version: 2.0.0
 08:52:15.674 Human: tfjs version: 3.6.0
@@ -96,7 +96,7 @@ node demo/nodejs/node.js
 08:52:15.847 Human: load model: file://models/handdetect.json
 08:52:15.847 Human: load model: file://models/handskeleton.json
 08:52:15.914 Human: load model: file://models/movenet-lightning.json
-08:52:15.957 Human: load model: file://models/mb3-centernet.json
+08:52:15.957 Human: load model: file://models/centernet.json
 08:52:16.015 Human: load model: file://models/faceres.json
 08:52:16.015 Human: tf engine state: 50796152 bytes 1318 tensors
 2021-06-01 08:52:16 INFO:  Loaded: [ 'face', 'movenet', 'handpose', 'emotion', 'centernet', 'faceres', [length]: 6 ]

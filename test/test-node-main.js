@@ -138,7 +138,7 @@ async function testDetect(human, input, title, checkLeak = true) {
   lastOp = `testDetect ${title}`;
   log('state', 'start', title);
   await human.load(config);
-  const missing = human.check();
+  const missing = human.models.validate();
   for (const op of missing) log('warn', 'missing kernel ops', { title, model: op.name, url: op.url, missing: op.missing, backkend: human.tf.getBackend() });
   const tensors = human.tf.engine().state.numTensors;
   const image = input ? await getImage(human, input) : human.tf.randomNormal([1, 1024, 1024, 3]);
@@ -189,7 +189,7 @@ async function verifyDetails(human) {
   verify(res.face.length === 1, 'details face length', res.face.length);
   for (const face of res.face) {
     verify(face.score > 0.9 && face.boxScore > 0.9 && face.faceScore > 0.9, 'details face score', face.score, face.boxScore, face.faceScore);
-    verify(face.age > 23 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.iris > 0.5 && face.distance < 2.5, 'details face age/gender', face.age, face.gender, face.genderScore, face.distance);
+    verify(face.age > 23 && face.age < 30 && face.gender === 'female' && face.genderScore > 0.9 && face.distance > 0.5 && face.distance < 2.5, 'details face age/gender', face.age, face.gender, face.genderScore, face.distance);
     verify(face.box.length === 4 && face.boxRaw.length === 4 && face.mesh.length === 478 && face.meshRaw.length === 478 && face.embedding.length === 1024, 'details face arrays', face.box.length, face.mesh.length, face.embedding.length);
     verify(face.emotion.length >= 2 && face.emotion[0].score > 0.30 && face.emotion[0].emotion === 'angry', 'details face emotion', face.emotion.length, face.emotion[0]);
     verify(face.real > 0.55, 'details face anti-spoofing', face.real);
@@ -293,9 +293,9 @@ async function test(Human, inputConfig) {
   // test model loading
   log('info', 'test: model load');
   await human.load();
-  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null), url: human.models[model] ? human.models[model]['modelUrl'] : null }));
-  const loaded = models.filter((model) => model.loaded);
-  if (models.length === 25 && loaded.length === 11) log('state', 'passed: models loaded', models.length, loaded.length, models);
+  const models = human.models.list();
+  const loaded = human.models.loaded();
+  if (models.length === 24 && loaded.length === 11) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
   log('info', 'memory:', { memory: human.tf.memory() });
   log('info', 'state:', { state: human.tf.engine().state });
@@ -380,15 +380,15 @@ async function test(Human, inputConfig) {
   const desc3 = res3 && res3.face && res3.face[0] && res3.face[0].embedding ? [...res3.face[0].embedding] : null;
   if (!desc1 || !desc2 || !desc3 || desc1.length !== 1024 || desc2.length !== 1024 || desc3.length !== 1024) log('error', 'failed: face descriptor', desc1?.length, desc2?.length, desc3?.length);
   else log('state', 'passed: face descriptor');
-  res1 = human.similarity(desc1, desc1);
-  res2 = human.similarity(desc1, desc2);
-  res3 = human.similarity(desc1, desc3);
+  res1 = human.match.similarity(desc1, desc1);
+  res2 = human.match.similarity(desc1, desc2);
+  res3 = human.match.similarity(desc1, desc3);
   if (res1 < 1 || res2 < 0.40 || res3 < 0.40 || res2 > 0.75 || res3 > 0.75) log('error', 'failed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
   else log('state', 'passed: face similarity', { similarity: [res1, res2, res3], descriptors: [desc1?.length, desc2?.length, desc3?.length] });
 
   // test object detection
   log('info', 'test object');
-  config.object = { enabled: true, modelPath: 'mb3-centernet.json' };
+  config.object = { enabled: true, modelPath: 'centernet.json' };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'object');
   if (!res || res.object?.length < 1 || res.object[0]?.label !== 'person') log('error', 'failed: centernet', res.object);
   else log('state', 'passed: centernet');
@@ -461,9 +461,9 @@ async function test(Human, inputConfig) {
   const arr = db.map((rec) => rec.embedding);
   if (db.length < 20) log('error', 'failed: face database ', db.length);
   else log('state', 'passed: face database', db.length);
-  res1 = human.match(desc1, arr);
-  res2 = human.match(desc2, arr);
-  res3 = human.match(desc3, arr);
+  res1 = human.match.find(desc1, arr);
+  res2 = human.match.find(desc2, arr);
+  res3 = human.match.find(desc3, arr);
   if (res1.index !== 4 || res2.index !== 4 || res3.index !== 4) log('error', 'failed: face match', res1, res2, res3);
   else log('state', 'passed: face match', { first: { index: res1.index, similarity: res1.similarity } }, { second: { index: res2.index, similarity: res2.similarity } }, { third: { index: res3.index, similarity: res3.similarity } });
 

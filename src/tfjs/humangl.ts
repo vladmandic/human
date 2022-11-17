@@ -4,7 +4,6 @@ import * as tf from 'dist/tfjs.esm.js';
 import type { Human } from '../human';
 import { log } from '../util/util';
 import * as image from '../image/image';
-import * as models from '../models';
 import type { AnyCanvas } from '../exports';
 
 export const config = {
@@ -46,7 +45,7 @@ export function register(instance: Human): void {
   if (instance.config.backend !== 'humangl') return;
   if ((config.name in tf.engine().registry) && !config?.gl?.getParameter(config.gl.VERSION)) {
     log('humangl error: backend invalid context');
-    models.reset(instance);
+    instance.models.reset();
     /*
     log('resetting humangl backend');
     await tf.removeBackend(config.name);

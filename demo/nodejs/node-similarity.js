@@ -57,7 +57,7 @@ async function main() {
   if (!res1 || !res1.face || res1.face.length === 0 || !res2 || !res2.face || res2.face.length === 0) {
     throw new Error('Could not detect face descriptors');
   }
-  const similarity = human.similarity(res1.face[0].embedding, res2.face[0].embedding, { order: 2 });
+  const similarity = human.match.similarity(res1.face[0].embedding, res2.face[0].embedding, { order: 2 });
   log.data('Similarity: ', similarity);
 }
 

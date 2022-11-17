@@ -250,7 +250,7 @@ async function detectFace() {
   }
   const db = await indexDb.load();
   const descriptors = db.map((rec) => rec.descriptor).filter((desc) => desc.length > 0);
-  const res = human.match(current.face.embedding, descriptors, matchOptions);
+  const res = human.match.find(current.face.embedding, descriptors, matchOptions);
   current.record = db[res.index] || null;
   if (current.record) {
     log(`best match: ${current.record.name} | id: ${current.record.id} | similarity: ${Math.round(1000 * res.similarity) / 10}%`);

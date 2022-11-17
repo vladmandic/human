@@ -18,6 +18,7 @@ export interface ModelInfo {
   sizeDesired: number,
   sizeFromManifest: number,
   sizeLoadedWeights: number,
+  url: string,
 }
 
 export const modelStats: Record<string, ModelInfo> = {};
@@ -45,6 +46,7 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     sizeLoadedWeights: 0,
     sizeDesired: modelsDefs[shortModelName],
     inCache: false,
+    url: '',
   };
   options.cacheSupported = (typeof indexedDB !== 'undefined'); // check if localStorage and indexedb are available
   let cachedModels = {};
@@ -54,8 +56,9 @@ export async function loadModel(modelPath: string | undefined): Promise<GraphMod
     options.cacheSupported = false;
   }
   modelStats[shortModelName].inCache = (options.cacheSupported && options.cacheModels) && Object.keys(cachedModels).includes(cachedModelName); // is model found in cache
+  modelStats[shortModelName].url = modelStats[shortModelName].inCache ? cachedModelName : modelUrl;
   const tfLoadOptions = typeof fetch === 'undefined' ? {} : { fetchFunc: (url: string, init?: RequestInit) => httpHandler(url, init) };
-  let model: GraphModel = new tf.GraphModel(modelStats[shortModelName].inCache ? cachedModelName : modelUrl, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
+  let model: GraphModel = new tf.GraphModel(modelStats[shortModelName].url, tfLoadOptions) as unknown as GraphModel; // create model prototype and decide if load from cache or from original modelurl
   let loaded = false;
   try {
     // @ts-ignore private function

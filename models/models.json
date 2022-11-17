@@ -1,6 +1,7 @@
 {
   "antispoof": 853098,
   "blazeface": 538928,
+  "centernet": 4030290,
   "emotion": 820516,
   "facemesh": 1477958,
   "faceres": 6978814,
@@ -8,7 +9,6 @@
   "handtrack": 2964837,
   "iris": 2599092,
   "liveness": 592976,
-  "mb3-centernet": 4030290,
   "models": 0,
   "movenet-lightning": 4650216,
   "age": 161240,

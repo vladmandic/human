@@ -9,7 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/16 mandic00@live.com
+### **HEAD -> main** 2022/11/17 mandic00@live.com
+
+
+### **origin/main** 2022/11/16 mandic00@live.com
 
 - added webcam id specification
 - include external typedefs

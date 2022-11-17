@@ -449,7 +449,7 @@ const config: Config = {
   },
   object: {
     enabled: false,
-    modelPath: 'mb3-centernet.json',
+    modelPath: 'centernet.json',
     minConfidence: 0.2,
     iouThreshold: 0.4,
     maxDetected: 10,

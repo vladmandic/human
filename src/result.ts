@@ -231,4 +231,4 @@ export interface Result {
   height: number,
 }
 
-export const emptyResult = (error: string | null = null): Result => ({ face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, width: 0, height: 0, error });
+export const empty = (error: string | null = null): Result => ({ face: [], body: [], hand: [], gesture: [], object: [], persons: [], performance: {}, timestamp: 0, width: 0, height: 0, error });

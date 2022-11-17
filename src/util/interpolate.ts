@@ -2,7 +2,7 @@
  * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 
-import { Result, FaceResult, BodyResult, HandResult, ObjectResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation, emptyResult } from '../result';
+import { Result, FaceResult, BodyResult, HandResult, ObjectResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation, empty } from '../result';
 import type { Config } from '../config';
 
 import * as moveNetCoords from '../body/movenetcoords';
@@ -11,12 +11,12 @@ import * as efficientPoseCoords from '../body/efficientposecoords';
 import { now } from './util';
 import { env } from './env';
 
-const bufferedResult: Result = emptyResult();
+const bufferedResult: Result = empty();
 let interpolateTime = 0;
 
 export function calc(newResult: Result, config: Config): Result {
   const t0 = now();
-  if (!newResult) return emptyResult();
+  if (!newResult) return empty();
   // each record is only updated using deep clone when number of detected record changes, otherwise it will converge by itself
   // otherwise bufferedResult is a shallow clone of result plus updated local calculated values
   // thus mixing by-reference and by-value assignments to minimize memory operations

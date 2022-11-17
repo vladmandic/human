@@ -11,9 +11,8 @@
   
 ### **HEAD -> main** 2022/11/17 mandic00@live.com
 
-
-### **origin/main** 2022/11/16 mandic00@live.com
-
+- refactor distance
+- add basic anthropometry
 - added webcam id specification
 - include external typedefs
 - prepare external typedefs

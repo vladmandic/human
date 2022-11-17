@@ -8,7 +8,7 @@ import * as sample from './sample';
 import * as image from './image/image';
 import * as backend from './tfjs/backend';
 import { env } from './util/env';
-import { emptyResult, Result } from './result';
+import { empty, Result } from './result';
 import type { Config } from './config';
 import type { Human } from './human';
 import type { Tensor, DataType } from './tfjs/types';
@@ -158,7 +158,7 @@ export async function warmup(instance: Human, userConfig?: Partial<Config>): Pro
   instance.state = 'warmup';
   if (userConfig) instance.config = mergeDeep(instance.config, userConfig) as Config;
   if (!instance.config.warmup || instance.config.warmup.length === 0 || instance.config.warmup === 'none') {
-    return emptyResult();
+    return empty();
   }
   return new Promise(async (resolve) => {
     await instance.models.load();

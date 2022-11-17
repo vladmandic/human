@@ -39,7 +39,7 @@ import * as selfie from './segmentation/selfie';
 import * as warmups from './warmup';
 
 // type definitions
-import { Input, DrawOptions, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, AnyCanvas, emptyResult } from './exports';
+import { Input, Config, Result, FaceResult, HandResult, BodyResult, ObjectResult, GestureResult, AnyCanvas, empty } from './exports';
 import type { Tensor, Tensor4D } from './tfjs/types';
 // type exports
 export * from './exports';
@@ -85,7 +85,7 @@ export class Human {
   tf;
 
   /** Object containing environment information used for diagnostics */
-  env: Env;
+  env: Env = env;
 
   /** Draw helper classes that can draw detected objects on canvas using specified draw
    * - canvas: draws input to canvas
@@ -133,7 +133,6 @@ export class Human {
    * @param userConfig - user configuration object {@link Config}
    */
   constructor(userConfig?: Partial<Config>) {
-    this.env = env;
     /*
     defaults.wasmPath = tf.version['tfjs-core'].includes('-') // custom build or official build
       ? 'https://vladmandic.github.io/tfjs/dist/'
@@ -160,7 +159,7 @@ export class Human {
     this.models = new models.Models(this);
     // reexport draw methods
     draw.init();
-    this.result = emptyResult();
+    this.result = empty();
     // export access to image processing
     this.process = { tensor: null, canvas: null };
     // export raw access to underlying models
@@ -394,7 +393,7 @@ export class Human {
       if (error) {
         log(error, input);
         this.emit('error');
-        resolve(emptyResult(error));
+        resolve(empty(error));
       }
 
       const timeStart = now();
@@ -412,7 +411,7 @@ export class Human {
       if (!img.tensor) {
         if (this.config.debug) log('could not convert input to tensor');
         this.emit('error');
-        resolve(emptyResult('could not convert input to tensor'));
+        resolve(empty('could not convert input to tensor'));
         return;
       }
       this.emit('image');

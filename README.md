@@ -25,6 +25,8 @@
 - Simple unified API  
 - Built-in Image, Video and WebCam handling
 
+[*Jump to Quick Start*](#quick-start)
+
 <br>
 
 ## Compatibility
@@ -143,24 +145,21 @@
 ## App Examples
 
 Visit [Examples gallery](https://vladmandic.github.io/human/samples/index.html) for more examples  
-<https://vladmandic.github.io/human/samples/index.html>
-
-![samples](assets/samples.jpg)
+[<img src="assets/samples.jpg" width="640"/>](assets/samples.jpg)
 
 <br>
 
 ## Options
 
 All options as presented in the demo application...  
-> [demo/index.html](demo/index.html)  
-
-![Options visible in demo](assets/screenshot-menu.png)
+[demo/index.html](demo/index.html)  
+[<img src="assets/screenshot-menu.png"/>](assets/screenshot-menu.png)
 
 <br>
 
 **Results Browser:**  
 [ *Demo -> Display -> Show Results* ]<br>
-![Results](assets/screenshot-results.png)
+[<img src="assets/screenshot-results.png"/>](assets/screenshot-results.png)
 
 <br>
 
@@ -172,22 +171,22 @@ sorts them by similarity to selected face
 and optionally matches detected face with database of known people to guess their names
 > [demo/facematch](demo/facematch/index.html)  
 
-![Face Matching](assets/screenshot-facematch.jpg)
+[<img src="assets/screenshot-facematch.jpg" width="640"/>](assets/screenshot-facematch.jpg)
 
 2. **Face ID:**  
 Performs validation check on a webcam input to detect a real face and matches it to known faces stored in database
 > [demo/faceid](demo/faceid/index.html)  
 
-![Face Matching](assets/screenshot-faceid.jpg)
+[<img src="assets/screenshot-faceid.jpg" width="640"/>](assets/screenshot-faceid.jpg)
 
 <br>
 
 3. **3D Rendering:**  
 > [human-motion](https://github.com/vladmandic/human-motion)
 
-![Face3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg)
-![Body3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-body.jpg)
-![Hand3D](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-hand.jpg)
+[<img src="https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg" width="640"/>](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg)
+[<img src="https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-body.jpg" width="640"/>](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-body.jpg)
+[<img src="https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-hand.jpg" width="640"/>](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-hand.jpg)
 
 <br>
 
@@ -195,7 +194,7 @@ Performs validation check on a webcam input to detect a real face and matches it
 > [human-three-vrm](https://github.com/vladmandic/human-three-vrm)  
 > [human-bjs-vrm](https://github.com/vladmandic/human-bjs-vrm)  
 
-![ThreeVRM](https://github.com/vladmandic/human-three-vrm/raw/main/assets/human-vrm-screenshot.jpg)
+[<img src="https://github.com/vladmandic/human-three-vrm/raw/main/assets/human-vrm-screenshot.jpg" width="640"/>](https://github.com/vladmandic/human-three-vrm/raw/main/assets/human-vrm-screenshot.jpg)
 
 
 5. **Human as OS native application:**
@@ -219,30 +218,12 @@ Simply load `Human` (*IIFE version*) directly from a cloud CDN in your HTML file
 <!DOCTYPE HTML>
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js"></script>
 <script src="https://unpkg.dev/@vladmandic/human/dist/human.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/human/2.1.5/human.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/human/3.0.0/human.js"></script>
 ```
 
 For details, including how to use `Browser ESM` version or `NodeJS` version of `Human`, see [**Installation**](https://github.com/vladmandic/human/wiki/Install)
 
 <br>
-
-## Inputs
-
-`Human` library can process all known input types:  
-
-- `Image`, `ImageData`, `ImageBitmap`, `Canvas`, `OffscreenCanvas`, `Tensor`,  
-- `HTMLImageElement`, `HTMLCanvasElement`, `HTMLVideoElement`, `HTMLMediaElement`
-
-Additionally, `HTMLVideoElement`, `HTMLMediaElement` can be a standard `<video>` tag that links to:
-
-- WebCam on user's system
-- Any supported video type  
-  e.g. `.mp4`, `.avi`, etc.
-- Additional video types supported via *HTML5 Media Source Extensions*  
-  e.g.: **HLS** (*HTTP Live Streaming*) using `hls.js` or **DASH** (*Dynamic Adaptive Streaming over HTTP*) using `dash.js`
-- **WebRTC** media track using built-in support  
-
-<br><hr><br>
 
 ## Code Examples
 
@@ -378,6 +359,24 @@ drawResults(); // start draw loop
 ```
 
 And for even better results, you can run detection in a separate web worker thread
+
+<br><hr><br>
+
+## Inputs
+
+`Human` library can process all known input types:  
+
+- `Image`, `ImageData`, `ImageBitmap`, `Canvas`, `OffscreenCanvas`, `Tensor`,  
+- `HTMLImageElement`, `HTMLCanvasElement`, `HTMLVideoElement`, `HTMLMediaElement`
+
+Additionally, `HTMLVideoElement`, `HTMLMediaElement` can be a standard `<video>` tag that links to:
+
+- WebCam on user's system
+- Any supported video type  
+  e.g. `.mp4`, `.avi`, etc.
+- Additional video types supported via *HTML5 Media Source Extensions*  
+  e.g.: **HLS** (*HTTP Live Streaming*) using `hls.js` or **DASH** (*Dynamic Adaptive Streaming over HTTP*) using `dash.js`
+- **WebRTC** media track using built-in support  
 
 <br><hr><br>
 

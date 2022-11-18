@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/11/17 mandic00@live.com
 
+- refactor draw and models namespaces
 - refactor distance
 - add basic anthropometry
 - added webcam id specification
@@ -26,9 +27,6 @@
 - tensor rank strong typechecks
 - rebuild dependencies
 
-### **release: 2.11.1** 2022/10/09 mandic00@live.com
-
-
 ### **2.11.1** 2022/10/09 mandic00@live.com
 
 - add rvm segmentation model
@@ -43,9 +41,7 @@
 ### **2.10.2** 2022/09/11 mandic00@live.com
 
 - add node.js esm compatibility (#292)
-
-### **release: 2.10.1** 2022/09/07 mandic00@live.com
-
+- release
 
 ### **2.10.1** 2022/09/07 mandic00@live.com
 
@@ -81,9 +77,7 @@
 
 ### **2.9.2** 2022/08/08 mandic00@live.com
 
-
-### **release: 2.9.1** 2022/07/25 mandic00@live.com
-
+- release rebuild
 
 ### **2.9.1** 2022/07/25 mandic00@live.com
 
@@ -130,7 +124,6 @@
 - enable precompile as part of warmup
 - prepare release beta
 - change default face crop
-- face attention model is available in human-models
 - beta release 2.7
 - refactor draw methods
 - implement face attention model
@@ -442,7 +435,6 @@
 - implemented human.next global interpolation method
 - finished draw buffering and smoothing and enabled by default
 - implemented service worker
-- quantized centernet
 - release candidate
 - added usage restrictions
 - quantize handdetect model

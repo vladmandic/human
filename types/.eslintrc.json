@@ -1,0 +1,51 @@
+{
+  "globals": {},
+  "env": {
+      "browser": true,
+      "commonjs": true,
+      "node": true,
+      "es2022": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "airbnb-base",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "max-len": [1, 1000, 3],
+    "@typescript-eslint/ban-types":"off",
+    "@typescript-eslint/no-empty-interface":"off",
+    "@typescript-eslint/no-explicit-any":"off",
+    "@typescript-eslint/no-extraneous-class":"off",
+    "@typescript-eslint/no-unnecessary-type-constraint":"off",
+    "@typescript-eslint/no-unused-vars":"off",
+    "@typescript-eslint/prefer-function-type":"off",
+    "@typescript-eslint/unified-signatures":"off",
+    "@typescript-eslint/triple-slash-reference":"off",
+    "camelcase":"off",
+    "comma-dangle":"off",
+    "import/extensions":"off",
+    "import/no-duplicates":"off",
+    "import/no-mutable-exports":"off",
+    "import/no-unresolved":"off",
+    "indent":"off",
+    "lines-between-class-members":"off",
+    "max-classes-per-file":"off",
+    "no-multiple-empty-lines":"off",
+    "no-shadow":"off",
+    "no-tabs":"off",
+    "no-underscore-dangle":"off",
+    "no-use-before-define":"off",
+    "object-curly-newline":"off",
+    "quotes":"off",
+    "semi":"off"
+  }
+}

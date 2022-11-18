@@ -206,7 +206,7 @@ Performs validation check on a webcam input to detect a real face and matches it
 **468-Point Face Mesh Defails:**  
 (view in full resolution to see keypoints)  
 
-![FaceMesh](assets/facemesh.png)
+[<img src="assets/facemesh.png" width="400"/>](assets/facemesh.png)
 
 <br><hr><br>
 
@@ -216,6 +216,7 @@ Simply load `Human` (*IIFE version*) directly from a cloud CDN in your HTML file
 (pick one: `jsdelirv`, `unpkg` or `cdnjs`)
 
 ```html
+<!DOCTYPE HTML>
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js"></script>
 <script src="https://unpkg.dev/@vladmandic/human/dist/human.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/human/2.1.5/human.js"></script>
@@ -270,6 +271,7 @@ function detectVideo() {
     human.draw.gesture(outputCanvas, result.gesture);
     // and loop immediate to the next frame
     requestAnimationFrame(detectVideo);
+    return result;
   });
 }
 
@@ -309,7 +311,7 @@ human.events.addEventListener('detect', () => { // event gets triggered when det
 
 function detectVideo() {
   human.detect(inputVideo) // run detection
-  .then(() => requestAnimationFrame(detectVideo)); // upon detect complete start processing of the next frame
+    .then(() => requestAnimationFrame(detectVideo)); // upon detect complete start processing of the next frame
 }
 
 detectVideo(); // start loop
@@ -386,6 +388,7 @@ And for even better results, you can run detection in a separate web worker thre
 - [**TypeDoc API Specification - Main class**](https://vladmandic.github.io/human/typedoc/classes/Human.html)
 - [**TypeDoc API Specification - Full**](https://vladmandic.github.io/human/typedoc/)
 
+    ![typedoc](assets/screenshot-typedoc.png)
 
 <br><hr><br>
 
@@ -396,16 +399,13 @@ And for even better results, you can run detection in a separate web worker thre
 *Note*: This does not include embedded `tfjs`  
 If you want to use embedded `tfjs` inside `Human` (`human.tf` namespace) and still full **typedefs**, add this code:
 
-```js
-import type * as tfjs from '@vladmandic/human/dist/tfjs.esm';
-...
-const tf = human.tf as typeof tfjs;
-```
+> import type * as tfjs from '@vladmandic/human/dist/tfjs.esm';  
+> const tf = human.tf as typeof tfjs;
 
 This is not enabled by default as `Human` does not ship with full **TFJS TypeDefs** due to size considerations  
 Enabling `tfjs` TypeDefs as above creates additional project (dev-only as only types are required) dependencies as defined in `@vladmandic/human/dist/tfjs.esm.d.ts`:
 
-    @tensorflow/tfjs-core, @tensorflow/tfjs-converter, @tensorflow/tfjs-backend-wasm, @tensorflow/tfjs-backend-webgl
+> @tensorflow/tfjs-core, @tensorflow/tfjs-converter, @tensorflow/tfjs-backend-wasm, @tensorflow/tfjs-backend-webgl
 
 
 <br><hr><br>

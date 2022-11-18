@@ -28,7 +28,8 @@ or you can pass a path to image to analyze, either on local filesystem or using 
 node demo/nodejs/node.js
 ```
 
-```json
+<!-- eslint-skip -->
+```js
 2021-06-01 08:52:15 INFO:  @vladmandic/human version 2.0.0
 2021-06-01 08:52:15 INFO:  User: vlado Platform: linux Arch: x64 Node: v16.0.0
 2021-06-01 08:52:15 INFO:  Current folder: /home/vlado/dev/human

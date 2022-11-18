@@ -3,20 +3,15 @@
   "overrides": [
     {
       "files": ["**/*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": { "ecmaVersion": "latest", "project": ["./tsconfig.json"] },
+      "plugins": ["@typescript-eslint"],
       "env": {
         "browser": true,
         "commonjs": false,
         "node": false,
         "es2021": true
       },
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "ecmaVersion": "latest",
-        "project": ["./tsconfig.json"]
-      },
-      "plugins": [
-        "@typescript-eslint"
-      ],
       "extends": [
         "airbnb-base",
         "eslint:recommended",
@@ -72,20 +67,15 @@
     },
     {
       "files": ["**/*.d.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": { "ecmaVersion": "latest", "project": ["./tsconfig.json"] },
+      "plugins": ["@typescript-eslint"],
       "env": {
         "browser": true,
         "commonjs": false,
         "node": false,
         "es2021": true
       },
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "ecmaVersion": "latest",
-        "project": ["./tsconfig.json"]
-      },
-      "plugins": [
-        "@typescript-eslint"
-      ],
       "extends": [
         "airbnb-base",
         "eslint:recommended",
@@ -120,18 +110,14 @@
     },
     {
       "files": ["**/*.js"],
+      "parserOptions": { "sourceType": "module", "ecmaVersion": "latest" },
+      "plugins": [],
       "env": {
         "browser": true,
         "commonjs": true,
         "node": true,
         "es2021": true
       },
-      "parserOptions": {
-        "sourceType": "module",
-        "ecmaVersion": "latest"
-      },
-      "plugins": [
-      ],
       "extends": [
         "airbnb-base",
         "eslint:recommended",
@@ -161,42 +147,50 @@
     },
     {
       "files": ["**/*.json"],
+      "parserOptions": { "ecmaVersion": "latest" },
+      "plugins": ["json"],
       "env": {
         "browser": false,
         "commonjs": false,
         "node": false,
         "es2021": false
       },
-      "parserOptions": {
-        "ecmaVersion": "latest"
-      },
-      "plugins": [
-        "json"
-      ],
       "extends": [
         "plugin:json/recommended"
       ] 
     },
     {
       "files": ["**/*.html"],
+      "parserOptions": { "sourceType": "module", "ecmaVersion": "latest" },
+      "parser": "@html-eslint/parser",
+      "plugins": ["html", "@html-eslint"],
       "env": {
         "browser": true,
         "commonjs": false,
         "node": false,
         "es2021": false
       },
-      "parserOptions": {
-        "sourceType": "module",
-        "ecmaVersion": "latest"
-      },
-      "parser": "@html-eslint/parser",
       "extends": ["plugin:@html-eslint/recommended"],
-      "plugins": [
-        "html", "@html-eslint"
-      ],
       "rules": {
         "@html-eslint/element-newline":"off",
         "@html-eslint/indent": ["error", 2]
+      }
+    },
+    {
+      "files": ["**/*.md"],
+      "plugins": ["markdown"],
+      "processor": "markdown/markdown",
+      "rules": {
+        "no-undef":"off"
+      }
+    },
+    {
+      "files": ["**/*.md/*.js"],
+      "rules": {
+        "no-undef":"off",
+        "promise/catch-or-return":"off",
+        "no-multi-spaces":"off",
+        "no-unused-vars":"off"
       }
     }
   ],

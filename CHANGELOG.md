@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/17 mandic00@live.com
+### **HEAD -> main** 2022/11/18 mandic00@live.com
 
+- default empty result
 - refactor draw and models namespaces
 - refactor distance
 - add basic anthropometry

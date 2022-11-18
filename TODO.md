@@ -87,6 +87,7 @@ Architecture:
 - Refactor namespace exports  
   Better [TypeDoc specs](https://vladmandic.github.io/human/typedoc/index.html)
 - Add named export for improved bundler support when using non-default imports  
+- Cleanup Git history for `dist`/`typedef`/`types`
 - Support for **NodeJS v19**  
 - Upgrade to **TypeScript 4.9**  
 

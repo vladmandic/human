@@ -72,12 +72,13 @@ Non-linear performance that increases with number of worker threads due to commu
 
 > node node-match
 
+<!-- eslint-skip -->
 ```js
-2021-10-13 07:53:36 INFO:  options: { dbFile: './faces.json', dbMax: 10000, threadPoolSize: 6, workerSrc: './node-match-worker.js', debug: false, minThreshold: 0.9, descLength: 1024 }
-2021-10-13 07:53:36 DATA:  created shared buffer: { maxDescriptors: 10000, totalBytes: 40960000, totalElements: 10240000 }
-2021-10-13 07:53:36 DATA:  db loaded: { existingRecords: 0, newRecords: 5700 }
-2021-10-13 07:53:36 INFO:  starting worker thread pool: { totalWorkers: 6, alreadyActive: 0 }
-2021-10-13 07:53:36 STATE: submitted: { matchJobs: 100, poolSize: 6, activeWorkers: 6 }
-2021-10-13 07:53:38 STATE: { matchJobsFinished: 100, totalTimeMs: 1769, averageTimeMs: 17.69 }
-2021-10-13 07:53:38 INFO:  closing workers: { poolSize: 6, activeWorkers: 6 }
+INFO:  options: { dbFile: './faces.json', dbMax: 10000, threadPoolSize: 6, workerSrc: './node-match-worker.js', debug: false, minThreshold: 0.9, descLength: 1024 }
+DATA:  created shared buffer: { maxDescriptors: 10000, totalBytes: 40960000, totalElements: 10240000 }
+DATA:  db loaded: { existingRecords: 0, newRecords: 5700 }
+INFO:  starting worker thread pool: { totalWorkers: 6, alreadyActive: 0 }
+STATE: submitted: { matchJobs: 100, poolSize: 6, activeWorkers: 6 }
+STATE: { matchJobsFinished: 100, totalTimeMs: 1769, averageTimeMs: 17.69 }
+INFO:  closing workers: { poolSize: 6, activeWorkers: 6 }
 ```

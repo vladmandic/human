@@ -37,12 +37,14 @@ Includes:
   in `index.js:ui`
 
 ```js
+const ui = {
   console: true,      // log messages to browser console
   useWorker: true,    // use web workers for processing
   buffered: true,     // should output be buffered between frames
   interpolated: true, // should output be interpolated for smoothness between frames
   results: false,     // show results tree
   useWebRTC: false,   // use webrtc as camera source instead of local webcam
+};
 ```
 
 Demo implements several ways to use `Human` library,  

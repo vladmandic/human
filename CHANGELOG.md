@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2022/11/18 mandic00@live.com
 
+- cleanup git history
 - default empty result
 - refactor draw and models namespaces
 - refactor distance

@@ -15,7 +15,7 @@
     "locations": ["dist/*", "types/*", "typedoc/*"]
   },
   "lint": {
-    "locations": [ "*.json", "src/**/*.ts", "test/**/*.js", "demo/**/*.js" ],
+    "locations": [ "**/*.json", "src/**/*.ts", "test/**/*.js", "demo/**/*.js", "**/*.md" ],
     "rules": { }
   },
   "changelog": {

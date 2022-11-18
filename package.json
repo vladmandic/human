@@ -44,7 +44,7 @@
     "clean": "build --profile clean",
     "build": "rimraf test/build.log && node build.js",
     "test": "node --no-warnings --unhandled-rejections=strict --trace-uncaught test/node.js",
-    "lint": "eslint *.json *.js src demo test models",
+    "lint": "eslint *.json *.js src demo test models wiki",
     "scan": "npx auditjs@latest ossi --dev --quiet"
   },
   "keywords": [

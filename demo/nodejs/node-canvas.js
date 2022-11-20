@@ -35,7 +35,7 @@ async function main() {
   log.info('Human:', human.version, 'TF:', tf.version_core);
 
   await human.load(); // pre-load models
-  log.info('Loaded models:', Object.keys(human.models).filter((a) => human.models[a]));
+  log.info('Loaded models:', human.models.loaded());
   log.info('Memory state:', human.tf.engine().memory());
 
   // parse cmdline

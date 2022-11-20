@@ -930,8 +930,8 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
     get modelVersion(): string;
     get inputNodes(): string[];
     get outputNodes(): string[];
-    get inputs(): TensorInfo[];
-    get outputs(): TensorInfo[];
+    get inputs(): TensorInfo_2[];
+    get outputs(): TensorInfo_2[];
     get weights(): NamedTensorsMap;
     get metadata(): {};
     get modelSignature(): {};
@@ -1004,6 +1004,7 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
      * @doc {heading: 'Models', subheading: 'Classes', ignoreCI: true}
      */
     save(handlerOrURL: io.IOHandler | string, config?: io.SaveConfig): Promise<io.SaveResult>;
+    private addStructuredOutputNames;
     /**
      * Execute the inference for the input tensors.
      *
@@ -1044,6 +1045,47 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
      * @doc {heading: 'Models', subheading: 'Classes'}
      */
     predict(inputs: Tensor | Tensor[] | NamedTensorMap, config?: ModelPredictConfig): Tensor | Tensor[] | NamedTensorMap;
+    /**
+     * Execute the inference for the input tensors in async fashion, use this
+     * method when your model contains control flow ops.
+     *
+     * @param input The input tensors, when there is single input for the model,
+     * inputs param should be a `tf.Tensor`. For models with mutliple inputs,
+     * inputs params should be in either `tf.Tensor`[] if the input order is
+     * fixed, or otherwise NamedTensorMap format.
+     *
+     * For model with multiple inputs, we recommend you use NamedTensorMap as the
+     * input type, if you use `tf.Tensor`[], the order of the array needs to
+     * follow the
+     * order of inputNodes array. @see {@link GraphModel.inputNodes}
+     *
+     * You can also feed any intermediate nodes using the NamedTensorMap as the
+     * input type. For example, given the graph
+     *    InputNode => Intermediate => OutputNode,
+     * you can execute the subgraph Intermediate => OutputNode by calling
+     *    model.execute('IntermediateNode' : tf.tensor(...));
+     *
+     * This is useful for models that uses tf.dynamic_rnn, where the intermediate
+     * state needs to be fed manually.
+     *
+     * For batch inference execution, the tensors for each input need to be
+     * concatenated together. For example with mobilenet, the required input shape
+     * is [1, 244, 244, 3], which represents the [batch, height, width, channel].
+     * If we are provide a batched data of 100 images, the input tensor should be
+     * in the shape of [100, 244, 244, 3].
+     *
+     * @param config Prediction configuration for specifying the batch size.
+     * Currently the batch size option is ignored for graph model.
+     *
+     * @returns A Promise of inference result tensors. If the model is converted
+     * and it originally had structured_outputs in tensorflow, then a
+     * NamedTensorMap will be returned matching the structured_outputs. If no
+     * structured_outputs are present, the output will be single `tf.Tensor` if
+     * the model has single output node, otherwise Tensor[].
+     *
+     * @doc {heading: 'Models', subheading: 'Classes'}
+     */
+    predictAsync(inputs: Tensor | Tensor[] | NamedTensorMap, config?: ModelPredictConfig): Promise<Tensor | Tensor[] | NamedTensorMap>;
     private normalizeInputs;
     private normalizeOutputs;
     private executeInitializerGraph;
@@ -2351,7 +2393,7 @@ export declare namespace Tensor { }
  *
  * @doc {heading: 'Tensors', subheading: 'Classes'}
  */
-export declare class Tensor<R extends Rank = Rank> {
+export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
     /** Unique id of this tensor. */
     readonly id: number;
     /**
@@ -2535,7 +2577,14 @@ declare class TensorBuffer<R extends Rank, D extends DataType = 'float32'> {
     toTensor(): Tensor<R>;
 }
 
+/** Holds metadata for a given tensor. */
 declare interface TensorInfo {
+    dataId: DataId;
+    shape: number[];
+    dtype: DataType;
+}
+
+declare interface TensorInfo_2 {
     name: string;
     shape?: number[];
     dtype: DataType;

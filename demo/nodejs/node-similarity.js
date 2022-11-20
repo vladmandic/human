@@ -27,8 +27,7 @@ async function init() {
   await human.tf.ready();
   log.info('Human:', human.version, 'TF:', tf.version_core);
   await human.load();
-  const loaded = Object.keys(human.models).filter((a) => human.models[a]);
-  log.info('Loaded:', loaded);
+  log.info('Loaded:', human.models.loaded());
   log.info('Memory state:', human.tf.engine().memory());
 }
 

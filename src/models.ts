@@ -87,8 +87,8 @@ export interface ModelStats {
  * - stats: live detailed model stats that can be checked during model load phase
  */
 export class Models {
-  instance: Human;
-  models: Record<string, null | GraphModel>;
+  private instance: Human;
+  models: Record<string, null | GraphModel> = {};
 
   constructor(currentInstance: Human) {
     this.models = {};
@@ -120,8 +120,9 @@ export class Models {
     for (const model of Object.keys(this.models)) this.models[model] = null;
   }
 
-  async load(): Promise<void> {
+  async load(instance?: Human): Promise<void> {
     if (env.initial) this.reset();
+    if (instance) this.instance = instance;
     const m: Record<string, null | GraphModel | Promise<GraphModel>> = {};
     // face main models
     m.blazeface = (this.instance.config.face.enabled && !this.models.blazeface) ? blazeface.load(this.instance.config) : null;

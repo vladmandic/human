@@ -4,6 +4,100 @@
   author: <https://github.com/vladmandic>'
 */
 
-import*as m from"../../dist/human.esm.js";var f=1920,b={modelBasePath:"../../models",filter:{enabled:!0,equalization:!1,flip:!1,width:f},face:{enabled:!0,detector:{rotation:!0},mesh:{enabled:!0},attention:{enabled:!1},iris:{enabled:!0},description:{enabled:!0},emotion:{enabled:!0},antispoof:{enabled:!0},liveness:{enabled:!0}},body:{enabled:!0},hand:{enabled:!1},object:{enabled:!1},segmentation:{enabled:!1},gesture:{enabled:!0}},e=new m.Human(b);e.env.perfadd=!1;e.draw.options.font='small-caps 18px "Lato"';e.draw.options.lineHeight=20;var a={video:document.getElementById("video"),canvas:document.getElementById("canvas"),log:document.getElementById("log"),fps:document.getElementById("status"),perf:document.getElementById("performance")},n={detect:0,draw:0,tensors:0,start:0},s={detectFPS:0,drawFPS:0,frames:0,averageMs:0},o=(...t)=>{a.log.innerText+=t.join(" ")+`
-`,console.log(...t)},r=t=>a.fps.innerText=t,g=t=>a.perf.innerText="tensors:"+e.tf.memory().numTensors.toString()+" | performance: "+JSON.stringify(t).replace(/"|{|}/g,"").replace(/,/g," | ");async function u(){if(!a.video.paused){n.start===0&&(n.start=e.now()),await e.detect(a.video);let t=e.tf.memory().numTensors;t-n.tensors!==0&&o("allocated tensors:",t-n.tensors),n.tensors=t,s.detectFPS=Math.round(1e3*1e3/(e.now()-n.detect))/1e3,s.frames++,s.averageMs=Math.round(1e3*(e.now()-n.start)/s.frames)/1e3,s.frames%100===0&&!a.video.paused&&o("performance",{...s,tensors:n.tensors})}n.detect=e.now(),requestAnimationFrame(u)}async function p(){var d,i,c;if(!a.video.paused){let l=e.next(e.result),w=await e.image(a.video);e.draw.canvas(w.canvas,a.canvas);let v={bodyLabels:`person confidence [score] and ${(c=(i=(d=e.result)==null?void 0:d.body)==null?void 0:i[0])==null?void 0:c.keypoints.length} keypoints`};await e.draw.all(a.canvas,l,v),g(l.performance)}let t=e.now();s.drawFPS=Math.round(1e3*1e3/(t-n.draw))/1e3,n.draw=t,r(a.video.paused?"paused":`fps: ${s.detectFPS.toFixed(1).padStart(5," ")} detect | ${s.drawFPS.toFixed(1).padStart(5," ")} draw`),setTimeout(p,30)}async function h(){let d=(await e.webcam.enumerate())[0].deviceId;await e.webcam.start({element:a.video,crop:!0,width:f,id:d}),a.canvas.width=e.webcam.width,a.canvas.height=e.webcam.height,a.canvas.onclick=async()=>{e.webcam.paused?await e.webcam.play():e.webcam.pause()}}async function y(){o("human version:",e.version,"| tfjs version:",e.tf.version["tfjs-core"]),o("platform:",e.env.platform,"| agent:",e.env.agent),r("loading..."),await e.load(),o("backend:",e.tf.getBackend(),"| available:",e.env.backends),o("models stats:",e.models.stats()),o("models loaded:",Object.values(e.models).filter(t=>t!==null).length),o("environment",e.env),r("initializing..."),await e.warmup(),await h(),await u(),await p()}window.onload=y;
+
+// demo/typescript/index.ts
+import * as H from "../../dist/human.esm.js";
+var width = 1920;
+var humanConfig = {
+  modelBasePath: "../../models",
+  filter: { enabled: true, equalization: false, flip: false, width },
+  face: { enabled: true, detector: { rotation: true }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
+  body: { enabled: true },
+  hand: { enabled: false },
+  object: { enabled: false },
+  segmentation: { enabled: false },
+  gesture: { enabled: true }
+};
+var human = new H.Human(humanConfig);
+human.env.perfadd = false;
+human.draw.options.font = 'small-caps 18px "Lato"';
+human.draw.options.lineHeight = 20;
+var dom = {
+  video: document.getElementById("video"),
+  canvas: document.getElementById("canvas"),
+  log: document.getElementById("log"),
+  fps: document.getElementById("status"),
+  perf: document.getElementById("performance")
+};
+var timestamp = { detect: 0, draw: 0, tensors: 0, start: 0 };
+var fps = { detectFPS: 0, drawFPS: 0, frames: 0, averageMs: 0 };
+var log = (...msg) => {
+  dom.log.innerText += msg.join(" ") + "\n";
+  console.log(...msg);
+};
+var status = (msg) => dom.fps.innerText = msg;
+var perf = (msg) => dom.perf.innerText = "tensors:" + human.tf.memory().numTensors.toString() + " | performance: " + JSON.stringify(msg).replace(/"|{|}/g, "").replace(/,/g, " | ");
+async function detectionLoop() {
+  if (!dom.video.paused) {
+    if (timestamp.start === 0)
+      timestamp.start = human.now();
+    await human.detect(dom.video);
+    const tensors = human.tf.memory().numTensors;
+    if (tensors - timestamp.tensors !== 0)
+      log("allocated tensors:", tensors - timestamp.tensors);
+    timestamp.tensors = tensors;
+    fps.detectFPS = Math.round(1e3 * 1e3 / (human.now() - timestamp.detect)) / 1e3;
+    fps.frames++;
+    fps.averageMs = Math.round(1e3 * (human.now() - timestamp.start) / fps.frames) / 1e3;
+    if (fps.frames % 100 === 0 && !dom.video.paused)
+      log("performance", { ...fps, tensors: timestamp.tensors });
+  }
+  timestamp.detect = human.now();
+  requestAnimationFrame(detectionLoop);
+}
+async function drawLoop() {
+  var _a, _b, _c;
+  if (!dom.video.paused) {
+    const interpolated = human.next(human.result);
+    const processed = await human.image(dom.video);
+    human.draw.canvas(processed.canvas, dom.canvas);
+    const opt = { bodyLabels: `person confidence [score] and ${(_c = (_b = (_a = human.result) == null ? void 0 : _a.body) == null ? void 0 : _b[0]) == null ? void 0 : _c.keypoints.length} keypoints` };
+    await human.draw.all(dom.canvas, interpolated, opt);
+    perf(interpolated.performance);
+  }
+  const now = human.now();
+  fps.drawFPS = Math.round(1e3 * 1e3 / (now - timestamp.draw)) / 1e3;
+  timestamp.draw = now;
+  status(dom.video.paused ? "paused" : `fps: ${fps.detectFPS.toFixed(1).padStart(5, " ")} detect | ${fps.drawFPS.toFixed(1).padStart(5, " ")} draw`);
+  setTimeout(drawLoop, 30);
+}
+async function webCam() {
+  const devices = await human.webcam.enumerate();
+  const id = devices[0].deviceId;
+  await human.webcam.start({ element: dom.video, crop: true, width, id });
+  dom.canvas.width = human.webcam.width;
+  dom.canvas.height = human.webcam.height;
+  dom.canvas.onclick = async () => {
+    if (human.webcam.paused)
+      await human.webcam.play();
+    else
+      human.webcam.pause();
+  };
+}
+async function main() {
+  log("human version:", human.version, "| tfjs version:", human.tf.version["tfjs-core"]);
+  log("platform:", human.env.platform, "| agent:", human.env.agent);
+  status("loading...");
+  await human.load();
+  log("backend:", human.tf.getBackend(), "| available:", human.env.backends);
+  log("models stats:", human.models.stats());
+  log("models loaded:", human.models.loaded());
+  log("environment", human.env);
+  status("initializing...");
+  await human.warmup();
+  await webCam();
+  await detectionLoop();
+  await drawLoop();
+}
+window.onload = main;
 //# sourceMappingURL=index.js.map

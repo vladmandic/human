@@ -60,17 +60,16 @@ async function events(event) {
 async function testDefault(title, testConfig = {}) {
   const t0 = human.now();
   let res;
-  for (const model of Object.keys(human.models)) { // unload models
-    if (human.models[model]) human.models[model] = null;
+  for (const model of Object.keys(human.models.models)) { // unload models
+    if (human.models.models[model]) human.models.models[model] = null;
   }
   human.reset();
   res = human.validate(testConfig); // validate
   if (res && res.length > 0) log('  invalid configuration', res);
   log(`test ${title}/${human.tf.getBackend()}`, human.config);
   await human.load();
-  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
-  log('  models', models);
-  const ops = await human.check();
+  log('  models', human.models.loaded());
+  const ops = await human.models.validate();
   if (ops && ops.length > 0) log('  missing ops', ops);
   const img = await image('../../samples/in/ai-body.jpg');
   const input = await human.image(img, true); // process image

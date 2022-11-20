@@ -80,7 +80,7 @@ async function main() {
   const configErrors = await human.validate();
   if (configErrors.length > 0) log.error('Configuration errors:', configErrors);
   await human.load(); // pre-load models
-  log.info('Loaded models:', Object.keys(human.models).filter((a) => human.models[a]));
+  log.info('Loaded models:', human.models.loaded());
 
   const inDir = process.argv[2];
   const outDir = process.argv[3];

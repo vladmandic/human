@@ -53,7 +53,7 @@ async function main() {
   await human.load(); // preload all models
   log('backend:', human.tf.getBackend(), '| available:', human.env.backends);
   log('models stats:', human.models.stats());
-  log('models loaded:', Object.values(human.models).filter((model) => model !== null).length);
+  log('models loaded:', human.models.loaded());
   await human.warmup(); // warmup function to initialize backend for future faster detection
   const numTensors = human.tf.engine().state.numTensors;
 

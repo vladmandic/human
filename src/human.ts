@@ -286,7 +286,7 @@ export class Human {
   async load(userConfig?: Partial<Config>): Promise<void> {
     this.state = 'load';
     const timeStamp = now();
-    const count = Object.values(this.models).filter((model) => model).length;
+    const count = Object.values(this.models.models).filter((model) => model).length;
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
 
     if (this.env.initial) { // print version info on first run and check for correct backend setup
@@ -298,11 +298,11 @@ export class Human {
       }
     }
 
-    await this.models.load(); // actually loads models
+    await this.models.load(this); // actually loads models
     if (this.env.initial && this.config.debug) log('tf engine state:', this.tf.engine().state.numBytes, 'bytes', this.tf.engine().state.numTensors, 'tensors'); // print memory stats on first run
     this.env.initial = false;
 
-    const loaded = Object.values(this.models).filter((model) => model).length;
+    const loaded = Object.values(this.models.models).filter((model) => model).length;
     if (loaded !== count) { // number of loaded models changed
       this.models.validate(); // validate kernel ops used by model against current backend
       this.emit('load');

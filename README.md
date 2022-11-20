@@ -436,7 +436,7 @@ For more info, see [**Configuration Details**](https://github.com/vladmandic/hum
 
 <br><hr><br>
 
-`Human` library is written in [TypeScript](https://www.typescriptlang.org/docs/handbook/intro.html) **4.9** using [TensorFlow/JS](https://www.tensorflow.org/js/) **4.0** and conforming to latest `JavaScript` [ECMAScript version 2022](https://262.ecma-international.org/) standard  
+`Human` library is written in [TypeScript](https://www.typescriptlang.org/docs/handbook/intro.html) **4.9** using [TensorFlow/JS](https://www.tensorflow.org/js/) **4.1** and conforming to latest `JavaScript` [ECMAScript version 2022](https://262.ecma-international.org/) standard  
 
 Build target for distributables is `JavaScript` [EMCAScript version 2018](https://262.ecma-international.org/9.0/)  
 

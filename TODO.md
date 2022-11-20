@@ -77,7 +77,7 @@ Features:
   See `human.result.face[n].distance`  
 
 Architecture:
-- Upgrade to **TFJS 4.0** with **strong typing**  
+- Upgrade to **TFJS 4.1** with **strong typing**  
   see [notes](https://github.com/vladmandic/human#typedefs) on how to use  
 - `TypeDef` refactoring  
 - Re-architect `human.models` namespace for better dynamic model handling  

@@ -65,20 +65,19 @@ async function events(event) {
 async function testDefault(title, testConfig = {}) {
   const t0 = human.now();
   let res;
-  for (const model of Object.keys(human.models)) { // unload models
-    if (human.models[model]) human.models[model] = null;
+  for (const model of Object.keys(human.models.models)) { // unload models
+    if (human.models.models[model]) human.models.models[model] = null;
   }
   human.reset();
   res = human.validate(testConfig); // validate
   if (res && res.length > 0) log('  invalid configuration', res);
   log(`test ${title}/${human.tf.getBackend()}`);
   await human.load();
-  const models = Object.keys(human.models).map((model) => ({ name: model, loaded: (human.models[model] !== null) }));
-  log('  models', models);
+  log('  models', human.models.loaded());
   const ops = await human.models.validate();
   if (ops && ops.length > 0) log('  missing ops', ops);
   const img = await image('../../samples/in/ai-body.jpg');
-  const input = await human.image(img); // process image
+  const input = await human.image(img, true); // process image
   draw(input.canvas);
   res = await human.warmup({ warmup: 'face' }); // warmup
   draw(res.canvas);
@@ -105,7 +104,7 @@ async function testMatch() {
   human.tf.dispose(input1.tensor, input2.tensor);
   const desc1 = res1?.face?.[0]?.embedding;
   const desc2 = res2?.face?.[0]?.embedding;
-  const similarity = await human.similarity(desc1, desc2);
+  const similarity = await human.match.similarity(desc1, desc2);
   const descArray = [];
   for (let i = 0; i < 100; i++) descArray.push(desc2);
   const match = await human.match.find(desc1, descArray);

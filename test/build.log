@@ -1,50 +1,943 @@
-2022-11-18 13:13:23 [32mDATA: [39m Build {"name":"@vladmandic/human","version":"3.0.0"} 
-2022-11-18 13:13:23 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"3.0.0"} 
-2022-11-18 13:13:23 [36mINFO: [39m Environment: {"profile":"production","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
-2022-11-18 13:13:23 [36mINFO: [39m Toolchain: {"build":"0.7.14","esbuild":"0.15.14","typescript":"4.9.3","typedoc":"0.23.21","eslint":"8.27.0"} 
-2022-11-18 13:13:23 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
-2022-11-18 13:13:23 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":361} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":569,"outputBytes":924} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":670136,"outputBytes":317438} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":577,"outputBytes":928} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":670140,"outputBytes":317442} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":665,"outputBytes":1876} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671088,"outputBytes":317553} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1375,"outputBytes":670} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":669882,"outputBytes":316023} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":1375,"outputBytes":1144900} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1814112,"outputBytes":1457337} 
-2022-11-18 13:13:23 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1814112,"outputBytes":1914669} 
-2022-11-18 13:13:27 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types/lib","files":15} 
-2022-11-18 13:13:29 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":77,"generated":true} 
-2022-11-18 13:13:29 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":2913} 
-2022-11-18 13:13:29 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":9456} 
-2022-11-18 13:13:37 [35mSTATE:[39m Lint: {"locations":["**/*.json","src/**/*.ts","test/**/*.js","demo/**/*.js","**/*.md"],"files":167,"errors":0,"warnings":0} 
-2022-11-18 13:13:37 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
-2022-11-18 13:13:37 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs-core.d.ts","output":"types/tfjs-core.d.ts"} 
-2022-11-18 13:13:37 [36mINFO: [39m Done... 
-2022-11-18 13:13:37 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs.d.ts","output":"types/tfjs.esm.d.ts"} 
-2022-11-18 13:13:37 [35mSTATE:[39m Copy: {"input":"src/types/tsconfig.json","output":"types/tsconfig.json"} 
-2022-11-18 13:13:37 [35mSTATE:[39m Copy: {"input":"src/types/eslint.json","output":"types/.eslintrc.json"} 
-2022-11-18 13:13:37 [35mSTATE:[39m Copy: {"input":"src/types/tfjs.esm.d.ts","output":"dist/tfjs.esm.d.ts"} 
-2022-11-18 13:13:37 [35mSTATE:[39m Filter: {"input":"types/tfjs-core.d.ts"} 
-2022-11-18 13:13:38 [35mSTATE:[39m API-Extractor: {"succeeeded":true,"errors":0,"warnings":195} 
-2022-11-18 13:13:38 [35mSTATE:[39m Filter: {"input":"types/human.d.ts"} 
-2022-11-18 13:13:38 [35mSTATE:[39m Write: {"output":"dist/human.esm-nobundle.d.ts"} 
-2022-11-18 13:13:38 [35mSTATE:[39m Write: {"output":"dist/human.esm.d.ts"} 
-2022-11-18 13:13:38 [35mSTATE:[39m Write: {"output":"dist/human.d.ts"} 
-2022-11-18 13:13:38 [35mSTATE:[39m Write: {"output":"dist/human.node-gpu.d.ts"} 
-2022-11-18 13:13:38 [35mSTATE:[39m Write: {"output":"dist/human.node.d.ts"} 
-2022-11-18 13:13:38 [35mSTATE:[39m Write: {"output":"dist/human.node-wasm.d.ts"} 
-2022-11-18 13:13:38 [36mINFO: [39m Analyze models: {"folders":8,"result":"models/models.json"} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"./models","models":12} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"../human-models/models","models":43} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"../blazepose/model/","models":4} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"../anti-spoofing/model","models":1} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"../efficientpose/models","models":3} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"../insightface/models","models":5} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"../movenet/models","models":3} 
-2022-11-18 13:13:38 [35mSTATE:[39m Models {"folder":"../nanodet/models","models":4} 
-2022-11-18 13:13:39 [35mSTATE:[39m Models: {"count":58,"totalSize":386543911} 
-2022-11-18 13:13:39 [36mINFO: [39m Human Build complete... {"logFile":"test/build.log"} 
+2022-11-20 15:02:14 [32mDATA: [39m Build {"name":"@vladmandic/human","version":"3.0.0"} 
+2022-11-20 15:02:14 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"3.0.0"} 
+2022-11-20 15:02:14 [36mINFO: [39m Environment: {"profile":"production","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
+2022-11-20 15:02:14 [36mINFO: [39m Toolchain: {"build":"0.7.14","esbuild":"0.15.14","typescript":"4.9.3","typedoc":"0.23.21","eslint":"8.28.0"} 
+2022-11-20 15:02:14 [36mINFO: [39m Build: {"profile":"production","steps":["clean","compile","typings","typedoc","lint","changelog"]} 
+2022-11-20 15:02:14 [35mSTATE:[39m Clean: {"locations":["dist/*","types/*","typedoc/*"]} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":361} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":569,"outputBytes":924} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":670136,"outputBytes":317438} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":577,"outputBytes":928} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":670140,"outputBytes":317442} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":665,"outputBytes":1876} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671088,"outputBytes":317553} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1375,"outputBytes":670} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":669882,"outputBytes":316023} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":1375,"outputBytes":1138192} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807404,"outputBytes":1450588} 
+2022-11-20 15:02:14 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807404,"outputBytes":1893687} 
+2022-11-20 15:02:18 [35mSTATE:[39m Typings: {"input":"src/human.ts","output":"types/lib","files":15} 
+2022-11-20 15:02:20 [35mSTATE:[39m TypeDoc: {"input":"src/human.ts","output":"typedoc","objects":77,"generated":true} 
+2022-11-20 15:02:20 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":2913} 
+2022-11-20 15:02:20 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":9456} 
+2022-11-20 15:02:28 [35mSTATE:[39m Lint: {"locations":["**/*.json","src/**/*.ts","test/**/*.js","demo/**/*.js","**/*.md"],"files":167,"errors":0,"warnings":0} 
+2022-11-20 15:02:28 [35mSTATE:[39m ChangeLog: {"repository":"https://github.com/vladmandic/human","branch":"main","output":"CHANGELOG.md"} 
+2022-11-20 15:02:28 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs-core.d.ts","output":"types/tfjs-core.d.ts"} 
+2022-11-20 15:02:28 [36mINFO: [39m Done... 
+2022-11-20 15:02:28 [35mSTATE:[39m Copy: {"input":"node_modules/@vladmandic/tfjs/types/tfjs.d.ts","output":"types/tfjs.esm.d.ts"} 
+2022-11-20 15:02:28 [35mSTATE:[39m Copy: {"input":"src/types/tsconfig.json","output":"types/tsconfig.json"} 
+2022-11-20 15:02:28 [35mSTATE:[39m Copy: {"input":"src/types/eslint.json","output":"types/.eslintrc.json"} 
+2022-11-20 15:02:28 [35mSTATE:[39m Copy: {"input":"src/types/tfjs.esm.d.ts","output":"dist/tfjs.esm.d.ts"} 
+2022-11-20 15:02:28 [35mSTATE:[39m Filter: {"input":"types/tfjs-core.d.ts"} 
+2022-11-20 15:02:29 [35mSTATE:[39m API-Extractor: {"succeeeded":true,"errors":0,"warnings":204} 
+2022-11-20 15:02:29 [35mSTATE:[39m Filter: {"input":"types/human.d.ts"} 
+2022-11-20 15:02:29 [35mSTATE:[39m Write: {"output":"dist/human.esm-nobundle.d.ts"} 
+2022-11-20 15:02:29 [35mSTATE:[39m Write: {"output":"dist/human.esm.d.ts"} 
+2022-11-20 15:02:29 [35mSTATE:[39m Write: {"output":"dist/human.d.ts"} 
+2022-11-20 15:02:29 [35mSTATE:[39m Write: {"output":"dist/human.node-gpu.d.ts"} 
+2022-11-20 15:02:29 [35mSTATE:[39m Write: {"output":"dist/human.node.d.ts"} 
+2022-11-20 15:02:29 [35mSTATE:[39m Write: {"output":"dist/human.node-wasm.d.ts"} 
+2022-11-20 15:02:29 [36mINFO: [39m Analyze models: {"folders":8,"result":"models/models.json"} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"./models","models":12} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"../human-models/models","models":43} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"../blazepose/model/","models":4} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"../anti-spoofing/model","models":1} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"../efficientpose/models","models":3} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"../insightface/models","models":5} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"../movenet/models","models":3} 
+2022-11-20 15:02:29 [35mSTATE:[39m Models {"folder":"../nanodet/models","models":4} 
+2022-11-20 15:02:30 [35mSTATE:[39m Models: {"count":58,"totalSize":386778123} 
+2022-11-20 15:02:30 [36mINFO: [39m Human Build complete... {"logFile":"test/build.log"} 
+2022-11-20 15:15:44 [36mINFO: [39m @vladmandic/human version 3.0.0 
+2022-11-20 15:15:44 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v19.1.0 
+2022-11-20 15:15:44 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"3.0.0"} 
+2022-11-20 15:15:44 [36mINFO: [39m Environment: {"profile":"development","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
+2022-11-20 15:15:44 [36mINFO: [39m Toolchain: {"build":"0.7.14","esbuild":"0.15.14","typescript":"4.9.3","typedoc":"0.23.21","eslint":"8.28.0"} 
+2022-11-20 15:15:44 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2022-11-20 15:15:44 [35mSTATE:[39m WebServer: {"ssl":false,"port":8000,"root":"."} 
+2022-11-20 15:15:44 [35mSTATE:[39m WebServer: {"ssl":true,"port":8001,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2022-11-20 15:15:44 [35mSTATE:[39m Watch: {"locations":["src/**/*","tfjs/**/*","demo/**/*.ts"]} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671000,"outputBytes":504955} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671024,"outputBytes":504975} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671206,"outputBytes":505166} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670137,"outputBytes":507647} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807406,"outputBytes":1450592} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807406,"outputBytes":1893704} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:15:44 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:15:44 [36mINFO: [39m Listening... 
+2022-11-20 15:15:51 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2042,"url":"/test/test-browser-iife.html","remote":"::1"} 
+2022-11-20 15:15:51 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450592,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 15:15:52 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4655,"url":"/test/test-browser-iife.js","remote":"::1"} 
+2022-11-20 15:15:52 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:15:52 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:17:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:17:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:17:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893704,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:17:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355211,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:17:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:19:49 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671091,"outputBytes":505046} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671115,"outputBytes":505066} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671297,"outputBytes":505257} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670228,"outputBytes":507738} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807497,"outputBytes":1450671} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807497,"outputBytes":1893795} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:19:49 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:19:55 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671091,"outputBytes":505046} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671115,"outputBytes":505066} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671297,"outputBytes":505257} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670228,"outputBytes":507738} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807497,"outputBytes":1450671} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807497,"outputBytes":1893795} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:19:55 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:20:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2042,"url":"/test/test-browser-iife.html","remote":"::1"} 
+2022-11-20 15:20:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450671,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 15:20:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4655,"url":"/test/test-browser-iife.js","remote":"::1"} 
+2022-11-20 15:20:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:20:11 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:20:11 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:20:11 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893795,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:20:11 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355366,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:20:12 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:21:18 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671091,"outputBytes":505046} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671115,"outputBytes":505066} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671297,"outputBytes":505257} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670228,"outputBytes":507738} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807497,"outputBytes":1450671} 
+2022-11-20 15:21:18 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807497,"outputBytes":1893795} 
+2022-11-20 15:21:19 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:21:19 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:21:26 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:21:26 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:21:26 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:21:26 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671093,"outputBytes":505048} 
+2022-11-20 15:21:26 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:21:26 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671117,"outputBytes":505068} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671299,"outputBytes":505259} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670230,"outputBytes":507740} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807499,"outputBytes":1450659} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807499,"outputBytes":1893797} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:21:27 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":301,"url":"/demo/typescript","redirect":"/demo/typescript/index.html","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":1953,"url":"/demo/typescript/index.html","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4207,"url":"/demo/typescript/index.js","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893797,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":9474,"url":"/demo/typescript/index.js.map","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355363,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/manifest+json","size":304,"url":"/demo/manifest.webmanifest","remote":"::1"} 
+2022-11-20 15:21:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/png","size":142790,"url":"/assets/icon.png","remote":"::1"} 
+2022-11-20 15:22:51 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:22:51 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:22:51 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893797,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:22:51 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355363,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:22:51 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:26:23 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671280,"outputBytes":505225} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671304,"outputBytes":505245} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671486,"outputBytes":505436} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670417,"outputBytes":507917} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807686,"outputBytes":1450775} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807686,"outputBytes":1893974} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:26:23 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:26:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:26:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:26:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893974,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:26:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355687,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:26:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:26:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:27:20 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671300,"outputBytes":505245} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671324,"outputBytes":505265} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671506,"outputBytes":505456} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670437,"outputBytes":507937} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807706,"outputBytes":1450794} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807706,"outputBytes":1893994} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:27:20 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:27:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:27:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:27:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893994,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:27:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355717,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:27:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:27:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:28:24 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671072,"outputBytes":505019} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671096,"outputBytes":505039} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671278,"outputBytes":505230} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670209,"outputBytes":507711} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807478,"outputBytes":1450649} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807478,"outputBytes":1893768} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:28:24 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:31:17 [36mINFO: [39m Watch: {"event":"modify","input":"src/warmup.ts"} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671099,"outputBytes":505046} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671123,"outputBytes":505066} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671305,"outputBytes":505257} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670236,"outputBytes":507738} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807505,"outputBytes":1450671} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807505,"outputBytes":1893795} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:31:17 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:31:29 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671124,"outputBytes":505071} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671148,"outputBytes":505091} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671330,"outputBytes":505282} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670261,"outputBytes":507763} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807530,"outputBytes":1450691} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807530,"outputBytes":1893820} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:31:29 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:31:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:31:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:31:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893820,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:31:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355427,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:31:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:31:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:31:52 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671128,"outputBytes":505075} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671152,"outputBytes":505095} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671334,"outputBytes":505286} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670265,"outputBytes":507767} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807534,"outputBytes":1450695} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807534,"outputBytes":1893824} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:31:52 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:32:12 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671188,"outputBytes":505133} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671212,"outputBytes":505153} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671394,"outputBytes":505344} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670325,"outputBytes":507825} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807594,"outputBytes":1450717} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807594,"outputBytes":1893882} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:32:12 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:32:15 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671168,"outputBytes":505113} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671192,"outputBytes":505133} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671374,"outputBytes":505324} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:32:15 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670305,"outputBytes":507805} 
+2022-11-20 15:32:16 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:32:16 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807574,"outputBytes":1450698} 
+2022-11-20 15:32:16 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807574,"outputBytes":1893862} 
+2022-11-20 15:32:16 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:32:16 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:32:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:32:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:32:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893862,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:32:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355498,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:32:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:32:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:32:51 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671173,"outputBytes":505117} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671197,"outputBytes":505137} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671379,"outputBytes":505328} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670310,"outputBytes":507809} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807579,"outputBytes":1450701} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807579,"outputBytes":1893866} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:32:51 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:32:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:32:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:32:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893866,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:32:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355516,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:32:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:32:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:33:05 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671164,"outputBytes":505108} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671188,"outputBytes":505128} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671370,"outputBytes":505319} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670301,"outputBytes":507800} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807570,"outputBytes":1450692} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807570,"outputBytes":1893857} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:33:05 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:33:06 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:33:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:33:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893857,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:33:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355502,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:33:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:33:07 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:33:45 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671164,"outputBytes":505108} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671188,"outputBytes":505128} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671370,"outputBytes":505319} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:33:45 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670301,"outputBytes":507800} 
+2022-11-20 15:33:46 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:33:46 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807570,"outputBytes":1450692} 
+2022-11-20 15:33:46 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807570,"outputBytes":1893857} 
+2022-11-20 15:33:46 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:33:46 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:33:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:33:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:33:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893857,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:33:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355502,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:33:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:33:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:34:59 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:34:59 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:34:59 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671164,"outputBytes":505108} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671188,"outputBytes":505128} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671370,"outputBytes":505319} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670301,"outputBytes":507800} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807570,"outputBytes":1450692} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807570,"outputBytes":1893857} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:35:00 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:35:04 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671164,"outputBytes":505108} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671188,"outputBytes":505128} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671370,"outputBytes":505319} 
+2022-11-20 15:35:04 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:35:05 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670301,"outputBytes":507800} 
+2022-11-20 15:35:05 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:35:05 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807570,"outputBytes":1450692} 
+2022-11-20 15:35:05 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807570,"outputBytes":1893857} 
+2022-11-20 15:35:05 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:35:05 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:35:13 [36mINFO: [39m Watch: {"event":"modify","input":"src/warmup.ts"} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671137,"outputBytes":505081} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671161,"outputBytes":505101} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671343,"outputBytes":505292} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670274,"outputBytes":507773} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:35:13 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807543,"outputBytes":1450670} 
+2022-11-20 15:35:14 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807543,"outputBytes":1893830} 
+2022-11-20 15:35:14 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:35:14 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:35:14 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts","skip":true} 
+2022-11-20 15:35:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:35:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:35:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893830,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:35:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355453,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:35:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:35:31 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:35:43 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671150,"outputBytes":505094} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671174,"outputBytes":505114} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671356,"outputBytes":505305} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670287,"outputBytes":507786} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807556,"outputBytes":1450682} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807556,"outputBytes":1893843} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:35:43 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:35:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:35:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:35:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893843,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:35:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355476,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:35:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:35:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:36:37 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671164,"outputBytes":505108} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671188,"outputBytes":505128} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671370,"outputBytes":505319} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670301,"outputBytes":507800} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807570,"outputBytes":1450696} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807570,"outputBytes":1893857} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:36:37 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:37:13 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671164,"outputBytes":505108} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671188,"outputBytes":505128} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671370,"outputBytes":505319} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670301,"outputBytes":507800} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807570,"outputBytes":1450696} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807570,"outputBytes":1893857} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:37:13 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:37:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:37:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:37:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893857,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:37:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355500,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:37:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:37:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:39:16 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671164,"outputBytes":505108} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671188,"outputBytes":505128} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671370,"outputBytes":505319} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670301,"outputBytes":507800} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807570,"outputBytes":1450696} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807570,"outputBytes":1893857} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:39:16 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:39:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:39:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:39:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893857,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:39:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355500,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:39:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:39:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:41:07 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671190,"outputBytes":505134} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671214,"outputBytes":505154} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671396,"outputBytes":505345} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670327,"outputBytes":507826} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807596,"outputBytes":1450717} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807596,"outputBytes":1893883} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:41:07 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:41:10 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:41:10 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:41:10 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893883,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:41:10 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355548,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:41:10 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:41:10 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:41:12 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:41:12 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:41:12 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893883,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:41:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355548,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:41:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:41:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:41:53 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671272,"outputBytes":505216} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671296,"outputBytes":505236} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671478,"outputBytes":505427} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670409,"outputBytes":507908} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807678,"outputBytes":1450784} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807678,"outputBytes":1893965} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:41:53 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:41:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:41:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:41:54 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893965,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:41:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355696,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:41:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:41:55 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:41:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:41:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:41:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893965,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:41:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355696,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:41:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:41:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:43:34 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671331,"outputBytes":505275} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671355,"outputBytes":505295} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671537,"outputBytes":505486} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670468,"outputBytes":507967} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807737,"outputBytes":1450833} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807737,"outputBytes":1894024} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:43:34 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:43:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:43:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:43:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894024,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:43:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355799,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:43:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:43:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:44:43 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671344,"outputBytes":505288} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671368,"outputBytes":505308} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671550,"outputBytes":505499} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670481,"outputBytes":507980} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807750,"outputBytes":1450845} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807750,"outputBytes":1894037} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:44:43 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:44:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:44:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:44:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894037,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:44:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355821,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:44:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:44:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:44:52 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671387,"outputBytes":505331} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671411,"outputBytes":505351} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671593,"outputBytes":505542} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670524,"outputBytes":508023} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807793,"outputBytes":1450882} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807793,"outputBytes":1894080} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:44:52 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:44:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:44:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:44:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894080,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:44:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355896,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:44:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:44:53 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:45:12 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671442,"outputBytes":505386} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671466,"outputBytes":505406} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671648,"outputBytes":505597} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670579,"outputBytes":508078} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807848,"outputBytes":1450930} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807848,"outputBytes":1894135} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:45:12 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:45:14 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:45:14 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8655,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:45:14 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894135,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:45:14 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355993,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:45:14 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:45:14 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:46:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:46:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8694,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:46:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894135,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:46:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355993,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:46:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:46:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:46:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:46:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8735,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:46:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894135,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:46:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355993,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:46:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:46:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:47:38 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671400,"outputBytes":505344} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671424,"outputBytes":505364} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671606,"outputBytes":505555} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670537,"outputBytes":508036} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807806,"outputBytes":1450894} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807806,"outputBytes":1894093} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:47:38 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:47:46 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671400,"outputBytes":505344} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671424,"outputBytes":505364} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671606,"outputBytes":505555} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670537,"outputBytes":508036} 
+2022-11-20 15:47:46 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:47:47 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807806,"outputBytes":1450894} 
+2022-11-20 15:47:47 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807806,"outputBytes":1894093} 
+2022-11-20 15:47:47 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:47:47 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:48:11 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts"} 
+2022-11-20 15:48:11 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:48:11 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:48:11 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671357,"outputBytes":505301} 
+2022-11-20 15:48:11 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671381,"outputBytes":505321} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671563,"outputBytes":505512} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670494,"outputBytes":507993} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807763,"outputBytes":1450857} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807763,"outputBytes":1894050} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6135,"outputBytes":4207} 
+2022-11-20 15:48:12 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:48:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:48:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8735,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:48:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894050,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:48:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355845,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:48:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:48:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:49:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:49:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8714,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:49:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894050,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:49:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355845,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:49:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:49:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:49:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:49:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:49:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8728,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:49:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894050,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:49:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355845,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:49:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:49:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:49:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:55:24 [36mINFO: [39m Watch: {"event":"modify","input":"demo/typescript/index.ts"} 
+2022-11-20 15:55:24 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts","skip":true} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671325,"outputBytes":505269} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671349,"outputBytes":505289} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671531,"outputBytes":505480} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670462,"outputBytes":507961} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:55:24 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807731,"outputBytes":1450830} 
+2022-11-20 15:55:25 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807731,"outputBytes":1894018} 
+2022-11-20 15:55:25 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6088,"outputBytes":4160} 
+2022-11-20 15:55:25 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:55:26 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:55:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8611,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:55:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1894018,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:55:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355791,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:55:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:55:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:55:27 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:56:39 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671249,"outputBytes":505193} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671273,"outputBytes":505213} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671455,"outputBytes":505404} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670386,"outputBytes":507885} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807655,"outputBytes":1450769} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807655,"outputBytes":1893942} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6088,"outputBytes":4160} 
+2022-11-20 15:56:39 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:56:45 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:56:45 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8611,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:56:45 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893942,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:56:45 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355649,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:56:45 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:56:45 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:56:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:57:19 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671249,"outputBytes":505193} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671273,"outputBytes":505213} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671455,"outputBytes":505404} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670386,"outputBytes":507885} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807655,"outputBytes":1450769} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807655,"outputBytes":1893942} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6088,"outputBytes":4160} 
+2022-11-20 15:57:19 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 15:57:19 [36mINFO: [39m Watch: {"event":"modify","input":"src/human.ts","skip":true} 
+2022-11-20 15:58:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:58:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8618,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:58:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893942,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:58:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355649,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:58:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:58:47 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:58:48 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:58:48 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:58:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:58:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/json","size":201673,"url":"/models/centernet.json","remote":"::1"} 
+2022-11-20 15:58:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":4030290,"url":"/models/centernet.bin","remote":"::1"} 
+2022-11-20 15:58:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:58:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:58:49 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8624,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893942,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355649,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 15:59:06 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:06 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 15:59:06 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450769,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 15:59:06 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:18 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:18 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 15:59:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 15:59:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450769,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 15:59:25 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:38 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:38 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:38 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:42 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:42 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 15:59:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 15:59:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 15:59:43 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450769,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 15:59:46 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:00:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:00:00 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:00:01 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:00:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:00:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:00:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:00:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 16:00:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450769,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:00:08 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:00:13 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:00:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:00:22 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:02:04 [36mINFO: [39m Watch: {"event":"modify","input":"src/models.ts"} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671091,"outputBytes":505035} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671115,"outputBytes":505055} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671297,"outputBytes":505246} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670228,"outputBytes":507727} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807497,"outputBytes":1450635} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807497,"outputBytes":1893784} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6088,"outputBytes":4160} 
+2022-11-20 16:02:04 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 16:11:02 [36mINFO: [39m @vladmandic/human version 3.0.0 
+2022-11-20 16:11:02 [36mINFO: [39m User: vlado Platform: linux Arch: x64 Node: v19.1.0 
+2022-11-20 16:11:02 [36mINFO: [39m Application: {"name":"@vladmandic/human","version":"3.0.0"} 
+2022-11-20 16:11:02 [36mINFO: [39m Environment: {"profile":"development","config":".build.json","package":"package.json","tsconfig":true,"eslintrc":true,"git":true} 
+2022-11-20 16:11:02 [36mINFO: [39m Toolchain: {"build":"0.7.14","esbuild":"0.15.14","typescript":"4.9.3","typedoc":"0.23.21","eslint":"8.28.0"} 
+2022-11-20 16:11:02 [36mINFO: [39m Build: {"profile":"development","steps":["serve","watch","compile"]} 
+2022-11-20 16:11:02 [35mSTATE:[39m WebServer: {"ssl":false,"port":8000,"root":"."} 
+2022-11-20 16:11:02 [35mSTATE:[39m WebServer: {"ssl":true,"port":8001,"root":".","sslKey":"node_modules/@vladmandic/build/cert/https.key","sslCrt":"node_modules/@vladmandic/build/cert/https.crt"} 
+2022-11-20 16:11:02 [35mSTATE:[39m Watch: {"locations":["src/**/*","tfjs/**/*","demo/**/*.ts"]} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"tfjs/browser/version","format":"esm","platform":"browser","input":"tfjs/tf-version.ts","output":"dist/tfjs.version.js","files":1,"inputBytes":1289,"outputBytes":1357} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/cpu","format":"cjs","platform":"node","input":"tfjs/tf-node.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1565,"outputBytes":1786} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"human/nodejs/cpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node.js","files":80,"inputBytes":671091,"outputBytes":505035} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/gpu","format":"cjs","platform":"node","input":"tfjs/tf-node-gpu.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1573,"outputBytes":1810} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"human/nodejs/gpu","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-gpu.js","files":80,"inputBytes":671115,"outputBytes":505055} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"tfjs/nodejs/wasm","format":"cjs","platform":"node","input":"tfjs/tf-node-wasm.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":1661,"outputBytes":1992} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"human/nodejs/wasm","format":"cjs","platform":"node","input":"src/human.ts","output":"dist/human.node-wasm.js","files":80,"inputBytes":671297,"outputBytes":505246} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/nobundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":2,"inputBytes":2371,"outputBytes":923} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"human/browser/esm/nobundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm-nobundle.js","files":80,"inputBytes":670228,"outputBytes":507727} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"tfjs/browser/esm/bundle","format":"esm","platform":"browser","input":"tfjs/tf-browser.ts","output":"dist/tfjs.esm.js","files":10,"inputBytes":2371,"outputBytes":1138192} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"human/browser/iife/bundle","format":"iife","platform":"browser","input":"src/human.ts","output":"dist/human.js","files":80,"inputBytes":1807497,"outputBytes":1450635} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"human/browser/esm/bundle","format":"esm","platform":"browser","input":"src/human.ts","output":"dist/human.esm.js","files":80,"inputBytes":1807497,"outputBytes":1893784} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"demo/typescript","format":"esm","platform":"browser","input":"demo/typescript/index.ts","output":"demo/typescript/index.js","files":1,"inputBytes":6088,"outputBytes":4160} 
+2022-11-20 16:11:02 [35mSTATE:[39m Compile: {"name":"demo/faceid","format":"esm","platform":"browser","input":"demo/faceid/index.ts","output":"demo/faceid/index.js","files":2,"inputBytes":17572,"outputBytes":13919} 
+2022-11-20 16:11:02 [36mINFO: [39m Listening... 
+2022-11-20 16:11:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2010,"url":"/test/test-browser-esm.html","remote":"::1"} 
+2022-11-20 16:11:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":8585,"url":"/test/test-browser-esm.js","remote":"::1"} 
+2022-11-20 16:11:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1893784,"url":"/dist/human.esm.js","remote":"::1"} 
+2022-11-20 16:11:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"application/octet-stream","size":3355368,"url":"/dist/human.esm.js.map","remote":"::1"} 
+2022-11-20 16:11:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 16:11:03 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 16:11:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:04 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:11:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 16:11:05 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450635,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:11:06 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:16 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:17 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:11:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 16:11:21 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450635,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:11:24 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:36 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:11:40 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 16:11:41 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450635,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:11:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:58 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:11:59 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:12:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:12:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:12:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:12:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1070,"url":"/test/test-browser-worker.js","remote":"::1"} 
+2022-11-20 16:12:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450635,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:12:06 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:12:11 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:12:15 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:12:20 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":8596,"url":"/samples/in/ai-face.jpg","remote":"::1"} 
+2022-11-20 16:13:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2042,"url":"/test/test-browser-iife.html","remote":"::1"} 
+2022-11-20 16:13:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450635,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:13:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4573,"url":"/test/test-browser-iife.js","remote":"::1"} 
+2022-11-20 16:13:02 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 16:13:26 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2042,"url":"/test/test-browser-iife.html","remote":"::1"} 
+2022-11-20 16:13:26 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450635,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:13:26 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4580,"url":"/test/test-browser-iife.js","remote":"::1"} 
+2022-11-20 16:13:26 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 16:13:26 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 16:13:32 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/html","size":2042,"url":"/test/test-browser-iife.html","remote":"::1"} 
+2022-11-20 16:13:33 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":1450635,"url":"/dist/human.js","remote":"::1"} 
+2022-11-20 16:13:33 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"text/javascript","size":4583,"url":"/test/test-browser-iife.js","remote":"::1"} 
+2022-11-20 16:13:33 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/x-icon","size":261950,"url":"/favicon.ico","remote":"::1"} 
+2022-11-20 16:13:33 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"font/woff2","size":181500,"url":"/assets/lato-light.woff2","remote":"::1"} 
+2022-11-20 16:13:33 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:13:33 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:13:44 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 
+2022-11-20 16:13:56 [32mDATA: [39m HTTPS: {"method":"GET","ver":"2.0","status":200,"mime":"image/jpeg","size":32320,"url":"/samples/in/ai-body.jpg","remote":"::1"} 

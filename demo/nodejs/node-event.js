@@ -65,8 +65,7 @@ async function main() {
     });
 
     human.events.addEventListener('load', () => {
-      const loaded = Object.keys(human.models).filter((a) => human.models[a]);
-      log.info('Event Loaded:', loaded, human.tf.engine().memory());
+      log.info('Event Loaded:', human.models.loaded(), human.tf.engine().memory());
     });
 
     human.events.addEventListener('image', () => {

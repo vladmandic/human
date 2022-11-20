@@ -101,7 +101,7 @@ async function main() { // main entry point
   await human.load(); // preload all models
   log('backend:', human.tf.getBackend(), '| available:', human.env.backends);
   log('models stats:', human.models.stats());
-  log('models loaded:', Object.values(human.models).filter((model) => model !== null).length);
+  log('models loaded:', human.models.loaded());
   log('environment', human.env);
   status('initializing...');
   await human.warmup(); // warmup function to initialize backend for future faster detection

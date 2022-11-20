@@ -89,10 +89,10 @@ async function testInstance(human) {
   }
   log('state', 'tensors', human.tf.memory().numTensors);
 
-  if (human.models) {
+  if (human.models.models) {
     log('state', 'passed: load models');
-    const keys = Object.keys(human.models);
-    const loaded = keys.filter((model) => human.models[model]);
+    const keys = Object.keys(human.models.models);
+    const loaded = human.models.loaded();
     log('state', ' result: defined models:', keys.length, 'loaded models:', loaded.length);
     return true;
   }
@@ -392,12 +392,12 @@ async function test(Human, inputConfig) {
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'object');
   if (!res || res.object?.length < 1 || res.object[0]?.label !== 'person') log('error', 'failed: centernet', res.object);
   else log('state', 'passed: centernet');
-  human.models.centernet = null;
+  human.models.models.centernet = null;
   config.object = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/nanodet.json' };
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'object');
   if (!res || res.object?.length < 1 || res.object[0]?.label !== 'person') log('error', 'failed: nanodet', res.object);
   else log('state', 'passed: nanodet');
-  human.models.nanodet = null;
+  human.models.models.nanodet = null;
   config.object.enabled = false;
 
   // test sensitive config
@@ -480,20 +480,20 @@ async function test(Human, inputConfig) {
   res = await testDetect(human, 'samples/in/ai-face.jpg', 'face embeddings');
   if (!res || !res.face || !res.face[0] || res.face[0]?.embedding?.length !== 512) log('error', 'failed: insightface', { embedding: res.face?.[0]?.embedding?.length });
   else log('state', 'passed: insightface', { embedding: res.face?.[0]?.embedding?.length });
-  human.models.mobilefacenet = null;
+  human.models.models.mobilefacenet = null;
   config.face.mobilefacenet = { enabled: false };
-  human.models.insightface = null;
+  human.models.models.insightface = null;
   config.face.insightface = { enabled: false };
 
   // test face attention
   log('info', 'test face attention');
-  human.models.facemesh = null;
+  human.models.models.facemesh = null;
   config.softwareKernels = true;
   config.face.attention = { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/facemesh-attention.json' };
   res = await testDetect(human, 'samples/in/ai-face.jpg', 'face attention');
   if (!res || !res.face[0] || res.face[0].mesh.length !== 478 || Object.keys(res.face[0].annotations).length !== 36) log('error', 'failed: face attention', { mesh: res.face?.[0]?.mesh?.length, annotations: Object.keys(res.face?.[0]?.annotations | {}).length });
   else log('state', 'passed: face attention');
-  human.models.facemesh = null; // unload model
+  human.models.models.facemesh = null; // unload model
   config.face.attention = { enabled: false };
 
   // test detectors only

@@ -89,15 +89,16 @@ async function testInstance(human) {
   }
   log('state', 'tensors', human.tf.memory().numTensors);
 
-  if (human.models.models) {
-    log('state', 'passed: load models');
-    const keys = Object.keys(human.models.models);
-    const loaded = human.models.loaded();
-    log('state', ' result: defined models:', keys.length, 'loaded models:', loaded.length);
+  const keys = Object.keys(human.models.models);
+  const loaded = human.models.loaded();
+  log('state', ' result: defined models:', keys.length, 'loaded models:', loaded.length);
+  if (loaded.length > 10) {
+    log('state', 'passed: load models', loaded.length);
     return true;
+  } else {
+    log('error', 'failed: load models', loaded.length);
+    return false;  
   }
-  log('error', 'failed: load models');
-  return false;
 }
 
 async function testWarmup(human, title) {
@@ -295,7 +296,7 @@ async function test(Human, inputConfig) {
   await human.load();
   const models = human.models.list();
   const loaded = human.models.loaded();
-  if (models.length === 24 && loaded.length === 11) log('state', 'passed: models loaded', models.length, loaded.length, models);
+  if (loaded.length === 11) log('state', 'passed: models loaded', models.length, loaded.length, models);
   else log('error', 'failed: models loaded', models.length, loaded.length, models);
   log('info', 'memory:', { memory: human.tf.memory() });
   log('info', 'state:', { state: human.tf.engine().state });

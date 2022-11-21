@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/18 mandic00@live.com
+### **HEAD -> main** 2022/11/21 mandic00@live.com
 
+- enforce markdown linting
 - cleanup git history
 - default empty result
 - refactor draw and models namespaces

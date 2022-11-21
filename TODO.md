@@ -51,9 +51,9 @@ No support for running in **web workers** as Safari still does not support `Offs
 
 ## Pending Release Changes
 
-Optimizations:
+Optimizations:  
 - Enabled high-resolution optimizations  
-  Internal limits are increased from **2k** to **4k**
+  Internal limits are increased from **2k** to **4k**  
 - Enhanced device capabilities detection  
   See `human.env.[agent, wasm, webgl, webgpu]` for details  
 - If `config.backend` is not set, Human will auto-select best backend  
@@ -62,15 +62,16 @@ Optimizations:
 - Reduce build dependencies  
   `Human` is now 30% smaller :)  
   As usual, `Human` has **zero** runtime dependencies,  
-  all *devDependencies* are only to rebuild `Human` itself
+  all *devDependencies* are only to rebuild `Human` itself  
 - Default hand skeleton model changed from `handlandmark-full` to `handlandmark-lite`  
   Both models are still supported, this reduces default size and increases performance  
 
-Features:
+Features:  
 - Add [draw label templates](https://github.com/vladmandic/human/wiki/Draw)  
 - Add `config.filter.autoBrightness` (*enabled by default*)  
   Per-frame video on-the-fly brightness adjustments  
   Which significantly increases performance and precision in poorly lit scenes  
+- Add new demo [face detect]((https://vladmandic.github.io/human/demo/facedetect/index.html))
 - Improved `config.filter.equalization` (*disabled by default*)  
   Image and video on-demand histogram equalization  
 - Support selecting specific video source when multiple cameras are present  
@@ -78,7 +79,7 @@ Features:
 - Updated algorithm to determine distance from camera based on iris size  
   See `human.result.face[n].distance`  
 
-Architecture:
+Architecture:  
 - Upgrade to **TFJS 4.1** with **strong typing**  
   see [notes](https://github.com/vladmandic/human#typedefs) on how to use  
 - `TypeDef` refactoring  
@@ -87,14 +88,14 @@ Architecture:
 - Repack external typedefs  
   Removes all external typedef dependencies  
 - Refactor namespace exports  
-  Better [TypeDoc specs](https://vladmandic.github.io/human/typedoc/index.html)
+  Better [TypeDoc specs](https://vladmandic.github.io/human/typedoc/index.html)  
 - Add named export for improved bundler support when using non-default imports  
-- Cleanup Git history for `dist`/`typedef`/`types`
-- Cleanup `@vladmandic/human-models`
+- Cleanup Git history for `dist`/`typedef`/`types`  
+- Cleanup `@vladmandic/human-models`  
 - Support for **NodeJS v19**  
 - Upgrade to **TypeScript 4.9**  
 
-Breaking changes:
+Breaking changes:  
 - Replaced `result.face[n].iris` with `result.face[n].distance`  
 - Replaced `human.getModelStats()` with `human.models.stats()`  
 - Moved `human.similarity`, `human.distance` and `human.match` to namespace `human.match.*`  

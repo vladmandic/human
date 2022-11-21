@@ -1954,12 +1954,12 @@ declare interface ModelPredictConfig {
  * - stats: live detailed model stats that can be checked during model load phase
  */
 declare class Models {
-    instance: Human;
+    private instance;
     models: Record<string, null | GraphModel>;
     constructor(currentInstance: Human);
     stats(): ModelStats;
     reset(): void;
-    load(): Promise<void>;
+    load(instance?: Human): Promise<void>;
     list(): {
         name: string;
         loaded: boolean;

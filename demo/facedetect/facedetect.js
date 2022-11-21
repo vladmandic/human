@@ -6,7 +6,8 @@
 
 /** @type {Human} */
 import { Human } from '../../dist/human.esm.js';
-import { showLoader, hideLoader } from './loader.js';
+
+let loader;
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
   debug: true,
@@ -30,29 +31,83 @@ const humanConfig = { // user configuration for human, used to fine-tune behavio
 
 const human = new Human(humanConfig); // new instance of human
 
+export const showLoader = (msg) => { loader.setAttribute('msg', msg); loader.style.display = 'block'; };
+export const hideLoader = () => loader.style.display = 'none';
+
+class ComponentLoader extends HTMLElement { // watch for attributes
+  message = document.createElement('div');
+
+  static get observedAttributes() { return ['msg']; }
+
+  attributeChangedCallback(_name, _prevVal, currVal) {
+    this.message.innerHTML = currVal;
+  }
+
+  connectedCallback() { // triggered on insert
+    this.attachShadow({ mode: 'open' });
+    const css = document.createElement('style');
+    css.innerHTML = `
+      .loader-container { top: 450px; justify-content: center; position: fixed; width: 100%; }
+      .loader-message { font-size: 1.5rem; padding: 1rem; }
+      .loader { width: 300px; height: 300px; border: 3px solid transparent; border-radius: 50%; border-top: 4px solid #f15e41; animation: spin 4s linear infinite; position: relative; }
+      .loader::before, .loader::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 6px; right: 6px; border-radius: 50%; border: 4px solid transparent; }
+      .loader::before { border-top-color: #bad375; animation: 3s spin linear infinite; }
+      .loader::after { border-top-color: #26a9e0; animation: spin 1.5s linear infinite; }
+      @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    `;
+    const container = document.createElement('div');
+    container.id = 'loader-container';
+    container.className = 'loader-container';
+    loader = document.createElement('div');
+    loader.id = 'loader';
+    loader.className = 'loader';
+    this.message.id = 'loader-message';
+    this.message.className = 'loader-message';
+    this.message.innerHTML = '';
+    container.appendChild(this.message);
+    container.appendChild(loader);
+    this.shadowRoot?.append(css, container);
+    loader = this; // eslint-disable-line @typescript-eslint/no-this-alias
+  }
+}
+
+customElements.define('component-loader', ComponentLoader);
+
+function addFace(face, source) {
+  const deg = (rad) => Math.round((rad || 0) * 180 / Math.PI);
+  const canvas = document.createElement('canvas');
+  const emotion = face.emotion?.map((e) => `${Math.round(100 * e.score)}% ${e.emotion}`) || [];
+  const rotation = `pitch ${deg(face.rotation?.angle.pitch)}° | roll ${deg(face.rotation?.angle.roll)}°  | yaw ${deg(face.rotation?.angle.yaw)}°`;
+  const gaze = `direction ${deg(face.rotation?.gaze.bearing)}° strength ${Math.round(100 * (face.rotation.gaze.strength || 0))}%`;
+  canvas.title = `
+    source: ${source}
+    score: ${Math.round(100 * face.boxScore)}% detection ${Math.round(100 * face.faceScore)}% analysis
+    age: ${face.age} years | gender: ${face.gender} score ${Math.round(100 * face.genderScore)}%
+    emotion: ${emotion.join(' | ')}
+    head rotation: ${rotation}
+    eyes gaze: ${gaze}
+    camera distance: ${face.distance}m | ${Math.round(100 * face.distance / 2.54)}in
+    check: ${Math.round(100 * face.real)}% real ${Math.round(100 * face.live)}% live
+  `.replace(/  /g, ' ');
+  canvas.onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('description').innerHTML = canvas.title;
+  };
+  human.tf.browser.toPixels(face.tensor, canvas);
+  human.tf.dispose(face.tensor);
+  return canvas;
+}
+
 async function addFaces(imgEl) {
   showLoader('human: busy');
   const faceEl = document.getElementById('faces');
   faceEl.innerHTML = '';
   const res = await human.detect(imgEl);
+  console.log(res); // eslint-disable-line no-console
+  document.getElementById('description').innerHTML = `detected ${res.face.length} faces`;
   for (const face of res.face) {
-    const canvas = document.createElement('canvas');
-    const emotion = face.emotion?.map((e) => `${Math.round(100 * e.score)}% ${e.emotion}`) || [];
-    canvas.title = `
-      source: ${imgEl.src.substring(0, 64)}
-      score: ${Math.round(100 * face.boxScore)}% detection ${Math.round(100 * face.faceScore)}% analysis
-      age: ${face.age} years
-      gender: ${face.gender} score ${Math.round(100 * face.genderScore)}%
-      emotion: ${emotion.join(' | ')}
-      check: ${Math.round(100 * face.real)}% real ${Math.round(100 * face.live)}% live
-    `.replace(/  /g, ' ');
-    canvas.onclick = (e) => {
-      e.preventDefault();
-      document.getElementById('description').innerHTML = canvas.title;
-    };
-    human.tf.browser.toPixels(face.tensor, canvas);
-    human.tf.dispose(face.tensor);
-    faceEl?.appendChild(canvas);
+    const canvas = addFace(face, imgEl.src.substring(0, 64));
+    faceEl.appendChild(canvas);
   }
   hideLoader();
 }

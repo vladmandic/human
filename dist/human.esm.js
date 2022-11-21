@@ -244,66 +244,66 @@ __export(tfjs_esm_exports, {
   ZerosLike: () => Fs,
   _FusedMatMul: () => fo,
   abs: () => Yt,
-  acos: () => f0,
-  acosh: () => h0,
+  acos: () => fv,
+  acosh: () => hv,
   add: () => xe,
-  addN: () => g0,
-  all: () => x0,
-  any: () => y0,
-  argMax: () => b0,
-  argMin: () => C0,
-  asin: () => S0,
-  asinh: () => w0,
-  atan: () => I0,
-  atan2: () => v0,
-  atanh: () => k0,
+  addN: () => gv,
+  all: () => xv,
+  any: () => yv,
+  argMax: () => bv,
+  argMin: () => Cv,
+  asin: () => Sv,
+  asinh: () => wv,
+  atan: () => Iv,
+  atan2: () => vv,
+  atanh: () => kv,
   avgPool: () => td,
-  avgPool3d: () => _0,
+  avgPool3d: () => _v,
   backend: () => Oie,
   backend_util: () => S,
-  basicLSTMCell: () => E0,
+  basicLSTMCell: () => Ev,
   batchNorm: () => wi,
-  batchNorm2d: () => A0,
-  batchNorm3d: () => R0,
-  batchNorm4d: () => F0,
+  batchNorm2d: () => Av,
+  batchNorm3d: () => Rv,
+  batchNorm4d: () => Fv,
   batchToSpaceND: () => rd,
   bincount: () => od,
   booleanMaskAsync: () => XG,
-  broadcastArgs: () => D0,
+  broadcastArgs: () => Dv,
   broadcastTo: () => Ii,
   broadcast_util: () => br,
-  browser: () => Qv,
+  browser: () => Q0,
   buffer: () => le,
   cast: () => Ke,
-  ceil: () => O0,
-  clipByValue: () => P0,
+  ceil: () => Ov,
+  clipByValue: () => Pv,
   clone: () => Br,
   complex: () => Tr,
   concat: () => gt,
-  concat1d: () => M0,
-  concat2d: () => L0,
-  concat3d: () => B0,
-  concat4d: () => V0,
-  conv1d: () => z0,
+  concat1d: () => Mv,
+  concat2d: () => Lv,
+  concat3d: () => Bv,
+  concat4d: () => Vv,
+  conv1d: () => zv,
   conv2d: () => vi,
-  conv2dTranspose: () => W0,
-  conv3d: () => U0,
-  conv3dTranspose: () => H0,
+  conv2dTranspose: () => Wv,
+  conv3d: () => Uv,
+  conv3dTranspose: () => Hv,
   copyRegisteredKernels: () => Dne,
-  cos: () => q0,
-  cosh: () => K0,
+  cos: () => qv,
+  cosh: () => Kv,
   cosineWindow: () => il,
-  cumprod: () => j0,
-  cumsum: () => X0,
+  cumprod: () => jv,
+  cumsum: () => Xv,
   customGrad: () => Cr,
-  denseBincount: () => Y0,
+  denseBincount: () => Yv,
   deprecationWarn: () => eC,
-  depthToSpace: () => Q0,
+  depthToSpace: () => Qv,
   depthwiseConv2d: () => Bp,
   deregisterOp: () => xK,
   device_util: () => yi,
-  diag: () => Z0,
-  dilation2d: () => J0,
+  diag: () => Zv,
+  dilation2d: () => Jv,
   disableDeprecationWarnings: () => vie,
   dispose: () => Dt,
   disposeVariables: () => kie,
@@ -377,7 +377,7 @@ __export(tfjs_esm_exports, {
   losses: () => cq,
   lowerBound: () => xk,
   matMul: () => Xe,
-  math: () => jv,
+  math: () => j0,
   max: () => Us,
   maxPool: () => bd,
   maxPool3d: () => yk,
@@ -449,7 +449,7 @@ __export(tfjs_esm_exports, {
   searchSorted: () => al,
   selu: () => u1,
   separableConv2d: () => p1,
-  serialization: () => p0,
+  serialization: () => pv,
   setBackend: () => Eie,
   setPlatform: () => Pie,
   setThreadsCount: () => kee,
@@ -496,8 +496,8 @@ __export(tfjs_esm_exports, {
   tensor4d: () => S1,
   tensor5d: () => w1,
   tensor6d: () => I1,
-  tensor_util: () => hv,
-  test_util: () => d0,
+  tensor_util: () => h0,
+  test_util: () => dv,
   tidy: () => Ee,
   tile: () => ki,
   time: () => _ie,
@@ -554,8 +554,8 @@ var IV = (r, e, t6, o) => {
   return r;
 };
 var rp = (r, e, t6) => (t6 = r != null ? yV(SV(r)) : {}, IV(e || !r || !r.__esModule ? ub(t6, "default", { value: r, enumerable: true }) : t6, r));
-var rv = qt((Pne, tv) => {
-  tv.exports = It;
+var r0 = qt((Pne, t0) => {
+  t0.exports = It;
   var xo = null;
   try {
     xo = new WebAssembly.Instance(new WebAssembly.Module(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 13, 2, 96, 0, 1, 127, 96, 4, 127, 127, 127, 127, 1, 127, 3, 7, 6, 0, 1, 1, 1, 1, 1, 6, 6, 1, 127, 1, 65, 0, 11, 7, 50, 6, 3, 109, 117, 108, 0, 1, 5, 100, 105, 118, 95, 115, 0, 2, 5, 100, 105, 118, 95, 117, 0, 3, 5, 114, 101, 109, 95, 115, 0, 4, 5, 114, 101, 109, 95, 117, 0, 5, 8, 103, 101, 116, 95, 104, 105, 103, 104, 0, 0, 10, 191, 1, 6, 4, 0, 35, 0, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 126, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 127, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 128, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 129, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 130, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11])), {}).exports;
@@ -583,7 +583,7 @@ var rv = qt((Pne, tv) => {
       if (r < 0)
         return Ji;
       if (r >= QI)
-        return ev;
+        return e0;
     } else {
       if (r <= -XI)
         return Mr;
@@ -637,8 +637,8 @@ var rv = qt((Pne, tv) => {
   It.NEG_ONE = wb;
   var JI = vt(-1, 2147483647, false);
   It.MAX_VALUE = JI;
-  var ev = vt(-1, -1, true);
-  It.MAX_UNSIGNED_VALUE = ev;
+  var e0 = vt(-1, -1, true);
+  It.MAX_UNSIGNED_VALUE = e0;
   var Mr = vt(0, -2147483648, false);
   It.MIN_VALUE = Mr;
   var me = It.prototype;
@@ -884,9 +884,9 @@ var rv = qt((Pne, tv) => {
     return new It(e[4] << 24 | e[5] << 16 | e[6] << 8 | e[7], e[0] << 24 | e[1] << 16 | e[2] << 8 | e[3], t6);
   };
 });
-var Mv = qt(() => {
+var M0 = qt(() => {
 });
-var Lv = qt(() => {
+var L0 = qt(() => {
 });
 var Bk = qt((Lk, cC) => {
   (function(r, e, t6) {
@@ -3558,26 +3558,26 @@ function Sb(r, e) {
 }
 var y = {};
 Ue(y, { arraysEqual: () => Pr, assert: () => E, assertNonNegativeIntegerDimensions: () => yt, assertNonNull: () => Jr, assertShapesMatch: () => ht, bytesFromStringArray: () => fb, bytesPerElement: () => Sm, checkConversionForErrors: () => mb, clamp: () => op, computeStrides: () => hs, createScalarValue: () => QV, createShuffledIndices: () => RV, decodeString: () => Ap, distSquared: () => _V, encodeString: () => gi, fetch: () => JV, fingerPrint64: () => YV, flatten: () => Oo, getArrayFromDType: () => lb, getTypedArrayFromDType: () => cb, hasEncodingLoss: () => OV, hexToLong: () => Kc, indexToLoc: () => LV, inferDtype: () => np, inferFromImplicitShape: () => DV, isBoolean: () => BI, isFunction: () => fs, isInt: () => na, isNumber: () => VI, isPromise: () => Wc, isScalarShape: () => EV, isString: () => Po, isTypedArray: () => Wt, isValidDtype: () => db, locToIndex: () => MV, makeOnesTypedArray: () => zc, makeZerosNestedTypedArray: () => PV, makeZerosTypedArray: () => ap, nearestDivisor: () => sp, nearestLargerEven: () => kV, now: () => ou, parseAxisParam: () => Qa, randUniform: () => TV, repeatedTry: () => FV, rightPad: () => ji, shuffle: () => LI, shuffleCombo: () => vV, sizeFromShape: () => ze, sizeToSquarishShape: () => AV, squeezeShape: () => pb, sum: () => NV, swap: () => Cm, tanh: () => $V, toNestedArray: () => Ki, toTypedArray: () => $p });
-var kb = rp(rv());
+var kb = rp(r0());
 var ru = kb.default || kb;
 function Kc(r) {
   return ru.fromString(r, true, 16);
 }
-var nv = Kc("c3a5c85c97cb3127");
+var n0 = Kc("c3a5c85c97cb3127");
 var tu = Kc("b492b66fbe98f273");
 var gr = Kc("9ae16a3b2f90404f");
 function vb(r) {
   return r.xor(r.shru(47));
 }
-function sv(r, e, t6) {
+function s0(r, e, t6) {
   let o = r.slice(e, e + t6);
   return ru.fromBytes(Array.from(o), true, true);
 }
 function bt(r, e) {
-  return sv(r, e, 8);
+  return s0(r, e, 8);
 }
-function ov(r, e) {
-  return sv(r, e, 4);
+function o0(r, e) {
+  return s0(r, e, 4);
 }
 function jt(r, e) {
   return e === 0 ? r : r.shru(e).or(r.shl(64 - e));
@@ -3602,12 +3602,12 @@ function KV(r, e = r.length) {
     return hi(s, a, t6);
   }
   if (e >= 4) {
-    let t6 = gr.add(e * 2), o = ov(r, 0);
-    return hi(o.shl(3).add(e), ov(r, e - 4), t6);
+    let t6 = gr.add(e * 2), o = o0(r, 0);
+    return hi(o.shl(3).add(e), o0(r, e - 4), t6);
   }
   if (e > 0) {
     let t6 = r[0], o = r[e >> 1], n = r[e - 1], s = t6 + (o << 8), a = e + (n << 2);
-    return vb(gr.mul(s).xor(nv.mul(a))).mul(gr);
+    return vb(gr.mul(s).xor(n0.mul(a))).mul(gr);
   }
   return gr;
 }
@@ -3632,7 +3632,7 @@ function YV(r, e = r.length) {
     o = jt(o.add(n).add(a[0]).add(bt(r, p + 8)), 37).mul(tu), n = jt(n.add(a[1]).add(bt(r, p + 48)), 42).mul(tu), o = o.xor(i[1]), n = n.add(a[0]).add(bt(r, p + 40)), s = jt(s.add(i[0]), 33).mul(tu), a = Fm(r, p, a[1].mul(tu), o.add(i[0])), i = Fm(r, p + 32, s.add(i[1]), n.add(bt(r, p + 16))), [s, o] = [o, s], p += 64;
   while (p !== u);
   let l = tu.add(s.and(255).shl(1));
-  return p = c, i[0] = i[0].add(e - 1 & 63), a[0] = a[0].add(i[0]), i[0] = i[0].add(a[0]), o = jt(o.add(n).add(a[0]).add(bt(r, p + 8)), 37).mul(l), n = jt(n.add(a[1]).add(bt(r, p + 48)), 42).mul(l), o = o.xor(i[1].mul(9)), n = n.add(a[0].mul(9).add(bt(r, p + 40))), s = jt(s.add(i[0]), 33).mul(l), a = Fm(r, p, a[1].mul(l), o.add(i[0])), i = Fm(r, p + 32, s.add(i[1]), n.add(bt(r, p + 16))), [s, o] = [o, s], hi(hi(a[0], i[0], l).add(vb(n).mul(nv)).add(s), hi(a[1], i[1], l).add(o), l);
+  return p = c, i[0] = i[0].add(e - 1 & 63), a[0] = a[0].add(i[0]), i[0] = i[0].add(a[0]), o = jt(o.add(n).add(a[0]).add(bt(r, p + 8)), 37).mul(l), n = jt(n.add(a[1]).add(bt(r, p + 48)), 42).mul(l), o = o.xor(i[1].mul(9)), n = n.add(a[0].mul(9).add(bt(r, p + 40))), s = jt(s.add(i[0]), 33).mul(l), a = Fm(r, p, a[1].mul(l), o.add(i[0])), i = Fm(r, p + 32, s.add(i[1]), n.add(bt(r, p + 16))), [s, o] = [o, s], hi(hi(a[0], i[0], l).add(vb(n).mul(n0)).add(s), hi(a[1], i[1], l).add(o), l);
 }
 function QV(r, e) {
   return e === "string" ? gi(r) : $p([r], e);
@@ -3726,7 +3726,7 @@ var Nb = class {
     console.log(`%c${p}	%c${i}	%c${u}D ${l}	%c${c}	%c${m}	%c${a}`, "font-weight:bold", "color:red", "color:blue", "color: orange", "color: green", "color: steelblue");
   }
 };
-function av(r, e, t6) {
+function a0(r, e, t6) {
   let o = {}, n = {};
   for (let p = 0; p < e.length; p++)
     o[e[p].id] = true;
@@ -3770,7 +3770,7 @@ function av(r, e, t6) {
   }
   return i;
 }
-function iv(r, e, t6, o) {
+function i0(r, e, t6, o) {
   for (let n = e.length - 1; n >= 0; n--) {
     let s = e[n], a = [];
     if (s.outputs.forEach((p) => {
@@ -3797,10 +3797,10 @@ function iv(r, e, t6, o) {
     }
   }
 }
-var uv = 20;
+var u0 = 20;
 var jc = 3;
 var Tb = 7;
-function pv(r, e, t6, o) {
+function p0(r, e, t6, o) {
   let n = hs(e), s = tz(r, e, t6, n), a = e.length, i = Om(r, e, t6, n, s), p = ["Tensor"];
   return o && (p.push(`  dtype: ${t6}`), p.push(`  rank: ${a}`), p.push(`  shape: [${e}]`), p.push("  values:")), p.push(i.map((u) => "    " + u).join(`
 `)), p.join(`
@@ -3818,9 +3818,9 @@ function tz(r, e, t6, o) {
 }
 function Xc(r, e, t6) {
   let o;
-  return Array.isArray(r) ? o = `${parseFloat(r[0].toFixed(Tb))} + ${parseFloat(r[1].toFixed(Tb))}j` : Po(r) ? o = `'${r}'` : t6 === "bool" ? o = cv(r) : o = parseFloat(r.toFixed(Tb)).toString(), ji(o, e);
+  return Array.isArray(r) ? o = `${parseFloat(r[0].toFixed(Tb))} + ${parseFloat(r[1].toFixed(Tb))}j` : Po(r) ? o = `'${r}'` : t6 === "bool" ? o = c0(r) : o = parseFloat(r.toFixed(Tb)).toString(), ji(o, e);
 }
-function cv(r) {
+function c0(r) {
   return r === 0 ? "false" : "true";
 }
 function Om(r, e, t6, o, n, s = true) {
@@ -3830,17 +3830,17 @@ function Om(r, e, t6, o, n, s = true) {
       let h = Yc(r);
       return [Xc(h[0], 0, t6)];
     }
-    return t6 === "bool" ? [cv(r[0])] : [r[0].toString()];
+    return t6 === "bool" ? [c0(r[0])] : [r[0].toString()];
   }
   if (p === 1) {
-    if (i > uv) {
+    if (i > u0) {
       let g = jc * a, x = Array.from(r.slice(0, g)), b = Array.from(r.slice((i - jc) * a, i * a));
       return t6 === "complex64" && (x = Yc(x), b = Yc(b)), ["[" + x.map((C, w) => Xc(C, n[w], t6)).join(", ") + ", ..., " + b.map((C, w) => Xc(C, n[i - jc + w], t6)).join(", ") + "]"];
     }
     return ["[" + (t6 === "complex64" ? Yc(r) : Array.from(r)).map((g, x) => Xc(g, n[x], t6)).join(", ") + "]"];
   }
   let u = e.slice(1), c = o.slice(1), l = o[0] * a, m = [];
-  if (i > uv) {
+  if (i > u0) {
     for (let h = 0; h < jc; h++) {
       let g = h * l, x = g + l;
       m.push(...Om(r.slice(g, x), u, t6, c, n, false));
@@ -3932,13 +3932,13 @@ var st = class {
 var rs = null;
 var Rp = null;
 var rz = null;
-function lv(r) {
+function l0(r) {
   rs = r;
 }
-function mv(r) {
+function m0(r) {
   Rp = r;
 }
-function dv(r) {
+function d0(r) {
   rz = r;
 }
 var it = class {
@@ -4012,7 +4012,7 @@ var it = class {
   }
   toString(e = false) {
     let t6 = this.dataSync();
-    return pv(t6, this.shape, this.dtype, e);
+    return p0(t6, this.shape, this.dtype, e);
   }
   cast(e) {
     return this.throwIfDisposed(), Rp.cast(this, e);
@@ -4042,8 +4042,8 @@ var va = class extends it {
   }
 };
 Object.defineProperty(va, Symbol.hasInstance, { value: (r) => r instanceof it && r.assign != null && r.assign instanceof Function });
-var hv = {};
-Ue(hv, { assertTypesMatch: () => Fb, getTensorsInContainer: () => Qc, isTensorInList: () => sz, makeTypesMatch: () => Re });
+var h0 = {};
+Ue(h0, { assertTypesMatch: () => Fb, getTensorsInContainer: () => Qc, isTensorInList: () => sz, makeTypesMatch: () => Re });
 var _b;
 (function(r) {
   r.R0 = "R0", r.R1 = "R1", r.R2 = "R2", r.R3 = "R3", r.R4 = "R4", r.R5 = "R5", r.R6 = "R6";
@@ -4090,9 +4090,9 @@ function sz(r, e) {
 }
 function Qc(r) {
   let e = [];
-  return fv(r, e, /* @__PURE__ */ new Set()), e;
+  return f0(r, e, /* @__PURE__ */ new Set()), e;
 }
-function fv(r, e, t6) {
+function f0(r, e, t6) {
   if (r == null)
     return;
   if (r instanceof it) {
@@ -4104,7 +4104,7 @@ function fv(r, e, t6) {
   let o = r;
   for (let n in o) {
     let s = o[n];
-    t6.has(s) || (t6.add(s), fv(s, e, t6));
+    t6.has(s) || (t6.add(s), f0(s, e, t6));
   }
 }
 function az(r) {
@@ -4452,12 +4452,12 @@ var xi = class {
       throw new Error(`dy must have 'float32' dtype, but has '${o.dtype}'`);
     let s = this.scopedRun(() => this.startTape(), () => this.endTape(), () => this.tidy("forward", e));
     E(s instanceof it, () => "The result y returned by f() must be a tensor.");
-    let a = av(this.state.activeTape, t6, s);
+    let a = a0(this.state.activeTape, t6, s);
     if (!n && a.length === 0 && t6.length > 0)
       throw new Error("Cannot compute gradient of y=f(x) with respect to x. Make sure that the f you passed encloses all operations that lead from x to y.");
     return this.tidy("backward", () => {
       let i = {};
-      i[s.id] = o == null ? iz(s.shape) : o, iv(i, a, (u) => this.tidy(u), uz);
+      i[s.id] = o == null ? iz(s.shape) : o, i0(i, a, (u) => this.tidy(u), uz);
       let p = t6.map((u) => i[u.id]);
       return this.state.gradientDepth === 0 && (this.state.activeTape.forEach((u) => {
         for (let c of u.saved)
@@ -4521,7 +4521,7 @@ function Ob() {
     let e = new Uc(r);
     r._tfengine = new xi(e);
   }
-  return UI(r._tfengine.ENV), lv(() => r._tfengine), r._tfengine;
+  return UI(r._tfengine.ENV), l0(() => r._tfengine), r._tfengine;
 }
 var T = Ob();
 function uz(r, e) {
@@ -4583,9 +4583,9 @@ function or(r, e) {
   let o = [];
   for (; Array.isArray(t6) || Wt(t6) && e !== "string"; )
     o.push(t6.length), t6 = t6[0];
-  return Array.isArray(r) && O().getBool("TENSORLIKE_CHECK_SHAPE_CONSISTENCY") && xv(r, o, []), o;
+  return Array.isArray(r) && O().getBool("TENSORLIKE_CHECK_SHAPE_CONSISTENCY") && x0(r, o, []), o;
 }
-function xv(r, e, t6) {
+function x0(r, e, t6) {
   if (t6 = t6 || [], !Array.isArray(r) && !Wt(r)) {
     E(e.length === 0, () => `Element arr[${t6.join("][")}] is a primitive, but should be an array/TypedArray of ${e[0]} elements`);
     return;
@@ -4593,9 +4593,9 @@ function xv(r, e, t6) {
   E(e.length > 0, () => `Element arr[${t6.join("][")}] should be a primitive, but is an array of ${r.length} elements`), E(r.length === e[0], () => `Element arr[${t6.join("][")}] should have ${e[0]} elements, but has ${r.length} elements`);
   let o = e.slice(1);
   for (let n = 0; n < r.length; ++n)
-    xv(r[n], o, t6.concat(n));
+    x0(r[n], o, t6.concat(n));
 }
-function gv(r, e, t6, o) {
+function g0(r, e, t6, o) {
   if (r !== "string_or_numeric") {
     if (r == null)
       throw new Error("Expected dtype cannot be null.");
@@ -4605,9 +4605,9 @@ function gv(r, e, t6, o) {
 }
 function v(r, e, t6, o = "numeric") {
   if (r instanceof it)
-    return gv(o, r.dtype, e, t6), r;
+    return g0(o, r.dtype, e, t6), r;
   let n = np(r);
-  if (n !== "string" && ["bool", "int32", "float32"].indexOf(o) >= 0 && (n = o), gv(o, n, e, t6), r == null || !Wt(r) && !Array.isArray(r) && typeof r != "number" && typeof r != "boolean" && typeof r != "string") {
+  if (n !== "string" && ["bool", "int32", "float32"].indexOf(o) >= 0 && (n = o), g0(o, n, e, t6), r == null || !Wt(r) && !Array.isArray(r) && typeof r != "number" && typeof r != "boolean" && typeof r != "string") {
     let p = r == null ? "null" : r.constructor.name;
     throw new Error(`Argument '${e}' passed to '${t6}' must be a Tensor or TensorLike, but got '${p}'`);
   }
@@ -4673,7 +4673,7 @@ function nr(r, e, t6) {
 }
 var Zc = { float32: 4, float16: 2, int32: 4, uint16: 2, uint8: 1, bool: 1, complex64: 8 };
 var Mm = 4;
-async function bv(r, e) {
+async function b0(r, e) {
   let t6 = [], o = [], n = Array.isArray(r) ? r.map((a) => a.name) : Object.keys(r);
   for (let a = 0; a < n.length; ++a) {
     let i = n[a], p = Array.isArray(r) ? r[a].tensor : r[i];
@@ -4780,10 +4780,10 @@ function dz(r) {
   }), o.buffer;
 }
 var Bb = typeof Buffer != "undefined" && (typeof Blob == "undefined" || typeof atob == "undefined" || typeof btoa == "undefined");
-function yv(r) {
+function y0(r) {
   return Bb ? Buffer.byteLength(r) : new Blob([r]).size;
 }
-function Cv(r) {
+function C0(r) {
   if (Bb)
     return Buffer.from(r).toString("base64");
   let e = new Uint8Array(r), t6 = "";
@@ -4791,7 +4791,7 @@ function Cv(r) {
     t6 += String.fromCharCode(e[o]);
   return btoa(t6);
 }
-function Sv(r) {
+function S0(r) {
   if (Bb) {
     let o = Buffer.from(r, "base64");
     return o.buffer.slice(o.byteOffset, o.byteOffset + o.byteLength);
@@ -4842,7 +4842,7 @@ async function Dp(r, e) {
 function Ps(r) {
   if (r.modelTopology instanceof ArrayBuffer)
     throw new Error("Expected JSON model topology, received ArrayBuffer.");
-  return { dateSaved: new Date(), modelTopologyType: "JSON", modelTopologyBytes: r.modelTopology == null ? 0 : yv(JSON.stringify(r.modelTopology)), weightSpecsBytes: r.weightSpecs == null ? 0 : yv(JSON.stringify(r.weightSpecs)), weightDataBytes: r.weightData == null ? 0 : r.weightData.byteLength };
+  return { dateSaved: new Date(), modelTopologyType: "JSON", modelTopologyBytes: r.modelTopology == null ? 0 : y0(JSON.stringify(r.modelTopology)), weightSpecsBytes: r.weightSpecs == null ? 0 : y0(JSON.stringify(r.weightSpecs)), weightDataBytes: r.weightData == null ? 0 : r.weightData.byteLength };
 }
 function Vm(r) {
   let e = [];
@@ -4917,15 +4917,15 @@ var lt = class {
     }), n;
   }
 };
-var wv = (r) => lt.registerSaveRouter(r);
-var Iv = (r) => lt.registerLoadRouter(r);
-var vv = (r) => lt.getSaveHandlers(r);
-var kv = (r, e) => lt.getLoadHandlers(r, e);
+var w0 = (r) => lt.registerSaveRouter(r);
+var I0 = (r) => lt.registerLoadRouter(r);
+var v0 = (r) => lt.getSaveHandlers(r);
+var k0 = (r, e) => lt.getLoadHandlers(r, e);
 var Wb = "tensorflowjs";
 var Ub = 1;
 var nu = "models_store";
 var bi = "model_info_store";
-function Nv() {
+function N0() {
   if (!O().getBool("IS_BROWSER"))
     throw new Error("Failed to obtain IndexedDB factory because the current environmentis not a web browser.");
   let r = typeof window == "undefined" ? self : window, e = r.indexedDB || r.mozIndexedDB || r.webkitIndexedDB || r.msIndexedDB || r.shimIndexedDB;
@@ -4939,7 +4939,7 @@ function Gb(r) {
 }
 var Ms = class {
   constructor(e) {
-    if (this.indexedDB = Nv(), e == null || !e)
+    if (this.indexedDB = N0(), e == null || !e)
       throw new Error("For IndexedDB, modelPath must not be null, undefined or empty.");
     this.modelPath = e;
   }
@@ -4982,9 +4982,9 @@ var Ms = class {
   }
 };
 Ms.URL_SCHEME = "indexeddb://";
-var Tv = (r) => O().getBool("IS_BROWSER") && !Array.isArray(r) && r.startsWith(Ms.URL_SCHEME) ? yz(r.slice(Ms.URL_SCHEME.length)) : null;
-lt.registerSaveRouter(Tv);
-lt.registerLoadRouter(Tv);
+var T0 = (r) => O().getBool("IS_BROWSER") && !Array.isArray(r) && r.startsWith(Ms.URL_SCHEME) ? yz(r.slice(Ms.URL_SCHEME.length)) : null;
+lt.registerSaveRouter(T0);
+lt.registerLoadRouter(T0);
 function yz(r) {
   return new Ms(r);
 }
@@ -4993,7 +4993,7 @@ function bz(r) {
 }
 var zm = class {
   constructor() {
-    this.indexedDB = Nv();
+    this.indexedDB = N0();
   }
   async listModels() {
     return new Promise((e, t6) => {
@@ -5034,15 +5034,15 @@ var zm = class {
 };
 var Ta = "/";
 var Op = "tensorflowjs_models";
-var _v = "info";
+var _0 = "info";
 var Cz = "model_topology";
 var Sz = "weight_specs";
 var wz = "weight_data";
 var Iz = "model_metadata";
-function Ev(r) {
-  return { info: [Op, r, _v].join(Ta), topology: [Op, r, Cz].join(Ta), weightSpecs: [Op, r, Sz].join(Ta), weightData: [Op, r, wz].join(Ta), modelMetadata: [Op, r, Iz].join(Ta) };
+function E0(r) {
+  return { info: [Op, r, _0].join(Ta), topology: [Op, r, Cz].join(Ta), weightSpecs: [Op, r, Sz].join(Ta), weightData: [Op, r, wz].join(Ta), modelMetadata: [Op, r, Iz].join(Ta) };
 }
-function $v(r) {
+function $0(r) {
   for (let e of Object.values(r))
     window.localStorage.removeItem(e);
 }
@@ -5061,7 +5061,7 @@ var Ls = class {
       throw new Error("The current environment does not support local storage.");
     if (this.LS = window.localStorage, e == null || !e)
       throw new Error("For local storage, modelPath must not be null, undefined or empty.");
-    this.modelPath = e, this.keys = Ev(this.modelPath);
+    this.modelPath = e, this.keys = E0(this.modelPath);
   }
   async save(e) {
     if (e.modelTopology instanceof ArrayBuffer)
@@ -5069,11 +5069,11 @@ var Ls = class {
     {
       let t6 = JSON.stringify(e.modelTopology), o = JSON.stringify(e.weightSpecs), n = Ps(e);
       try {
-        this.LS.setItem(this.keys.info, JSON.stringify(n)), this.LS.setItem(this.keys.topology, t6), this.LS.setItem(this.keys.weightSpecs, o), this.LS.setItem(this.keys.weightData, Cv(e.weightData));
+        this.LS.setItem(this.keys.info, JSON.stringify(n)), this.LS.setItem(this.keys.topology, t6), this.LS.setItem(this.keys.weightSpecs, o), this.LS.setItem(this.keys.weightData, C0(e.weightData));
         let s = { format: e.format, generatedBy: e.generatedBy, convertedBy: e.convertedBy, signature: e.signature != null ? e.signature : void 0, userDefinedMetadata: e.userDefinedMetadata != null ? e.userDefinedMetadata : void 0, modelInitializer: e.modelInitializer != null ? e.modelInitializer : void 0, initializerSignature: e.initializerSignature != null ? e.initializerSignature : void 0, trainingConfig: e.trainingConfig != null ? e.trainingConfig : void 0 };
         return this.LS.setItem(this.keys.modelMetadata, JSON.stringify(s)), { modelArtifactsInfo: n };
       } catch (s) {
-        throw $v(this.keys), new Error(`Failed to save model '${this.modelPath}' to local storage: size quota being exceeded is a possible cause of this failure: modelTopologyBytes=${n.modelTopologyBytes}, weightSpecsBytes=${n.weightSpecsBytes}, weightDataBytes=${n.weightDataBytes}.`);
+        throw $0(this.keys), new Error(`Failed to save model '${this.modelPath}' to local storage: size quota being exceeded is a possible cause of this failure: modelTopologyBytes=${n.modelTopologyBytes}, weightSpecsBytes=${n.weightSpecsBytes}, weightDataBytes=${n.weightDataBytes}.`);
       }
     }
   }
@@ -5099,13 +5099,13 @@ var Ls = class {
     let a = this.LS.getItem(this.keys.weightData);
     if (a == null)
       throw new Error(`In local storage, the binary weight values of model '${this.modelPath}' are missing.`);
-    return t6.weightData = Sv(a), t6;
+    return t6.weightData = S0(a), t6;
   }
 };
 Ls.URL_SCHEME = "localstorage://";
-var Av = (r) => O().getBool("IS_BROWSER") && !Array.isArray(r) && r.startsWith(Ls.URL_SCHEME) ? Nz(r.slice(Ls.URL_SCHEME.length)) : null;
-lt.registerSaveRouter(Av);
-lt.registerLoadRouter(Av);
+var A0 = (r) => O().getBool("IS_BROWSER") && !Array.isArray(r) && r.startsWith(Ls.URL_SCHEME) ? Nz(r.slice(Ls.URL_SCHEME.length)) : null;
+lt.registerSaveRouter(A0);
+lt.registerLoadRouter(A0);
 function Nz(r) {
   return new Ls(r);
 }
@@ -5114,7 +5114,7 @@ var Wm = class {
     E(O().getBool("IS_BROWSER"), () => "Current environment is not a web browser"), E(typeof window == "undefined" || typeof window.localStorage != "undefined", () => "Current browser does not appear to support localStorage"), this.LS = window.localStorage;
   }
   async listModels() {
-    let e = {}, t6 = Op + Ta, o = Ta + _v;
+    let e = {}, t6 = Op + Ta, o = Ta + _0;
     for (let n = 0; n < this.LS.length; ++n) {
       let s = this.LS.key(n);
       if (s.startsWith(t6) && s.endsWith(o)) {
@@ -5126,11 +5126,11 @@ var Wm = class {
   }
   async removeModel(e) {
     e = kz(e);
-    let t6 = Ev(e);
+    let t6 = E0(e);
     if (this.LS.getItem(t6.info) == null)
       throw new Error(`Cannot find model at path '${e}'`);
     let o = JSON.parse(this.LS.getItem(t6.info));
-    return $v(t6), o;
+    return $0(t6), o;
   }
 };
 var Pp = "://";
@@ -5161,7 +5161,7 @@ function Um(r) {
     throw new Error(`The url string provided does not contain a scheme. Supported schemes are: ${Xt.getSchemes().join(",")}`);
   return { scheme: r.split(Pp)[0], path: r.split(Pp)[1] };
 }
-async function Rv(r, e, t6 = false) {
+async function R0(r, e, t6 = false) {
   E(r !== e, () => `Old path and new path are the same: '${r}'`);
   let o = lt.getLoadHandlers(r);
   E(o.length > 0, () => `Copying failed because no load handler is found for source URL ${r}.`), E(o.length < 2, () => `Copying failed because more than one (${o.length}) load handlers for source URL ${r}.`);
@@ -5172,7 +5172,7 @@ async function Rv(r, e, t6 = false) {
   let l = await a.save(c);
   return t6 && !u && await Xt.getManager(i).removeModel(p), l.modelArtifactsInfo;
 }
-async function Fv() {
+async function F0() {
   let r = Xt.getSchemes(), e = {};
   for (let t6 of r) {
     let o = await Xt.getManager(t6).listModels();
@@ -5183,15 +5183,15 @@ async function Fv() {
   }
   return e;
 }
-async function Dv(r) {
+async function D0(r) {
   let e = Um(r);
   return Xt.getManager(e.scheme).removeModel(e.path);
 }
-async function Ov(r, e) {
-  return Rv(r, e, false);
+async function O0(r, e) {
+  return R0(r, e, false);
 }
-async function Pv(r, e) {
-  return Rv(r, e, true);
+async function P0(r, e) {
+  return R0(r, e, true);
 }
 var Hb = class {
   constructor() {
@@ -5238,11 +5238,11 @@ if (O().get("IS_BROWSER")) {
   } catch (r) {
   }
 }
-var Tz = { importFetch: () => Mv() };
+var Tz = { importFetch: () => M0() };
 var qb;
 var Kb = class {
   constructor() {
-    this.util = Lv(), this.textEncoder = new this.util.TextEncoder();
+    this.util = L0(), this.textEncoder = new this.util.TextEncoder();
   }
   fetch(e, t6) {
     return O().global.fetch != null ? O().global.fetch(e, t6) : (qb == null && (qb = Tz.importFetch()), qb(e, t6));
@@ -5284,13 +5284,13 @@ function Gm(r, e = false) {
 }
 Ob();
 var $z = { buffer: le, cast: Ke, clone: Br, print: Gm };
-mv($z);
+m0($z);
 var Ea = {};
-Ue(Ea, { browserFiles: () => Vv, browserHTTPRequest: () => Uv, concatenateArrayBuffers: () => Fp, copyModel: () => Ov, decodeWeights: () => Lm, encodeWeights: () => bv, fromMemory: () => Gv, fromMemorySync: () => Jb, getLoadHandlers: () => kv, getModelArtifactsForJSON: () => Dp, getModelArtifactsForJSONSync: () => zb, getModelArtifactsInfoForJSON: () => Ps, getSaveHandlers: () => vv, getWeightSpecs: () => Vm, http: () => qm, isHTTPScheme: () => Hm, listModels: () => Fv, loadWeights: () => zv, moveModel: () => Pv, registerLoadRouter: () => Iv, registerSaveRouter: () => wv, removeModel: () => Dv, weightsLoaderFactory: () => Qb, withSaveHandler: () => Hv, withSaveHandlerSync: () => qv });
+Ue(Ea, { browserFiles: () => V0, browserHTTPRequest: () => U0, concatenateArrayBuffers: () => Fp, copyModel: () => O0, decodeWeights: () => Lm, encodeWeights: () => b0, fromMemory: () => G0, fromMemorySync: () => Jb, getLoadHandlers: () => k0, getModelArtifactsForJSON: () => Dp, getModelArtifactsForJSONSync: () => zb, getModelArtifactsInfoForJSON: () => Ps, getSaveHandlers: () => v0, getWeightSpecs: () => Vm, http: () => qm, isHTTPScheme: () => Hm, listModels: () => F0, loadWeights: () => z0, moveModel: () => P0, registerLoadRouter: () => I0, registerSaveRouter: () => w0, removeModel: () => D0, weightsLoaderFactory: () => Qb, withSaveHandler: () => H0, withSaveHandlerSync: () => q0 });
 var Az = "model";
 var Rz = ".json";
 var Fz = ".weights.bin";
-function Bv(r) {
+function B0(r) {
   return new Promise((e) => setTimeout(e)).then(r);
 }
 var _a = class {
@@ -5307,9 +5307,9 @@ var _a = class {
       throw new Error("BrowserDownloads.save() does not support saving model topology in binary formats yet.");
     {
       let o = [{ paths: ["./" + this.weightDataFileName], weights: e.weightSpecs }], n = Bm(e, o), s = window.URL.createObjectURL(new Blob([JSON.stringify(n)], { type: "application/json" })), a = this.modelJsonAnchor == null ? document.createElement("a") : this.modelJsonAnchor;
-      if (a.download = this.modelJsonFileName, a.href = s, await Bv(() => a.dispatchEvent(new MouseEvent("click"))), e.weightData != null) {
+      if (a.download = this.modelJsonFileName, a.href = s, await B0(() => a.dispatchEvent(new MouseEvent("click"))), e.weightData != null) {
         let i = this.weightDataAnchor == null ? document.createElement("a") : this.weightDataAnchor;
-        i.download = this.weightDataFileName, i.href = t6, await Bv(() => i.dispatchEvent(new MouseEvent("click")));
+        i.download = this.weightDataFileName, i.href = t6, await B0(() => i.dispatchEvent(new MouseEvent("click")));
       }
       return { modelArtifactsInfo: Ps(e) };
     }
@@ -5381,7 +5381,7 @@ lt.registerSaveRouter(Dz);
 function Oz(r = "model") {
   return new _a(r);
 }
-function Vv(r) {
+function V0(r) {
   return new jb(r);
 }
 function Xb(r, e, t6, o) {
@@ -5403,7 +5403,7 @@ async function Yb(r, e) {
   let t6 = e.fetchFunc == null ? O().platform.fetch : e.fetchFunc, o = r.map((l) => t6(l, e.requestInit, { isBinary: true })), n = 0, s = 0.5, i = (e.onProgress == null ? await Promise.all(o) : await Xb(o, e.onProgress, n, s)).map((l) => l.arrayBuffer()), p = 0.5, u = 1;
   return e.onProgress == null ? await Promise.all(i) : await Xb(i, e.onProgress, p, u);
 }
-async function zv(r, e = "", t6, o) {
+async function z0(r, e = "", t6, o) {
   return Qb((a) => Yb(a, { requestInit: o }))(r, e, t6);
 }
 function Qb(r) {
@@ -5503,7 +5503,7 @@ function Lz(r) {
 function Hm(r) {
   return r.match(Jc.URL_SCHEME_REGEX) != null;
 }
-var Wv = (r, e) => {
+var W0 = (r, e) => {
   if (typeof fetch == "undefined" && (e == null || e.fetchFunc == null))
     return null;
   {
@@ -5513,12 +5513,12 @@ var Wv = (r, e) => {
   }
   return null;
 };
-lt.registerSaveRouter(Wv);
-lt.registerLoadRouter(Wv);
+lt.registerSaveRouter(W0);
+lt.registerLoadRouter(W0);
 function qm(r, e) {
   return new Jc(r, e);
 }
-function Uv(r, e) {
+function U0(r, e) {
   return qm(r, e);
 }
 var el = class {
@@ -5542,21 +5542,21 @@ var Zb = class {
     e.load && (this.load = () => Promise.resolve(e.load())), e.save && (this.save = (t6) => Promise.resolve(e.save(t6)));
   }
 };
-function Gv(r, e, t6, o) {
+function G0(r, e, t6, o) {
   let n = arguments;
   return new Zb(Jb(...n));
 }
 function Jb(r, e, t6, o) {
   return arguments.length === 1 ? r.modelTopology != null || r.weightSpecs != null ? new el(r) : (console.warn("Please call tf.io.fromMemory() with only one argument. The argument should be of type ModelArtifacts. The multi-argument signature of tf.io.fromMemory() has been deprecated and will be removed in a future release."), new el({ modelTopology: r })) : (console.warn("Please call tf.io.fromMemory() with only one argument. The argument should be of type ModelArtifacts. The multi-argument signature of tf.io.fromMemory() has been deprecated and will be removed in a future release."), new el({ modelTopology: r, weightSpecs: e, weightData: t6, trainingConfig: o }));
 }
-function Hv(r) {
+function H0(r) {
   return new Km(r);
 }
-function qv(r) {
+function q0(r) {
   return new Km(r);
 }
-var jv = {};
-Ue(jv, { confusionMatrix: () => Kv });
+var j0 = {};
+Ue(j0, { confusionMatrix: () => K0 });
 function Bz(r, e, t6 = false, o = false) {
   let n = v(r, "a", "matMul"), s = v(e, "b", "matMul");
   [n, s] = Re(n, s);
@@ -5583,7 +5583,7 @@ function vie() {
 function eC(r) {
   O().getBool("DEPRECATION_WARNINGS_ENABLED") && console.warn(r + " You can disable deprecation warnings with tf.disableDeprecationWarnings().");
 }
-dv(eC);
+d0(eC);
 function kie() {
   T.disposeVariables();
 }
@@ -5669,10 +5669,10 @@ function Hz(r, e, t6) {
   let s = tl(Ke(o, "int32"), t6), a = tl(Ke(n, "int32"), t6), i = Mp(s), p = Xe(i, a);
   return Ke(p, "int32");
 }
-var Kv = N({ confusionMatrix_: Hz });
+var K0 = N({ confusionMatrix_: Hz });
 var br = {};
-Ue(br, { assertAndGetBroadcastShape: () => Je, getBroadcastDims: () => Xv, getReductionAxes: () => jm });
-function Xv(r, e) {
+Ue(br, { assertAndGetBroadcastShape: () => Je, getBroadcastDims: () => X0, getReductionAxes: () => jm });
+function X0(r, e) {
   let t6 = r.length, o = [];
   for (let n = 0; n < t6; n++) {
     let s = t6 - 1 - n, a = r[s] || 1;
@@ -5706,8 +5706,8 @@ function Je(r, e) {
   }
   return t6;
 }
-var Qv = {};
-Ue(Qv, { fromPixels: () => Zz, fromPixelsAsync: () => Yz, toPixels: () => Qz });
+var Q0 = {};
+Ue(Q0, { fromPixels: () => Zz, fromPixelsAsync: () => Yz, toPixels: () => Qz });
 function Xm(r, e, t6) {
   if (Jr(r), e != null && e.length !== 3)
     throw new Error("tensor3d() requires shape to have three numbers");
@@ -5719,7 +5719,7 @@ function Xm(r, e, t6) {
   return xr(r, e, o, t6);
 }
 var su;
-function Yv(r, e = 3) {
+function Y0(r, e = 3) {
   if (e > 4)
     throw new Error("Cannot construct Tensor with more than 4 channels from pixels.");
   if (r == null)
@@ -5795,7 +5795,7 @@ async function Yz(r, e = 3) {
     o != null && o.width === r.width && o.height === r.height ? t6 = o : t6 = r;
   } else
     t6 = r;
-  return Yv(t6, e);
+  return Y0(t6, e);
 }
 async function Qz(r, e) {
   let t6 = v(r, "img", "toPixels");
@@ -5832,10 +5832,10 @@ async function Qz(r, e) {
   }
   return t6 !== r && t6.dispose(), p;
 }
-var Zz = N({ fromPixels_: Yv });
+var Zz = N({ fromPixels_: Y0 });
 var Ym = {};
-Ue(Ym, { prepareAndValidate: () => Zv });
-function Zv(r, e) {
+Ue(Ym, { prepareAndValidate: () => Z0 });
+function Z0(r, e) {
   let t6 = r.shape.length, o = e.shape.length;
   if (t6 < 1)
     throw new Error(`tf.gatherND() expects the input to be rank 1 or higher, but the rank was ${t6}.`);
@@ -5859,7 +5859,7 @@ function Zv(r, e) {
   return [p, a, u, c];
 }
 var rl = {};
-Ue(rl, { calculateShapes: () => Jv, validateInput: () => Qm, validateUpdateShape: () => tC });
+Ue(rl, { calculateShapes: () => J0, validateInput: () => Qm, validateUpdateShape: () => tC });
 function tC(r, e, t6) {
   let o = e.rank > 1 ? e.shape[e.rank - 1] : 1, n = e.rank > 1 ? e.rank - 1 : 1, s = `Must have updates.shape = indices.shape[:batchDim] + shape[sliceDim:], got updates.shape: ${t6.shape}, indices.shape: ${e.shape}, shape: ${r}, sliceDim: ${o}, and batchDim: ${n}.`;
   if (t6.rank < n)
@@ -5892,7 +5892,7 @@ function Qm(r, e, t6) {
   }
   tC(t6, e, r);
 }
-function Jv(r, e, t6) {
+function J0(r, e, t6) {
   let o = e.shape.length, n = o > 1 ? e.shape[o - 1] : 1, s = t6.length, a = 1;
   for (let l = n; l < s; ++l)
     a *= t6[l];
@@ -5900,7 +5900,7 @@ function Jv(r, e, t6) {
   return { sliceRank: n, numUpdates: p, sliceSize: a, strides: u, outputSize: c };
 }
 var ut = {};
-Ue(ut, { assertParamsValid: () => eW, computeFlatOffset: () => sW, computeOutShape: () => rW, getNormalizedAxes: () => oW, isSliceContinous: () => nW, maskToAxes: () => tW, parseSliceParams: () => aW, sliceInfo: () => iW, startForAxis: () => i0, startIndicesWithElidedDims: () => n0, stopForAxis: () => u0, stopIndicesWithElidedDims: () => s0, stridesForAxis: () => a0, stridesWithElidedDims: () => t0 });
+Ue(ut, { assertParamsValid: () => eW, computeFlatOffset: () => sW, computeOutShape: () => rW, getNormalizedAxes: () => oW, isSliceContinous: () => nW, maskToAxes: () => tW, parseSliceParams: () => aW, sliceInfo: () => iW, startForAxis: () => iv, startIndicesWithElidedDims: () => nv, stopForAxis: () => uv, stopIndicesWithElidedDims: () => sv, stridesForAxis: () => av, stridesWithElidedDims: () => tv });
 var rC = -2;
 var Jz = -1;
 function eW(r, e, t6) {
@@ -5921,7 +5921,7 @@ function rW(r, e, t6) {
     o[n] = Math.ceil((e[n] - r[n]) / t6[n]);
   return o;
 }
-function t0(r, e, t6, o) {
+function tv(r, e, t6, o) {
   let n = [...r];
   for (let s = n.length; s < o.length; s++)
     n.push(1);
@@ -5929,10 +5929,10 @@ function t0(r, e, t6, o) {
     s === 0 ? n[e] = 1 : (n.splice(e, 0, 1), n.pop());
   return n;
 }
-function r0(r, e, t6) {
+function rv(r, e, t6) {
   return t6 <= r ? t6 : t6 - (e - 1);
 }
-function o0(r, e) {
+function ov(r, e) {
   let t6 = [];
   for (let o = 0; o < r; o++)
     t6.push(e + o);
@@ -5942,30 +5942,30 @@ function oW(r, e, t6, o, n, s, a, i, p) {
   let u = r.length, c = new Array(u), l = new Array(u), m = new Array(u);
   if (e.length && t6 > 0) {
     let d = e[0], f = t6 + 1;
-    c = n0(a, d, f, o, r), l = s0(i, d, f, n, r), m = t0(s, d, f, r);
+    c = nv(a, d, f, o, r), l = sv(i, d, f, n, r), m = tv(s, d, f, r);
   } else
     for (let d = 0; d < u; d++)
-      c[d] = i0(a, o, s, r, d, p), l[d] = u0(i, n, s, r, d, p), m[d] = a0(s, d, p);
+      c[d] = iv(a, o, s, r, d, p), l[d] = uv(i, n, s, r, d, p), m[d] = av(s, d, p);
   return { begin: c, end: l, strides: m };
 }
-function n0(r, e, t6, o, n) {
-  let s = [...n], a = o0(t6, e);
+function nv(r, e, t6, o, n) {
+  let s = [...n], a = ov(t6, e);
   for (let i = 0; i < s.length; i++)
     if (a.indexOf(i) > -1)
       s[i] = 0;
     else {
-      let p = r0(e, t6, i), u = o[p];
+      let p = rv(e, t6, i), u = o[p];
       r & 1 << p && (u = 0), s[i] = u;
     }
   return s;
 }
-function s0(r, e, t6, o, n) {
-  let s = [...n], a = o0(t6, e);
+function sv(r, e, t6, o, n) {
+  let s = [...n], a = ov(t6, e);
   for (let i = 0; i < s.length; i++)
     if (a.indexOf(i) > -1)
       s[i] = Number.MAX_SAFE_INTEGER;
     else {
-      let p = r0(e, t6, i), u = o[p];
+      let p = rv(e, t6, i), u = o[p];
       r & 1 << p && (u = Number.MAX_SAFE_INTEGER), s[i] = u;
     }
   for (let i = 0; i < s.length; i++) {
@@ -5974,17 +5974,17 @@ function s0(r, e, t6, o, n) {
   }
   return s;
 }
-function a0(r, e, t6) {
+function av(r, e, t6) {
   let o = r[e];
   return (t6 & 1 << e || o == null) && (o = 1), o;
 }
-function i0(r, e, t6, o, n, s) {
+function iv(r, e, t6, o, n, s) {
   let a = e[n], i = t6[n] || 1;
   (r & 1 << n || s & 1 << n || a == null) && (i > 0 ? a = Number.MIN_SAFE_INTEGER : a = Number.MAX_SAFE_INTEGER);
   let p = o[n];
   return a < 0 && (a += p), a = op(0, a, p - 1), a;
 }
-function u0(r, e, t6, o, n, s) {
+function uv(r, e, t6, o, n, s) {
   let a = e[n], i = t6[n] || 1;
   (r & 1 << n || s & 1 << n || a == null) && (i > 0 ? a = Number.MAX_SAFE_INTEGER : a = Number.MIN_SAFE_INTEGER);
   let p = o[n];
@@ -6046,7 +6046,7 @@ function iW(r, e, t6, o, n, s, a, i, p) {
         if (m.begin[C] = M, m.end[C] = m.begin[C] + 1, M < 0 || M >= k)
           throw Error(`slice index ${m.begin[C]} of dimension ${C} out of bounds.`);
       } else
-        m.begin[C] = e0(m.begin[C], 0, m.strides[C], k, _, $), m.end[C] = e0(m.end[C], 1, m.strides[C], k, _, $);
+        m.begin[C] = ev(m.begin[C], 0, m.strides[C], k, _, $), m.end[C] = ev(m.end[C], 1, m.strides[C], k, _, $);
       let P = m.strides[C] === 1 && m.begin[C] === 0 && m.end[C] === k;
       d = d && P, f = f && (C === 0 && m.strides[C] === 1 || P);
     } else
@@ -6081,7 +6081,7 @@ function uW(r, e) {
       r.begin != null && (e.begin[t6] = r.begin[o]), r.end != null && (e.end[t6] = r.end[o]), e.strides[t6] = r.strides[o], r.beginMask & 1 << o && (e.beginMask |= 1 << t6), r.endMask & 1 << o && (e.endMask |= 1 << t6), r.shrinkAxisMask & 1 << o ? (e.finalShapeGatherIndices.push(Jz), e.finalShapeGatherIndicesSparse.push(-1), e.shrinkAxisMask |= 1 << t6) : (e.finalShapeGatherIndices.push(t6), e.finalShapeGatherIndicesSparse.push(o)), e.inputShapeGatherIndicesSparse[t6] = o, t6++;
     }
 }
-function e0(r, e, t6, o, n, s) {
+function ev(r, e, t6, o, n, s) {
   if (n[e])
     return t6 > 0 ? s[e] : s[e + 1 & 1];
   {
@@ -6089,8 +6089,8 @@ function e0(r, e, t6, o, n, s) {
     return a < s[0] ? s[0] : a > s[1] ? s[1] : a;
   }
 }
-var p0 = {};
-Ue(p0, { Serializable: () => ol, SerializationMap: () => Bs, registerClass: () => Er });
+var pv = {};
+Ue(pv, { Serializable: () => ol, SerializationMap: () => Bs, registerClass: () => Er });
 var ol = class {
   getClassName() {
     return this.constructor.className;
@@ -6113,15 +6113,15 @@ var Bs = class {
 function Er(r) {
   E(r.className != null, () => "Class being registered does not have the static className property defined."), E(typeof r.className == "string", () => "className is required to be a string, but got type " + typeof r.className), E(r.className.length > 0, () => "Class being registered has an empty-string as its className, which is disallowed."), Bs.register(r);
 }
-var d0 = {};
-Ue(d0, { TEST_EPSILON_FLOAT16: () => c0, createVideoElement: () => hW, encodeStrings: () => m0, expectArrayBuffersEqual: () => fW, expectArraysClose: () => cW, expectArraysEqual: () => mW, expectNumbersClose: () => l0, expectPromiseToFail: () => lW, expectValuesInRange: () => dW, play: () => gW, testEpsilon: () => Zm });
+var dv = {};
+Ue(dv, { TEST_EPSILON_FLOAT16: () => cv, createVideoElement: () => hW, encodeStrings: () => mv, expectArrayBuffersEqual: () => fW, expectArraysClose: () => cW, expectArraysEqual: () => mW, expectNumbersClose: () => lv, expectPromiseToFail: () => lW, expectValuesInRange: () => dW, play: () => gW, testEpsilon: () => Zm });
 var pW = 1e-3;
-var c0 = 0.1;
+var cv = 0.1;
 function cW(r, e, t6) {
   return t6 == null && (t6 = Zm()), oC(r, e, (o, n) => nC(o, n, t6));
 }
 function Zm() {
-  return T.backend.floatPrecision() === 32 ? pW : c0;
+  return T.backend.floatPrecision() === 32 ? pW : cv;
 }
 function oC(r, e, t6) {
   let o = true;
@@ -6156,7 +6156,7 @@ function mW(r, e) {
   let t6 = typeof e == "string" || typeof e == "number" || typeof e == "boolean" ? [e] : e;
   return Po(r) || Po(r[0]) || Po(e) || Po(e[0]) ? oC(r, t6, (o, n) => o == n) : oC(r, e, (o, n) => nC(o, n, 0));
 }
-function l0(r, e, t6) {
+function lv(r, e, t6) {
   if (t6 == null && (t6 = Zm()), !nC(r, e, t6))
     throw new Error(`Numbers differ: actual === ${r}, expected === ${e}`);
   typeof expect != "undefined" && expect().nothing();
@@ -6177,10 +6177,10 @@ function fW(r, e) {
     if (t6[n] !== o[n])
       throw new Error(`Expected ArrayBuffer value at ${n} to be ${o[n]} but got ${t6[n]} instead`);
 }
-function m0(r) {
+function mv(r) {
   for (let e = 0; e < r.length; e++) {
     let t6 = r[e];
-    Array.isArray(t6) ? m0(t6) : r[e] = gi(t6);
+    Array.isArray(t6) ? mv(t6) : r[e] = gi(t6);
   }
   return r;
 }
@@ -6240,12 +6240,12 @@ function IW(r) {
   let t6 = { x: v(r, "x", "acos") };
   return T.runKernel(sa, t6);
 }
-var f0 = N({ acos_: IW });
+var fv = N({ acos_: IW });
 function vW(r) {
   let t6 = { x: v(r, "x", "acosh") };
   return T.runKernel(aa, t6);
 }
-var h0 = N({ acosh_: vW });
+var hv = N({ acosh_: vW });
 function kW(r) {
   E(Array.isArray(r), () => "The argument passed to tf.addN() must be a list of tensors"), E(r.length >= 1, () => `Must pass at least one tensor to tf.addN(), but got ${r.length}`);
   let e = r.map((n, s) => v(n, `tensors${s}`, "addN")), t6 = e[0];
@@ -6259,56 +6259,56 @@ function kW(r) {
   let o = e;
   return T.runKernel(Mo, o);
 }
-var g0 = N({ addN_: kW });
+var gv = N({ addN_: kW });
 function NW(r, e = null, t6 = false) {
   let n = { x: v(r, "x", "all", "bool") }, s = { axis: e, keepDims: t6 };
   return T.runKernel(Lo, n, s);
 }
-var x0 = N({ all_: NW });
+var xv = N({ all_: NW });
 function TW(r, e = null, t6 = false) {
   let n = { x: v(r, "x", "any", "bool") }, s = { axis: e, keepDims: t6 };
   return T.runKernel(Bo, n, s);
 }
-var y0 = N({ any_: TW });
+var yv = N({ any_: TW });
 function _W(r, e = 0) {
   let o = { x: v(r, "x", "argMax") }, n = { axis: e };
   return T.runKernel(Vo, o, n);
 }
-var b0 = N({ argMax_: _W });
+var bv = N({ argMax_: _W });
 function EW(r, e = 0) {
   let o = { x: v(r, "x", "argMin") }, n = { axis: e };
   return T.runKernel(Za, o, n);
 }
-var C0 = N({ argMin_: EW });
+var Cv = N({ argMin_: EW });
 function $W(r) {
   let t6 = { x: v(r, "x", "asin") };
   return T.runKernel(ia, t6);
 }
-var S0 = N({ asin_: $W });
+var Sv = N({ asin_: $W });
 function AW(r) {
   let t6 = { x: v(r, "x", "asinh") };
   return T.runKernel(ua, t6);
 }
-var w0 = N({ asinh_: AW });
+var wv = N({ asinh_: AW });
 function RW(r) {
   let t6 = { x: v(r, "x", "atan") };
   return T.runKernel(pa, t6);
 }
-var I0 = N({ atan_: RW });
+var Iv = N({ atan_: RW });
 function FW(r, e) {
   let t6 = v(r, "a", "atan2"), o = v(e, "b", "atan2");
   [t6, o] = Re(t6, o);
   let n = { a: t6, b: o };
   return T.runKernel(la, n);
 }
-var v0 = N({ atan2_: FW });
+var vv = N({ atan2_: FW });
 function DW(r) {
   let t6 = { x: v(r, "x", "atanh") };
   return T.runKernel(ca, t6);
 }
-var k0 = N({ atanh_: DW });
+var kv = N({ atanh_: DW });
 function OW(r, e, t6, o, n = "NHWC", s) {
-  let a = r[3], i = [...e, a], p = T0(n);
+  let a = r[3], i = [...e, a], p = Tv(n);
   return uu(r, i, t6, s, o, null, null, p);
 }
 function aC(r, e, t6, o, n, s, a = "channelsLast") {
@@ -6329,7 +6329,7 @@ function PW(r, e, t6, o, n, s, a = "NDHWC") {
     l = "channelsFirst", c = [i, p, u, r[1], r[1]];
   else
     throw new Error(`Unknown dataFormat ${a}`);
-  return N0(r, c, t6, o, n, false, l, s);
+  return Nv(r, c, t6, o, n, false, l, s);
 }
 function uu(r, e, t6, o, n, s, a = false, i = "channelsLast") {
   let [p, u, c, l] = [-1, -1, -1, -1];
@@ -6342,7 +6342,7 @@ function uu(r, e, t6, o, n, s, a = false, i = "channelsLast") {
   let [m, d, , f] = e, [h, g] = ed(t6), [x, b] = ed(o), C = Lp(m, x), w = Lp(d, b), { padInfo: k, outHeight: _, outWidth: $ } = BW(n, u, c, h, g, C, w, s, i), A = a ? f * l : f, R;
   return i === "channelsFirst" ? R = [p, A, _, $] : i === "channelsLast" && (R = [p, _, $, A]), { batchSize: p, dataFormat: i, inHeight: u, inWidth: c, inChannels: l, outHeight: _, outWidth: $, outChannels: A, padInfo: k, strideHeight: h, strideWidth: g, filterHeight: m, filterWidth: d, effectiveFilterHeight: C, effectiveFilterWidth: w, dilationHeight: x, dilationWidth: b, inShape: r, outShape: R, filterShape: e };
 }
-function N0(r, e, t6, o, n, s = false, a = "channelsLast", i) {
+function Nv(r, e, t6, o, n, s = false, a = "channelsLast", i) {
   let [p, u, c, l, m] = [-1, -1, -1, -1, -1];
   if (a === "channelsLast")
     [p, u, c, l, m] = r;
@@ -6432,7 +6432,7 @@ function iu(r) {
 function lr(r, e) {
   return iu(r) || iu(e);
 }
-function T0(r) {
+function Tv(r) {
   if (r === "NHWC")
     return "channelsLast";
   if (r === "NCHW")
@@ -6475,7 +6475,7 @@ function UW(r, e, t6, o, n, s = "NDHWC") {
   let u = { x: i }, c = { filterSize: e, strides: t6, pad: o, dimRoundingMode: n, dataFormat: s }, l = T.runKernel(ip, u, c);
   return l = Ke(l, i.dtype), p ? z(l, [l.shape[1], l.shape[2], l.shape[3], l.shape[4]]) : l;
 }
-var _0 = N({ avgPool3d_: UW });
+var _v = N({ avgPool3d_: UW });
 function GW(r, e = 0) {
   E(r.length >= 1, () => "Pass at least one tensor to concat");
   let t6 = Na(r, "tensors", "concat", "string_or_numeric");
@@ -6511,7 +6511,7 @@ function jW(r, e, t6, o, n, s) {
   let a = v(r, "forgetBias", "basicLSTMCell"), i = v(e, "lstmKernel", "basicLSTMCell"), p = v(t6, "lstmBias", "basicLSTMCell"), u = v(o, "data", "basicLSTMCell"), c = v(n, "c", "basicLSTMCell"), l = v(s, "h", "basicLSTMCell"), m = gt([u, l], 1), d = Xe(m, i), f = xe(d, p), h = f.shape[0], g = f.shape[1] / 4, x = [h, g], b = He(f, [0, 0], x), C = He(f, [0, g], x), w = He(f, [0, g * 2], x), k = He(f, [0, g * 3], x), _ = xe(ae(zs(b), nl(C)), ae(c, zs(xe(a, w)))), $ = ae(nl(_), zs(k));
   return [_, $];
 }
-var E0 = N({ basicLSTMCell_: jW });
+var Ev = N({ basicLSTMCell_: jW });
 function XW(r, e, t6) {
   let o = v(r, "x", "batchToSpaceND"), n = e.reduce((i, p) => i * p);
   E(o.rank >= 1 + e.length, () => `input rank is ${o.rank} but should be > than blockShape.length ${e.length}`), E(t6.length === e.length, () => `crops.length is ${t6.length} but should be equal to blockShape.length  ${e.length}`), E(o.shape[0] % n === 0, () => `input tensor batch is ${o.shape[0]} but is not divisible by the product of the elements of blockShape ${e.join(" * ")} === ${n}`);
@@ -6519,7 +6519,7 @@ function XW(r, e, t6) {
   return T.runKernel(xs, s, a);
 }
 var rd = N({ batchToSpaceND_: XW });
-function $0(r) {
+function $v(r) {
   let e;
   return r.rank === 0 || r.rank === 1 ? e = z(r, [1, 1, 1, r.size]) : r.rank === 2 ? e = z(r, [1, 1, r.shape[0], r.shape[1]]) : r.rank === 3 ? e = z(r, [1, r.shape[0], r.shape[1], r.shape[2]]) : e = r, e;
 }
@@ -6529,7 +6529,7 @@ function YW(r, e, t6, o, n, s) {
   n != null && (u = v(n, "scale", "batchNorm"));
   let c;
   o != null && (c = v(o, "offset", "batchNorm")), E(i.rank === p.rank, () => "Batch normalization gradient requires mean and variance to have equal ranks."), E(c == null || i.rank === c.rank, () => "Batch normalization gradient requires mean and offset to have equal ranks."), E(u == null || i.rank === u.rank, () => "Batch normalization gradient requires mean and scale to have equal ranks.");
-  let m = { x: $0(a), scale: u, offset: c, mean: i, variance: p }, d = { varianceEpsilon: s }, f = T.runKernel(an, m, d);
+  let m = { x: $v(a), scale: u, offset: c, mean: i, variance: p }, d = { varianceEpsilon: s }, f = T.runKernel(an, m, d);
   return z(f, a.shape);
 }
 var wi = N({ batchNorm_: YW });
@@ -6539,21 +6539,21 @@ function QW(r, e, t6, o, n, s) {
   let c;
   return o != null && (c = v(o, "offset", "batchNorm")), E(a.rank === 2, () => `Error in batchNorm2D: x must be rank 2 but got rank ${a.rank}.`), E(i.rank === 2 || i.rank === 1, () => `Error in batchNorm2D: mean must be rank 2 or rank 1 but got rank ${i.rank}.`), E(p.rank === 2 || p.rank === 1, () => `Error in batchNorm2D: variance must be rank 2 or rank 1 but got rank ${p.rank}.`), u != null && E(u.rank === 2 || u.rank === 1, () => `Error in batchNorm2D: scale must be rank 2 or rank 1 but got rank ${u.rank}.`), c != null && E(c.rank === 2 || c.rank === 1, () => `Error in batchNorm2D: offset must be rank 2 or rank 1 but got rank ${c.rank}.`), wi(a, i, p, c, u, s);
 }
-var A0 = N({ batchNorm2d_: QW });
+var Av = N({ batchNorm2d_: QW });
 function ZW(r, e, t6, o, n, s) {
   let a = v(r, "x", "batchNorm"), i = v(e, "mean", "batchNorm"), p = v(t6, "variance", "batchNorm"), u;
   n != null && (u = v(n, "scale", "batchNorm"));
   let c;
   return o != null && (c = v(o, "offset", "batchNorm")), E(a.rank === 3, () => `Error in batchNorm3D: x must be rank 3 but got rank ${a.rank}.`), E(i.rank === 3 || i.rank === 1, () => `Error in batchNorm3D: mean must be rank 3 or rank 1 but got rank ${i.rank}.`), E(p.rank === 3 || p.rank === 1, () => `Error in batchNorm3D: variance must be rank 3 or rank 1 but got rank ${p.rank}.`), u != null && E(u.rank === 3 || u.rank === 1, () => `Error in batchNorm3D: scale must be rank 3 or rank 1 but got rank ${u.rank}.`), c != null && E(c.rank === 3 || c.rank === 1, () => `Error in batchNorm3D: offset must be rank 3 or rank 1 but got rank ${c.rank}.`), wi(a, i, p, c, u, s);
 }
-var R0 = N({ batchNorm3d_: ZW });
+var Rv = N({ batchNorm3d_: ZW });
 function JW(r, e, t6, o, n, s) {
   let a = v(r, "x", "batchNorm"), i = v(e, "mean", "batchNorm"), p = v(t6, "variance", "batchNorm"), u;
   n != null && (u = v(n, "scale", "batchNorm"));
   let c;
   return o != null && (c = v(o, "offset", "batchNorm")), E(a.rank === 4, () => `Error in batchNorm4D: x must be rank 4 but got rank ${a.rank}.`), E(i.rank === 4 || i.rank === 1, () => `Error in batchNorm4D: mean must be rank 4 or rank 1 but got rank ${i.rank}.`), E(p.rank === 4 || p.rank === 1, () => `Error in batchNorm4D: variance must be rank 4 or rank 1 but got rank ${p.rank}.`), u != null && E(u.rank === 4 || u.rank === 1, () => `Error in batchNorm4D: scale must be rank 4 or rank 1 but got rank ${u.rank}.`), c != null && E(c.rank === 4 || c.rank === 1, () => `Error in batchNorm4D: offset must be rank 4 or rank 1 but got rank ${c.rank}.`), wi(a, i, p, c, u, s);
 }
-var F0 = N({ batchNorm4d_: JW });
+var Fv = N({ batchNorm4d_: JW });
 function eU(r, e, t6) {
   let o = v(r, "x", "bincount"), n = v(e, "weights", "bincount");
   E(o.dtype === "int32", () => `Error in bincount: input dtype must be int32, but got ${o.dtype}`), E(t6 >= 0, () => `size must be non-negative, but got ${t6}.`), E(n.size === o.size || n.size === 0, () => `Error in bincount: weights must have the same size as input or0-length, but got input shape: ${o.shape}, weights shape: ${n.shape}.`);
@@ -6570,7 +6570,7 @@ function tU(r, e) {
   let n = { s0: t6, s1: o };
   return T.runKernel(up, n);
 }
-var D0 = N({ broadcastArgs_: tU });
+var Dv = N({ broadcastArgs_: tU });
 function rU(r, e) {
   let t6 = v(r, "broadcastTo", "x"), o = t6.shape;
   if (yt(e), e.length < t6.rank)
@@ -6597,7 +6597,7 @@ function oU(r) {
   let t6 = { x: v(r, "x", "ceil", "float32") };
   return T.runKernel(Uo, t6);
 }
-var O0 = N({ ceil_: oU });
+var Ov = N({ ceil_: oU });
 function Ws(r, e, t6) {
   yt(r);
   let o = { shape: r, value: e, dtype: t6 };
@@ -6610,23 +6610,23 @@ function nU(r, e, t6) {
   let n = { x: o }, s = { clipValueMin: e, clipValueMax: t6 };
   return T.runKernel(lo, n, s);
 }
-var P0 = N({ clipByValue_: nU });
+var Pv = N({ clipByValue_: nU });
 function sU(r) {
   return gt(r, 0);
 }
-var M0 = N({ concat1d_: sU });
+var Mv = N({ concat1d_: sU });
 function aU(r, e) {
   return gt(r, e);
 }
-var L0 = N({ concat2d_: aU });
+var Lv = N({ concat2d_: aU });
 function iU(r, e) {
   return gt(r, e);
 }
-var B0 = N({ concat3d_: iU });
+var Bv = N({ concat3d_: iU });
 function uU(r, e) {
   return gt(r, e);
 }
-var V0 = N({ concat4d_: uU });
+var Vv = N({ concat4d_: uU });
 function pU(r, e, t6, o, n = "NHWC", s = [1, 1], a) {
   let i = v(r, "x", "conv2d", "float32"), p = v(e, "filter", "conv2d", "float32"), u = i, c = false;
   i.rank === 3 && (c = true, u = z(i, [1, i.shape[0], i.shape[1], i.shape[2]])), E(u.rank === 4, () => `Error in conv2d: input must be rank 4, but got rank ${u.rank}.`), E(p.rank === 4, () => `Error in conv2d: filter must be rank 4, but got rank ${p.rank}.`), Pt("conv2d", o, a);
@@ -6642,7 +6642,7 @@ function cU(r, e, t6, o, n = "NWC", s = 1, a) {
   let l = z(p, [1, p.shape[0], p.shape[1], p.shape[2]]), m = z(u, [u.shape[0], 1, u.shape[1], u.shape[2]]), g = vi(m, l, [1, t6], o, "NHWC", [1, s], a);
   return c ? z(g, [g.shape[2], g.shape[3]]) : z(g, [g.shape[0], g.shape[2], g.shape[3]]);
 }
-var z0 = N({ conv1d_: cU });
+var zv = N({ conv1d_: cU });
 function lU(r, e, t6, o, n, s = "NHWC", a) {
   E(r.length === e.rank, () => `Length of inShape (${r.length}) and rank of dy (${e.rank}) must match`);
   let i = r, p = e, u = false;
@@ -6657,14 +6657,14 @@ function mU(r, e, t6, o, n, s) {
   let a = v(r, "x", "conv2dTranspose"), i = v(e, "filter", "conv2dTranspose");
   return nd(t6, a, i, o, n, "NHWC", s);
 }
-var W0 = N({ conv2dTranspose_: mU });
+var Wv = N({ conv2dTranspose_: mU });
 function dU(r, e, t6, o, n = "NDHWC", s = [1, 1, 1]) {
   let a = v(r, "x", "conv3d"), i = v(e, "filter", "conv3d"), p = a, u = false;
   a.rank === 4 && (u = true, p = z(a, [1, a.shape[0], a.shape[1], a.shape[2], a.shape[3]])), E(p.rank === 5, () => `Error in conv3d: input must be rank 5, but got rank ${p.rank}.`), E(i.rank === 5, () => `Error in conv3d: filter must be rank 5, but got rank ${i.rank}.`), E(p.shape[4] === i.shape[3], () => `Error in conv3d: depth of input (${p.shape[4]}) must match input depth for filter ${i.shape[3]}.`), E(lr(t6, s), () => `Error in conv3D: Either strides or dilations must be 1. Got strides ${t6} and dilations '${s}'`), E(n === "NDHWC", () => `Error in conv3d: got dataFormat of ${n} but only NDHWC is currently supported.`);
   let c = { x: p, filter: i }, l = { strides: t6, pad: o, dataFormat: n, dilations: s }, m = T.runKernel(lp, c, l);
   return u ? z(m, [m.shape[1], m.shape[2], m.shape[3], m.shape[4]]) : m;
 }
-var U0 = N({ conv3d_: dU });
+var Uv = N({ conv3d_: dU });
 function fU(r, e, t6, o, n) {
   E(r.length === e.rank, () => `Length of inShape (${r.length}) and rank of dy (${e.rank}) must match`);
   let s = r, a = e, i = false;
@@ -6674,39 +6674,39 @@ function fU(r, e, t6, o, n) {
   let c = { dy: a, filter: t6 }, l = { pad: n, strides: o, inputShape: s }, m = T.runKernel(mp, c, l);
   return i ? z(m, [m.shape[1], m.shape[2], m.shape[3], m.shape[4]]) : m;
 }
-var G0 = N({ conv3DBackpropInput_: fU });
+var Gv = N({ conv3DBackpropInput_: fU });
 function hU(r, e, t6, o, n) {
   let s = v(r, "x", "conv3dTranspose"), a = v(e, "filter", "conv3dTranspose");
-  return G0(t6, s, a, o, n);
+  return Gv(t6, s, a, o, n);
 }
-var H0 = N({ conv3dTranspose_: hU });
+var Hv = N({ conv3dTranspose_: hU });
 function gU(r) {
   let t6 = { x: v(r, "x", "cos", "float32") };
   return T.runKernel(qo, t6);
 }
-var q0 = N({ cos_: gU });
+var qv = N({ cos_: gU });
 function xU(r) {
   let t6 = { x: v(r, "x", "cosh", "float32") };
   return T.runKernel(Ko, t6);
 }
-var K0 = N({ cosh_: xU });
+var Kv = N({ cosh_: xU });
 function yU(r, e = 0, t6 = false, o = false) {
   let s = { x: v(r, "x", "cumprod") }, a = { axis: e, exclusive: t6, reverse: o };
   return T.runKernel(jo, s, a);
 }
-var j0 = N({ cumprod_: yU });
+var jv = N({ cumprod_: yU });
 function bU(r, e = 0, t6 = false, o = false) {
   let s = { x: v(r, "x", "cumsum") }, a = { axis: e, exclusive: t6, reverse: o };
   return T.runKernel(Xo, s, a);
 }
-var X0 = N({ cumsum_: bU });
+var Xv = N({ cumsum_: bU });
 function CU(r, e, t6, o = false) {
   let n = v(r, "x", "denseBincount"), s = v(e, "weights", "denseBincount");
   E(n.dtype === "int32", () => `Error in denseBincount: input dtype must be int32, but got ${n.dtype}`), E(n.rank <= 2, () => `Error in denseBincount: input must be at most rank 2, but got rank ${n.rank}.`), E(t6 >= 0, () => `size must be non-negative, but got ${t6}.`), E(s.size === n.size || s.size === 0, () => `Error in denseBincount: weights must have the same shape as x or 0-length, but got x shape: ${n.shape}, weights shape: ${s.shape}.`);
   let a = { x: n, weights: s }, i = { size: t6, binaryOutput: o };
   return T.runKernel(ti, a, i);
 }
-var Y0 = N({ denseBincount_: CU });
+var Yv = N({ denseBincount_: CU });
 function SU(r, e, t6 = "NHWC") {
   let o = v(r, "x", "depthToSpace", "float32"), n = t6 === "NHWC" ? o.shape[1] : o.shape[2], s = t6 === "NHWC" ? o.shape[2] : o.shape[3], a = t6 === "NHWC" ? o.shape[3] : o.shape[1];
   E(e > 1, () => `blockSize should be > 1 for depthToSpace, but was: ${e}`), E(n * e >= 0, () => `Negative dimension size caused by overflow when multiplying
@@ -6717,7 +6717,7 @@ function SU(r, e, t6 = "NHWC") {
   let i = { x: o }, p = { blockSize: e, dataFormat: t6 };
   return T.runKernel(Qo, i, p);
 }
-var Q0 = N({ depthToSpace_: SU });
+var Qv = N({ depthToSpace_: SU });
 function wU(r, e, t6, o, n = "NHWC", s = [1, 1], a) {
   let i = v(r, "x", "depthwiseConv2d", "float32"), p = v(e, "filter", "depthwiseConv2d", "float32"), u = i, c = false;
   i.rank === 3 && (c = true, u = z(i, [1, i.shape[0], i.shape[1], i.shape[2]])), E(u.rank === 4, () => `Error in depthwiseConv2d: input must be rank 4, but got rank ${u.rank}.`), E(p.rank === 4, () => `Error in depthwiseConv2d: filter must be rank 4, but got rank ${p.rank}.`);
@@ -6731,7 +6731,7 @@ function IU(r) {
   let t6 = { x: v(r, "x", "diag") };
   return T.runKernel(hp, t6);
 }
-var Z0 = N({ diag_: IU });
+var Zv = N({ diag_: IU });
 function vU(r, e, t6, o, n = [1, 1], s = "NHWC") {
   let a = v(r, "x", "dilation2d"), i = v(e, "filter", "dilation2d");
   E(a.rank === 3 || a.rank === 4, () => `Error in dilation2d: input must be rank 3 or 4, but got rank ${a.rank}.`), E(i.rank === 3, () => `Error in dilation2d: filter must be rank 3, but got rank ${i.rank}.`), E(s === "NHWC", () => `Error in dilation2d: Only NHWC is currently supported, but got dataFormat of ${s}`);
@@ -6740,7 +6740,7 @@ function vU(r, e, t6, o, n = [1, 1], s = "NHWC") {
   let c = { x: p, filter: i }, l = { strides: t6, pad: o, dilations: n }, m = T.runKernel(gp, c, l);
   return u ? z(m, [m.shape[1], m.shape[2], m.shape[3]]) : m;
 }
-var J0 = N({ dilation2d_: vU });
+var Jv = N({ dilation2d_: vU });
 function kU(r, e) {
   let t6 = v(r, "a", "equal", "string_or_numeric"), o = v(e, "b", "equal", "string_or_numeric");
   [t6, o] = Re(t6, o), Je(t6.shape, o.shape);
@@ -8978,7 +8978,7 @@ function CC() {
   return new Promise((r) => dq(() => r()));
 }
 var S = {};
-Ue(S, { ERF_A1: () => $q, ERF_A2: () => Aq, ERF_A3: () => Rq, ERF_A4: () => Fq, ERF_A5: () => Dq, ERF_P: () => Eq, PARALLELIZE_THRESHOLD: () => Ud, RowPartitionType: () => Ks, SELU_SCALE: () => _q, SELU_SCALEALPHA: () => Tq, applyActivation: () => yu, assertAndGetBroadcastShape: () => Je, assertAxesAreInnerMostDims: () => DU, assertParamsConsistent: () => fq, assignToTypedArray: () => Vq, axesAreInnerMostDims: () => uC, calculateShapes: () => Jv, checkEinsumDimSizes: () => qq, checkPadOnDimRoundingMode: () => Pt, combineLocations: () => nk, combineRaggedTensorToTensorShapes: () => gq, complexWithEvenIndex: () => Mq, complexWithOddIndex: () => Lq, computeConv2DInfo: () => uu, computeConv3DInfo: () => N0, computeDefaultPad: () => iC, computeDilation2DInfo: () => OW, computeOptimalWindowSize: () => Cq, computeOutAndReduceShapes: () => FU, computeOutShape: () => hq, computePool2DInfo: () => aC, computePool3DInfo: () => PW, convertConv2DDataFormat: () => T0, decodeEinsumEquation: () => Gq, eitherStridesOrDilationsAreOne: () => lr, expandShapeToKeepDim: () => Aa, exponent: () => Wq, exponents: () => zq, fromStringArrayToUint8: () => dK, fromUint8ToStringArray: () => mK, getAxesPermutation: () => OU, getBroadcastDims: () => Xv, getComplexWithIndex: () => Bq, getEinsumComputePath: () => Kq, getEinsumPermutation: () => Hq, getFusedBiasGradient: () => xu, getFusedDyActivation: () => gu, getImageCenter: () => Sq, getInnerMostAxes: () => MU, getPermuted: () => Iq, getRaggedRank: () => yq, getReductionAxes: () => jm, getReshaped: () => wq, getReshapedPermuted: () => vq, getRowPartitionTypesHelper: () => xq, getSliceBeginCoords: () => kq, getSliceSize: () => Nq, getSparseFillEmptyRowsIndicesDenseShapeMismatch: () => Qq, getSparseFillEmptyRowsNegativeIndexErrorMessage: () => Zq, getSparseFillEmptyRowsOutOfRangeIndexErrorMessage: () => Jq, getSparseReshapeEmptyTensorZeroOutputDimErrorMessage: () => rK, getSparseReshapeInputOutputMismatchErrorMessage: () => nK, getSparseReshapeInputOutputMultipleErrorMessage: () => oK, getSparseReshapeMultipleNegativeOneOutputDimErrorMessage: () => eK, getSparseReshapeNegativeOutputDimErrorMessage: () => tK, getSparseSegmentReductionIndicesOutOfRangeErrorMessage: () => uK, getSparseSegmentReductionNegativeSegmentIdsErrorMessage: () => sK, getSparseSegmentReductionNonIncreasingSegmentIdsErrorMessage: () => aK, getSparseSegmentReductionSegmentIdOutOfRangeErrorMessage: () => iK, getUndoAxesPermutation: () => PU, isIdentityPermutation: () => jq, log: () => GV, mergeRealAndImagArrays: () => Oq, prepareAndValidate: () => Zv, prepareSplitSize: () => Yq, segment_util: () => wC, shouldFuse: () => bu, slice_util: () => ut, splitRealAndImagArrays: () => Pq, tupleValuesAreOne: () => iu, upcastType: () => dt, validateDefaultValueShape: () => bq, validateInput: () => Qm, validateUpdateShape: () => tC, warn: () => Os });
+Ue(S, { ERF_A1: () => $q, ERF_A2: () => Aq, ERF_A3: () => Rq, ERF_A4: () => Fq, ERF_A5: () => Dq, ERF_P: () => Eq, PARALLELIZE_THRESHOLD: () => Ud, RowPartitionType: () => Ks, SELU_SCALE: () => _q, SELU_SCALEALPHA: () => Tq, applyActivation: () => yu, assertAndGetBroadcastShape: () => Je, assertAxesAreInnerMostDims: () => DU, assertParamsConsistent: () => fq, assignToTypedArray: () => Vq, axesAreInnerMostDims: () => uC, calculateShapes: () => J0, checkEinsumDimSizes: () => qq, checkPadOnDimRoundingMode: () => Pt, combineLocations: () => nk, combineRaggedTensorToTensorShapes: () => gq, complexWithEvenIndex: () => Mq, complexWithOddIndex: () => Lq, computeConv2DInfo: () => uu, computeConv3DInfo: () => Nv, computeDefaultPad: () => iC, computeDilation2DInfo: () => OW, computeOptimalWindowSize: () => Cq, computeOutAndReduceShapes: () => FU, computeOutShape: () => hq, computePool2DInfo: () => aC, computePool3DInfo: () => PW, convertConv2DDataFormat: () => Tv, decodeEinsumEquation: () => Gq, eitherStridesOrDilationsAreOne: () => lr, expandShapeToKeepDim: () => Aa, exponent: () => Wq, exponents: () => zq, fromStringArrayToUint8: () => dK, fromUint8ToStringArray: () => mK, getAxesPermutation: () => OU, getBroadcastDims: () => X0, getComplexWithIndex: () => Bq, getEinsumComputePath: () => Kq, getEinsumPermutation: () => Hq, getFusedBiasGradient: () => xu, getFusedDyActivation: () => gu, getImageCenter: () => Sq, getInnerMostAxes: () => MU, getPermuted: () => Iq, getRaggedRank: () => yq, getReductionAxes: () => jm, getReshaped: () => wq, getReshapedPermuted: () => vq, getRowPartitionTypesHelper: () => xq, getSliceBeginCoords: () => kq, getSliceSize: () => Nq, getSparseFillEmptyRowsIndicesDenseShapeMismatch: () => Qq, getSparseFillEmptyRowsNegativeIndexErrorMessage: () => Zq, getSparseFillEmptyRowsOutOfRangeIndexErrorMessage: () => Jq, getSparseReshapeEmptyTensorZeroOutputDimErrorMessage: () => rK, getSparseReshapeInputOutputMismatchErrorMessage: () => nK, getSparseReshapeInputOutputMultipleErrorMessage: () => oK, getSparseReshapeMultipleNegativeOneOutputDimErrorMessage: () => eK, getSparseReshapeNegativeOutputDimErrorMessage: () => tK, getSparseSegmentReductionIndicesOutOfRangeErrorMessage: () => uK, getSparseSegmentReductionNegativeSegmentIdsErrorMessage: () => sK, getSparseSegmentReductionNonIncreasingSegmentIdsErrorMessage: () => aK, getSparseSegmentReductionSegmentIdOutOfRangeErrorMessage: () => iK, getUndoAxesPermutation: () => PU, isIdentityPermutation: () => jq, log: () => GV, mergeRealAndImagArrays: () => Oq, prepareAndValidate: () => Z0, prepareSplitSize: () => Yq, segment_util: () => wC, shouldFuse: () => bu, slice_util: () => ut, splitRealAndImagArrays: () => Pq, tupleValuesAreOne: () => iu, upcastType: () => dt, validateDefaultValueShape: () => bq, validateInput: () => Qm, validateUpdateShape: () => tC, warn: () => Os });
 function fq(r, e) {
   let t6 = r[0].length;
   r.forEach((n, s) => {
@@ -9726,7 +9726,7 @@ var rf = class {
   }
 };
 var Ye = {};
-Ue(Ye, { OP_SCOPE_SUFFIX: () => Lb, abs: () => Yt, acos: () => f0, acosh: () => h0, add: () => xe, addN: () => g0, all: () => x0, any: () => y0, argMax: () => b0, argMin: () => C0, asin: () => S0, asinh: () => w0, atan: () => I0, atan2: () => v0, atanh: () => k0, avgPool: () => td, avgPool3d: () => _0, basicLSTMCell: () => E0, batchNorm: () => wi, batchNorm2d: () => A0, batchNorm3d: () => R0, batchNorm4d: () => F0, batchToSpaceND: () => rd, bincount: () => od, booleanMaskAsync: () => XG, broadcastArgs: () => D0, broadcastTo: () => Ii, buffer: () => le, cast: () => Ke, ceil: () => O0, clipByValue: () => P0, clone: () => Br, complex: () => Tr, concat: () => gt, concat1d: () => M0, concat2d: () => L0, concat3d: () => B0, concat4d: () => V0, conv1d: () => z0, conv2d: () => vi, conv2dTranspose: () => W0, conv3d: () => U0, conv3dTranspose: () => H0, cos: () => q0, cosh: () => K0, cosineWindow: () => il, cumprod: () => j0, cumsum: () => X0, denseBincount: () => Y0, depthToSpace: () => Q0, depthwiseConv2d: () => Bp, diag: () => Z0, dilation2d: () => J0, div: () => Ge, divNoNan: () => ek, dot: () => tk, dropout: () => aH, einsum: () => rk, elu: () => ad, enclosingPowerOfTwo: () => xC, equal: () => sd, erf: () => ok, euclideanNorm: () => ak, exp: () => Co, expandDims: () => Fa, expm1: () => ik, eye: () => id, fft: () => zp, fill: () => Ws, floor: () => ud, floorDiv: () => Jm, fused: () => yC, gather: () => pd, gatherND: () => nH, greater: () => cu, greaterEqual: () => cd, ifft: () => hu, imag: () => Si, image: () => uq, inTopKAsync: () => uH, irfft: () => Fd, isFinite: () => uk, isInf: () => pk, isNaN: () => ck, leakyRelu: () => ld, less: () => lk, lessEqual: () => Vp, linalg: () => pq, linspace: () => mk, localResponseNormalization: () => dk, log: () => Da, log1p: () => md, logSigmoid: () => fk, logSoftmax: () => hk, logSumExp: () => hd, logicalAnd: () => lu, logicalNot: () => gd, logicalOr: () => xd, logicalXor: () => gk, losses: () => cq, lowerBound: () => xk, matMul: () => Xe, max: () => Us, maxPool: () => bd, maxPool3d: () => yk, maxPoolWithArgmax: () => bk, maximum: () => Cd, mean: () => mu, meshgrid: () => Ck, min: () => sl, minimum: () => Sd, mirrorPad: () => Sk, mod: () => wk, moments: () => Ik, movingAverage: () => QG, mul: () => ae, multiRNNCell: () => vk, multinomial: () => kk, neg: () => yr, norm: () => pu, notEqual: () => wd, oneHot: () => tl, ones: () => Gs, onesLike: () => Nk, op: () => N, outerProduct: () => Tk, pad: () => Hs, pad1d: () => _k, pad2d: () => Ek, pad3d: () => $k, pad4d: () => Ak, pool: () => Rk, pow: () => Ra, prelu: () => vd, print: () => Gm, prod: () => Fk, raggedGather: () => Dk, raggedRange: () => Ok, raggedTensorToTensor: () => Pk, rand: () => Mk, randomGamma: () => e1, randomNormal: () => Ed, randomStandardNormal: () => t1, randomUniform: () => $d, range: () => Ni, real: () => $a, reciprocal: () => r1, relu: () => Ti, relu6: () => Ad, reshape: () => z, reverse: () => no, reverse1d: () => o1, reverse2d: () => n1, reverse3d: () => s1, reverse4d: () => a1, rfft: () => Wp, round: () => Rd, rsqrt: () => i1, scalar: () => be, scatterND: () => JG, searchSorted: () => al, selu: () => u1, separableConv2d: () => p1, setdiff1dAsync: () => c1, sigmoid: () => zs, sign: () => l1, signal: () => iq, sin: () => m1, sinh: () => d1, slice: () => He, slice1d: () => f1, slice2d: () => h1, slice3d: () => g1, slice4d: () => x1, softmax: () => y1, softplus: () => fd, spaceToBatchND: () => Id, sparse: () => lq, sparseToDense: () => rH, spectral: () => aq, split: () => Oa, sqrt: () => $r, square: () => Qt, squaredDifference: () => Dd, squeeze: () => Up, stack: () => Sr, step: () => Od, stridedSlice: () => b1, string: () => mq, sub: () => Ne, sum: () => et, tan: () => C1, tanh: () => nl, tensor: () => nr, tensor1d: () => mr, tensor2d: () => _i, tensor3d: () => Xm, tensor4d: () => S1, tensor5d: () => w1, tensor6d: () => I1, tile: () => ki, topk: () => v1, transpose: () => Mp, truncatedNormal: () => k1, unique: () => N1, unsortedSegmentSum: () => T1, unstack: () => so, upperBound: () => _1, variable: () => E1, where: () => os, whereAsync: () => Md, zeros: () => Vr, zerosLike: () => Ut });
+Ue(Ye, { OP_SCOPE_SUFFIX: () => Lb, abs: () => Yt, acos: () => fv, acosh: () => hv, add: () => xe, addN: () => gv, all: () => xv, any: () => yv, argMax: () => bv, argMin: () => Cv, asin: () => Sv, asinh: () => wv, atan: () => Iv, atan2: () => vv, atanh: () => kv, avgPool: () => td, avgPool3d: () => _v, basicLSTMCell: () => Ev, batchNorm: () => wi, batchNorm2d: () => Av, batchNorm3d: () => Rv, batchNorm4d: () => Fv, batchToSpaceND: () => rd, bincount: () => od, booleanMaskAsync: () => XG, broadcastArgs: () => Dv, broadcastTo: () => Ii, buffer: () => le, cast: () => Ke, ceil: () => Ov, clipByValue: () => Pv, clone: () => Br, complex: () => Tr, concat: () => gt, concat1d: () => Mv, concat2d: () => Lv, concat3d: () => Bv, concat4d: () => Vv, conv1d: () => zv, conv2d: () => vi, conv2dTranspose: () => Wv, conv3d: () => Uv, conv3dTranspose: () => Hv, cos: () => qv, cosh: () => Kv, cosineWindow: () => il, cumprod: () => jv, cumsum: () => Xv, denseBincount: () => Yv, depthToSpace: () => Qv, depthwiseConv2d: () => Bp, diag: () => Zv, dilation2d: () => Jv, div: () => Ge, divNoNan: () => ek, dot: () => tk, dropout: () => aH, einsum: () => rk, elu: () => ad, enclosingPowerOfTwo: () => xC, equal: () => sd, erf: () => ok, euclideanNorm: () => ak, exp: () => Co, expandDims: () => Fa, expm1: () => ik, eye: () => id, fft: () => zp, fill: () => Ws, floor: () => ud, floorDiv: () => Jm, fused: () => yC, gather: () => pd, gatherND: () => nH, greater: () => cu, greaterEqual: () => cd, ifft: () => hu, imag: () => Si, image: () => uq, inTopKAsync: () => uH, irfft: () => Fd, isFinite: () => uk, isInf: () => pk, isNaN: () => ck, leakyRelu: () => ld, less: () => lk, lessEqual: () => Vp, linalg: () => pq, linspace: () => mk, localResponseNormalization: () => dk, log: () => Da, log1p: () => md, logSigmoid: () => fk, logSoftmax: () => hk, logSumExp: () => hd, logicalAnd: () => lu, logicalNot: () => gd, logicalOr: () => xd, logicalXor: () => gk, losses: () => cq, lowerBound: () => xk, matMul: () => Xe, max: () => Us, maxPool: () => bd, maxPool3d: () => yk, maxPoolWithArgmax: () => bk, maximum: () => Cd, mean: () => mu, meshgrid: () => Ck, min: () => sl, minimum: () => Sd, mirrorPad: () => Sk, mod: () => wk, moments: () => Ik, movingAverage: () => QG, mul: () => ae, multiRNNCell: () => vk, multinomial: () => kk, neg: () => yr, norm: () => pu, notEqual: () => wd, oneHot: () => tl, ones: () => Gs, onesLike: () => Nk, op: () => N, outerProduct: () => Tk, pad: () => Hs, pad1d: () => _k, pad2d: () => Ek, pad3d: () => $k, pad4d: () => Ak, pool: () => Rk, pow: () => Ra, prelu: () => vd, print: () => Gm, prod: () => Fk, raggedGather: () => Dk, raggedRange: () => Ok, raggedTensorToTensor: () => Pk, rand: () => Mk, randomGamma: () => e1, randomNormal: () => Ed, randomStandardNormal: () => t1, randomUniform: () => $d, range: () => Ni, real: () => $a, reciprocal: () => r1, relu: () => Ti, relu6: () => Ad, reshape: () => z, reverse: () => no, reverse1d: () => o1, reverse2d: () => n1, reverse3d: () => s1, reverse4d: () => a1, rfft: () => Wp, round: () => Rd, rsqrt: () => i1, scalar: () => be, scatterND: () => JG, searchSorted: () => al, selu: () => u1, separableConv2d: () => p1, setdiff1dAsync: () => c1, sigmoid: () => zs, sign: () => l1, signal: () => iq, sin: () => m1, sinh: () => d1, slice: () => He, slice1d: () => f1, slice2d: () => h1, slice3d: () => g1, slice4d: () => x1, softmax: () => y1, softplus: () => fd, spaceToBatchND: () => Id, sparse: () => lq, sparseToDense: () => rH, spectral: () => aq, split: () => Oa, sqrt: () => $r, square: () => Qt, squaredDifference: () => Dd, squeeze: () => Up, stack: () => Sr, step: () => Od, stridedSlice: () => b1, string: () => mq, sub: () => Ne, sum: () => et, tan: () => C1, tanh: () => nl, tensor: () => nr, tensor1d: () => mr, tensor2d: () => _i, tensor3d: () => Xm, tensor4d: () => S1, tensor5d: () => w1, tensor6d: () => I1, tile: () => ki, topk: () => v1, transpose: () => Mp, truncatedNormal: () => k1, unique: () => N1, unsortedSegmentSum: () => T1, unstack: () => so, upperBound: () => _1, variable: () => E1, where: () => os, whereAsync: () => Md, zeros: () => Vr, zerosLike: () => Ut });
 var _N = (r, e, t6, o = Ye) => {
   switch (r.op) {
     case "BiasAdd":
@@ -31831,8 +31831,8 @@ async function process2(input, config3, getTensor = true) {
   let pixels;
   let depth = 3;
   if (typeof ImageData !== "undefined" && input instanceof ImageData || input.data && input.width && input.height) {
-    if (env.browser && Qv) {
-      pixels = Qv ? Qv.fromPixels(input) : null;
+    if (env.browser && Q0) {
+      pixels = Q0 ? Q0.fromPixels(input) : null;
     } else {
       depth = input.data.length / input.height / input.width;
       const arr = new Uint8Array(input.data.buffer);
@@ -31841,12 +31841,12 @@ async function process2(input, config3, getTensor = true) {
   } else {
     if (!tmpCanvas || outCanvas.width !== tmpCanvas.width || outCanvas.height !== tmpCanvas.height)
       tmpCanvas = canvas(outCanvas.width, outCanvas.height);
-    if (Qv && env.browser) {
+    if (Q0 && env.browser) {
       if (config3.backend === "webgl" || config3.backend === "humangl" || config3.backend === "webgpu") {
-        pixels = Qv.fromPixels(outCanvas);
+        pixels = Q0.fromPixels(outCanvas);
       } else {
         tmpCanvas = copy(outCanvas);
-        pixels = Qv.fromPixels(tmpCanvas);
+        pixels = Q0.fromPixels(tmpCanvas);
       }
     } else {
       const tempCanvas = copy(outCanvas);
@@ -32225,8 +32225,6 @@ __export(models_exports, {
   "blazeface-back": () => blazeface_back,
   "blazeface-front": () => blazeface_front,
   "blazepose-detector": () => blazepose_detector,
-  "blazepose-detector2d": () => blazepose_detector2d,
-  "blazepose-detector3d": () => blazepose_detector3d,
   "blazepose-full": () => blazepose_full,
   "blazepose-heavy": () => blazepose_heavy,
   "blazepose-lite": () => blazepose_lite,
@@ -32240,10 +32238,9 @@ __export(models_exports, {
   faceboxes: () => faceboxes,
   facemesh: () => facemesh,
   "facemesh-attention": () => facemesh_attention,
-  "facemesh-attention-alt": () => facemesh_attention_alt,
+  "facemesh-attention-pinto": () => facemesh_attention_pinto,
   "facemesh-detection-full": () => facemesh_detection_full,
   "facemesh-detection-short": () => facemesh_detection_short,
-  "facemesh-orig": () => facemesh_orig,
   faceres: () => faceres,
   "faceres-deep": () => faceres_deep,
   gear: () => gear,
@@ -32284,7 +32281,7 @@ var centernet = 4030290;
 var emotion = 820516;
 var facemesh = 1477958;
 var faceres = 6978814;
-var handlandmark_full = 5431368;
+var handlandmark_lite = 2023432;
 var handtrack = 2964837;
 var iris = 2599092;
 var liveness = 592976;
@@ -32293,24 +32290,22 @@ var movenet_lightning = 4650216;
 var age = 161240;
 var blazeface_back = 538928;
 var blazeface_front = 402048;
-var blazepose_detector2d = 7499400;
-var blazepose_detector3d = 5928856;
-var blazepose_full = 6338290;
-var blazepose_heavy = 27501554;
-var blazepose_lite = 2725490;
+var blazepose_detector = 5928856;
+var blazepose_full = 6339202;
+var blazepose_heavy = 27502466;
+var blazepose_lite = 2726402;
 var efficientpose = 5651240;
 var faceboxes = 2013002;
-var facemesh_attention_alt = 2387598;
+var facemesh_attention_pinto = 2387598;
 var facemesh_attention = 2382414;
 var facemesh_detection_full = 1026192;
 var facemesh_detection_short = 201268;
-var facemesh_orig = 2955780;
 var faceres_deep = 13957620;
 var gear = 1498916;
 var gender_ssrnet_imdb = 161236;
 var gender = 201808;
 var handdetect = 3515612;
-var handlandmark_lite = 2023432;
+var handlandmark_full = 5431368;
 var handlandmark_sparse = 5286322;
 var handskeleton = 5502280;
 var meet = 372228;
@@ -32322,7 +32317,6 @@ var nanodet = 7574558;
 var posenet = 5032780;
 var rvm = 3739355;
 var selfie = 212886;
-var blazepose_detector = 5928856;
 var anti_spoofing = 853098;
 var efficientpose_i_lite = 2269064;
 var efficientpose_ii_lite = 5651240;
@@ -32343,7 +32337,7 @@ var models_default = {
   emotion,
   facemesh,
   faceres,
-  "handlandmark-full": handlandmark_full,
+  "handlandmark-lite": handlandmark_lite,
   handtrack,
   iris,
   liveness,
@@ -32352,24 +32346,22 @@ var models_default = {
   age,
   "blazeface-back": blazeface_back,
   "blazeface-front": blazeface_front,
-  "blazepose-detector2d": blazepose_detector2d,
-  "blazepose-detector3d": blazepose_detector3d,
+  "blazepose-detector": blazepose_detector,
   "blazepose-full": blazepose_full,
   "blazepose-heavy": blazepose_heavy,
   "blazepose-lite": blazepose_lite,
   efficientpose,
   faceboxes,
-  "facemesh-attention-alt": facemesh_attention_alt,
+  "facemesh-attention-pinto": facemesh_attention_pinto,
   "facemesh-attention": facemesh_attention,
   "facemesh-detection-full": facemesh_detection_full,
   "facemesh-detection-short": facemesh_detection_short,
-  "facemesh-orig": facemesh_orig,
   "faceres-deep": faceres_deep,
   gear,
   "gender-ssrnet-imdb": gender_ssrnet_imdb,
   gender,
   handdetect,
-  "handlandmark-lite": handlandmark_lite,
+  "handlandmark-full": handlandmark_full,
   "handlandmark-sparse": handlandmark_sparse,
   handskeleton,
   meet,
@@ -32381,7 +32373,6 @@ var models_default = {
   posenet,
   rvm,
   selfie,
-  "blazepose-detector": blazepose_detector,
   "anti-spoofing": anti_spoofing,
   "efficientpose-i-lite": efficientpose_i_lite,
   "efficientpose-ii-lite": efficientpose_ii_lite,
@@ -37693,7 +37684,7 @@ async function max2d(inputs, minScore) {
   const max = Us(reshaped, 0);
   const newScore = (await max.data())[0];
   if (newScore > minScore) {
-    const coordinates = b0(reshaped, 0);
+    const coordinates = bv(reshaped, 0);
     const mod = wk(coordinates, width);
     const x = (await mod.data())[0];
     const div = Ge(coordinates, width);
@@ -37982,7 +37973,7 @@ function decodeBoxes2(boxOutputs) {
   t6.ends = xe(t6.centersNormalized, t6.halfBoxSize);
   t6.startNormalized = ae(t6.starts, inputSizeT);
   t6.endNormalized = ae(t6.ends, inputSizeT);
-  const boxes = L0([t6.startNormalized, t6.endNormalized], 1);
+  const boxes = Lv([t6.startNormalized, t6.endNormalized], 1);
   Object.keys(t6).forEach((tensor) => Dt(t6[tensor]));
   return boxes;
 }
@@ -38446,7 +38437,7 @@ async function predict6(image, config3, idx, count2) {
         obj.gender = gender2[0] <= 0.5 ? "female" : "male";
         obj.genderScore = Math.min(0.99, confidence);
       }
-      const argmax = b0(resT.find((t6) => t6.shape[1] === 100), 1);
+      const argmax = bv(resT.find((t6) => t6.shape[1] === 100), 1);
       const ageIdx = (await argmax.data())[0];
       Dt(argmax);
       const ageT = resT.find((t6) => t6.shape[1] === 100);
@@ -38731,7 +38722,7 @@ async function predict11(image, config3, idx, count2) {
       const redNorm = ae(red, rgb[0]);
       const greenNorm = ae(green, rgb[1]);
       const blueNorm = ae(blue, rgb[2]);
-      const grayscale = g0([redNorm, greenNorm, blueNorm]);
+      const grayscale = gv([redNorm, greenNorm, blueNorm]);
       const normalize2 = ae(Ne(grayscale, constants.tf05), 2);
       return normalize2;
     });
@@ -42743,7 +42734,7 @@ var HandDetector = class {
     t6.startPoints = ae(t6.sub, this.inputSizeTensor);
     t6.add = xe(t6.boxCenterPoints, t6.halfBoxSizes);
     t6.endPoints = ae(t6.add, this.inputSizeTensor);
-    const res = L0([t6.startPoints, t6.endPoints], 1);
+    const res = Lv([t6.startPoints, t6.endPoints], 1);
     Object.keys(t6).forEach((tensor) => Dt(t6[tensor]));
     return res;
   }
@@ -43105,7 +43096,7 @@ async function detectHands(input, config3) {
   t6.filtered = Sr(classScores, 1);
   Dt(classScores);
   t6.max = Us(t6.filtered, 1);
-  t6.argmax = b0(t6.filtered, 1);
+  t6.argmax = bv(t6.filtered, 1);
   let id2 = 0;
   t6.nms = await uq.nonMaxSuppressionAsync(t6.boxes, t6.max, (config3.hand.maxDetected || 0) + 1, config3.hand.iouThreshold || 0, config3.hand.minConfidence || 1);
   const nms = await t6.nms.data();
@@ -43276,7 +43267,7 @@ var bufferedResult = empty();
 var interpolateTime = 0;
 function calc2(newResult, config3) {
   var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2, _m2, _n2, _o2, _p, _q2, _r2, _s2, _t, _u2, _v2, _w2;
-  const t02 = now();
+  const t0 = now();
   if (!newResult)
     return empty();
   const elapsed = Date.now() - newResult.timestamp;
@@ -43403,7 +43394,7 @@ function calc2(newResult, config3) {
   bufferedResult.width = newResult.width;
   bufferedResult.height = newResult.height;
   const t12 = now();
-  interpolateTime = env.perfadd ? interpolateTime + Math.round(t12 - t02) : Math.round(t12 - t02);
+  interpolateTime = env.perfadd ? interpolateTime + Math.round(t12 - t0) : Math.round(t12 - t0);
   if (newResult.performance)
     bufferedResult.performance = { ...newResult.performance, interpolate: interpolateTime };
   return bufferedResult;
@@ -43763,7 +43754,7 @@ async function process4(res, outputShape, config3) {
     const scores = await scoresT.array();
     const featuresT = Up(res.find((a) => a.shape[1] === baseSize ** 2 && (a.shape[2] || 0) < labels2.length));
     const boxesMaxT = z(featuresT, [-1, 4, (((_a2 = featuresT.shape) == null ? void 0 : _a2[1]) || 0) / 4]);
-    const boxIdxT = b0(boxesMaxT, 2);
+    const boxIdxT = bv(boxesMaxT, 2);
     const boxIdx = await boxIdxT.array();
     for (let i = 0; i < scoresT.shape[0]; i++) {
       for (let j = 0; j < (((_b2 = scoresT.shape) == null ? void 0 : _b2[1]) || 0); j++) {
@@ -45362,7 +45353,7 @@ async function runCompile(instance) {
 }
 async function warmup(instance, userConfig) {
   await check(instance, false);
-  const t02 = now();
+  const t0 = now();
   instance.state = "warmup";
   if (userConfig)
     instance.config = mergeDeep(instance.config, userConfig);
@@ -45375,7 +45366,7 @@ async function warmup(instance, userConfig) {
     const res = await runInference(instance);
     const t12 = now();
     if (instance.config.debug)
-      log("warmup", instance.config.warmup, Math.round(t12 - t02), "ms");
+      log("warmup", instance.config.warmup, Math.round(t12 - t0), "ms");
     instance.emit("warmup");
     resolve(res);
   });
@@ -45550,10 +45541,10 @@ var Human = class {
     return calc2(result, this.config);
   }
   async warmup(userConfig) {
-    const t02 = now();
+    const t0 = now();
     const res = await warmup(this, userConfig);
     const t12 = now();
-    this.performance.warmup = Math.trunc(t12 - t02);
+    this.performance.warmup = Math.trunc(t12 - t0);
     return res;
   }
   async profile(input, userConfig) {

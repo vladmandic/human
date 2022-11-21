@@ -247,7 +247,7 @@ var config = {
       modelPath: "handtrack.json"
     },
     skeleton: {
-      modelPath: "handlandmark-full.json"
+      modelPath: "handlandmark-lite.json"
     }
   },
   object: {
@@ -13761,9 +13761,11 @@ var Models = class {
     m.selfie = this.instance.config.segmentation.enabled && !this.models.selfie && ((_y = this.instance.config.segmentation.modelPath) == null ? void 0 : _y.includes("selfie")) ? load21(this.instance.config) : null;
     m.meet = this.instance.config.segmentation.enabled && !this.models.meet && ((_z = this.instance.config.segmentation.modelPath) == null ? void 0 : _z.includes("meet")) ? load16(this.instance.config) : null;
     m.rvm = this.instance.config.segmentation.enabled && !this.models.rvm && ((_A = this.instance.config.segmentation.modelPath) == null ? void 0 : _A.includes("rvm")) ? load20(this.instance.config) : null;
-    await Promise.all([...Object.values(m)]);
-    for (const model23 of Object.keys(m))
-      this.models[model23] = m[model23] || this.models[model23] || null;
+    for (const [model23, promise] of Object.entries(m)) {
+      if (promise == null ? void 0 : promise["then"])
+        promise["then"]((val) => this.models[model23] = val);
+    }
+    await Promise.all(Object.values(m));
   }
   list() {
     const models3 = Object.keys(this.models).map((model23) => {
@@ -14685,7 +14687,9 @@ async function runCompile(instance) {
   tfjs_esm_exports.env().set("ENGINE_COMPILE_ONLY", true);
   const numTensorsStart = tfjs_esm_exports.engine().state.numTensors;
   const compiledModels = [];
-  for (const [modelName, model23] of Object.entries(instance.models).filter(([key, val]) => key !== null && val !== null)) {
+  for (const [modelName, model23] of Object.entries(instance.models.models)) {
+    if (!model23)
+      continue;
     const shape = (model23 == null ? void 0 : model23.modelSignature) && ((_b = (_a = model23 == null ? void 0 : model23.inputs) == null ? void 0 : _a[0]) == null ? void 0 : _b.shape) ? [...model23.inputs[0].shape] : [1, 64, 64, 3];
     const dtype = (model23 == null ? void 0 : model23.modelSignature) && ((_d = (_c = model23 == null ? void 0 : model23.inputs) == null ? void 0 : _c[0]) == null ? void 0 : _d.dtype) ? model23.inputs[0].dtype : "float32";
     for (let dim = 0; dim < shape.length; dim++) {

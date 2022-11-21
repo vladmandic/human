@@ -63,6 +63,8 @@ Optimizations:
   `Human` is now 30% smaller :)  
   As usual, `Human` has **zero** runtime dependencies,  
   all *devDependencies* are only to rebuild `Human` itself
+- Default hand skeleton model changed from `handlandmark-full` to `handlandmark-lite`  
+  Both models are still supported, this reduces default size and increases performance  
 
 Features:
 - Add [draw label templates](https://github.com/vladmandic/human/wiki/Draw)  
@@ -88,6 +90,7 @@ Architecture:
   Better [TypeDoc specs](https://vladmandic.github.io/human/typedoc/index.html)
 - Add named export for improved bundler support when using non-default imports  
 - Cleanup Git history for `dist`/`typedef`/`types`
+- Cleanup `@vladmandic/human-models`
 - Support for **NodeJS v19**  
 - Upgrade to **TypeScript 4.9**  
 
@@ -97,3 +100,4 @@ Breaking changes:
 - Moved `human.similarity`, `human.distance` and `human.match` to namespace `human.match.*`  
 - Obsolete `human.enhance()`  
 - Obsolete `human.gl`  
+- Renamed model `mb3-centernet` to `centernet`  

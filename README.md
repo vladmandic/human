@@ -70,6 +70,7 @@
 - **Full** [[*Live*]](https://vladmandic.github.io/human/demo/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo): Main browser demo app that showcases all Human capabilities
 - **Simple** [[*Live*]](https://vladmandic.github.io/human/demo/typescript/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/typescript): Simple demo in WebCam processing demo in TypeScript
 - **Embedded** [[*Live*]](https://vladmandic.github.io/human/demo/video/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/video/index.html): Even simpler demo with tiny code embedded in HTML file
+- **Face Detect** [[*Live*]](https://vladmandic.github.io/human/demo/facedetect/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facedetect): Extract faces from images and processes details
 - **Face Match** [[*Live*]](https://vladmandic.github.io/human/demo/facematch/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Extract faces from images, calculates face descriptors and similarities and matches them to known database
 - **Face ID** [[*Live*]](https://vladmandic.github.io/human/demo/faceid/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/faceid): Runs multiple checks to validate webcam input before performing face match to faces in IndexDB
 - **Multi-thread** [[*Live*]](https://vladmandic.github.io/human/demo/multithread/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/multithread): Runs each Human module in a separate web worker for highest possible performance  
@@ -173,7 +174,13 @@ and optionally matches detected face with database of known people to guess thei
 
 [<img src="assets/screenshot-facematch.jpg" width="640"/>](assets/screenshot-facematch.jpg)
 
-2. **Face ID:**  
+2. **Face Detect:**  
+Extracts all detect faces from loaded images on-demand and highlights face details on a selected face  
+> [demo/facedetect](demo/facedetect/index.html)  
+
+[<img src="assets/screenshot-facedetect.jpg" width="640"/>](assets/screenshot-facedetect.jpg)
+
+3. **Face ID:**  
 Performs validation check on a webcam input to detect a real face and matches it to known faces stored in database
 > [demo/faceid](demo/faceid/index.html)  
 
@@ -181,7 +188,7 @@ Performs validation check on a webcam input to detect a real face and matches it
 
 <br>
 
-3. **3D Rendering:**  
+4. **3D Rendering:**  
 > [human-motion](https://github.com/vladmandic/human-motion)
 
 [<img src="https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg" width="640"/>](https://github.com/vladmandic/human-motion/raw/main/assets/screenshot-face.jpg)
@@ -190,14 +197,14 @@ Performs validation check on a webcam input to detect a real face and matches it
 
 <br>
 
-4. **VR Model Tracking:**  
+5. **VR Model Tracking:**  
 > [human-three-vrm](https://github.com/vladmandic/human-three-vrm)  
 > [human-bjs-vrm](https://github.com/vladmandic/human-bjs-vrm)  
 
 [<img src="https://github.com/vladmandic/human-three-vrm/raw/main/assets/human-vrm-screenshot.jpg" width="640"/>](https://github.com/vladmandic/human-three-vrm/raw/main/assets/human-vrm-screenshot.jpg)
 
 
-5. **Human as OS native application:**
+6. **Human as OS native application:**
 > [human-electron](https://github.com/vladmandic/human-electron)
 
 <br>

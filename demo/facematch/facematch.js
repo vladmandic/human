@@ -64,7 +64,7 @@ async function loadFaceMatchDB() {
   }
 }
 
-async function SelectFaceCanvas(face) {
+async function selectFaceCanvas(face) {
   // if we have face image tensor, enhance it and display it
   let embedding;
   document.getElementById('orig').style.filter = 'blur(16px)';
@@ -72,19 +72,6 @@ async function SelectFaceCanvas(face) {
     title('Sorting Faces by Similarity');
     const c = document.getElementById('orig');
     await human.tf.browser.toPixels(face.tensor, c);
-    /*
-    const enhanced = human.enhance(face);
-    if (enhanced) {
-      const c = document.getElementById('orig');
-      const squeeze = human.tf.squeeze(enhanced);
-      const normalize = human.tf.div(squeeze, 255);
-      await human.tf.browser.toPixels(normalize, c);
-      human.tf.dispose([enhanced, squeeze, normalize]);
-      const ctx = c.getContext('2d');
-      ctx.font = 'small-caps 0.4rem "Lato"';
-      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-    }
-    */
     const arr = db.map((rec) => rec.embedding);
     const res = await human.match.find(face.embedding, arr);
     log('Match:', db[res.index].name);
@@ -139,7 +126,7 @@ async function SelectFaceCanvas(face) {
   title('Selected Face');
 }
 
-async function AddFaceCanvas(index, res, fileName) {
+async function addFaceCanvas(index, res, fileName) {
   all[index] = res.face;
   for (const i in res.face) {
     if (!res.face[i].tensor) continue; // did not get valid results
@@ -160,7 +147,7 @@ async function AddFaceCanvas(index, res, fileName) {
     `.replace(/  /g, ' ');
     await human.tf.browser.toPixels(res.face[i].tensor, canvas);
     const ctx = canvas.getContext('2d');
-    if (!ctx) return false;
+    if (!ctx) return;
     ctx.font = 'small-caps 0.8rem "Lato"';
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     ctx.fillText(`${res.face[i].age}y ${(100 * (res.face[i].genderScore || 0)).toFixed(1)}% ${res.face[i].gender}`, 4, canvas.height - 6);
@@ -171,12 +158,12 @@ async function AddFaceCanvas(index, res, fileName) {
     document.getElementById('faces').appendChild(canvas);
     canvas.addEventListener('click', (evt) => {
       log('Select:', 'Image:', evt.target.tag.sample, 'Face:', evt.target.tag.face, 'Source:', evt.target.tag.source, all[evt.target.tag.sample][evt.target.tag.face]);
-      SelectFaceCanvas(all[evt.target.tag.sample][evt.target.tag.face]);
+      selectFaceCanvas(all[evt.target.tag.sample][evt.target.tag.face]);
     });
   }
 }
 
-async function AddImageElement(index, image, length) {
+async function addImageElement(index, image, length) {
   const faces = all.reduce((prev, curr) => prev += curr.length, 0);
   title(`Analyzing Input Images<br> ${Math.round(100 * index / length)}% [${index} / ${length}]<br>Found ${faces} Faces`);
   return new Promise((resolve) => {
@@ -185,7 +172,7 @@ async function AddImageElement(index, image, length) {
       document.getElementById('images').appendChild(img); // and finally we can add it
       human.detect(img, userConfig)
         .then((res) => { // eslint-disable-line promise/always-return
-          AddFaceCanvas(index, res, image); // then wait until image is analyzed
+          addFaceCanvas(index, res, image); // then wait until image is analyzed
           resolve(true);
         })
         .catch(() => log('human detect error'));
@@ -226,18 +213,23 @@ async function main() {
   // could not dynamically enumerate images so using static list
   if (images.length === 0) {
     images = [
-      'ai-body.jpg', 'solvay1927.jpg', 'ai-upper.jpg',
-      'person-carolina.jpg', 'person-celeste.jpg', 'person-leila1.jpg', 'person-leila2.jpg', 'person-lexi.jpg', 'person-linda.jpg', 'person-nicole.jpg', 'person-tasia.jpg',
-      'person-tetiana.jpg', 'person-vlado1.jpg', 'person-vlado5.jpg', 'person-vlado.jpg', 'person-christina.jpg', 'person-lauren.jpg',
+      'ai-face.jpg', 'ai-upper.jpg', 'ai-body.jpg', 'solvay1927.jpg',
       'group-1.jpg', 'group-2.jpg', 'group-3.jpg', 'group-4.jpg', 'group-5.jpg', 'group-6.jpg', 'group-7.jpg',
-      'daz3d-brianna.jpg', 'daz3d-chiyo.jpg', 'daz3d-cody.jpg', 'daz3d-drew-01.jpg', 'daz3d-drew-02.jpg', 'daz3d-ella-01.jpg', 'daz3d-ella-02.jpg', 'daz3d-gillian.jpg',
-      'daz3d-hye-01.jpg', 'daz3d-hye-02.jpg', 'daz3d-kaia.jpg', 'daz3d-karen.jpg', 'daz3d-kiaria-01.jpg', 'daz3d-kiaria-02.jpg', 'daz3d-lilah-01.jpg', 'daz3d-lilah-02.jpg',
-      'daz3d-lilah-03.jpg', 'daz3d-lila.jpg', 'daz3d-lindsey.jpg', 'daz3d-megah.jpg', 'daz3d-selina-01.jpg', 'daz3d-selina-02.jpg', 'daz3d-snow.jpg',
-      'daz3d-sunshine.jpg', 'daz3d-taia.jpg', 'daz3d-tuesday-01.jpg', 'daz3d-tuesday-02.jpg', 'daz3d-tuesday-03.jpg', 'daz3d-zoe.jpg', 'daz3d-ginnifer.jpg',
-      'daz3d-_emotions01.jpg', 'daz3d-_emotions02.jpg', 'daz3d-_emotions03.jpg', 'daz3d-_emotions04.jpg', 'daz3d-_emotions05.jpg',
+      'person-celeste.jpg', 'person-christina.jpg', 'person-lauren.jpg', 'person-lexi.jpg', 'person-linda.jpg', 'person-nicole.jpg', 'person-tasia.jpg', 'person-tetiana.jpg', 'person-vlado.jpg', 'person-vlado1.jpg', 'person-vlado5.jpg',
+      'stock-group-1.jpg', 'stock-group-2.jpg',
+      'stock-models-1.jpg', 'stock-models-2.jpg', 'stock-models-3.jpg', 'stock-models-4.jpg', 'stock-models-5.jpg', 'stock-models-6.jpg', 'stock-models-7.jpg', 'stock-models-8.jpg', 'stock-models-9.jpg',
+      'stock-teen-1.jpg', 'stock-teen-2.jpg', 'stock-teen-3.jpg', 'stock-teen-4.jpg', 'stock-teen-5.jpg', 'stock-teen-6.jpg', 'stock-teen-7.jpg', 'stock-teen-8.jpg',
+      'stock-models-10.jpg', 'stock-models-11.jpg', 'stock-models-12.jpg', 'stock-models-13.jpg', 'stock-models-14.jpg', 'stock-models-15.jpg', 'stock-models-16.jpg',
+      'cgi-model-1.jpg', 'cgi-model-2.jpg', 'cgi-model-3.jpg', 'cgi-model-4.jpg', 'cgi-model-5.jpg', 'cgi-model-6.jpg', 'cgi-model-7.jpg', 'cgi-model-8.jpg', 'cgi-model-9.jpg',
+      'cgi-model-10.jpg', 'cgi-model-11.jpg', 'cgi-model-12.jpg', 'cgi-model-13.jpg', 'cgi-model-14.jpg', 'cgi-model-15.jpg', 'cgi-model-18.jpg', 'cgi-model-19.jpg',
+      'cgi-model-20.jpg', 'cgi-model-21.jpg', 'cgi-model-22.jpg', 'cgi-model-23.jpg', 'cgi-model-24.jpg', 'cgi-model-25.jpg', 'cgi-model-26.jpg', 'cgi-model-27.jpg', 'cgi-model-28.jpg', 'cgi-model-29.jpg',
+      'cgi-model-30.jpg', 'cgi-model-31.jpg', 'cgi-model-33.jpg', 'cgi-model-34.jpg',
+      'cgi-multiangle-1.jpg', 'cgi-multiangle-2.jpg', 'cgi-multiangle-3.jpg', 'cgi-multiangle-4.jpg', 'cgi-multiangle-6.jpg', 'cgi-multiangle-7.jpg', 'cgi-multiangle-8.jpg', 'cgi-multiangle-9.jpg', 'cgi-multiangle-10.jpg', 'cgi-multiangle-11.jpg',
+      'stock-emotions-a-1.jpg', 'stock-emotions-a-2.jpg', 'stock-emotions-a-3.jpg', 'stock-emotions-a-4.jpg', 'stock-emotions-a-5.jpg', 'stock-emotions-a-6.jpg', 'stock-emotions-a-7.jpg', 'stock-emotions-a-8.jpg',
+      'stock-emotions-b-1.jpg', 'stock-emotions-b-2.jpg', 'stock-emotions-b-3.jpg', 'stock-emotions-b-4.jpg', 'stock-emotions-b-5.jpg', 'stock-emotions-b-6.jpg', 'stock-emotions-b-7.jpg', 'stock-emotions-b-8.jpg',
     ];
     // add prefix for gitpages
-    images = images.map((a) => `/human/samples/in/${a}`);
+    images = images.map((a) => `../../samples/in/${a}`);
     log('Adding static image list:', images);
   } else {
     log('Discovered images:', images);
@@ -246,7 +238,7 @@ async function main() {
   // images = ['/samples/in/person-lexi.jpg', '/samples/in/person-carolina.jpg', '/samples/in/solvay1927.jpg'];
 
   const t0 = human.now();
-  for (let i = 0; i < images.length; i++) await AddImageElement(i, images[i], images.length);
+  for (let i = 0; i < images.length; i++) await addImageElement(i, images[i], images.length);
   const t1 = human.now();
 
   // print stats

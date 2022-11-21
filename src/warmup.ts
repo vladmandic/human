@@ -122,7 +122,8 @@ export async function runCompile(instance: Human) {
   tf.env().set('ENGINE_COMPILE_ONLY', true);
   const numTensorsStart = tf.engine().state.numTensors;
   const compiledModels: string[] = [];
-  for (const [modelName, model] of Object.entries(instance.models).filter(([key, val]) => (key !== null && val !== null))) {
+  for (const [modelName, model] of Object.entries(instance.models.models)) {
+    if (!model) continue;
     const shape = (model?.modelSignature && model?.inputs?.[0]?.shape) ? [...model.inputs[0].shape] : [1, 64, 64, 3];
     const dtype: DataType = (model?.modelSignature && model?.inputs?.[0]?.dtype) ? model.inputs[0].dtype : 'float32';
     for (let dim = 0; dim < shape.length; dim++) {

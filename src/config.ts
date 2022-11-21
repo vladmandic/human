@@ -444,7 +444,7 @@ const config: Config = {
       modelPath: 'handtrack.json',
     },
     skeleton: {
-      modelPath: 'handlandmark-full.json',
+      modelPath: 'handlandmark-lite.json',
     },
   },
   object: {

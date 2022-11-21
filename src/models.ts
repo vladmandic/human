@@ -157,8 +157,10 @@ export class Models {
     m.rvm = (this.instance.config.segmentation.enabled && !this.models.rvm && this.instance.config.segmentation.modelPath?.includes('rvm')) ? rvm.load(this.instance.config) : null;
 
     // models are loaded in parallel asynchronously so lets wait until they are actually loaded
-    await Promise.all([...Object.values(m)]);
-    for (const model of Object.keys(m)) this.models[model] = m[model] as GraphModel || this.models[model] || null; // only update actually loaded models
+    for (const [model, promise] of Object.entries(m)) {
+      if (promise?.['then']) promise['then']((val) => this.models[model] = val);
+    }
+    await Promise.all(Object.values(m)); // wait so this function does not resolve prematurely
   }
 
   list() {

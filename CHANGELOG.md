@@ -1,6 +1,6 @@
 # @vladmandic/human  
 
-  Version: **3.0.0**  
+  Version: **3.0.1**  
   Description: **Human: AI-powered 3D Face Detection & Rotation Tracking, Face Description & Recognition, Body Pose Tracking, 3D Hand & Finger Tracking, Iris Analysis, Age & Gender & Emotion Prediction, Gesture Recognition**  
   
   Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,8 +9,13 @@
   
 ## Changelog
   
-### **HEAD -> main** 2022/11/21 mandic00@live.com
+### **3.0.1** 2022/11/22 mandic00@live.com
 
+
+### **origin/main** 2022/11/22 mandic00@live.com
+
+- polish demos
+- add facedetect demo and fix model async load
 - enforce markdown linting
 - cleanup git history
 - default empty result

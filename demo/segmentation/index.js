@@ -71,7 +71,6 @@ async function main() {
 
   await human.webcam.start({ element: dom.webcam, crop: true, width: window.innerWidth / 2, height: window.innerHeight / 2 }); // use human webcam helper methods and associate webcam stream with a dom element
   if (!human.webcam.track) dom.fps.innerText = 'webcam error';
-  console.log(human.webcam);
 
   // processing loop
   async function loop() {

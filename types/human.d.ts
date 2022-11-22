@@ -447,6 +447,7 @@ declare function encodeWeights(tensors: NamedTensorMap | NamedTensor[], group?: 
 
 /** Env class that holds detected capabilities */
 export declare class Env {
+    #private;
     /** Running in Browser */
     browser: boolean;
     /** Running in NodeJS */
@@ -505,12 +506,12 @@ export declare class Env {
     };
     /** List of supported kernels for current backend */
     kernels: string[];
-    /** MonkeyPatch for Canvas */
-    Canvas: undefined;
-    /** MonkeyPatch for Image */
-    Image: undefined;
-    /** MonkeyPatch for ImageData */
-    ImageData: undefined;
+    get Canvas(): undefined;
+    set Canvas(val: undefined);
+    get Image(): undefined;
+    set Image(val: undefined);
+    get ImageData(): undefined;
+    set ImageData(val: undefined);
     constructor();
     /** update backend information */
     updateBackend(): Promise<void>;

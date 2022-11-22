@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2022/11/22 mandic00@live.com
+
+
 ### **3.0.1** 2022/11/22 mandic00@live.com
 
-
-### **origin/main** 2022/11/22 mandic00@live.com
-
+- support dynamic loads
 - polish demos
 - add facedetect demo and fix model async load
 - enforce markdown linting

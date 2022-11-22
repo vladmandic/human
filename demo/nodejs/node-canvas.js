@@ -40,7 +40,8 @@ async function main() {
 
   // parse cmdline
   const input = process.argv[2];
-  const output = process.argv[3];
+  let output = process.argv[3];
+  if (!output.toLowerCase().endsWith('.jpg')) output += '.jpg';
   if (process.argv.length !== 4) log.error('Parameters: <input-image> <output-image> missing');
   else if (!fs.existsSync(input) && !input.startsWith('http')) log.error(`File not found: ${process.argv[2]}`);
   else {

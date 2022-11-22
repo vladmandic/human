@@ -75,7 +75,6 @@ export async function process(input: Input, config: Config, getTensor: boolean =
   if (
     !(input instanceof tf.Tensor)
     && !(typeof Image !== 'undefined' && input instanceof Image)
-    && !(typeof env.Canvas !== 'undefined' && input instanceof env.Canvas)
     && !(typeof globalThis.Canvas !== 'undefined' && input instanceof globalThis.Canvas)
     && !(typeof ImageData !== 'undefined' && input instanceof ImageData)
     && !(typeof ImageBitmap !== 'undefined' && input instanceof ImageBitmap)
@@ -85,7 +84,7 @@ export async function process(input: Input, config: Config, getTensor: boolean =
     && !(typeof HTMLCanvasElement !== 'undefined' && input instanceof HTMLCanvasElement)
     && !(typeof OffscreenCanvas !== 'undefined' && input instanceof OffscreenCanvas)
   ) {
-    throw new Error('input error: type is not recognized');
+    throw new Error('input error: type not recognized');
   }
   if (input instanceof tf.Tensor) { // if input is tensor use as-is without filters but correct shape as needed
     let tensor: Tensor | null = null;

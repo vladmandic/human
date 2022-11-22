@@ -14,7 +14,7 @@ const width = 1920; // used by webcam config as well as human maximum resultion 
 const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
   // backend: 'webgpu',
   modelBasePath: '../../models',
-  filter: { enabled: true, equalization: false, flip: false, width },
+  filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: true }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
   body: { enabled: true },
   // hand: { enabled: true },
@@ -85,7 +85,7 @@ async function drawLoop() { // main screen refresh loop
 async function webCam() {
   const devices = await human.webcam.enumerate();
   const id = devices[0].deviceId; // use first available video source
-  await human.webcam.start({ element: dom.video, crop: true, width, id }); // use human webcam helper methods and associate webcam stream with a dom element
+  await human.webcam.start({ element: dom.video, crop: false, width, id }); // use human webcam helper methods and associate webcam stream with a dom element
   dom.canvas.width = human.webcam.width;
   dom.canvas.height = human.webcam.height;
   dom.canvas.onclick = async () => { // pause when clicked on screen and resume on next click

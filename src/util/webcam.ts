@@ -139,10 +139,10 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
         facingMode: this.config.mode === 'front' ? 'user' : 'environment',
         // @ts-ignore // resizeMode is still not defined in tslib
         resizeMode: this.config.crop ? 'crop-and-scale' : 'none',
-        width: { ideal: this.config.width > 0 ? this.config.width : window.innerWidth },
-        height: { ideal: this.config.height > 0 ? this.config.height : window.innerHeight },
       },
     };
+    if (this.config?.width > 0) (requestedConstraints.video as MediaTrackConstraints).width = { ideal: this.config.width };
+    if (this.config?.height > 0) (requestedConstraints.video as MediaTrackConstraints).height = { ideal: this.config.height };
     if (this.config.id) (requestedConstraints.video as MediaTrackConstraintSet).deviceId = this.config.id;
 
     // set default event listeners

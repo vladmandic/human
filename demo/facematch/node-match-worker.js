@@ -61,11 +61,11 @@ threads.parentPort?.on('message', (msg) => {
   }
   if (typeof msg.debug !== 'undefined') { // set verbose logging
     debug = msg.debug;
-    if (debug) threads.parentPort?.postMessage(`debug: ${debug}`);
+    // if (debug) threads.parentPort?.postMessage(`debug: ${debug}`);
   }
   if (typeof msg.threshold !== 'undefined') { // set minimum similarity threshold
     threshold = msg.threshold;
-    if (debug) threads.parentPort?.postMessage(`threshold: ${threshold}`);
+    // if (debug) threads.parentPort?.postMessage(`threshold: ${threshold}`);
   }
   if (typeof msg.shutdown !== 'undefined') { // got message to close worker
     if (debug) threads.parentPort?.postMessage('shutting down');

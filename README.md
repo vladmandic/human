@@ -93,6 +93,7 @@
 - **Similarity** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Compares two input images for similarity of detected faces
 - **Face Match** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Parallel processing of face **match** in multiple child worker threads
 - **Multiple Workers** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Runs multiple parallel `human` by dispaching them to pool of pre-created worker processes  
+- **Dynamic Load** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Loads Human dynamically with multiple different desired backends  
 
 ## Project pages
 

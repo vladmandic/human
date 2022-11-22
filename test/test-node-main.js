@@ -95,10 +95,9 @@ async function testInstance(human) {
   if (loaded.length > 10) {
     log('state', 'passed: load models', loaded.length);
     return true;
-  } else {
-    log('error', 'failed: load models', loaded.length);
-    return false;  
   }
+  log('error', 'failed: load models', loaded.length);
+  return false;
 }
 
 async function testWarmup(human, title) {
@@ -116,22 +115,7 @@ async function testWarmup(human, title) {
   } else {
     log('error', 'failed: warmup:', config.warmup, title);
   }
-  /*
-  // now try with monkey-patch
-  globalThis.Canvas = canvasJS.Canvas; // monkey-patch to use external canvas library
-  globalThis.ImageData = canvasJS.ImageData; // monkey-patch to use external canvas library
-  try {
-    warmup = await human.warmup(config);
-  } catch (err) {
-    log('error', 'error warmup');
-  }
-  if (warmup) {
-    log('state', 'passed: warmup:', config.warmup, title);
-    printResults(warmup);
-  } else {
-    log('error', 'failed: warmup:', config.warmup, title);
-  }
-  */
+
   return warmup;
 }
 

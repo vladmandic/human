@@ -25,6 +25,8 @@ const humanConfig = { // user configuration for human, used to fine-tune behavio
   },
 };
 
+const backgroundImage = '../../samples/in/background.jpg';
+
 const human = new H.Human(humanConfig); // create instance of human with overrides from user configuration
 
 const log = (...msg) => console.log(...msg); // eslint-disable-line no-console
@@ -32,7 +34,7 @@ const log = (...msg) => console.log(...msg); // eslint-disable-line no-console
 async function main() {
   // gather dom elements
   const dom = {
-    video: document.getElementById('video'),
+    background: document.getElementById('background'),
     webcam: document.getElementById('webcam'),
     output: document.getElementById('output'),
     merge: document.getElementById('merge'),
@@ -44,7 +46,7 @@ async function main() {
   // set defaults
   dom.fps.innerText = 'initializing';
   dom.ratio.valueAsNumber = human.config.segmentation.ratio;
-  dom.video.src = 'https://vladmandic.github.io/segmentation/assets/rijeka.mp4';
+  dom.background.src = backgroundImage;
   dom.composite.innerHTML = ['source-atop', 'color', 'color-burn', 'color-dodge', 'copy', 'darken', 'destination-atop', 'destination-in', 'destination-out', 'destination-over', 'difference', 'exclusion', 'hard-light', 'hue', 'lighten', 'lighter', 'luminosity', 'multiply', 'overlay', 'saturation', 'screen', 'soft-light', 'source-in', 'source-out', 'source-over', 'xor'].map((gco) => `<option value="${gco}">${gco}</option>`).join(''); // eslint-disable-line max-len
   const ctxMerge = dom.merge.getContext('2d');
 
@@ -66,8 +68,10 @@ async function main() {
     dom.merge.height = human.webcam.height;
     loop(); // eslint-disable-line no-use-before-define
   };
-  await human.webcam.start({ element: dom.webcam, crop: true, width: 960, height: 720 }); // use human webcam helper methods and associate webcam stream with a dom element
+
+  await human.webcam.start({ element: dom.webcam, crop: true, width: window.innerWidth / 2, height: window.innerHeight / 2 }); // use human webcam helper methods and associate webcam stream with a dom element
   if (!human.webcam.track) dom.fps.innerText = 'webcam error';
+  console.log(human.webcam);
 
   // processing loop
   async function loop() {
@@ -85,7 +89,7 @@ async function main() {
     human.tf.browser.toPixels(rgba, dom.output); // draw raw output
     human.tf.dispose(rgba); // dispose tensors
     ctxMerge.globalCompositeOperation = 'source-over';
-    ctxMerge.drawImage(dom.video, 0, 0); // draw original video to first stacked canvas
+    ctxMerge.drawImage(dom.background, 0, 0); // draw original video to first stacked canvas
     ctxMerge.globalCompositeOperation = dom.composite.value;
     ctxMerge.drawImage(dom.output, 0, 0); // draw processed output to second stacked canvas
     if (numTensors !== human.tf.engine().state.numTensors) log({ leak: human.tf.engine().state.numTensors - numTensors }); // check for memory leaks

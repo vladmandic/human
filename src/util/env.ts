@@ -83,12 +83,20 @@ export class Env {
     };
   /** List of supported kernels for current backend */
   kernels: string[] = [];
-  /** MonkeyPatch for Canvas */
-  Canvas: undefined;
-  /** MonkeyPatch for Image */
-  Image: undefined;
-  /** MonkeyPatch for ImageData */
-  ImageData: undefined;
+
+  /** MonkeyPatch for Canvas/Image/ImageData */
+  #canvas: undefined;
+  #image: undefined;
+  #imageData: undefined;
+
+  get Canvas() { return this.#canvas; }
+  set Canvas(val) { this.#canvas = val; globalThis.Canvas = val; }
+  get Image() { return this.#image; }
+  // @ts-ignore monkey-patch;
+  set Image(val) { this.#image = val; globalThis.Image = val; }
+  get ImageData() { return this.#imageData; }
+  // @ts-ignore monkey-patch;
+  set ImageData(val) { this.#imageData = val; globalThis.ImageData = val; }
 
   constructor() {
     this.browser = typeof navigator !== 'undefined';

@@ -68,6 +68,7 @@ Optimizations:
 
 Features:  
 - Add [draw label templates](https://github.com/vladmandic/human/wiki/Draw)  
+  Allows easy customization of results labels drawn on canvas  
 - Add `config.filter.autoBrightness` (*enabled by default*)  
   Per-frame video on-the-fly brightness adjustments  
   Which significantly increases performance and precision in poorly lit scenes  
@@ -94,6 +95,8 @@ Architecture:
 - Cleanup `@vladmandic/human-models`  
 - Support for **NodeJS v19**  
 - Upgrade to **TypeScript 4.9**  
+- Support for dynamic module load in **NodeJS**  
+  See <https://vladmandic.github.io/human/demo/nodejs/node-bench>  
 
 Breaking changes:  
 - Replaced `result.face[n].iris` with `result.face[n].distance`  

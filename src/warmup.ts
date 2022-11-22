@@ -53,7 +53,10 @@ async function warmupCanvas(instance: Human): Promise<Result | undefined> {
     if (typeof Image !== 'undefined') img = new Image();
     // @ts-ignore env.image is an external monkey-patch
     else if (env.Image) img = new env.Image();
-    else return;
+    else {
+      resolve(undefined);
+      return;
+    }
     img.onload = async () => {
       const canvas = image.canvas(img.naturalWidth, img.naturalHeight);
       if (!canvas) {
@@ -104,7 +107,7 @@ async function warmupNode(instance: Human): Promise<Result | undefined> {
 async function runInference(instance: Human) {
   let res: Result | undefined;
   if (typeof createImageBitmap === 'function') res = await warmupBitmap(instance);
-  else if (typeof Image !== 'undefined' || env.Canvas !== undefined) res = await warmupCanvas(instance);
+  else if ((typeof Image !== 'undefined') || (env.Canvas !== undefined)) res = await warmupCanvas(instance);
   else res = await warmupNode(instance);
   return res;
 }

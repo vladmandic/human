@@ -176,7 +176,7 @@ async function main() {
     data.requestID++; // increase request id
     if (testOptions.fuzDescriptors) match(fuzDescriptor(descriptor)); // fuz descriptor for harder match
     else match(descriptor);
-    if (options.debug) log.info('submited job', data.requestID); // we already know what we're searching for so we can compare results
+    if (options.debug) log.debug('submited job', data.requestID); // we already know what we're searching for so we can compare results
   }
   log.state('submitted:', { matchJobs: testOptions.maxJobs, poolSize: data.workers.length, activeWorkers: data.workers.filter((worker) => !!worker).length });
 }

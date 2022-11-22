@@ -10,7 +10,7 @@ import type { TensorInfo } from './types';
 
 export async function getBestBackend(): Promise<BackendEnum> {
   await env.updateBackend(); // update env on backend init
-  if (!env.browser) return 'tensorflow';
+  if (env.tensorflow?.version) return 'tensorflow';
   if (env.webgpu.supported && env.webgpu.backend) return 'webgpu';
   if (env.webgl.supported && env.webgl.backend) return 'webgl';
   if (env.wasm.supported && env.wasm.backend) return 'wasm';

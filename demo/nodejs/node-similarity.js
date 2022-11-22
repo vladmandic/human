@@ -48,7 +48,8 @@ async function main() {
   log.configure({ inspect: { breakLength: 265 } });
   log.header();
   if (process.argv.length !== 4) {
-    throw new Error('Parameters: <first image> <second image> missing');
+    log.error('Parameters: <first image> <second image> missing');
+    return;
   }
   await init();
   const res1 = await detect(process.argv[2]);

@@ -12,6 +12,9 @@
 ### **HEAD -> main** 2022/11/22 mandic00@live.com
 
 
+### **release: 3.0.1** 2022/11/22 mandic00@live.com
+
+
 ### **3.0.1** 2022/11/22 mandic00@live.com
 
 - support dynamic loads

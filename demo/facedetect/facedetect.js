@@ -15,7 +15,7 @@ const humanConfig = { // user configuration for human, used to fine-tune behavio
   filter: { enabled: true, equalization: false, flip: false },
   face: {
     enabled: true,
-    detector: { rotation: true, maxDetected: 100, minConfidence: 0.2, return: true },
+    detector: { rotation: false, maxDetected: 100, minConfidence: 0.2, return: true },
     iris: { enabled: true },
     description: { enabled: true },
     emotion: { enabled: true },

@@ -30818,7 +30818,7 @@ var config = {
     enabled: true,
     detector: {
       modelPath: "blazeface.json",
-      rotation: true,
+      rotation: false,
       maxDetected: 1,
       skipFrames: 99,
       skipTime: 2500,

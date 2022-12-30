@@ -22,7 +22,6 @@ const userConfig = {
   },
   face: {
     enabled: true,
-    // detector: { rotation: false, return: true, maxDetected: 50, iouThreshold: 0.206, minConfidence: 0.122 },
     detector: { return: true, rotation: true, maxDetected: 50, iouThreshold: 0.01, minConfidence: 0.2 },
     mesh: { enabled: true },
     iris: { enabled: false },

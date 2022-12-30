@@ -11,10 +11,11 @@
  * Working version of `ffmpeg` must be present on the system
 */
 
+const process = require('process');
 const spawn = require('child_process').spawn;
 const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 // in nodejs environments tfjs-node is required to be loaded before human
-const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
+// const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
 const Pipe2Jpeg = require('pipe2jpeg'); // eslint-disable-line node/no-missing-require, import/no-unresolved
 // const human = require('@vladmandic/human'); // use this when human is installed as module (majority of use cases)
@@ -22,7 +23,8 @@ const Human = require('../../dist/human.node.js'); // use this when using human 
 
 let count = 0; // counter
 let busy = false; // busy flag
-const inputFile = './test.mp4';
+let inputFile = './test.mp4';
+if (process.argv.length === 3) inputFile = process.argv[2];
 
 const humanConfig = {
   modelBasePath: 'file://models/',
@@ -59,15 +61,16 @@ const ffmpegParams = [
   'pipe:1', // output to unix pipe that is then captured by pipe2jpeg
 ];
 
-async function process(jpegBuffer) {
+async function detect(jpegBuffer) {
   if (busy) return; // skip processing if busy
   busy = true;
   const tensor = human.tf.node.decodeJpeg(jpegBuffer, 3); // decode jpeg buffer to raw tensor
-  log.state('input frame:', ++count, 'size:', jpegBuffer.length, 'decoded shape:', tensor.shape);
   const res = await human.detect(tensor);
-  log.data('gesture', JSON.stringify(res.gesture));
-  // do processing here
-  tf.dispose(tensor); // must dispose tensor
+  human.tf.dispose(tensor); // must dispose tensor
+  // start custom processing here
+  log.data('frame', { frame: ++count, size: jpegBuffer.length, shape: tensor.shape, face: res?.face?.length, body: res?.body?.length, hand: res?.hand?.length, gesture: res?.gesture?.length });
+  if (res?.face?.[0]) log.data('person', { score: [res.face[0].boxScore, res.face[0].faceScore], age: res.face[0].age || 0, gender: [res.face[0].genderScore || 0, res.face[0].gender], emotion: res.face[0].emotion?.[0] });
+  // at the of processing mark loop as not busy so it can process next frame
   busy = false;
 }
 
@@ -75,8 +78,9 @@ async function main() {
   log.header();
   await human.tf.ready();
   // pre-load models
-  log.info('human:', human.version, 'tf:', tf.version_core);
-  pipe2jpeg.on('jpeg', (jpegBuffer) => process(jpegBuffer));
+  log.info({ human: human.version, tf: human.tf.version_core });
+  log.info({ input: inputFile });
+  pipe2jpeg.on('data', (jpegBuffer) => detect(jpegBuffer));
 
   const ffmpeg = spawn('ffmpeg', ffmpegParams, { stdio: ['ignore', 'pipe', 'ignore'] });
   ffmpeg.on('error', (error) => log.error('ffmpeg error:', error));

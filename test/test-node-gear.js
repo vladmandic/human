@@ -15,7 +15,7 @@ const humanConfig = {
   cacheSensitivity: 0,
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   face: {
-    detector: { enabled: true, modelPath: 'blazeface-back.json', cropFactor: 1.6 },
+    detector: { enabled: true, modelPath: 'blazeface-back.json' },
     mesh: { enabled: true },
     iris: { enabled: false },
     description: { enabled: true, modelPath: 'faceres.json' },

@@ -17,7 +17,7 @@ const humanConfig = { // user configuration for human, used to fine-tune behavio
   debug: true,
   face: {
     enabled: true,
-    detector: { rotation: true, return: true, cropFactor: 1.6, mask: false }, // return tensor is used to get detected face image
+    detector: { rotation: true, return: true, mask: false }, // return tensor is used to get detected face image
     description: { enabled: true }, // default model for face descriptor extraction is faceres
     // mobilefacenet: { enabled: true, modelPath: 'https://vladmandic.github.io/human-models/models/mobilefacenet.json' }, // alternative model
     // insightface: { enabled: true, modelPath: 'https://vladmandic.github.io/insightface/models/insightface-mobilenet-swish.json' }, // alternative model
@@ -46,7 +46,6 @@ const options = {
   distanceMax: 1.0, // farthest that face is allowed to be to the cammera in cm
   mask: humanConfig.face.detector.mask,
   rotation: humanConfig.face.detector.rotation,
-  cropFactor: humanConfig.face.detector.cropFactor,
   ...matchOptions,
 };
 

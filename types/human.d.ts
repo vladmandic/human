@@ -2346,6 +2346,7 @@ export declare type SegmentationEnum = 'default' | 'alpha' | 'foreground' | 'sta
  * =============================================================================
  */
 /// <amd-module name="@tensorflow/tfjs-core/dist/types" />
+/// <reference path="../src/types/webgpu.d.ts" />
 /** @docalias number[] */
 declare interface ShapeMap {
     R0: number[];

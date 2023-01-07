@@ -671,7 +671,7 @@ var i0 = Kt((Sse, a0) => {
   de.getNumBitsAbs = function() {
     if (this.isNegative())
       return this.eq(Pr) ? 64 : this.neg().getNumBitsAbs();
-    for (var e = this.high != 0 ? this.high : this.low, t10 = 31; t10 > 0 && (e & 1 << t10) == 0; t10--)
+    for (var e = this.high != 0 ? this.high : this.low, t10 = 31; t10 > 0 && !(e & 1 << t10); t10--)
       ;
     return this.high != 0 ? t10 + 33 : t10 + 1;
   };
@@ -4274,7 +4274,7 @@ var vi = class {
       };
     } else {
       let { forwardFunc: f } = e, h = (g) => {
-        !n || (o = g.map((x) => this.keep(this.clone(x))));
+        n && (o = g.map((x) => this.keep(this.clone(x))));
       };
       i = () => {
         let g = this.backend.numDataIds();
@@ -4820,7 +4820,7 @@ function zm(r) {
 function Dz() {
   let r = (t10) => {
     let o = t10 << 13, n = 0;
-    for (; (o & 8388608) === 0; )
+    for (; !(o & 8388608); )
       n -= 8388608, o <<= 1;
     return o &= -8388609, n += 947912704, o | n;
   }, e = new Uint32Array(2048);
@@ -8865,11 +8865,11 @@ function $K(r, e, t10) {
 }
 function EK(r, e, t10, o, n, s, a, i, p) {
   let u;
-  if (o == null ? (u = new Array(e.length), u.fill(1)) : u = o, a != null && (a & a - 1) !== 0)
+  if (o == null ? (u = new Array(e.length), u.fill(1)) : u = o, a != null && a & a - 1)
     throw new Error("Multiple ellipses in slice is not allowed.");
   let c = false, l = { dims: u.length, numAddAxisAfterEllipsis: 0, begin: e.slice(), end: t10.slice(), strides: u.slice(), beginMask: n, endMask: s, ellipsisMask: a, newAxisMask: i, shrinkAxisMask: p };
   for (let C = 0; C < l.dims; C++)
-    c && (1 << C & i) !== 0 && l.numAddAxisAfterEllipsis++, 1 << C & a && (c = true);
+    c && 1 << C & i && l.numAddAxisAfterEllipsis++, 1 << C & a && (c = true);
   c || (l.ellipsisMask |= 1 << l.dims, l.dims++);
   let m = { dims: r.length, beginMask: 0, endMask: 0, beginValid: false, endValid: false };
   AK(l, m);
@@ -9520,37 +9520,37 @@ var ml = class {
       let a = s.type, i;
       switch (s.type) {
         case "string":
-          i = Kd(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = Kd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = Kd(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = Kd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "string[]":
-          i = Jd(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = Jd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = Jd(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = Jd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "number":
-          i = jd(e.attr, s.tfName, s.defaultValue || 0), i === void 0 && !!s.tfDeprecatedName && (i = jd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = jd(e.attr, s.tfName, s.defaultValue || 0), i === void 0 && s.tfDeprecatedName && (i = jd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "number[]":
-          i = Zd(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = Zd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = Zd(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = Zd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "bool":
-          i = qd(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = qd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = qd(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = qd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "bool[]":
-          i = tf(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = tf(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = tf(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = tf(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "shape":
-          i = Qd(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = Qd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = Qd(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = Qd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "shape[]":
-          i = ef(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = ef(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = ef(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = ef(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "dtype":
-          i = Xd(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = Xd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = Xd(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = Xd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "dtype[]":
-          i = Yd(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = Yd(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = Yd(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = Yd(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "func":
-          i = AN(e.attr, s.tfName, s.defaultValue), i === void 0 && !!s.tfDeprecatedName && (i = AN(e.attr, s.tfDeprecatedName, s.defaultValue));
+          i = AN(e.attr, s.tfName, s.defaultValue), i === void 0 && s.tfDeprecatedName && (i = AN(e.attr, s.tfDeprecatedName, s.defaultValue));
           break;
         case "tensor":
         case "tensors":
@@ -9931,7 +9931,7 @@ var nf = class {
     e.forEach((o, n) => this.write(o, t10[n]));
   }
   gather(e, t10) {
-    if (!!t10 && t10 !== this.dtype)
+    if (t10 && t10 !== this.dtype)
       throw new Error(`TensorArray dtype is ${this.dtype} but gather requested dtype ${t10}`);
     if (e)
       e = e.slice(0, this.size());
@@ -9946,7 +9946,7 @@ var nf = class {
     return Vr(this.elementShape, o[0].shape, "TensorArray shape mismatch: "), Sr(o, 0);
   }
   concat(e) {
-    if (!!e && e !== this.dtype)
+    if (e && e !== this.dtype)
       throw new Error(`TensorArray dtype is ${this.dtype} but concat requested dtype ${e}`);
     if (this.size() === 0)
       return nr([], [0].concat(this.elementShape));
@@ -10080,7 +10080,7 @@ var Ba = class {
     });
   }
   concat(e, t10) {
-    if (!!e && e !== this.elementDtype)
+    if (e && e !== this.elementDtype)
       throw new Error(`TensorList dtype is ${this.elementDtype} but concat requested dtype ${e}`);
     Vr(this.elementShape, t10, "TensorList shape mismatch: ");
     let o = Hp(this.elementShape, this.tensors, t10);
@@ -11204,7 +11204,7 @@ var ku = class {
     return this._executeAsync(e, t10);
   }
   disposeIntermediateTensors() {
-    !this.clonedTensorsMap || (Object.values(this.clonedTensorsMap).forEach((e) => {
+    this.clonedTensorsMap && (Object.values(this.clonedTensorsMap).forEach((e) => {
       for (let t10 of e)
         t10 && !t10.isDisposed && t10.dispose();
     }), this.clonedTensorsMap = null);
@@ -32223,27 +32223,41 @@ async function compare(config3, input1, input2) {
 var _canvas, _image, _imageData;
 var Env = class {
   constructor() {
+    /** Running in Browser */
     __publicField(this, "browser");
+    /** Running in NodeJS */
     __publicField(this, "node");
+    /** Running in WebWorker thread */
     __publicField(this, "worker");
+    /** Detected platform */
     __publicField(this, "platform", "");
+    /** Detected agent */
     __publicField(this, "agent", "");
+    /** List of supported backends */
     __publicField(this, "backends", []);
+    /** Has any work been performed so far */
     __publicField(this, "initial");
+    /** Are image filters supported? */
     __publicField(this, "filter");
+    /** TFJS instance details */
     __publicField(this, "tfjs");
+    /** Is offscreenCanvas supported? */
     __publicField(this, "offscreen");
+    /** Are performance counter instant values or additive */
     __publicField(this, "perfadd", false);
+    /** If using tfjs-node get version of underlying tensorflow shared library and if gpu acceleration is enabled */
     __publicField(this, "tensorflow", {
       version: void 0,
       gpu: void 0
     });
+    /** WASM detected capabilities */
     __publicField(this, "wasm", {
       supported: void 0,
       backend: void 0,
       simd: void 0,
       multithread: void 0
     });
+    /** WebGL detected capabilities */
     __publicField(this, "webgl", {
       supported: void 0,
       backend: void 0,
@@ -32252,16 +32266,20 @@ var Env = class {
       shader: void 0,
       vendor: void 0
     });
+    /** WebGPU detected capabilities */
     __publicField(this, "webgpu", {
       supported: void 0,
       backend: void 0,
       adapter: void 0
     });
+    /** CPU info */
     __publicField(this, "cpu", {
       model: void 0,
       flags: []
     });
+    /** List of supported kernels for current backend */
     __publicField(this, "kernels", []);
+    /** MonkeyPatch for Canvas/Image/ImageData */
     __privateAdd(this, _canvas, void 0);
     __privateAdd(this, _image, void 0);
     __privateAdd(this, _imageData, void 0);
@@ -32296,6 +32314,7 @@ var Env = class {
   get Image() {
     return __privateGet(this, _image);
   }
+  // @ts-ignore monkey-patch;
   set Image(val) {
     __privateSet(this, _image, val);
     globalThis.Image = val;
@@ -32303,10 +32322,12 @@ var Env = class {
   get ImageData() {
     return __privateGet(this, _imageData);
   }
+  // @ts-ignore monkey-patch;
   set ImageData(val) {
     __privateSet(this, _imageData, val);
     globalThis.ImageData = val;
   }
+  /** update backend information */
   async updateBackend() {
     this.backends = Object.keys(sr().registryFactory);
     try {
@@ -32347,6 +32368,7 @@ var Env = class {
     } catch (e) {
     }
   }
+  /** update cpu information */
   updateCPU() {
     const cpu = { model: "", flags: [] };
     if (this.node && this.platform.startsWith("linux")) {
@@ -32365,9 +32387,14 @@ var env = new Env();
 // src/util/webcam.ts
 var WebCam = class {
   constructor() {
+    // eslint-disable-line @typescript-eslint/no-extraneous-class
+    /** current webcam configuration */
     __publicField(this, "config");
+    /** instance of dom element associated with webcam stream */
     __publicField(this, "element");
+    /** active webcam stream */
     __publicField(this, "stream");
+    /** enumerated video devices */
     __publicField(this, "devices", []);
     __publicField(this, "enumerate", async () => {
       try {
@@ -32378,6 +32405,7 @@ var WebCam = class {
       }
       return this.devices;
     });
+    /** start method initializizes webcam stream and associates it with a dom video element */
     __publicField(this, "start", async (webcamConfig) => {
       var _a2, _b2;
       if (webcamConfig == null ? void 0 : webcamConfig.debug)
@@ -32416,6 +32444,7 @@ var WebCam = class {
         audio: false,
         video: {
           facingMode: this.config.mode === "front" ? "user" : "environment",
+          // @ts-ignore // resizeMode is still not defined in tslib
           resizeMode: this.config.crop ? "crop-and-scale" : "none"
         }
       };
@@ -32479,14 +32508,17 @@ var WebCam = class {
         });
       }
     });
+    /** pause webcam video method */
     __publicField(this, "pause", () => {
       if (this.element)
         this.element.pause();
     });
+    /** play webcam video method */
     __publicField(this, "play", async () => {
       if (this.element)
         await this.element.play();
     });
+    /** stop method stops active webcam stream track and disconnects webcam */
     __publicField(this, "stop", () => {
       if (this.config.debug)
         log("webcam", "stop");
@@ -32502,40 +32534,48 @@ var WebCam = class {
       height: 0
     };
   }
+  /** get active webcam stream track */
   get track() {
     if (!this.stream)
       return void 0;
     return this.stream.getVideoTracks()[0];
   }
+  /** get webcam capabilities */
   get capabilities() {
     if (!this.track)
       return void 0;
     return this.track.getCapabilities ? this.track.getCapabilities() : void 0;
   }
+  /** get webcam constraints */
   get constraints() {
     if (!this.track)
       return void 0;
     return this.track.getConstraints ? this.track.getConstraints() : void 0;
   }
+  /** get webcam settings */
   get settings() {
     if (!this.stream)
       return void 0;
     const track = this.stream.getVideoTracks()[0];
     return track.getSettings ? track.getSettings() : void 0;
   }
+  /** get webcam label */
   get label() {
     if (!this.track)
       return "";
     return this.track.label;
   }
+  /** is webcam paused */
   get paused() {
     var _a2;
     return ((_a2 = this.element) == null ? void 0 : _a2.paused) || false;
   }
+  /** webcam current width */
   get width() {
     var _a2;
     return ((_a2 = this.element) == null ? void 0 : _a2.videoWidth) || 0;
   }
+  /** webcam current height */
   get height() {
     var _a2;
     return ((_a2 = this.element) == null ? void 0 : _a2.videoHeight) || 0;
@@ -32796,7 +32836,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.0.2";
+var version = "3.0.3";
 
 // src/tfjs/humangl.ts
 var config2 = {
@@ -32806,6 +32846,7 @@ var config2 = {
   gl: null,
   extensions: [],
   webGLattr: {
+    // https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.2
     alpha: false,
     antialias: false,
     premultipliedAlpha: false,
@@ -32813,7 +32854,9 @@ var config2 = {
     depth: false,
     stencil: false,
     failIfMajorPerformanceCaveat: false,
+    // default=true
     desynchronized: true
+    // default=undefined
   }
 };
 function extensions() {
@@ -33120,6 +33163,8 @@ function fakeOps(kernelNames, config3) {
           log("kernelFunc", kernelName, config3.backend, param);
         return (_a2 = param == null ? void 0 : param.inputs) == null ? void 0 : _a2.info;
       }
+      // setupFunc: () => { if (config.debug) log('kernelFunc', kernelName, config.backend); },
+      // disposeFunc: () => { if (config.debug) log('kernelFunc', kernelName, config.backend); },
     };
     ka(kernelConfig);
   }
@@ -33267,7 +33312,9 @@ function arrow(ctx, from, to2, radius = 5) {
 // src/draw/options.ts
 var options2 = {
   color: "rgba(173, 216, 230, 0.6)",
+  // 'lightblue' with light alpha channel
   labelColor: "rgba(173, 216, 230, 1)",
+  // 'lightblue' with dark alpha channel
   shadowColor: "black",
   alpha: 0.5,
   font: 'small-caps 16px "Segoe UI"',
@@ -33334,6 +33381,10 @@ var meshAnnotations = {
     67,
     109
   ],
+  // lipsUpperOuter: [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291], // 11
+  // lipsLowerOuter: [146, 91, 181, 84, 17, 314, 405, 321, 375, 291], // 10
+  // lipsUpperInner: [78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308], // 11
+  // lipsLowerInner: [78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308], // 11
   lipsUpperOuter: [185, 40, 39, 37, 0, 267, 269, 270, 409],
   lipsLowerOuter: [61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291],
   lipsUpperInner: [191, 80, 81, 82, 13, 312, 311, 310, 415],
@@ -33343,15 +33394,25 @@ var meshAnnotations = {
   lipsLowerSemiInner: [62, 96, 89, 179, 86, 15, 316, 403, 319, 325, 292],
   lipsUpperSemiInner: [183, 42, 41, 38, 12, 268, 271, 272, 407],
   rightEyeUpper0: [246, 161, 160, 159, 158, 157, 173],
+  // 7
   rightEyeLower0: [33, 7, 163, 144, 145, 153, 154, 155, 133],
+  // 9
   rightEyeUpper1: [247, 30, 29, 27, 28, 56, 190],
+  // 7
   rightEyeLower1: [130, 25, 110, 24, 23, 22, 26, 112, 243],
+  // 9
   rightEyeUpper2: [113, 225, 224, 223, 222, 221, 189],
+  // 7
   rightEyeLower2: [226, 31, 228, 229, 230, 231, 232, 233, 244],
+  // 9
   rightEyeLower3: [143, 111, 117, 118, 119, 120, 121, 128, 245],
+  // 9
   rightEyebrowUpper: [156, 70, 63, 105, 66, 107, 55, 193],
+  // 8
   rightEyebrowLower: [35, 124, 46, 53, 52, 65],
+  // 6
   rightEyeIris: [473, 474, 475, 476, 477],
+  // 5
   leftEyeUpper0: [466, 388, 387, 386, 385, 384, 398],
   leftEyeLower0: [263, 249, 390, 373, 374, 380, 381, 382, 362],
   leftEyeUpper1: [467, 260, 259, 257, 258, 286, 414],
@@ -33385,15 +33446,25 @@ var blazeFaceLandmarks = {
   symmetryLine: [3, 2]
 };
 var irisIndices = [
+  // A mapping from facemesh model keypoints to iris model keypoints.
   { key: "EyeUpper0", indices: [9, 10, 11, 12, 13, 14, 15] },
+  // 7 x 3d
   { key: "EyeUpper1", indices: [25, 26, 27, 28, 29, 30, 31] },
+  // 7 x 3d
   { key: "EyeUpper2", indices: [41, 42, 43, 44, 45, 46, 47] },
+  // 7 x 3d
   { key: "EyeLower0", indices: [0, 1, 2, 3, 4, 5, 6, 7, 8] },
+  // 7 x 3d
   { key: "EyeLower1", indices: [16, 17, 18, 19, 20, 21, 22, 23, 24] },
+  // 9 x 3d
   { key: "EyeLower2", indices: [32, 33, 34, 35, 36, 37, 38, 39, 40] },
+  // 9 x 3d
   { key: "EyeLower3", indices: [54, 55, 56, 57, 58, 59, 60, 61, 62] },
+  // 9 x 3d
   { key: "EyebrowUpper", indices: [63, 64, 65, 66, 67, 68, 69, 70] },
+  // 8 x 3d
   { key: "EyebrowLower", indices: [48, 49, 50, 51, 52, 53] }
+  // 6 x 3d
 ];
 var UV468 = [
   [0.499976992607117, 0.652534008026123],
@@ -36508,6 +36579,7 @@ var TRI468 = [
   255
 ];
 var VTX68 = [
+  /* cont  */
   127,
   234,
   132,
@@ -36525,6 +36597,7 @@ var VTX68 = [
   361,
   454,
   356,
+  /* brows */
   70,
   63,
   105,
@@ -36535,6 +36608,7 @@ var VTX68 = [
   334,
   293,
   300,
+  /* nose  */
   168,
   6,
   195,
@@ -36544,6 +36618,7 @@ var VTX68 = [
   2,
   326,
   327,
+  /* eyes  */
   33,
   160,
   158,
@@ -36556,6 +36631,7 @@ var VTX68 = [
   263,
   373,
   380,
+  /* lip   */
   57,
   40,
   37,
@@ -36568,6 +36644,7 @@ var VTX68 = [
   17,
   84,
   91,
+  /* mouth */
   78,
   81,
   13,
@@ -36800,6 +36877,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   321,
   375,
   291,
+  // Lower outer.
   185,
   40,
   39,
@@ -36809,6 +36887,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   269,
   270,
   409,
+  // Upper outer(excluding corners).
   78,
   95,
   88,
@@ -36820,6 +36899,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   318,
   324,
   308,
+  // Lower inner.
   191,
   80,
   81,
@@ -36829,6 +36909,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   311,
   310,
   415,
+  // Upper inner(excluding corners).
   76,
   77,
   90,
@@ -36840,6 +36921,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   320,
   307,
   306,
+  // Lower semi - outer.
   184,
   74,
   73,
@@ -36849,6 +36931,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   303,
   304,
   408,
+  // Upper semi - outer(excluding corners).
   62,
   96,
   89,
@@ -36860,6 +36943,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   319,
   325,
   292,
+  // Lower semi - inner.
   183,
   42,
   41,
@@ -36869,6 +36953,7 @@ var LANDMARKS_REFINEMENT_LIPS_CONFIG = [
   271,
   272,
   407
+  // Upper semi - inner(excluding corners).
 ];
 var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   33,
@@ -36880,6 +36965,7 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   154,
   155,
   133,
+  // Lower contour.
   246,
   161,
   160,
@@ -36887,6 +36973,7 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   158,
   157,
   173,
+  // upper contour (excluding corners).
   130,
   25,
   110,
@@ -36896,6 +36983,7 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   26,
   112,
   243,
+  // Halo x2 lower contour.
   247,
   30,
   29,
@@ -36903,6 +36991,7 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   28,
   56,
   190,
+  // Halo x2 upper contour (excluding corners).
   226,
   31,
   228,
@@ -36912,6 +37001,7 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   232,
   233,
   244,
+  // Halo x3 lower contour.
   113,
   225,
   224,
@@ -36919,12 +37009,14 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   222,
   221,
   189,
+  // Halo x3 upper contour (excluding corners).
   35,
   124,
   46,
   53,
   52,
   65,
+  // Halo x4 upper contour (no lower because of mesh structure) or eyebrow inner contour.
   143,
   111,
   117,
@@ -36934,6 +37026,7 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   121,
   128,
   245,
+  // Halo x5 lower contour.
   156,
   70,
   63,
@@ -36942,6 +37035,7 @@ var LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG = [
   107,
   55,
   193
+  // Halo x5 upper contour (excluding corners) or eyebrow outer contour.
 ];
 var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   263,
@@ -36953,6 +37047,7 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   381,
   382,
   362,
+  // Lower contour.
   466,
   388,
   387,
@@ -36960,6 +37055,7 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   385,
   384,
   398,
+  // Upper contour (excluding corners).
   359,
   255,
   339,
@@ -36969,6 +37065,7 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   256,
   341,
   463,
+  // Halo x2 lower contour.
   467,
   260,
   259,
@@ -36976,6 +37073,7 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   258,
   286,
   414,
+  // Halo x2 upper contour (excluding corners).
   446,
   261,
   448,
@@ -36985,6 +37083,7 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   452,
   453,
   464,
+  // Halo x3 lower contour.
   342,
   445,
   444,
@@ -36992,12 +37091,14 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   442,
   441,
   413,
+  // Halo x3 upper contour (excluding corners).
   265,
   353,
   276,
   283,
   282,
   295,
+  // Halo x4 upper contour (no lower because of mesh structure) or/ eyebrow inner contour.
   372,
   340,
   346,
@@ -37007,6 +37108,7 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   350,
   357,
   465,
+  // Halo x5 lower contour.
   383,
   300,
   293,
@@ -37015,6 +37117,7 @@ var LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG = [
   336,
   285,
   417
+  // Halo x5 upper contour (excluding corners) or eyebrow outer contour.
 ];
 
 // src/draw/face.ts
@@ -37410,6 +37513,8 @@ async function all(inCanvas2, result, drawOptions) {
     hand(inCanvas2, result.hand, localOptions2),
     object(inCanvas2, result.object, localOptions2),
     gesture(inCanvas2, result.gesture, localOptions2)
+    // gestures do not have buffering
+    // person(inCanvas, result.persons, localOptions); // already included above
   ]);
   drawTime = env.perfadd ? drawTime + Math.round(now() - timeStamp) : Math.round(now() - timeStamp);
   result.performance.draw = drawTime;
@@ -37433,44 +37538,83 @@ __export(blazeposecoords_exports, {
 });
 var kpt = [
   "nose",
+  //  0
   "leftEyeInside",
+  //  1
   "leftEye",
+  //  2
   "leftEyeOutside",
+  //  3
   "rightEyeInside",
+  //  4
   "rightEye",
+  //  5
   "rightEyeOutside",
+  //  6
   "leftEar",
+  //  7
   "rightEar",
+  //  8
   "leftMouth",
+  //  9
   "rightMouth",
+  // 10
   "leftShoulder",
+  // 11
   "rightShoulder",
+  // 12
   "leftElbow",
+  // 13
   "rightElbow",
+  // 14
   "leftWrist",
+  // 15
   "rightWrist",
+  // 16
   "leftPinky",
+  // 17
   "rightPinky",
+  // 18
   "leftIndex",
+  // 19
   "rightIndex",
+  // 20
   "leftThumb",
+  // 21
   "rightThumb",
+  // 22
   "leftHip",
+  // 23
   "rightHip",
+  // 24
   "leftKnee",
+  // 25
   "rightKnee",
+  // 26
   "leftAnkle",
+  // 27
   "rightAnkle",
+  // 28
   "leftHeel",
+  // 29
   "rightHeel",
+  // 30
   "leftFoot",
+  // 31
   "rightFoot",
+  // 32
   "bodyCenter",
+  // 33
   "bodyTop",
+  // 34
   "leftPalm",
+  // 35 // z-coord not ok
   "leftHand",
+  // 36 // similar to wrist but z-coord not ok
   "rightPalm",
+  // 37 // z-coord not ok
   "rightHand"
+  // 38 // similar to wrist but z-coord not ok
 ];
 var connected = {
   shoulders: ["leftShoulder", "rightShoulder"],
@@ -37668,9 +37812,13 @@ function prepareImage(input, size2, cropBox) {
     ];
     padding = [
       [0, 0],
+      // dont touch batch
       height,
+      // height before&after
       width,
+      // width before&after
       [0, 0]
+      // dont touch rbg
     ];
     t10.pad = Ks(t10.cropped || input, padding);
     t10.resize = eK.resizeBilinear(t10.pad, [size2, size2]);
@@ -37699,7 +37847,9 @@ function rescaleKeypoints(keypoints, outputSize2, cropBox) {
     for (const kpt4 of keypoints) {
       kpt4.positionRaw = [
         kpt4.positionRaw[0] / height + cropBox[1],
+        // correct offset due to crop
         kpt4.positionRaw[1] / width + cropBox[0],
+        // correct offset due to crop
         kpt4.positionRaw[2]
       ];
       kpt4.position = [
@@ -37725,7 +37875,14 @@ async function detectLandmarks(input, config3, outputSize2) {
   if (!(model2 == null ? void 0 : model2["executor"]))
     return null;
   const t10 = {};
-  [t10.ld, t10.segmentation, t10.heatmap, t10.world, t10.poseflag] = model2 == null ? void 0 : model2.execute(input, outputNodes.landmarks);
+  [
+    t10.ld,
+    t10.segmentation,
+    t10.heatmap,
+    t10.world,
+    t10.poseflag
+    /* 1,1 */
+  ] = model2 == null ? void 0 : model2.execute(input, outputNodes.landmarks);
   const poseScore = (await t10.poseflag.data())[0];
   const points = await t10.ld.data();
   const distances = await t10.world.data();
@@ -38059,10 +38216,14 @@ async function predict3(image, config3) {
             score: Math.round(100 * partScore) / 100,
             part: kpt2[id2],
             positionRaw: [
+              // normalized to 0..1
+              // @ts-ignore model is not undefined here
               x6 / model4.inputs[0].shape[2],
               y10 / model4.inputs[0].shape[1]
             ],
             position: [
+              // normalized to input image size
+              // @ts-ignore model is not undefined here
               Math.round(image.shape[2] * x6 / model4.inputs[0].shape[2]),
               Math.round(image.shape[1] * y10 / model4.inputs[0].shape[1])
             ]
@@ -38489,11 +38650,19 @@ async function augmentIris(rawCoords, face4, meshSize) {
 async function augment(rawCoords, results) {
   var _a2, _b2, _c2, _d2, _e, _f2, _g2, _h2, _i2, _j2;
   const t10 = {
+    // all attention models produce 2d results so it needs to be later augmented with correct z-coords
+    // mesh: results[0], // already have it in rawCoords // output_mesh_identity
+    // flag: results[1], // already processed in parent // conv_faceflag
     lips: await ((_b2 = (_a2 = results.filter((r) => r.size === 160)) == null ? void 0 : _a2[0]) == null ? void 0 : _b2.data()),
+    // 80 x 2d = 160 // output_lips
     irisL: await ((_d2 = (_c2 = results.filter((r) => r.size === 10)) == null ? void 0 : _c2[0]) == null ? void 0 : _d2.data()),
+    // 5 x 2d = 10 // output_right_iris
     eyeL: await ((_f2 = (_e = results.filter((r) => r.size === 142)) == null ? void 0 : _e[0]) == null ? void 0 : _f2.data()),
+    // 71 x 2d = 142 // output_right_eye
     irisR: await ((_h2 = (_g2 = results.filter((r) => r.size === 10)) == null ? void 0 : _g2[1]) == null ? void 0 : _h2.data()),
+    // 5 x 2d = 10 // output_left_iris
     eyeR: await ((_j2 = (_i2 = results.filter((r) => r.size === 142)) == null ? void 0 : _i2[1]) == null ? void 0 : _j2.data())
+    // 71 x 2d = 142// output_left_eye
   };
   for (const val of Object.values(t10)) {
     if (!val)
@@ -38524,8 +38693,6 @@ var model7 = null;
 var inputSize6 = 0;
 async function predict4(input, config3) {
   var _a2, _b2, _c2, _d2, _e, _f2, _g2, _h2, _i2, _j2;
-  if (!(model7 == null ? void 0 : model7["executor"]))
-    return [];
   const skipTime = (((_a2 = config3.face.detector) == null ? void 0 : _a2.skipTime) || 0) > now() - cache3.timestamp;
   const skipFrame = cache3.skipped < (((_b2 = config3.face.detector) == null ? void 0 : _b2.skipFrames) || 0);
   if (!config3.skipAllowed || !skipTime || !skipFrame || cache3.boxes.length === 0) {
@@ -38544,6 +38711,7 @@ async function predict4(input, config3) {
     let angle = 0;
     let rotationMatrix;
     const face4 = {
+      // init face result
       id: id2++,
       mesh: [],
       meshRaw: [],
@@ -38552,6 +38720,8 @@ async function predict4(input, config3) {
       score: 0,
       boxScore: 0,
       faceScore: 0,
+      // contoursRaw: [],
+      // contours: [],
       annotations: {}
     };
     [angle, rotationMatrix, face4.tensor] = correctFaceRotation((_c2 = config3.face.detector) == null ? void 0 : _c2.rotation, box, input, ((_d2 = config3.face.mesh) == null ? void 0 : _d2.enabled) ? inputSize6 : size());
@@ -38562,7 +38732,7 @@ async function predict4(input, config3) {
         face4.tensor = equilized;
     }
     face4.boxScore = Math.round(100 * box.confidence) / 100;
-    if (!((_e = config3.face.mesh) == null ? void 0 : _e.enabled)) {
+    if (!((_e = config3.face.mesh) == null ? void 0 : _e.enabled) || !(model7 == null ? void 0 : model7["executor"])) {
       face4.box = clampBox(box, input);
       face4.boxRaw = getRawBox(box, input);
       face4.score = face4.boxScore;
@@ -39457,7 +39627,15 @@ var Finger = {
   ring: 3,
   pinky: 4,
   all: [0, 1, 2, 3, 4],
+  // just for convenience
   nameMapping: { 0: "thumb", 1: "index", 2: "middle", 3: "ring", 4: "pinky" },
+  // Describes mapping of joints based on the 21 points returned by handpose.
+  // [0]     Palm
+  // [1-4]   Thumb
+  // [5-8]   Index
+  // [9-12]  Middle
+  // [13-16] Ring
+  // [17-20] Pinky
   pointsMapping: {
     0: [[0, 1], [1, 2], [2, 3], [3, 4]],
     1: [[0, 5], [5, 6], [6, 7], [7, 8]],
@@ -39611,8 +39789,10 @@ var fingergesture_default = [ThumbsUp, Victory, Point, MiddleFinger, OpenPalm];
 // src/hand/fingerpose.ts
 var minConfidence = 0.7;
 var options3 = {
+  // curl estimation
   HALF_CURL_START_LIMIT: 60,
   NO_CURL_START_LIMIT: 130,
+  // direction estimation
   DISTANCE_VOTE_POWER: 1.1,
   SINGLE_ANGLE_VOTE_POWER: 0.9,
   TOTAL_ANGLE_VOTE_POWER: 1.6
@@ -43370,6 +43550,14 @@ var cache4 = {
   hands: []
 };
 var fingerMap = {
+  /*
+  thumb: [0, 1, 2, 3, 4],
+  index: [0, 5, 6, 7, 8],
+  middle: [0, 9, 10, 11, 12],
+  ring: [0, 13, 14, 15, 16],
+  pinky: [0, 17, 18, 19, 20],
+  palm: [0],
+  */
   thumb: [1, 2, 3, 4],
   index: [5, 6, 7, 8],
   middle: [9, 10, 11, 12],
@@ -43450,6 +43638,7 @@ async function detectHands(input, config3) {
 }
 async function detectFingers(input, h, config3) {
   const hand3 = {
+    // initial values inherited from hand detect
     id: h.id,
     score: Math.round(100 * h.score) / 100,
     boxScore: Math.round(100 * h.score) / 100,
@@ -43543,6 +43732,7 @@ __export(movenetcoords_exports, {
   vertical: () => vertical
 });
 var kpt3 = [
+  // used to create part labels
   "nose",
   "leftEye",
   "rightEye",
@@ -43562,6 +43752,7 @@ var kpt3 = [
   "rightAnkle"
 ];
 var horizontal = [
+  // used to fix left vs right
   ["leftEye", "rightEye"],
   ["leftEar", "rightEar"],
   ["leftShoulder", "rightShoulder"],
@@ -43572,16 +43763,19 @@ var horizontal = [
   ["leftAnkle", "rightAnkle"]
 ];
 var vertical = [
+  // used to remove unlikely keypoint positions
   ["leftKnee", "leftShoulder"],
   ["rightKnee", "rightShoulder"],
   ["leftAnkle", "leftKnee"],
   ["rightAnkle", "rightKnee"]
 ];
 var relative = [
+  // used to match relative body parts
   [["leftHip", "rightHip"], ["leftShoulder", "rightShoulder"]],
   [["leftElbow", "rightElbow"], ["leftShoulder", "rightShoulder"]]
 ];
 var connected3 = {
+  // used to create body outline in annotations
   leftLeg: ["leftHip", "leftKnee", "leftAnkle"],
   rightLeg: ["rightHip", "rightKnee", "rightAnkle"],
   torso: ["leftShoulder", "rightShoulder", "rightHip", "leftHip", "leftShoulder"],
@@ -43689,6 +43883,7 @@ function calc2(newResult, config3) {
           pitch: ((bufferedFactor - 1) * (((_q2 = (_p2 = bufferedResult.face[i].rotation) == null ? void 0 : _p2.angle) == null ? void 0 : _q2.pitch) || 0) + (((_s2 = (_r2 = newResult.face[i].rotation) == null ? void 0 : _r2.angle) == null ? void 0 : _s2.pitch) || 0)) / bufferedFactor
         };
         rotation.gaze = {
+          // not fully correct due projection on circle, also causes wrap-around draw on jump from negative to positive
           bearing: ((bufferedFactor - 1) * (((_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze.bearing) || 0) + (((_u2 = newResult.face[i].rotation) == null ? void 0 : _u2.gaze.bearing) || 0)) / bufferedFactor,
           strength: ((bufferedFactor - 1) * (((_v2 = bufferedResult.face[i].rotation) == null ? void 0 : _v2.gaze.strength) || 0) + (((_w2 = newResult.face[i].rotation) == null ? void 0 : _w2.gaze.strength) || 0)) / bufferedFactor
         };
@@ -43896,9 +44091,13 @@ function padInput(input, inputSize10) {
     return input;
   cache5.padding = [
     [0, 0],
+    // dont touch batch
     [input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0, input.shape[2] > input.shape[1] ? Math.trunc((input.shape[2] - input.shape[1]) / 2) : 0],
+    // height before&after
     [input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0, input.shape[1] > input.shape[2] ? Math.trunc((input.shape[1] - input.shape[2]) / 2) : 0],
+    // width before&after
     [0, 0]
+    // dont touch rbg
   ];
   t10.pad = Ks(input, cache5.padding);
   t10.resize = eK.resizeBilinear(t10.pad, [inputSize10, inputSize10]);
@@ -43960,6 +44159,7 @@ function parseSinglePose(res, config3, image) {
         part: kpt3[id2],
         positionRaw,
         position: [
+          // normalized to input image size
           Math.round((image.shape[2] || 0) * positionRaw[0]),
           Math.round((image.shape[1] || 0) * positionRaw[1])
         ]
@@ -44102,6 +44302,7 @@ async function process4(res, outputShape, config3) {
           let boxRaw = [x, y6, w, h];
           boxRaw = boxRaw.map((a) => Math.max(0, Math.min(a, 1)));
           const box = [
+            // results normalized to input image pixels
             boxRaw[0] * outputShape[0],
             boxRaw[1] * outputShape[1],
             boxRaw[2] * outputShape[0],
@@ -44109,9 +44310,12 @@ async function process4(res, outputShape, config3) {
           ];
           const result = {
             id: id2++,
+            // strideSize,
             score: Math.round(100 * score) / 100,
             class: j10 + 1,
             label: labels2[j10].label,
+            // center: [Math.trunc(outputShape[0] * cx), Math.trunc(outputShape[1] * cy)],
+            // centerRaw: [cx, cy],
             box: box.map((a) => Math.trunc(a)),
             boxRaw
           };
@@ -44252,8 +44456,10 @@ function scalePoses(poses, [height, width], [inputResolutionHeight, inputResolut
   return scaledPoses;
 }
 var MaxHeap = class {
+  // function call
   constructor(maxSize2, getElementValue) {
     __publicField(this, "priorityQueue");
+    // don't touch
     __publicField(this, "numberOfElements");
     __publicField(this, "getElementValue");
     this.priorityQueue = new Array(maxSize2);
@@ -44344,7 +44550,13 @@ function addVectors(a, b) {
 
 // src/body/posenet.ts
 var model20;
-var poseNetOutputs = ["MobilenetV1/offset_2/BiasAdd", "MobilenetV1/heatmap_2/BiasAdd", "MobilenetV1/displacement_fwd_2/BiasAdd", "MobilenetV1/displacement_bwd_2/BiasAdd"];
+var poseNetOutputs = [
+  "MobilenetV1/offset_2/BiasAdd",
+  "MobilenetV1/heatmap_2/BiasAdd",
+  "MobilenetV1/displacement_fwd_2/BiasAdd",
+  "MobilenetV1/displacement_bwd_2/BiasAdd"
+  /* displacementBwd */
+];
 var localMaximumRadius = 1;
 var outputStride = 16;
 var squaredNmsRadius = 50 ** 2;
@@ -45705,24 +45917,74 @@ async function warmup(instance, userConfig) {
 // src/human.ts
 var _numTensors, _analyzeMemoryLeaks, _checkSanity, _sanity, _loops;
 var Human = class {
+  // definition end
+  /** Constructor for **Human** library that is futher used for all operations
+   * @param userConfig - user configuration object {@link Config}
+   */
   constructor(userConfig) {
+    /** Current version of Human library in *semver* format */
     __publicField(this, "version");
+    /** Current configuration
+     * - Defaults: [config](https://github.com/vladmandic/human/blob/main/src/config.ts#L262)
+     */
     __publicField(this, "config");
+    /** Last known result of detect run
+     * - Can be accessed anytime after initial detection
+    */
     __publicField(this, "result");
+    /** Current state of Human library
+     * - Can be polled to determine operations that are currently executed
+     * - Progresses through: 'config', 'check', 'backend', 'load', 'run:<model>', 'idle'
+     */
     __publicField(this, "state");
+    /** currenty processed image tensor and canvas */
     __publicField(this, "process");
+    /** Instance of TensorFlow/JS used by Human
+     *  - Can be embedded or externally provided
+     * [TFJS API](https://js.tensorflow.org/api/latest/)
+     */
     __publicField(this, "tf");
+    /** Object containing environment information used for diagnostics */
     __publicField(this, "env", env);
+    /** Draw helper classes that can draw detected objects on canvas using specified draw
+     * - canvas: draws input to canvas
+     * - options: are global settings for all draw operations, can be overriden for each draw method {@link DrawOptions}
+     * - face, body, hand, gesture, object, person: draws detected results as overlays on canvas
+     */
+    // draw: { canvas: typeof draw.canvas, face: typeof draw.face, body: typeof draw.body, hand: typeof draw.hand, gesture: typeof draw.gesture, object: typeof draw.object, person: typeof draw.person, all: typeof draw.all, options: DrawOptions };
     __publicField(this, "draw", draw_exports);
+    /** Face Matching
+     * - similarity: compare two face descriptors and return similarity index
+     * - distance: compare two face descriptors and return raw calculated differences
+     * - find: compare face descriptor to array of face descriptors and return best match
+     */
     __publicField(this, "match", match_exports);
+    /** Currently loaded models
+     * @internal
+     * {@link models#Models}
+    */
     __publicField(this, "models");
+    /** Container for events dispatched by Human
+     * Possible events:
+     * - `create`: triggered when Human object is instantiated
+     * - `load`: triggered when models are loaded (explicitly or on-demand)
+     * - `image`: triggered when input image is processed
+     * - `result`: triggered when detection is complete
+     * - `warmup`: triggered when warmup is complete
+     * - `error`: triggered on some errors
+     */
     __publicField(this, "events");
+    /** Reference face triangualtion array of 468 points, used for triangle references between points */
     __publicField(this, "faceTriangulation");
+    /** Refernce UV map of 468 values, used for 3D mapping of the face mesh */
     __publicField(this, "faceUVMap");
+    /** Performance object that contains values for all recently performed operations */
     __publicField(this, "performance");
+    // perf members are dynamically defined as needed
     __privateAdd(this, _numTensors, void 0);
     __privateAdd(this, _analyzeMemoryLeaks, void 0);
     __privateAdd(this, _checkSanity, void 0);
+    /** internal function to measure tensor leaks */
     __publicField(this, "analyze", (...msg) => {
       if (!__privateGet(this, _analyzeMemoryLeaks))
         return;
@@ -45733,6 +45995,7 @@ var Human = class {
       if (leaked !== 0)
         log(...msg, leaked);
     });
+    /** internal function for quick sanity check on inputs @hidden */
     __privateAdd(this, _sanity, (input) => {
       if (!__privateGet(this, _checkSanity))
         return null;
@@ -45747,12 +46010,17 @@ var Human = class {
       }
       return null;
     });
+    /** WebCam helper methods
+     *
+     */
     __publicField(this, "webcam", new WebCam());
+    /** emit event */
     __publicField(this, "emit", (event) => {
       var _a2;
       if ((_a2 = this.events) == null ? void 0 : _a2.dispatchEvent)
         this.events.dispatchEvent(new Event(event));
     });
+    /** internal structure that keeps track of processed videos @hidden */
     __privateAdd(this, _loops, {});
     const tfVersion = (tse.tfjs || RK).replace(/-(.*)/, "");
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfVersion}/dist/`;
@@ -45791,6 +46059,7 @@ var Human = class {
     if (this.config.debug)
       log("environment:", envTemp);
   }
+  /** Reset configuration to default values */
   reset() {
     const currentBackend = this.config.backend;
     this.config = JSON.parse(JSON.stringify(config));
@@ -45798,18 +46067,32 @@ var Human = class {
     reset();
     env.initial = true;
   }
+  /** Validate current configuration schema */
   validate(userConfig) {
     const msgs = validate(config, userConfig || this.config);
     if (msgs.length === 0)
       this.config = mergeDeep(this.config, userConfig);
     return msgs;
   }
+  /** Utility wrapper for performance.now() */
   now() {
     return now();
   }
+  /** Process input as return canvas and tensor
+   *
+   * @param input - any input {@link Input}
+   * @param getTensor - should image processing also return tensor or just canvas
+   * Returns object with `tensor` and `canvas`
+   */
   image(input, getTensor = false) {
     return process2(input, this.config, getTensor);
   }
+  /** Segmentation method takes any input and returns RGBA tensor
+   * Note: Segmentation is not triggered as part of detect process
+   *
+   * @param input - {@link Input}
+   * Returns tensor which contains image data in RGBA format
+   */
   async segmentation(input, userConfig) {
     var _a2, _b2, _c2;
     if (userConfig)
@@ -45829,14 +46112,31 @@ var Human = class {
     Ot(processed.tensor);
     return tensor;
   }
+  /** Compare two input tensors for pixel similarity
+   * - use `human.image` to process any valid input and get a tensor that can be used for compare
+   * - when passing manually generated tensors:
+   *  - both input tensors must be in format [1, height, width, 3]
+   *  - if resolution of tensors does not match, second tensor will be resized to match resolution of the first tensor
+   * - return value is pixel similarity score normalized by input resolution and rgb channels
+  */
   compare(firstImageTensor, secondImageTensor) {
     return compare(this.config, firstImageTensor, secondImageTensor);
   }
+  /** Explicit backend initialization
+   *  - Normally done implicitly during initial load phase
+   *  - Call to explictly register and initialize TFJS backend without any other operations
+   *  - Use when changing backend during runtime
+   */
   async init() {
     await check(this, true);
     await this.tf.ready();
     reset();
   }
+  /** Load method preloads all configured models on-demand
+   * - Not explicitly required as any required model is load implicitly on it's first run
+   *
+   * @param userConfig - {@link Config}
+  */
   async load(userConfig) {
     this.state = "load";
     const timeStamp = now();
@@ -45867,9 +46167,21 @@ var Human = class {
     if (current > (this.performance.loadModels || 0))
       this.performance.loadModels = this.env.perfadd ? (this.performance.loadModels || 0) + current : current;
   }
+  /** Runs interpolation using last known result and returns smoothened result
+   * Interpolation is based on time since last known result so can be called independently
+   *
+   * @param result - {@link Result} optional use specific result set to run interpolation on
+   * @returns result - {@link Result}
+   */
   next(result = this.result) {
     return calc2(result, this.config);
   }
+  /** Warmup method pre-initializes all configured models for faster inference
+   * - can take significant time on startup
+   * - only used for `webgl` and `humangl` backends
+   * @param userConfig - {@link Config}
+   * @returns result - {@link Result}
+  */
   async warmup(userConfig) {
     const t0 = now();
     const res = await warmup(this, userConfig);
@@ -45877,6 +46189,10 @@ var Human = class {
     this.performance.warmup = Math.trunc(t12 - t0);
     return res;
   }
+  /** Run detect with tensorflow profiling
+   * - result object will contain total exeuction time information for top-20 kernels
+   * - actual detection object can be accessed via `human.result`
+  */
   async profile(input, userConfig) {
     const profile = await this.tf.profile(() => this.detect(input, userConfig));
     const kernels = {};
@@ -45899,6 +46215,16 @@ var Human = class {
     kernelArr.length = 20;
     return kernelArr;
   }
+  /** Main detection method
+   * - Analyze configuration: {@link Config}
+   * - Pre-process input: {@link Input}
+   * - Run inference for all configured models
+   * - Process and return result: {@link Result}
+   *
+   * @param input - {@link Input}
+   * @param userConfig - {@link Config}
+   * @returns result - {@link Result}
+  */
   async detect(input, userConfig) {
     this.state = "detect";
     return new Promise(async (resolve) => {
@@ -46058,11 +46384,19 @@ var Human = class {
       resolve(this.result);
     });
   }
+  /** Helper function
+   * @param ms - sleep time in miliseconds
+   */
   async sleep(ms2) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms2);
     });
   }
+  /** Continously detect video frames
+   * @param element - HTMLVideoElement input
+   * @param run - boolean run continously or stop if already running, default true
+   * @param delay - number delay detection between frames for number of miliseconds, default 0
+   */
   async video(element, run = true, delay = 0) {
     if (run) {
       if (!__privateGet(this, _loops)[element.id]) {

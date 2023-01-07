@@ -33,7 +33,6 @@ let model: GraphModel | null = null;
 let inputSize = 0;
 
 export async function predict(input: Tensor4D, config: Config): Promise<FaceResult[]> {
-  if (!model?.['executor']) return [];
   // reset cached boxes
   const skipTime = (config.face.detector?.skipTime || 0) > (now() - cache.timestamp);
   const skipFrame = cache.skipped < (config.face.detector?.skipFrames || 0);
@@ -74,7 +73,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
       if (equilized) face.tensor = equilized;
     }
     face.boxScore = Math.round(100 * box.confidence) / 100;
-    if (!config.face.mesh?.enabled) { // mesh not enabled, return resuts from detector only
+    if (!config.face.mesh?.enabled || !model?.['executor']) { // mesh not enabled or not loaded, return resuts from detector only
       face.box = util.clampBox(box, input);
       face.boxRaw = util.getRawBox(box, input);
       face.score = face.boxScore;

@@ -32289,12 +32289,13 @@ var Env = class {
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;
     this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
-    if (typeof navigator !== "undefined") {
-      const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if (typeof navigator !== "undefined" && typeof navigator.userAgent !== "undefined") {
+      const agent = navigator.userAgent || "";
+      const raw = agent.match(/\(([^()]+)\)/g);
       if (raw == null ? void 0 : raw[0]) {
         const platformMatch = raw[0].match(/\(([^()]+)\)/g);
         this.platform = (platformMatch == null ? void 0 : platformMatch[0]) ? platformMatch[0].replace(/\(|\)/g, "") : "";
-        this.agent = navigator.userAgent.replace(raw[0], "");
+        this.agent = agent.replace(raw[0], "");
         if (this.platform[1])
           this.agent = this.agent.replace(raw[1], "");
         this.agent = this.agent.replace(/  /g, " ");
@@ -32353,7 +32354,7 @@ var Env = class {
       this.webgl.renderer = gl2.getParameter(gl2.RENDERER);
       this.webgl.shader = gl2.getParameter(gl2.SHADING_LANGUAGE_VERSION);
     }
-    this.webgpu.supported = this.browser && typeof navigator.gpu !== "undefined";
+    this.webgpu.supported = this.browser && typeof navigator !== "undefined" && typeof navigator.gpu !== "undefined";
     this.webgpu.backend = this.backends.includes("webgpu");
     try {
       if (this.webgpu.supported) {
@@ -38373,6 +38374,7 @@ function generateAnchors(inputSize10) {
 function transformRawCoords(coordsRaw, box, angle, rotationMatrix, inputSize10) {
   const boxSize = getBoxSize(box);
   const coordsScaled = coordsRaw.map((coord) => [
+    // scaled around zero-point
     boxSize[0] / inputSize10 * (coord[0] - inputSize10 / 2),
     boxSize[1] / inputSize10 * (coord[1] - inputSize10 / 2),
     coord[2] || 0
@@ -39337,6 +39339,7 @@ var calculateGaze = (face4) => {
   const eyeCenter = left ? [(face4.mesh[133][0] + face4.mesh[33][0]) / 2, (face4.mesh[133][1] + face4.mesh[33][1]) / 2] : [(face4.mesh[263][0] + face4.mesh[362][0]) / 2, (face4.mesh[263][1] + face4.mesh[362][1]) / 2];
   const eyeSize = left ? [face4.mesh[133][0] - face4.mesh[33][0], face4.mesh[23][1] - face4.mesh[27][1]] : [face4.mesh[263][0] - face4.mesh[362][0], face4.mesh[253][1] - face4.mesh[257][1]];
   const eyeDiff = [
+    // x distance between extreme point and center point normalized with eye size
     (eyeCenter[0] - irisCenter[0]) / eyeSize[0] - offsetIris[0],
     eyeRatio * (irisCenter[1] - eyeCenter[1]) / eyeSize[1] - offsetIris[1]
   ];

@@ -107,12 +107,13 @@ export class Env {
 
     // @ts-ignore WorkerGlobalScope evaluated in browser only
     this.worker = this.browser && this.offscreen ? (typeof WorkerGlobalScope !== 'undefined') : undefined;
-    if (typeof navigator !== 'undefined') { // TBD replace with navigator.userAgentData once in mainline
-      const raw = navigator.userAgent.match(/\(([^()]+)\)/g);
+    if ((typeof navigator !== 'undefined') && (typeof navigator.userAgent !== 'undefined')) { // TBD replace with navigator.userAgentData once in mainline
+      const agent = navigator.userAgent || '';
+      const raw = agent.match(/\(([^()]+)\)/g);
       if (raw?.[0]) {
         const platformMatch = raw[0].match(/\(([^()]+)\)/g);
         this.platform = (platformMatch?.[0]) ? platformMatch[0].replace(/\(|\)/g, '') : '';
-        this.agent = navigator.userAgent.replace(raw[0], '');
+        this.agent = agent.replace(raw[0], '');
         if (this.platform[1]) this.agent = this.agent.replace(raw[1], '');
         this.agent = this.agent.replace(/  /g, ' ');
       }
@@ -148,7 +149,7 @@ export class Env {
       this.webgl.renderer = gl.getParameter(gl.RENDERER);
       this.webgl.shader = gl.getParameter(gl.SHADING_LANGUAGE_VERSION);
     }
-    this.webgpu.supported = this.browser && typeof navigator.gpu !== 'undefined';
+    this.webgpu.supported = this.browser && typeof navigator !== 'undefined' && typeof navigator.gpu !== 'undefined';
     this.webgpu.backend = this.backends.includes('webgpu');
     try {
       if (this.webgpu.supported) {

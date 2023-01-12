@@ -9,15 +9,16 @@
   
 ## Changelog
   
+### **HEAD -> main** 2023/01/07 mandic00@live.com
+
+- fix facedetector-only configs
+
 ### **3.0.3** 2023/01/07 mandic00@live.com
 
-
-### **origin/main** 2023/01/06 mandic00@live.com
-
+- full rebuild
 
 ### **3.0.2** 2023/01/06 mandic00@live.com
 
-- full rebuild
 - default face.rotation disabled
 
 ### **release: 3.0.1** 2022/11/22 mandic00@live.com

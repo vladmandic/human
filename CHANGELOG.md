@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2023/01/07 mandic00@live.com
+### **HEAD -> main** 2023/01/12 mandic00@live.com
 
 - fix facedetector-only configs
 

@@ -2,7 +2,7 @@
  * Results interpolation for smoothening of video detection results inbetween detected frames
  */
 
-import { Result, FaceResult, BodyResult, HandResult, ObjectResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation, empty } from '../result';
+import { Result, FaceResult, BodyResult, HandResult, ObjectResult, PersonResult, Box, Point, BodyLandmark, BodyAnnotation, empty, FaceLandmark } from '../result';
 import type { Config } from '../config';
 
 import * as moveNetCoords from '../body/movenetcoords';
@@ -125,6 +125,19 @@ export function calc(newResult: Result, config: Config): Result {
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j] + b) / bufferedFactor)) as Box;
       const boxRaw = (newResult.face[i].boxRaw // update boxRaw
         .map((b, j) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j] + b) / bufferedFactor)) as Box;
+      let annotations: Record<FaceLandmark, Point[]> = newResult.face[i].annotations;
+      if (Object.keys(bufferedResult.face[i].annotations).length !== Object.keys(newResult.face[i].annotations).length) {
+        bufferedResult.face[i].annotations = newResult.face[i].annotations; // reset annotations as previous frame did not have them
+        annotations = bufferedResult.face[i].annotations;
+      } else if (newResult.face[i].annotations) {
+        for (const key of Object.keys(newResult.face[i].annotations)) { // update annotations
+          annotations[key] = newResult.face[i]?.annotations?.[key]?.[0]
+            ? newResult.face[i].annotations[key]
+              .map((val, j: number) => val
+                .map((coord: number, k: number) => ((bufferedFactor - 1) * bufferedResult.face[i].annotations[key][j][k] + coord) / bufferedFactor))
+            : null;
+        }
+      }
       if (newResult.face[i].rotation) {
         const rotation: {
           matrix: [number, number, number, number, number, number, number, number, number],
@@ -142,9 +155,9 @@ export function calc(newResult: Result, config: Config): Result {
           bearing: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze.bearing || 0) + (newResult.face[i].rotation?.gaze.bearing || 0)) / bufferedFactor,
           strength: ((bufferedFactor - 1) * (bufferedResult.face[i].rotation?.gaze.strength || 0) + (newResult.face[i].rotation?.gaze.strength || 0)) / bufferedFactor,
         };
-        bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw }; // shallow clone plus updated values
+        bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw, annotations }; // shallow clone plus updated values
       } else {
-        bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw }; // shallow clone plus updated values
+        bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw, annotations }; // shallow clone plus updated values
       }
     }
   }

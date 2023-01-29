@@ -78,13 +78,11 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
       face.boxRaw = util.getRawBox(box, input);
       face.score = face.boxScore;
       face.mesh = box.landmarks.map((pt) => [
-        ((box.startPoint[0] + box.endPoint[0])) / 2 + ((box.endPoint[0] + box.startPoint[0]) * pt[0] / blazeface.size()),
-        ((box.startPoint[1] + box.endPoint[1])) / 2 + ((box.endPoint[1] + box.startPoint[1]) * pt[1] / blazeface.size()),
+        ((box.startPoint[0] + box.endPoint[0]) / 2) + (pt[0] * input.shape[2] / blazeface.size()),
+        ((box.startPoint[1] + box.endPoint[1]) / 2) + (pt[1] * input.shape[1] / blazeface.size()),
       ]);
       face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size]);
-      for (const key of Object.keys(coords.blazeFaceLandmarks)) {
-        face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
-      }
+      for (const key of Object.keys(coords.blazeFaceLandmarks)) face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
     } else if (!model) { // mesh enabled, but not loaded
       if (config.debug) log('face mesh detection requested, but model is not loaded');
     } else { // mesh enabled

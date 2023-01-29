@@ -118,13 +118,22 @@ function drawFacePolygons(f: FaceResult, ctx: CanvasRenderingContext2D | Offscre
 }
 
 function drawFacePoints(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
-  if (localOptions.drawPoints && f.mesh.length >= 468) {
-    for (let i = 0; i < f.mesh.length; i++) {
-      point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], localOptions);
-      if (localOptions.drawAttention) {
-        if (facemeshConstants.LANDMARKS_REFINEMENT_LIPS_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) + 127, localOptions);
-        if (facemeshConstants.LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, localOptions);
-        if (facemeshConstants.LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, localOptions);
+  if (localOptions.drawPoints) {
+    if (f?.mesh.length >= 468) {
+      for (let i = 0; i < f.mesh.length; i++) {
+        point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], localOptions);
+        if (localOptions.drawAttention) {
+          if (facemeshConstants.LANDMARKS_REFINEMENT_LIPS_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) + 127, localOptions);
+          if (facemeshConstants.LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, localOptions);
+          if (facemeshConstants.LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG.includes(i)) point(ctx, f.mesh[i][0], f.mesh[i][1], (f.mesh[i][2] as number) - 127, localOptions);
+        }
+      }
+    } else {
+      for (const [k, v] of Object.entries(f?.annotations || {})) {
+        if (!v?.[0]) continue;
+        const pt = v[0];
+        point(ctx, pt[0], pt[1], 0, localOptions);
+        if (localOptions.drawLabels) labels(ctx, k, pt[0], pt[1], localOptions);
       }
     }
   }

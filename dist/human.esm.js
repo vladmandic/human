@@ -32837,7 +32837,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.0.3";
+var version = "3.0.4";
 
 // src/tfjs/humangl.ts
 var config2 = {
@@ -37237,16 +37237,27 @@ function drawFacePolygons(f, ctx) {
   }
 }
 function drawFacePoints(f, ctx) {
-  if (localOptions.drawPoints && f.mesh.length >= 468) {
-    for (let i = 0; i < f.mesh.length; i++) {
-      point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], localOptions);
-      if (localOptions.drawAttention) {
-        if (LANDMARKS_REFINEMENT_LIPS_CONFIG.includes(i))
-          point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2] + 127, localOptions);
-        if (LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG.includes(i))
-          point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2] - 127, localOptions);
-        if (LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG.includes(i))
-          point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2] - 127, localOptions);
+  if (localOptions.drawPoints) {
+    if ((f == null ? void 0 : f.mesh.length) >= 468) {
+      for (let i = 0; i < f.mesh.length; i++) {
+        point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2], localOptions);
+        if (localOptions.drawAttention) {
+          if (LANDMARKS_REFINEMENT_LIPS_CONFIG.includes(i))
+            point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2] + 127, localOptions);
+          if (LANDMARKS_REFINEMENT_LEFT_EYE_CONFIG.includes(i))
+            point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2] - 127, localOptions);
+          if (LANDMARKS_REFINEMENT_RIGHT_EYE_CONFIG.includes(i))
+            point(ctx, f.mesh[i][0], f.mesh[i][1], f.mesh[i][2] - 127, localOptions);
+        }
+      }
+    } else {
+      for (const [k, v10] of Object.entries((f == null ? void 0 : f.annotations) || {})) {
+        if (!(v10 == null ? void 0 : v10[0]))
+          continue;
+        const pt = v10[0];
+        point(ctx, pt[0], pt[1], 0, localOptions);
+        if (localOptions.drawLabels)
+          labels(ctx, k, pt[0], pt[1], localOptions);
       }
     }
   }
@@ -38282,7 +38293,8 @@ var getRawBox = (box, input) => box ? [
 var scaleBoxCoordinates = (box, factor) => {
   const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
   const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
-  return { startPoint, endPoint, landmarks: box.landmarks, confidence: box.confidence };
+  const landmarks = box.landmarks;
+  return { startPoint, endPoint, landmarks, confidence: box.confidence };
 };
 var cutAndResize = (box, image, cropSize) => {
   const h = image.shape[1];
@@ -38739,13 +38751,12 @@ async function predict4(input, config3) {
       face4.boxRaw = getRawBox(box, input);
       face4.score = face4.boxScore;
       face4.mesh = box.landmarks.map((pt) => [
-        (box.startPoint[0] + box.endPoint[0]) / 2 + (box.endPoint[0] + box.startPoint[0]) * pt[0] / size(),
-        (box.startPoint[1] + box.endPoint[1]) / 2 + (box.endPoint[1] + box.startPoint[1]) * pt[1] / size()
+        (box.startPoint[0] + box.endPoint[0]) / 2 + pt[0] * input.shape[2] / size(),
+        (box.startPoint[1] + box.endPoint[1]) / 2 + pt[1] * input.shape[1] / size()
       ]);
       face4.meshRaw = face4.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size2]);
-      for (const key of Object.keys(blazeFaceLandmarks)) {
+      for (const key of Object.keys(blazeFaceLandmarks))
         face4.annotations[key] = [face4.mesh[blazeFaceLandmarks[key]]];
-      }
     } else if (!model7) {
       if (config3.debug)
         log("face mesh detection requested, but model is not loaded");
@@ -39424,7 +39435,7 @@ var calculateFaceAngle = (face4, imageSize) => {
 // src/face/anthropometry.ts
 function calculateCameraDistance(face4, width) {
   const f = face4 == null ? void 0 : face4.annotations;
-  if (!f)
+  if (!(f == null ? void 0 : f.leftEyeIris) || !(f == null ? void 0 : f.rightEyeIris))
     return 0;
   const irisSize = Math.max(Math.abs(f.leftEyeIris[3][0] - f.leftEyeIris[1][0]), Math.abs(f.rightEyeIris[3][0] - f.rightEyeIris[1][0])) / width;
   const cameraDistance = Math.round(1.17 / irisSize) / 100;
@@ -43791,7 +43802,7 @@ var connected3 = {
 var bufferedResult = empty();
 var interpolateTime = 0;
 function calc2(newResult, config3) {
-  var _a2, _b2, _c2, _d2, _e, _f2, _g2, _h2, _i2, _j2, _k, _l2, _m2, _n2, _o2, _p2, _q2, _r2, _s2, _t, _u2, _v2, _w2;
+  var _a2, _b2, _c2, _d2, _e, _f2, _g2, _h2, _i2, _j2, _k, _l2, _m2, _n2, _o2, _p2, _q2, _r2, _s2, _t, _u2, _v2, _w2, _x2, _y, _z2;
   const t0 = now();
   if (!newResult)
     return empty();
@@ -43877,22 +43888,31 @@ function calc2(newResult, config3) {
     for (let i = 0; i < newResult.face.length; i++) {
       const box = newResult.face[i].box.map((b, j10) => ((bufferedFactor - 1) * bufferedResult.face[i].box[j10] + b) / bufferedFactor);
       const boxRaw = newResult.face[i].boxRaw.map((b, j10) => ((bufferedFactor - 1) * bufferedResult.face[i].boxRaw[j10] + b) / bufferedFactor);
+      let annotations2 = newResult.face[i].annotations;
+      if (Object.keys(bufferedResult.face[i].annotations).length !== Object.keys(newResult.face[i].annotations).length) {
+        bufferedResult.face[i].annotations = newResult.face[i].annotations;
+        annotations2 = bufferedResult.face[i].annotations;
+      } else if (newResult.face[i].annotations) {
+        for (const key of Object.keys(newResult.face[i].annotations)) {
+          annotations2[key] = ((_i2 = (_h2 = (_g2 = newResult.face[i]) == null ? void 0 : _g2.annotations) == null ? void 0 : _h2[key]) == null ? void 0 : _i2[0]) ? newResult.face[i].annotations[key].map((val, j10) => val.map((coord, k) => ((bufferedFactor - 1) * bufferedResult.face[i].annotations[key][j10][k] + coord) / bufferedFactor)) : null;
+        }
+      }
       if (newResult.face[i].rotation) {
         const rotation = { matrix: [0, 0, 0, 0, 0, 0, 0, 0, 0], angle: { roll: 0, yaw: 0, pitch: 0 }, gaze: { bearing: 0, strength: 0 } };
-        rotation.matrix = (_g2 = newResult.face[i].rotation) == null ? void 0 : _g2.matrix;
+        rotation.matrix = (_j2 = newResult.face[i].rotation) == null ? void 0 : _j2.matrix;
         rotation.angle = {
-          roll: ((bufferedFactor - 1) * (((_i2 = (_h2 = bufferedResult.face[i].rotation) == null ? void 0 : _h2.angle) == null ? void 0 : _i2.roll) || 0) + (((_k = (_j2 = newResult.face[i].rotation) == null ? void 0 : _j2.angle) == null ? void 0 : _k.roll) || 0)) / bufferedFactor,
-          yaw: ((bufferedFactor - 1) * (((_m2 = (_l2 = bufferedResult.face[i].rotation) == null ? void 0 : _l2.angle) == null ? void 0 : _m2.yaw) || 0) + (((_o2 = (_n2 = newResult.face[i].rotation) == null ? void 0 : _n2.angle) == null ? void 0 : _o2.yaw) || 0)) / bufferedFactor,
-          pitch: ((bufferedFactor - 1) * (((_q2 = (_p2 = bufferedResult.face[i].rotation) == null ? void 0 : _p2.angle) == null ? void 0 : _q2.pitch) || 0) + (((_s2 = (_r2 = newResult.face[i].rotation) == null ? void 0 : _r2.angle) == null ? void 0 : _s2.pitch) || 0)) / bufferedFactor
+          roll: ((bufferedFactor - 1) * (((_l2 = (_k = bufferedResult.face[i].rotation) == null ? void 0 : _k.angle) == null ? void 0 : _l2.roll) || 0) + (((_n2 = (_m2 = newResult.face[i].rotation) == null ? void 0 : _m2.angle) == null ? void 0 : _n2.roll) || 0)) / bufferedFactor,
+          yaw: ((bufferedFactor - 1) * (((_p2 = (_o2 = bufferedResult.face[i].rotation) == null ? void 0 : _o2.angle) == null ? void 0 : _p2.yaw) || 0) + (((_r2 = (_q2 = newResult.face[i].rotation) == null ? void 0 : _q2.angle) == null ? void 0 : _r2.yaw) || 0)) / bufferedFactor,
+          pitch: ((bufferedFactor - 1) * (((_t = (_s2 = bufferedResult.face[i].rotation) == null ? void 0 : _s2.angle) == null ? void 0 : _t.pitch) || 0) + (((_v2 = (_u2 = newResult.face[i].rotation) == null ? void 0 : _u2.angle) == null ? void 0 : _v2.pitch) || 0)) / bufferedFactor
         };
         rotation.gaze = {
           // not fully correct due projection on circle, also causes wrap-around draw on jump from negative to positive
-          bearing: ((bufferedFactor - 1) * (((_t = bufferedResult.face[i].rotation) == null ? void 0 : _t.gaze.bearing) || 0) + (((_u2 = newResult.face[i].rotation) == null ? void 0 : _u2.gaze.bearing) || 0)) / bufferedFactor,
-          strength: ((bufferedFactor - 1) * (((_v2 = bufferedResult.face[i].rotation) == null ? void 0 : _v2.gaze.strength) || 0) + (((_w2 = newResult.face[i].rotation) == null ? void 0 : _w2.gaze.strength) || 0)) / bufferedFactor
+          bearing: ((bufferedFactor - 1) * (((_w2 = bufferedResult.face[i].rotation) == null ? void 0 : _w2.gaze.bearing) || 0) + (((_x2 = newResult.face[i].rotation) == null ? void 0 : _x2.gaze.bearing) || 0)) / bufferedFactor,
+          strength: ((bufferedFactor - 1) * (((_y = bufferedResult.face[i].rotation) == null ? void 0 : _y.gaze.strength) || 0) + (((_z2 = newResult.face[i].rotation) == null ? void 0 : _z2.gaze.strength) || 0)) / bufferedFactor
         };
-        bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw };
+        bufferedResult.face[i] = { ...newResult.face[i], rotation, box, boxRaw, annotations: annotations2 };
       } else {
-        bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw };
+        bufferedResult.face[i] = { ...newResult.face[i], box, boxRaw, annotations: annotations2 };
       }
     }
   }

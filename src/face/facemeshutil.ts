@@ -34,7 +34,8 @@ export const getRawBox = (box, input): Box => (box ? [
 export const scaleBoxCoordinates = (box, factor) => {
   const startPoint: Point = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
   const endPoint: Point = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
-  return { startPoint, endPoint, landmarks: box.landmarks, confidence: box.confidence };
+  const landmarks = box.landmarks;
+  return { startPoint, endPoint, landmarks, confidence: box.confidence };
 };
 
 export const cutAndResize = (box, image, cropSize) => {

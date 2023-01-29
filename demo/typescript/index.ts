@@ -17,8 +17,7 @@ const humanConfig: Partial<H.Config> = { // user configuration for human, used t
   filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: true }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
   body: { enabled: true },
-  // hand: { enabled: true },
-  hand: { enabled: false },
+  hand: { enabled: true },
   object: { enabled: false },
   segmentation: { enabled: false },
   gesture: { enabled: true },
@@ -29,6 +28,7 @@ const human = new H.Human(humanConfig); // create instance of human with overrid
 human.env.perfadd = false; // is performance data showing instant or total values
 human.draw.options.font = 'small-caps 18px "Lato"'; // set font used to draw labels when using draw methods
 human.draw.options.lineHeight = 20;
+human.draw.options.drawPoints = true; // draw points on face mesh
 // human.draw.options.fillPolygons = true;
 
 const dom = { // grab instances of dom objects so we dont have to look them up later

@@ -9,10 +9,10 @@
   
 ## Changelog
   
+### **HEAD -> main** 2023/01/29 mandic00@live.com
+
+
 ### **3.0.4** 2023/01/29 mandic00@live.com
-
-
-### **origin/main** 2023/01/21 mandic00@live.com
 
 - make naviator calls safe
 - fix facedetector-only configs

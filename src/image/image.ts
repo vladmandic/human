@@ -39,10 +39,18 @@ export function canvas(width: number, height: number): AnyCanvas {
       if (typeof OffscreenCanvas === 'undefined') throw new Error('canvas error: attempted to run in web worker but OffscreenCanvas is not supported');
       c = new OffscreenCanvas(width, height);
     } else { // otherwise use DOM canvas
-      if (typeof document === 'undefined') throw new Error('canvas error: attempted to run in browser but DOM is not defined');
-      c = document.createElement('canvas');
-      c.width = width;
-      c.height = height;
+      if (typeof document !== 'undefined') {
+        c = document.createElement('canvas');
+        c.width = width;
+        c.height = height;
+      } else if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+        // @ts-ignore // env.canvas is an external monkey-patch
+        if (typeof env.Canvas !== 'undefined') c = new env.Canvas(width, height);
+        else if (typeof globalThis.Canvas !== 'undefined') c = new globalThis.Canvas(width, height);
+        else throw new Error('canvas error: attempted to use canvas in react-native without canvas support installed');
+      } else {
+        throw new Error('canvas error: attempted to run in browser but DOM is not defined');
+      }
     }
   } else { // if not running in browser, there is no "default" canvas object, so we need monkey patch or fail
     // @ts-ignore // env.canvas is an external monkey-patch

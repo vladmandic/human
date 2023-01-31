@@ -31963,11 +31963,20 @@ function canvas(width, height) {
         throw new Error("canvas error: attempted to run in web worker but OffscreenCanvas is not supported");
       c = new OffscreenCanvas(width, height);
     } else {
-      if (typeof document === "undefined")
+      if (typeof document !== "undefined") {
+        c = document.createElement("canvas");
+        c.width = width;
+        c.height = height;
+      } else if (typeof navigator !== "undefined" && navigator.product === "ReactNative") {
+        if (typeof env.Canvas !== "undefined")
+          c = new env.Canvas(width, height);
+        else if (typeof globalThis.Canvas !== "undefined")
+          c = new globalThis.Canvas(width, height);
+        else
+          throw new Error("canvas error: attempted to use canvas in react-native without canvas support installed");
+      } else {
         throw new Error("canvas error: attempted to run in browser but DOM is not defined");
-      c = document.createElement("canvas");
-      c.width = width;
-      c.height = height;
+      }
     }
   } else {
     if (typeof env.Canvas !== "undefined")

@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2023/01/29 mandic00@live.com
+### **HEAD -> main** 2023/01/31 mandic00@live.com
 
+- redo blazeface annotations
 
 ### **3.0.4** 2023/01/29 mandic00@live.com
 

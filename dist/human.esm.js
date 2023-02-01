@@ -32621,6 +32621,8 @@ __export(models_exports, {
   faceres: () => faceres,
   "faceres-deep": () => faceres_deep,
   gear: () => gear,
+  "gear-e1": () => gear_e1,
+  "gear-e2": () => gear_e2,
   gender: () => gender,
   "gender-ssrnet-imdb": () => gender_ssrnet_imdb,
   handdetect: () => handdetect,
@@ -32678,6 +32680,8 @@ var facemesh_attention = 2382414;
 var facemesh_detection_full = 1026192;
 var facemesh_detection_short = 201268;
 var faceres_deep = 13957620;
+var gear_e1 = 112438;
+var gear_e2 = 112438;
 var gear = 1498916;
 var gender_ssrnet_imdb = 161236;
 var gender = 201808;
@@ -32734,6 +32738,8 @@ var models_default = {
   "facemesh-detection-full": facemesh_detection_full,
   "facemesh-detection-short": facemesh_detection_short,
   "faceres-deep": faceres_deep,
+  "gear-e1": gear_e1,
+  "gear-e2": gear_e2,
   gear,
   "gender-ssrnet-imdb": gender_ssrnet_imdb,
   gender,
@@ -33158,7 +33164,6 @@ async function check(instance, force = false) {
     instance.config.backend = Rie();
     await env.updateBackend();
     registerCustomOps(instance.config);
-    env.initial = false;
   }
   return true;
 }

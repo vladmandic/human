@@ -288,7 +288,6 @@ export class Human {
     const timeStamp = now();
     const count = Object.values(this.models.models).filter((model) => model).length;
     if (userConfig) this.config = mergeDeep(this.config, userConfig) as Config;
-
     if (this.env.initial) { // print version info on first run and check for correct backend setup
       if (!await backend.check(this, false)) log('error: backend check failed');
       await tf.ready();

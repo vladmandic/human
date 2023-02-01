@@ -217,7 +217,7 @@ export async function check(instance: Human, force = false) {
     await env.updateBackend(); // update env on backend init
     registerCustomOps(instance.config);
     // await env.updateBackend(); // update env on backend init
-    env.initial = false;
+    // env.initial = false;
   }
   return true;
 }

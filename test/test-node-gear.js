@@ -43,7 +43,7 @@ function getImageTensor(imageFile) {
 
 function printResult(obj) {
   if (!obj || !obj.res || !obj.res.face || obj.res.face.length === 0) log('warn', 'failed: no faces detected');
-  else obj.res.face.forEach((face, i) => log('data', 'results', { face: i, model: obj.model, image: obj.image, age: face.age, gender: face.gender, genderScore: face.genderScore, race: face.race }));
+  else obj.res.face.forEach((face, i) => log('data', 'results', { face: i, model: obj.model, image: obj.image, age: face.age, gender: face.gender, genderScore: face.genderScore, race: face.race, emotion: face.emotion }));
 }
 
 async function main() {

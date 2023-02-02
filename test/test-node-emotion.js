@@ -3,8 +3,9 @@ const path = require('path');
 const log = require('@vladmandic/pilogger');
 const H = require('../dist/human.node.js');
 
-const models = ['emotion.json', 'gear-e1.json', 'gear-e2.json'];
+const models = ['emotion.json', 'gear-e1.json', 'gear-e2.json', 'affectnet-mobilenet.json'];
 const humanConfig = {
+  debug: false,
   cacheSensitivity: 0,
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   face: {
@@ -13,7 +14,7 @@ const humanConfig = {
     mesh: { enabled: true },
     iris: { enabled: false },
     description: { enabled: false },
-    emotion: { enabled: true },
+    emotion: { enabled: true, crop: 0.15 },
   },
   body: { enabled: false },
   hand: { enabled: false },
@@ -28,7 +29,7 @@ function samples() {
 
 async function main() {
   log.configure({ inspect: { breakLength: 350 } });
-  const inputs = process.argv.length > 2 ? process.argv.slice(2, -1) : samples();
+  const inputs = process.argv.length > 2 ? process.argv.slice(2) : samples();
   const human = new H.Human(humanConfig);
   for (const model of models) {
     human.env.initial = true; // reset to allow model change instead of using cached model

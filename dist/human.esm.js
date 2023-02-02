@@ -31915,16 +31915,16 @@ function GLImageFilter() {
 // src/image/enhance.ts
 async function histogramEqualization(inputImage) {
   const squeeze = inputImage.shape.length === 4 ? Up(inputImage) : inputImage;
-  const rgb2 = Oa(squeeze, 3, 2);
-  const min = [rl(rgb2[0]), rl(rgb2[1]), rl(rgb2[2])];
-  const max = [Gs(rgb2[0]), Gs(rgb2[1]), Gs(rgb2[2])];
+  const rgb3 = Oa(squeeze, 3, 2);
+  const min = [rl(rgb3[0]), rl(rgb3[1]), rl(rgb3[2])];
+  const max = [Gs(rgb3[0]), Gs(rgb3[1]), Gs(rgb3[2])];
   const absMax = await Promise.all(max.map((channel) => channel.data()));
   const maxValue = Math.max(absMax[0][0], absMax[1][0], absMax[2][0]);
   const maxRange = maxValue > 1 ? 255 : 1;
   const factor = maxRange / maxValue;
   let final;
   if (factor > 1) {
-    const sub = [ke(rgb2[0], min[0]), ke(rgb2[1], min[1]), ke(rgb2[2], min[2])];
+    const sub = [ke(rgb3[0], min[0]), ke(rgb3[1], min[1]), ke(rgb3[2], min[2])];
     const range = [ke(max[0], min[0]), ke(max[1], min[1]), ke(max[2], min[2])];
     const enh = [ne(sub[0], factor), ne(sub[1], factor), ne(sub[2], factor)];
     const stack = Sr([enh[0], enh[1], enh[2]], 2);
@@ -31933,7 +31933,7 @@ async function histogramEqualization(inputImage) {
   } else {
     final = Ra(squeeze, 0);
   }
-  Ot([...rgb2, ...min, ...max, rgb2, squeeze, inputImage]);
+  Ot([...rgb3, ...min, ...max, rgb3, squeeze, inputImage]);
   return final;
 }
 
@@ -32012,9 +32012,9 @@ async function process2(input, config3, getTensor = true) {
       if (input.shape[2] === 3) {
         tensor2 = Ra(input, 0);
       } else if (input.shape[2] === 4) {
-        const rgb2 = Qk(input, [0, 0, 0], [-1, -1, 3]);
-        tensor2 = Ra(rgb2, 0);
-        Ot(rgb2);
+        const rgb3 = Qk(input, [0, 0, 0], [-1, -1, 3]);
+        tensor2 = Ra(rgb3, 0);
+        Ot(rgb3);
       }
     } else if (input.shape.length === 4) {
       if (input.shape[3] === 3) {
@@ -32166,9 +32166,9 @@ async function process2(input, config3, getTensor = true) {
     }
   }
   if (depth === 4) {
-    const rgb2 = Qk(pixels, [0, 0, 0], [-1, -1, 3]);
+    const rgb3 = Qk(pixels, [0, 0, 0], [-1, -1, 3]);
     Ot(pixels);
-    pixels = rgb2;
+    pixels = rgb3;
   }
   if (!pixels)
     throw new Error("input error: cannot create tensor");
@@ -32595,6 +32595,7 @@ var WebCam = class {
 // models/models.json
 var models_exports = {};
 __export(models_exports, {
+  "affectnet-mobilenet": () => affectnet_mobilenet,
   age: () => age,
   "anti-spoofing": () => anti_spoofing,
   antispoof: () => antispoof,
@@ -32666,6 +32667,7 @@ var iris = 2599092;
 var liveness = 592976;
 var models = 0;
 var movenet_lightning = 4650216;
+var affectnet_mobilenet = 6920630;
 var age = 161240;
 var blazeface_back = 538928;
 var blazeface_front = 402048;
@@ -32724,6 +32726,7 @@ var models_default = {
   liveness,
   models,
   "movenet-lightning": movenet_lightning,
+  "affectnet-mobilenet": affectnet_mobilenet,
   age,
   "blazeface-back": blazeface_back,
   "blazeface-front": blazeface_front,
@@ -32852,7 +32855,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.0.4";
+var version = "3.0.5";
 
 // src/tfjs/humangl.ts
 var config2 = {
@@ -33221,8 +33224,8 @@ var replace = (str, source, target) => str.replace(source, typeof target === "nu
 var colorDepth = (z, opt) => {
   if (!opt.useDepth || typeof z === "undefined")
     return opt.color;
-  const rgb2 = Uint8ClampedArray.from([127 + 2 * z, 127 - 2 * z, 255]);
-  return `rgba(${rgb2[0]}, ${rgb2[1]}, ${rgb2[2]}, ${opt.alpha})`;
+  const rgb3 = Uint8ClampedArray.from([127 + 2 * z, 127 - 2 * z, 255]);
+  return `rgba(${rgb3[0]}, ${rgb3[1]}, ${rgb3[2]}, ${opt.alpha})`;
 };
 function labels(ctx, str, startX, startY, localOptions2) {
   const line = str.replace(/\[.*\]/g, "").split("\n").map((l) => l.trim());
@@ -38852,20 +38855,27 @@ var triangulation = TRI468;
 var uvmap = UV468;
 
 // src/gear/emotion.ts
-var annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
+var annotations = [];
 var model8;
 var last3 = [];
 var lastCount = 0;
 var lastTime4 = 0;
 var skipped4 = Number.MAX_SAFE_INTEGER;
+var rgb = false;
 async function load6(config3) {
-  var _a2;
+  var _a2, _b2, _c2;
   if (env.initial)
     model8 = null;
-  if (!model8)
+  if (!model8) {
     model8 = await loadModel((_a2 = config3.face.emotion) == null ? void 0 : _a2.modelPath);
-  else if (config3.debug)
+    rgb = ((_c2 = (_b2 = model8 == null ? void 0 : model8.inputs) == null ? void 0 : _b2[0].shape) == null ? void 0 : _c2[3]) === 3;
+    if (!rgb)
+      annotations = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"];
+    else
+      annotations = ["angry", "disgust", "fear", "happy", "neutral", "sad", "surprise"];
+  } else if (config3.debug) {
     log("cached model:", model8["modelUrl"]);
+  }
   return model8;
 }
 async function predict5(image, config3, idx, count2) {
@@ -38885,12 +38895,24 @@ async function predict5(image, config3, idx, count2) {
     if ((_a3 = config3.face.emotion) == null ? void 0 : _a3.enabled) {
       const t10 = {};
       const inputSize10 = (model8 == null ? void 0 : model8.inputs[0].shape) ? model8.inputs[0].shape[2] : 0;
-      t10.resize = eK.resizeBilinear(image, [inputSize10, inputSize10], false);
-      t10.channels = ne(t10.resize, constants.rgb);
-      t10.grayscale = et(t10.channels, 3, true);
-      t10.grayscaleSub = ke(t10.grayscale, constants.tf05);
-      t10.grayscaleMul = ne(t10.grayscaleSub, constants.tf2);
-      t10.emotion = model8 == null ? void 0 : model8.execute(t10.grayscaleMul);
+      if (config3.face.emotion["crop"] > 0) {
+        const crop = config3.face.emotion["crop"];
+        const box = [[crop, crop, 1 - crop, 1 - crop]];
+        t10.resize = eK.cropAndResize(image, box, [0], [inputSize10, inputSize10]);
+      } else {
+        t10.resize = eK.resizeBilinear(image, [inputSize10, inputSize10], false);
+      }
+      if (rgb) {
+        t10.mul = ne(t10.resize, 255);
+        t10.normalize = ke(t10.mul, [103.939, 116.779, 123.68]);
+        t10.emotion = model8 == null ? void 0 : model8.execute(t10.normalize);
+      } else {
+        t10.channels = ne(t10.resize, constants.rgb);
+        t10.grayscale = et(t10.channels, 3, true);
+        t10.grayscaleSub = ke(t10.grayscale, constants.tf05);
+        t10.grayscaleMul = ne(t10.grayscaleSub, constants.tf2);
+        t10.emotion = model8 == null ? void 0 : model8.execute(t10.grayscaleMul);
+      }
       lastTime4 = now();
       const data = await t10.emotion.data();
       for (let i = 0; i < data.length; i++) {
@@ -39214,7 +39236,7 @@ var last7 = [];
 var lastCount7 = 0;
 var lastTime10 = 0;
 var skipped10 = Number.MAX_SAFE_INTEGER;
-var rgb = [0.2989, 0.587, 0.114];
+var rgb2 = [0.2989, 0.587, 0.114];
 async function load12(config3) {
   var _a2;
   if (env.initial)
@@ -39244,9 +39266,9 @@ async function predict11(image, config3, idx, count2) {
     t10.resize = eK.resizeBilinear(image, [model14.inputs[0].shape[2], model14.inputs[0].shape[1]], false);
     t10.enhance = Ee(() => {
       const [red, green, blue] = Oa(t10.resize, 3, 3);
-      const redNorm = ne(red, rgb[0]);
-      const greenNorm = ne(green, rgb[1]);
-      const blueNorm = ne(blue, rgb[2]);
+      const redNorm = ne(red, rgb2[0]);
+      const greenNorm = ne(green, rgb2[1]);
+      const blueNorm = ne(blue, rgb2[2]);
       const grayscale = K0([redNorm, greenNorm, blueNorm]);
       const normalize2 = ne(ke(grayscale, constants.tf05), 2);
       return normalize2;
@@ -44780,10 +44802,10 @@ var normalize = (r) => Ee(() => {
   return cast;
 });
 function getRGBA(fgr, pha) {
-  const rgb2 = fgr ? normalize(fgr) : Us([pha.shape[1] || 0, pha.shape[2] || 0, 3], 255, "int32");
+  const rgb3 = fgr ? normalize(fgr) : Us([pha.shape[1] || 0, pha.shape[2] || 0, 3], 255, "int32");
   const a = pha ? normalize(pha) : Us([fgr.shape[1] || 0, fgr.shape[2] || 0, 1], 255, "int32");
-  const rgba = xt([rgb2, a], -1);
-  Ot([rgb2, a]);
+  const rgba = xt([rgb3, a], -1);
+  Ot([rgb3, a]);
   return rgba;
 }
 function getState(state) {

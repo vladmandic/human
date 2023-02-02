@@ -40,7 +40,6 @@ export const detectFace = async (instance: Human /* instance of human */, input:
 
   const faceRes: FaceResult[] = [];
   instance.state = 'run:face';
-
   const faces: FaceResult[] = await facemesh.predict(input, instance.config);
   instance.performance.face = env.perfadd ? (instance.performance.face || 0) + Math.trunc(now() - timeStamp) : Math.trunc(now() - timeStamp);
   if (!input.shape || input.shape.length !== 4) return [];

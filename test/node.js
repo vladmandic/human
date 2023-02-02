@@ -26,6 +26,7 @@ const demos = [
   { cmd: '../demo/multithread/node-multiprocess.js', args: [] },
   { cmd: '../demo/facematch/node-match.js', args: [] },
   { cmd: '../demo/nodejs/node-bench.js', args: [] },
+  { cmd: '../test/test-node-emotion.js', args: [] },
   // { cmd: '../demo/nodejs/node-video.js', args: [] },
   // { cmd: '../demo/nodejs/node-webcam.js', args: [] },
 ];

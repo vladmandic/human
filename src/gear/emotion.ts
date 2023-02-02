@@ -13,17 +13,24 @@ import { loadModel } from '../tfjs/load';
 import { env } from '../util/env';
 import { constants } from '../tfjs/constants';
 
-const annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
+let annotations: string[] = [];
 let model: GraphModel | null;
 const last: { score: number, emotion: Emotion }[][] = [];
 let lastCount = 0;
 let lastTime = 0;
 let skipped = Number.MAX_SAFE_INTEGER;
+let rgb = false;
 
 export async function load(config: Config): Promise<GraphModel> {
   if (env.initial) model = null;
-  if (!model) model = await loadModel(config.face.emotion?.modelPath);
-  else if (config.debug) log('cached model:', model['modelUrl']);
+  if (!model) {
+    model = await loadModel(config.face.emotion?.modelPath);
+    rgb = model?.inputs?.[0].shape?.[3] === 3;
+    if (!rgb) annotations = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']; // oarriaga and gear
+    else annotations = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']; // affectnet
+  } else if (config.debug) {
+    log('cached model:', model['modelUrl']);
+  }
   return model;
 }
 
@@ -41,20 +48,30 @@ export async function predict(image: Tensor4D, config: Config, idx: number, coun
     if (config.face.emotion?.enabled) {
       const t: Record<string, Tensor> = {};
       const inputSize = model?.inputs[0].shape ? model.inputs[0].shape[2] : 0;
-      t.resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
-      // const box = [[0.15, 0.15, 0.85, 0.85]]; // empyrical values for top, left, bottom, right
-      // const resize = tf.image.cropAndResize(image, box, [0], [inputSize, inputSize]);
-      // [t.red, t.green, t.blue] = tf.split(t.resize, 3, 3);
-      // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
-      // t.redNorm = tf.mul(t.red, rgb[0]);
-      // t.greenNorm = tf.mul(t.green, rgb[1]);
-      // t.blueNorm = tf.mul(t.blue, rgb[2]);
-      // t.grayscale = tf.addN([t.redNorm, t.greenNorm, t.blueNorm]);
-      t.channels = tf.mul(t.resize, constants.rgb);
-      t.grayscale = tf.sum(t.channels, 3, true);
-      t.grayscaleSub = tf.sub(t.grayscale, constants.tf05);
-      t.grayscaleMul = tf.mul(t.grayscaleSub, constants.tf2);
-      t.emotion = model?.execute(t.grayscaleMul) as Tensor; // result is already in range 0..1, no need for additional activation
+      if (config.face.emotion['crop'] > 0) { // optional crop
+        const crop = config.face.emotion['crop'];
+        const box = [[crop, crop, 1 - crop, 1 - crop]]; // empyrical values for top, left, bottom, right
+        t.resize = tf.image.cropAndResize(image, box, [0], [inputSize, inputSize]);
+      } else {
+        t.resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);
+      }
+      if (rgb) {
+        t.mul = tf.mul(t.resize, 255);
+        t.normalize = tf.sub(t.mul, [103.939, 116.779, 123.68]); // affectnet uses specific norm values
+        t.emotion = model?.execute(t.normalize) as Tensor; // result is already in range 0..1, no need for additional activation
+      } else {
+        // [t.red, t.green, t.blue] = tf.split(t.resize, 3, 3);
+        // weighted rgb to grayscale: https://www.mathworks.com/help/matlab/ref/rgb2gray.html
+        // t.redNorm = tf.mul(t.red, rgb[0]);
+        // t.greenNorm = tf.mul(t.green, rgb[1]);
+        // t.blueNorm = tf.mul(t.blue, rgb[2]);
+        // t.grayscale = tf.addN([t.redNorm, t.greenNorm, t.blueNorm]);
+        t.channels = tf.mul(t.resize, constants.rgb);
+        t.grayscale = tf.sum(t.channels, 3, true);
+        t.grayscaleSub = tf.sub(t.grayscale, constants.tf05);
+        t.grayscaleMul = tf.mul(t.grayscaleSub, constants.tf2);
+        t.emotion = model?.execute(t.grayscaleMul) as Tensor; // result is already in range 0..1, no need for additional activation
+      }
       lastTime = now();
       const data = await t.emotion.data();
       for (let i = 0; i < data.length; i++) {

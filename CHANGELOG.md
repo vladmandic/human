@@ -9,11 +9,12 @@
   
 ## Changelog
   
+### **HEAD -> main** 2023/02/02 mandic00@live.com
+
+
 ### **3.0.5** 2023/02/02 mandic00@live.com
 
-
-### **origin/main** 2023/02/01 mandic00@live.com
-
+- add gear-e models
 - detect react-native
 - redo blazeface annotations
 

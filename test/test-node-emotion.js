@@ -10,7 +10,7 @@ const humanConfig = {
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   face: {
     scale: 1.4,
-    detector: { enabled: true, maxDetected: 1 },
+    detector: { enabled: true, maxDetected: 1, minSize: 256 },
     mesh: { enabled: true },
     iris: { enabled: false },
     description: { enabled: false },

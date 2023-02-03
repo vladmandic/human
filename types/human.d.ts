@@ -575,6 +575,8 @@ export declare interface FaceDetectorConfig extends GenericConfig {
     maxDetected: number;
     /** minimum confidence for a detected face before results are discarded */
     minConfidence: number;
+    /** minimum size in pixels of a detected face box before resutls are discared */
+    minSize: number;
     /** minimum overlap between two detected faces before one is discarded */
     iouThreshold: number;
     /** should child models perform on masked image of a face */
@@ -632,6 +634,8 @@ export declare interface FaceResult {
     box: Box;
     /** detected face box normalized to 0..1 */
     boxRaw: Box;
+    /** detected face box size */
+    size: [number, number];
     /** detected face mesh */
     mesh: Point[];
     /** detected face mesh normalized to 0..1 */

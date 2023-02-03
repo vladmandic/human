@@ -20,7 +20,7 @@ let anchors: Tensor | null = null;
 let inputSize = 0;
 let inputSizeT: Tensor | null = null;
 
-interface DetectBox { startPoint: Point, endPoint: Point, landmarks: Point[], confidence: number }
+export interface DetectBox { startPoint: Point, endPoint: Point, landmarks: Point[], confidence: number, size: [number, number] }
 
 export const size = () => inputSize;
 
@@ -52,7 +52,7 @@ function decodeBoxes(boxOutputs: Tensor) {
   return boxes;
 }
 
-export async function getBoxes(inputImage: Tensor4D, config: Config) {
+export async function getBoxes(inputImage: Tensor4D, config: Config): Promise<DetectBox[]> {
   // sanity check on input
   if ((!inputImage) || (inputImage['isDisposedInternal']) || (inputImage.shape.length !== 4) || (inputImage.shape[1] < 1) || (inputImage.shape[2] < 1)) return [];
   const t: Record<string, Tensor> = {};
@@ -98,7 +98,7 @@ export async function getBoxes(inputImage: Tensor4D, config: Config) {
       const scaledBox = util.scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize]);
       const enlargedBox = util.enlargeBox(scaledBox, config.face['scale'] || faceBoxScaleFactor);
       const squaredBox = util.squarifyBox(enlargedBox);
-      boxes.push(squaredBox);
+      if (squaredBox.size[0] > (config.face.detector?.['minSize'] || 0) && squaredBox.size[1] > (config.face.detector?.['minSize'] || 0)) boxes.push(squaredBox);
       Object.keys(b).forEach((tensor) => tf.dispose(b[tensor]));
     }
   }

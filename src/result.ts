@@ -37,6 +37,8 @@ export interface FaceResult {
   box: Box,
   /** detected face box normalized to 0..1 */
   boxRaw: Box,
+  /** detected face box size */
+  size: [number, number],
   /** detected face mesh */
   mesh: Point[]
   /** detected face mesh normalized to 0..1 */

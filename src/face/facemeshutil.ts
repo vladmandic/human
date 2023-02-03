@@ -52,20 +52,36 @@ export const enlargeBox = (box, factor) => {
   const center = getBoxCenter(box);
   const size = getBoxSize(box);
   const halfSize: [number, number] = [factor * size[0] / 2, factor * size[1] / 2];
-  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]] as Point, endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]] as Point, landmarks: box.landmarks, confidence: box.confidence };
+  return {
+    startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]] as Point,
+    endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]] as Point,
+    landmarks: box.landmarks,
+    confidence: box.confidence,
+    size,
+  };
 };
 
 export const squarifyBox = (box) => {
   const centers = getBoxCenter(box);
   const size = getBoxSize(box);
   const halfSize = Math.max(...size) / 2;
-  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)] as Point, endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)] as Point, landmarks: box.landmarks, confidence: box.confidence };
+  return {
+    startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)] as Point,
+    endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)] as Point,
+    landmarks: box.landmarks,
+    confidence: box.confidence,
+    size: [Math.round(size[0]), Math.round(size[1])] as [number, number],
+  };
 };
 
 export const calculateLandmarksBoundingBox = (landmarks) => {
   const x = landmarks.map((d) => d[0]);
   const y = landmarks.map((d) => d[1]);
-  return { startPoint: [Math.min(...x), Math.min(...y)] as Point, endPoint: [Math.max(...x), Math.max(...y)] as Point, landmarks };
+  return {
+    startPoint: [Math.min(...x), Math.min(...y)] as Point,
+    endPoint: [Math.max(...x), Math.max(...y)] as Point,
+    landmarks,
+  };
 };
 
 export const fixedRotationMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];

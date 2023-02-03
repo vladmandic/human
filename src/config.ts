@@ -33,6 +33,8 @@ export interface FaceDetectorConfig extends GenericConfig {
   maxDetected: number,
   /** minimum confidence for a detected face before results are discarded */
   minConfidence: number,
+  /** minimum size in pixels of a detected face box before resutls are discared */
+  minSize: number,
   /** minimum overlap between two detected faces before one is discarded */
   iouThreshold: number,
   /** should child models perform on masked image of a face */
@@ -379,6 +381,7 @@ const config: Config = {
       skipFrames: 99,
       skipTime: 2500,
       minConfidence: 0.2,
+      minSize: 0,
       iouThreshold: 0.1,
       mask: false,
       return: false,

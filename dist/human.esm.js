@@ -31122,6 +31122,7 @@ var config = {
       skipFrames: 99,
       skipTime: 2500,
       minConfidence: 0.2,
+      minSize: 0,
       iouThreshold: 0.1,
       mask: false,
       return: false
@@ -38326,18 +38327,34 @@ var enlargeBox = (box, factor) => {
   const center = getBoxCenter(box);
   const size2 = getBoxSize(box);
   const halfSize = [factor * size2[0] / 2, factor * size2[1] / 2];
-  return { startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]], endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]], landmarks: box.landmarks, confidence: box.confidence };
+  return {
+    startPoint: [center[0] - halfSize[0], center[1] - halfSize[1]],
+    endPoint: [center[0] + halfSize[0], center[1] + halfSize[1]],
+    landmarks: box.landmarks,
+    confidence: box.confidence,
+    size: size2
+  };
 };
 var squarifyBox = (box) => {
   const centers = getBoxCenter(box);
   const size2 = getBoxSize(box);
   const halfSize = Math.max(...size2) / 2;
-  return { startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)], endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)], landmarks: box.landmarks, confidence: box.confidence };
+  return {
+    startPoint: [Math.round(centers[0] - halfSize), Math.round(centers[1] - halfSize)],
+    endPoint: [Math.round(centers[0] + halfSize), Math.round(centers[1] + halfSize)],
+    landmarks: box.landmarks,
+    confidence: box.confidence,
+    size: [Math.round(size2[0]), Math.round(size2[1])]
+  };
 };
 var calculateLandmarksBoundingBox = (landmarks) => {
   const x = landmarks.map((d) => d[0]);
   const y6 = landmarks.map((d) => d[1]);
-  return { startPoint: [Math.min(...x), Math.min(...y6)], endPoint: [Math.max(...x), Math.max(...y6)], landmarks };
+  return {
+    startPoint: [Math.min(...x), Math.min(...y6)],
+    endPoint: [Math.max(...x), Math.max(...y6)],
+    landmarks
+  };
 };
 var fixedRotationMatrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 var normalizeRadians = (angle) => angle - 2 * Math.PI * Math.floor((angle + Math.PI) / (2 * Math.PI));
@@ -38498,7 +38515,7 @@ function decodeBoxes2(boxOutputs) {
   return boxes;
 }
 async function getBoxes(inputImage, config3) {
-  var _a2, _b2, _c2, _d2;
+  var _a2, _b2, _c2, _d2, _e, _f2;
   if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1)
     return [];
   const t10 = {};
@@ -38544,7 +38561,8 @@ async function getBoxes(inputImage, config3) {
       const scaledBox = scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize4, (inputImage.shape[1] || 0) / inputSize4]);
       const enlargedBox = enlargeBox(scaledBox, config3.face["scale"] || faceBoxScaleFactor);
       const squaredBox = squarifyBox(enlargedBox);
-      boxes.push(squaredBox);
+      if (squaredBox.size[0] > (((_e = config3.face.detector) == null ? void 0 : _e["minSize"]) || 0) && squaredBox.size[1] > (((_f2 = config3.face.detector) == null ? void 0 : _f2["minSize"]) || 0))
+        boxes.push(squaredBox);
       Object.keys(b).forEach((tensor) => Ot(b[tensor]));
     }
   }
@@ -38751,6 +38769,7 @@ async function predict4(input, config3) {
       score: 0,
       boxScore: 0,
       faceScore: 0,
+      size: [0, 0],
       // contoursRaw: [],
       // contours: [],
       annotations: {}
@@ -38767,6 +38786,7 @@ async function predict4(input, config3) {
       face4.box = clampBox(box, input);
       face4.boxRaw = getRawBox(box, input);
       face4.score = face4.boxScore;
+      face4.size = box.size;
       face4.mesh = box.landmarks.map((pt) => [
         (box.startPoint[0] + box.endPoint[0]) / 2 + pt[0] * input.shape[2] / size(),
         (box.startPoint[1] + box.endPoint[1]) / 2 + pt[1] * input.shape[1] / size()
@@ -38817,7 +38837,12 @@ async function predict4(input, config3) {
         for (const key of Object.keys(meshAnnotations))
           face4.annotations[key] = meshAnnotations[key].map((index2) => face4.mesh[index2]);
         face4.score = face4.faceScore;
-        const calculatedBox = { ...calculateFaceBox(face4.mesh, box), confidence: box.confidence, landmarks: box.landmarks };
+        const calculatedBox = {
+          ...calculateFaceBox(face4.mesh, box),
+          confidence: box.confidence,
+          landmarks: box.landmarks,
+          size: box.size
+        };
         face4.box = clampBox(calculatedBox, input);
         face4.boxRaw = getRawBox(calculatedBox, input);
         newCache.push(calculatedBox);

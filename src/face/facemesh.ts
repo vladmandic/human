@@ -20,8 +20,7 @@ import { env } from '../util/env';
 import type { GraphModel, Tensor, Tensor4D } from '../tfjs/types';
 import type { FaceResult, FaceLandmark, Point } from '../result';
 import type { Config } from '../config';
-
-interface DetectBox { startPoint: Point, endPoint: Point, landmarks: Point[], confidence: number }
+import type { DetectBox } from './blazeface';
 
 const cache = {
   boxes: [] as DetectBox[],
@@ -60,6 +59,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
       score: 0,
       boxScore: 0,
       faceScore: 0,
+      size: [0, 0],
       // contoursRaw: [],
       // contours: [],
       annotations: {} as Record<FaceLandmark, Point[]>,
@@ -77,6 +77,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
       face.box = util.clampBox(box, input);
       face.boxRaw = util.getRawBox(box, input);
       face.score = face.boxScore;
+      face.size = box.size;
       face.mesh = box.landmarks.map((pt) => [
         ((box.startPoint[0] + box.endPoint[0]) / 2) + (pt[0] * input.shape[2] / blazeface.size()),
         ((box.startPoint[1] + box.endPoint[1]) / 2) + (pt[1] * input.shape[1] / blazeface.size()),
@@ -124,7 +125,12 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size]);
         for (const key of Object.keys(coords.meshAnnotations)) face.annotations[key] = coords.meshAnnotations[key].map((index) => face.mesh[index]); // add annotations
         face.score = face.faceScore;
-        const calculatedBox = { ...util.calculateFaceBox(face.mesh, box), confidence: box.confidence, landmarks: box.landmarks };
+        const calculatedBox = {
+          ...util.calculateFaceBox(face.mesh, box),
+          confidence: box.confidence,
+          landmarks: box.landmarks,
+          size: box.size,
+        };
         face.box = util.clampBox(calculatedBox, input);
         face.boxRaw = util.getRawBox(calculatedBox, input);
         /*

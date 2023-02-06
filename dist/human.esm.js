@@ -38308,10 +38308,10 @@ var getRawBox = (box, input) => box ? [
   (box.endPoint[0] - box.startPoint[0]) / (input.shape[2] || 0),
   (box.endPoint[1] - box.startPoint[1]) / (input.shape[1] || 0)
 ] : [0, 0, 0, 0];
-var scaleBoxCoordinates = (box, factor) => {
+var scaleBoxCoordinates = (box, factor, anchor) => {
   const startPoint = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
   const endPoint = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
-  const landmarks = box.landmarks;
+  const landmarks = box.landmarks.map((pt) => [(pt[0] + anchor[0]) * factor[0], (pt[1] + anchor[1]) * factor[1]]);
   return { startPoint, endPoint, landmarks, confidence: box.confidence };
 };
 var cutAndResize = (box, image, cropSize) => {
@@ -38558,7 +38558,9 @@ async function getBoxes(inputImage, config3) {
         landmarks: await b.landmarks.array(),
         confidence
       };
-      const scaledBox = scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize4, (inputImage.shape[1] || 0) / inputSize4]);
+      b.anchor = Ke(anchors, [nms[i], 0], [1, 2]);
+      const anchor = await b.anchor.data();
+      const scaledBox = scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize4, (inputImage.shape[1] || 0) / inputSize4], anchor);
       const enlargedBox = enlargeBox(scaledBox, config3.face["scale"] || faceBoxScaleFactor);
       const squaredBox = squarifyBox(enlargedBox);
       if (squaredBox.size[0] > (((_e = config3.face.detector) == null ? void 0 : _e["minSize"]) || 0) && squaredBox.size[1] > (((_f2 = config3.face.detector) == null ? void 0 : _f2["minSize"]) || 0))
@@ -38787,10 +38789,7 @@ async function predict4(input, config3) {
       face4.boxRaw = getRawBox(box, input);
       face4.score = face4.boxScore;
       face4.size = box.size;
-      face4.mesh = box.landmarks.map((pt) => [
-        (box.startPoint[0] + box.endPoint[0]) / 2 + pt[0] * input.shape[2] / size(),
-        (box.startPoint[1] + box.endPoint[1]) / 2 + pt[1] * input.shape[1] / size()
-      ]);
+      face4.mesh = box.landmarks;
       face4.meshRaw = face4.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size2]);
       for (const key of Object.keys(blazeFaceLandmarks))
         face4.annotations[key] = [face4.mesh[blazeFaceLandmarks[key]]];
@@ -38809,14 +38808,11 @@ async function predict4(input, config3) {
       face4.faceScore = Math.round(100 * faceConfidence[0]) / 100;
       if (face4.faceScore < (((_g2 = config3.face.detector) == null ? void 0 : _g2.minConfidence) || 1)) {
         box.confidence = face4.faceScore;
-        if (config3.face.mesh.keepInvalid) {
+        if (config3.face.mesh["keepInvalid"]) {
           face4.box = clampBox(box, input);
           face4.boxRaw = getRawBox(box, input);
           face4.score = face4.boxScore;
-          face4.mesh = box.landmarks.map((pt) => [
-            (box.startPoint[0] + box.endPoint[0]) / 2 + (box.endPoint[0] + box.startPoint[0]) * pt[0] / size(),
-            (box.startPoint[1] + box.endPoint[1]) / 2 + (box.endPoint[1] + box.startPoint[1]) * pt[1] / size()
-          ]);
+          face4.mesh = box.landmarks;
           face4.meshRaw = face4.mesh.map((pt) => [pt[0] / (input.shape[2] || 1), pt[1] / (input.shape[1] || 1), (pt[2] || 0) / size2]);
           for (const key of Object.keys(blazeFaceLandmarks)) {
             face4.annotations[key] = [face4.mesh[blazeFaceLandmarks[key]]];

@@ -2189,6 +2189,10 @@ export declare enum Rank {
     R6 = "R6"
 }
 
+declare interface RecursiveArray<T extends any> {
+    [index: number]: T | RecursiveArray<T>;
+}
+
 declare const registerLoadRouter: (loudRouter: IORouter) => void;
 
 declare const registerSaveRouter: (loudRouter: IORouter) => void;
@@ -2538,6 +2542,15 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
 }
 
 /** @doclink Tensor */
+export declare type Tensor1D = Tensor<Rank.R1>;
+
+/** @doclink Tensor */
+export declare type Tensor2D = Tensor<Rank.R2>;
+
+/** @doclink Tensor */
+export declare type Tensor3D = Tensor<Rank.R3>;
+
+/** @doclink Tensor */
 export declare type Tensor4D = Tensor<Rank.R4>;
 
 /**
@@ -2596,6 +2609,9 @@ declare interface TensorInfo_2 {
     dtype: DataType;
 }
 
+/** @docalias TypedArray|Array */
+export declare type TensorLike = TypedArray | number | boolean | string | RecursiveArray<number | number[] | TypedArray> | RecursiveArray<boolean> | RecursiveArray<string> | Uint8Array[];
+
 /** Model training configuration. */
 declare interface TrainingConfig {
     /** Optimizer used for the model training. */
@@ -2614,6 +2630,8 @@ declare interface TrainingConfig {
         [key: string]: number;
     };
 }
+
+declare type TypedArray = Float32Array | Int32Array | Uint8Array;
 
 declare type Url = string | io.IOHandler | io.IOHandlerSync;
 

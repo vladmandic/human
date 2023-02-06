@@ -82,6 +82,7 @@ export async function getBoxes(inputImage: Tensor4D, config: Config): Promise<De
   const scores = await t.scores.data();
   for (let i = 0; i < nms.length; i++) {
     const confidence = scores[nms[i]];
+
     if (confidence > (config.face.detector?.minConfidence || 0)) {
       const b: Record<string, Tensor> = {};
       b.bbox = tf.slice(t.boxes, [nms[i], 0], [1, -1]);
@@ -95,7 +96,9 @@ export async function getBoxes(inputImage: Tensor4D, config: Config): Promise<De
         landmarks: (await b.landmarks.array()) as Point[],
         confidence,
       };
-      const scaledBox = util.scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize]);
+      b.anchor = tf.slice(anchors as Tensor, [nms[i], 0], [1, 2]);
+      const anchor = await b.anchor.data();
+      const scaledBox = util.scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize], anchor);
       const enlargedBox = util.enlargeBox(scaledBox, config.face['scale'] || faceBoxScaleFactor);
       const squaredBox = util.squarifyBox(enlargedBox);
       if (squaredBox.size[0] > (config.face.detector?.['minSize'] || 0) && squaredBox.size[1] > (config.face.detector?.['minSize'] || 0)) boxes.push(squaredBox);

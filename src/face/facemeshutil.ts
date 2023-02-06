@@ -31,10 +31,18 @@ export const getRawBox = (box, input): Box => (box ? [
   (box.endPoint[1] - box.startPoint[1]) / (input.shape[1] || 0),
 ] : [0, 0, 0, 0]);
 
-export const scaleBoxCoordinates = (box, factor) => {
+export const scaleBoxCoordinates = (box, factor, anchor) => {
   const startPoint: Point = [box.startPoint[0] * factor[0], box.startPoint[1] * factor[1]];
   const endPoint: Point = [box.endPoint[0] * factor[0], box.endPoint[1] * factor[1]];
-  const landmarks = box.landmarks;
+  // const centerPoint = [(startPoint[0] + endPoint[0]) / 2, (startPoint[1] + endPoint[1]) / 2];
+  const landmarks = box.landmarks.map((pt) => [(pt[0] + anchor[0]) * factor[0], (pt[1] + anchor[1]) * factor[1]]);
+  /**
+  face.mesh = box.landmarks.map((pt) => [
+    ((box.startPoint[0] + box.endPoint[0]) / 2) + (pt[0] * input.shape[2] / blazeface.size()),
+    ((box.startPoint[1] + box.endPoint[1]) / 2) + (pt[1] * input.shape[1] / blazeface.size()),
+  ]);
+  */
+
   return { startPoint, endPoint, landmarks, confidence: box.confidence };
 };
 

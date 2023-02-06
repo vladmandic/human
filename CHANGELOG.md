@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2023/02/02 mandic00@live.com
+### **HEAD -> main** 2023/02/03 mandic00@live.com
 
+- add affectnet
 
 ### **3.0.5** 2023/02/02 mandic00@live.com
 

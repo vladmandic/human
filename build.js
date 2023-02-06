@@ -121,18 +121,22 @@ async function main() {
 
   // run api-extractor to create typedef rollup
   const extractorConfig = APIExtractor.ExtractorConfig.loadFileAndPrepare('.api-extractor.json');
-  const extractorResult = APIExtractor.Extractor.invoke(extractorConfig, {
-    localBuild: true,
-    showVerboseMessages: false,
-    messageCallback: (msg) => {
-      msg.handled = true;
-      if (msg.logLevel === 'none' || msg.logLevel === 'verbose' || msg.logLevel === 'info') return;
-      if (msg.sourceFilePath?.includes('/node_modules/')) return;
-      // if (apiExtractorIgnoreList.reduce((prev, curr) => prev || msg.messageId.includes(curr), false)) return; // those are external issues outside of human control
-      log.data('API', { level: msg.logLevel, category: msg.category, id: msg.messageId, file: msg.sourceFilePath, line: msg.sourceFileLine, text: msg.text });
-    },
-  });
-  log.state('API-Extractor:', { succeeeded: extractorResult.succeeded, errors: extractorResult.errorCount, warnings: extractorResult.warningCount });
+  try {
+    const extractorResult = APIExtractor.Extractor.invoke(extractorConfig, {
+      localBuild: true,
+      showVerboseMessages: false,
+      messageCallback: (msg) => {
+        msg.handled = true;
+        if (msg.logLevel === 'none' || msg.logLevel === 'verbose' || msg.logLevel === 'info') return;
+        if (msg.sourceFilePath?.includes('/node_modules/')) return;
+        // if (apiExtractorIgnoreList.reduce((prev, curr) => prev || msg.messageId.includes(curr), false)) return; // those are external issues outside of human control
+        log.data('API', { level: msg.logLevel, category: msg.category, id: msg.messageId, file: msg.sourceFilePath, line: msg.sourceFileLine, text: msg.text });
+      },
+    });
+    log.state('API-Extractor:', { succeeeded: extractorResult.succeeded, errors: extractorResult.errorCount, warnings: extractorResult.warningCount });
+  } catch (err) {
+    log.error('API-Extractor:', err);
+  }
   regExFile('types/human.d.ts', regEx);
   writeFile('export * from \'../types/human\';', 'dist/human.esm-nobundle.d.ts');
   writeFile('export * from \'../types/human\';', 'dist/human.esm.d.ts');

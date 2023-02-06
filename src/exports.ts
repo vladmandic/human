@@ -9,7 +9,7 @@ export * from './result';
 /**
  * Explict reexport of main @tensorflow/tfjs types
  */
-export type { Tensor, Tensor4D, GraphModel, Rank } from './tfjs/types';
+export type { Tensor, Tensor1D, Tensor2D, Tensor3D, Tensor4D, TensorLike, GraphModel, Rank } from './tfjs/types';
 
 // re-export types
 export type { DrawOptions } from './draw/options';

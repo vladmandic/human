@@ -78,10 +78,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
       face.boxRaw = util.getRawBox(box, input);
       face.score = face.boxScore;
       face.size = box.size;
-      face.mesh = box.landmarks.map((pt) => [
-        ((box.startPoint[0] + box.endPoint[0]) / 2) + (pt[0] * input.shape[2] / blazeface.size()),
-        ((box.startPoint[1] + box.endPoint[1]) / 2) + (pt[1] * input.shape[1] / blazeface.size()),
-      ]);
+      face.mesh = box.landmarks;
       face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size]);
       for (const key of Object.keys(coords.blazeFaceLandmarks)) face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations
     } else if (!model) { // mesh enabled, but not loaded
@@ -98,14 +95,11 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
       face.faceScore = Math.round(100 * faceConfidence[0]) / 100;
       if (face.faceScore < (config.face.detector?.minConfidence || 1)) { // low confidence in detected mesh
         box.confidence = face.faceScore; // reset confidence of cached box
-        if (config.face.mesh.keepInvalid) {
+        if (config.face.mesh['keepInvalid']) {
           face.box = util.clampBox(box, input);
           face.boxRaw = util.getRawBox(box, input);
           face.score = face.boxScore;
-          face.mesh = box.landmarks.map((pt) => [
-            ((box.startPoint[0] + box.endPoint[0])) / 2 + ((box.endPoint[0] + box.startPoint[0]) * pt[0] / blazeface.size()),
-            ((box.startPoint[1] + box.endPoint[1])) / 2 + ((box.endPoint[1] + box.startPoint[1]) * pt[1] / blazeface.size()),
-          ]);
+          face.mesh = box.landmarks;
           face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 1), pt[1] / (input.shape[1] || 1), (pt[2] || 0) / size]);
           for (const key of Object.keys(coords.blazeFaceLandmarks)) {
             face.annotations[key] = [face.mesh[coords.blazeFaceLandmarks[key] as number]]; // add annotations

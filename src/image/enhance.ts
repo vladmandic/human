@@ -3,7 +3,7 @@
  */
 
 import * as tf from 'dist/tfjs.esm.js';
-import type { Tensor } from '../exports';
+import type { Tensor } from '../tfjs/types';
 
 export async function histogramEqualization(inputImage: Tensor): Promise<Tensor> {
   const squeeze = inputImage.shape.length === 4 ? tf.squeeze(inputImage) : inputImage;

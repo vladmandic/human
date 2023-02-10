@@ -1007,7 +1007,7 @@ var wk = Kt((Sk, dC) => {
       return i.x = a.x.slice(), i.i = a.i, i;
     }
     function s(a, i) {
-      a == null && (a = +new Date());
+      a == null && (a = +/* @__PURE__ */ new Date());
       var p = new o(a), u = i && i.state, c = function() {
         return (p.next() >>> 0) / 4294967296;
       };
@@ -1047,7 +1047,7 @@ var vk = Kt((Ik, fC) => {
       return i.i = a.i, i.w = a.w, i.X = a.X.slice(), i;
     }
     function s(a, i) {
-      a == null && (a = +new Date());
+      a == null && (a = +/* @__PURE__ */ new Date());
       var p = new o(a), u = i && i.state, c = function() {
         return (p.next() >>> 0) / 4294967296;
       };
@@ -1158,7 +1158,7 @@ var $k = Kt((_k, yd) => {
         return l && (C = l.randomBytes) ? C = C(o) : (C = new Uint8Array(o), (r.crypto || r.msCrypto).getRandomValues(C)), b(C);
       } catch (_) {
         var w = r.navigator, k = w && w.plugins;
-        return [+new Date(), r, k, r.screen, b(e)];
+        return [+/* @__PURE__ */ new Date(), r, k, r.screen, b(e)];
       }
     }
     function b(C) {
@@ -4809,7 +4809,7 @@ async function Op(r, e) {
 function Ms(r) {
   if (r.modelTopology instanceof ArrayBuffer)
     throw new Error("Expected JSON model topology, received ArrayBuffer.");
-  return { dateSaved: new Date(), modelTopologyType: "JSON", modelTopologyBytes: r.modelTopology == null ? 0 : I0(JSON.stringify(r.modelTopology)), weightSpecsBytes: r.weightSpecs == null ? 0 : I0(JSON.stringify(r.weightSpecs)), weightDataBytes: r.weightData == null ? 0 : r.weightData.byteLength };
+  return { dateSaved: /* @__PURE__ */ new Date(), modelTopologyType: "JSON", modelTopologyBytes: r.modelTopology == null ? 0 : I0(JSON.stringify(r.modelTopology)), weightSpecsBytes: r.weightSpecs == null ? 0 : I0(JSON.stringify(r.weightSpecs)), weightDataBytes: r.weightData == null ? 0 : r.weightData.byteLength };
 }
 function zm(r) {
   let e = [];
@@ -31020,7 +31020,7 @@ var tse = { tfjs: rV, "tfjs-core": rV, "tfjs-converter": Yne, "tfjs-backend-cpu"
 
 // src/util/util.ts
 function log(...msg) {
-  const dt2 = new Date();
+  const dt2 = /* @__PURE__ */ new Date();
   const ts2 = `${dt2.getHours().toString().padStart(2, "0")}:${dt2.getMinutes().toString().padStart(2, "0")}:${dt2.getSeconds().toString().padStart(2, "0")}.${dt2.getMilliseconds().toString().padStart(3, "0")}`;
   if (msg)
     console.log(ts2, "Human:", ...msg);

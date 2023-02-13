@@ -81,6 +81,7 @@ function parseSinglePose(res, config, image) {
 }
 
 function parseMultiPose(res, config, image) {
+  config.body.minConfidence = -1; // movenet-multipose return incorrect scores
   const bodies: BodyResult[] = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
@@ -135,39 +136,6 @@ export async function predict(input: Tensor, config: Config): Promise<BodyResult
   return new Promise(async (resolve) => {
     const t: Record<string, Tensor> = {};
     skipped = 0;
-    // run detection on squared input and cached boxes
-    /*
-    cache.bodies = []; // reset bodies result
-    if (cache.boxes.length >= (config.body.maxDetected || 0)) { // if we have enough cached boxes run detection using cache
-      for (let i = 0; i < cache.boxes.length; i++) { // run detection based on cached boxes
-        t.crop = tf.image.cropAndResize(input, [cache.boxes[i]], [0], [inputSize, inputSize], 'bilinear');
-        t.cast = tf.cast(t.crop, 'int32');
-        // t.input = prepareImage(input);
-        t.res = model?.execute(t.cast) as Tensor;
-        const res = await t.res.array();
-        const newBodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, cache.boxes[i]) : await parseMultiPose(res, config, input, cache.boxes[i]);
-        cache.bodies = cache.bodies.concat(newBodies);
-        Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-      }
-    }
-    if (cache.bodies.length !== config.body.maxDetected) { // did not find enough bodies based on cached boxes so run detection on full frame
-      t.input = prepareImage(input);
-      t.res = model?.execute(t.input) as Tensor;
-      const res = await t.res.array();
-      cache.bodies = (t.res.shape[2] === 17) ? await parseSinglePose(res, config, input, [0, 0, 1, 1]) : await parseMultiPose(res, config, input, [0, 0, 1, 1]);
-      for (const body of cache.bodies) rescaleBody(body, [input.shape[2] || 1, input.shape[1] || 1]);
-      Object.keys(t).forEach((tensor) => tf.dispose(t[tensor]));
-    }
-    cache.boxes.length = 0; // reset cache
-    for (let i = 0; i < cache.bodies.length; i++) {
-      if (cache.bodies[i].keypoints.length > (coords.kpt.length / 2)) { // only update cache if we detected at least half keypoints
-        const scaledBox = box.scale(cache.bodies[i].boxRaw, boxExpandFact);
-        const cropBox = box.crop(scaledBox);
-        cache.boxes.push(cropBox);
-      }
-    }
-    */
-
     // run detection on squared input and no cached boxes
     t.input = fix.padInput(input, inputSize);
     t.res = model?.execute(t.input) as Tensor;

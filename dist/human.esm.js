@@ -44266,6 +44266,7 @@ function parseSinglePose(res, config3, image) {
   return bodies;
 }
 function parseMultiPose(res, config3, image) {
+  config3.body.minConfidence = -1;
   const bodies = [];
   for (let id2 = 0; id2 < res[0].length; id2++) {
     const kpt4 = res[0][id2];

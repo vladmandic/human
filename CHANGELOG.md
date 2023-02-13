@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2023/02/10 mandic00@live.com
+### **HEAD -> main** 2023/02/13 mandic00@live.com
 
 - add face.detector.minsize configurable setting
 - add affectnet

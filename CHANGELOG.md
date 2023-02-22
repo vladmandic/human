@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2023/02/13 mandic00@live.com
 
+- rebuild and publish
 - add face.detector.minsize configurable setting
 - add affectnet
 

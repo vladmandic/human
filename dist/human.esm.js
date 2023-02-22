@@ -39286,12 +39286,18 @@ async function predict11(image, config3, idx, count2) {
     const t10 = {};
     t10.resize = eK.resizeBilinear(image, [model14.inputs[0].shape[2], model14.inputs[0].shape[1]], false);
     t10.enhance = Ee(() => {
-      const [red, green, blue] = Oa(t10.resize, 3, 3);
-      const redNorm = ne(red, rgb2[0]);
-      const greenNorm = ne(green, rgb2[1]);
-      const blueNorm = ne(blue, rgb2[2]);
-      const grayscale = K0([redNorm, greenNorm, blueNorm]);
-      const normalize2 = ne(ke(grayscale, constants.tf05), 2);
+      var _a4, _b3;
+      let normalize2;
+      if (((_b3 = (_a4 = model14 == null ? void 0 : model14.inputs) == null ? void 0 : _a4[0].shape) == null ? void 0 : _b3[3]) === 1) {
+        const [red, green, blue] = Oa(t10.resize, 3, 3);
+        const redNorm = ne(red, rgb2[0]);
+        const greenNorm = ne(green, rgb2[1]);
+        const blueNorm = ne(blue, rgb2[2]);
+        const grayscale = K0([redNorm, greenNorm, blueNorm]);
+        normalize2 = ne(ke(grayscale, constants.tf05), 2);
+      } else {
+        normalize2 = ne(ke(t10.resize, constants.tf05), 2);
+      }
       return normalize2;
     });
     const obj = { gender: "unknown", genderScore: 0 };

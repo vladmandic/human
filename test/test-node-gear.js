@@ -54,7 +54,6 @@ async function main() {
   if (stat.isFile()) files.push(inputs);
   else if (stat.isDirectory()) fs.readdirSync(inputs).forEach((f) => files.push(path.join(inputs, f)));
   log('data', 'input:', files);
-  await human.load();
   let res;
   for (const f of files) {
     const tensor = getImageTensor(f);
@@ -64,8 +63,10 @@ async function main() {
     human.config.face.description.enabled = true;
     human.config.face.gear.enabled = false;
     human.config.face.ssrnet.enabled = false;
+    human.env.initial = true;
+    await human.models.reset();
+    await human.load();
     res = await human.detect(tensor);
-
     msg = { model: 'faceres', image: f, res };
     if (res?.face?.[0].age > 20 && res?.face?.[0].age < 30) log('state', 'passed: gear', msg.model, msg.image);
     else log('error', 'failed: gear', msg);
@@ -74,6 +75,9 @@ async function main() {
     human.config.face.description.enabled = false;
     human.config.face.gear.enabled = true;
     human.config.face.ssrnet.enabled = false;
+    human.env.initial = true;
+    await human.models.reset();
+    await human.load();
     res = await human.detect(tensor);
     msg = { model: 'gear', image: f, res };
     if (res?.face?.[0].age > 20 && res?.face?.[0].age < 30) log('state', 'passed: gear', msg.model, msg.image);
@@ -83,6 +87,21 @@ async function main() {
     human.config.face.description.enabled = false;
     human.config.face.gear.enabled = false;
     human.config.face.ssrnet.enabled = true;
+    human.env.initial = true;
+    await human.models.reset();
+    await human.load();
+    res = await human.detect(tensor);
+    msg = { model: 'ssrnet', image: f, res };
+    if (res?.face?.[0].age > 20 && res?.face?.[0].age < 30) log('state', 'passed: gear', msg.model, msg.image);
+    else log('error', 'failed: gear', msg);
+    printResult(msg);
+
+    human.config.face.description.enabled = false;
+    human.config.face.gear.enabled = false;
+    human.config.face.ssrnet = { enabled: true, modelPathAge: 'age.json', modelPathGender: 'gender-ssrnet-imdb.json' };
+    human.env.initial = true;
+    await human.models.reset();
+    await human.load();
     res = await human.detect(tensor);
     msg = { model: 'ssrnet', image: f, res };
     if (res?.face?.[0].age > 20 && res?.face?.[0].age < 30) log('state', 'passed: gear', msg.model, msg.image);

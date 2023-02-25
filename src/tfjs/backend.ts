@@ -93,12 +93,24 @@ export async function check(instance: Human, force = false) {
         if (instance.config.debug) log('running inside web worker');
       }
 
+      if (typeof navigator !== 'undefined' && navigator?.userAgent?.toLowerCase().includes('electron')) {
+        if (instance.config.debug) log('running inside electron');
+      }
+
+      // check available backends
+      let available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
+      if (instance.config.backend === 'humangl' && !available.includes('humangl')) {
+        humangl.register(instance);
+        available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
+      }
+      if (instance.config.debug) log('available backends:', available);
+
       // force browser vs node backend
-      if (env.browser && instance.config.backend === 'tensorflow') {
+      if (env.browser && !env.node && (instance.config.backend === 'tensorflow') && available.includes('webgl')) {
         if (instance.config.debug) log('override: backend set to tensorflow while running in browser');
         instance.config.backend = 'webgl';
       }
-      if (env.node && (instance.config.backend === 'webgl' || instance.config.backend === 'humangl')) {
+      if (env.node && !env.browser && (instance.config.backend === 'webgl' || instance.config.backend === 'humangl') && available.includes('tensorflow')) {
         if (instance.config.debug) log(`override: backend set to ${instance.config.backend} while running in nodejs`);
         instance.config.backend = 'tensorflow';
       }
@@ -122,14 +134,6 @@ export async function check(instance: Human, force = false) {
           }
         }
       }
-
-      // check available backends
-      let available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
-      if (instance.config.backend === 'humangl' && !available.includes('humangl')) {
-        humangl.register(instance);
-        available = Object.keys(tf.engine().registryFactory as Record<string, unknown>);
-      }
-      if (instance.config.debug) log('available backends:', available);
 
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);

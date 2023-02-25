@@ -91,7 +91,7 @@
     "@tensorflow/tfjs-layers": "^4.2.0",
     "@tensorflow/tfjs-node": "^4.2.0",
     "@tensorflow/tfjs-node-gpu": "^4.2.0",
-    "@types/node": "^18.14.0",
+    "@types/node": "^18.14.1",
     "@types/offscreencanvas": "^2019.7.0",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",

@@ -33047,7 +33047,7 @@ function registerCustomOps(config3) {
 }
 var defaultFlags = {};
 async function check(instance, force = false) {
-  var _a2;
+  var _a2, _b2;
   instance.state = "backend";
   if (((_a2 = instance.config.backend) == null ? void 0 : _a2.length) === 0)
     instance.config.backend = await getBestBackend();
@@ -33058,12 +33058,23 @@ async function check(instance, force = false) {
         if (instance.config.debug)
           log("running inside web worker");
       }
-      if (env.browser && instance.config.backend === "tensorflow") {
+      if (typeof navigator !== "undefined" && ((_b2 = navigator == null ? void 0 : navigator.userAgent) == null ? void 0 : _b2.toLowerCase().includes("electron"))) {
+        if (instance.config.debug)
+          log("running inside electron");
+      }
+      let available = Object.keys(sr().registryFactory);
+      if (instance.config.backend === "humangl" && !available.includes("humangl")) {
+        register(instance);
+        available = Object.keys(sr().registryFactory);
+      }
+      if (instance.config.debug)
+        log("available backends:", available);
+      if (env.browser && !env.node && instance.config.backend === "tensorflow" && available.includes("webgl")) {
         if (instance.config.debug)
           log("override: backend set to tensorflow while running in browser");
         instance.config.backend = "webgl";
       }
-      if (env.node && (instance.config.backend === "webgl" || instance.config.backend === "humangl")) {
+      if (env.node && !env.browser && (instance.config.backend === "webgl" || instance.config.backend === "humangl") && available.includes("tensorflow")) {
         if (instance.config.debug)
           log(`override: backend set to ${instance.config.backend} while running in nodejs`);
         instance.config.backend = "tensorflow";
@@ -33085,13 +33096,6 @@ async function check(instance, force = false) {
           }
         }
       }
-      let available = Object.keys(sr().registryFactory);
-      if (instance.config.backend === "humangl" && !available.includes("humangl")) {
-        register(instance);
-        available = Object.keys(sr().registryFactory);
-      }
-      if (instance.config.debug)
-        log("available backends:", available);
       if (!available.includes(instance.config.backend)) {
         log(`error: backend ${instance.config.backend} not found in registry`);
         instance.config.backend = env.node ? "tensorflow" : "webgl";

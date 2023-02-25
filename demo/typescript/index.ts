@@ -13,8 +13,9 @@ const width = 1920; // used by webcam config as well as human maximum resultion 
 
 const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
   // backend: 'webgpu',
+  // cacheSensitivity: 0,
+  // debug: false,
   modelBasePath: '../../models',
-  cacheSensitivity: 0,
   filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: true }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
   body: { enabled: true },

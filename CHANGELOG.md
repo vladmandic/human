@@ -9,8 +9,9 @@
   
 ## Changelog
   
-### **HEAD -> main** 2023/02/13 mandic00@live.com
+### **HEAD -> main** 2023/02/22 mandic00@live.com
 
+- add movenet-multipose workaround
 - rebuild and publish
 - add face.detector.minsize configurable setting
 - add affectnet

@@ -43,3 +43,7 @@ No support for running in **web workers** as Safari still does not support `Offs
 <hr><br>
 
 ## Pending Release Changes
+
+- add `electron` detection
+- fix `gender-ssrnet-imdb`
+- add `movenet-multipose` workaround

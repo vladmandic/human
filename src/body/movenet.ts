@@ -39,6 +39,8 @@ export async function load(config: Config): Promise<GraphModel> {
   } else if (config.debug) log('cached model:', model['modelUrl']);
   inputSize = (model?.['executor'] && model?.inputs?.[0].shape) ? model.inputs[0].shape[2] : 0;
   if (inputSize < 64) inputSize = 256;
+  // @ts-ignore private property
+  if (tf.env().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS) tf.env().set('WEBGL_USE_SHAPES_UNIFORMS', false); // default=false <https://github.com/tensorflow/tfjs/issues/5205>
   return model;
 }
 
@@ -81,12 +83,11 @@ function parseSinglePose(res, config, image) {
 }
 
 function parseMultiPose(res, config, image) {
-  config.body.minConfidence = -1; // movenet-multipose return incorrect scores
   const bodies: BodyResult[] = [];
   for (let id = 0; id < res[0].length; id++) {
     const kpt = res[0][id];
-    const totalScore = Math.round(100 * kpt[51 + 4]) / 100;
-    if (totalScore > config.body.minConfidence) {
+    const boxScore = Math.round(100 * kpt[51 + 4]) / 100;
+    if (boxScore > config.body.minConfidence) {
       const keypoints: BodyKeypoint[] = [];
       for (let i = 0; i < 17; i++) {
         const score = kpt[3 * i + 2];
@@ -100,10 +101,10 @@ function parseMultiPose(res, config, image) {
           });
         }
       }
-      const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
+      // const newBox = box.calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
       // movenet-multipose has built-in box details
-      // const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
-      // const box: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
+      const boxRaw: Box = [kpt[51 + 1], kpt[51 + 0], kpt[51 + 3] - kpt[51 + 1], kpt[51 + 2] - kpt[51 + 0]];
+      const boxNorm: Box = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
       const annotations: Record<BodyAnnotation, Point[][]> = {} as Record<BodyAnnotation, Point[][]>;
       for (const [name, indexes] of Object.entries(coords.connected)) {
         const pt: Point[][] = [];
@@ -114,7 +115,8 @@ function parseMultiPose(res, config, image) {
         }
         annotations[name] = pt;
       }
-      const body: BodyResult = { id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations };
+      // const body: BodyResult = { id, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations };
+      const body: BodyResult = { id, score: boxScore, box: boxNorm, boxRaw, keypoints: [...keypoints], annotations };
       fix.bodyParts(body);
       bodies.push(body);
     }

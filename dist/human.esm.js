@@ -44234,6 +44234,8 @@ async function load17(config3) {
   inputSize8 = (model18 == null ? void 0 : model18["executor"]) && ((_a2 = model18 == null ? void 0 : model18.inputs) == null ? void 0 : _a2[0].shape) ? model18.inputs[0].shape[2] : 0;
   if (inputSize8 < 64)
     inputSize8 = 256;
+  if (O().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS)
+    O().set("WEBGL_USE_SHAPES_UNIFORMS", false);
   return model18;
 }
 function parseSinglePose(res, config3, image) {
@@ -44276,12 +44278,11 @@ function parseSinglePose(res, config3, image) {
   return bodies;
 }
 function parseMultiPose(res, config3, image) {
-  config3.body.minConfidence = -1;
   const bodies = [];
   for (let id2 = 0; id2 < res[0].length; id2++) {
     const kpt4 = res[0][id2];
-    const totalScore = Math.round(100 * kpt4[51 + 4]) / 100;
-    if (totalScore > config3.body.minConfidence) {
+    const boxScore = Math.round(100 * kpt4[51 + 4]) / 100;
+    if (boxScore > config3.body.minConfidence) {
       const keypoints = [];
       for (let i = 0; i < 17; i++) {
         const score = kpt4[3 * i + 2];
@@ -44295,7 +44296,8 @@ function parseMultiPose(res, config3, image) {
           });
         }
       }
-      const newBox = calc(keypoints.map((pt) => pt.position), [image.shape[2], image.shape[1]]);
+      const boxRaw = [kpt4[51 + 1], kpt4[51 + 0], kpt4[51 + 3] - kpt4[51 + 1], kpt4[51 + 2] - kpt4[51 + 0]];
+      const boxNorm = [Math.trunc(boxRaw[0] * (image.shape[2] || 0)), Math.trunc(boxRaw[1] * (image.shape[1] || 0)), Math.trunc(boxRaw[2] * (image.shape[2] || 0)), Math.trunc(boxRaw[3] * (image.shape[1] || 0))];
       const annotations2 = {};
       for (const [name, indexes] of Object.entries(connected3)) {
         const pt = [];
@@ -44307,7 +44309,7 @@ function parseMultiPose(res, config3, image) {
         }
         annotations2[name] = pt;
       }
-      const body4 = { id: id2, score: totalScore, box: newBox.box, boxRaw: newBox.boxRaw, keypoints: [...keypoints], annotations: annotations2 };
+      const body4 = { id: id2, score: boxScore, box: boxNorm, boxRaw, keypoints: [...keypoints], annotations: annotations2 };
       bodyParts(body4);
       bodies.push(body4);
     }

@@ -13,6 +13,7 @@ const Human = require('../../dist/human.node.js'); // use this when using human 
 const humanConfig = {
   // add any custom config here
   debug: true,
+  body: { enabled: false },
 };
 
 async function detect(inputFile) {

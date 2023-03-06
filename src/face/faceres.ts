@@ -32,10 +32,17 @@ export async function load(config: Config): Promise<GraphModel> {
   return model;
 }
 
-export function enhance(input): Tensor {
+export function enhance(input, config: Config): Tensor {
   const tensor = (input.image || input.tensor || input) as Tensor4D; // input received from detector is already normalized to 0..1, input is also assumed to be straightened
   if (!model?.inputs[0].shape) return tensor; // model has no shape so no point continuing
-  const crop: Tensor = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+  let crop: Tensor;
+  if (config.face.description?.['crop'] > 0) { // optional crop
+    const cropval = config.face.description?.['crop'];
+    const box = [[cropval, cropval, 1 - cropval, 1 - cropval]];
+    crop = tf.image.cropAndResize(tensor, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+  } else {
+    crop = tf.image.resizeBilinear(tensor, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+  }
   const norm: Tensor = tf.mul(crop, constants.tf255);
   tf.dispose(crop);
   return norm;
@@ -75,7 +82,7 @@ export async function predict(image: Tensor4D, config: Config, idx: number, coun
   skipped = 0;
   return new Promise(async (resolve) => {
     if (config.face.description?.enabled) {
-      const enhanced = enhance(image);
+      const enhanced = enhance(image, config);
       const resT = model?.execute(enhanced) as Tensor[];
       lastTime = now();
       tf.dispose(enhanced);

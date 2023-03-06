@@ -9,7 +9,7 @@
   
 ## Changelog
   
-### **HEAD -> main** 2023/02/25 mandic00@live.com
+### **HEAD -> main** 2023/02/28 mandic00@live.com
 
 - add electron detection
 - fix gender-ssrnet-imdb

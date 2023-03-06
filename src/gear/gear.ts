@@ -41,7 +41,11 @@ export async function predict(image: Tensor4D, config: Config, idx: number, coun
     if (!model?.inputs[0].shape) return;
     const t: Record<string, Tensor> = {};
     // t.resize = tf.image.resizeBilinear(image, [model?.inputs[0].shape[2], model?.inputs[0].shape[1]], false);
-    const box = [[0.0, 0.10, 0.90, 0.90]]; // empyrical values for top, left, bottom, right
+    let box = [[0.0, 0.10, 0.90, 0.90]]; // empyrical values for top, left, bottom, right
+    if (config.face.gear?.['crop'] > 0) { // optional crop config value
+      const crop = config.face.gear?.['crop'];
+      box = [[crop, crop, 1 - crop, 1 - crop]];
+    }
     t.resize = tf.image.cropAndResize(image, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
     const obj: GearType = { age: 0, gender: 'unknown', genderScore: 0, race: [] };
     if (config.face.gear?.enabled) [t.age, t.gender, t.race] = model.execute(t.resize, ['age_output', 'gender_output', 'race_output']) as Tensor[];

@@ -48,9 +48,9 @@ export async function predict(image: Tensor4D, config: Config, idx: number, coun
     if (config.face.emotion?.enabled) {
       const t: Record<string, Tensor> = {};
       const inputSize = model?.inputs[0].shape ? model.inputs[0].shape[2] : 0;
-      if (config.face.emotion['crop'] > 0) { // optional crop
-        const crop = config.face.emotion['crop'];
-        const box = [[crop, crop, 1 - crop, 1 - crop]]; // empyrical values for top, left, bottom, right
+      if (config.face.emotion?.['crop'] > 0) { // optional crop
+        const crop = config.face.emotion?.['crop'];
+        const box = [[crop, crop, 1 - crop, 1 - crop]];
         t.resize = tf.image.cropAndResize(image, box, [0], [inputSize, inputSize]);
       } else {
         t.resize = tf.image.resizeBilinear(image, [inputSize, inputSize], false);

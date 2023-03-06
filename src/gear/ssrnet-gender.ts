@@ -41,7 +41,13 @@ export async function predict(image: Tensor4D, config: Config, idx, count): Prom
   return new Promise(async (resolve) => {
     if (!model?.inputs[0].shape) return;
     const t: Record<string, Tensor> = {};
-    t.resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    if (config.face['ssrnet']?.['crop'] > 0) { // optional crop
+      const crop = config.face['ssrnet']?.['crop'];
+      const box = [[crop, crop, 1 - crop, 1 - crop]];
+      t.resize = tf.image.cropAndResize(image, box, [0], [model.inputs[0].shape[2], model.inputs[0].shape[1]]);
+    } else {
+      t.resize = tf.image.resizeBilinear(image, [model.inputs[0].shape[2], model.inputs[0].shape[1]], false);
+    }
     t.enhance = tf.tidy(() => {
       let normalize: Tensor;
       if (model?.inputs?.[0].shape?.[3] === 1) {

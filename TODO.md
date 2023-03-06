@@ -46,4 +46,5 @@ No support for running in **web workers** as Safari still does not support `Offs
 
 - add `electron` detection
 - fix `gender-ssrnet-imdb`
-- add `movenet-multipose` workaround
+- fix `movenet-multipose`
+- add optional `crop` values for *emotion*, *description*, *ssrnet* and *gear* models

@@ -12,14 +12,16 @@ import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 const width = 1920; // used by webcam config as well as human maximum resultion // can be anything, but resolutions higher than 4k will disable internal optimizations
 
 const humanConfig: Partial<H.Config> = { // user configuration for human, used to fine-tune behavior
-  // backend: 'webgpu',
+  debug: true,
+  backend: 'webgl',
   // cacheSensitivity: 0,
-  // debug: false,
+  // cacheModels: false,
+  // warmup: 'none',
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false, flip: false },
-  face: { enabled: true, detector: { rotation: true }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
-  body: { enabled: true },
-  hand: { enabled: true },
+  face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
+  body: { enabled: false, modelPath: 'https://vladmandic.github.io/human-models/models/movenet-multipose.json', minConfidence: -1 },
+  hand: { enabled: false },
   object: { enabled: false },
   segmentation: { enabled: false },
   gesture: { enabled: true },

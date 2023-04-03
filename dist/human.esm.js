@@ -32856,7 +32856,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.0.5";
+var version = "3.0.6";
 
 // src/tfjs/humangl.ts
 var config2 = {
@@ -37150,6 +37150,7 @@ function drawLabels(f, ctx) {
   if (!localOptions.drawLabels || ((_a2 = localOptions.faceLabels) == null ? void 0 : _a2.length) === 0)
     return;
   let l = localOptions.faceLabels.slice();
+  l = replace(l, "[id]", f.id.toFixed(0));
   if (f.score)
     l = replace(l, "[score]", 100 * f.score);
   if (f.gender)
@@ -37330,6 +37331,7 @@ function body(inCanvas2, result, drawOptions) {
       rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions2);
       if (localOptions2.drawLabels && ((_a2 = localOptions2.bodyLabels) == null ? void 0 : _a2.length) > 0) {
         let l = localOptions2.bodyLabels.slice();
+        l = replace(l, "[id]", result[i].id.toFixed(0));
         l = replace(l, "[score]", 100 * result[i].score);
         labels(ctx, l, result[i].box[0], result[i].box[1], localOptions2);
       }
@@ -37380,6 +37382,7 @@ function hand(inCanvas2, result, drawOptions) {
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions2);
       if (localOptions2.drawLabels && ((_a2 = localOptions2.handLabels) == null ? void 0 : _a2.length) > 0) {
         let l = localOptions2.handLabels.slice();
+        l = replace(l, "[id]", h.id.toFixed(0));
         l = replace(l, "[label]", h.label);
         l = replace(l, "[score]", 100 * h.score);
         labels(ctx, l, h.box[0], h.box[1], localOptions2);
@@ -37442,6 +37445,7 @@ function object(inCanvas2, result, drawOptions) {
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions2);
       if (localOptions2.drawLabels && ((_a2 = localOptions2.objectLabels) == null ? void 0 : _a2.length) > 0) {
         let l = localOptions2.objectLabels.slice();
+        l = replace(l, "[id]", h.id.toFixed(0));
         l = replace(l, "[label]", h.label);
         l = replace(l, "[score]", 100 * h.score);
         labels(ctx, l, h.box[0], h.box[1], localOptions2);

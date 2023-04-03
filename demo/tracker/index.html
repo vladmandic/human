@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Human</title>
+    <meta name="viewport" content="width=device-width" id="viewport">
+    <meta name="keywords" content="Human">
+    <meta name="application-name" content="Human">
+    <meta name="description" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="msapplication-tooltip" content="Human: 3D Face Detection, Body Pose, Hand & Finger Tracking, Iris Tracking, Age & Gender Prediction, Emotion Prediction & Gesture Recognition; Author: Vladimir Mandic <https://github.com/vladmandic>">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="../../assets/icon.png">
+    <script src="./index.js" type="module"></script>
+    <style>
+      html { font-family: 'Segoe UI'; font-size: 16px; font-variant: small-caps; }
+      body { margin: 0; background: black; color: white; overflow-x: hidden; width: 100vw; height: 100vh; }
+      body::-webkit-scrollbar { display: none; }
+      input[type="file"] { font-family: 'Segoe UI'; font-size: 14px; font-variant: small-caps; }
+      ::-webkit-file-upload-button { background: #333333; color: white; border: 0; border-radius: 0; padding: 6px 16px; box-shadow: 4px 4px 4px #222222; font-family: 'Segoe UI'; font-size: 14px; font-variant: small-caps; }
+    </style>
+  </head>
+  <body>
+    <div style="display: flex">
+      <video id="video" playsinline style="width: 25vw" controls controlslist="nofullscreen nodownload noremoteplayback" disablepictureinpicture loop></video>
+      <canvas id="canvas" style="width: 75vw"></canvas> 
+    </div>
+    <div class="uploader" style="padding: 8px">
+      <input type="file" name="inputvideo" id="inputvideo" accept="video/*"></input>
+      <input type="checkbox" id="interpolation" name="interpolation"></input>
+      <label for="tracker">interpolation</label>
+    </div>
+    <form id="config" style="padding: 8px; line-height: 1.6rem;">
+      tracker | 
+      <input type="checkbox" id="tracker" name="tracker" checked></input>
+      <label for="tracker">enabled</label> | 
+      <input type="checkbox" id="keepInMemory" name="keepInMemory"></input>
+      <label for="keepInMemory">keepInMemory</label> | 
+      <br>
+      tracker source | 
+      <input type="radio" id="box-face" name="box" value="face" checked>
+      <label for="box-face">face</label> |
+      <input type="radio" id="box-body" name="box" value="body">
+      <label for="box-face">body</label> |
+      <input type="radio" id="box-object" name="box" value="object">
+      <label for="box-face">object</label> |
+      <br>
+      tracker config | 
+      <input type="range" id="unMatchedFramesTolerance" name="unMatchedFramesTolerance" min="0" max="300" step="1", value="60"></input>
+      <label for="unMatchedFramesTolerance">unMatchedFramesTolerance</label> |
+      <input type="range" id="iouLimit" name="unMatchedFramesTolerance" min="0" max="1" step="0.01", value="0.1"></input>
+      <label for="iouLimit">iouLimit</label> |
+      <input type="range" id="distanceLimit" name="unMatchedFramesTolerance" min="0" max="1" step="0.01", value="0.1"></input>
+      <label for="distanceLimit">distanceLimit</label> |
+      <input type="radio" id="matchingAlgorithm-kdTree" name="matchingAlgorithm" value="kdTree" checked>
+      <label for="matchingAlgorithm-kdTree">kdTree</label> |
+      <input type="radio" id="matchingAlgorithm-munkres" name="matchingAlgorithm" value="munkres">
+      <label for="matchingAlgorithm-kdTree">munkres</label> |
+    </form>
+    <pre id="status" style="position: absolute; top: 12px; right: 20px; background-color: grey; padding: 8px; box-shadow: 2px 2px black"></pre>
+    <pre id="log" style="padding: 8px"></pre>
+    <div id="performance" style="position: absolute; bottom: 0; width: 100%; padding: 8px; font-size: 0.8rem;"></div>
+  </body>
+</html>

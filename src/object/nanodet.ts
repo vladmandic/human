@@ -26,6 +26,7 @@ export async function load(config: Config): Promise<GraphModel> {
   if (!model || env.initial) {
     model = await loadModel(config.object.modelPath);
     const inputs = model?.['executor'] ? Object.values(model.modelSignature['inputs']) : undefined;
+    // @ts-ignore model signature properties are not typed and inputs are unreliable for this model
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 416;
   } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;

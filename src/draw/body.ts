@@ -20,6 +20,7 @@ export function body(inCanvas: AnyCanvas, result: BodyResult[], drawOptions?: Pa
       rect(ctx, result[i].box[0], result[i].box[1], result[i].box[2], result[i].box[3], localOptions);
       if (localOptions.drawLabels && (localOptions.bodyLabels?.length > 0)) {
         let l = localOptions.bodyLabels.slice();
+        l = replace(l, '[id]', result[i].id.toFixed(0));
         l = replace(l, '[score]', 100 * result[i].score);
         labels(ctx, l, result[i].box[0], result[i].box[1], localOptions);
       }

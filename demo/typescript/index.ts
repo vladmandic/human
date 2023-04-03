@@ -20,7 +20,7 @@ const humanConfig: Partial<H.Config> = { // user configuration for human, used t
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
-  body: { enabled: false, modelPath: 'https://vladmandic.github.io/human-models/models/movenet-multipose.json', minConfidence: -1 },
+  body: { enabled: false },
   hand: { enabled: false },
   object: { enabled: false },
   segmentation: { enabled: false },

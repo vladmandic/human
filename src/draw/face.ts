@@ -11,6 +11,7 @@ let localOptions: DrawOptions;
 function drawLabels(f: FaceResult, ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
   if (!localOptions.drawLabels || (localOptions.faceLabels?.length === 0)) return;
   let l = localOptions.faceLabels.slice();
+  l = replace(l, '[id]', f.id.toFixed(0));
   if (f.score) l = replace(l, '[score]', 100 * f.score);
   if (f.gender) l = replace(l, '[gender]', f.gender);
   if (f.genderScore) l = replace(l, '[genderScore]', 100 * f.genderScore);

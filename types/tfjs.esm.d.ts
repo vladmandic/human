@@ -6,6 +6,7 @@ import { DataId as DataId_2 } from './tfjs-core';
 import { DataStorage } from './tfjs-core';
 import { DataToGPUWebGLOption } from './tfjs-core';
 import { DataType } from './tfjs-core';
+import { DataTypeFor } from './tfjs-core';
 import { DataTypeMap } from './tfjs-core';
 import { GPUData } from './tfjs-core';
 import { InferenceModel } from './tfjs-core';
@@ -32,6 +33,7 @@ import * as tfc from './tfjs-core';
 import { TimingInfo } from './tfjs-core';
 import { TypedArray } from './tfjs-core';
 import { WebGLData } from './tfjs-core';
+import { WebGPUData } from './tfjs-core';
 
 /**
  * Base class for Activations.
@@ -222,7 +224,7 @@ declare class AlphaDropout extends Layer {
     readonly rate: number;
     readonly noiseShape: Shape;
     constructor(args: AlphaDropoutArgs);
-    _getNoiseShape(inputs: Tensor | Tensor[]): number[];
+    _getNoiseShape(inputs: Tensor | Tensor[]): any;
     computeOutputShape(inputShape: Shape | Shape[]): Shape | Shape[];
     getConfig(): {
         rate: number;
@@ -273,9 +275,9 @@ declare interface AlphaDropoutArgs extends LayerArgs {
     noiseShape?: Shape;
 }
 
-declare function ArrayBufferToTypedArray(data: ArrayBuffer, dtype: DataType): Uint8Array | Int32Array | Float32Array;
-
 declare function assertNotComplex(tensor: TensorInfo_2 | TensorInfo_2[], opName: string): void;
+
+declare function assertNotComplex_2(tensor: TensorInfo_2 | TensorInfo_2[], opName: string): void;
 
 declare namespace AttrValue {
     /** Properties of a ListValue. */
@@ -425,10 +427,10 @@ export declare class BackendWasm extends KernelBackend {
     private dataIdNextNumber;
     dataIdMap: DataStorage<TensorData_2>;
     constructor(wasm: BackendWasmModule | BackendWasmThreadedSimdModule);
-    write(values: backend_util.BackendValues, shape: number[], dtype: DataType): DataId_3;
+    write(values: backend_util.BackendValues | null, shape: number[], dtype: DataType): DataId_3;
     numDataIds(): number;
     time(f: () => void): Promise<BackendTimingInfo>;
-    move(dataId: DataId_3, values: backend_util.BackendValues, shape: number[], dtype: DataType, refCount: number): void;
+    move(dataId: DataId_3, values: backend_util.BackendValues | null, shape: number[], dtype: DataType, refCount: number): void;
     read(dataId: DataId_3): Promise<backend_util.BackendValues>;
     readSync(dataId: DataId_3, start?: number, end?: number): backend_util.BackendValues;
     /**
@@ -453,7 +455,7 @@ export declare class BackendWasm extends KernelBackend {
      * is present, the memory was allocated elsewhere (in c++) and we just record
      * the pointer where that memory lives.
      */
-    makeOutput(shape: number[], dtype: DataType, memoryOffset?: number): TensorInfo_2;
+    makeOutput(shape: number[], dtype: DataType, memoryOffset?: number, values?: backend_util.BackendValues): TensorInfo_2;
     typedArrayFromHeap({ shape, dtype, dataId }: TensorInfo_2): backend_util.TypedArray;
 }
 
@@ -636,6 +638,18 @@ declare interface BaseConvLayerArgs extends LayerArgs {
      * Regularizer function applied to the activation.
      */
     activityRegularizer?: RegularizerIdentifier | Regularizer;
+}
+
+declare abstract class BaseRandomLayer extends Layer {
+    /** @nocollapse */
+    static className: string;
+    protected randomGenerator: RandomSeed;
+    constructor(args: BaseRandomLayerArgs);
+    getConfig(): serialization.ConfigDict;
+}
+
+declare interface BaseRandomLayerArgs extends LayerArgs {
+    seed?: number;
 }
 
 declare interface BaseRNNLayerArgs extends LayerArgs {
@@ -1182,7 +1196,7 @@ declare interface CategoryEncodingArgs extends LayerArgs {
     outputMode?: OutputMode;
 }
 
-declare const ceilImpl: SimpleUnaryImpl;
+declare const ceilImpl: SimpleUnaryImpl<number, number>;
 
 declare class CenterCrop extends Layer {
     /** @nocollapse */
@@ -1804,8 +1818,8 @@ declare class ConvLSTM2DCell extends LSTMCell implements ConvRNN2DCell {
     build(inputShape: Shape | Shape[]): void;
     call(inputs: tfc.Tensor[], kwargs: Kwargs): tfc.Tensor[];
     getConfig(): tfc.serialization.ConfigDict;
-    inputConv(x: Tensor, w: Tensor, b?: Tensor, padding?: PaddingMode): tfc.Tensor3D;
-    recurrentConv(x: Tensor, w: Tensor): tfc.Tensor3D;
+    inputConv(x: Tensor, w: Tensor, b?: Tensor, padding?: PaddingMode): any;
+    recurrentConv(x: Tensor, w: Tensor): any;
 }
 
 /**
@@ -2163,6 +2177,8 @@ declare enum DataType_2 {
     DT_UINT32_REF = 122,
     DT_UINT64_REF = 123
 }
+
+declare function dataTypeToGPUType(type: DataType, component?: number): string;
 
 declare interface DefaultValueTypeMap {
     bool: boolean;
@@ -2706,9 +2722,9 @@ declare interface EmbeddingLayerArgs extends LayerArgs {
 
 declare const equalImpl: SimpleBinaryKernelImpl;
 
-declare const expImpl: SimpleUnaryImpl;
+declare const expImpl: SimpleUnaryImpl<number, number>;
 
-declare const expm1Impl: SimpleUnaryImpl;
+declare const expm1Impl: SimpleUnaryImpl<number, number>;
 
 /** @docinline */
 declare type FanMode = 'fanIn' | 'fanOut' | 'fanAvg';
@@ -2758,7 +2774,9 @@ declare interface FlattenLayerArgs extends LayerArgs {
     dataFormat?: DataFormat;
 }
 
-declare const floorImpl: SimpleUnaryImpl;
+declare const floorDivImpl: SimpleBinaryKernelImpl;
+
+declare const floorImpl: SimpleUnaryImpl<number, number>;
 
 /**
  * Enforce use of half precision textures if available on the platform.
@@ -2892,7 +2910,7 @@ declare function getRowsCols(shape: number[]): [number, number];
 
 declare function getShapeAs3D(shape: number[]): [number, number, number];
 
-declare function getStartHeaderString(useGlobalIndex: boolean): string;
+declare function getStartHeaderString(useGlobalIndex: boolean, program: WebGPUProgram): string;
 
 declare function getTextureShapeFromLogicalShape(logShape: number[], isPacked?: boolean): [number, number];
 
@@ -2909,7 +2927,7 @@ declare function getWebGLErrorMessage(gl: WebGLRenderingContext, status: number)
 
 declare function getWebGLMaxTextureSize(webGLVersion: number): number;
 
-declare function getWorkgroupSizeString(): string;
+declare function getWorkgroupSizeString(program: WebGPUProgram): string;
 
 declare class GlobalAveragePooling1D extends GlobalPooling1D {
     /** @nocollapse */
@@ -3232,7 +3250,7 @@ export declare class GraphModel<ModelURL extends Url = string | io.IOHandler> im
      * @param onProgress Optional, progress callback function, fired periodically
      * before the load is completed.
      */
-    constructor(modelUrl: ModelURL, loadOptions?: io.LoadOptions, tfio?: typeof io);
+    constructor(modelUrl: ModelURL, loadOptions?: io.LoadOptions, tfio?: any);
     private findIOHandler;
     /**
      * Loads the model and weight files, construct the in memory weight map and
@@ -3957,9 +3975,13 @@ declare interface InputSpecArgs {
 
 declare const INTERPOLATION_KEYS: readonly ["bilinear", "nearest"];
 
+declare const INTERPOLATION_KEYS_2: readonly ["bilinear", "nearest"];
+
 declare type InterpolationFormat = 'nearest' | 'bilinear';
 
 declare type InterpolationType = typeof INTERPOLATION_KEYS[number];
+
+declare type InterpolationType_2 = typeof INTERPOLATION_KEYS_2[number];
 
 declare function isCapableOfRenderingToFloatTexture(webGLVersion: number): boolean;
 
@@ -4732,6 +4754,7 @@ declare namespace layers {
         centerCrop,
         resizing,
         categoryEncoding,
+        randomWidth,
         globalMaxPool1d,
         globalMaxPool2d,
         maxPool1d,
@@ -5464,7 +5487,7 @@ declare function linSpaceImpl(start: number, stop: number, num: number): TypedAr
  *
  * @doc {heading: 'Models', subheading: 'Loading'}
  */
-export declare function loadGraphModel(modelUrl: string | io.IOHandler, options?: io.LoadOptions, tfio?: typeof io): Promise<GraphModel>;
+export declare function loadGraphModel(modelUrl: string | io.IOHandler, options?: io.LoadOptions, tfio?: any): Promise<GraphModel>;
 
 /**
  * Load a graph model given a synchronous IO handler with a 'load' method.
@@ -5581,7 +5604,7 @@ export declare function loadGraphModelSync(modelSource: io.IOHandlerSync | io.Mo
  */
 export declare function loadLayersModel(pathOrIOHandler: string | io.IOHandler, options?: io.LoadOptions): Promise<LayersModel>;
 
-declare const logImpl: SimpleUnaryImpl;
+declare const logImpl: SimpleUnaryImpl<number, number>;
 
 /**
  * Logs in which values can only be numbers.
@@ -5805,8 +5828,6 @@ declare function MAPE(yTrue: Tensor, yPred: Tensor): Tensor;
 
 declare function mape(yTrue: Tensor, yPred: Tensor): Tensor;
 
-declare function mapToWgslTypes(type: DataType, isVec4: boolean): WGSLDataType | DataType;
-
 declare class Masking extends Layer {
     /** @nocollapse */
     static className: string;
@@ -5907,7 +5928,7 @@ export declare class MathBackendWebGL extends KernelBackend {
     private nextDataId;
     private pendingRead;
     private pendingDisposal;
-    dataRefCount: WeakMap<object, number>;
+    dataRefCount: WeakMap<DataId_2, number>;
     private numBytesInGPU;
     private canvas;
     private programTimersStack;
@@ -5971,7 +5992,7 @@ export declare class MathBackendWebGL extends KernelBackend {
      * tests.
      */
     getDataInfo(dataId: DataId_2): TextureData;
-    shouldExecuteOnCPU(inputs: TensorInfo_2[], sizeThreshold?: number): boolean;
+    shouldExecuteOnCPU(inputs: TensorInfo_2[], sizeThreshold?: any): boolean;
     getGPGPUContext(): GPGPUContext;
     where(condition: Tensor): Tensor2D;
     private packedUnaryOp;
@@ -6004,7 +6025,7 @@ export declare class MathBackendWebGL extends KernelBackend {
      * Create a TF.js tensor out of an existing WebGL texture. A new texture will
      * be created.
      */
-    createTensorFromTexture(values: WebGLData, shape: number[], dtype: DataType): Tensor;
+    createTensorFromGPUData(values: WebGLData, shape: number[], dtype: DataType): Tensor;
 }
 
 declare enum MatMulProgramType {
@@ -7418,6 +7439,27 @@ declare interface RandomNormalArgs {
 }
 
 /**
+ * @license
+ * Copyright 2023 CodeSmith LLC
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
+/**
+ * Keeps track of seed and handles pseudorandomness
+ * Instance created in BaseRandomLayer class
+ * Utilized for random preprocessing layers
+ */
+declare class RandomSeed {
+    static className: string;
+    seed: number | undefined;
+    constructor(seed: number | undefined);
+    next(): number | undefined;
+}
+
+/**
  * Initializer that generates random values initialized to a uniform
  * distribution.
  *
@@ -7435,6 +7477,91 @@ declare interface RandomUniformArgs {
     maxval?: number;
     /** Used to seed the random generator. */
     seed?: number;
+}
+
+/**
+ * Preprocessing Layer with randomly varies image during training
+ *
+ * This layer randomly adjusts the width of a batch of images of a
+ * batch of images by a random factor.
+ *
+ * The input should be a 3D (unbatched) or
+ * 4D (batched) tensor in the `"channels_last"` image data format. Input pixel
+ * values can be of any range (e.g. `[0., 1.)` or `[0, 255]`) and of interger
+ * or floating point dtype. By default, the layer will output floats.
+ *
+ * tf methods implemented in tfjs: 'bilinear', 'nearest',
+ * tf methods unimplemented in tfjs: 'bicubic', 'area', 'lanczos3', 'lanczos5',
+ *                                   'gaussian', 'mitchellcubic'
+ *
+ */
+declare class RandomWidth extends BaseRandomLayer {
+    /** @nocollapse */
+    static className: string;
+    private readonly factor;
+    private readonly interpolation?;
+    private widthLower;
+    private widthUpper;
+    private imgHeight;
+    private adjustedWidth;
+    private widthFactor;
+    constructor(args: RandomWidthArgs);
+    getConfig(): serialization.ConfigDict;
+    computeOutputShape(inputShape: Shape | Shape[]): Shape | Shape[];
+    call(inputs: Tensor<Rank.R3> | Tensor<Rank.R4>, kwargs: Kwargs): Tensor[] | Tensor;
+}
+
+/**
+ * A preprocessing layer which randomly varies image width during training.
+ *
+ * This layer will randomly adjusts the width of a batch of images of a batch
+ * of images by a random factor.
+ *
+ * The input should be a 3D (unbatched) or 4D (batched) tensor in
+ * the `"channels_last"` image data format. Input pixel values can be of any
+ * range (e.g. `[0., 1.)` or `[0, 255]`) and of integer or floating point
+ * dtype. By default, the layer will output floats. By default, this layer is
+ * inactive during inference. For an overview and full list of preprocessing
+ * layers, see the preprocessing [guide]
+ * (https://www.tensorflow.org/guide/keras/preprocessing_layers).
+ *
+ * Arguments:
+ *
+ * factor:
+ *   A positive float (fraction of original width), or a tuple of size 2
+ *   representing lower and upper bound for resizing vertically.
+ *   When represented as a single float, this value is used for both the upper
+ *   and lower bound. For instance, `factor=(0.2, 0.3)` results in an output
+ *   with width changed by a random amount in the range `[20%, 30%]`.
+ *   `factor=(-0.2, 0.3)` results in an output with width changed by a random
+ *   amount in the range `[-20%, +30%]`. `factor=0.2` results in an output
+ *   with width changed by a random amount in the range `[-20%, +20%]`.
+ * interpolation:
+ *   String, the interpolation method.
+ *   Defaults to `bilinear`.
+ *   Supports `"bilinear"`, `"nearest"`.
+ *   The tf methods `"bicubic"`, `"area"`, `"lanczos3"`, `"lanczos5"`,
+ *   `"gaussian"`, `"mitchellcubic"` are unimplemented in tfjs.
+ * seed:
+ *   Integer. Used to create a random seed.
+ *
+ * Input shape:
+ *     3D (unbatched) or 4D (batched) tensor with shape:
+ *     `(..., height, width, channels)`, in `"channels_last"` format.
+ * Output shape:
+ *     3D (unbatched) or 4D (batched) tensor with shape:
+ *     `(..., height, random_width, channels)`.
+ *
+ *
+ * @doc {heading: 'Layers', subheading: 'RandomWidth', namespace: 'layers'}
+ */
+declare function randomWidth(args: RandomWidthArgs): RandomWidth;
+
+declare interface RandomWidthArgs extends BaseRandomLayerArgs {
+    factor: number | [number, number];
+    interpolation?: InterpolationType_2;
+    seed?: number;
+    autoVectorize?: boolean;
 }
 
 declare function rangeImpl(start: number, stop: number, step: number, dtype: 'float32' | 'int32'): DataTypeMap['float32' | 'int32'];
@@ -7582,7 +7709,7 @@ declare class RepeatVector extends Layer {
  *  const model = tf.sequential();
  *  model.add(tf.layers.repeatVector({n: 4, inputShape: [2]}));
  *  const x = tf.tensor2d([[10, 20]]);
- *  // Use the model to do inference on a data point the model hasn't see
+ *  // Use the model to do inference on a data point the model hasn't seen
  *  model.predict(x).print();
  *  // output shape is now [batch, 2, 4]
  * ```
@@ -7907,12 +8034,12 @@ export declare interface RNNLayerArgs extends BaseRNNLayerArgs {
     cell: RNNCell | RNNCell[];
 }
 
-declare const rsqrtImpl: SimpleUnaryImpl;
+declare const rsqrtImpl: SimpleUnaryImpl<number, number>;
 
 /** @docinline */
 declare type SampleWeightMode = 'temporal';
 
-declare function scatterImpl<R extends Rank, D extends 'float32' | 'int32' | 'bool' | 'string'>(indices: TensorBuffer<R, 'int32'>, updates: TensorBuffer<R, D>, shape: number[], outputSize: number, sliceSize: number, numUpdates: number, sliceRank: number, strides: number[], defaultValue: DefaultValueTypeMap[D], sumDupeIndices: boolean): TensorBuffer<R, D>;
+declare function scatterImpl<R extends Rank, D extends 'float32' | 'int32' | 'bool' | 'string'>(indices: TensorBuffer<R, 'int32'>, updates: TensorBuffer<R, D>, shape: number[], outputSize: number, sliceSize: number, numUpdates: number, sliceRank: number, strides: number[], defaultValue: TensorBuffer<R, D> | DefaultValueTypeMap[D], sumDupeIndices: boolean): TensorBuffer<R, D>;
 
 declare interface SeedOnlyInitializerArgs {
     /** Random number generator seed. */
@@ -8550,6 +8677,7 @@ declare namespace shared {
         expImpl,
         expm1Impl,
         floorImpl,
+        floorDivImpl,
         gatherNdImpl,
         gatherV2Impl,
         greaterImpl,
@@ -8578,6 +8706,7 @@ declare namespace shared {
         sparseSegmentReductionImpl,
         sqrtImpl,
         squaredDifferenceImpl,
+        staticRegexReplaceImpl,
         stridedSliceImpl,
         stringNGramsImpl,
         stringSplitImpl,
@@ -8593,7 +8722,7 @@ declare namespace shared {
 }
 export { shared }
 
-declare const sigmoidImpl: SimpleUnaryImpl;
+declare const sigmoidImpl: SimpleUnaryImpl<number, number>;
 
 declare function simpleAbsImpl(vals: TypedArray): Float32Array;
 
@@ -8853,7 +8982,7 @@ export declare interface SimpleRNNLayerArgs extends BaseRNNLayerArgs {
     dropoutFunc?: Function;
 }
 
-declare type SimpleUnaryImpl = (values: TypedArray, dtype: DataType, attrs?: NamedAttrMap) => TypedArray;
+declare type SimpleUnaryImpl<I extends number | string = number | string, O extends number | string = number | string> = (values: ArrayLike<I>, dtype: DataTypeFor<O>, attrs?: NamedAttrMap) => DataTypeMap[DataTypeFor<O>];
 
 declare function sliceImpl(vals: BackendValues, begin: number[], size: number[], shape: number[], dtype: DataType): BackendValues;
 
@@ -8976,7 +9105,7 @@ declare interface SpatialDropout1DLayerConfig extends LayerConfig {
     seed?: number;
 }
 
-declare const sqrtImpl: SimpleUnaryImpl;
+declare const sqrtImpl: SimpleUnaryImpl<number, number>;
 
 declare const squaredDifferenceImpl: SimpleBinaryKernelImpl;
 
@@ -9023,6 +9152,8 @@ declare interface StackedRNNCellsArgs extends LayerArgs {
      */
     cells: RNNCell[];
 }
+
+declare const staticRegexReplaceImpl: SimpleUnaryImpl<string, string>;
 
 declare function stridedSliceImpl<R extends Rank>(outShape: number[], xBuf: TensorBuffer<R>, strides: number[], begin: number[]): TensorBuffer<R>;
 
@@ -9117,11 +9248,12 @@ declare interface TensorData_2 {
 }
 
 declare type TensorData_3 = {
-    values: backend_util.BackendValues;
+    values: BackendValues;
     dtype: DataType;
     shape: number[];
     refCount: number;
     resourceInfo?: BufferInfo | TextureInfo;
+    external?: boolean;
     complexTensorInfos?: {
         real: TensorInfo_2;
         imag: TensorInfo_2;
@@ -9201,14 +9333,14 @@ declare type TextureInfo = {
 };
 
 declare class TextureManager {
-    private gpgpu;
+    private readonly gpgpu;
     private numUsedTextures;
     private numFreeTextures;
     private _numBytesAllocated;
     private _numBytesFree;
     private freeTextures;
-    private logEnabled;
     private usedTextures;
+    private logEnabled;
     constructor(gpgpu: GPGPUContext);
     acquireTexture(shapeRC: [number, number], usage: TextureUsage, isPacked: boolean): Texture;
     releaseTexture(texture: Texture, shape: [number, number], logicalTexType: TextureUsage, isPacked: boolean): void;
@@ -9412,6 +9544,8 @@ declare interface TruncatedNormalArgs {
     /** Used to seed the random generator. */
     seed?: number;
 }
+
+declare const typeSnippet: (component: number, type?: string) => string;
 
 declare function unbindColorTextureFromFramebuffer(gl: WebGLRenderingContext, framebuffer: WebGLFramebuffer): void;
 
@@ -9709,10 +9843,10 @@ declare namespace webgpu_program {
         getStartHeaderString,
         getWorkgroupSizeString,
         makeShaderKey,
-        mapToWgslTypes,
+        dataTypeToGPUType,
         WebGPUProgram,
         compileProgram,
-        WGSLDataType
+        typeSnippet
     }
 }
 
@@ -9725,8 +9859,8 @@ declare namespace webgpu_util {
         computeWorkPerThreadForConv2d,
         flatDispatchLayout,
         GPUBytesPerElement,
-        ArrayBufferToTypedArray,
         isWebGPUSupported,
+        assertNotComplex_2 as assertNotComplex,
         WorkgroupInfo,
         MatMulProgramType
     }
@@ -9779,16 +9913,21 @@ export declare class WebGPUBackend extends KernelBackend {
     incRef(dataId: DataId_4): void;
     /** Decrease refCount of a `TensorData`. */
     decRef(dataId: DataId_4): void;
-    write(values: backend_util.BackendValues, shape: number[], dtype: DataType): DataId_4;
-    move(dataId: DataId_4, values: backend_util.BackendValues, shape: number[], dtype: DataType, refCount: number): void;
+    write(values: BackendValues, shape: number[], dtype: DataType): DataId_4;
+    move(dataId: DataId_4, values: BackendValues, shape: number[], dtype: DataType, refCount: number): void;
     submitQueue(): void;
     ensureCommandEncoderReady(): void;
     ensureComputePassEnded(): void;
     getComputePass(): GPUComputePassEncoder;
-    getBufferData(buffer: GPUBuffer, size: number): Promise<backend_util.BackendValues>;
+    getBufferData(buffer: GPUBuffer, size: number): Promise<ArrayBuffer>;
     private convertAndCacheOnCPU;
-    readSync(dataId: object): backend_util.BackendValues;
-    read(dataId: object): Promise<backend_util.BackendValues>;
+    readSync(dataId: object): BackendValues;
+    read(dataId: object): Promise<BackendValues>;
+    private copyBuffer;
+    /**
+     * Create a TF.js tensor out of an existing WebGPU buffer.
+     */
+    createTensorFromGPUData(values: WebGPUData, shape: number[], dtype: DataType): Tensor;
     /**
      * Read tensor to a new GPUBuffer.
      * @param dataId The source tensor.
@@ -9796,14 +9935,14 @@ export declare class WebGPUBackend extends KernelBackend {
     readToGPU(dataId: DataId_4): GPUData;
     bufferSync<R extends Rank, D extends DataType>(t: TensorInfo_2): TensorBuffer<R, D>;
     time(f: () => void): Promise<WebGPUTimingInfo>;
-    makeTensorInfo(shape: number[], dtype: DataType, values?: backend_util.BackendValues | string[]): TensorInfo_2;
+    makeTensorInfo(shape: number[], dtype: DataType, values?: BackendValues | string[]): TensorInfo_2;
     private tensorToBinding;
     getQueryTime(query: GPUQuerySet): Promise<number>;
     uploadToGPU(dataId: DataId_4): void;
     private makeUniforms;
     runWebGPUProgram(program: webgpu_program.WebGPUProgram, inputs: TensorInfo_2[], outputDtype: DataType, programDefinedUniform?: ProgramUniform, output?: TensorInfo_2): TensorInfo_2;
     getTimeFromQuerySet(querySet: GPUQuerySet): Promise<number>;
-    shouldExecuteOnCPU(inputs: TensorInfo_2[], sizeThreshold?: number): boolean;
+    shouldExecuteOnCPU(inputs: TensorInfo_2[], sizeThreshold?: any): boolean;
     numDataIds(): number;
     dispose(): void;
 }
@@ -9823,13 +9962,13 @@ export declare interface WebGPUProgram {
         z?: number[];
     };
     isFromPixels?: boolean;
-    isVec4?: boolean;
+    outputComponent?: number;
     outputShape: number[];
     shaderKey: string;
     size?: boolean;
     uniforms?: string;
     variableNames: string[];
-    variableTypes?: string[];
+    variableComponents?: number[];
     workgroupSize: [number, number, number];
     workPerThread?: number;
     getUserCode: () => string;
@@ -9839,8 +9978,6 @@ declare interface WebGPUTimingInfo extends TimingInfo {
     uploadWaitMs: number;
     downloadWaitMs: number;
 }
-
-declare type WGSLDataType = 'f32' | 'i32' | 'vec4<f32>' | 'vec4<i32>' | 'vec4<bool>';
 
 declare type WorkgroupInfo = {
     workgroupSize: [number, number, number];

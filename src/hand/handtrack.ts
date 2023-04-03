@@ -77,7 +77,9 @@ export async function loadDetect(config: Config): Promise<GraphModel> {
     fakeOps(['tensorlistreserve', 'enter', 'tensorlistfromtensor', 'merge', 'loopcond', 'switch', 'exit', 'tensorliststack', 'nextiteration', 'tensorlistsetitem', 'tensorlistgetitem', 'reciprocal', 'shape', 'split', 'where'], config);
     models[0] = await loadModel(config.hand.detector?.modelPath);
     const inputs = models[0]['executor'] ? Object.values(models[0].modelSignature['inputs']) : undefined;
+    // @ts-ignore model signature properties are not typed and inputs are unreliable for this model
     inputSize[0][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    // @ts-ignore model signature properties are not typed and inputs are unreliable for this model
     inputSize[0][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug) log('cached model:', models[0]['modelUrl']);
   return models[0];
@@ -88,7 +90,9 @@ export async function loadSkeleton(config: Config): Promise<GraphModel> {
   if (!models[1]) {
     models[1] = await loadModel(config.hand.skeleton?.modelPath);
     const inputs = models[1]['executor'] ? Object.values(models[1].modelSignature['inputs']) : undefined;
+    // @ts-ignore model signature properties are not typed and inputs are unreliable for this model
     inputSize[1][0] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
+    // @ts-ignore model signature properties are not typed and inputs are unreliable for this model
     inputSize[1][1] = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[2].size) : 0;
   } else if (config.debug) log('cached model:', models[1]['modelUrl']);
   return models[1];

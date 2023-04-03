@@ -36,6 +36,7 @@ export async function loadPose(config: Config): Promise<GraphModel> {
   if (!model) {
     model = await loadModel(config.body.modelPath);
     const inputs = model?.['executor'] ? Object.values(model.modelSignature['inputs']) : undefined;
+    // @ts-ignore model signature properties are not typed and inputs are unreliable for this model
     inputSize = Array.isArray(inputs) ? parseInt(inputs[0].tensorShape.dim[1].size) : 0;
   } else if (config.debug) log('cached model:', model['modelUrl']);
   return model;

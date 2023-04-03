@@ -2,3 +2,5 @@ node_modules/
 types/lib
 pnpm-lock.yaml
 *.swp
+samples/**/*.mp4
+samples/**/*.webm

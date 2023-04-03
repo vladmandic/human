@@ -19,6 +19,7 @@ export function object(inCanvas: AnyCanvas, result: ObjectResult[], drawOptions?
       rect(ctx, h.box[0], h.box[1], h.box[2], h.box[3], localOptions);
       if (localOptions.drawLabels && (localOptions.objectLabels?.length > 0)) {
         let l = localOptions.objectLabels.slice();
+        l = replace(l, '[id]', h.id.toFixed(0));
         l = replace(l, '[label]', h.label);
         l = replace(l, '[score]', 100 * h.score);
         labels(ctx, l, h.box[0], h.box[1], localOptions);

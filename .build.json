@@ -160,6 +160,15 @@
         "output": "demo/faceid/index.js",
         "sourcemap": true,
         "external": ["*/human.esm.js"]
+      },
+      {
+        "name": "demo/tracker",
+        "platform": "browser",
+        "format": "esm",
+        "input": "demo/tracker/index.ts",
+        "output": "demo/tracker/index.js",
+        "sourcemap": true,
+        "external": ["*/human.esm.js"]
       }
     ]
   },

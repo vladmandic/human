@@ -24,7 +24,7 @@ export async function histogramEqualization(inputImage: Tensor): Promise<Tensor>
     const enh = [tf.mul(sub[0], factor), tf.mul(sub[1], factor), tf.mul(sub[2], factor)];
     const stack = tf.stack([enh[0], enh[1], enh[2]], 2);
     final = tf.reshape(stack, [1, squeeze.shape[0] || 0, squeeze.shape[1] || 0, 3]);
-    tf.dispose([...sub, ...range, ...enh]);
+    tf.dispose([...sub, ...range, ...enh, stack]);
   } else {
     final = tf.expandDims(squeeze, 0);
   }

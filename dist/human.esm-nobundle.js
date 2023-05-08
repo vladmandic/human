@@ -992,7 +992,11 @@ async function histogramEqualization(inputImage) {
     const enh = [tfjs_esm_exports.mul(sub11[0], factor), tfjs_esm_exports.mul(sub11[1], factor), tfjs_esm_exports.mul(sub11[2], factor)];
     const stack5 = tfjs_esm_exports.stack([enh[0], enh[1], enh[2]], 2);
     final = tfjs_esm_exports.reshape(stack5, [1, squeeze14.shape[0] || 0, squeeze14.shape[1] || 0, 3]);
+<<<<<<< HEAD
     tfjs_esm_exports.dispose([...sub11, ...range, ...enh, stack5]);
+=======
+    tfjs_esm_exports.dispose([...sub11, ...range, ...enh]);
+>>>>>>> 05fc81f6 (update dependencies)
   } else {
     final = tfjs_esm_exports.expandDims(squeeze14, 0);
   }
@@ -9279,10 +9283,17 @@ var iris2 = (res) => {
     if (leftIrisCenterX > 0.06 || rightIrisCenterX > 0.06)
       center = false;
     if (leftIrisCenterX > rightIrisCenterX) {
+<<<<<<< HEAD
       if (leftIrisCenterX > 0.05)
         gestures.push({ iris: i, gesture: "looking right" });
     } else {
       if (rightIrisCenterX > 0.05)
+=======
+      if (rightIrisCenterX > 0.04)
+        gestures.push({ iris: i, gesture: "looking right" });
+    } else {
+      if (leftIrisCenterX > 0.04)
+>>>>>>> 05fc81f6 (update dependencies)
         gestures.push({ iris: i, gesture: "looking left" });
     }
     const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];

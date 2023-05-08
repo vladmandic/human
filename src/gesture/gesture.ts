@@ -99,9 +99,9 @@ export const iris = (res: FaceResult[]): GestureResult[] => {
     const rightIrisCenterX = Math.abs(res[i].mesh[33][0] - res[i].annotations.rightEyeIris[0][0]) / res[i].box[2];
     if (leftIrisCenterX > 0.06 || rightIrisCenterX > 0.06) center = false;
     if (leftIrisCenterX > rightIrisCenterX) { // check eye with bigger offset
-      if (leftIrisCenterX > 0.05) gestures.push({ iris: i, gesture: 'looking right' });
+      if (rightIrisCenterX > 0.04) gestures.push({ iris: i, gesture: 'looking right' });
     } else {
-      if (rightIrisCenterX > 0.05) gestures.push({ iris: i, gesture: 'looking left' });
+      if (leftIrisCenterX > 0.04) gestures.push({ iris: i, gesture: 'looking left' });
     }
 
     const rightIrisCenterY = Math.abs(res[i].mesh[145][1] - res[i].annotations.rightEyeIris[0][1]) / res[i].box[3];

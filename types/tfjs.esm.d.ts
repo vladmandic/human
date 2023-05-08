@@ -22,7 +22,6 @@ import { PixelData } from './tfjs-core';
 import { Rank } from './tfjs-core';
 import { Scalar } from './tfjs-core';
 import { serialization } from './tfjs-core';
-import { ShapeMap } from './tfjs-core';
 import { Tensor } from './tfjs-core';
 import { Tensor2D } from './tfjs-core';
 import { Tensor3D } from './tfjs-core';
@@ -992,11 +991,7 @@ declare function bindVertexBufferToProgramAttribute(gl: WebGLRenderingContext, p
 
 declare function bindVertexProgramAttributeStreams(gl: WebGLRenderingContext, program: WebGLProgram, vertexBuffer: WebGLBuffer): boolean;
 
-declare type BufferInfo = {
-    size: number;
-    usage: GPUBufferUsageFlags;
-    buffer: GPUBuffer;
-};
+declare const bitwiseAndImpl: SimpleBinaryKernelImpl;
 
 /**
  * @license
@@ -1023,10 +1018,8 @@ declare class BufferManager {
     numBytesUsed: number;
     numBytesAllocated: number;
     constructor(device: GPUDevice);
-    acquireUploadBuffer(size: number, usage: GPUBufferUsageFlags): GPUBuffer;
-    acquireBuffer(size: number, usage: GPUBufferUsageFlags, mappedAtCreation?: boolean): GPUBuffer;
-    releaseBuffer(buffer: GPUBuffer, size: number, usage: GPUBufferUsageFlags): void;
-    releaseUploadBuffer(buffer: GPUBuffer, size: number, usage: GPUBufferUsageFlags): void;
+    acquireBuffer(size: number, usage: GPUBufferUsageFlags, mappedAtCreation?: boolean, reuse?: boolean): any;
+    releaseBuffer(buffer: GPUBuffer, reuse?: boolean): void;
     getNumUsedBuffers(): number;
     getNumFreeBuffers(): number;
     dispose(): void;
@@ -1268,7 +1261,7 @@ export declare type ClassWeightMap = {
     [outputName: string]: ClassWeight;
 };
 
-declare const compileProgram: (device: GPUDevice, program: WebGPUProgram, inputsData: InputInfo[], output: TensorInfo_2) => GPUComputePipeline;
+declare const compileProgram: (device: GPUDevice, program: WebGPUProgram, inputsData: InputInfo[], output: TensorInfo_2, parallelCompilation: boolean) => GPUComputePipeline | Promise<GPUComputePipeline>;
 
 declare type ComplexBinaryKernelImpl = (aShape: number[], bShape: number[], aRealVals: Float32Array, aImagVals: Float32Array, bRealVals: Float32Array, bImagVals: Float32Array) => [TypedArray, TypedArray, number[]];
 
@@ -3142,6 +3135,7 @@ export declare class GPGPUContext {
     private createFence;
     downloadMatrixFromPackedTexture(texture: WebGLTexture, physicalRows: number, physicalCols: number): Float32Array;
     createProgram(fragmentShader: WebGLShader): GPGPUContextProgram;
+    buildVao(program: GPGPUContextProgram): void;
     deleteProgram(program: GPGPUContextProgram): void;
     setProgram(program: GPGPUContextProgram | null): void;
     getUniformLocation(program: WebGLProgram, uniformName: string, shouldThrow?: boolean): WebGLUniformLocation;
@@ -5822,7 +5816,7 @@ export declare interface LSTMLayerArgs extends SimpleRNNLayerArgs {
     implementation?: number;
 }
 
-declare function makeShaderKey<R extends Rank>(program: WebGPUProgram, shapes: Array<ShapeMap[R]>, inputsData: InputInfo[], output: TensorInfo_2): string;
+declare function makeShaderKey<R extends Rank>(program: WebGPUProgram, inputsData: InputInfo[], output: TensorInfo_2): string;
 
 declare function MAPE(yTrue: Tensor, yPred: Tensor): Tensor;
 
@@ -7503,7 +7497,6 @@ declare class RandomWidth extends BaseRandomLayer {
     private widthLower;
     private widthUpper;
     private imgHeight;
-    private adjustedWidth;
     private widthFactor;
     constructor(args: RandomWidthArgs);
     getConfig(): serialization.ConfigDict;
@@ -8670,6 +8663,7 @@ declare namespace shared {
         addImpl,
         bincountImpl,
         bincountReduceImpl,
+        bitwiseAndImpl,
         castImpl,
         ceilImpl,
         concatImpl,
@@ -9252,7 +9246,7 @@ declare type TensorData_3 = {
     dtype: DataType;
     shape: number[];
     refCount: number;
-    resourceInfo?: BufferInfo | TextureInfo;
+    resource?: GPUBuffer | GPUTexture | GPUExternalTexture;
     external?: boolean;
     complexTensorInfos?: {
         real: TensorInfo_2;
@@ -9324,14 +9318,6 @@ declare interface TextureData {
     };
 }
 
-declare type TextureInfo = {
-    width: number;
-    height: number;
-    format: GPUTextureFormat;
-    usage: GPUTextureUsageFlags;
-    texture: GPUTexture | GPUExternalTexture;
-};
-
 declare class TextureManager {
     private readonly gpgpu;
     private numUsedTextures;
@@ -9378,7 +9364,7 @@ declare class TextureManager_2 {
     numBytesAllocated: number;
     constructor(device: GPUDevice);
     acquireTexture(width: number, height: number, format: GPUTextureFormat, usage: GPUTextureUsageFlags): GPUTexture;
-    releaseTexture(texture: GPUTexture, width: number, height: number, format: GPUTextureFormat, usage: GPUTextureUsageFlags): void;
+    releaseTexture(texture: GPUTexture): void;
     getNumUsedTextures(): number;
     getNumFreeTextures(): number;
     dispose(): void;
@@ -9893,10 +9879,10 @@ export declare class WebGPUBackend extends KernelBackend {
     private supportTimeQuery;
     private uniformPendingDisposal;
     private uploadWaitMs;
+    private hasReadSyncWarned;
     private nextDataId;
     constructor(device: GPUDevice, adapterInfo?: GPUAdapterInfo);
     floatPrecision(): 32;
-    defaultGpuBufferUsage(): number;
     /**
      * Dispose the memory if the dataId has 0 refCount. Return true if the memory
      * is released or memory is not managed in this backend, false if memory is
@@ -9919,7 +9905,8 @@ export declare class WebGPUBackend extends KernelBackend {
     ensureCommandEncoderReady(): void;
     ensureComputePassEnded(): void;
     getComputePass(): GPUComputePassEncoder;
-    getBufferData(buffer: GPUBuffer, size: number): Promise<ArrayBuffer>;
+    checkCompileCompletionAsync(): Promise<void>;
+    getBufferData(buffer: GPUBuffer): Promise<ArrayBuffer>;
     private convertAndCacheOnCPU;
     readSync(dataId: object): BackendValues;
     read(dataId: object): Promise<BackendValues>;
@@ -9927,7 +9914,7 @@ export declare class WebGPUBackend extends KernelBackend {
     /**
      * Create a TF.js tensor out of an existing WebGPU buffer.
      */
-    createTensorFromGPUData(values: WebGPUData, shape: number[], dtype: DataType): Tensor;
+    createTensorFromGPUData(webGPUData: WebGPUData, shape: number[], dtype: DataType): Tensor;
     /**
      * Read tensor to a new GPUBuffer.
      * @param dataId The source tensor.
@@ -9941,6 +9928,7 @@ export declare class WebGPUBackend extends KernelBackend {
     uploadToGPU(dataId: DataId_4): void;
     private makeUniforms;
     runWebGPUProgram(program: webgpu_program.WebGPUProgram, inputs: TensorInfo_2[], outputDtype: DataType, programDefinedUniform?: ProgramUniform, output?: TensorInfo_2): TensorInfo_2;
+    private recordAndSubmit;
     getTimeFromQuerySet(querySet: GPUQuerySet): Promise<number>;
     shouldExecuteOnCPU(inputs: TensorInfo_2[], sizeThreshold?: any): boolean;
     numDataIds(): number;
@@ -9971,6 +9959,7 @@ export declare interface WebGPUProgram {
     variableComponents?: number[];
     workgroupSize: [number, number, number];
     workPerThread?: number;
+    pipeline?: GPUComputePipeline | Promise<GPUComputePipeline>;
     getUserCode: () => string;
 }
 

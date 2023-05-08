@@ -905,7 +905,6 @@ declare interface GPUData {
     texture?: WebGLTexture;
     buffer?: GPUBuffer;
     texShape?: [number, number];
-    bufSize?: number;
 }
 
 /**
@@ -2486,12 +2485,10 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
      *        texShape: [number, number] // [height, width]
      *     }
      *
-     *     For WebGPU backend, a GPUData contains the new buffer and
-     *     its information.
+     *     For WebGPU backend, a GPUData contains the new buffer.
      *     {
      *        tensorRef: The tensor that is associated with this buffer,
      *        buffer: GPUBuffer,
-     *        bufSize: number
      *     }
      *
      *     Remember to dispose the GPUData after it is used by

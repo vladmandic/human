@@ -9,11 +9,16 @@
   
 ## Changelog
   
+### **HEAD -> main** 2023/05/08 mandic00@live.com
+
+
+### **origin/main** 2023/05/03 76097937+dalvine@users.noreply.github.com
+
+- initial work on tracker
+
 ### **3.0.6** 2023/03/21 mandic00@live.com
 
-
-### **origin/main** 2023/03/06 mandic00@live.com
-
+- add optional crop to multiple models
 - fix movenet-multipose
 - add electron detection
 - fix gender-ssrnet-imdb

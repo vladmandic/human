@@ -94,10 +94,11 @@ export class HandPipeline {
     const skipTime = (config.hand.skipTime || 0) > (now() - lastTime);
     const skipFrame = this.skipped < (config.hand.skipFrames || 0);
     if (config.skipAllowed && skipTime && skipFrame) {
+      this.skipped++;
+    } else {
       boxes = await this.handDetector.predict(image, config);
       this.skipped = 0;
     }
-    if (config.skipAllowed) this.skipped++;
 
     // if detector result count doesn't match current working set, use it to reset current working set
     if (boxes && (boxes.length > 0) && ((boxes.length !== this.detectedHands) && (this.detectedHands !== config.hand.maxDetected) || !config.hand.landmarks)) {

@@ -17,7 +17,8 @@ const humanConfig: Partial<H.Config> = { // user configuration for human, used t
   // cacheSensitivity: 0,
   // cacheModels: false,
   // warmup: 'none',
-  modelBasePath: '../../models',
+  // modelBasePath: '../../models',
+  modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   filter: { enabled: true, equalization: false, flip: false },
   face: { enabled: true, detector: { rotation: false }, mesh: { enabled: true }, attention: { enabled: false }, iris: { enabled: true }, description: { enabled: true }, emotion: { enabled: true }, antispoof: { enabled: true }, liveness: { enabled: true } },
   body: { enabled: false },
@@ -89,7 +90,8 @@ async function drawLoop() { // main screen refresh loop
 async function webCam() {
   const devices = await human.webcam.enumerate();
   const id = devices[0].deviceId; // use first available video source
-  await human.webcam.start({ element: dom.video, crop: false, width, id }); // use human webcam helper methods and associate webcam stream with a dom element
+  const webcamStatus = await human.webcam.start({ element: dom.video, crop: false, width, id }); // use human webcam helper methods and associate webcam stream with a dom element
+  log(webcamStatus);
   dom.canvas.width = human.webcam.width;
   dom.canvas.height = human.webcam.height;
   dom.canvas.onclick = async () => { // pause when clicked on screen and resume on next click

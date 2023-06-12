@@ -98,6 +98,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
         if (config.face.mesh['keepInvalid']) {
           face.box = util.clampBox(box, input);
           face.boxRaw = util.getRawBox(box, input);
+          face.size = box.size;
           face.score = face.boxScore;
           face.mesh = box.landmarks;
           face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 1), pt[1] / (input.shape[1] || 1), (pt[2] || 0) / size]);
@@ -127,6 +128,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
         };
         face.box = util.clampBox(calculatedBox, input);
         face.boxRaw = util.getRawBox(calculatedBox, input);
+        face.size = calculatedBox.size;
         /*
         const contoursT = results.find((t) => t.shape[t.shape.length - 1] === 266) as Tensor;
         const contoursData = contoursT && await contoursT.data(); // 133 x 2d points

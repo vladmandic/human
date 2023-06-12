@@ -1547,7 +1547,10 @@ declare abstract class Container extends Layer {
      *    subclasses: ['LayersModel']
      * }
      */
-    getLayer(name?: string, index?: number): Layer;
+    getLayer(name: string): Layer;
+    getLayer(index: number): Layer;
+    getLayer(name: string, index: number): Layer;
+    findLayer(index: number): Layer;
     /**
      * Retrieves the Container's current loss values.
      *
@@ -2870,6 +2873,13 @@ declare interface GaussianNoiseArgs extends LayerArgs {
 declare function getBatchDim(shape: number[], dimsToSkip?: number): number;
 
 declare function getCoordsDataType(rank: number): string;
+
+/**
+ * Derives logical coordinates from a flat index. Performs integer division
+ * with each stride and decrements the index until the index equals the final
+ * dimension coordinate.
+ */
+declare function getCoordsFromIndexSnippet(shape: number[], name?: string): string;
 
 declare function getCoordsXYZ(index: number): string;
 
@@ -9829,6 +9839,7 @@ declare namespace webgpu_program {
         getStartHeaderString,
         getWorkgroupSizeString,
         makeShaderKey,
+        getCoordsFromIndexSnippet,
         dataTypeToGPUType,
         WebGPUProgram,
         compileProgram,
@@ -9862,10 +9873,10 @@ export declare class WebGPUBackend extends KernelBackend {
     textureManager: TextureManager_2;
     thresholdToIncreaseWorkgroups: number;
     private activeTimers;
-    private currentCommandEncoder;
-    private currentComputePass;
+    private commandEncoder;
+    private computePassEncoder;
     private commandQueueOwnedIds;
-    private dispatchNumberInEncoder;
+    private dispatchCountInPass;
     private disposed;
     private downloadWaitMs;
     private dummyCanvas;
@@ -9874,25 +9885,28 @@ export declare class WebGPUBackend extends KernelBackend {
     private static nextDataId;
     private pipelineCache;
     private programTimersStack;
+    private queryResolveBuffer;
     private querySet;
+    private querySetCount;
     private stagingPendingDisposal;
-    private supportTimeQuery;
+    private supportTimestampQuery;
     private uniformPendingDisposal;
     private uploadWaitMs;
     private hasReadSyncWarned;
+    private hasTimestampQueryWarned;
     private nextDataId;
     constructor(device: GPUDevice, adapterInfo?: GPUAdapterInfo);
     floatPrecision(): 32;
     /**
      * Dispose the memory if the dataId has 0 refCount. Return true if the memory
-     * is released or memory is not managed in this backend, false if memory is
-     * not cleared.
+     * is released or delayed in this backend, false if there are still
+     * references.
      * @param dataId
      * @oaram force Optional, remove the data regardless of refCount
      */
     disposeData(dataId: DataId_4, force?: boolean): boolean;
     memory(): WebGPUMemoryInfo;
-    releaseResource(dataId: DataId_4): void;
+    private releaseResource;
     /** Return refCount of a `TensorData`. */
     refCount(dataId: DataId_4): number;
     /** Increase refCount of a `TensorData`. */
@@ -9903,8 +9917,7 @@ export declare class WebGPUBackend extends KernelBackend {
     move(dataId: DataId_4, values: BackendValues, shape: number[], dtype: DataType, refCount: number): void;
     submitQueue(): void;
     ensureCommandEncoderReady(): void;
-    ensureComputePassEnded(): void;
-    getComputePass(): GPUComputePassEncoder;
+    endComputePassEncoder(): void;
     checkCompileCompletionAsync(): Promise<void>;
     getBufferData(buffer: GPUBuffer): Promise<ArrayBuffer>;
     private convertAndCacheOnCPU;
@@ -9924,12 +9937,11 @@ export declare class WebGPUBackend extends KernelBackend {
     time(f: () => void): Promise<WebGPUTimingInfo>;
     makeTensorInfo(shape: number[], dtype: DataType, values?: BackendValues | string[]): TensorInfo_2;
     private tensorToBinding;
-    getQueryTime(query: GPUQuerySet): Promise<number>;
     uploadToGPU(dataId: DataId_4): void;
     private makeUniforms;
     runWebGPUProgram(program: webgpu_program.WebGPUProgram, inputs: TensorInfo_2[], outputDtype: DataType, programDefinedUniform?: ProgramUniform, output?: TensorInfo_2): TensorInfo_2;
     private recordAndSubmit;
-    getTimeFromQuerySet(querySet: GPUQuerySet): Promise<number>;
+    getQueryTime(): Promise<number>;
     shouldExecuteOnCPU(inputs: TensorInfo_2[], sizeThreshold?: any): boolean;
     numDataIds(): number;
     dispose(): void;

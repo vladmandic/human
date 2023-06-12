@@ -7,7 +7,7 @@ export const getCanvasContext = (input: AnyCanvas) => {
   if (!input) log('draw error: invalid canvas');
   else if (!input.getContext) log('draw error: canvas context not defined');
   else {
-    const ctx = input.getContext('2d');
+    const ctx = input.getContext('2d', { willReadFrequently: true });
     if (!ctx) log('draw error: cannot get canvas context');
     else return ctx;
   }

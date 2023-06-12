@@ -4376,6 +4376,16 @@ declare function getRaggedRank(rowPartitionTypes: RowPartitionType[]): number;
 declare function getReductionAxes(inShape: number[], outShape: number[]): number[];
 
 /**
+ * Get the registered name of a class. If the class has not been registered,
+ * return the class name.
+ *
+ * @param cls The class we want to get register name for. It must have a public
+ *     static member called `className` defined.
+ * @returns registered name or class name.
+ */
+declare function getRegisteredName<T extends Serializable>(cls: SerializableConstructor<T>): string;
+
+/**
  * @license
  * Copyright 2018 Google LLC. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -8223,7 +8233,7 @@ export declare function registerBackend(name: string, factory: () => KernelBacke
  * This is often used for registering custom Layers, so they can be
  * serialized and deserialized.
  *
- * Example:
+ * Example 1. Register the class without package name and specified name.
  *
  * ```js
  * class MyCustomLayer extends tf.layers.Layer {
@@ -8234,14 +8244,64 @@ export declare function registerBackend(name: string, factory: () => KernelBacke
  *   }
  * }
  * tf.serialization.registerClass(MyCustomLayer);
+ * console.log(tf.serialization.GLOBALCUSTOMOBJECT.get("Custom>MyCustomLayer"));
+ * console.log(tf.serialization.GLOBALCUSTOMNAMES.get(MyCustomLayer));
+ * ```
+ *
+ * Example 2. Register the class with package name: "Package" and specified
+ * name: "MyLayer".
+ * ```js
+ * class MyCustomLayer extends tf.layers.Layer {
+ *   static className = 'MyCustomLayer';
+ *
+ *   constructor(config) {
+ *     super(config);
+ *   }
+ * }
+ * tf.serialization.registerClass(MyCustomLayer, "Package", "MyLayer");
+ * console.log(tf.serialization.GLOBALCUSTOMOBJECT.get("Package>MyLayer"));
+ * console.log(tf.serialization.GLOBALCUSTOMNAMES.get(MyCustomLayer));
+ * ```
+ *
+ * Example 3. Register the class with specified name: "MyLayer".
+ * ```js
+ * class MyCustomLayer extends tf.layers.Layer {
+ *   static className = 'MyCustomLayer';
+ *
+ *   constructor(config) {
+ *     super(config);
+ *   }
+ * }
+ * tf.serialization.registerClass(MyCustomLayer, undefined, "MyLayer");
+ * console.log(tf.serialization.GLOBALCUSTOMOBJECT.get("Custom>MyLayer"));
+ * console.log(tf.serialization.GLOBALCUSTOMNAMES.get(MyCustomLayer));
+ * ```
+ *
+ * Example 4. Register the class with specified package name: "Package".
+ * ```js
+ * class MyCustomLayer extends tf.layers.Layer {
+ *   static className = 'MyCustomLayer';
+ *
+ *   constructor(config) {
+ *     super(config);
+ *   }
+ * }
+ * tf.serialization.registerClass(MyCustomLayer, "Package");
+ * console.log(tf.serialization.GLOBALCUSTOMOBJECT
+ * .get("Package>MyCustomLayer"));
+ * console.log(tf.serialization.GLOBALCUSTOMNAMES
+ * .get(MyCustomLayer));
  * ```
  *
  * @param cls The class to be registered. It must have a public static member
  *   called `className` defined and the value must be a non-empty string.
- *
+ * @param pkg The pakcage name that this class belongs to. This used to define
+ *     the key in GlobalCustomObject. If not defined, it defaults to `Custom`.
+ * @param name The name that user specified. It defaults to the actual name of
+ *     the class as specified by its static `className` property.
  * @doc {heading: 'Models', subheading: 'Serialization', ignoreCI: true}
  */
-declare function registerClass<T extends Serializable>(cls: SerializableConstructor<T>): void;
+declare function registerClass<T extends Serializable>(cls: SerializableConstructor<T>, pkg?: string, name?: string): SerializableConstructor<T>;
 
 /**
  * Registers a gradient function for a given kernel in the global registry,
@@ -9008,6 +9068,7 @@ declare type SerializableConstructor<T extends Serializable> = {
 declare namespace serialization {
     export {
         registerClass,
+        getRegisteredName,
         ConfigDictValue,
         ConfigDict,
         ConfigDictArray,
@@ -10275,11 +10336,14 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
  * // downloading the values.
  *
  * // Example for WebGL2:
- * const customCanvas = document.createElement('canvas');
- * const customBackend = new tf.MathBackendWebGL(customCanvas);
- * tf.registerBackend('custom-webgl', () => customBackend);
+ * if (tf.findBackend('custom-webgl') == null) {
+ *   const customCanvas = document.createElement('canvas');
+ *   const customBackend = new tf.MathBackendWebGL(customCanvas);
+ *   tf.registerBackend('custom-webgl', () => customBackend);
+ * }
+ * const savedBackend = tf.getBackend();
  * await tf.setBackend('custom-webgl');
- * const gl = customBackend.gpgpu.gl;
+ * const gl = tf.backend().gpgpu.gl;
  * const texture = gl.createTexture();
  * const tex2d = gl.TEXTURE_2D;
  * const width = 2;
@@ -10306,6 +10370,7 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
  *
  * const logicalShape = [height * width * 2];
  * const a = tf.tensor({texture, height, width, channels: 'BR'}, logicalShape);
+ * a.print();
  * // Tensor value will be [2, 0, 6, 4, 10, 8, 14, 12], since [2, 0] is the
  * // values of 'B' and 'R' channels of Pixel0, [6, 4] is the values of 'B' and
  * 'R'
@@ -10316,6 +10381,7 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
  * // so:
  *
  * const tex = a.dataToGPU();
+ * await tf.setBackend(savedBackend);
  * ```
  *
  * ```js
@@ -10368,6 +10434,7 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
  *   return gpuReadBuffer;
  * }
  *
+ * const savedBackend = tf.getBackend();
  * await tf.setBackend('webgpu').catch(
  *     () => {throw new Error(
  *         'Failed to use WebGPU backend. Please use Chrome Canary to run.')});
@@ -10383,10 +10450,12 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
  * const a = tf.tensor({buffer: aBuffer}, shape, dtype);
  * const b = tf.tensor(bData, shape, dtype);
  * const result = tf.add(a, b);
+ * result.print();
  * a.dispose();
  * b.dispose();
  * result.dispose();
  * aBuffer.destroy();
+ * await tf.setBackend(savedBackend);
  * ```
  * @param values The values of the tensor. Can be nested array of numbers,
  *     or a flat array, or a `TypedArray`, or a `WebGLData` object, or a

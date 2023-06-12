@@ -147,7 +147,11 @@ export class Models {
     // hand alternatives
     m.handtrack = (this.instance.config.hand.enabled && !this.models.handtrack && this.instance.config.hand.detector?.modelPath?.includes('handtrack')) ? handtrack.loadDetect(this.instance.config) : null;
     m.handskeleton = (this.instance.config.hand.enabled && this.instance.config.hand.landmarks && !this.models.handskeleton && this.instance.config.hand.detector?.modelPath?.includes('handtrack')) ? handtrack.loadSkeleton(this.instance.config) : null;
-    if (this.instance.config.hand.detector?.modelPath?.includes('handdetect')) [m.handpose, m.handskeleton] = (!this.models.handpose) ? await handpose.load(this.instance.config) : [null, null];
+    // if (this.instance.config.hand.detector?.modelPath?.includes('handdetect')) [m.handpose, m.handskeleton] = (!this.models.handpose) ? await handpose.load(this.instance.config) : [null, null];
+    if (this.instance.config.hand.enabled && !this.models.handdetect && this.instance.config.hand.detector?.modelPath?.includes('handdetect')) {
+      m.handdetect = handpose.loadDetect(this.instance.config);
+      m.handskeleton = handpose.loadSkeleton(this.instance.config);
+    }
     // object detection alternatives
     m.centernet = (this.instance.config.object.enabled && !this.models.centernet && this.instance.config.object.modelPath?.includes('centernet')) ? centernet.load(this.instance.config) : null;
     m.nanodet = (this.instance.config.object.enabled && !this.models.nanodet && this.instance.config.object.modelPath?.includes('nanodet')) ? nanodet.load(this.instance.config) : null;

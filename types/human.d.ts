@@ -142,12 +142,46 @@ declare function browserHTTPRequest(path: string, loadOptions?: LoadOptions): IO
 declare function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, output: AnyCanvas): void;
 
 /**
+ * Wraps a list of ArrayBuffers into a `slice()`-able object without allocating
+ * a large ArrayBuffer.
+ *
+ * Allocating large ArrayBuffers (~2GB) can be unstable on Chrome. TFJS loads
+ * its weights as a list of (usually) 4MB ArrayBuffers and then slices the
+ * weight tensors out of them. For small models, it's safe to concatenate all
+ * the weight buffers into a single ArrayBuffer and then slice the weight
+ * tensors out of it, but for large models, a different approach is needed.
+ */
+declare class CompositeArrayBuffer {
+    private shards;
+    private previousShardIndex;
+    private bufferUniformSize?;
+    readonly byteLength: number;
+    /**
+     * Concatenate a number of ArrayBuffers into one.
+     *
+     * @param buffers An array of ArrayBuffers to concatenate, or a single
+     *     ArrayBuffer.
+     * @returns Result of concatenating `buffers` in order.
+     */
+    static join(buffers?: ArrayBuffer[] | ArrayBuffer): ArrayBuffer;
+    constructor(buffers?: ArrayBuffer | ArrayBuffer[] | TypedArray | TypedArray[]);
+    slice(start?: number, end?: number): ArrayBuffer;
+    /**
+     * Get the index of the shard that contains the byte at `byteIndex`.
+     */
+    private findShardForByte;
+}
+
+/**
  * Concatenate a number of ArrayBuffers into one.
  *
- * @param buffers A number of array buffers to concatenate.
+ * @param buffers An array of ArrayBuffers to concatenate, or a single
+ *     ArrayBuffer.
  * @returns Result of concatenating `buffers` in order.
+ *
+ * @deprecated Use tf.io.CompositeArrayBuffer.join() instead.
  */
-declare function concatenateArrayBuffers(buffers: ArrayBuffer[]): ArrayBuffer;
+declare function concatenateArrayBuffers(buffers: ArrayBuffer[] | ArrayBuffer): ArrayBuffer;
 
 /**
  * Configuration interface definition for **Human** library
@@ -320,15 +354,16 @@ declare interface DataTypeMap {
  *
  * This function is the reverse of `encodeWeights`.
  *
- * @param buffer A flat ArrayBuffer carrying the binary values of the tensors
- *   concatenated in the order specified in `specs`.
+ * @param weightData A flat ArrayBuffer or an array of ArrayBuffers carrying the
+ *   binary values of the tensors concatenated in the order specified in
+ *   `specs`.
  * @param specs Specifications of the names, dtypes and shapes of the tensors
  *   whose value are encoded by `buffer`.
  * @return A map from tensor name to tensor value, with the names corresponding
  *   to names in `specs`.
  * @throws Error, if any of the tensors has unsupported dtype.
  */
-declare function decodeWeights(buffer: ArrayBuffer, specs: WeightsManifestEntry[]): NamedTensorMap;
+declare function decodeWeights(weightData: WeightData, specs: WeightsManifestEntry[]): NamedTensorMap;
 
 /** - [See all default Config values...](https://github.com/vladmandic/human/blob/main/src/config.ts#L262) */
 export declare const defaults: Config;
@@ -784,7 +819,7 @@ export declare type FingerDirection = 'verticalUp' | 'verticalDown' | 'horizonta
  *
  * @returns A passthrough `IOHandler` that simply loads the provided data.
  */
-declare function fromMemory(modelArtifacts: {} | ModelArtifacts, weightSpecs?: WeightsManifestEntry[], weightData?: ArrayBuffer, trainingConfig?: TrainingConfig): IOHandler;
+declare function fromMemory(modelArtifacts: {} | ModelArtifacts, weightSpecs?: WeightsManifestEntry[], weightData?: WeightData, trainingConfig?: TrainingConfig): IOHandler;
 
 /**
  * Creates an IOHandler that loads model artifacts from memory.
@@ -807,7 +842,7 @@ declare function fromMemory(modelArtifacts: {} | ModelArtifacts, weightSpecs?: W
  *
  * @returns A passthrough `IOHandlerSync` that simply loads the provided data.
  */
-declare function fromMemorySync(modelArtifacts: {} | ModelArtifacts, weightSpecs?: WeightsManifestEntry[], weightData?: ArrayBuffer, trainingConfig?: TrainingConfig): IOHandlerSync;
+declare function fromMemorySync(modelArtifacts: {} | ModelArtifacts, weightSpecs?: WeightsManifestEntry[], weightData?: WeightData, trainingConfig?: TrainingConfig): IOHandlerSync;
 
 export declare type Gender = 'male' | 'female' | 'unknown';
 
@@ -866,7 +901,7 @@ declare const getLoadHandlers: (url: string | string[], loadOptions?: LoadOption
  */
 declare function getModelArtifactsForJSON(modelJSON: ModelJSON, loadWeights: (weightsManifest: WeightsManifestConfig) => Promise<[
 WeightsManifestEntry[],
-ArrayBuffer
+WeightData
 ]>): Promise<ModelArtifacts>;
 
 /**
@@ -875,12 +910,12 @@ ArrayBuffer
  * @param modelJSON Object containing the parsed JSON of `model.json`
  * @param weightSpecs The list of WeightsManifestEntry for the model. Must be
  *     passed if the modelJSON has a weightsManifest.
- * @param weightData An ArrayBuffer of weight data for the model corresponding
- *     to the weights in weightSpecs. Must be passed if the modelJSON has a
- *     weightsManifest.
+ * @param weightData An ArrayBuffer or array of ArrayBuffers of weight data for
+ *     the model corresponding to the weights in weightSpecs. Must be passed if
+ *     the modelJSON has a weightsManifest.
  * @returns A Promise of the `ModelArtifacts`, as described by the JSON file.
  */
-declare function getModelArtifactsForJSONSync(modelJSON: ModelJSON, weightSpecs?: WeightsManifestEntry[], weightData?: ArrayBuffer): ModelArtifacts;
+declare function getModelArtifactsForJSONSync(modelJSON: ModelJSON, weightSpecs?: WeightsManifestEntry[], weightData?: WeightData): ModelArtifacts;
 
 /**
  * Populate ModelArtifactsInfo fields for a model with JSON topology.
@@ -1530,6 +1565,7 @@ declare namespace io {
         removeModel,
         browserFiles,
         browserHTTPRequest,
+        CompositeArrayBuffer,
         concatenateArrayBuffers,
         decodeWeights,
         encodeWeights,
@@ -1560,6 +1596,7 @@ declare namespace io {
         SaveHandler,
         SaveResult,
         TrainingConfig,
+        WeightData,
         WeightGroup,
         weightsLoaderFactory,
         WeightsManifestConfig,
@@ -1779,10 +1816,12 @@ declare interface ModelArtifacts {
      */
     weightSpecs?: WeightsManifestEntry[];
     /**
-     * Binary buffer for all weight values concatenated in the order specified
-     * by `weightSpecs`.
+     * Binary buffer(s) for all weight values in the order specified by
+     * `weightSpecs`. This may be a single ArrayBuffer of all the weights
+     * concatenated together or an Array of ArrayBuffers containing the weights
+     * (weights may be sharded across multiple ArrayBuffers).
      */
-    weightData?: ArrayBuffer;
+    weightData?: WeightData;
     /**
      * Hard-coded format name for models saved from TensorFlow.js or converted
      * by TensorFlow.js Converter.
@@ -2688,7 +2727,7 @@ export declare class WebCam {
     get height(): number;
     enumerate: () => Promise<MediaDeviceInfo[]>;
     /** start method initializizes webcam stream and associates it with a dom video element */
-    start: (webcamConfig?: Partial<WebCamConfig>) => Promise<void>;
+    start: (webcamConfig?: Partial<WebCamConfig>) => Promise<string>;
     /** pause webcam video method */
     pause: () => void;
     /** play webcam video method */
@@ -2719,6 +2758,8 @@ export declare interface WebCamConfig {
     /** deviceId of the video device to use */
     id?: string;
 }
+
+declare type WeightData = ArrayBuffer | ArrayBuffer[];
 
 /**
  * Group to which the weight belongs.

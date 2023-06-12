@@ -27,7 +27,13 @@ let handDetectorModel: GraphModel | null;
 let handPoseModel: GraphModel | null;
 let handPipeline: handpipeline.HandPipeline;
 
+export function initPipeline() {
+  const handDetector = handDetectorModel ? new handdetector.HandDetector(handDetectorModel) : undefined;
+  if (handDetector && handPoseModel) handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel);
+}
+
 export async function predict(input: Tensor, config: Config): Promise<HandResult[]> {
+  if (!handPipeline) initPipeline();
   const predictions = await handPipeline.estimateHands(input, config);
   if (!predictions) return [];
   const hands: HandResult[] = [];
@@ -82,21 +88,16 @@ export async function predict(input: Tensor, config: Config): Promise<HandResult
   return hands;
 }
 
-export async function load(config: Config): Promise<[GraphModel | null, GraphModel | null]> {
-  if (env.initial) {
-    handDetectorModel = null;
-    handPoseModel = null;
-  }
-  if (!handDetectorModel || !handPoseModel) {
-    [handDetectorModel, handPoseModel] = await Promise.all([
-      config.hand.enabled ? loadModel(config.hand.detector?.modelPath) : null,
-      config.hand.landmarks ? loadModel(config.hand.skeleton?.modelPath) : null,
-    ]);
-  } else {
-    if (config.debug) log('cached model:', handDetectorModel['modelUrl']);
-    if (config.debug) log('cached model:', handPoseModel['modelUrl']);
-  }
-  const handDetector = handDetectorModel ? new handdetector.HandDetector(handDetectorModel) : undefined;
-  if (handDetector && handPoseModel) handPipeline = new handpipeline.HandPipeline(handDetector, handPoseModel);
-  return [handDetectorModel, handPoseModel];
+export async function loadDetect(config: Config): Promise<GraphModel> {
+  if (env.initial) handDetectorModel = null;
+  if (!handDetectorModel) handDetectorModel = await loadModel(config.hand.detector?.modelPath);
+  else if (config.debug) log('cached model:', handDetectorModel['modelUrl']);
+  return handDetectorModel;
+}
+
+export async function loadSkeleton(config: Config): Promise<GraphModel> {
+  if (env.initial) handPoseModel = null;
+  if (!handPoseModel) handPoseModel = await loadModel(config.hand.skeleton?.modelPath);
+  else if (config.debug) log('cached model:', handPoseModel['modelUrl']);
+  return handPoseModel;
 }

@@ -103,7 +103,7 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
   };
 
   /** start method initializizes webcam stream and associates it with a dom video element */
-  public start = async (webcamConfig?: Partial<WebCamConfig>): Promise<void> => {
+  public start = async (webcamConfig?: Partial<WebCamConfig>): Promise<string> => {
     // set config
     if (webcamConfig?.debug) this.config.debug = webcamConfig?.debug;
     if (webcamConfig?.crop) this.config.crop = webcamConfig?.crop;
@@ -120,13 +120,13 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
           this.element = el;
         } else {
           if (this.config.debug) log('webcam', 'cannot get dom element', webcamConfig.element);
-          return;
+          return `webcam error: cannot get dom element: ${webcamConfig.element}`;
         }
       } else if (webcamConfig.element instanceof HTMLVideoElement) {
         this.element = webcamConfig.element;
       } else {
         if (this.config.debug) log('webcam', 'unknown dom element', webcamConfig.element);
-        return;
+        return `webcam error: unknown dom element: ${webcamConfig.element}`;
       }
     } else {
       this.element = document.createElement('video');
@@ -156,18 +156,18 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
 
     // get webcam and set it to run in dom element
     if (!navigator?.mediaDevices) {
-      if (this.config.debug) log('webcam', 'no devices');
-      return;
+      if (this.config.debug) log('webcam error', 'no devices');
+      return 'webcam error: no devices';
     }
     try {
       this.stream = await navigator.mediaDevices.getUserMedia(requestedConstraints); // get stream that satisfies constraints
     } catch (err) {
       log('webcam', err);
-      return;
+      return `webcam error: ${err}`;
     }
     if (!this.stream) {
-      if (this.config.debug) log('webcam', 'no stream');
-      return;
+      if (this.config.debug) log('webcam error', 'no stream');
+      return 'webcam error no stream';
     }
     this.element.srcObject = this.stream; // assign it to dom element
     const ready = new Promise((resolve) => { // wait until stream is ready
@@ -189,6 +189,7 @@ export class WebCam { // eslint-disable-line @typescript-eslint/no-extraneous-cl
         capabilities: this.capabilities,
       });
     }
+    return `webcam: ${this.label}`;
   };
 
   /** pause webcam video method */

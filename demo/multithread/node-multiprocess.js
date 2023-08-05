@@ -8,8 +8,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 const childProcess = require('child_process'); // eslint-disable-line camelcase
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 // note that main process does not import human or tfjs at all, it's all done from worker process
 
 const workerFile = 'demo/multithread/node-multiprocess-worker.js';

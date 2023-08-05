@@ -69,7 +69,7 @@
 
 - **Full** [[*Live*]](https://vladmandic.github.io/human/demo/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo): Main browser demo app that showcases all Human capabilities
 - **Simple** [[*Live*]](https://vladmandic.github.io/human/demo/typescript/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/typescript): Simple demo in WebCam processing demo in TypeScript
-- **Embedded** [[*Live*]](https://vladmandic.github.io/human/demo/video/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/video/index.html): Even simpler demo with tiny code embedded in HTML file
+- **Embedded** [[*Live*]](https://vladmandic.github.io/human/demo/video/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/video/index.html): Even simpler demo with tiny code embedded in HTML file
 - **Face Detect** [[*Live*]](https://vladmandic.github.io/human/demo/facedetect/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facedetect): Extract faces from images and processes details
 - **Face Match** [[*Live*]](https://vladmandic.github.io/human/demo/facematch/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Extract faces from images, calculates face descriptors and similarities and matches them to known database
 - **Face ID** [[*Live*]](https://vladmandic.github.io/human/demo/faceid/index.html) [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/faceid): Runs multiple checks to validate webcam input before performing face match to faces in IndexDB
@@ -85,14 +85,14 @@
 *NodeJS demos may require extra dependencies which are used to decode inputs*  
 *See header of each demo to see its dependencies as they are not automatically installed with `Human`*
 
-- **Main** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Process images from files, folders or URLs using native methods  
-- **Canvas** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Process image from file or URL and draw results to a new image file using `node-canvas`  
-- **Video** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Processing of video input using `ffmpeg`  
-- **WebCam** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Processing of webcam screenshots using `fswebcam`  
-- **Events** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Showcases usage of `Human` eventing to get notifications on processing
-- **Similarity** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Compares two input images for similarity of detected faces
-- **Face Match** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch): Parallel processing of face **match** in multiple child worker threads
-- **Multiple Workers** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Runs multiple parallel `human` by dispaching them to pool of pre-created worker processes  
+- **Main** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs/node.js): Process images from files, folders or URLs using native methods  
+- **Canvas** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs/node-canvas.js): Process image from file or URL and draw results to a new image file using `node-canvas`  
+- **Video** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs/node-video.js): Processing of video input using `ffmpeg`  
+- **WebCam** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs/node-webcam.js): Processing of webcam screenshots using `fswebcam`  
+- **Events** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs/node-event.js): Showcases usage of `Human` eventing to get notifications on processing
+- **Similarity** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs/node-similarity.js): Compares two input images for similarity of detected faces
+- **Face Match** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/facematch/node-match.js): Parallel processing of face **match** in multiple child worker threads
+- **Multiple Workers** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/multithread/node-multiprocess.js): Runs multiple parallel `human` by dispaching them to pool of pre-created worker processes  
 - **Dynamic Load** [[*Details*]](https://github.com/vladmandic/human/tree/main/demo/nodejs): Loads Human dynamically with multiple different desired backends  
 
 ## Project pages
@@ -241,7 +241,7 @@ draw output on screen using internal draw helper functions
 ```js
 // create instance of human with simple configuration using default values
 const config = { backend: 'webgl' };
-const human = new Human(config);
+const human = new Human.Human(config);
 // select input HTMLVideoElement and output HTMLCanvasElement from page
 const inputVideo = document.getElementById('video-id');
 const outputCanvas = document.getElementById('canvas-id');
@@ -444,7 +444,7 @@ For more info, see [**Configuration Details**](https://github.com/vladmandic/hum
 
 <br><hr><br>
 
-`Human` library is written in [TypeScript](https://www.typescriptlang.org/docs/handbook/intro.html) **4.9** using [TensorFlow/JS](https://www.tensorflow.org/js/) **4.2** and conforming to latest `JavaScript` [ECMAScript version 2022](https://262.ecma-international.org/) standard  
+`Human` library is written in [TypeScript](https://www.typescriptlang.org/docs/handbook/intro.html) **5.1** using [TensorFlow/JS](https://www.tensorflow.org/js/) **4.10** and conforming to latest `JavaScript` [ECMAScript version 2022](https://262.ecma-international.org/) standard  
 
 Build target for distributables is `JavaScript` [EMCAScript version 2018](https://262.ecma-international.org/9.0/)  
 

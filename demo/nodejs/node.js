@@ -2,10 +2,10 @@
  * Human demo for NodeJS
 */
 
-const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 const fs = require('fs');
 const path = require('path');
 const process = require('process');
+const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpublished-require
 
 // in nodejs environments tfjs-node is required to be loaded before human
 const tf = require('@tensorflow/tfjs-node'); // eslint-disable-line node/no-unpublished-require

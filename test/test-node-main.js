@@ -312,8 +312,8 @@ async function test(Human, inputConfig) {
     log('state', 'details:', {
       face: { boxScore: res.face[0].boxScore, faceScore: res.face[0].faceScore, age: res.face[0].age, gender: res.face[0].gender, genderScore: res.face[0].genderScore },
       emotion: res.face[0].emotion,
-      body: { score: res.body[0].score, keypoints: res.body[0].keypoints.length },
-      hand: { boxScore: res.hand[0].boxScore, fingerScore: res.hand[0].fingerScore, keypoints: res.hand[0].keypoints.length },
+      body: { score: res.body[0]?.score, keypoints: res.body[0]?.keypoints.length },
+      hand: { boxScore: res.hand[0]?.boxScore, fingerScore: res.hand[0]?.fingerScore, keypoints: res.hand[0]?.keypoints.length },
       gestures: res.gesture,
     });
   }
@@ -328,7 +328,7 @@ async function test(Human, inputConfig) {
   config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'async');
   if (!res || res.face?.length !== 1 || res.face[0].gender !== 'female') log('error', 'failed: default result face mismatch', res.face?.length, res.face[0].gender, res.face[0].genderScore);
-  else log('state', 'passed: default result face match', res.face?.length, res.face[0].gender, res.face[0].genderScore);
+  else log('state', 'passed: default result face match', res.face?.length, res.face[0]?.gender, res.face[0]?.genderScore);
 
   // test default config sync
   log('info', 'test sync');
@@ -337,7 +337,7 @@ async function test(Human, inputConfig) {
   config.cacheSensitivity = 0;
   res = await testDetect(human, 'samples/in/ai-body.jpg', 'sync');
   if (!res || res.face?.length !== 1 || res.face[0].gender !== 'female') log('error', 'failed: default sync', res.face?.length, res.face[0].gender, res.face[0].genderScore);
-  else log('state', 'passed: default sync', res.face?.length, res.face[0].gender, res.face[0].genderScore);
+  else log('state', 'passed: default sync', res.face?.length, res.face[0]?.gender, res.face[0]?.genderScore);
 
   // test image processing
   log('info', 'test: image process');

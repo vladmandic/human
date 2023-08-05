@@ -16,7 +16,7 @@ let inCanvas: AnyCanvas | null = null; // use global variable to avoid recreatin
 let outCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 let tmpCanvas: AnyCanvas | null = null; // use global variable to avoid recreating canvas on each frame
 // @ts-ignore // imagefx is js module that should be converted to a class
-let fx: fxImage.GLImageFilter | null; // instance of imagefx
+let fx: fxImage.GLImageFilter | null; // eslint-disable-line @typescript-eslint/no-redundant-type-constituents
 
 const last: { inputSum: number, cacheDiff: number, sumMethod: number, inputTensor: undefined | Tensor } = {
   inputSum: 0,

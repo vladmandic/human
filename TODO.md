@@ -20,11 +20,6 @@ No issues with default model `MB3-CenterNet`
 
 Model does not return valid detection scores (all other functionality is not impacted)  
 
-### WebGPU
-
-Experimental support only until support is officially added in Chromium  
-Enable via <chrome://flags/#enable-unsafe-webgpu>  
-
 ### Firefox
 
 Running in **web workers** requires `OffscreenCanvas` which is still disabled by default in **Firefox**  
@@ -41,10 +36,3 @@ No support for running in **web workers** as Safari still does not support `Offs
 `Human` support for **React-Native** is best-effort, but not part of the main development focus  
 
 <hr><br>
-
-## Pending Release Changes
-
-- add `electron` detection
-- fix `gender-ssrnet-imdb`
-- fix `movenet-multipose`
-- add optional `crop` values for *emotion*, *description*, *ssrnet* and *gear* models

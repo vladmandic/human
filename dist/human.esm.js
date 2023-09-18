@@ -35289,7 +35289,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.1.1";
+var version = "3.1.2";
 
 // src/tfjs/humangl.ts
 var config2 = {

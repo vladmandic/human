@@ -1453,6 +1453,7 @@ declare abstract class Container extends Layer {
      *   extra weights and missing weights will be silently ignored.
      */
     loadWeights(weights: NamedTensorMap, strict?: boolean): void;
+    protected parseWeights(weights: NamedTensorMap): void;
     /**
      * Util shared between different serialization methods.
      * @returns LayersModel config with Keras version information added.
@@ -4474,6 +4475,7 @@ declare abstract class Layer extends serialization.Serializable {
      * layer).
      */
     computeMask(inputs: Tensor | Tensor[], mask?: Tensor | Tensor[]): Tensor | Tensor[];
+    private setMaskMetadata;
     /**
      * Internal method to create an inbound node for the layer.
      *
@@ -6532,7 +6534,7 @@ export declare interface ModelFitArgs {
      *     In the browser: no action. This is the default.
      * 2 - Not implemented yet.
      */
-    verbose?: ModelLoggingVerbosity;
+    verbose?: ModelLoggingVerbosity | 2;
     /**
      * List of callbacks to be called during training.
      * Can have one or more of the following callbacks:
@@ -7113,6 +7115,11 @@ declare interface PermuteLayerArgs extends LayerArgs {
      * of the input.
      */
     dims: number[];
+}
+
+declare enum PixelsOpType {
+    FROM_PIXELS = 0,
+    DRAW = 1
 }
 
 /**
@@ -8993,7 +9000,7 @@ declare function sliceImpl(vals: BackendValues, begin: number[], size: number[],
 declare class Softmax extends Layer {
     /** @nocollapse */
     static className: string;
-    readonly axis: number;
+    readonly axis: number | number[];
     readonly softmax: (t: Tensor, a?: number) => Tensor;
     readonly DEFAULT_AXIS = 1;
     constructor(args?: SoftmaxLayerArgs);
@@ -9025,7 +9032,7 @@ declare interface SoftmaxLayerArgs extends LayerArgs {
      * Integer, axis along which the softmax normalization is applied.
      * Defaults to `-1` (i.e., the last axis).
      */
-    axis?: number;
+    axis?: number | number[];
 }
 
 /**
@@ -9841,6 +9848,7 @@ declare namespace webgpu_program {
         makeShaderKey,
         getCoordsFromIndexSnippet,
         dataTypeToGPUType,
+        PixelsOpType,
         WebGPUProgram,
         compileProgram,
         typeSnippet
@@ -9961,9 +9969,9 @@ export declare interface WebGPUProgram {
         y?: number[];
         z?: number[];
     };
-    isFromPixels?: boolean;
     outputComponent?: number;
     outputShape: number[];
+    pixelsOpType?: PixelsOpType;
     shaderKey: string;
     size?: boolean;
     uniforms?: string;

@@ -64,7 +64,7 @@ __export(tfjs_esm_exports, {
   Bincount: () => en,
   BitwiseAnd: () => ja,
   BroadcastArgs: () => ea,
-  BroadcastTo: () => Lce,
+  BroadcastTo: () => Bce,
   Cast: () => bo,
   Ceil: () => tn,
   ClipByValue: () => Co,
@@ -133,15 +133,15 @@ __export(tfjs_esm_exports, {
   LinSpace: () => Fn,
   Log: () => Pn,
   Log1p: () => On,
-  LogSoftmax: () => Bce,
+  LogSoftmax: () => zce,
   LogicalAnd: () => Mn,
   LogicalNot: () => Ln,
   LogicalOr: () => Bn,
   LogicalXor: () => $0,
-  LowerBound: () => zce,
+  LowerBound: () => Vce,
   MathBackendCPU: () => xu,
   MathBackendWebGL: () => wu,
-  MatrixBandPart: () => Vce,
+  MatrixBandPart: () => Wce,
   Max: () => Vn,
   MaxPool: () => Un,
   MaxPool3D: () => ia,
@@ -169,7 +169,7 @@ __export(tfjs_esm_exports, {
   OptimizerConstructors: () => Pl,
   Pack: () => la,
   PadV2: () => ts,
-  Pool: () => Wce,
+  Pool: () => Uce,
   Pow: () => rs,
   Prelu: () => os,
   Prod: () => ns,
@@ -236,7 +236,7 @@ __export(tfjs_esm_exports, {
   Unique: () => Zi,
   Unpack: () => wa,
   UnsortedSegmentSum: () => Ji,
-  UpperBound: () => Uce,
+  UpperBound: () => Gce,
   Variable: () => oi,
   WebGPUBackend: () => Tu,
   ZerosLike: () => Sa,
@@ -257,7 +257,7 @@ __export(tfjs_esm_exports, {
   atanh: () => Ok,
   avgPool: () => fd,
   avgPool3d: () => Bk,
-  backend: () => Ide,
+  backend: () => vde,
   backend_util: () => w,
   basicLSTMCell: () => zk,
   batchNorm: () => au,
@@ -288,7 +288,7 @@ __export(tfjs_esm_exports, {
   conv2dTranspose: () => e2,
   conv3d: () => t2,
   conv3dTranspose: () => o2,
-  copyRegisteredKernels: () => Qce,
+  copyRegisteredKernels: () => Zce,
   cos: () => n2,
   cosh: () => s2,
   cosineWindow: () => Rl,
@@ -303,17 +303,17 @@ __export(tfjs_esm_exports, {
   device_util: () => ou,
   diag: () => c2,
   dilation2d: () => l2,
-  disableDeprecationWarnings: () => mde,
+  disableDeprecationWarnings: () => dde,
   dispose: () => Mt,
-  disposeVariables: () => dde,
+  disposeVariables: () => fde,
   div: () => je,
   divNoNan: () => d2,
   dot: () => f2,
   dropout: () => W6,
   einsum: () => pu,
   elu: () => Cd,
-  enableDebugMode: () => lde,
-  enableProdMode: () => cde,
+  enableDebugMode: () => mde,
+  enableProdMode: () => lde,
   enclosingPowerOfTwo: () => Qw,
   engine: () => pr,
   ensureShape: () => h2,
@@ -327,8 +327,8 @@ __export(tfjs_esm_exports, {
   eye: () => wd,
   fft: () => fc,
   fill: () => Ea,
-  findBackend: () => wde,
-  findBackendFactory: () => Sde,
+  findBackend: () => Sde,
+  findBackendFactory: () => Ide,
   floor: () => Sd,
   floorDiv: () => dd,
   forceHalfFloat: () => MD,
@@ -336,7 +336,7 @@ __export(tfjs_esm_exports, {
   gather: () => Id,
   gatherND: () => z6,
   gather_util: () => af,
-  getBackend: () => bde,
+  getBackend: () => Cde,
   getGradient: () => iw,
   getKernel: () => tc,
   getKernelsForBackend: () => Ym,
@@ -384,7 +384,7 @@ __export(tfjs_esm_exports, {
   maxPoolWithArgmax: () => R2,
   maximum: () => Fd,
   mean: () => Xu,
-  memory: () => fde,
+  memory: () => hde,
   meshgrid: () => D2,
   min: () => Tl,
   minimum: () => Yu,
@@ -414,7 +414,7 @@ __export(tfjs_esm_exports, {
   prelu: () => Md,
   print: () => md,
   prod: () => H2,
-  profile: () => hde,
+  profile: () => gde,
   raggedGather: () => K2,
   raggedRange: () => q2,
   raggedTensorToTensor: () => j2,
@@ -425,16 +425,16 @@ __export(tfjs_esm_exports, {
   randomUniform: () => dc,
   randomUniformInt: () => y1,
   range: () => mu,
-  ready: () => yde,
+  ready: () => bde,
   real: () => ci,
   reciprocal: () => b1,
   registerBackend: () => su,
-  registerGradient: () => jce,
+  registerGradient: () => Xce,
   registerKernel: () => ri,
   registerOp: () => D5,
   relu: () => du,
   relu6: () => Gd,
-  removeBackend: () => Cde,
+  removeBackend: () => wde,
   reshape: () => W,
   reverse: () => mo,
   reverse1d: () => C1,
@@ -451,8 +451,8 @@ __export(tfjs_esm_exports, {
   selu: () => k1,
   separableConv2d: () => N1,
   serialization: () => WN,
-  setBackend: () => xde,
-  setPlatform: () => vde,
+  setBackend: () => yde,
+  setPlatform: () => kde,
   setThreadsCount: () => Qse,
   setWasmPath: () => Xse,
   setWasmPaths: () => Yse,
@@ -502,14 +502,14 @@ __export(tfjs_esm_exports, {
   test_util: () => h1,
   tidy: () => De,
   tile: () => cu,
-  time: () => gde,
+  time: () => xde,
   topk: () => U1,
-  train: () => NGe,
+  train: () => TGe,
   transpose: () => yc,
   truncatedNormal: () => G1,
   unique: () => H1,
-  unregisterGradient: () => Yce,
-  unregisterKernel: () => Xce,
+  unregisterGradient: () => Qce,
+  unregisterKernel: () => Yce,
   unsortedSegmentSum: () => K1,
   unstack: () => fo,
   upcastType: () => dt,
@@ -519,13 +519,13 @@ __export(tfjs_esm_exports, {
   valueAndGrads: () => OK,
   variable: () => j1,
   variableGrads: () => zw,
-  version: () => Dce,
+  version: () => Ace,
   version_converter: () => D8,
   version_core: () => _X,
   version_cpu: () => cY,
   version_wasm: () => Jse,
   version_webgl: () => s9,
-  webgl: () => bat,
+  webgl: () => Cat,
   webgl_util: () => Ac,
   webgpu_util: () => Yv,
   where: () => lo,
@@ -551,7 +551,7 @@ var NG = (r, t8, e, o) => {
   return r;
 };
 var Kp = (r, t8, e) => (e = r != null ? wG(vG(r)) : {}, NG(t8 || !r || !r.__esModule ? QC(e, "default", { value: r, enumerable: true }) : e, r));
-var V0 = qt((ele, z0) => {
+var V0 = qt((tle, z0) => {
   z0.exports = Nt;
   var No = null;
   try {
@@ -1185,7 +1185,7 @@ var c1 = qt((p1, Ld) => {
       }) : e["seed" + a] = m;
   })(typeof self != "undefined" ? self : p1, [], Math);
 });
-var qw = qt((X2e, l1) => {
+var qw = qt((Y2e, l1) => {
   var vq = Q2(), kq = J2(), Nq = t1(), Tq = o1(), _q = s1(), $q = i1(), Qu = c1();
   Qu.alea = vq;
   Qu.xor128 = kq;
@@ -2218,7 +2218,7 @@ var FB = qt((Wg, Wv) => {
     return Vv;
   }) : typeof Wg == "object" && (Wg.WasmBackendModuleThreadedSimd = Vv);
 });
-var OB = qt((WFt, PB) => {
+var OB = qt((UFt, PB) => {
   PB.exports.wasmWorkerContents = `"use strict";var Module={};var ENVIRONMENT_IS_NODE=typeof process=="object"&&typeof process.versions=="object"&&typeof process.versions.node=="string";if(ENVIRONMENT_IS_NODE){var nodeWorkerThreads=require("worker_threads");var parentPort=nodeWorkerThreads.parentPort;parentPort.on("message",data=>onmessage({data:data}));var fs=require("fs");Object.assign(global,{self:global,require:require,Module:Module,location:{href:__filename},Worker:nodeWorkerThreads.Worker,importScripts:function(f){(0,eval)(fs.readFileSync(f,"utf8")+"//# sourceURL="+f)},postMessage:function(msg){parentPort.postMessage(msg)},performance:global.performance||{now:function(){return Date.now()}}})}var initializedJS=false;var pendingNotifiedProxyingQueues=[];function threadPrintErr(){var text=Array.prototype.slice.call(arguments).join(" ");if(ENVIRONMENT_IS_NODE){fs.writeSync(2,text+"
 ");return}console.error(text)}function threadAlert(){var text=Array.prototype.slice.call(arguments).join(" ");postMessage({cmd:"alert",text:text,threadId:Module["_pthread_self"]()})}var err=threadPrintErr;self.alert=threadAlert;Module["instantiateWasm"]=(info,receiveInstance)=>{var instance=new WebAssembly.Instance(Module["wasmModule"],info);receiveInstance(instance);Module["wasmModule"]=null;return instance.exports};self.onunhandledrejection=e=>{throw e.reason??e};self.startWorker=instance=>{Module=instance;postMessage({"cmd":"loaded"})};self.onmessage=e=>{try{if(e.data.cmd==="load"){Module["wasmModule"]=e.data.wasmModule;for(const handler of e.data.handlers){Module[handler]=function(){postMessage({cmd:"callHandler",handler:handler,args:[...arguments]})}}Module["wasmMemory"]=e.data.wasmMemory;Module["buffer"]=Module["wasmMemory"].buffer;Module["ENVIRONMENT_IS_PTHREAD"]=true;if(typeof e.data.urlOrBlob=="string"){importScripts(e.data.urlOrBlob)}else{var objectUrl=URL.createObjectURL(e.data.urlOrBlob);importScripts(objectUrl);URL.revokeObjectURL(objectUrl)}WasmBackendModuleThreadedSimd(Module)}else if(e.data.cmd==="run"){Module["__emscripten_thread_init"](e.data.pthread_ptr,0,0,1);Module["establishStackSpace"]();Module["PThread"].receiveObjectTransfer(e.data);Module["PThread"].threadInitTLS();if(!initializedJS){pendingNotifiedProxyingQueues.forEach(queue=>{Module["executeNotifiedProxyingQueue"](queue)});pendingNotifiedProxyingQueues=[];initializedJS=true}try{Module["invokeEntryPoint"](e.data.start_routine,e.data.arg)}catch(ex){if(ex!="unwind"){if(ex instanceof Module["ExitStatus"]){if(Module["keepRuntimeAlive"]()){}else{Module["__emscripten_thread_exit"](ex.status)}}else{throw ex}}}}else if(e.data.cmd==="cancel"){if(Module["_pthread_self"]()){Module["__emscripten_thread_exit"](-1)}}else if(e.data.target==="setimmediate"){}else if(e.data.cmd==="processProxyingQueue"){if(initializedJS){Module["executeNotifiedProxyingQueue"](e.data.queue)}else{pendingNotifiedProxyingQueues.push(e.data.queue)}}else if(e.data.cmd){err("worker.js received unknown command "+e.data.cmd);err(e.data)}}catch(ex){if(Module["__emscripten_thread_crashed"]){Module["__emscripten_thread_crashed"]()}throw ex}};`;
 });
@@ -3485,7 +3485,7 @@ var Jo = "BatchMatMul";
 var Js = "BatchToSpaceND";
 var en = "Bincount";
 var ja = "BitwiseAnd";
-var Lce = "BroadcastTo";
+var Bce = "BroadcastTo";
 var ea = "BroadcastArgs";
 var bo = "Cast";
 var tn = "Ceil";
@@ -3549,11 +3549,11 @@ var Mn = "LogicalAnd";
 var Ln = "LogicalNot";
 var Bn = "LogicalOr";
 var $0 = "LogicalXor";
-var Bce = "LogSoftmax";
-var zce = "LowerBound";
+var zce = "LogSoftmax";
+var Vce = "LowerBound";
 var zn = "LRN";
 var Qa = "LRNGrad";
-var Vce = "MatrixBandPart";
+var Wce = "MatrixBandPart";
 var Vn = "Max";
 var Wn = "Maximum";
 var Un = "MaxPool";
@@ -3577,7 +3577,7 @@ var ca = "OnesLike";
 var es = "OneHot";
 var la = "Pack";
 var ts = "PadV2";
-var Wce = "Pool";
+var Uce = "Pool";
 var rs = "Pow";
 var os = "Prelu";
 var ns = "Prod";
@@ -3635,7 +3635,7 @@ var co = "Transpose";
 var Zi = "Unique";
 var wa = "Unpack";
 var Ji = "UnsortedSegmentSum";
-var Uce = "UpperBound";
+var Gce = "UpperBound";
 var Sa = "ZerosLike";
 var So = "Step";
 var Mu = "FromPixels";
@@ -3673,22 +3673,22 @@ function ri(r) {
   let { kernelName: t8, backendName: e } = r, o = uw(t8, e);
   ec.has(o) && Ia(`The kernel '${t8}' for backend '${e}' is already registered`), ec.set(o, r);
 }
-function jce(r) {
+function Xce(r) {
   let { kernelName: t8 } = r;
   xl.has(t8) && A().getBool("DEBUG") && Ia(`Overriding the gradient for '${t8}'`), xl.set(t8, r);
 }
-function Xce(r, t8) {
+function Yce(r, t8) {
   let e = uw(r, t8);
   if (!ec.has(e))
     throw new Error(`The kernel '${r}' for backend '${t8}' is not registered`);
   ec.delete(e);
 }
-function Yce(r) {
+function Qce(r) {
   if (!xl.has(r))
     throw new Error(`The gradient '${r}' for backend is not registered`);
   xl.delete(r);
 }
-function Qce(r, t8) {
+function Zce(r, t8) {
   Ym(r).forEach((o) => {
     let n = Object.assign({}, o, { backendName: t8 });
     ri(n);
@@ -4157,7 +4157,7 @@ var ut = class {
     return this.dtype === "string" ? t8 : new Uint8Array(t8.buffer);
   }
   dispose() {
-    this.isDisposed || (Os().disposeTensor(this), this.isDisposedInternal = true);
+    this.isDisposed || (this.kerasMask && this.kerasMask.dispose(), Os().disposeTensor(this), this.isDisposedInternal = true);
   }
   get isDisposed() {
     return this.isDisposedInternal;
@@ -5523,29 +5523,29 @@ function md(r, t8 = false) {
 Sw();
 var P4 = { buffer: me, cast: We, clone: Ur, print: md };
 Q0(P4);
-function cde() {
+function lde() {
   A().set("PROD", true);
 }
-function lde() {
+function mde() {
   A().set("DEBUG", true);
 }
-function mde() {
+function dde() {
   A().set("DEPRECATION_WARNINGS_ENABLED", false), console.warn("TensorFlow.js deprecation warnings have been disabled.");
 }
 function Pw(r) {
   A().getBool("DEPRECATION_WARNINGS_ENABLED") && console.warn(r + " You can disable deprecation warnings with tf.disableDeprecationWarnings().");
 }
 Z0(Pw);
-function dde() {
+function fde() {
   T.disposeVariables();
 }
 function pr() {
   return T;
 }
-function fde() {
+function hde() {
   return T.memory();
 }
-function hde(r) {
+function gde(r) {
   return T.profile(r);
 }
 function De(r, t8) {
@@ -5557,34 +5557,34 @@ function Mt(r) {
 function Rr(r) {
   return T.keep(r);
 }
-function gde(r) {
+function xde(r) {
   return T.time(r);
 }
-function xde(r) {
+function yde(r) {
   return T.setBackend(r);
 }
-function yde() {
+function bde() {
   return T.ready();
 }
-function bde() {
+function Cde() {
   return T.backendName;
 }
-function Cde(r) {
+function wde(r) {
   T.removeBackend(r);
 }
-function wde(r) {
+function Sde(r) {
   return T.findBackend(r);
 }
-function Sde(r) {
+function Ide(r) {
   return T.findBackendFactory(r);
 }
 function su(r, t8, e = 1) {
   return T.registerBackend(r, t8, e);
 }
-function Ide() {
+function vde() {
   return T.backend;
 }
-function vde(r, t8) {
+function kde(r, t8) {
   A().setPlatform(r, t8);
 }
 function O4(r, t8) {
@@ -9278,7 +9278,7 @@ function sT(r, t8, e, o, n, s) {
     return a < s[0] ? s[0] : a > s[1] ? s[1] : a;
   }
 }
-var _X = "4.10.0";
+var _X = "4.11.0";
 var Pl = class {
   static sgd(t8) {
     return new mi(t8);
@@ -9302,7 +9302,7 @@ var Pl = class {
     return new sp(t8, e);
   }
 };
-var NGe = Pl;
+var TGe = Pl;
 var $X = (() => typeof requestAnimationFrame != "undefined" ? requestAnimationFrame : typeof setImmediate != "undefined" ? setImmediate : (r) => r())();
 function pS() {
   return new Promise((r) => $X(() => r()));
@@ -11971,7 +11971,7 @@ function E8(r) {
 function R8(r) {
   return r.endsWith("/") || (r = r + "/"), `${r}${_8}${T8}`;
 }
-var D8 = "4.10.0";
+var D8 = "4.11.0";
 function Q(r, t8) {
   Array.isArray(r) || (r = [r]), r.forEach((e) => {
     e != null && y.assert(e.dtype !== "complex64", () => `${t8} does not support complex64 tensors in the CPU backend.`);
@@ -13190,7 +13190,7 @@ function bp(r, t8, e, o) {
   let d = e.slice();
   return d[n] = l[1], { outputValues: m.values, outputShape: d, indices: i };
 }
-var cY = "4.10.0";
+var cY = "4.11.0";
 su("cpu", () => new xu(), 1);
 var mI = Ie(gn, (r) => r >= 0 ? r : Math.exp(r) - 1);
 var A_ = { kernelName: gn, backendName: "cpu", kernelFunc: mI };
@@ -15718,6 +15718,7 @@ Se.registerFlag("WEBGL_PACK_IMAGE_OPERATIONS", () => Se.getBool("WEBGL_PACK"));
 Se.registerFlag("WEBGL_PACK_REDUCE", () => Se.getBool("WEBGL_PACK"));
 Se.registerFlag("WEBGL_LAZILY_UNPACK", () => Se.getBool("WEBGL_PACK"));
 Se.registerFlag("WEBGL_CONV_IM2COL", () => Se.getBool("WEBGL_PACK"));
+Se.registerFlag("WEBGL_PACK_CONV2DTRANSPOSE", () => Se.getBool("WEBGL_PACK"));
 Se.registerFlag("WEBGL_MAX_TEXTURE_SIZE", () => VI(Se.getNumber("WEBGL_VERSION")));
 Se.registerFlag("WEBGL_MAX_TEXTURES_IN_SHADER", () => WI(Se.getNumber("WEBGL_VERSION")));
 Se.registerFlag("WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_VERSION", () => {
@@ -18608,12 +18609,12 @@ function n9(r, t8) {
   } else
     throw new Error(`Unknown dtype ${t8}`);
 }
-var s9 = "4.10.0";
+var s9 = "4.11.0";
 function MD() {
   A().set("WEBGL_FORCE_F16_TEXTURES", true);
 }
 ou.isBrowser() && su("webgl", () => new wu(), 2);
-var bat = { forceHalfFloat: MD };
+var Cat = { forceHalfFloat: MD };
 var Wc = `
   if (isnan(a)) return a;
   if (isnan(b)) return b;
@@ -21287,7 +21288,7 @@ var Kh = class {
 };
 function tJ(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, filter: s } = t8, { inputShape: a, strides: i, pad: p, dataFormat: u, dimRoundingMode: c } = o, l = w.convertConv2DDataFormat(u), m = w.computeConv2DInfo(a, s.shape, i, 1, p, c, false, l);
-  if (A().getBool("WEBGL_PACK") && l === "channelsLast") {
+  if (A().getBool("WEBGL_PACK_CONV2DTRANSPOSE") && l === "channelsLast") {
     let d = [[m.strideHeight, m.strideWidth]], f = new Kh(m);
     return e.runWebGLProgram(f, [n, s], "float32", d);
   } else {
@@ -25170,7 +25171,7 @@ function Vre(r, t8, e, o, n, s, a) {
 var qP = { kernelName: ha, backendName: "wasm", kernelFunc: Oo };
 function Wre(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { blockShape: s, crops: a } = o, i = s.reduce((x, b) => x * b), p = w.getReshaped(n.shape, s, i), u = w.getPermuted(p.length, s.length), c = w.getReshapedPermuted(n.shape, s, i), l = w.getSliceBeginCoords(a, s.length), m = w.getSliceSize(c, a, s.length), d = Vt({ inputs: { x: n }, backend: e, attrs: { shape: p } }), f = go({ inputs: { x: d }, backend: e, attrs: { perm: u } }), h = Vt({ inputs: { x: f }, backend: e, attrs: { shape: c } }), g = Oo({ inputs: { x: h }, backend: e, attrs: { begin: l, size: m } });
-  return e.disposeData(d.dataId), e.disposeData(f.dataId), e.disposeData(d.dataId), g;
+  return e.disposeData(d.dataId), e.disposeData(f.dataId), e.disposeData(h.dataId), g;
 }
 var jP = { kernelName: Js, backendName: "wasm", kernelFunc: Wre };
 var XP;
@@ -26560,7 +26561,7 @@ function Zse() {
     throw new Error("WASM backend not initialized.");
   return Hv;
 }
-var Jse = "4.10.0";
+var Jse = "4.11.0";
 var eae = 2;
 su("wasm", async () => {
   let { wasm: r } = await VB();
@@ -26576,7 +26577,7 @@ xo.registerFlag("WEBGPU_CPU_HANDOFF_SIZE_THRESHOLD", () => 1e3);
 xo.registerFlag("WEBGPU_USE_PROFILE_TOOL", () => false);
 xo.registerFlag("WEBGPU_IMPORT_EXTERNAL_TEXTURE", () => true);
 xo.registerFlag("WEBGPU_USE_NAIVE_CONV2D_DEBUG", () => false);
-xo.registerFlag("WEBGPU_THRESHOLD_TO_INCREASE_WORKGROUPS_FOR_MATMUL", () => 0);
+xo.registerFlag("WEBGPU_THRESHOLD_TO_INCREASE_WORKGROUPS_FOR_MATMUL", () => -1);
 xo.registerFlag("WEBGPU_CONV_SEPARATE_IM2COL_SHADER", () => false);
 xo.registerFlag("WEBGPU_PRINT_SHADER", () => "");
 xo.registerFlag("WEBGPU_ENGINE_COMPILE_ONLY", () => false);
@@ -28792,7 +28793,7 @@ function et({ opType: r, cpuKernelImpl: t8, supportsComplex: e = false, dtype: o
     return p.runWebGPUProgram(c, [a, i], u);
   };
 }
-var { addImpl: sz, castImpl: az, ceilImpl: iz, concatImpl: uz, equalImpl: pz, expImpl: cz, expm1Impl: lz, floorImpl: mz, floorDivImpl: dz, gatherNdImpl: fz, gatherV2Impl: hz, greaterEqualImpl: gz, greaterImpl: xz, lessEqualImpl: yz, lessImpl: bz, logImpl: Cz, maxImpl: wz, maximumImpl: Sz, minimumImpl: Iz, multiplyImpl: vz, negImpl: kz, notEqualImpl: Nz, prodImpl: Tz, rangeImpl: _z, rsqrtImpl: $z, scatterImpl: Ez, simpleAbsImpl: Rz, sliceImpl: Dz, stridedSliceImpl: Az, stringNGramsImpl: Fz, subImpl: Pz, tileImpl: Oz, topKImpl: Mz, transposeImpl: Lz, uniqueImpl: GPt } = Tc;
+var { addImpl: sz, castImpl: az, ceilImpl: iz, concatImpl: uz, equalImpl: pz, expImpl: cz, expm1Impl: lz, floorImpl: mz, floorDivImpl: dz, gatherNdImpl: fz, gatherV2Impl: hz, greaterEqualImpl: gz, greaterImpl: xz, lessEqualImpl: yz, lessImpl: bz, logImpl: Cz, maxImpl: wz, maximumImpl: Sz, minimumImpl: Iz, multiplyImpl: vz, negImpl: kz, notEqualImpl: Nz, prodImpl: Tz, rangeImpl: _z, rsqrtImpl: $z, scatterImpl: Ez, simpleAbsImpl: Rz, sliceImpl: Dz, stridedSliceImpl: Az, stringNGramsImpl: Fz, subImpl: Pz, tileImpl: Oz, topKImpl: Mz, transposeImpl: Lz, uniqueImpl: HPt } = Tc;
 var Uie = ye({ opType: Z.ABS, cpuKernelImpl: Rz });
 var Bz = { kernelName: Xs, backendName: "webgpu", kernelFunc: Uie };
 var Gie = ye({ opType: Z.ACOS });
@@ -28977,6 +28978,7 @@ var nx = class {
      `;
   }
 };
+var jie = { mean: "float32", all: "bool", any: "bool" };
 function eo(r, t8, e, o, n) {
   let s = r.shape.length, a = [], i = y.parseAxisParam(t8, r.shape), p = i, u = w.getAxesPermutation(p, s), c = r;
   u != null && (c = yr({ inputs: { x: r }, attrs: { perm: u }, backend: n }), p = w.getInnerMostAxes(p.length, s), a.push(c)), w.assertAxesAreInnerMostDims(o, p, s);
@@ -28998,21 +29000,21 @@ function eo(r, t8, e, o, n) {
         throw new Error(`${o} CPU implementation is not yet supported.`);
     }
   } else {
-    let h = y.sizeFromShape(m), x = y.sizeFromShape(c.shape) / h, b = { windowSize: h, inSize: h, batchSize: x, outSize: 1 }, C = o === "mean" ? "float32" : ni(r.dtype), S = [{ type: "int32", data: [h] }], k = new nx(b, o, n.device.limits.maxComputeWorkgroupSizeX), _ = n.runWebGPUProgram(k, [c], C, S);
+    let h = y.sizeFromShape(m), x = y.sizeFromShape(c.shape) / h, b = { windowSize: h, inSize: h, batchSize: x, outSize: 1 }, C = jie[o] || ni(r.dtype), S = [{ type: "int32", data: [h] }], k = new nx(b, o, n.device.limits.maxComputeWorkgroupSizeX), _ = n.runWebGPUProgram(k, [c], C, S);
     a.push(_), f = pe({ inputs: { x: _ }, attrs: { shape: d }, backend: n });
   }
   return a.forEach((h) => n.disposeData(h.dataId)), f;
 }
-function jie(r) {
+function Xie(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { keepDims: s, axis: a } = o;
   return eo(n, a, s, "all", e);
 }
-var Hz = { kernelName: Ho, backendName: "webgpu", kernelFunc: jie };
-function Xie(r) {
+var Hz = { kernelName: Ho, backendName: "webgpu", kernelFunc: Xie };
+function Yie(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { keepDims: s, axis: a } = o;
   return eo(n, a, s, "any", e);
 }
-var Kz = { kernelName: Ko, backendName: "webgpu", kernelFunc: Xie };
+var Kz = { kernelName: Ko, backendName: "webgpu", kernelFunc: Yie };
 var Zc = class {
   constructor(t8, e, o) {
     this.workgroupSize = [64, 1, 1], this.variableNames = ["x"], this.uniforms = "infinityValue : f32,", this.size = true;
@@ -29100,30 +29102,30 @@ var Zc = class {
       `;
   }
 };
-function Yie(r) {
+function Qie(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { axis: s } = o, a = y.parseAxisParam(s, n.shape), i = w.getAxesPermutation(a, n.shape.length), p = n, u = [];
   i != null && (p = yr({ inputs: { x: n }, backend: e, attrs: { perm: i } }), u.push(p), a = w.getInnerMostAxes(a.length, p.shape.length)), w.assertAxesAreInnerMostDims("argMax", [a[0]], p.shape.length);
   let c = new Zc(p.shape, a[0], "max"), l = [{ type: "float32", data: [Number.NEGATIVE_INFINITY] }], m = e.runWebGPUProgram(c, [p], "int32", l);
   return u.forEach((d) => e.disposeData(d.dataId)), m;
 }
-var qz = { kernelName: Ys, backendName: "webgpu", kernelFunc: Yie };
-function Qie(r) {
+var qz = { kernelName: Ys, backendName: "webgpu", kernelFunc: Qie };
+function Zie(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { axis: s } = o, a = y.parseAxisParam(s, n.shape), i = w.getAxesPermutation(a, n.shape.length), p = n, u = [];
   i != null && (p = yr({ inputs: { x: n }, backend: e, attrs: { perm: i } }), u.push(p), a = w.getInnerMostAxes(a.length, p.shape.length)), w.assertAxesAreInnerMostDims("argMin", [a[0]], p.shape.length);
   let c = new Zc(p.shape, a[0], "min"), l = [{ type: "float32", data: [Number.POSITIVE_INFINITY] }], m = e.runWebGPUProgram(c, [p], "int32", l);
   return u.forEach((d) => e.disposeData(d.dataId)), m;
 }
-var jz = { kernelName: Qs, backendName: "webgpu", kernelFunc: Qie };
-var Zie = ye({ opType: Z.ASIN });
-var Xz = { kernelName: qo, backendName: "webgpu", kernelFunc: Zie };
-var Jie = ye({ opType: Z.ASINH });
-var Yz = { kernelName: jo, backendName: "webgpu", kernelFunc: Jie };
-var eue = ye({ opType: Z.ATAN });
-var Qz = { kernelName: Xo, backendName: "webgpu", kernelFunc: eue };
-var tue = et({ opType: fe.ATAN2 });
-var Zz = { kernelName: Qo, backendName: "webgpu", kernelFunc: tue };
-var rue = ye({ opType: Z.ATANH });
-var Jz = { kernelName: Yo, backendName: "webgpu", kernelFunc: rue };
+var jz = { kernelName: Qs, backendName: "webgpu", kernelFunc: Zie };
+var Jie = ye({ opType: Z.ASIN });
+var Xz = { kernelName: qo, backendName: "webgpu", kernelFunc: Jie };
+var eue = ye({ opType: Z.ASINH });
+var Yz = { kernelName: jo, backendName: "webgpu", kernelFunc: eue };
+var tue = ye({ opType: Z.ATAN });
+var Qz = { kernelName: Xo, backendName: "webgpu", kernelFunc: tue };
+var rue = et({ opType: fe.ATAN2 });
+var Zz = { kernelName: Qo, backendName: "webgpu", kernelFunc: rue };
+var oue = ye({ opType: Z.ATANH });
+var Jz = { kernelName: Yo, backendName: "webgpu", kernelFunc: oue };
 var sx = class {
   constructor(t8) {
     this.variableNames = ["x"], this.uniforms = "strides : vec2<i32>,", this.workgroupSize = [256, 1, 1], this.size = true, this.outputShape = t8.outShape, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "poolWithFilterSizeEqualsOne";
@@ -29285,16 +29287,16 @@ function ax(r, t8, e, o) {
   let n, s = [{ type: "int32", data: [t8.strideHeight, t8.strideWidth] }];
   return t8.filterHeight === 1 && t8.filterWidth === 1 ? n = new sx(t8) : (e === "avg" ? n = new za(t8, "avg") : (y.assert(e === "max", () => `Invalid pool type ${e}`), n = new za(t8, "max")), s.push({ type: "int32", data: [t8.padInfo.top, t8.padInfo.left] }, { type: "int32", data: [t8.dilationHeight, t8.dilationWidth] }, { type: "int32", data: [t8.inHeight, t8.inWidth] }, { type: "int32", data: [t8.effectiveFilterHeight, t8.effectiveFilterWidth] })), o.runWebGPUProgram(n, [r], r.dtype, s);
 }
-function oue(r) {
+function nue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { filterSize: s, strides: a, pad: i, dimRoundingMode: p } = o, u = 1, c = w.computePool2DInfo(n.shape, s, a, u, i, p);
   return ax(n, c, "avg", e);
 }
-var rV = { kernelName: Zo, backendName: "webgpu", kernelFunc: oue };
-function nue(r) {
+var rV = { kernelName: Zo, backendName: "webgpu", kernelFunc: nue };
+function sue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { filterSize: s, strides: a, pad: i, dataFormat: p, dimRoundingMode: u } = o, c = [1, 1, 1], l = w.computePool3DInfo(n.shape, s, a, c, i, u, p), m = new _u(l, "avg"), d = [{ type: "int32", data: [l.strideDepth, l.strideHeight, l.strideWidth] }, { type: "int32", data: [l.padInfo.front, l.padInfo.top, l.padInfo.left] }, { type: "int32", data: [l.inDepth, l.inHeight, l.inWidth] }, { type: "int32", data: [l.effectiveFilterDepth, l.effectiveFilterHeight, l.effectiveFilterWidth] }];
   return e.runWebGPUProgram(m, [n], n.dtype, d);
 }
-var oV = { kernelName: Zs, backendName: "webgpu", kernelFunc: nue };
+var oV = { kernelName: Zs, backendName: "webgpu", kernelFunc: sue };
 var ix = class {
   constructor(t8) {
     this.variableNames = ["dy"], this.uniforms = `strides : vec2<i32>, pads : vec2<i32>, dilations : vec2<i32>, filterDims : vec2<i32>,
@@ -29399,29 +29401,29 @@ var ux = class {
     `;
   }
 };
-function sue(r) {
+function aue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, input: s } = t8, a = s, { filterSize: i, strides: p, pad: u, dimRoundingMode: c } = o, l = w.computePool3DInfo(a.shape, i, p, 1, u, c), m = new ux(l), d = 1 / (l.filterDepth * l.filterHeight * l.filterWidth), f = [{ type: "int32", data: [l.strideDepth, l.strideHeight, l.strideWidth] }, { type: "int32", data: [l.effectiveFilterDepth - 1 - l.padInfo.front, l.effectiveFilterHeight - 1 - l.padInfo.top, l.effectiveFilterWidth - 1 - l.padInfo.left] }, { type: "int32", data: [l.effectiveFilterDepth, l.effectiveFilterHeight, l.effectiveFilterWidth] }, { type: "int32", data: [l.outDepth] }, { type: "int32", data: [l.outHeight] }, { type: "int32", data: [l.outWidth] }, { type: "float32", data: [d] }];
   return e.runWebGPUProgram(m, [n], a.dtype, f);
 }
-var nV = { kernelName: Ai, backendName: "webgpu", kernelFunc: sue };
-function aue(r) {
+var nV = { kernelName: Ai, backendName: "webgpu", kernelFunc: aue };
+function iue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, input: s } = t8, a = s;
   fm([n, s], "avgPoolGrad");
   let { filterSize: i, strides: p, pad: u } = o, c = w.computePool2DInfo(a.shape, i, p, 1, u), l = new ix(c), m = 1 / (c.filterHeight * c.filterWidth), d = [{ type: "int32", data: [c.strideHeight, c.strideWidth] }, { type: "int32", data: [c.effectiveFilterHeight - 1 - c.padInfo.top, c.effectiveFilterWidth - 1 - c.padInfo.left] }, { type: "int32", data: [c.dilationHeight, c.dilationWidth] }, { type: "int32", data: [c.effectiveFilterHeight, c.effectiveFilterWidth] }, { type: "int32", data: [c.outHeight] }, { type: "int32", data: [c.outWidth] }, { type: "float32", data: [m] }];
   return e.runWebGPUProgram(l, [n], a.dtype, d);
 }
-var sV = { kernelName: Di, backendName: "webgpu", kernelFunc: aue };
-function iue(r) {
+var sV = { kernelName: Di, backendName: "webgpu", kernelFunc: iue };
+function uue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { a: n, b: s } = t8, { transposeA: a, transposeB: i } = o;
   return Op({ a: n, b: s, transposeA: a, transposeB: i, backend: e });
 }
-var aV = { kernelName: Jo, backendName: "webgpu", kernelFunc: iue };
+var aV = { kernelName: Jo, backendName: "webgpu", kernelFunc: uue };
 var px = class {
   constructor(t8, e) {
     this.variableNames = ["source"], this.workPerThread = 1, this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.rank = e.length, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize, [this.workPerThread, 1, 1]), this.start = t8, this.uniforms = `start : ${ht(t8.length)}, `, this.shaderKey = "slice";
   }
   getUserCode() {
-    let t8 = ht(this.rank), e = uue(this.rank), o;
+    let t8 = ht(this.rank), e = pue(this.rank), o;
     return this.start.length === 1 ? o = this.outputShape.map((s, a) => "sourceLoc = uniforms.start + coords;") : o = this.outputShape.map((s, a) => `sourceLoc.${t0[a]} = uniforms.start.${Mo(a)} + coords.${t0[a]};`), `
       ${G("index")} {
         if (index < uniforms.size) {
@@ -29436,7 +29438,7 @@ var px = class {
   }
 };
 var t0 = ["x", "y", "z", "w", "u", "v"];
-function uue(r) {
+function pue(r) {
   if (r === 1)
     return "sourceLoc";
   if (r <= 6)
@@ -29455,19 +29457,19 @@ function Hs(r) {
   return e.runWebGPUProgram(u, [n], n.dtype, c);
 }
 var iV = { kernelName: ha, backendName: "webgpu", kernelFunc: Hs };
-var pue = (r) => {
+var cue = (r) => {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { blockShape: s, crops: a } = o;
   y.assert(n.shape.length <= 4, () => "batchToSpaceND for rank > 4 with a WebGPU backend not implemented yet");
   let i = s.reduce((b, C) => b * C), p = w.getReshaped(n.shape, s, i), u = w.getPermuted(p.length, s.length), c = w.getReshapedPermuted(n.shape, s, i), l = w.getSliceBeginCoords(a, s.length), m = w.getSliceSize(c, a, s.length), d = [], f = pe({ inputs: { x: n }, backend: e, attrs: { shape: p } }), h = yr({ inputs: { x: f }, backend: e, attrs: { perm: u } }), g = pe({ inputs: { x: h }, backend: e, attrs: { shape: c } }), x = Hs({ inputs: { x: g }, backend: e, attrs: { begin: l, size: m } });
   return d.push(f), d.push(h), d.push(g), d.forEach((b) => e.disposeData(b.dataId)), x;
 };
-var uV = { kernelName: Js, backendName: "webgpu", kernelFunc: pue };
-var cue = `
+var uV = { kernelName: Js, backendName: "webgpu", kernelFunc: cue };
+var lue = `
   fn bincount_write(index: i32, value: f32) {
     ${Qr("&result[index]", "value", "float32")}
   }
 `;
-var lue = `
+var mue = `
   fn bincount_write(index: i32, value: f32) {
     atomicStore(&result[index], bitcast<i32>(value));
   }
@@ -29478,7 +29480,7 @@ var Jc = class {
   }
   getUserCode() {
     return `
-    ${this.binaryOutput ? lue : cue}
+    ${this.binaryOutput ? mue : lue}
   ${G("index")} {
     ${this.rank === 1 ? `if (index < uniforms.xShape) {
       let indexVal = i32(getX(index));
@@ -29498,11 +29500,11 @@ var Jc = class {
   `;
   }
 };
-function mue(r) {
+function due(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, weights: s } = t8, { size: a } = o, i = y.sizeFromShape(n.shape), u = y.sizeFromShape(s.shape) > 0, c = [a], l = s.dtype, m = kt({ backend: e, attrs: { shape: c, value: 0, dtype: l } }), d = new Jc([i], u), f = [{ type: "int32", data: [a] }], h = u ? [n, s] : [n];
   return e.runWebGPUProgram(d, h, l, f, m);
 }
-var pV = { kernelName: en, backendName: "webgpu", kernelFunc: mue };
+var pV = { kernelName: en, backendName: "webgpu", kernelFunc: due };
 var cx = class {
   constructor(t8) {
     this.outputShape = [], this.variableNames = ["s0", "s1"], this.uniforms = "s0Size : i32, s1Size : i32, ", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [t8], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "broadcastArgs";
@@ -29536,7 +29538,7 @@ var cx = class {
   `;
   }
 };
-function due(r) {
+function fue(r) {
   let { inputs: t8, backend: e } = r, { s0: o, s1: n } = t8;
   if (e.shouldExecuteOnCPU([o, n])) {
     let c = e.tensorMap.get(o.dataId), l = e.tensorMap.get(n.dataId), m = c.values, d = l.values, f = w.assertAndGetBroadcastShape(Array.from(m), Array.from(d));
@@ -29545,7 +29547,7 @@ function due(r) {
   let s = y.sizeFromShape(o.shape), a = y.sizeFromShape(n.shape), i = Math.max(s, a), p = new cx(i), u = [{ type: "int32", data: [s] }, { type: "int32", data: [a] }];
   return e.runWebGPUProgram(p, [o, n], "int32", u);
 }
-var cV = { kernelName: ea, backendName: "webgpu", kernelFunc: due };
+var cV = { kernelName: ea, backendName: "webgpu", kernelFunc: fue };
 var r0 = et({ opType: fe.NOT_EQUAL, dtype: "bool", cpuKernelImpl: Nz });
 var lV = { kernelName: Qn, backendName: "webgpu", kernelFunc: r0 };
 function Ni(r) {
@@ -29586,8 +29588,8 @@ function o0(r) {
   throw new Error(`Error in Cast: failed to cast ${n.dtype} to ${s}`);
 }
 var fV = { kernelName: bo, backendName: "webgpu", kernelFunc: o0 };
-var fue = ye({ opType: Z.CEIL, cpuKernelImpl: iz });
-var hV = { kernelName: tn, backendName: "webgpu", kernelFunc: fue };
+var hue = ye({ opType: Z.CEIL, cpuKernelImpl: iz });
+var hV = { kernelName: tn, backendName: "webgpu", kernelFunc: hue };
 var lx = class {
   constructor(t8) {
     this.variableNames = ["A"], this.uniforms = "minVal : f32, maxVal : f32,", this.workPerThread = 4, this.workgroupSize = [64, 1, 1], this.outputComponent = 4, this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize, [this.workPerThread, 1, 1]), this.shaderKey = "clipVec4";
@@ -29625,11 +29627,11 @@ var mx = class {
     `;
   }
 };
-function hue(r) {
+function gue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { clipValueMin: s, clipValueMax: a } = o, i, p = [{ type: "float32", data: [s] }, { type: "float32", data: [a] }];
   return y.sizeFromShape(n.shape) % 4 === 0 ? i = new lx(n.shape) : i = new mx(n.shape), e.runWebGPUProgram(i, [n], n.dtype, p);
 }
-var gV = { kernelName: Co, backendName: "webgpu", kernelFunc: hue };
+var gV = { kernelName: Co, backendName: "webgpu", kernelFunc: gue };
 var dx = class {
   constructor(t8) {
     this.outputShape = [], this.variableNames = ["real", "imag"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "complexAbs";
@@ -29653,11 +29655,11 @@ var dx = class {
 function xV(r, t8) {
   return { dataId: t8.dataId, dtype: t8.dtype, shape: r.shape };
 }
-function gue(r) {
+function xue(r) {
   let { inputs: t8, backend: e } = r, { x: o } = t8, n = e.tensorMap.get(o.dataId), s = new dx(o.shape), a = [xV(o, n.complexTensorInfos.real), xV(o, n.complexTensorInfos.imag)];
   return e.runWebGPUProgram(s, a, a[0].dtype);
 }
-var yV = { kernelName: Pi, backendName: "webgpu", kernelFunc: gue };
+var yV = { kernelName: Pi, backendName: "webgpu", kernelFunc: xue };
 var fx = class {
   constructor(t8) {
     this.uniforms = "", this.workPerThread = 1, this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = w.computeOutShape(t8, 1), this.variableNames = t8.map((e, o) => `T${o}`), this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize, [this.workPerThread, 1, 1]), this.offsetLength = t8.length - 1;
@@ -29723,7 +29725,7 @@ function el(r, t8, e) {
       e.disposeData(g.dataId);
     return h;
   }
-  let { tensors2D: a, outShape: i } = xue(r, t8, e), p = a.map((f) => f.shape), u = new fx(p), c = [], l = new Array(p.length - 1);
+  let { tensors2D: a, outShape: i } = yue(r, t8, e), p = a.map((f) => f.shape), u = new fx(p), c = [], l = new Array(p.length - 1);
   if (l.length > 0) {
     l[0] = p[0][1], c.push({ type: "int32", data: [l[0]] });
     for (let f = 1; f < l.length; f++)
@@ -29734,7 +29736,7 @@ function el(r, t8, e) {
   let d = pe({ inputs: { x: m }, backend: e, attrs: { shape: i } });
   return e.disposeData(m.dataId), d;
 }
-function xue(r, t8, e) {
+function yue(r, t8, e) {
   let o = w.computeOutShape(r.map((s) => s.shape), t8);
   return { tensors2D: r.map((s) => pe({ inputs: { x: s }, backend: e, attrs: { shape: [y.sizeFromShape(s.shape.slice(0, t8)), y.sizeFromShape(s.shape.slice(t8))] } })), outShape: o };
 }
@@ -29748,24 +29750,24 @@ function n0(r) {
   return p.length === 1 ? Ft({ inputs: { x: p[0] }, backend: e }) : el(p, s, e);
 }
 var CV = { kernelName: ta, backendName: "webgpu", kernelFunc: n0 };
-function yue(r, t8, e, o, n = false, s = null, a = false, i = 4, p = 4, u = 4) {
+function bue(r, t8, e, o, n = false, s = null, a = false, i = 4, p = 4, u = 4) {
   let c = (D) => {
     switch (D) {
       case 1:
-        return "resData = x[xIndex];";
+        return "resData = f32(x[xIndex]);";
       case 3:
         return "resData = vec3<f32>(x[xIndex], x[xIndex + 1], x[xIndex + 2]);";
       case 4:
-        return "resData = x[xIndex / 4];";
+        return "resData = vec4<f32>(x[xIndex / 4]);";
       default:
         throw new Error(`innerElementSize ${D} is not supported.`);
     }
   }, l = (D) => {
     switch (D) {
       case 1:
-        return "return W[row * uniforms.wShape[3] + col];";
+        return "return f32(W[row * uniforms.wShape[3] + col]);";
       case 4:
-        return "return W[(row * uniforms.wShape[3] + col) / 4];";
+        return "return vec4<f32>(W[(row * uniforms.wShape[3] + col) / 4]);";
       default:
         throw new Error(`innerElementSize ${D} is not supported.`);
     }
@@ -29843,7 +29845,7 @@ var hx = class {
   getUserCode() {
     let t8 = this.isVec4 ? Fp(this.elementsPerThread, this.workgroupSize, !this.isChannelsLast, this.tileInner) : Pp(this.elementsPerThread, this.workgroupSize, !this.isChannelsLast, this.tileInner, false, null, this.sequentialAccessByThreads), e = this.isVec4 ? [this.innerElementSize, 4, 4] : [1, 1, 1];
     return `
-    ${yue(this.isChannelsLast, this.fitAOuter, this.fitBOuter, this.fitInner, this.addBias, this.activation, this.hasPreluActivationWeights, e[0], e[1], e[2])}
+    ${bue(this.isChannelsLast, this.fitAOuter, this.fitBOuter, this.fitInner, this.addBias, this.activation, this.hasPreluActivationWeights, e[0], e[1], e[2])}
     ${t8}
   `;
   }
@@ -29939,7 +29941,7 @@ function yx(r, t8) {
   let e = r.length;
   return e >= 3 ? t8 ? [...r.slice(0, -3), r[e - 3] * r[e - 2], r[e - 1]] : [...r.slice(0, -3), r[e - 3], r[e - 2] * r[e - 1]] : !t8 && e === 1 && r[0] > 1 ? [r[0], 1] : null;
 }
-function bue({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluActivationWeights: s = null, leakyreluAlpha: a = 0, activation: i = null }) {
+function Cue({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluActivationWeights: s = null, leakyreluAlpha: a = 0, activation: i = null }) {
   let p = e.dataFormat === "channelsLast", u = !p, c = false, l = p && e.filterHeight === e.inHeight && e.filterWidth === e.inWidth && e.padInfo.type === "VALID", m = [], d, f;
   if (l) {
     let x = e.inHeight * e.inWidth * e.inChannels;
@@ -29960,7 +29962,7 @@ function bue({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluA
     o.disposeData(x.dataId);
   return g;
 }
-function Cue({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluActivationWeights: s = null, leakyreluAlpha: a = 0, activation: i = null }) {
+function wue({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluActivationWeights: s = null, leakyreluAlpha: a = 0, activation: i = null }) {
   let { filterWidth: p, filterHeight: u, inChannels: c, strideWidth: l, strideHeight: m, padInfo: d, outWidth: f, outHeight: h, dilationWidth: g, dilationHeight: x, dataFormat: b } = e, C = b === "channelsLast", S = p * u * c, k = h * f, _ = C ? [e.batchSize, k, S] : [e.batchSize, S, k], E = new xx(_, C), R = [{ type: "int32", data: [d.top, d.left] }, { type: "int32", data: [m, l] }, { type: "int32", data: [x, g] }, { type: "int32", data: [f] }, { type: "int32", data: [c * p] }, { type: "int32", data: [c] }], D = o.runWebGPUProgram(E, [r], r.dtype, R), P = [];
   P.push(D);
   let O = pe({ inputs: { x: t8 }, backend: o, attrs: { shape: [1, S, -1] } });
@@ -29981,10 +29983,10 @@ function Cue({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluA
 function bx({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluActivationWeights: s = null, leakyreluAlpha: a = 0, activation: i = null }) {
   let p = n != null, u = s != null, c = e.dataFormat === "channelsLast", l = c && e.filterHeight === e.inHeight && e.filterWidth === e.inWidth && e.padInfo.type === "VALID", m = A().getBool("WEBGPU_USE_NAIVE_CONV2D_DEBUG");
   if (!m && (l || e.filterHeight === 1 && e.filterWidth === 1 && e.dilationHeight === 1 && e.dilationWidth === 1 && e.strideHeight === 1 && e.strideWidth === 1 && (e.padInfo.type === "SAME" || e.padInfo.type === "VALID")))
-    return bue({ x: r, filter: t8, convInfo: e, backend: o, bias: n, activation: i, preluActivationWeights: s, leakyreluAlpha: a });
-  let d = A().getNumber("WEBGPU_THRESHOLD_TO_INCREASE_WORKGROUPS_FOR_MATMUL"), f = d > 0 ? d : o.thresholdToIncreaseWorkgroups, h = e.batchSize * Math.ceil(e.outHeight * e.outWidth / 32) * Math.ceil(e.outChannels / 32);
+    return Cue({ x: r, filter: t8, convInfo: e, backend: o, bias: n, activation: i, preluActivationWeights: s, leakyreluAlpha: a });
+  let d = A().getNumber("WEBGPU_THRESHOLD_TO_INCREASE_WORKGROUPS_FOR_MATMUL"), f = d > -1 ? d : o.thresholdToIncreaseWorkgroups, h = e.batchSize * Math.ceil(e.outHeight * e.outWidth / 32) * Math.ceil(e.outChannels / 32);
   if (A().getBool("WEBGPU_CONV_SEPARATE_IM2COL_SHADER") || h <= f)
-    return Cue({ x: r, filter: t8, convInfo: e, backend: o, bias: n, preluActivationWeights: s, leakyreluAlpha: a, activation: i });
+    return wue({ x: r, filter: t8, convInfo: e, backend: o, bias: n, preluActivationWeights: s, leakyreluAlpha: a, activation: i });
   let g, x = [e.padInfo.top, e.padInfo.left], b = [{ type: "int32", data: [e.filterHeight, e.filterWidth] }, { type: "int32", data: [...x] }, { type: "int32", data: [e.strideHeight, e.strideWidth] }, { type: "int32", data: [e.dilationHeight, e.dilationWidth] }];
   if (m)
     g = new gx(e, p, i, u);
@@ -30001,11 +30003,11 @@ function bx({ x: r, filter: t8, convInfo: e, backend: o, bias: n = null, preluAc
     o.disposeData(_.dataId);
   return k;
 }
-function wue(r) {
+function Sue(r) {
   let { inputs: t8, attrs: e, backend: o } = r, { x: n, filter: s } = t8, { strides: a, pad: i, dataFormat: p, dilations: u, dimRoundingMode: c } = e, l = w.convertConv2DDataFormat(p), m = w.computeConv2DInfo(n.shape, s.shape, a, u, i, c, false, l);
   return bx({ x: n, filter: s, convInfo: m, backend: o });
 }
-var wV = { kernelName: rn, backendName: "webgpu", kernelFunc: wue };
+var wV = { kernelName: rn, backendName: "webgpu", kernelFunc: Sue };
 var Cx = class {
   constructor(t8) {
     this.variableNames = ["dy", "W"], this.uniforms = "filterDims : vec2<i32>, pads : vec2<i32>, strides : vec2<i32>, outBackprop : vec4<i32>,", this.workgroupSize = [64, 1, 1], this.size = false, this.isVec4 = false, this.workPerThread = 1, this.outputShape = t8.inShape, this.isChannelsLast = t8.dataFormat === "channelsLast", this.isVec4 = this.isChannelsLast && t8.outChannels % 4 === 0 && t8.inChannels % 4 === 0, this.isVec4 ? (this.workPerThread = 2, this.outputComponent = 4, this.workgroupSize = [4, 4, 4], this.dispatchLayout = { x: [3], y: [2], z: [0, 1] }, this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize, [4, this.workPerThread, 1])) : (this.size = true, this.workPerThread = 1, this.workgroupSize = [64, 1, 1], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize)), this.shaderKey = `conv2DDerInput_${this.isChannelsLast}_${this.isVec4}_${this.workPerThread}`;
@@ -30318,12 +30320,12 @@ var Ix = class {
   `;
   }
 };
-function Sue(r) {
+function Iue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, dy: s } = t8, { strides: a, pad: i, dataFormat: p, dimRoundingMode: u, filterShape: c } = o, l = w.convertConv2DDataFormat(p), m = w.computeConv2DInfo(n.shape, c, a, 1, i, u, false, l), d = new wx(m), f = [{ type: "int32", data: [m.padInfo.top, m.padInfo.left] }, { type: "int32", data: [m.strideHeight, m.strideWidth] }, { type: "int32", data: [m.batchSize] }, { type: "int32", data: [m.outHeight] }, { type: "int32", data: [m.outWidth] }, { type: "int32", data: [m.inHeight] }, { type: "int32", data: [m.inWidth] }];
   return e.runWebGPUProgram(d, [n, s], n.dtype, f);
 }
-var SV = { kernelName: Oi, backendName: "webgpu", kernelFunc: Sue };
-function Iue(r = 4) {
+var SV = { kernelName: Oi, backendName: "webgpu", kernelFunc: Iue };
+function vue(r = 4) {
   let t8 = (s) => {
     switch (s) {
       case 1:
@@ -30403,12 +30405,12 @@ var vx = class {
   getUserCode() {
     let t8 = this.isVec4 ? Fp(this.elementsPerThread, this.workgroupSize) : Pp(this.elementsPerThread, this.workgroupSize);
     return `
-    ${Iue(this.isVec4 ? 4 : 1)}
+    ${vue(this.isVec4 ? 4 : 1)}
     ${t8}
     `;
   }
 };
-function vue(r) {
+function kue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, filter: s } = t8, { inputShape: a, strides: i, pad: p, dataFormat: u, dimRoundingMode: c } = o, l = w.convertConv2DDataFormat(u), m = w.computeConv2DInfo(a, s.shape, i, 1, p, c, false, l), d = [{ type: "int32", data: [m.filterHeight, m.filterWidth] }, { type: "int32", data: [m.filterHeight - 1 - m.padInfo.top, m.filterWidth - 1 - m.padInfo.left] }, { type: "int32", data: [m.strideHeight, m.strideWidth] }, { type: "int32", data: [m.batchSize, m.outHeight, m.outWidth, m.outChannels] }], f;
   if (A().getBool("WEBGPU_USE_NAIVE_CONV2D_TRANSPOSE") || m.dataFormat !== "channelsLast")
     f = new Cx(m);
@@ -30419,7 +30421,7 @@ function vue(r) {
   }
   return e.runWebGPUProgram(f, [n, s], "float32", d);
 }
-var IV = { kernelName: on, backendName: "webgpu", kernelFunc: vue };
+var IV = { kernelName: on, backendName: "webgpu", kernelFunc: kue };
 var kx = class {
   constructor(t8) {
     this.variableNames = ["x", "W"], this.uniforms = "filterDims: vec3<i32>, pads: vec3<i32>, strides: vec3<i32>, dilations: vec3<i32>,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8.outShape, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "conv3dnaive";
@@ -30510,25 +30512,25 @@ var kx = class {
     }`;
   }
 };
-function kue(r) {
+function Nue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, filter: s } = t8, { strides: a, pad: i, dilations: p } = o, u = w.computeConv3DInfo(n.shape, s.shape, a, p, i), c = [u.padInfo.front, u.padInfo.top, u.padInfo.left], l = [{ type: "int32", data: [u.filterDepth, u.filterHeight, u.filterWidth] }, { type: "int32", data: [...c] }, { type: "int32", data: [u.strideDepth, u.strideHeight, u.strideWidth] }, { type: "int32", data: [u.dilationDepth, u.dilationHeight, u.dilationWidth] }], m = new kx(u), d = dt(n.dtype, s.dtype);
   return e.runWebGPUProgram(m, [n, s], d, l);
 }
-var vV = { kernelName: nn, backendName: "webgpu", kernelFunc: kue };
-function Nue(r) {
+var vV = { kernelName: nn, backendName: "webgpu", kernelFunc: Nue };
+function Tue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, dy: s } = t8, { strides: a, pad: i, filterShape: p } = o, u = w.computeConv3DInfo(n.shape, p, a, 1, i), c = new Sx(u), l = [{ type: "int32", data: [u.padInfo.front, u.padInfo.top, u.padInfo.left] }, { type: "int32", data: [u.strideDepth, u.strideHeight, u.strideWidth] }, { type: "int32", data: [u.batchSize] }, { type: "int32", data: [u.outDepth] }, { type: "int32", data: [u.outHeight] }, { type: "int32", data: [u.outWidth] }, { type: "int32", data: [u.inDepth] }, { type: "int32", data: [u.inHeight] }, { type: "int32", data: [u.inWidth] }];
   return e.runWebGPUProgram(c, [n, s], s.dtype, l);
 }
-var kV = { kernelName: Xa, backendName: "webgpu", kernelFunc: Nue };
-function Tue(r) {
+var kV = { kernelName: Xa, backendName: "webgpu", kernelFunc: Tue };
+function _ue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, filter: s } = t8, { strides: a, pad: i, inputShape: p } = o, u = w.computeConv3DInfo(p, s.shape, a, 1, i), c = new Ix(u), l = [{ type: "int32", data: [u.filterDepth, u.filterHeight, u.filterWidth] }, { type: "int32", data: [u.filterDepth - 1 - u.padInfo.front, u.filterHeight - 1 - u.padInfo.top, u.filterWidth - 1 - u.padInfo.left] }, { type: "int32", data: [u.strideDepth, u.strideHeight, u.strideWidth] }, { type: "int32", data: [u.outDepth] }, { type: "int32", data: [u.outHeight] }, { type: "int32", data: [u.outWidth] }, { type: "int32", data: [u.outChannels] }];
   return e.runWebGPUProgram(c, [n, s], n.dtype, l);
 }
-var NV = { kernelName: sn, backendName: "webgpu", kernelFunc: Tue };
-var _ue = ye({ opType: Z.COS });
-var TV = { kernelName: an, backendName: "webgpu", kernelFunc: _ue };
-var $ue = ye({ opType: Z.COSH });
-var _V = { kernelName: un, backendName: "webgpu", kernelFunc: $ue };
+var NV = { kernelName: sn, backendName: "webgpu", kernelFunc: _ue };
+var $ue = ye({ opType: Z.COS });
+var TV = { kernelName: an, backendName: "webgpu", kernelFunc: $ue };
+var Eue = ye({ opType: Z.COSH });
+var _V = { kernelName: un, backendName: "webgpu", kernelFunc: Eue };
 var Nx = class {
   constructor(t8, e, o, n) {
     this.variableNames = ["Image", "Boxes", "BoxInd"], this.uniforms = "extrapolationValue : f32,", this.workgroupSize = [64, 1, 1], this.size = true;
@@ -30596,11 +30598,11 @@ var Nx = class {
     `;
   }
 };
-var Eue = (r) => {
+var Rue = (r) => {
   let { inputs: t8, backend: e, attrs: o } = r, { image: n, boxes: s, boxInd: a } = t8, { cropSize: i, method: p, extrapolationValue: u } = o, c = new Nx(n.shape[3], s.shape, i, p), l = [{ type: "float32", data: [u] }];
   return e.runWebGPUProgram(c, [n, s, a], "float32", l);
 };
-var $V = { kernelName: ln, backendName: "webgpu", kernelFunc: Eue };
+var $V = { kernelName: ln, backendName: "webgpu", kernelFunc: Rue };
 var Lp;
 (function(r) {
   r.Prod = "*", r.Sum = "+";
@@ -30673,21 +30675,21 @@ function Tx(r, t8, e, o, n, s) {
   }
   return l;
 }
-function Rue(r) {
+function Due(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { axis: s, exclusive: a, reverse: i } = o;
   return Tx(Lp.Prod, n, e, s, a, i);
 }
-var DV = { kernelName: pn, backendName: "webgpu", kernelFunc: Rue };
-function Due(r) {
+var DV = { kernelName: pn, backendName: "webgpu", kernelFunc: Due };
+function Aue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { axis: s, exclusive: a, reverse: i } = o;
   return Tx(Lp.Sum, n, e, s, a, i);
 }
-var AV = { kernelName: cn, backendName: "webgpu", kernelFunc: Due };
-function Aue(r) {
+var AV = { kernelName: cn, backendName: "webgpu", kernelFunc: Aue };
+function Fue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, weights: s } = t8, { size: a, binaryOutput: i } = o, p = n.shape.length === 1, c = y.sizeFromShape(s.shape) > 0, l = s.dtype, m = p ? [n.shape[0]] : [n.shape[0], n.shape[1]], d = p ? [a] : [n.shape[0], a], f = kt({ backend: e, attrs: { shape: d, value: 0, dtype: l } }), h = new Jc(m, c, i), g = [{ type: "int32", data: [a] }], x = c ? [n, s] : [n];
   return e.runWebGPUProgram(h, x, l, g, f);
 }
-var FV = { kernelName: ra, backendName: "webgpu", kernelFunc: Aue };
+var FV = { kernelName: ra, backendName: "webgpu", kernelFunc: Fue };
 var _x = class {
   constructor(t8, e) {
     this.variableNames = ["x"], this.workgroupSize = [64, 1, 1], this.size = true, this.uniforms = "blockSize : i32,", this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = `depthToSpace_${e}`, this.dataFormat = e;
@@ -30731,11 +30733,11 @@ var _x = class {
     return this.dataFormat === "NHWC" ? "getX(b, in_h, in_w, in_d)" : "getX(b, in_d, in_h, in_w)";
   }
 };
-function Fue(r) {
+function Pue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { blockSize: s, dataFormat: a } = o, i = n.shape[0], p = a === "NHWC" ? n.shape[1] : n.shape[2], u = a === "NHWC" ? n.shape[2] : n.shape[3], c = a === "NHWC" ? n.shape[3] : n.shape[1], l = p * s, m = u * s, d = c / (s * s), f = a === "NHWC" ? [i, l, m, d] : [i, d, l, m], h = [{ type: "int32", data: [s] }], g = new _x(f, a);
   return e.runWebGPUProgram(g, [n], n.dtype, h);
 }
-var PV = { kernelName: mn, backendName: "webgpu", kernelFunc: Fue };
+var PV = { kernelName: mn, backendName: "webgpu", kernelFunc: Pue };
 var $x = class {
   constructor(t8, e, o, n = false, s = null, a = false) {
     this.variableNames = ["x", "W"], this.uniforms = "pads : vec2<i32>, inDims : vec2<i32>,", this.workgroupSize = [16, 16, 1], this.outputShape = t8, this.dispatchLayout = { x: [3], y: [2], z: [0, 1] }, this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), n && this.variableNames.push("bias"), a && this.variableNames.push("preluActivationWeights"), this.addBias = n, this.activation = s, this.hasPreluActivation = a, this.filterHeight = e, this.filterWidth = o, this.shaderKey = `depthwiseNCHW_${this.activation}_${this.filterHeight}_${this.filterWidth}`;
@@ -30949,13 +30951,13 @@ var rl = class {
     `;
   }
 };
-function Pue(r) {
+function Oue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, filter: s } = t8, { strides: a, pad: i, dataFormat: p, dilations: u, dimRoundingMode: c } = o, l = w.convertConv2DDataFormat(p), m = u;
   m == null && (m = [1, 1]);
   let d = w.computeConv2DInfo(n.shape, s.shape, a, m, i, c, true, l), f = [{ type: "int32", data: [d.padInfo.top, d.padInfo.left] }, { type: "int32", data: [d.inHeight, d.inWidth] }], h = d.dataFormat === "channelsLast", g;
   return !h && d.inHeight > 16 && d.inWidth > 16 && d.strideHeight === 1 && d.strideWidth === 1 && d.dilationWidth === 1 && d.dilationHeight === 1 && d.inChannels === d.outChannels ? g = new $x(d.outShape, d.filterHeight, d.filterWidth) : h && d.outHeight > 4 && d.outWidth > 4 && d.strideWidth <= 2 && d.inChannels === d.outChannels && d.dilationHeight === 1 && d.dilationWidth === 1 && d.inChannels % 4 === 0 ? (g = new tl(d), f.push({ type: "int32", data: [g.virtualWidth] })) : (g = new rl(d), f.push({ type: "int32", data: [d.filterHeight] }, { type: "int32", data: [d.filterWidth] }, { type: "int32", data: [d.strideHeight, d.strideWidth] }, { type: "int32", data: [d.dilationHeight, d.dilationWidth] })), e.runWebGPUProgram(g, [n, s], n.dtype, f);
 }
-var OV = { kernelName: dn, backendName: "webgpu", kernelFunc: Pue };
+var OV = { kernelName: dn, backendName: "webgpu", kernelFunc: Oue };
 var Ex = class {
   constructor(t8) {
     this.variableNames = ["x", "dy"], this.uniforms = `strides : vec2<i32>, pads : vec2<i32>, filterDims : vec2<i32>, outHeight : i32,
@@ -31051,16 +31053,16 @@ var Rx = class {
     `;
   }
 };
-function Oue(r) {
+function Mue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, dy: s } = t8, { strides: a, dilations: i, pad: p, dimRoundingMode: u, filterShape: c } = o, l = w.computeConv2DInfo(n.shape, c, a, i, p, u, true), m = new Ex(l), d = [{ type: "int32", data: [l.strideHeight, l.strideWidth] }, { type: "int32", data: [l.padInfo.top, l.padInfo.left] }, { type: "int32", data: [l.filterHeight, l.filterWidth] }, { type: "int32", data: [l.outHeight] }, { type: "int32", data: [l.outWidth] }, { type: "int32", data: [l.inHeight] }, { type: "int32", data: [l.inWidth] }, { type: "int32", data: [l.batchSize] }, { type: "int32", data: [l.outChannels / l.inChannels] }];
   return e.runWebGPUProgram(m, [n, s], "float32", d);
 }
-var MV = { kernelName: Mi, backendName: "webgpu", kernelFunc: Oue };
-function Mue(r) {
+var MV = { kernelName: Mi, backendName: "webgpu", kernelFunc: Mue };
+function Lue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, filter: s } = t8, { strides: a, dilations: i, pad: p, dimRoundingMode: u, inputShape: c } = o, l = w.computeConv2DInfo(c, s.shape, a, i, p, u, true), m = new Rx(l), d = [{ type: "int32", data: [l.strideHeight, l.strideWidth] }, { type: "int32", data: [l.filterHeight - 1 - l.padInfo.top, l.filterWidth - 1 - l.padInfo.left] }, { type: "int32", data: [l.filterHeight, l.filterWidth] }, { type: "int32", data: [l.outHeight] }, { type: "int32", data: [l.outWidth] }, { type: "int32", data: [l.outChannels / l.inChannels] }];
   return e.runWebGPUProgram(m, [n, s], n.dtype, d);
 }
-var LV = { kernelName: Li, backendName: "webgpu", kernelFunc: Mue };
+var LV = { kernelName: Li, backendName: "webgpu", kernelFunc: Lue };
 var Dx = class {
   constructor(t8) {
     this.variableNames = ["x"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [t8, t8], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "diag";
@@ -31077,11 +31079,11 @@ var Dx = class {
     `;
   }
 };
-function Lue(r) {
+function Bue(r) {
   let { inputs: t8, backend: e } = r, { x: o } = t8, n = [...o.shape, ...o.shape], s = y.sizeFromShape(o.shape), a = pe({ inputs: { x: o }, backend: e, attrs: { shape: [s] } }), i = new Dx(s), p = e.runWebGPUProgram(i, [a], a.dtype), u = pe({ inputs: { x: p }, backend: e, attrs: { shape: n } });
   return e.disposeData(a.dataId), e.disposeData(p.dataId), u;
 }
-var BV = { kernelName: oa, backendName: "webgpu", kernelFunc: Lue };
+var BV = { kernelName: oa, backendName: "webgpu", kernelFunc: Bue };
 var Ax = class {
   constructor(t8) {
     this.variableNames = ["x", "w"], this.uniforms = "filterDims: vec2<i32>, pads: vec2<i32>, strides: vec2<i32>, dilations: vec2<i32>", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8.outShape, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "dilation2d";
@@ -31122,11 +31124,11 @@ var Ax = class {
      `;
   }
 };
-function Bue(r) {
+function zue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, filter: s } = t8, { strides: a, pad: i, dilations: p } = o, u = w.computeDilation2DInfo(n.shape, s.shape, a, i, "NHWC", p), c = [u.padInfo.top, u.padInfo.left], l = [{ type: "int32", data: [u.filterHeight, u.filterWidth] }, { type: "int32", data: [...c] }, { type: "int32", data: [u.strideHeight, u.strideWidth] }, { type: "int32", data: [u.dilationHeight, u.dilationWidth] }], m = new Ax(u);
   return e.runWebGPUProgram(m, [n, s], n.dtype, l);
 }
-var zV = { kernelName: fn, backendName: "webgpu", kernelFunc: Bue };
+var zV = { kernelName: fn, backendName: "webgpu", kernelFunc: zue };
 var Fx = class {
   constructor(t8, e) {
     if (this.variableNames = ["x", "w", "dy"], this.uniforms = "filterDims: vec2<i32>, pads: vec2<i32>, strides: vec2<i32>, dilations: vec2<i32>, dySize: i32,", this.workgroupSize = [64, 1, 1], this.atomic = true, this.outputShape = t8.inShape, this.dispatchLayout = X(t8.outShape), this.dispatch = H(this.dispatchLayout, t8.outShape, this.workgroupSize), e !== "float32" && e !== "int32")
@@ -31234,16 +31236,16 @@ var Px = class {
      `;
   }
 };
-function zue(r) {
+function Vue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, filter: s, dy: a } = t8, { strides: i, pad: p, dilations: u } = o, c = w.computeDilation2DInfo(n.shape, s.shape, i, p, "NHWC", u), l = s.dtype, m = new Px(c, s.shape, l), d = [{ type: "int32", data: [c.filterHeight, c.filterWidth] }, { type: "int32", data: [c.padInfo.top, c.padInfo.left] }, { type: "int32", data: [c.strideHeight, c.strideWidth] }, { type: "int32", data: [c.dilationHeight, c.dilationWidth] }, { type: "int32", data: [y.sizeFromShape(c.outShape)] }], f = kt({ backend: e, attrs: { shape: s.shape, value: 0, dtype: l } });
   return e.runWebGPUProgram(m, [n, s, a], l, d, f);
 }
-var VV = { kernelName: zi, backendName: "webgpu", kernelFunc: zue };
-function Vue(r) {
+var VV = { kernelName: zi, backendName: "webgpu", kernelFunc: Vue };
+function Wue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, filter: s, dy: a } = t8, { strides: i, pad: p, dilations: u } = o, c = w.computeDilation2DInfo(n.shape, s.shape, i, p, "NHWC", u), l = n.dtype, m = new Fx(c, l), d = [{ type: "int32", data: [c.filterHeight, c.filterWidth] }, { type: "int32", data: [c.padInfo.top, c.padInfo.left] }, { type: "int32", data: [c.strideHeight, c.strideWidth] }, { type: "int32", data: [c.dilationHeight, c.dilationWidth] }, { type: "int32", data: [y.sizeFromShape(c.outShape)] }], f = kt({ backend: e, attrs: { shape: c.inShape, value: 0, dtype: l } });
   return e.runWebGPUProgram(m, [n, s, a], l, d, f);
 }
-var WV = { kernelName: Bi, backendName: "webgpu", kernelFunc: Vue };
+var WV = { kernelName: Bi, backendName: "webgpu", kernelFunc: Wue };
 var Ox = class {
   constructor(t8, e, o) {
     this.variableNames = ["Image"], this.uniforms = "alpha: f32,", this.workgroupSize = [64, 1, 1], this.pixelsOpType = Ii.DRAW, this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.type = e, this.textureFormat = o, this.shaderKey = `draw_${e}_${o}`;
@@ -31276,7 +31278,7 @@ var Ox = class {
       `;
   }
 };
-function Wue(r) {
+function Uue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { image: n } = t8, { canvas: s, options: a } = o, [i, p] = n.shape.slice(0, 2), { imageOptions: u } = a || {}, c = (u == null ? void 0 : u.alpha) || 1, l = e.device.features.has("bgra8unorm-storage") ? "bgra8unorm" : "rgba8unorm", m = [i, p], d = new Ox(m, n.dtype, l);
   s.width = p, s.height = i;
   let f = "webgpu", h = s.getContext(f), g;
@@ -31294,7 +31296,7 @@ function Wue(r) {
   }
   return e.disposeData(C.dataId), n;
 }
-var UV = { kernelName: Pu, backendName: "webgpu", kernelFunc: Wue };
+var UV = { kernelName: Pu, backendName: "webgpu", kernelFunc: Uue };
 var s0 = et({ opType: fe.MUL, cpuKernelImpl: vz, supportsComplex: true });
 var GV = { kernelName: Yn, backendName: "webgpu", kernelFunc: s0 };
 function a0(r) {
@@ -31302,7 +31304,7 @@ function a0(r) {
   return eo(n, s, a, "sum", e);
 }
 var HV = { kernelName: Is, backendName: "webgpu", kernelFunc: a0 };
-function Uue(r) {
+function Gue(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { equation: n } = o, s = t8, { allDims: a, summedDims: i, idDims: p } = w.decodeEinsumEquation(n, s.length);
   w.checkEinsumDimSizes(a.length, p, s);
   let { path: u, steps: c } = w.getEinsumComputePath(i, p), l = c.length, m = null, d = a.length, f = [];
@@ -31321,27 +31323,27 @@ function Uue(r) {
     h !== m && e.disposeData(h.dataId);
   return m;
 }
-var KV = { kernelName: Vi, backendName: "webgpu", kernelFunc: Uue };
-var Gue = ye({ opType: Z.ELU });
-var qV = { kernelName: gn, backendName: "webgpu", kernelFunc: Gue };
-var Hue = (r) => {
+var KV = { kernelName: Vi, backendName: "webgpu", kernelFunc: Gue };
+var Hue = ye({ opType: Z.ELU });
+var qV = { kernelName: gn, backendName: "webgpu", kernelFunc: Hue };
+var Kue = (r) => {
   let { inputs: t8, backend: e } = r, { dy: o, y: n } = t8, s = new ki(fe.ELU_DER, o.shape, n.shape);
   return e.runWebGPUProgram(s, [o, n], o.dtype);
 };
-var jV = { kernelName: Ya, backendName: "webgpu", kernelFunc: Hue };
-var Kue = et({ opType: fe.EQUAL, dtype: "bool", cpuKernelImpl: pz });
-var XV = { kernelName: yn, backendName: "webgpu", kernelFunc: Kue };
-var que = ye({ opType: Z.ERF });
-var YV = { kernelName: xn, backendName: "webgpu", kernelFunc: que };
-var jue = ye({ opType: Z.EXP, cpuKernelImpl: cz, dtype: "float32" });
-var QV = { kernelName: bn, backendName: "webgpu", kernelFunc: jue };
+var jV = { kernelName: Ya, backendName: "webgpu", kernelFunc: Kue };
+var que = et({ opType: fe.EQUAL, dtype: "bool", cpuKernelImpl: pz });
+var XV = { kernelName: yn, backendName: "webgpu", kernelFunc: que };
+var jue = ye({ opType: Z.ERF });
+var YV = { kernelName: xn, backendName: "webgpu", kernelFunc: jue };
+var Xue = ye({ opType: Z.EXP, cpuKernelImpl: cz, dtype: "float32" });
+var QV = { kernelName: bn, backendName: "webgpu", kernelFunc: Xue };
 function Mx(r) {
   let { inputs: t8, attrs: e, backend: o } = r, { dim: n } = e, { input: s } = t8, a = s.shape.length, i = s.shape.slice(), p = n;
   return n < 0 && (y.assert(-(a + 1) <= n, () => `Axis must be in the interval [${-(a + 1)}, ${a}]`), p = a + n + 1), i.splice(p, 0, 1), pe({ inputs: { x: s }, backend: o, attrs: { shape: i } });
 }
 var ZV = { kernelName: na, backendName: "webgpu", kernelFunc: Mx };
-var Xue = ye({ opType: Z.EXPM1, cpuKernelImpl: lz });
-var JV = { kernelName: Cn, backendName: "webgpu", kernelFunc: Xue };
+var Yue = ye({ opType: Z.EXPM1, cpuKernelImpl: lz });
+var JV = { kernelName: Cn, backendName: "webgpu", kernelFunc: Yue };
 var ym = class {
   constructor(t8, e) {
     this.variableNames = ["real", "imag"], this.outputShape = [], this.uniforms = "exponentMultiplier : f32, denominator: f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.component = t8, this.shaderKey = `fft_${t8}`;
@@ -31395,11 +31397,11 @@ function Lx(r, t8, e) {
   let C = pe({ inputs: { x: b }, backend: e, attrs: { shape: r.shape } });
   return i.forEach((S) => e.disposeData(S.dataId)), C;
 }
-function Yue(r) {
+function Que(r) {
   let { inputs: t8, backend: e } = r, { input: o } = t8;
   return Lx(o, false, e);
 }
-var eW = { kernelName: Wi, backendName: "webgpu", kernelFunc: Yue };
+var eW = { kernelName: Wi, backendName: "webgpu", kernelFunc: Que };
 var Bx = class {
   constructor(t8) {
     this.outputShape = [], this.variableNames = ["x"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "flipLeftRight";
@@ -31421,10 +31423,10 @@ var tW = { kernelName: wn, backendName: "webgpu", kernelFunc: ({ inputs: r, back
   let { image: e } = r, o = t8, n = new Bx(e.shape);
   return o.runWebGPUProgram(n, [e], e.dtype);
 } };
-var Que = ye({ opType: Z.FLOOR, cpuKernelImpl: mz });
-var rW = { kernelName: Sn, backendName: "webgpu", kernelFunc: Que };
-var Zue = et({ opType: fe.FLOOR_DIV, cpuKernelImpl: dz, dtype: "int32" });
-var oW = { kernelName: In, backendName: "webgpu", kernelFunc: Zue };
+var Zue = ye({ opType: Z.FLOOR, cpuKernelImpl: mz });
+var rW = { kernelName: Sn, backendName: "webgpu", kernelFunc: Zue };
+var Jue = et({ opType: fe.FLOOR_DIV, cpuKernelImpl: dz, dtype: "int32" });
+var oW = { kernelName: In, backendName: "webgpu", kernelFunc: Jue };
 var zx = class {
   constructor(t8, e, o = false) {
     this.pixelsOpType = Ii.FROM_PIXELS, this.outputShape = [0], this.variableNames = [], this.workgroupSize = [256, 1, 1], this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize, [e, 1, 1]), this.importVideo = o, this.shaderKey = `fromPixels_${this.importVideo}`;
@@ -31446,10 +31448,10 @@ var zx = class {
   `;
   }
 };
-var nW = { kernelName: Mu, backendName: "webgpu", kernelFunc: Jue };
+var nW = { kernelName: Mu, backendName: "webgpu", kernelFunc: epe };
 var ol;
 var i0 = A().getBool("CANVAS2D_WILL_READ_FREQUENTLY_FOR_GPU");
-function Jue(r) {
+function epe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { pixels: n } = t8, { numChannels: s } = o;
   if (n == null)
     throw new Error("pixels passed to tf.browser.fromPixels() can not be null");
@@ -31513,12 +31515,12 @@ var sW = { kernelName: vn, backendName: "webgpu", kernelFunc: ({ inputs: r, attr
   let d = new Vx(o.shape, a.shape, i.shape, l, m), f = [{ type: "float32", data: [p] }];
   return u.runWebGPUProgram(d, c, o.dtype, f);
 } };
-function epe(r) {
+function tpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, filter: s, bias: a, preluActivationWeights: i } = t8, { strides: p, pad: u, dataFormat: c, dilations: l, dimRoundingMode: m, activation: d, leakyreluAlpha: f } = o, h = w.convertConv2DDataFormat(c), g = w.computeConv2DInfo(n.shape, s.shape, p, l, u, m, false, h);
   return bx({ x: n, filter: s, convInfo: g, backend: e, bias: a, preluActivationWeights: i, leakyreluAlpha: f, activation: d });
 }
-var aW = { kernelName: vo, backendName: "webgpu", kernelFunc: epe };
-function tpe(r) {
+var aW = { kernelName: vo, backendName: "webgpu", kernelFunc: tpe };
+function rpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, filter: s, bias: a, preluActivationWeights: i } = t8, { strides: p, pad: u, dilations: c, dimRoundingMode: l, activation: m, leakyreluAlpha: d } = o, f = c;
   f == null && (f = [1, 1]), y.assert(w.eitherStridesOrDilationsAreOne(p, f), () => `Error in depthwiseConv2d: Either strides or dilations must be 1. Got strides ${p} and dilations '${f}'`);
   let h = w.computeConv2DInfo(n.shape, s.shape, p, f, u, l, true), g = [n, s], x = a != null, b = i != null;
@@ -31526,7 +31528,7 @@ function tpe(r) {
   let C = [{ type: "int32", data: [h.padInfo.top, h.padInfo.left] }, { type: "int32", data: [h.inHeight, h.inWidth] }], S;
   return h.outHeight > 4 && h.outWidth > 4 && h.strideWidth <= 2 && h.inChannels === h.outChannels && h.dilationHeight === 1 && h.dilationWidth === 1 && h.inChannels % 4 === 0 ? (S = new tl(h, x, m, b), C.push({ type: "int32", data: [S.virtualWidth] })) : (S = new rl(h, x, m, b), C.push({ type: "int32", data: [h.filterHeight] }, { type: "int32", data: [h.filterWidth] }, { type: "int32", data: [h.strideHeight, h.strideWidth] }, { type: "int32", data: [h.dilationHeight, h.dilationWidth] })), m === "leakyrelu" && (C.push({ type: "float32", data: [d] }), S.uniforms += " alpha : f32,"), e.runWebGPUProgram(S, g, "float32", C);
 }
-var iW = { kernelName: ko, backendName: "webgpu", kernelFunc: tpe };
+var iW = { kernelName: ko, backendName: "webgpu", kernelFunc: rpe };
 var Wx = class {
   constructor(t8, e) {
     this.variableNames = ["A", "indices"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = `gathernd_${t8}`, this.sliceDim = t8, this.uniforms = `sliceDim : i32, strides : ${ht(t8)},`;
@@ -31550,7 +31552,7 @@ var Wx = class {
       `;
   }
 };
-function rpe(r) {
+function ope(r) {
   let { inputs: t8, backend: e } = r, { params: o, indices: n } = t8, s = n.shape, a = s[s.length - 1], i = y.sizeFromShape(o.shape), [p, u, c, l] = w.prepareAndValidate(o, n), m = pe({ inputs: { x: n }, backend: e, attrs: { shape: [u, a] } }), d = pe({ inputs: { x: o }, backend: e, attrs: { shape: [y.sizeFromShape(o.shape) / c, c] } });
   if (e.shouldExecuteOnCPU([o, n]) || o.dtype === "string") {
     let b = e.readSync(n.dataId), C = e.bufferSync(o), S = fz(b, C, o.dtype, u, a, c, l, o.shape, i);
@@ -31559,13 +31561,13 @@ function rpe(r) {
   let f = new Wx(a, [u, c]), h = [{ type: "int32", data: [a] }, { type: "int32", data: l }], g = e.runWebGPUProgram(f, [d, m], d.dtype, h), x = pe({ inputs: { x: g }, backend: e, attrs: { shape: p } });
   return e.disposeData(m.dataId), e.disposeData(d.dataId), e.disposeData(g.dataId), x;
 }
-var uW = { kernelName: kn, backendName: "webgpu", kernelFunc: rpe };
+var uW = { kernelName: kn, backendName: "webgpu", kernelFunc: ope };
 var Ux = class {
   constructor(t8, e) {
     this.variableNames = ["A", "indices"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8.slice(), this.aShape = t8, this.outputShape = e, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "gather";
   }
   getUserCode() {
-    let t8 = ope(this.aShape);
+    let t8 = npe(this.aShape);
     return `
       ${G("index")} {
         if (index < uniforms.size) {
@@ -31578,7 +31580,7 @@ var Ux = class {
     `;
   }
 };
-function ope(r) {
+function npe(r) {
   let t8 = ["resRC.x", "resRC.y", "resRC.z", "resRC.w"], e = [];
   for (let o = 0; o < r.length; o++)
     o === 2 ? e.push("indexZ") : e.push(`${t8[o]}`);
@@ -31598,30 +31600,30 @@ function u0(r) {
   return l.forEach((b) => e.disposeData(b.dataId)), x;
 }
 var pW = { kernelName: aa, backendName: "webgpu", kernelFunc: u0 };
-var npe = et({ opType: fe.GREATER, cpuKernelImpl: xz, dtype: "bool" });
-var cW = { kernelName: Nn, backendName: "webgpu", kernelFunc: npe };
-var spe = et({ opType: fe.GREATER_EQUAL, dtype: "bool", cpuKernelImpl: gz });
-var lW = { kernelName: Tn, backendName: "webgpu", kernelFunc: spe };
-function ape(r) {
+var spe = et({ opType: fe.GREATER, cpuKernelImpl: xz, dtype: "bool" });
+var cW = { kernelName: Nn, backendName: "webgpu", kernelFunc: spe };
+var ape = et({ opType: fe.GREATER_EQUAL, dtype: "bool", cpuKernelImpl: gz });
+var lW = { kernelName: Tn, backendName: "webgpu", kernelFunc: ape };
+function ipe(r) {
   let { inputs: t8, backend: e } = r, { input: o } = t8;
   return Lx(o, true, e);
 }
-var mW = { kernelName: Ui, backendName: "webgpu", kernelFunc: ape };
-var ipe = ye({ opType: Z.IS_FINITE, dtype: "bool" });
-var dW = { kernelName: _n, backendName: "webgpu", kernelFunc: ipe };
-var upe = ye({ opType: Z.IS_INF, dtype: "bool" });
-var fW = { kernelName: $n, backendName: "webgpu", kernelFunc: upe };
-var ppe = ye({ opType: Z.IS_NAN, dtype: "bool" });
-var hW = { kernelName: En, backendName: "webgpu", kernelFunc: ppe };
-function cpe(r) {
+var mW = { kernelName: Ui, backendName: "webgpu", kernelFunc: ipe };
+var upe = ye({ opType: Z.IS_FINITE, dtype: "bool" });
+var dW = { kernelName: _n, backendName: "webgpu", kernelFunc: upe };
+var ppe = ye({ opType: Z.IS_INF, dtype: "bool" });
+var fW = { kernelName: $n, backendName: "webgpu", kernelFunc: ppe };
+var cpe = ye({ opType: Z.IS_NAN, dtype: "bool" });
+var hW = { kernelName: En, backendName: "webgpu", kernelFunc: cpe };
+function lpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { alpha: s } = o, a = [{ type: "float32", data: [s] }], i = new Jr(n.shape, Z.LEAKYRELU, "alpha : f32,");
   return e.runWebGPUProgram(i, [n], "float32", a);
 }
-var gW = { kernelName: Rn, backendName: "webgpu", kernelFunc: cpe };
-var lpe = et({ opType: fe.LESS, dtype: "bool", cpuKernelImpl: bz });
-var xW = { kernelName: Dn, backendName: "webgpu", kernelFunc: lpe };
-var mpe = et({ opType: fe.LESS_EQUAL, dtype: "bool", cpuKernelImpl: yz });
-var yW = { kernelName: An, backendName: "webgpu", kernelFunc: mpe };
+var gW = { kernelName: Rn, backendName: "webgpu", kernelFunc: lpe };
+var mpe = et({ opType: fe.LESS, dtype: "bool", cpuKernelImpl: bz });
+var xW = { kernelName: Dn, backendName: "webgpu", kernelFunc: mpe };
+var dpe = et({ opType: fe.LESS_EQUAL, dtype: "bool", cpuKernelImpl: yz });
+var yW = { kernelName: An, backendName: "webgpu", kernelFunc: dpe };
 var Gx = class {
   constructor(t8) {
     this.variableNames = [], this.outputShape = [], this.uniforms = "start : f32, step : f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [t8], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "linSpace";
@@ -31636,21 +31638,21 @@ var Gx = class {
     `;
   }
 };
-function dpe(r) {
+function fpe(r) {
   let { backend: t8, attrs: e } = r, { start: o, stop: n, num: s } = e, a = (n - o) / (s - 1), i = new Gx(s), p = [{ type: "float32", data: [o] }, { type: "float32", data: [a] }];
   return t8.runWebGPUProgram(i, [], "float32", p);
 }
-var bW = { kernelName: Fn, backendName: "webgpu", kernelFunc: dpe };
-var fpe = ye({ opType: Z.LOG, cpuKernelImpl: Cz });
-var CW = { kernelName: Pn, backendName: "webgpu", kernelFunc: fpe };
-var hpe = ye({ opType: Z.LOG1P });
-var wW = { kernelName: On, backendName: "webgpu", kernelFunc: hpe };
-var gpe = et({ opType: fe.LOGICAL_AND, dtype: "bool" });
-var SW = { kernelName: Mn, backendName: "webgpu", kernelFunc: gpe };
-var xpe = ye({ opType: Z.LOGICAL_NOT });
-var IW = { kernelName: Ln, backendName: "webgpu", kernelFunc: xpe };
-var ype = et({ opType: fe.LOGICAL_OR });
-var vW = { kernelName: Bn, backendName: "webgpu", kernelFunc: ype };
+var bW = { kernelName: Fn, backendName: "webgpu", kernelFunc: fpe };
+var hpe = ye({ opType: Z.LOG, cpuKernelImpl: Cz });
+var CW = { kernelName: Pn, backendName: "webgpu", kernelFunc: hpe };
+var gpe = ye({ opType: Z.LOG1P });
+var wW = { kernelName: On, backendName: "webgpu", kernelFunc: gpe };
+var xpe = et({ opType: fe.LOGICAL_AND, dtype: "bool" });
+var SW = { kernelName: Mn, backendName: "webgpu", kernelFunc: xpe };
+var ype = ye({ opType: Z.LOGICAL_NOT });
+var IW = { kernelName: Ln, backendName: "webgpu", kernelFunc: ype };
+var bpe = et({ opType: fe.LOGICAL_OR });
+var vW = { kernelName: Bn, backendName: "webgpu", kernelFunc: bpe };
 var kW = `
   var powValue = 0.0;
   let basis = uniforms.bias + uniforms.alpha * sum;
@@ -31733,13 +31735,13 @@ var Kx = class {
     } `;
   }
 };
-function bpe(r) {
+function Cpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { depthRadius: s, bias: a, alpha: i, beta: p } = o, u;
   s > 16 ? u = new Hx(n.shape) : u = new Kx(n.shape, s);
   let c = [{ type: "int32", data: [s] }, { type: "float32", data: [a] }, { type: "float32", data: [i] }, { type: "float32", data: [p] }];
   return e.runWebGPUProgram(u, [n], n.dtype, c);
 }
-var NW = { kernelName: zn, backendName: "webgpu", kernelFunc: bpe };
+var NW = { kernelName: zn, backendName: "webgpu", kernelFunc: Cpe };
 var qx = class {
   constructor(t8) {
     this.outputShape = [], this.variableNames = ["inputImage", "outputImage", "dy"], this.uniforms = "depthRadius : i32, bias : f32, alpha : f32, beta : f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "lrn_grad";
@@ -31798,23 +31800,23 @@ var qx = class {
   `;
   }
 };
-function Cpe(r) {
+function wpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, y: s, dy: a } = t8, { depthRadius: i, bias: p, alpha: u, beta: c } = o, l = new qx(n.shape), m = [{ type: "int32", data: [i] }, { type: "float32", data: [p] }, { type: "float32", data: [u] }, { type: "float32", data: [c] }];
   return e.runWebGPUProgram(l, [n, s, a], n.dtype, m);
 }
-var TW = { kernelName: Qa, backendName: "webgpu", kernelFunc: Cpe };
-var wpe = et({ opType: fe.MAX, cpuKernelImpl: Sz });
-var _W = { kernelName: Wn, backendName: "webgpu", kernelFunc: wpe };
-function Spe(r) {
+var TW = { kernelName: Qa, backendName: "webgpu", kernelFunc: wpe };
+var Spe = et({ opType: fe.MAX, cpuKernelImpl: Sz });
+var _W = { kernelName: Wn, backendName: "webgpu", kernelFunc: Spe };
+function Ipe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { filterSize: s, strides: a, pad: i, dimRoundingMode: p } = o, u = 1, c = w.computePool2DInfo(n.shape, s, a, u, i, p);
   return ax(n, c, "max", e);
 }
-var $W = { kernelName: Un, backendName: "webgpu", kernelFunc: Spe };
-function Ipe(r) {
+var $W = { kernelName: Un, backendName: "webgpu", kernelFunc: Ipe };
+function vpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { filterSize: s, strides: a, pad: i, dataFormat: p, dimRoundingMode: u } = o, c = [1, 1, 1], l = w.computePool3DInfo(n.shape, s, a, c, i, u, p), m = new _u(l, "max"), d = [{ type: "int32", data: [l.strideDepth, l.strideHeight, l.strideWidth] }, { type: "int32", data: [l.padInfo.front, l.padInfo.top, l.padInfo.left] }, { type: "int32", data: [l.inDepth, l.inHeight, l.inWidth] }, { type: "int32", data: [l.effectiveFilterDepth, l.effectiveFilterHeight, l.effectiveFilterWidth] }];
   return e.runWebGPUProgram(m, [n], n.dtype, d);
 }
-var EW = { kernelName: ia, backendName: "webgpu", kernelFunc: Ipe };
+var EW = { kernelName: ia, backendName: "webgpu", kernelFunc: vpe };
 var jx = class {
   constructor(t8) {
     this.variableNames = ["dy", "maxPos"], this.uniforms = `strides : vec2<i32>, pads : vec2<i32>, dilations : vec2<i32>, filterDims : vec2<i32>,
@@ -31934,14 +31936,14 @@ var Xx = class {
     `;
   }
 };
-function vpe(r) {
+function kpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, input: s } = t8, a = s, { filterSize: i, strides: p, pad: u, dimRoundingMode: c } = o, l = [1, 1, 1], m = w.computePool3DInfo(a.shape, i, p, l, u, c), d = new _u(m, "max", true), f = [{ type: "int32", data: [m.strideDepth, m.strideHeight, m.strideWidth] }, { type: "int32", data: [m.padInfo.front, m.padInfo.top, m.padInfo.left] }, { type: "int32", data: [m.inDepth, m.inHeight, m.inWidth] }, { type: "int32", data: [m.effectiveFilterDepth, m.effectiveFilterHeight, m.effectiveFilterWidth] }], h = e.runWebGPUProgram(d, [a], "int32", f), g = new Xx(m);
   f = [{ type: "int32", data: [m.strideDepth, m.strideHeight, m.strideWidth] }, { type: "int32", data: [m.effectiveFilterDepth - 1 - m.padInfo.front, m.effectiveFilterHeight - 1 - m.padInfo.top, m.effectiveFilterWidth - 1 - m.padInfo.left] }, { type: "int32", data: [m.effectiveFilterDepth, m.effectiveFilterHeight, m.effectiveFilterWidth] }, { type: "int32", data: [m.outDepth] }, { type: "int32", data: [m.outHeight] }, { type: "int32", data: [m.outWidth] }];
   let x = e.runWebGPUProgram(g, [n, h], a.dtype, f);
   return e.disposeData(h.dataId), x;
 }
-var RW = { kernelName: Ki, backendName: "webgpu", kernelFunc: vpe };
-function kpe(r) {
+var RW = { kernelName: Ki, backendName: "webgpu", kernelFunc: kpe };
+function Npe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { dy: n, input: s, output: a } = t8, i = s;
   fm([s, a], "maxPoolGrad");
   let { filterSize: p, strides: u, pad: c, dimRoundingMode: l } = o, m = w.computePool2DInfo(i.shape, p, u, 1, c, l), d = new za(m, "max", true), f = [{ type: "int32", data: [m.strideHeight, m.strideWidth] }, { type: "int32", data: [m.padInfo.top, m.padInfo.left] }, { type: "int32", data: [m.dilationHeight, m.dilationWidth] }, { type: "int32", data: [m.inHeight, m.inWidth] }, { type: "int32", data: [m.effectiveFilterHeight, m.effectiveFilterWidth] }], h = e.runWebGPUProgram(d, [i], "int32", f), g = new jx(m);
@@ -31949,8 +31951,8 @@ function kpe(r) {
   let x = e.runWebGPUProgram(g, [n, h], i.dtype, f);
   return e.disposeData(h.dataId), x;
 }
-var DW = { kernelName: Hi, backendName: "webgpu", kernelFunc: kpe };
-function Npe(r) {
+var DW = { kernelName: Hi, backendName: "webgpu", kernelFunc: Npe };
+function Tpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { filterSize: n, strides: s, pad: a, includeBatchInIndex: i } = o, { x: p } = t8;
   y.assert(p.shape.length === 4, () => `Error in maxPool: input must be rank 4 but got rank ${p.shape.length}.`);
   let u = [1, 1];
@@ -31960,14 +31962,14 @@ function Npe(r) {
   let f = e.runWebGPUProgram(m, [p], "int32", l);
   return [d, f];
 }
-var AW = { kernelName: ua, backendName: "webgpu", kernelFunc: Npe };
-function Tpe(r) {
+var AW = { kernelName: ua, backendName: "webgpu", kernelFunc: Tpe };
+function _pe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { axis: s, keepDims: a } = o;
   return eo(n, s, a, "min", e);
 }
-var FW = { kernelName: Hn, backendName: "webgpu", kernelFunc: Tpe };
-var _pe = et({ opType: fe.MIN, cpuKernelImpl: Iz });
-var PW = { kernelName: Kn, backendName: "webgpu", kernelFunc: _pe };
+var FW = { kernelName: Hn, backendName: "webgpu", kernelFunc: _pe };
+var $pe = et({ opType: fe.MIN, cpuKernelImpl: Iz });
+var PW = { kernelName: Kn, backendName: "webgpu", kernelFunc: $pe };
 var Yx = class {
   constructor(t8, e, o) {
     this.uniforms = "", this.variableNames = ["x"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e.map((n, s) => n[0] + t8[s] + n[1]), this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.xShape = t8, e.map((n, s) => {
@@ -32000,8 +32002,8 @@ var OW = { kernelName: qn, backendName: "webgpu", kernelFunc: ({ inputs: r, attr
   let { x: o } = r, { paddings: n, mode: s } = t8, a = e, i = n.map((c) => ({ type: "int32", data: [c[0], c[1]] })), p = new Yx(o.shape, n, s);
   return a.runWebGPUProgram(p, [o], o.dtype, i);
 } };
-var $pe = et({ opType: fe.MOD });
-var MW = { kernelName: jn, backendName: "webgpu", kernelFunc: $pe };
+var Epe = et({ opType: fe.MOD });
+var MW = { kernelName: jn, backendName: "webgpu", kernelFunc: Epe };
 var Qx = class {
   constructor(t8, e) {
     this.variableNames = ["probs"], this.outputShape = [], this.uniforms = "seed : f32, numOutcomes: i32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [t8, e], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "multinomial";
@@ -32115,12 +32117,12 @@ function p0(r) {
   return e.disposeData(a.dataId), e.disposeData(p.dataId), u;
 }
 var LW = { kernelName: vs, backendName: "webgpu", kernelFunc: p0 };
-function Epe(r) {
+function Rpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { logits: n } = t8, { numSamples: s, seed: a, normalized: i } = o, p = i ? n : p0({ inputs: { logits: n }, backend: e, attrs: { dim: n.shape.length - 1 } }), u = p.shape[0], c = p.shape[1], l = new Qx(u, s), m = [{ type: "float32", data: [a] }, { type: "int32", data: [c] }], d = e.runWebGPUProgram(l, [p], "int32", m);
   return i || e.disposeData(p.dataId), d;
 }
-var BW = { kernelName: Xn, backendName: "webgpu", kernelFunc: Epe };
-function Rpe(r) {
+var BW = { kernelName: Xn, backendName: "webgpu", kernelFunc: Rpe };
+function Dpe(r) {
   let { inputs: t8, backend: e } = r, { x: o } = t8;
   if (e.shouldExecuteOnCPU([o])) {
     let s = e.tensorMap.get(o.dataId), [a, i] = kz(s.values, o.shape, o.dtype);
@@ -32129,19 +32131,19 @@ function Rpe(r) {
   let n = new Jr(o.shape, Z.NEG);
   return e.runWebGPUProgram(n, [o], o.dtype);
 }
-var zW = { kernelName: pa, backendName: "webgpu", kernelFunc: Rpe };
-function Dpe(r) {
+var zW = { kernelName: pa, backendName: "webgpu", kernelFunc: Dpe };
+function Ape(r) {
   console.warn("tf.nonMaxSuppression() in webgpu locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: t8, backend: e, attrs: o } = r, { boxes: n, scores: s } = t8, { maxOutputSize: a, iouThreshold: i, scoreThreshold: p } = o, u = e.readSync(n.dataId), c = e.readSync(s.dataId), { selectedIndices: l } = Wt.nonMaxSuppressionV3Impl(u, c, a, i, p);
   return e.makeTensorInfo([l.length], "int32", new Int32Array(l));
 }
-var VW = { kernelName: Zn, backendName: "webgpu", kernelFunc: Dpe };
-function Ape(r) {
+var VW = { kernelName: Zn, backendName: "webgpu", kernelFunc: Ape };
+function Fpe(r) {
   console.warn("tf.nonMaxSuppression() in webgpu locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: t8, backend: e, attrs: o } = r, { boxes: n, scores: s } = t8, { maxOutputSize: a, iouThreshold: i, scoreThreshold: p, softNmsSigma: u } = o, c = e.readSync(n.dataId), l = e.readSync(s.dataId), m = a, d = i, f = p, h = u, { selectedIndices: g, selectedScores: x } = Wt.nonMaxSuppressionV5Impl(c, l, m, d, f, h);
   return [e.makeTensorInfo([g.length], "int32", new Int32Array(g)), e.makeTensorInfo([x.length], "float32", new Float32Array(x))];
 }
-var WW = { kernelName: Jn, backendName: "webgpu", kernelFunc: Ape };
+var WW = { kernelName: Jn, backendName: "webgpu", kernelFunc: Fpe };
 var Jx = class {
   constructor(t8, e) {
     this.variableNames = ["x"], this.uniforms = "onValue : f32, offValue : f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [t8, e], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "onehot";
@@ -32158,13 +32160,13 @@ var Jx = class {
     `;
   }
 };
-function Fpe(r) {
+function Ppe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { indices: n } = t8, { dtype: s, depth: a, onValue: i, offValue: p } = o, u = y.sizeFromShape(n.shape), c = new Jx(u, a), l = pe({ inputs: { x: n }, backend: e, attrs: { shape: [u] } }), m = [{ type: "float32", data: [i] }, { type: "float32", data: [p] }], d = e.runWebGPUProgram(c, [l], s, m);
   e.disposeData(l.dataId);
   let f = [...n.shape, a], h = pe({ inputs: { x: d }, backend: e, attrs: { shape: f } });
   return e.disposeData(d.dataId), h;
 }
-var UW = { kernelName: es, backendName: "webgpu", kernelFunc: Fpe };
+var UW = { kernelName: es, backendName: "webgpu", kernelFunc: Ppe };
 function bm(r) {
   let { inputs: t8, backend: e } = r, { x: o } = t8;
   if (o.dtype === "complex64") {
@@ -32185,7 +32187,7 @@ function HW(r) {
     return kt({ attrs: { shape: o.shape, dtype: o.dtype, value: 1 }, backend: e });
 }
 var KW = { kernelName: ca, backendName: "webgpu", kernelFunc: HW };
-function Ppe(r) {
+function Ope(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { axis: n } = o;
   if (t8.length === 1)
     return Mx({ inputs: { input: t8[0] }, backend: e, attrs: { dim: n } });
@@ -32199,7 +32201,7 @@ function Ppe(r) {
   }), u = n0({ inputs: p, backend: e, attrs: { axis: n } });
   return i.forEach((c) => e.disposeData(c.dataId)), u;
 }
-var qW = { kernelName: la, backendName: "webgpu", kernelFunc: Ppe };
+var qW = { kernelName: la, backendName: "webgpu", kernelFunc: Ope };
 function c0(r, t8 = false) {
   let e = r.length, o = ht(e), n = r.map((l, m) => `uniforms.pad${m}[0]`).join(","), s = r.map((l, m) => `uniforms.pad${m}[0] + uniforms.xShape${e > 1 ? `[${m}]` : ""}`).join(","), a = e > 1 ? `${o}(${n})` : `${n}`, i = e > 1 ? `${o}(${s})` : `${s}`, p = e > 1 ? "any(paddedCoords < start)" : "paddedCoords < start", u = e > 1 ? "any(paddedCoords >= end)" : "paddedCoords >= end", c = e > 1 ? ["coords[0]", "coords[1]", "coords[2]", "coords[3]"].slice(0, e) : "coords";
   return `
@@ -32230,7 +32232,7 @@ var ey = class {
     `;
   }
 };
-var Ope = (r) => {
+var Mpe = (r) => {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { paddings: s, constantValue: a } = o;
   if (s.every((u) => y.arraysEqual(u, [0, 0])))
     return Ft({ inputs: { x: n }, backend: e });
@@ -32243,32 +32245,32 @@ var Ope = (r) => {
   let p = new ey(n.shape, s);
   return e.runWebGPUProgram(p, [n], n.dtype, i);
 };
-var jW = { kernelName: ts, backendName: "webgpu", kernelFunc: Ope };
-var Mpe = et({ opType: fe.POW });
-var XW = { kernelName: rs, backendName: "webgpu", kernelFunc: Mpe };
-function Lpe(r) {
+var jW = { kernelName: ts, backendName: "webgpu", kernelFunc: Mpe };
+var Lpe = et({ opType: fe.POW });
+var XW = { kernelName: rs, backendName: "webgpu", kernelFunc: Lpe };
+function Bpe(r) {
   let { inputs: t8, backend: e } = r, { x: o, alpha: n } = t8, s = new ki(fe.PRELU, o.shape, n.shape);
   return e.runWebGPUProgram(s, [o, n], "float32");
 }
-var YW = { kernelName: os, backendName: "webgpu", kernelFunc: Lpe };
-function Bpe(r) {
+var YW = { kernelName: os, backendName: "webgpu", kernelFunc: Bpe };
+function zpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { axis: s, keepDims: a } = o;
   return eo(n, s, a, "prod", e);
 }
-var QW = { kernelName: ns, backendName: "webgpu", kernelFunc: Bpe };
-var zpe = (r) => {
+var QW = { kernelName: ns, backendName: "webgpu", kernelFunc: zpe };
+var Vpe = (r) => {
   let { backend: t8, attrs: e } = r, { start: o, stop: n, step: s, dtype: a } = e, i = _z(o, n, s, a);
   return t8.makeTensorInfo([i.length], a, i);
 };
-var ZW = { kernelName: ma, backendName: "webgpu", kernelFunc: zpe };
-var Vpe = et({ opType: fe.DIV });
-var JW = { kernelName: hn, backendName: "webgpu", kernelFunc: Vpe };
-var Wpe = ye({ opType: Z.RECIPROCAL });
-var eU = { kernelName: ss, backendName: "webgpu", kernelFunc: Wpe };
-var Upe = ye({ opType: Z.RELU });
-var tU = { kernelName: as, backendName: "webgpu", kernelFunc: Upe };
-var Gpe = ye({ opType: Z.RELU6 });
-var rU = { kernelName: ps, backendName: "webgpu", kernelFunc: Gpe };
+var ZW = { kernelName: ma, backendName: "webgpu", kernelFunc: Vpe };
+var Wpe = et({ opType: fe.DIV });
+var JW = { kernelName: hn, backendName: "webgpu", kernelFunc: Wpe };
+var Upe = ye({ opType: Z.RECIPROCAL });
+var eU = { kernelName: ss, backendName: "webgpu", kernelFunc: Upe };
+var Gpe = ye({ opType: Z.RELU });
+var tU = { kernelName: as, backendName: "webgpu", kernelFunc: Gpe };
+var Hpe = ye({ opType: Z.RELU6 });
+var rU = { kernelName: ps, backendName: "webgpu", kernelFunc: Hpe };
 var ty = class {
   constructor(t8, e, o) {
     this.variableNames = ["x"], this.uniforms = "adjustHeightWidth : vec2<f32>, halfPixelCenters : f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [t8[0], e, o, t8[3]], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "resizeBilinear";
@@ -32320,11 +32322,11 @@ var ty = class {
     `;
   }
 };
-function Hpe(r) {
+function Kpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { images: n } = t8, { alignCorners: s, size: a, halfPixelCenters: i } = o, [p, u] = a, c = s && p > 1 ? 1 : 0, l = s && u > 1 ? 1 : 0, d = [{ type: "float32", data: [c, l] }, { type: "float32", data: [i ? 0.5 : 0] }], f = new ty(n.shape, p, u);
   return e.runWebGPUProgram(f, [n], "float32", d);
 }
-var oU = { kernelName: us, backendName: "webgpu", kernelFunc: Hpe };
+var oU = { kernelName: us, backendName: "webgpu", kernelFunc: Kpe };
 var ry = class {
   constructor(t8, e) {
     this.variableNames = ["dy"], this.uniforms = `effectiveXSize : vec2<i32>, effectiveYSize : vec2<i32>, heightScale : f32, widthScale : f32,
@@ -32408,11 +32410,11 @@ var ry = class {
     `;
   }
 };
-function Kpe(r) {
+function qpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { images: n, dy: s } = t8, { alignCorners: a } = o, [, i, p] = n.shape, [, u, c] = s.shape, l = [a && u > 1 ? i - 1 : i, a && c > 1 ? p - 1 : p], m = [a && u > 1 ? u - 1 : u, a && c > 1 ? c - 1 : c], d = l[0] / m[0], f = l[1] / m[1], h = 1 / d, g = 1 / f, x = Math.ceil(h) * 2 + 2, b = Math.ceil(g) * 2 + 2, C = new ry(n.shape, a), S = [{ type: "int32", data: l }, { type: "int32", data: m }, { type: "float32", data: [d] }, { type: "float32", data: [f] }, { type: "float32", data: [h] }, { type: "float32", data: [g] }, { type: "int32", data: [x] }, { type: "int32", data: [b] }];
   return e.runWebGPUProgram(C, [s], s.dtype, S);
 }
-var nU = { kernelName: ei, backendName: "webgpu", kernelFunc: Kpe };
+var nU = { kernelName: ei, backendName: "webgpu", kernelFunc: qpe };
 var oy = class {
   constructor(t8, e, o, n) {
     this.variableNames = ["x"], this.uniforms = "adjustHeightWidth : vec2<f32>, roundBase : f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [t8[0], e, o, t8[3]], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.halfPixelCenters = n, this.shaderKey = `resizeNearest_${n}`;
@@ -32453,11 +32455,11 @@ var oy = class {
     `;
   }
 };
-function qpe(r) {
+function jpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { images: n } = t8, { alignCorners: s, halfPixelCenters: a, size: i } = o, [p, u] = i, c = s && p > 1 ? 1 : 0, l = s && u > 1 ? 1 : 0, d = [{ type: "float32", data: [c, l] }, { type: "float32", data: [s ? 0.5 : 0] }], f = new oy(n.shape, p, u, a);
   return e.runWebGPUProgram(f, [n], n.dtype, d);
 }
-var sU = { kernelName: is, backendName: "webgpu", kernelFunc: qpe };
+var sU = { kernelName: is, backendName: "webgpu", kernelFunc: jpe };
 var ny = class {
   constructor(t8, e) {
     this.variableNames = ["dy"], this.uniforms = `effectiveXSize : vec2<i32>, effectiveYSize : vec2<i32>, invHeightScale : f32, invWidthScale : f32,
@@ -32526,11 +32528,11 @@ var ny = class {
     `;
   }
 };
-function jpe(r) {
+function Xpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { images: n, dy: s } = t8, { alignCorners: a } = o, [, i, p] = n.shape, [, u, c] = s.shape, l = [a && u > 1 ? i - 1 : i, a && c > 1 ? p - 1 : p], m = [a && u > 1 ? u - 1 : u, a && c > 1 ? c - 1 : c], d = l[0] / m[0], f = l[1] / m[1], h = 1 / d, g = 1 / f, x = Math.ceil(h) * 2 + 2, b = Math.ceil(g) * 2 + 2, C = new ny(n.shape, a), S = [{ type: "int32", data: l }, { type: "int32", data: m }, { type: "float32", data: [h] }, { type: "float32", data: [g] }, { type: "int32", data: [x] }, { type: "int32", data: [b] }];
   return e.runWebGPUProgram(C, [s], s.dtype, S);
 }
-var aU = { kernelName: Ja, backendName: "webgpu", kernelFunc: jpe };
+var aU = { kernelName: Ja, backendName: "webgpu", kernelFunc: Xpe };
 var sy = class {
   constructor(t8) {
     this.variableNames = ["x"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.uniforms = " axis : vec4<i32>,", this.shaderKey = "reverse";
@@ -32569,7 +32571,7 @@ var sy = class {
     `;
   }
 };
-function Xpe(r) {
+function Ype(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { dims: s } = o, a = n.shape.length;
   if (a === 0)
     return Ft({ inputs: { x: n }, backend: e });
@@ -32588,7 +32590,7 @@ function Xpe(r) {
   let h = pe({ inputs: { x: f }, backend: e, attrs: { shape: i } });
   return e.disposeData(f.dataId), h;
 }
-var iU = { kernelName: cs, backendName: "webgpu", kernelFunc: Xpe };
+var iU = { kernelName: cs, backendName: "webgpu", kernelFunc: Ype };
 var ay = class {
   constructor(t8, e) {
     this.outputShape = [], this.variableNames = ["x"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.uniforms = `centerX : f32, centerY : f32, sinRadians : f32,
@@ -32622,10 +32624,10 @@ var uU = { kernelName: As, backendName: "webgpu", kernelFunc: ({ inputs: r, attr
   let { image: o } = r, { radians: n, fillValue: s, center: a } = t8, i = e, p = new ay(o.shape, s), [u, c] = w.getImageCenter(a, o.shape[1], o.shape[2]), l = [{ type: "float32", data: [u] }, { type: "float32", data: [c] }, { type: "float32", data: [Math.sin(n)] }, { type: "float32", data: [Math.cos(n)] }];
   return typeof s == "number" ? l.push({ type: "float32", data: [Number.parseFloat(s.toFixed(2))] }) : l.push({ type: "float32", data: s }), i.runWebGPUProgram(p, [o], o.dtype, l);
 } };
-var Ype = ye({ opType: Z.ROUND });
-var pU = { kernelName: ls, backendName: "webgpu", kernelFunc: Ype };
-var Qpe = ye({ opType: Z.RSQRT, cpuKernelImpl: $z });
-var cU = { kernelName: ms, backendName: "webgpu", kernelFunc: Qpe };
+var Qpe = ye({ opType: Z.ROUND });
+var pU = { kernelName: ls, backendName: "webgpu", kernelFunc: Qpe };
+var Zpe = ye({ opType: Z.RSQRT, cpuKernelImpl: $z });
+var cU = { kernelName: ms, backendName: "webgpu", kernelFunc: Zpe };
 var Va = class {
   constructor(t8, e, o, n, s, a, i, p = true) {
     this.variableNames = ["updates", "indices"], this.workgroupSize = [64, 1, 1], this.atomic = true, this.outputShape = a, this.type = i, this.sumDupeIndices = p, this.dispatchLayout = X(t8), this.dispatch = H(this.dispatchLayout, t8, this.workgroupSize), this.sliceDimGreaterThanOne = e > 1, this.shaderKey = `scatter_${o}_${n}_${this.sliceDimGreaterThanOne}_${i}_${p}`;
@@ -32672,14 +32674,14 @@ var Va = class {
       }`;
   }
 };
-function Zpe(r) {
+function Jpe(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { indices: n, updates: s } = t8, { shape: a } = o, { sliceRank: i, numUpdates: p, sliceSize: u, strides: c, outputSize: l } = w.calculateShapes(s, n, a), m = [l / u, u];
   if (l === 0)
     return e.makeTensorInfo(a, n.dtype);
   let d = pe({ inputs: { x: n }, backend: e, attrs: { shape: [p, i] } }), f = pe({ inputs: { x: s }, backend: e, attrs: { shape: [p, u] } }), h = f.dtype, g = kt({ backend: e, attrs: { shape: m, value: 0, dtype: h } }), x = y.sizeFromShape(f.shape), b = [{ type: "int32", data: [i] }, { type: "int32", data: c }, { type: "int32", data: [x] }], C = new Va(f.shape, i, d.shape.length, f.shape.length, c, m, h), S = e.runWebGPUProgram(C, [f, d], h, b, g), k = pe({ inputs: { x: S }, backend: e, attrs: { shape: a } });
   return e.disposeData(d.dataId), e.disposeData(f.dataId), e.disposeData(S.dataId), k;
 }
-var lU = { kernelName: ds, backendName: "webgpu", kernelFunc: Zpe };
+var lU = { kernelName: ds, backendName: "webgpu", kernelFunc: Jpe };
 var iy = class {
   constructor(t8, e) {
     this.outputShape = [], this.variableNames = ["sortedSequence", "values"], this.uniforms = "numInputs : i32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.side = e, this.shaderKey = `search_sorted_${e}`;
@@ -32710,11 +32712,11 @@ var iy = class {
     `;
   }
 };
-function Jpe(r) {
+function ece(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { sortedSequence: n, values: s } = t8, { side: a } = o, i = new iy([s.shape[0], s.shape[1]], a), p = [{ type: "int32", data: [n.shape[1]] }];
   return e.runWebGPUProgram(i, [n, s], "int32", p);
 }
-var mU = { kernelName: hs, backendName: "webgpu", kernelFunc: Jpe };
+var mU = { kernelName: hs, backendName: "webgpu", kernelFunc: ece };
 var uy = class {
   constructor(t8, e, o) {
     this.variableNames = ["c", "a", "b"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.cRank = t8, this.rank = o, this.shaderKey = "select";
@@ -32746,23 +32748,23 @@ var uy = class {
     `;
   }
 };
-function ece(r) {
+function tce(r) {
   let { inputs: t8, backend: e } = r, { condition: o, t: n, e: s } = t8, a = new uy(o.shape.length, n.shape, n.shape.length);
   return e.runWebGPUProgram(a, [o, n, s], dt(n.dtype, s.dtype));
 }
-var dU = { kernelName: fa, backendName: "webgpu", kernelFunc: ece };
-var tce = ye({ opType: Z.SELU });
-var fU = { kernelName: gs, backendName: "webgpu", kernelFunc: tce };
-var rce = ye({ opType: Z.SIGMOID });
-var hU = { kernelName: Cs, backendName: "webgpu", kernelFunc: rce };
-var oce = ye({ opType: Z.SIGN });
-var gU = { kernelName: bs, backendName: "webgpu", kernelFunc: oce };
-var nce = ye({ opType: Z.SIN });
-var xU = { kernelName: xs, backendName: "webgpu", kernelFunc: nce };
-var sce = ye({ opType: Z.SINH });
-var yU = { kernelName: ys, backendName: "webgpu", kernelFunc: sce };
-var ace = ye({ opType: Z.SOFTPLUS });
-var bU = { kernelName: ws, backendName: "webgpu", kernelFunc: ace };
+var dU = { kernelName: fa, backendName: "webgpu", kernelFunc: tce };
+var rce = ye({ opType: Z.SELU });
+var fU = { kernelName: gs, backendName: "webgpu", kernelFunc: rce };
+var oce = ye({ opType: Z.SIGMOID });
+var hU = { kernelName: Cs, backendName: "webgpu", kernelFunc: oce };
+var nce = ye({ opType: Z.SIGN });
+var gU = { kernelName: bs, backendName: "webgpu", kernelFunc: nce };
+var sce = ye({ opType: Z.SIN });
+var xU = { kernelName: xs, backendName: "webgpu", kernelFunc: sce };
+var ace = ye({ opType: Z.SINH });
+var yU = { kernelName: ys, backendName: "webgpu", kernelFunc: ace };
+var ice = ye({ opType: Z.SOFTPLUS });
+var bU = { kernelName: ws, backendName: "webgpu", kernelFunc: ice };
 var py = class {
   constructor(t8, e, o, n, s, a) {
     this.variableNames = ["x"], this.outputShape = [], this.uniforms = "", this.workgroupSize = [64, 1, 1], this.size = true;
@@ -32788,7 +32790,7 @@ var py = class {
     `;
   }
 };
-var ice = (r) => {
+var uce = (r) => {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { blockShape: s, paddings: a } = o;
   y.assert(n.shape.length <= 4, () => "spaceToBatchND for rank > 4 with a WebGPU backend not implemented yet");
   let i = s.reduce((b, C) => b * C), p = [[0, 0]];
@@ -32800,7 +32802,7 @@ var ice = (r) => {
   let g = e.runWebGPUProgram(f, [n], n.dtype, h), x = pe({ inputs: { x: g }, backend: e, attrs: { shape: m } });
   return e.disposeData(g.dataId), x;
 };
-var CU = { kernelName: ga, backendName: "webgpu", kernelFunc: ice };
+var CU = { kernelName: ga, backendName: "webgpu", kernelFunc: uce };
 var cy = class {
   constructor(t8, e, o) {
     this.variableNames = ["input", "indices", "segmentIds"], this.outputShape = [], this.uniforms = "segmentSize : i32, sparseSize : i32,", this.workgroupSize = [64, 1, 1], this.atomic = true, this.outputShape = t8, this.type = o, this.dispatchLayout = X([e]), this.dispatch = H(this.dispatchLayout, [e], this.workgroupSize), this.shaderKey = "sparseSegmentSum";
@@ -32870,16 +32872,16 @@ function dy(r, t8, e, o = false, n) {
   let k = n.runWebGPUProgram(m, [x, C], i, g, S);
   return n.disposeData(x.dataId), n.disposeData(C.dataId), k;
 }
-function uce(r) {
+function pce(r) {
   let { inputs: t8, backend: e } = r, { data: o, indices: n, segmentIds: s } = t8;
   return dy(o, n, s, false, e);
 }
-var wU = { kernelName: ya, backendName: "webgpu", kernelFunc: uce };
-function pce(r) {
+var wU = { kernelName: ya, backendName: "webgpu", kernelFunc: pce };
+function cce(r) {
   let { inputs: t8, backend: e } = r, { data: o, indices: n, segmentIds: s } = t8;
   return dy(o, n, s, true, e);
 }
-var SU = { kernelName: ba, backendName: "webgpu", kernelFunc: pce };
+var SU = { kernelName: ba, backendName: "webgpu", kernelFunc: cce };
 var fy = class {
   constructor(t8, e) {
     this.variableNames = ["A"], this.workgroupSize = [64, 1, 1], this.size = true;
@@ -32889,7 +32891,7 @@ var fy = class {
     this.outputShape = o, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.rank = this.outputShape.length, this.shaderKey = "tile";
   }
   getUserCode() {
-    let t8 = cce(this.rank, "uniforms.");
+    let t8 = lce(this.rank, "uniforms.");
     return `
       ${G("index")} {
         if (index < uniforms.size) {
@@ -32900,7 +32902,7 @@ var fy = class {
     `;
   }
 };
-function cce(r, t8 = "") {
+function lce(r, t8 = "") {
   if (r >= 5)
     throw Error(`Tile for rank ${r} is not yet supported`);
   if (r === 1)
@@ -32920,7 +32922,7 @@ function Cm(r) {
   return e.runWebGPUProgram(a, [n], n.dtype);
 }
 var IU = { kernelName: po, backendName: "webgpu", kernelFunc: Cm };
-function lce(r) {
+function mce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { sparseIndices: n, sparseValues: s, defaultValue: a } = t8, { outputShape: i } = o, { sliceRank: p, numUpdates: u, sliceSize: c, strides: l, outputSize: m } = w.calculateShapes(s, n, i), d = false;
   if (s.dtype === "string") {
     let R = e.bufferSync(n), D = e.bufferSync(s), P = y.decodeString(e.readSync(a.dataId)[0]), O = Ez(R, D, i, m, c, u, p, l, P, d);
@@ -32949,8 +32951,8 @@ function lce(r) {
   let E = pe({ inputs: { x: S }, backend: e, attrs: { shape: i } });
   return e.disposeData(h.dataId), e.disposeData(g.dataId), e.disposeData(C.dataId), e.disposeData(b.dataId), e.disposeData(S.dataId), E;
 }
-var vU = { kernelName: ks, backendName: "webgpu", kernelFunc: lce };
-function mce(r) {
+var vU = { kernelName: ks, backendName: "webgpu", kernelFunc: mce };
+function dce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { numOrSizeSplits: s, axis: a } = o, i = y.parseAxisParam(a, n.shape)[0], p = w.prepareSplitSize(n, s, i), u = n.shape.length, c = new Array(u).fill(0), l = n.shape.slice();
   return p.map((m) => {
     let d = [...l];
@@ -32959,20 +32961,20 @@ function mce(r) {
     return c[i] += m, f;
   });
 }
-var kU = { kernelName: xa, backendName: "webgpu", kernelFunc: mce };
-var dce = ye({ opType: Z.SQRT });
-var NU = { kernelName: Ss, backendName: "webgpu", kernelFunc: dce };
+var kU = { kernelName: xa, backendName: "webgpu", kernelFunc: dce };
+var fce = ye({ opType: Z.SQRT });
+var NU = { kernelName: Ss, backendName: "webgpu", kernelFunc: fce };
 var TU = { kernelName: Xi, backendName: "webgpu", kernelFunc: ({ inputs: r, backend: t8 }) => {
   let { x: e } = r, o = t8, n = new Jr(e.shape, Z.SQUARE);
   return o.runWebGPUProgram(n, [e], e.dtype);
 } };
-var fce = et({ opType: fe.SQUARED_DIFFERENCE });
-var _U = { kernelName: Ns, backendName: "webgpu", kernelFunc: fce };
-function hce({ inputs: r, attrs: t8, backend: e }) {
+var hce = et({ opType: fe.SQUARED_DIFFERENCE });
+var _U = { kernelName: Ns, backendName: "webgpu", kernelFunc: hce };
+function gce({ inputs: r, attrs: t8, backend: e }) {
   let { x: o } = r, n = new Jr(o.shape, Z.STEP, "stepAlpha : f32,"), s = [{ type: "float32", data: [t8.alpha] }];
   return e.runWebGPUProgram(n, [o], o.dtype, s);
 }
-var $U = { kernelName: So, backendName: "webgpu", kernelFunc: hce };
+var $U = { kernelName: So, backendName: "webgpu", kernelFunc: gce };
 var hy = class {
   constructor(t8) {
     this.variableNames = ["x"], this.workPerThread = 1, this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize, [this.workPerThread, 1, 1]);
@@ -32997,7 +32999,7 @@ var hy = class {
      `;
   }
 };
-function gce(r) {
+function xce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { begin: s, end: a, strides: i, beginMask: p, endMask: u, ellipsisMask: c, newAxisMask: l, shrinkAxisMask: m } = o, { finalShapeSparse: d, finalShape: f, isIdentity: h, sliceDim0: g, isSimpleSlice: x, begin: b, end: C, strides: S } = ct.sliceInfo(n.shape, s, a, i, p, u, c, l, m), k;
   if (h)
     k = pe({ inputs: { x: n }, backend: e, attrs: { shape: f } });
@@ -33014,19 +33016,19 @@ function gce(r) {
   }
   return k;
 }
-var EU = { kernelName: Ts, backendName: "webgpu", kernelFunc: gce };
-function xce(r) {
+var EU = { kernelName: Ts, backendName: "webgpu", kernelFunc: xce };
+function yce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { separator: n, nGramWidths: s, leftPad: a, rightPad: i, padWidth: p, preserveShortSequences: u } = o, { data: c, dataSplits: l } = t8, m = e.readSync(c.dataId), d = e.readSync(l.dataId), [f, h] = Fz(m, d, n, s, a, i, p, u);
   return [e.makeTensorInfo([f.length], "string", f), e.makeTensorInfo(l.shape, "int32", h)];
 }
-var RU = { kernelName: Ca, backendName: "webgpu", kernelFunc: xce };
-var yce = et({ opType: fe.SUB, cpuKernelImpl: Pz, supportsComplex: true });
-var DU = { kernelName: _s, backendName: "webgpu", kernelFunc: yce };
-var bce = ye({ opType: Z.TAN });
-var AU = { kernelName: $s, backendName: "webgpu", kernelFunc: bce };
-var Cce = ye({ opType: Z.TANH });
-var FU = { kernelName: Es, backendName: "webgpu", kernelFunc: Cce };
-function wce(r) {
+var RU = { kernelName: Ca, backendName: "webgpu", kernelFunc: yce };
+var bce = et({ opType: fe.SUB, cpuKernelImpl: Pz, supportsComplex: true });
+var DU = { kernelName: _s, backendName: "webgpu", kernelFunc: bce };
+var Cce = ye({ opType: Z.TAN });
+var AU = { kernelName: $s, backendName: "webgpu", kernelFunc: Cce };
+var wce = ye({ opType: Z.TANH });
+var FU = { kernelName: Es, backendName: "webgpu", kernelFunc: wce };
+function Sce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { tensor: n, indices: s, updates: a } = t8, {} = o, { sliceRank: i, numUpdates: p, sliceSize: u, strides: c, outputSize: l } = w.calculateShapes(a, s, n.shape), m = [l / u, u];
   if (l === 0)
     return e.makeTensorInfo(n.shape, s.dtype);
@@ -33041,7 +33043,7 @@ function wce(r) {
   let _ = pe({ inputs: { x: k }, backend: e, attrs: { shape: n.shape } });
   return d.forEach((E) => e.disposeData(E.dataId)), _;
 }
-var PU = { kernelName: fs, backendName: "webgpu", kernelFunc: wce };
+var PU = { kernelName: fs, backendName: "webgpu", kernelFunc: Sce };
 var gy = class {
   constructor(t8) {
     this.variableNames = ["x", "indices"], this.workgroupSize = [256, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.uniforms = `inputSize : i32, firstPass : i32, negativeInf : f32,
@@ -33194,7 +33196,7 @@ function OU(r) {
     t8 *= 2;
   return t8;
 }
-function Sce(r) {
+function Ice(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n } = t8, { k: s, sorted: a } = o, i = n.shape, p = i[i.length - 1];
   if (e.shouldExecuteOnCPU([n])) {
     let k = e.readSync(n.dataId), [_, E] = Mz(k, i, n.dtype, s, a);
@@ -33229,7 +33231,7 @@ function Sce(r) {
   let S = b;
   return b = pe({ inputs: { x: b }, attrs: { shape: C }, backend: e }), nl(e, S), [b, f];
 }
-var MU = { kernelName: Rs, backendName: "webgpu", kernelFunc: Sce };
+var MU = { kernelName: Rs, backendName: "webgpu", kernelFunc: Ice };
 var yy = class {
   constructor(t8) {
     this.variableNames = ["Image", "Transforms"], this.uniforms = "interpolationModeId : i32, fillModeId : i32, fillValue : f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = t8, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "transform";
@@ -33354,7 +33356,7 @@ var yy = class {
         `;
   }
 };
-function Ice(r) {
+function vce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { image: n, transforms: s } = t8, { interpolation: a, fillMode: i, fillValue: p, outputShape: u } = o, [c, l, m, d] = n.shape, [f, h] = u != null ? u : [l, m], g = [c, f, h, d], x = new yy(g), b = a === "nearest" ? 1 : 2, C;
   switch (i) {
     case "constant":
@@ -33376,8 +33378,8 @@ function Ice(r) {
   let S = [{ type: "int32", data: [b] }, { type: "int32", data: [C] }, { type: "float32", data: [p] }];
   return e.runWebGPUProgram(x, [n, s], "float32", S);
 }
-var LU = { kernelName: Ds, backendName: "webgpu", kernelFunc: Ice };
-function vce(r) {
+var LU = { kernelName: Ds, backendName: "webgpu", kernelFunc: vce };
+function kce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { value: n } = t8, { axis: s } = o;
   s < 0 && (s += n.shape.length);
   let a = n, i = a.shape.length, p = n.shape[s], u = new Array(i - 1), c = 0;
@@ -33393,7 +33395,7 @@ function vce(r) {
   }
   return l.forEach((h) => e.disposeData(h.dataId)), f;
 }
-var BU = { kernelName: wa, backendName: "webgpu", kernelFunc: vce };
+var BU = { kernelName: wa, backendName: "webgpu", kernelFunc: kce };
 var by = class {
   constructor(t8, e, o) {
     if (this.outputShape = [], this.variableNames = ["x", "segmentIds"], this.uniforms = "numSegments : i32, xSize: i32,", this.workgroupSize = [64, 1, 1], this.atomic = true, this.outputShape = e, this.dispatchLayout = X(t8), this.dispatch = H(this.dispatchLayout, t8, this.workgroupSize), o !== "float32" && o !== "int32")
@@ -33421,7 +33423,7 @@ var by = class {
   `;
   }
 };
-function kce(r) {
+function Nce(r) {
   let { inputs: t8, backend: e, attrs: o } = r, { x: n, segmentIds: s } = t8, { numSegments: a } = o, i = n.shape.length, p = [], u = 0, c = w.getAxesPermutation([u], i), l = n;
   c != null && (l = yr({ inputs: { x: n }, backend: e, attrs: { perm: c } }), p.push(l), u = w.getInnerMostAxes(1, i)[0]);
   let m = w.segment_util.computeOutShape(l.shape, u, a), d = y.sizeFromShape([l.shape[u]]), f = pe({ inputs: { x: l }, backend: e, attrs: { shape: [-1, d] } });
@@ -33436,17 +33438,17 @@ function kce(r) {
   }
   return p.forEach((E) => e.disposeData(E.dataId)), _;
 }
-var zU = { kernelName: Ji, backendName: "webgpu", kernelFunc: kce };
-var Nce = [rz, Bz, zz, Vz, Wz, Uz, Hz, Kz, qz, jz, Xz, Yz, Qz, Zz, Jz, rV, oV, nV, sV, aV, uV, pV, cV, fV, hV, gV, nz, yV, CV, wV, SV, IV, vV, kV, NV, TV, _V, $V, DV, AV, FV, PV, MV, LV, OV, BV, zV, VV, WV, UV, KV, qV, jV, XV, YV, QV, ZV, JV, eW, ez, tW, nW, rW, oW, sW, aW, iW, uW, pW, cW, lW, oz, mW, bV, dW, fW, hW, gW, xW, yW, bW, wW, CW, SW, IW, vW, NW, TW, eV, _W, $W, DW, EW, RW, AW, tV, FW, PW, OW, MW, BW, GV, zW, VW, WW, lV, UW, KW, qW, jW, XW, YW, QW, ZW, mV, JW, eU, tU, rU, tz, oU, nU, sU, aU, iU, uU, pU, cU, lU, mU, dU, fU, hU, gU, xU, yU, iV, $U, EU, RU, LW, bU, CU, wU, SU, vU, kU, NU, TU, _U, DU, HV, AU, FU, PU, IU, MU, LU, Gz, BU, zU, GW];
-for (let r of Nce)
+var zU = { kernelName: Ji, backendName: "webgpu", kernelFunc: Nce };
+var Tce = [rz, Bz, zz, Vz, Wz, Uz, Hz, Kz, qz, jz, Xz, Yz, Qz, Zz, Jz, rV, oV, nV, sV, aV, uV, pV, cV, fV, hV, gV, nz, yV, CV, wV, SV, IV, vV, kV, NV, TV, _V, $V, DV, AV, FV, PV, MV, LV, OV, BV, zV, VV, WV, UV, KV, qV, jV, XV, YV, QV, ZV, JV, eW, ez, tW, nW, rW, oW, sW, aW, iW, uW, pW, cW, lW, oz, mW, bV, dW, fW, hW, gW, xW, yW, bW, wW, CW, SW, IW, vW, NW, TW, eV, _W, $W, DW, EW, RW, AW, tV, FW, PW, OW, MW, BW, GV, zW, VW, WW, lV, UW, KW, qW, jW, XW, YW, QW, ZW, mV, JW, eU, tU, rU, tz, oU, nU, sU, aU, iU, uU, pU, cU, lU, mU, dU, fU, hU, gU, xU, yU, iV, $U, EU, RU, LW, bU, CU, wU, SU, vU, kU, NU, TU, _U, DU, HV, AU, FU, PU, IU, MU, LU, Gz, BU, zU, GW];
+for (let r of Tce)
   ri(r);
-var VU = "4.10.0";
-var Tce = "4.10.0";
-var _ce = "4.10.0";
-var $ce = "4.10.0";
-var Ece = "4.10.0";
-var Rce = "4.10.0";
-var Dce = { tfjs: VU, "tfjs-core": VU, "tfjs-converter": Tce, "tfjs-backend-cpu": _ce, "tfjs-backend-webgl": $ce, "tfjs-backend-wasm": Ece, "tfjs-backend-webgpu": Rce };
+var VU = "4.11.0";
+var _ce = "4.11.0";
+var $ce = "4.11.0";
+var Ece = "4.11.0";
+var Rce = "4.11.0";
+var Dce = "4.11.0";
+var Ace = { tfjs: VU, "tfjs-core": VU, "tfjs-converter": _ce, "tfjs-backend-cpu": $ce, "tfjs-backend-webgl": Ece, "tfjs-backend-wasm": Rce, "tfjs-backend-webgpu": Dce };
 
 // src/util/util.ts
 function log(...msg) {
@@ -34725,7 +34727,7 @@ var Env = class {
     __privateAdd(this, _imageData, void 0);
     this.browser = typeof navigator !== "undefined";
     this.node = typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined";
-    this.tfjs = { version: Dce["tfjs-core"] };
+    this.tfjs = { version: Ace["tfjs-core"] };
     this.offscreen = typeof OffscreenCanvas !== "undefined";
     this.initial = true;
     this.worker = this.browser && this.offscreen ? typeof WorkerGlobalScope !== "undefined" : void 0;
@@ -34773,8 +34775,8 @@ var Env = class {
     this.backends = Object.keys(pr().registryFactory);
     try {
       this.tensorflow = {
-        version: Ide()["binding"] ? Ide()["binding"].TF_Version : void 0,
-        gpu: Ide()["binding"] ? Ide()["binding"].isUsingGpuDevice() : void 0
+        version: vde()["binding"] ? vde()["binding"].TF_Version : void 0,
+        gpu: vde()["binding"] ? vde()["binding"].isUsingGpuDevice() : void 0
       };
     } catch (e) {
     }
@@ -34805,7 +34807,7 @@ var Env = class {
       this.webgpu.supported = false;
     }
     try {
-      this.kernels = Ym(bde()).map((kernel) => kernel.kernelName.toLowerCase());
+      this.kernels = Ym(Cde()).map((kernel) => kernel.kernelName.toLowerCase());
     } catch (e) {
     }
   }
@@ -35064,6 +35066,11 @@ __export(models_exports, {
   "handlandmark-sparse": () => handlandmark_sparse,
   handskeleton: () => handskeleton,
   handtrack: () => handtrack,
+  "insightface-efficientnet-b0": () => insightface_efficientnet_b0,
+  "insightface-ghostnet-strides1": () => insightface_ghostnet_strides1,
+  "insightface-ghostnet-strides2": () => insightface_ghostnet_strides2,
+  "insightface-mobilenet-emore": () => insightface_mobilenet_emore,
+  "insightface-mobilenet-swish": () => insightface_mobilenet_swish,
   iris: () => iris,
   liveness: () => liveness,
   meet: () => meet,
@@ -35131,6 +35138,11 @@ var anti_spoofing = 853098;
 var efficientpose_i_lite = 2269064;
 var efficientpose_ii_lite = 5651240;
 var efficientpose_iv = 25643252;
+var insightface_efficientnet_b0 = 13013224;
+var insightface_ghostnet_strides1 = 8093408;
+var insightface_ghostnet_strides2 = 8049584;
+var insightface_mobilenet_emore = 6938536;
+var insightface_mobilenet_swish = 12168584;
 var nanodet_e = 12319156;
 var nanodet_g = 7574558;
 var nanodet_m = 1887474;
@@ -35185,6 +35197,11 @@ var models_default = {
   "efficientpose-i-lite": efficientpose_i_lite,
   "efficientpose-ii-lite": efficientpose_ii_lite,
   "efficientpose-iv": efficientpose_iv,
+  "insightface-efficientnet-b0": insightface_efficientnet_b0,
+  "insightface-ghostnet-strides1": insightface_ghostnet_strides1,
+  "insightface-ghostnet-strides2": insightface_ghostnet_strides2,
+  "insightface-mobilenet-emore": insightface_mobilenet_emore,
+  "insightface-mobilenet-swish": insightface_mobilenet_swish,
   "nanodet-e": nanodet_e,
   "nanodet-g": nanodet_g,
   "nanodet-m": nanodet_m,
@@ -35309,7 +35326,7 @@ function register(instance) {
     log("humangl error: backend invalid context");
     instance.models.reset();
   }
-  if (!wde(config2.name)) {
+  if (!Sde(config2.name)) {
     try {
       config2.canvas = canvas(100, 100);
     } catch (err) {
@@ -35377,7 +35394,7 @@ function register(instance) {
       return;
     }
     extensions();
-    const backend = Ide();
+    const backend = vde();
     const current = typeof backend["gpgpu"] !== "undefined" ? backend["getGPGPUContext"]().gl : null;
     if (current) {
       if (instance.config.debug)
@@ -35425,7 +35442,7 @@ function registerCustomOps(config3) {
   if (!env.kernels.includes("mod")) {
     const kernelMod = {
       kernelName: "Mod",
-      backendName: bde(),
+      backendName: Cde(),
       kernelFunc: (op2) => De(() => Te(op2.inputs.a, se(je(op2.inputs.a, op2.inputs.b), op2.inputs.b)))
     };
     ri(kernelMod);
@@ -35435,7 +35452,7 @@ function registerCustomOps(config3) {
   if (!env.kernels.includes("floormod")) {
     const kernelFloorMod = {
       kernelName: "FloorMod",
-      backendName: bde(),
+      backendName: Cde(),
       kernelFunc: (op2) => De(() => Ce(se(dd(op2.inputs.a, op2.inputs.b), op2.inputs.b), F2(op2.inputs.a, op2.inputs.b)))
     };
     ri(kernelFloorMod);
@@ -35445,12 +35462,12 @@ function registerCustomOps(config3) {
   if (!env.kernels.includes("rotatewithoffset") && config3.softwareKernels) {
     const kernelRotateWithOffset = {
       kernelName: "RotateWithOffset",
-      backendName: bde(),
+      backendName: Cde(),
       kernelFunc: (op2) => De(() => {
-        const backend = bde();
-        xde("cpu");
+        const backend = Cde();
+        yde("cpu");
         const t8 = Kj.rotateWithOffset(op2.inputs.image, op2.attrs.radians, op2.attrs.fillValue, op2.attrs.center);
-        xde(backend);
+        yde(backend);
         return t8;
       })
     };
@@ -35467,7 +35484,7 @@ async function check(instance, force = false) {
   instance.state = "backend";
   if (((_a = instance.config.backend) == null ? void 0 : _a.length) === 0)
     instance.config.backend = await getBestBackend();
-  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && bde() !== instance.config.backend) {
+  if (force || env.initial || instance.config.backend && instance.config.backend.length > 0 && Cde() !== instance.config.backend) {
     const timeStamp = now();
     if (instance.config.backend && instance.config.backend.length > 0) {
       if (typeof window === "undefined" && typeof WorkerGlobalScope !== "undefined" && instance.config.debug) {
@@ -35543,8 +35560,8 @@ async function check(instance, force = false) {
         }
       }
       try {
-        await xde(instance.config.backend);
-        await yde();
+        await yde(instance.config.backend);
+        await bde();
       } catch (err) {
         log("error: cannot set backend:", instance.config.backend, err);
         return false;
@@ -35552,7 +35569,7 @@ async function check(instance, force = false) {
       if (instance.config.debug)
         defaultFlags = JSON.parse(JSON.stringify(A().flags));
     }
-    if (bde() === "humangl" || bde() === "webgl") {
+    if (Cde() === "humangl" || Cde() === "webgl") {
       if (A().flagRegistry.WEBGL_USE_SHAPES_UNIFORMS)
         A().set("WEBGL_USE_SHAPES_UNIFORMS", true);
       if (A().flagRegistry.WEBGL_EXP_CONV)
@@ -35562,7 +35579,7 @@ async function check(instance, force = false) {
         A().set("WEBGL_DELETE_TEXTURE_THRESHOLD", 0);
       }
     }
-    if (bde() === "webgpu") {
+    if (Cde() === "webgpu") {
     }
     if (instance.config.debug) {
       const newFlags = A().flags;
@@ -35573,7 +35590,7 @@ async function check(instance, force = false) {
         updatedFlags[key] = newFlags[key];
       }
       if (instance.config.debug && Object.keys(updatedFlags).length > 0)
-        log("backend:", bde(), "flags:", updatedFlags);
+        log("backend:", Cde(), "flags:", updatedFlags);
     }
     if (instance.config.flags && Object.keys(instance.config.flags).length > 0) {
       if (instance.config.debug)
@@ -35582,10 +35599,10 @@ async function check(instance, force = false) {
         A().set(key, val);
       }
     }
-    cde();
+    lde();
     init();
     instance.performance.initBackend = Math.trunc(now() - timeStamp);
-    instance.config.backend = bde();
+    instance.config.backend = Cde();
     await env.updateBackend();
     registerCustomOps(instance.config);
   }
@@ -35607,7 +35624,7 @@ function fakeOps(kernelNames, config3) {
     };
     ri(kernelConfig);
   }
-  env.kernels = Ym(bde()).map((kernel) => kernel.kernelName.toLowerCase());
+  env.kernels = Ym(Cde()).map((kernel) => kernel.kernelName.toLowerCase());
 }
 
 // src/draw/draw.ts
@@ -48373,7 +48390,7 @@ async function warmupNode(instance) {
   else
     img = atob2(body3);
   let res;
-  if ("node" in tfjs_esm_exports && bde() === "tensorflow") {
+  if ("node" in tfjs_esm_exports && Cde() === "tensorflow") {
     const data = (void 0).decodeJpeg(img);
     const expanded = Ms(data, 0);
     instance.tf.dispose(data);
@@ -48399,8 +48416,8 @@ async function runCompile(instance) {
   var _a, _b, _c2, _d2;
   if (!A().flagRegistry.ENGINE_COMPILE_ONLY)
     return;
-  const backendType = bde();
-  const webGLBackend = Ide();
+  const backendType = Cde();
+  const webGLBackend = vde();
   if (backendType !== "webgl" && backendType !== "humangl" || !(webGLBackend == null ? void 0 : webGLBackend["checkCompileCompletion"])) {
     return;
   }
@@ -48568,7 +48585,7 @@ var Human = class {
     });
     /** internal structure that keeps track of processed videos @hidden */
     __privateAdd(this, _loops, {});
-    const tfVersion = (Dce.tfjs || _X).replace(/-(.*)/, "");
+    const tfVersion = (Ace.tfjs || _X).replace(/-(.*)/, "");
     config.wasmPath = `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${tfVersion}/dist/`;
     config.modelBasePath = env.browser ? "../models/" : "file://models/";
     this.version = version;
@@ -48692,7 +48709,7 @@ var Human = class {
     if (this.env.initial) {
       if (!await check(this, false))
         log("error: backend check failed");
-      await yde();
+      await bde();
       if (this.env.browser) {
         if (this.config.debug)
           log("configuration:", this.config);

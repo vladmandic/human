@@ -4864,6 +4864,7 @@ export declare const image: {
     grayscaleToRGB: <T extends Tensor2D | Tensor3D | Tensor4D | Tensor5D | Tensor6D>(image: TensorLike | T) => T;
     resizeNearestNeighbor: <T_1 extends Tensor3D | Tensor4D>(images: TensorLike | T_1, size: [number, number], alignCorners?: boolean, halfPixelCenters?: boolean) => T_1;
     resizeBilinear: <T_2 extends Tensor3D | Tensor4D>(images: TensorLike | T_2, size: [number, number], alignCorners?: boolean, halfPixelCenters?: boolean) => T_2;
+    rgbToGrayscale: <T_3 extends Tensor2D | Tensor3D | Tensor4D | Tensor5D | Tensor6D>(image: TensorLike | T_3) => T_3;
     rotateWithOffset: (image: TensorLike | Tensor4D, radians: number, fillValue?: number | [number, number, number], center?: number | [number, number]) => Tensor4D;
     cropAndResize: (image: TensorLike | Tensor4D, boxes: TensorLike | Tensor2D, boxInd: TensorLike | Tensor1D, cropSize: [number, number], method?: "nearest" | "bilinear", extrapolationValue?: number) => Tensor4D;
     nonMaxSuppression: (boxes: TensorLike | Tensor2D, scores: TensorLike | Tensor1D, maxOutputSize: number, iouThreshold?: number, scoreThreshold?: number) => Tensor1D;
@@ -10191,6 +10192,8 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
     kept: boolean;
     /** The id of the scope this tensor is being tracked in. */
     scopeId: number;
+    /** The keras mask that some keras layers attach to the tensor */
+    kerasMask?: Tensor;
     /**
      * Number of elements to skip in each dimension when indexing. See
      * https://docs.scipy.org/doc/numpy/reference/generated/\

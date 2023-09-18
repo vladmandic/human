@@ -2461,6 +2461,8 @@ export declare class Tensor<R extends Rank = Rank> implements TensorInfo {
     kept: boolean;
     /** The id of the scope this tensor is being tracked in. */
     scopeId: number;
+    /** The keras mask that some keras layers attach to the tensor */
+    kerasMask?: Tensor;
     /**
      * Number of elements to skip in each dimension when indexing. See
      * https://docs.scipy.org/doc/numpy/reference/generated/\

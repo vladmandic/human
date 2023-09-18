@@ -1,6 +1,7 @@
 node_modules/
 types/lib
 pnpm-lock.yaml
+package-lock.json
 *.swp
 samples/**/*.mp4
 samples/**/*.webm

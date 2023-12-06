@@ -8,6 +8,7 @@ For details on other demos see Wiki: [**Demos**](https://github.com/vladmandic/h
 `index.html`: Full demo using `Human` ESM module running in Browsers,  
 
 Includes:
+
 - Selectable inputs:
   - Sample images
   - Image via drag & drop

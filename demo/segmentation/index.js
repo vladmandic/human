@@ -85,7 +85,7 @@ async function main() {
       return;
     }
     dom.fps.innerText = `fps: ${Math.round(10000 / (t1 - t0)) / 10}`; // mark performance
-    human.tf.browser.toPixels(rgba, dom.output); // draw raw output
+    human.tf.browser.draw(rgba, dom.output); // draw raw output
     human.tf.dispose(rgba); // dispose tensors
     ctxMerge.globalCompositeOperation = 'source-over';
     ctxMerge.drawImage(dom.background, 0, 0); // draw original video to first stacked canvas

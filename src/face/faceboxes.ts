@@ -9,13 +9,11 @@ import type { Config } from '../config';
 type Box = [number, number, number, number];
 
 export class FaceBoxes {
-  enlarge: number;
   model: GraphModel;
   config: Config;
   inputSize: 0;
 
   constructor(model, config: Config) {
-    this.enlarge = 1.1;
     this.model = model;
     this.config = config;
     this.inputSize = model.inputs[0].shape ? model.inputs[0].shape[2] : 0;
@@ -23,6 +21,7 @@ export class FaceBoxes {
 
   async estimateFaces(input, config) {
     if (config) this.config = config;
+    const enlarge = this.config.face.detector?.minConfidence || 0.1;
     const results: { confidence: number, box: Box, boxRaw: Box, image: Tensor }[] = [];
     const resizeT = tf.image.resizeBilinear(input, [this.inputSize, this.inputSize]);
     const castT = resizeT.toInt();
@@ -38,7 +37,7 @@ export class FaceBoxes {
     resizeT.dispose();
     for (let i = 0; i < boxes.length; i++) {
       if (scores[i] && scores[i] > (this.config.face.detector?.minConfidence || 0.1)) {
-        const crop = [boxes[i][0] / this.enlarge, boxes[i][1] / this.enlarge, boxes[i][2] * this.enlarge, boxes[i][3] * this.enlarge];
+        const crop = [boxes[i][0] / enlarge, boxes[i][1] / enlarge, boxes[i][2] * enlarge, boxes[i][3] * enlarge];
         const boxRaw: Box = [crop[1], crop[0], (crop[3]) - (crop[1]), (crop[2]) - (crop[0])];
         const box: Box = [
           parseInt((boxRaw[0] * input.shape[2]).toString()),

@@ -114,7 +114,7 @@ export async function predict(input: Tensor4D, config: Config): Promise<FaceResu
         if (config.face.attention?.enabled) {
           rawCoords = await attention.augment(rawCoords, results); // augment iris results using attention model results
         } else if (config.face.iris?.enabled) {
-          rawCoords = await iris.augmentIris(rawCoords, face.tensor, inputSize); // run iris model and augment results
+          rawCoords = await iris.augmentIris(rawCoords, face.tensor, inputSize, config); // run iris model and augment results
         }
         face.mesh = util.transformRawCoords(rawCoords, box, angle, rotationMatrix, inputSize); // get processed mesh
         face.meshRaw = face.mesh.map((pt) => [pt[0] / (input.shape[2] || 0), pt[1] / (input.shape[1] || 0), (pt[2] || 0) / size]);

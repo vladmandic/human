@@ -14,7 +14,6 @@ import { env } from '../util/env';
 import type { Point } from '../result';
 
 const keypointsCount = 6;
-const faceBoxScaleFactor = 1.4;
 let model: GraphModel | null;
 let anchors: Tensor | null = null;
 let inputSize = 0;
@@ -99,7 +98,7 @@ export async function getBoxes(inputImage: Tensor4D, config: Config): Promise<De
       b.anchor = tf.slice(anchors as Tensor, [nms[i], 0], [1, 2]);
       const anchor = await b.anchor.data();
       const scaledBox = util.scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize, (inputImage.shape[1] || 0) / inputSize], anchor);
-      const enlargedBox = util.enlargeBox(scaledBox, config.face['scale'] || faceBoxScaleFactor);
+      const enlargedBox = util.enlargeBox(scaledBox, config.face.detector?.scale || 1.4);
       const squaredBox = util.squarifyBox(enlargedBox);
       if (squaredBox.size[0] > (config.face.detector?.['minSize'] || 0) && squaredBox.size[1] > (config.face.detector?.['minSize'] || 0)) boxes.push(squaredBox);
       Object.keys(b).forEach((tensor) => tf.dispose(b[tensor]));

@@ -37,6 +37,8 @@ export interface FaceDetectorConfig extends GenericConfig {
   minSize: number,
   /** minimum overlap between two detected faces before one is discarded */
   iouThreshold: number,
+  /** how much should face box be enlarged over the min/max facial coordinates */
+  scale: number,
   /** should child models perform on masked image of a face */
   mask: boolean,
   /** should face detection return processed and cropped face tensor that can with an external model for addtional processing?
@@ -51,7 +53,10 @@ export interface FaceMeshConfig extends GenericConfig {
 }
 
 /** Iris part of face configuration */
-export interface FaceIrisConfig extends GenericConfig {}
+export interface FaceIrisConfig extends GenericConfig {
+  /** how much should iris box be enlarged over the min/max iris coordinates */
+  scale: number,
+}
 
 /** Attention part of face configuration */
 export interface FaceAttentionConfig extends GenericConfig {}
@@ -383,6 +388,7 @@ const config: Config = {
       minConfidence: 0.2,
       minSize: 0,
       iouThreshold: 0.1,
+      scale: 1.4,
       mask: false,
       return: false,
     },
@@ -397,6 +403,7 @@ const config: Config = {
     },
     iris: {
       enabled: true,
+      scale: 2.3,
       modelPath: 'iris.json',
     },
     emotion: {

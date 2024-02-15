@@ -11,8 +11,6 @@ import type { Point } from '../result';
 let model: GraphModel | null;
 let inputSize = 0;
 
-const irisEnlarge = 2.3;
-
 const leftOutline = coords.meshAnnotations.leftEyeLower0;
 const rightOutline = coords.meshAnnotations.rightEyeLower0;
 
@@ -62,8 +60,8 @@ export const getLeftToRightEyeDepthDifference = (rawCoords) => {
 };
 
 // Returns a box describing a cropped region around the eye fit for passing to the iris model.
-export const getEyeBox = (rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, meshSize, flip = false) => {
-  const box = util.squarifyBox(util.enlargeBox(util.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), irisEnlarge));
+export const getEyeBox = (rawCoords, face, eyeInnerCornerIndex, eyeOuterCornerIndex, meshSize, flip = false, scale = 2.3) => {
+  const box = util.squarifyBox(util.enlargeBox(util.calculateLandmarksBoundingBox([rawCoords[eyeInnerCornerIndex], rawCoords[eyeOuterCornerIndex]]), scale));
   const boxSize = util.getBoxSize(box);
   let crop = tf.image.cropAndResize(face, [[
     box.startPoint[1] / meshSize,
@@ -110,10 +108,10 @@ export const getAdjustedIrisCoords = (rawCoords, irisCoords, direction) => {
   });
 };
 
-export async function augmentIris(rawCoords, face, meshSize) {
+export async function augmentIris(rawCoords, face, meshSize, config: Config) {
   if (!model?.['executor']) return rawCoords;
-  const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], meshSize, true);
-  const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], meshSize, true);
+  const { box: leftEyeBox, boxSize: leftEyeBoxSize, crop: leftEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.leftBounds[0], eyeLandmarks.leftBounds[1], meshSize, true, config.face.iris?.scale || 2.3);
+  const { box: rightEyeBox, boxSize: rightEyeBoxSize, crop: rightEyeCrop } = getEyeBox(rawCoords, face, eyeLandmarks.rightBounds[0], eyeLandmarks.rightBounds[1], meshSize, true, config.face.iris?.scale || 2.3);
   const combined = tf.concat([leftEyeCrop, rightEyeCrop]);
   tf.dispose(leftEyeCrop);
   tf.dispose(rightEyeCrop);

@@ -11,6 +11,7 @@
   
 ### **HEAD -> main** 2024/04/17 mandic00@live.com
 
+- fix flazeface tensor scale and update build platform
 
 ### **3.2.2** 2024/04/17 mandic00@live.com
 

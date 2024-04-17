@@ -57,7 +57,7 @@ export async function getBoxes(inputImage: Tensor4D, config: Config): Promise<De
   const t: Record<string, Tensor> = {};
   t.resized = tf.image.resizeBilinear(inputImage, [inputSize, inputSize]);
   t.div = tf.div(t.resized, constants.tf127);
-  t.normalized = tf.sub(t.div, constants.tf05);
+  t.normalized = tf.sub(t.div, constants.tf1);
   const res = model?.execute(t.normalized) as Tensor[];
   if (Array.isArray(res) && res.length > 2) { // pinto converted model?
     const sorted = res.sort((a, b) => a.size - b.size);

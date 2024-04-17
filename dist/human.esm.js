@@ -33656,7 +33656,7 @@ var config = {
       minConfidence: 0.2,
       minSize: 0,
       iouThreshold: 0.1,
-      scale: 1,
+      scale: 1.4,
       mask: false,
       return: false
     },

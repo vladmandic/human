@@ -178,7 +178,7 @@ export class Models {
     return models;
   }
 
-  loaded() {
+  loaded(): string[] {
     const list = this.list();
     const loaded = list.filter((model) => model.loaded).map((model) => model.name);
     return loaded;

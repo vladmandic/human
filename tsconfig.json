@@ -51,9 +51,9 @@
     "tabSize": 2
   },
   "exclude": ["node_modules/", "types/", "dist/**/*.js"],
-  "include": ["src", "tfjs/*.ts", "types/human.d.ts", "test/**/*.ts", "demo/**/*.ts", "demo/facedetect/loader.js"],
+  "include": ["src", "tfjs/*.ts", "types/human.d.ts", "test/**/*.ts"],
   "typedocOptions": {
     "excludeExternals": true,
-    "externalPattern": ["**/node_modules/**", "tfjs/"]
+    "externalPattern": ["**/node_modules/**", "tfjs/", "demo/"]
   }
 }

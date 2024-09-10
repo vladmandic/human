@@ -1,5 +1,9 @@
 {
-  "globals": {},
+  "globals": {
+  },
+  "rules": {
+    "@typescript-eslint/no-require-imports":"off"
+  },
   "overrides": [
     {
       "files": ["**/*.ts"],
@@ -34,6 +38,8 @@
         "@typescript-eslint/no-unsafe-call":"off",
         "@typescript-eslint/no-unsafe-member-access":"off",
         "@typescript-eslint/no-unsafe-return":"off",
+        "@typescript-eslint/no-require-imports":"off",
+        "@typescript-eslint/no-empty-object-type":"off",
         "@typescript-eslint/non-nullable-type-assertion-style":"off",
         "@typescript-eslint/prefer-for-of":"off",
         "@typescript-eslint/prefer-nullish-coalescing":"off",
@@ -155,9 +161,7 @@
         "node": false,
         "es2021": false
       },
-      "extends": [
-        "plugin:json/recommended"
-      ] 
+      "extends": [] 
     },
     {
       "files": ["**/*.html"],
@@ -173,6 +177,7 @@
       "extends": ["plugin:@html-eslint/recommended"],
       "rules": {
         "@html-eslint/element-newline":"off",
+        "@html-eslint/attrs-newline":"off",
         "@html-eslint/indent": ["error", 2]
       }
     },

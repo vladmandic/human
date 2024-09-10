@@ -107,7 +107,7 @@ async function testWarmup(human, title) {
   try {
     warmup = await human.warmup(config);
   } catch (err) {
-    log('error', 'error warmup');
+    log('error', 'error warmup', err);
   }
   if (warmup) {
     log('state', 'passed: warmup:', config.warmup, title);

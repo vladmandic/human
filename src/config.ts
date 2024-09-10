@@ -1,7 +1,7 @@
 /* eslint-disable no-multi-spaces */
 
 /** Possible TensorFlow backends */
-export type BackendEnum = '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu';
+export type BackendEnum = '' | 'cpu' | 'wasm' | 'webgl' | 'humangl' | 'tensorflow' | 'webgpu' | 'none';
 
 /** Possible values for `human.warmup` */
 export type WarmupEnum = '' | 'none' | 'face' | 'full' | 'body';

@@ -1,9 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "mainEntryPointFilePath": "types/lib/src/human.d.ts",
-  "bundledPackages": ["@tensorflow/tfjs-core", "@tensorflow/tfjs-data", "@tensorflow/tfjs-layers", "@tensorflow/tfjs-converter"],
   "compiler": {
-    "skipLibCheck": false
+    "skipLibCheck": true
   },
   "newlineKind": "lf",
   "dtsRollup": {

@@ -92,7 +92,7 @@ async function detect(input) {
   try {
     result = await human.detect(tensor, myConfig);
   } catch (err) {
-    log.error('caught');
+    log.error('caught', err);
   }
 
   // dispose image tensor as we no longer need it

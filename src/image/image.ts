@@ -290,7 +290,6 @@ const checksum = async (input: Tensor): Promise<number> => { // use tf sum or js
 export async function skip(config: Partial<Config>, input: Tensor) {
   let skipFrame = false;
   if (config.cacheSensitivity === 0 || !input.shape || input.shape.length !== 4 || input.shape[1] > 3840 || input.shape[2] > 2160) return skipFrame; // cache disabled or input is invalid or too large for cache analysis
-
   /*
   const checkSum = await checksum(input);
   const diff = 100 * (Math.max(checkSum, last.inputSum) / Math.min(checkSum, last.inputSum) - 1);

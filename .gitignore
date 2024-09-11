@@ -5,3 +5,5 @@ package-lock.json
 *.swp
 samples/**/*.mp4
 samples/**/*.webm
+temp
+tmp

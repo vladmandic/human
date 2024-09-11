@@ -39140,10 +39140,21 @@ function decodeBoxes2(boxOutputs) {
   return boxes;
 }
 async function getBoxes(inputImage, config3) {
-  var _a, _b, _c2, _d2, _e, _f2, _g2;
+  var _a, _b, _c2, _d2, _e, _f2, _g2, _h2, _i2;
   if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1) return [];
   const t10 = {};
-  t10.resized = eX.resizeBilinear(inputImage, [inputSize4, inputSize4]);
+  let pad = [0, 0];
+  let scale2 = [1, 1];
+  if ((_b = (_a = config3 == null ? void 0 : config3.face) == null ? void 0 : _a.detector) == null ? void 0 : _b.square) {
+    const xy2 = Math.max(inputImage.shape[2], inputImage.shape[1]);
+    pad = [Math.floor((xy2 - inputImage.shape[2]) / 2), Math.floor((xy2 - inputImage.shape[1]) / 2)];
+    t10.padded = Aa(inputImage, [[0, 0], [pad[1], pad[1]], [pad[0], pad[0]], [0, 0]]);
+    scale2 = [inputImage.shape[2] / xy2, inputImage.shape[1] / xy2];
+    pad = [pad[0] / inputSize4, pad[1] / inputSize4];
+  } else {
+    t10.padded = inputImage;
+  }
+  t10.resized = eX.resizeBilinear(t10.padded, [inputSize4, inputSize4]);
   t10.div = je(t10.resized, constants.tf127);
   t10.normalized = Te(t10.div, constants.tf1);
   const res = model5 == null ? void 0 : model5.execute(t10.normalized);
@@ -39163,31 +39174,38 @@ async function getBoxes(inputImage, config3) {
   t10.logits = Xe(t10.batch, [0, 0], [-1, 1]);
   t10.sigmoid = Ea(t10.logits);
   t10.scores = cc(t10.sigmoid);
-  t10.nms = await eX.nonMaxSuppressionAsync(t10.boxes, t10.scores, ((_a = config3.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = config3.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c2 = config3.face.detector) == null ? void 0 : _c2.minConfidence) || 0);
+  t10.nms = await eX.nonMaxSuppressionAsync(t10.boxes, t10.scores, ((_c2 = config3.face.detector) == null ? void 0 : _c2.maxDetected) || 0, ((_d2 = config3.face.detector) == null ? void 0 : _d2.iouThreshold) || 0, ((_e = config3.face.detector) == null ? void 0 : _e.minConfidence) || 0);
   const nms = await t10.nms.array();
   const boxes = [];
   const scores = await t10.scores.data();
   for (let i = 0; i < nms.length; i++) {
     const confidence = scores[nms[i]];
-    if (confidence > (((_d2 = config3.face.detector) == null ? void 0 : _d2.minConfidence) || 0)) {
+    if (confidence > (((_f2 = config3.face.detector) == null ? void 0 : _f2.minConfidence) || 0)) {
       const b = {};
       b.bbox = Xe(t10.boxes, [nms[i], 0], [1, -1]);
       b.slice = Xe(t10.batch, [nms[i], keypointsCount - 1], [1, -1]);
       b.squeeze = cc(b.slice);
       b.landmarks = W(b.squeeze, [keypointsCount, -1]);
       const points = await b.bbox.data();
+      const unpadded = [
+        // TODO fix this math
+        points[0] * scale2[0] - pad[0],
+        points[1] * scale2[1] - pad[1],
+        points[2] * scale2[0] - pad[0],
+        points[3] * scale2[1] - pad[1]
+      ];
       const rawBox = {
-        startPoint: [points[0], points[1]],
-        endPoint: [points[2], points[3]],
+        startPoint: [unpadded[0], unpadded[1]],
+        endPoint: [unpadded[2], unpadded[3]],
         landmarks: await b.landmarks.array(),
         confidence
       };
       b.anchor = Xe(anchors, [nms[i], 0], [1, 2]);
       const anchor = await b.anchor.data();
       const scaledBox = scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize4, (inputImage.shape[1] || 0) / inputSize4], anchor);
-      const enlargedBox = enlargeBox(scaledBox, ((_e = config3.face.detector) == null ? void 0 : _e.scale) || 1.4);
+      const enlargedBox = enlargeBox(scaledBox, ((_g2 = config3.face.detector) == null ? void 0 : _g2.scale) || 1.4);
       const squaredBox = squarifyBox(enlargedBox);
-      if (squaredBox.size[0] > (((_f2 = config3.face.detector) == null ? void 0 : _f2["minSize"]) || 0) && squaredBox.size[1] > (((_g2 = config3.face.detector) == null ? void 0 : _g2["minSize"]) || 0)) boxes.push(squaredBox);
+      if (squaredBox.size[0] > (((_h2 = config3.face.detector) == null ? void 0 : _h2["minSize"]) || 0) && squaredBox.size[1] > (((_i2 = config3.face.detector) == null ? void 0 : _i2["minSize"]) || 0)) boxes.push(squaredBox);
       Object.keys(b).forEach((tensor) => Ot(b[tensor]));
     }
   }
@@ -46371,6 +46389,7 @@ async function warmup(instance, userConfig) {
   }
   return new Promise(async (resolve) => {
     await instance.models.load();
+    await Ime();
     await runCompile(instance);
     const res = await runInference(instance);
     const t12 = now();

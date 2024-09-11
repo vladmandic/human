@@ -78,7 +78,6 @@ export const calculateFaceAngle = (face: FaceResult, imageSize: [number, number]
     if (Number.isNaN(thetaZ)) thetaZ = 0;
     return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
   };
-
   /*
   const meshToEulerAngle = (mesh) => { // simple Euler angle calculation based existing 3D mesh
     const radians = (a1, a2, b1, b2) => Math.atan2(b2 - a2, b1 - a1);

@@ -166,6 +166,7 @@ export async function warmup(instance: Human, userConfig?: Partial<Config>): Pro
   }
   return new Promise(async (resolve) => {
     await instance.models.load();
+    await tf.ready();
     await runCompile(instance);
     const res = await runInference(instance);
     const t1 = now();

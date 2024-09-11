@@ -10,12 +10,13 @@ import { Human } from '../../dist/human.esm.js';
 let loader;
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
+  cacheSensitivity: 0.0001,
   debug: true,
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   filter: { enabled: true, equalization: false, flip: false },
   face: {
     enabled: true,
-    detector: { rotation: false, maxDetected: 100, minConfidence: 0.2, return: true },
+    detector: { rotation: false, maxDetected: 100, minConfidence: 0.2, return: true, square: true },
     iris: { enabled: true },
     description: { enabled: true },
     emotion: { enabled: true },
@@ -149,7 +150,7 @@ async function main() {
   showLoader('compiling models');
   await human.warmup();
   showLoader('loading images');
-  const images = ['group-1.jpg', 'group-2.jpg', 'group-3.jpg', 'group-4.jpg', 'group-5.jpg', 'group-6.jpg', 'group-7.jpg', 'solvay1927.jpg', 'stock-group-1.jpg', 'stock-group-2.jpg'];
+  const images = ['group-1.jpg', 'group-2.jpg', 'group-3.jpg', 'group-4.jpg', 'group-5.jpg', 'group-6.jpg', 'group-7.jpg', 'solvay1927.jpg', 'stock-group-1.jpg', 'stock-group-2.jpg', 'stock-models-6.jpg', 'stock-models-7.jpg'];
   const imageUris = images.map((a) => `../../samples/in/${a}`);
   for (let i = 0; i < imageUris.length; i++) addImage(imageUris[i]);
   initDragAndDrop();

@@ -1513,11 +1513,11 @@ var WebCam = class {
         return "webcam error no stream";
       }
       this.element.srcObject = this.stream;
-      const ready3 = new Promise((resolve) => {
+      const ready4 = new Promise((resolve) => {
         if (!this.element) resolve(false);
         else this.element.onloadeddata = () => resolve(true);
       });
-      await ready3;
+      await ready4;
       await this.element.play();
       if (this.config.debug) {
         log("webcam", {
@@ -7445,10 +7445,21 @@ function decodeBoxes2(boxOutputs) {
   return boxes;
 }
 async function getBoxes(inputImage, config3) {
-  var _a, _b, _c, _d, _e, _f, _g;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i;
   if (!inputImage || inputImage["isDisposedInternal"] || inputImage.shape.length !== 4 || inputImage.shape[1] < 1 || inputImage.shape[2] < 1) return [];
   const t2 = {};
-  t2.resized = tf13.image.resizeBilinear(inputImage, [inputSize4, inputSize4]);
+  let pad4 = [0, 0];
+  let scale2 = [1, 1];
+  if ((_b = (_a = config3 == null ? void 0 : config3.face) == null ? void 0 : _a.detector) == null ? void 0 : _b.square) {
+    const xy = Math.max(inputImage.shape[2], inputImage.shape[1]);
+    pad4 = [Math.floor((xy - inputImage.shape[2]) / 2), Math.floor((xy - inputImage.shape[1]) / 2)];
+    t2.padded = tf13.pad(inputImage, [[0, 0], [pad4[1], pad4[1]], [pad4[0], pad4[0]], [0, 0]]);
+    scale2 = [inputImage.shape[2] / xy, inputImage.shape[1] / xy];
+    pad4 = [pad4[0] / inputSize4, pad4[1] / inputSize4];
+  } else {
+    t2.padded = inputImage;
+  }
+  t2.resized = tf13.image.resizeBilinear(t2.padded, [inputSize4, inputSize4]);
   t2.div = tf13.div(t2.resized, constants.tf127);
   t2.normalized = tf13.sub(t2.div, constants.tf1);
   const res = model5 == null ? void 0 : model5.execute(t2.normalized);
@@ -7468,31 +7479,38 @@ async function getBoxes(inputImage, config3) {
   t2.logits = tf13.slice(t2.batch, [0, 0], [-1, 1]);
   t2.sigmoid = tf13.sigmoid(t2.logits);
   t2.scores = tf13.squeeze(t2.sigmoid);
-  t2.nms = await tf13.image.nonMaxSuppressionAsync(t2.boxes, t2.scores, ((_a = config3.face.detector) == null ? void 0 : _a.maxDetected) || 0, ((_b = config3.face.detector) == null ? void 0 : _b.iouThreshold) || 0, ((_c = config3.face.detector) == null ? void 0 : _c.minConfidence) || 0);
+  t2.nms = await tf13.image.nonMaxSuppressionAsync(t2.boxes, t2.scores, ((_c = config3.face.detector) == null ? void 0 : _c.maxDetected) || 0, ((_d = config3.face.detector) == null ? void 0 : _d.iouThreshold) || 0, ((_e = config3.face.detector) == null ? void 0 : _e.minConfidence) || 0);
   const nms = await t2.nms.array();
   const boxes = [];
   const scores = await t2.scores.data();
   for (let i = 0; i < nms.length; i++) {
     const confidence = scores[nms[i]];
-    if (confidence > (((_d = config3.face.detector) == null ? void 0 : _d.minConfidence) || 0)) {
+    if (confidence > (((_f = config3.face.detector) == null ? void 0 : _f.minConfidence) || 0)) {
       const b = {};
       b.bbox = tf13.slice(t2.boxes, [nms[i], 0], [1, -1]);
       b.slice = tf13.slice(t2.batch, [nms[i], keypointsCount - 1], [1, -1]);
       b.squeeze = tf13.squeeze(b.slice);
       b.landmarks = tf13.reshape(b.squeeze, [keypointsCount, -1]);
       const points = await b.bbox.data();
+      const unpadded = [
+        // TODO fix this math
+        points[0] * scale2[0] - pad4[0],
+        points[1] * scale2[1] - pad4[1],
+        points[2] * scale2[0] - pad4[0],
+        points[3] * scale2[1] - pad4[1]
+      ];
       const rawBox = {
-        startPoint: [points[0], points[1]],
-        endPoint: [points[2], points[3]],
+        startPoint: [unpadded[0], unpadded[1]],
+        endPoint: [unpadded[2], unpadded[3]],
         landmarks: await b.landmarks.array(),
         confidence
       };
       b.anchor = tf13.slice(anchors, [nms[i], 0], [1, 2]);
       const anchor = await b.anchor.data();
       const scaledBox = scaleBoxCoordinates(rawBox, [(inputImage.shape[2] || 0) / inputSize4, (inputImage.shape[1] || 0) / inputSize4], anchor);
-      const enlargedBox = enlargeBox(scaledBox, ((_e = config3.face.detector) == null ? void 0 : _e.scale) || 1.4);
+      const enlargedBox = enlargeBox(scaledBox, ((_g = config3.face.detector) == null ? void 0 : _g.scale) || 1.4);
       const squaredBox = squarifyBox(enlargedBox);
-      if (squaredBox.size[0] > (((_f = config3.face.detector) == null ? void 0 : _f["minSize"]) || 0) && squaredBox.size[1] > (((_g = config3.face.detector) == null ? void 0 : _g["minSize"]) || 0)) boxes.push(squaredBox);
+      if (squaredBox.size[0] > (((_h = config3.face.detector) == null ? void 0 : _h["minSize"]) || 0) && squaredBox.size[1] > (((_i = config3.face.detector) == null ? void 0 : _i["minSize"]) || 0)) boxes.push(squaredBox);
       Object.keys(b).forEach((tensor6) => tf13.dispose(b[tensor6]));
     }
   }
@@ -14706,6 +14724,7 @@ async function warmup(instance, userConfig) {
   }
   return new Promise(async (resolve) => {
     await instance.models.load();
+    await tf37.ready();
     await runCompile(instance);
     const res = await runInference(instance);
     const t1 = now();

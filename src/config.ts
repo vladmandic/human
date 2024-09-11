@@ -39,6 +39,8 @@ export interface FaceDetectorConfig extends GenericConfig {
   iouThreshold: number,
   /** how much should face box be enlarged over the min/max facial coordinates */
   scale: number,
+  /** automatically pad image to square */
+  square: boolean,
   /** should child models perform on masked image of a face */
   mask: boolean,
   /** should face detection return processed and cropped face tensor that can with an external model for addtional processing?

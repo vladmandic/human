@@ -17,7 +17,8 @@ export function distance(descriptor1: Descriptor, descriptor2: Descriptor, optio
     const diff = (!options.order || options.order === 2) ? (descriptor1[i] - descriptor2[i]) : (Math.abs(descriptor1[i] - descriptor2[i]));
     sum += (!options.order || options.order === 2) ? (diff * diff) : (diff ** options.order);
   }
-  return (options.multiplier || 20) * sum;
+  const dist = Math.round(100 * (options.multiplier || 20) * sum) / 100;
+  return dist;
 }
 
 // invert distance to similarity, normalize to given range and clamp
@@ -25,7 +26,7 @@ const normalizeDistance = (dist, order, min, max) => {
   if (dist === 0) return 1; // short circuit for identical inputs
   const root = order === 2 ? Math.sqrt(dist) : dist ** (1 / order); // take root of distance
   const norm = (1 - (root / 100) - min) / (max - min); // normalize to range
-  const clamp = Math.max(Math.min(norm, 1), 0); // clamp to 0..1
+  const clamp = Math.round(100 * Math.max(Math.min(norm, 1), 0)) / 100; // clamp to 0..1
   return clamp;
 };
 

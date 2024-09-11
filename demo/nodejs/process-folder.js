@@ -20,7 +20,7 @@ const config = { // just enable all and leave default settings
   modelBasePath: 'file://models',
   debug: true,
   softwareKernels: true, // slower but enhanced precision since face rotation can work in software mode in nodejs environments
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.01,
   face: { enabled: true, detector: { maxDetected: 100, minConfidence: 0.1 } },
   object: { enabled: true, maxDetected: 100, minConfidence: 0.1 },
   gesture: { enabled: true },

@@ -6,7 +6,7 @@ const H = require('../dist/human.node.js');
 const models = ['emotion.json', 'gear-e1.json', 'gear-e2.json', 'affectnet-mobilenet.json'];
 const humanConfig = {
   debug: false,
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.01,
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   face: {
     scale: 1.4,

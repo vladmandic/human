@@ -10,13 +10,13 @@ import { Human } from '../../dist/human.esm.js';
 let loader;
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
-  cacheSensitivity: 0.0001,
+  cacheSensitivity: 0,
   debug: true,
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   filter: { enabled: true, equalization: false, flip: false },
   face: {
     enabled: true,
-    detector: { rotation: false, maxDetected: 100, minConfidence: 0.2, return: true, square: true },
+    detector: { rotation: false, maxDetected: 100, minConfidence: 0.2, return: true, square: false },
     iris: { enabled: true },
     description: { enabled: true },
     emotion: { enabled: true },

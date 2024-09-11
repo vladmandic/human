@@ -7,7 +7,7 @@ const log = require('@vladmandic/pilogger'); // eslint-disable-line node/no-unpu
 const canvas = require('canvas'); // eslint-disable-line node/no-unpublished-require
 
 const config = {
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.01,
   wasmPlatformFetch: true,
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
 };

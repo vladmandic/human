@@ -12,7 +12,7 @@ process.env.TF_CPP_MIN_LOG_LEVEL = '2';
 const humanConfig = {
   backend: 'tensorflow',
   debug: false,
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.01,
   modelBasePath: 'https://vladmandic.github.io/human-models/models/',
   face: {
     detector: { enabled: true, modelPath: 'blazeface-back.json' },

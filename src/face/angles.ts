@@ -60,7 +60,9 @@ export const calculateFaceAngle = (face: FaceResult, imageSize: [number, number]
     let thetaZ: number;
     if (r10 < 1) { // YZX calculation
       if (r10 > -1) {
-        thetaZ = Math.asin(r10);
+        // thetaZ = Math.asin(r10);
+        const cosThetaZ = Math.sqrt(r00 * r00 + r20 * r20); // <https://github.com/vladmandic/human/issues/464>
+        thetaZ = Math.atan2(r10, cosThetaZ);
         thetaY = Math.atan2(-r20, r00);
         thetaX = Math.atan2(-r12, r11);
       } else {
@@ -76,7 +78,8 @@ export const calculateFaceAngle = (face: FaceResult, imageSize: [number, number]
     if (Number.isNaN(thetaX)) thetaX = 0;
     if (Number.isNaN(thetaY)) thetaY = 0;
     if (Number.isNaN(thetaZ)) thetaZ = 0;
-    return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
+    // return { pitch: 2 * -thetaX, yaw: 2 * -thetaY, roll: 2 * -thetaZ };
+    return { pitch: -thetaX, yaw: -thetaY, roll: -thetaZ };
   };
   /*
   const meshToEulerAngle = (mesh) => { // simple Euler angle calculation based existing 3D mesh

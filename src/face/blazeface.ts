@@ -64,7 +64,7 @@ export async function getBoxes(inputImage: Tensor4D, config: Config): Promise<De
     scale = [inputImage.shape[2] / xy, inputImage.shape[1] / xy];
     pad = [pad[0] / inputSize, pad[1] / inputSize];
   } else {
-    t.padded = inputImage;
+    t.padded = inputImage.clone();
   }
   t.resized = tf.image.resizeBilinear(t.padded as Tensor4D, [inputSize, inputSize]);
   t.div = tf.div(t.resized, constants.tf127);

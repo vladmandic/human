@@ -11,7 +11,7 @@ const userConfig = {
   backend: 'humangl',
   async: true,
   warmup: 'none',
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.01,
   debug: true,
   modelBasePath: '../../models/',
   deallocate: true,

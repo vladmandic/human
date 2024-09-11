@@ -11,7 +11,7 @@ import * as H from '../../dist/human.esm.js'; // equivalent of @vladmandic/Human
 import * as indexDb from './indexdb'; // methods to deal with indexdb
 
 const humanConfig = { // user configuration for human, used to fine-tune behavior
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.01,
   modelBasePath: '../../models',
   filter: { enabled: true, equalization: true }, // lets run with histogram equilizer
   debug: true,

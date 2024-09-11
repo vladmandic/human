@@ -3,7 +3,7 @@ const H = require('../dist/human.node-gpu.js');
 const test = require('./test-node-main.js').test;
 
 const config = {
-  cacheSensitivity: 0,
+  cacheSensitivity: 0.01,
   modelBasePath: 'file://models/',
   backend: 'tensorflow',
   debug: false,

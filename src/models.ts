@@ -100,13 +100,13 @@ export class Models {
     let totalSizeWeights = 0;
     let totalSizeLoading = 0;
     for (const m of Object.values(modelStats)) {
-      totalSizeFromManifest += m.sizeFromManifest;
-      totalSizeWeights += m.sizeLoadedWeights;
-      totalSizeLoading += m.sizeDesired;
+      totalSizeFromManifest += Number.isNaN(+m.sizeFromManifest) ? 0 : m.sizeFromManifest;
+      totalSizeWeights += Number.isNaN(+m.sizeLoadedWeights) ? 0 : m.sizeLoadedWeights;
+      totalSizeLoading += Number.isNaN(+m.sizeDesired) ? 0 : m.sizeDesired;
     }
     const percentageLoaded = totalSizeLoading > 0 ? totalSizeWeights / totalSizeLoading : 0;
     return {
-      numLoadedModels: Object.values(modelStats).length,
+      numLoadedModels: Object.values(modelStats).filter((m) => m?.loaded).length,
       numDefinedModels: Object.keys(this.models).length,
       percentageLoaded,
       totalSizeFromManifest,

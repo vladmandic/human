@@ -536,7 +536,6 @@ var AG = (r15, e, t10, o) => {
 };
 var zp = (r15, e, t10) => (t10 = r15 != null ? _G(RG(r15)) : {}, AG(e || !r15 || !r15.__esModule ? QC(t10, "default", { value: r15, enumerable: true }) : t10, r15));
 var U0 = Kt((ple, W0) => {
-  "use strict";
   W0.exports = kt;
   var ko = null;
   try {
@@ -827,13 +826,10 @@ var U0 = Kt((ple, W0) => {
   };
 });
 var Ek = Kt(() => {
-  "use strict";
 });
 var $k = Kt(() => {
-  "use strict";
 });
 var o1 = Kt((r1, Ww) => {
-  "use strict";
   (function(r15, e, t10) {
     function o(i) {
       var p = this, u = a();
@@ -873,7 +869,6 @@ var o1 = Kt((r1, Ww) => {
   })(r1, typeof Ww == "object" && Ww, typeof define == "function" && define);
 });
 var s1 = Kt((n1, Uw) => {
-  "use strict";
   (function(r15, e, t10) {
     function o(a) {
       var i = this, p = "";
@@ -905,7 +900,6 @@ var s1 = Kt((n1, Uw) => {
   })(n1, typeof Uw == "object" && Uw, typeof define == "function" && define);
 });
 var i1 = Kt((a1, Gw) => {
-  "use strict";
   (function(r15, e, t10) {
     function o(a) {
       var i = this, p = "";
@@ -937,7 +931,6 @@ var i1 = Kt((a1, Gw) => {
   })(a1, typeof Gw == "object" && Gw, typeof define == "function" && define);
 });
 var p1 = Kt((u1, Hw) => {
-  "use strict";
   (function(r15, e, t10) {
     function o(a) {
       var i = this;
@@ -978,7 +971,6 @@ var p1 = Kt((u1, Hw) => {
   })(u1, typeof Hw == "object" && Hw, typeof define == "function" && define);
 });
 var l1 = Kt((c1, Kw) => {
-  "use strict";
   (function(r15, e, t10) {
     function o(a) {
       var i = this;
@@ -1017,7 +1009,6 @@ var l1 = Kt((c1, Kw) => {
   })(c1, typeof Kw == "object" && Kw, typeof define == "function" && define);
 });
 var d1 = Kt((m1, qw) => {
-  "use strict";
   (function(r15, e, t10) {
     function o(a) {
       var i = this, p = "";
@@ -1049,10 +1040,8 @@ var d1 = Kt((m1, qw) => {
   })(m1, typeof qw == "object" && qw, typeof define == "function" && define);
 });
 var f1 = Kt(() => {
-  "use strict";
 });
 var g1 = Kt((h1, Md) => {
-  "use strict";
   (function(r15, e, t10) {
     var o = 256, n = 6, s = 52, a = "random", i = t10.pow(o, n), p = t10.pow(2, s), u = p * 2, c = o - 1, l;
     function m(C, S, k) {
@@ -1121,7 +1110,6 @@ var g1 = Kt((h1, Md) => {
   })(typeof self != "undefined" ? self : h1, [], Math);
 });
 var jw = Kt((s1e, x1) => {
-  "use strict";
   var Dq = o1(), Aq = s1(), Fq = i1(), Pq = p1(), Oq = l1(), Mq = d1(), Ku = g1();
   Ku.alea = Dq;
   Ku.xor128 = Aq;
@@ -1132,22 +1120,16 @@ var jw = Kt((s1e, x1) => {
   x1.exports = Ku;
 });
 var Vv = Kt(() => {
-  "use strict";
 });
 var Wv = Kt(() => {
-  "use strict";
 });
 var LB = Kt(() => {
-  "use strict";
 });
 var BB = Kt(() => {
-  "use strict";
 });
 var zB = Kt(() => {
-  "use strict";
 });
 var VB = Kt((Wg, Gv) => {
-  "use strict";
   var Uv = (() => {
     var r15 = typeof document != "undefined" && document.currentScript ? document.currentScript.src : void 0;
     return typeof __filename != "undefined" && (r15 = r15 || __filename), function(e) {
@@ -2106,12 +2088,10 @@ var VB = Kt((Wg, Gv) => {
   }) : typeof Wg == "object" && (Wg.WasmBackendModuleThreadedSimd = Uv);
 });
 var UB = Kt((e3t, WB) => {
-  "use strict";
   WB.exports.wasmWorkerContents = `"use strict";var Module={};var ENVIRONMENT_IS_NODE=typeof process=="object"&&typeof process.versions=="object"&&typeof process.versions.node=="string";if(ENVIRONMENT_IS_NODE){var nodeWorkerThreads=require("worker_threads");var parentPort=nodeWorkerThreads.parentPort;parentPort.on("message",data=>onmessage({data:data}));var fs=require("fs");Object.assign(global,{self:global,require:require,Module:Module,location:{href:__filename},Worker:nodeWorkerThreads.Worker,importScripts:function(f){(0,eval)(fs.readFileSync(f,"utf8")+"//# sourceURL="+f)},postMessage:function(msg){parentPort.postMessage(msg)},performance:global.performance||{now:function(){return Date.now()}}})}var initializedJS=false;var pendingNotifiedProxyingQueues=[];function threadPrintErr(){var text=Array.prototype.slice.call(arguments).join(" ");if(ENVIRONMENT_IS_NODE){fs.writeSync(2,text+"
 ");return}console.error(text)}function threadAlert(){var text=Array.prototype.slice.call(arguments).join(" ");postMessage({cmd:"alert",text:text,threadId:Module["_pthread_self"]()})}var err=threadPrintErr;self.alert=threadAlert;Module["instantiateWasm"]=(info,receiveInstance)=>{var instance=new WebAssembly.Instance(Module["wasmModule"],info);receiveInstance(instance);Module["wasmModule"]=null;return instance.exports};self.onunhandledrejection=e=>{throw e.reason??e};self.startWorker=instance=>{Module=instance;postMessage({"cmd":"loaded"})};self.onmessage=e=>{try{if(e.data.cmd==="load"){Module["wasmModule"]=e.data.wasmModule;for(const handler of e.data.handlers){Module[handler]=function(){postMessage({cmd:"callHandler",handler:handler,args:[...arguments]})}}Module["wasmMemory"]=e.data.wasmMemory;Module["buffer"]=Module["wasmMemory"].buffer;Module["ENVIRONMENT_IS_PTHREAD"]=true;if(typeof e.data.urlOrBlob=="string"){importScripts(e.data.urlOrBlob)}else{var objectUrl=URL.createObjectURL(e.data.urlOrBlob);importScripts(objectUrl);URL.revokeObjectURL(objectUrl)}WasmBackendModuleThreadedSimd(Module)}else if(e.data.cmd==="run"){Module["__emscripten_thread_init"](e.data.pthread_ptr,0,0,1);Module["establishStackSpace"]();Module["PThread"].receiveObjectTransfer(e.data);Module["PThread"].threadInitTLS();if(!initializedJS){pendingNotifiedProxyingQueues.forEach(queue=>{Module["executeNotifiedProxyingQueue"](queue)});pendingNotifiedProxyingQueues=[];initializedJS=true}try{Module["invokeEntryPoint"](e.data.start_routine,e.data.arg)}catch(ex){if(ex!="unwind"){if(ex instanceof Module["ExitStatus"]){if(Module["keepRuntimeAlive"]()){}else{Module["__emscripten_thread_exit"](ex.status)}}else{throw ex}}}}else if(e.data.cmd==="cancel"){if(Module["_pthread_self"]()){Module["__emscripten_thread_exit"](-1)}}else if(e.data.target==="setimmediate"){}else if(e.data.cmd==="processProxyingQueue"){if(initializedJS){Module["executeNotifiedProxyingQueue"](e.data.queue)}else{pendingNotifiedProxyingQueues.push(e.data.queue)}}else if(e.data.cmd){err("worker.js received unknown command "+e.data.cmd);err(e.data)}}catch(ex){if(Module["__emscripten_thread_crashed"]){Module["__emscripten_thread_crashed"]()}throw ex}};`;
 });
 var GB = Kt((Ug, Kv) => {
-  "use strict";
   var Hv = (() => {
     var r15 = typeof document != "undefined" && document.currentScript ? document.currentScript.src : void 0;
     return typeof __filename != "undefined" && (r15 = r15 || __filename), function(e) {
@@ -33578,7 +33558,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.3.2";
+var version = "3.3.3";
 
 // src/tfjs/humangl.ts
 var config2 = {

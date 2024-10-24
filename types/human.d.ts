@@ -195,6 +195,7 @@ declare namespace draw {
     export {
         person,
         canvas,
+        tensor,
         all,
         init,
         options,

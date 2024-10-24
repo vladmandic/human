@@ -223,7 +223,7 @@ async function calcSimmilarity(result) {
     log('setting face compare baseline:', result.face[0]);
     if (result.face[0].tensor) {
       const c = document.getElementById('orig');
-      human.tf.browser.draw(result.face[0].tensor, c);
+      human.draw.tensor(result.face[0].tensor, c);
     } else {
       document.getElementById('compare-canvas').getContext('2d').drawImage(compare.original.canvas, 0, 0, 200, 200);
     }

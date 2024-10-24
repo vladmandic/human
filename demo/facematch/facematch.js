@@ -70,7 +70,7 @@ async function selectFaceCanvas(face) {
   if (face.tensor) {
     title('Sorting Faces by Similarity');
     const c = document.getElementById('orig');
-    await human.tf.browser.draw(face.tensor, c);
+    await human.draw.tensor(face.tensor, c);
     const arr = db.map((rec) => rec.embedding);
     const res = await human.match.find(face.embedding, arr);
     log('Match:', db[res.index].name);
@@ -97,7 +97,7 @@ async function selectFaceCanvas(face) {
     canvas.tag.similarity = similarity;
     // get best match
     // draw the canvas
-    await human.tf.browser.draw(current.tensor, canvas);
+    await human.draw.tensor(current.tensor, canvas);
     const ctx = canvas.getContext('2d');
     ctx.font = 'small-caps 1rem "Lato"';
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
@@ -144,7 +144,7 @@ async function addFaceCanvas(index, res, fileName) {
       gender: ${Math.round(100 * res.face[i].genderScore)}% ${res.face[i].gender}
       emotion: ${emotion}
     `.replace(/  /g, ' ');
-    await human.tf.browser.draw(res.face[i].tensor, canvas);
+    await human.draw.tensor(res.face[i].tensor, canvas);
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.font = 'small-caps 0.8rem "Lato"';

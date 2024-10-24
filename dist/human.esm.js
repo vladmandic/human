@@ -32781,31 +32781,31 @@ async function process2(input, config3, getTensor = true) {
     throw new Error("input error: type not recognized");
   }
   if (input instanceof mt) {
-    let tensor2 = null;
+    let tensor3 = null;
     if (input["isDisposedInternal"]) throw new Error("input error: attempted to use tensor but it is disposed");
     if (!input.shape) throw new Error("input error: attempted to use tensor without a shape");
     if (input.shape.length === 3) {
       if (input.shape[2] === 3) {
-        tensor2 = Ms(input, 0);
+        tensor3 = Ms(input, 0);
       } else if (input.shape[2] === 4) {
         const rgb3 = B1(input, [0, 0, 0], [-1, -1, 3]);
-        tensor2 = Ms(rgb3, 0);
+        tensor3 = Ms(rgb3, 0);
         Ot(rgb3);
       }
     } else if (input.shape.length === 4) {
       if (input.shape[3] === 3) {
-        tensor2 = Ur(input);
+        tensor3 = Ur(input);
       } else if (input.shape[3] === 4) {
-        tensor2 = z1(input, [0, 0, 0, 0], [-1, -1, -1, 3]);
+        tensor3 = z1(input, [0, 0, 0, 0], [-1, -1, -1, 3]);
       }
     }
-    if (tensor2 == null || tensor2.shape.length !== 4 || tensor2.shape[0] !== 1 || tensor2.shape[3] !== 3) throw new Error(`input error: attempted to use tensor with unrecognized shape: ${input.shape.toString()}`);
-    if (tensor2.dtype === "int32") {
-      const cast = Ue(tensor2, "float32");
-      Ot(tensor2);
-      tensor2 = cast;
+    if (tensor3 == null || tensor3.shape.length !== 4 || tensor3.shape[0] !== 1 || tensor3.shape[3] !== 3) throw new Error(`input error: attempted to use tensor with unrecognized shape: ${input.shape.toString()}`);
+    if (tensor3.dtype === "int32") {
+      const cast = Ue(tensor3, "float32");
+      Ot(tensor3);
+      tensor3 = cast;
     }
-    return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
+    return { tensor: tensor3, canvas: config3.filter.return ? outCanvas : null };
   }
   if (typeof input["readyState"] !== "undefined" && input.readyState <= 2) {
     if (config3.debug) log("input stream is not ready");
@@ -32916,15 +32916,15 @@ async function process2(input, config3, getTensor = true) {
   }
   if (!pixels) throw new Error("input error: cannot create tensor");
   const casted = Ue(pixels, "float32");
-  const tensor = config3.filter.equalization ? await histogramEqualization(casted) : Ms(casted, 0);
+  const tensor2 = config3.filter.equalization ? await histogramEqualization(casted) : Ms(casted, 0);
   Ot([pixels, casted]);
   if (config3.filter.autoBrightness) {
-    const max = Ra(tensor);
+    const max = Ra(tensor2);
     const maxVal = await max.data();
     config3.filter.brightness = maxVal[0] > 1 ? 1 - maxVal[0] / 255 : 1 - maxVal[0];
     Ot(max);
   }
-  return { tensor, canvas: config3.filter.return ? outCanvas : null };
+  return { tensor: tensor2, canvas: config3.filter.return ? outCanvas : null };
 }
 async function skip(config3, input) {
   let skipFrame = false;
@@ -33877,7 +33877,8 @@ __export(draw_exports, {
   init: () => init2,
   object: () => object,
   options: () => options2,
-  person: () => person
+  person: () => person,
+  tensor: () => tensor
 });
 
 // src/draw/primitives.ts
@@ -38168,6 +38169,11 @@ function canvas2(input, output) {
   if (!ctx) return;
   ctx.drawImage(input, 0, 0);
 }
+async function tensor(input, output) {
+  if (!input || !output) return;
+  if (!env.browser) return;
+  await cT.toPixels(input, output);
+}
 async function all(inCanvas2, result, drawOptions) {
   if (!(result == null ? void 0 : result.performance) || !inCanvas2) return null;
   const timeStamp = now();
@@ -38386,7 +38392,7 @@ async function decodeResults(boxesTensor, logitsTensor, config3, outputSize2) {
     const detectedBox = { score, boxRaw, box };
     detectedBoxes.push(detectedBox);
   }
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return detectedBoxes;
 }
 async function detectBoxes(input, config3, outputSize2) {
@@ -38397,7 +38403,7 @@ async function detectBoxes(input, config3, outputSize2) {
   t10.logits = cc(t10.logitsRaw);
   t10.boxes = cc(t10.boxesRaw);
   const boxes = await decodeResults(t10.boxes, t10.logits, config3, outputSize2);
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return boxes;
 }
 
@@ -38489,7 +38495,7 @@ function prepareImage(input, size2, cropBox) {
   } else {
     final = je(t10.cropped || input, constants.tf255);
   }
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return final;
 }
 function rescaleKeypoints(keypoints, outputSize2, cropBox) {
@@ -38545,7 +38551,7 @@ async function detectLandmarks(input, config3, outputSize2) {
   const poseScore = (await t10.poseflag.data())[0];
   const points = await t10.ld.data();
   const distances = await t10.world.data();
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   const keypointsRelative = [];
   const depth = 5;
   for (let i = 0; i < points.length / depth; i++) {
@@ -38743,7 +38749,7 @@ async function process3(res, outputShape, config3) {
     ];
     results.push({ id: i++, score, class: classVal, label, box, boxRaw });
   }
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return results;
 }
 async function predict2(input, config3) {
@@ -38838,7 +38844,7 @@ async function predict3(image, config3) {
   }
   skipped3 = 0;
   return new Promise(async (resolve) => {
-    const tensor = De(() => {
+    const tensor2 = De(() => {
       var _a, _b;
       const resize = eX.resizeBilinear(image, [((_a = model4 == null ? void 0 : model4.inputs[0].shape) == null ? void 0 : _a[2]) || 0, ((_b = model4 == null ? void 0 : model4.inputs[0].shape) == null ? void 0 : _b[1]) || 0], false);
       const enhance2 = se(resize, constants.tf2);
@@ -38846,9 +38852,9 @@ async function predict3(image, config3) {
       return norm;
     });
     let resT;
-    if (config3.body.enabled) resT = model4 == null ? void 0 : model4.execute(tensor);
+    if (config3.body.enabled) resT = model4 == null ? void 0 : model4.execute(tensor2);
     lastTime3 = now();
-    Ot(tensor);
+    Ot(tensor2);
     if (resT) {
       cache2.keypoints.length = 0;
       const squeeze = cc(resT);
@@ -39117,7 +39123,7 @@ function decodeBoxes2(boxOutputs) {
   t10.startNormalized = se(t10.starts, inputSizeT);
   t10.endNormalized = se(t10.ends, inputSizeT);
   const boxes = r22([t10.startNormalized, t10.endNormalized], 1);
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return boxes;
 }
 async function getBoxes(inputImage, config3) {
@@ -39187,10 +39193,10 @@ async function getBoxes(inputImage, config3) {
       const enlargedBox = enlargeBox(scaledBox, ((_g2 = config3.face.detector) == null ? void 0 : _g2.scale) || 1.4);
       const squaredBox = squarifyBox(enlargedBox);
       if (squaredBox.size[0] > (((_h2 = config3.face.detector) == null ? void 0 : _h2["minSize"]) || 0) && squaredBox.size[1] > (((_i2 = config3.face.detector) == null ? void 0 : _i2["minSize"]) || 0)) boxes.push(squaredBox);
-      Object.keys(b).forEach((tensor) => Ot(b[tensor]));
+      Object.keys(b).forEach((tensor2) => Ot(b[tensor2]));
     }
   }
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return boxes;
 }
 
@@ -39539,7 +39545,7 @@ async function predict5(image, config3, idx, count2) {
         if (data[i] > (config3.face.emotion.minConfidence || 0)) obj.push({ score: Math.min(0.99, Math.trunc(100 * data[i]) / 100), emotion: annotations[i] });
       }
       obj.sort((a, b) => b.score - a.score);
-      Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+      Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     }
     last3[idx] = obj;
     lastCount = count2;
@@ -39562,15 +39568,15 @@ async function load7(config3) {
 }
 function enhance(input, config3) {
   var _a, _b;
-  const tensor = input.image || input.tensor || input;
-  if (!(model9 == null ? void 0 : model9.inputs[0].shape)) return tensor;
+  const tensor2 = input.image || input.tensor || input;
+  if (!(model9 == null ? void 0 : model9.inputs[0].shape)) return tensor2;
   let crop;
   if (((_a = config3.face.description) == null ? void 0 : _a["crop"]) > 0) {
     const cropval = (_b = config3.face.description) == null ? void 0 : _b["crop"];
     const box = [[cropval, cropval, 1 - cropval, 1 - cropval]];
-    crop = eX.cropAndResize(tensor, box, [0], [model9.inputs[0].shape[2], model9.inputs[0].shape[1]]);
+    crop = eX.cropAndResize(tensor2, box, [0], [model9.inputs[0].shape[2], model9.inputs[0].shape[1]]);
   } else {
-    crop = eX.resizeBilinear(tensor, [model9.inputs[0].shape[2], model9.inputs[0].shape[1]], false);
+    crop = eX.resizeBilinear(tensor2, [model9.inputs[0].shape[2], model9.inputs[0].shape[1]], false);
   }
   const norm = se(crop, constants.tf255);
   Ot(crop);
@@ -39778,7 +39784,7 @@ async function predict9(image, config3, idx, count2) {
     let age2 = ageSorted[0][0];
     for (let i = 1; i < ageSorted.length; i++) age2 += ageSorted[i][1] * (ageSorted[i][0] - age2);
     obj.age = Math.round(10 * age2) / 10;
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     last5[idx] = obj;
     lastCount5 = count2;
     lastTime8 = now();
@@ -39826,7 +39832,7 @@ async function predict10(image, config3, idx, count2) {
       const data = await t10.age.data();
       obj.age = Math.trunc(10 * data[0]) / 10;
     }
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     last6[idx] = obj;
     lastCount6 = count2;
     lastTime9 = now();
@@ -39889,7 +39895,7 @@ async function predict11(image, config3, idx, count2) {
     const data = await t10.gender.data();
     obj.gender = data[0] > data[1] ? "female" : "male";
     obj.genderScore = data[0] > data[1] ? Math.trunc(100 * data[0]) / 100 : Math.trunc(100 * data[1]) / 100;
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     last7[idx] = obj;
     lastCount7 = count2;
     lastTime10 = now();
@@ -39928,7 +39934,7 @@ async function predict12(input, config3, idx, count2) {
       t10.data = model15.execute(t10.crop);
       const output = await t10.data.data();
       data = Array.from(output);
-      Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+      Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     }
     last8[idx] = data;
     lastCount8 = count2;
@@ -39967,7 +39973,7 @@ async function predict13(input, config3, idx, count2) {
       t10.data = model16.execute(t10.crop);
       const output = await t10.data.data();
       data = Array.from(output);
-      Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+      Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     }
     last9[idx] = data;
     lastCount9 = count2;
@@ -40216,7 +40222,7 @@ var detectFace = async (instance, input) => {
       descRes.descriptor = insightfaceRes;
     }
     const irisSize = ((_v2 = instance.config.face.iris) == null ? void 0 : _v2.enabled) ? calculateCameraDistance(faces[i], input.shape[2]) : 0;
-    const tensor = ((_w2 = instance.config.face.detector) == null ? void 0 : _w2.return) ? cc(faces[i].tensor) : null;
+    const tensor2 = ((_w2 = instance.config.face.detector) == null ? void 0 : _w2.return) ? cc(faces[i].tensor) : null;
     Ot(faces[i].tensor);
     if (faces[i].tensor) delete faces[i].tensor;
     const res = {
@@ -40233,7 +40239,7 @@ var detectFace = async (instance, input) => {
     if (livenessRes) res.live = livenessRes;
     if (irisSize > 0) res.distance = irisSize;
     if (rotation) res.rotation = rotation;
-    if (tensor) res.tensor = tensor;
+    if (tensor2) res.tensor = tensor2;
     faceRes.push(res);
     instance.analyze("End Face");
   }
@@ -43811,7 +43817,7 @@ var HandDetector = class {
     t10.add = Ce(t10.boxCenterPoints, t10.halfBoxSizes);
     t10.endPoints = se(t10.add, this.inputSizeTensor);
     const res = r22([t10.startPoints, t10.endPoints], 1);
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     return res;
   }
   normalizeLandmarks(rawPalmLandmarks, index2) {
@@ -43820,7 +43826,7 @@ var HandDetector = class {
     t10.div = je(t10.reshape, this.inputSizeTensor);
     t10.landmarks = Ce(t10.div, this.anchors[index2] ? this.anchors[index2] : 0);
     const res = se(t10.landmarks, this.inputSizeTensor);
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     return res;
   }
   async predict(input, config3) {
@@ -43853,9 +43859,9 @@ var HandDetector = class {
       const hand3 = { startPoint, endPoint, palmLandmarks, confidence: scores[index2] };
       const scaled = scaleBoxCoordinates2(hand3, [(input.shape[2] || 1) / this.inputSize, (input.shape[1] || 0) / this.inputSize]);
       hands.push(scaled);
-      Object.keys(p).forEach((tensor) => Ot(p[tensor]));
+      Object.keys(p).forEach((tensor2) => Ot(p[tensor2]));
     }
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     return hands;
   }
 };
@@ -44182,7 +44188,7 @@ async function detectHands(input, config3) {
     const hand3 = { id: id2++, score, box: boxFull, boxRaw, label };
     hands.push(hand3);
   }
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   hands.sort((a, b) => b.score - a.score);
   if (hands.length > (config3.hand.maxDetected || 1)) hands.length = config3.hand.maxDetected || 1;
   return hands;
@@ -44221,7 +44227,7 @@ async function detectFingers(input, h, config3) {
         hand3.annotations[key] = fingerMap[key].map((index2) => hand3.landmarks && hand3.keypoints[index2] ? hand3.keypoints[index2] : null);
       }
     }
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   }
   return hand3;
 }
@@ -44506,7 +44512,7 @@ async function predict16(input, config3) {
     default:
       rgba = ar(0);
   }
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return rgba;
 }
 
@@ -44643,7 +44649,7 @@ function padInput(input, inputSize10) {
   t10.pad = Aa(input, cache5.padding);
   t10.resize = eX.resizeBilinear(t10.pad, [inputSize10, inputSize10]);
   const final = Ue(t10.resize, "int32");
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return final;
 }
 function rescaleBody(body4, outputSize2) {
@@ -44785,7 +44791,7 @@ async function predict17(input, config3) {
       rescaleBody(body4, [input.shape[2] || 1, input.shape[1] || 1]);
       jitter(body4.keypoints);
     }
-    Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+    Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
     resolve(cache6.bodies);
   });
 }
@@ -45215,7 +45221,7 @@ async function predict19(input, config3) {
     results3d[1] = Ea(results3d[1]);
     return results3d;
   });
-  const buffers = await Promise.all(res.map((tensor) => tensor.buffer()));
+  const buffers = await Promise.all(res.map((tensor2) => tensor2.buffer()));
   for (const t10 of res) Ot(t10);
   const decoded = decode(buffers[0], buffers[1], buffers[2], buffers[3], config3.body.maxDetected, config3.body.minConfidence);
   if (!model20.inputs[0].shape) return [];
@@ -45337,7 +45343,7 @@ async function predict21(input, config3) {
     default:
       rgba = ar(0);
   }
-  Object.keys(t10).forEach((tensor) => Ot(t10[tensor]));
+  Object.keys(t10).forEach((tensor2) => Ot(t10[tensor2]));
   return rgba;
 }
 
@@ -46293,8 +46299,8 @@ async function warmupCanvas(instance) {
       } else {
         const ctx = canvas3.getContext("2d");
         if (ctx) ctx.drawImage(img, 0, 0);
-        const tensor = await instance.image(canvas3, true);
-        const res = tensor.tensor ? await instance.detect(tensor.tensor, instance.config) : void 0;
+        const tensor2 = await instance.image(canvas3, true);
+        const res = tensor2.tensor ? await instance.detect(tensor2.tensor, instance.config) : void 0;
         resolve(res);
       }
     };
@@ -46344,16 +46350,16 @@ async function runCompile(instance) {
     for (let dim = 0; dim < shape.length; dim++) {
       if (shape[dim] === -1) shape[dim] = dim === 0 ? 1 : 64;
     }
-    const tensor = Gr(shape, dtype);
+    const tensor2 = Gr(shape, dtype);
     try {
-      const res = model23.execute(tensor);
+      const res = model23.execute(tensor2);
       compiledModels.push(modelName);
       if (Array.isArray(res)) res.forEach((t10) => Ot(t10));
       else Ot(res);
     } catch (e) {
       if (instance.config.debug) log("compile fail model:", modelName);
     }
-    Ot(tensor);
+    Ot(tensor2);
   }
   const kernels = await webGLBackend["checkCompileCompletionAsync"]();
   webGLBackend["getUniformLocations"]();
@@ -46556,12 +46562,12 @@ var Human = class {
     if (!this.config.segmentation.enabled) return null;
     const processed = await process2(input, this.config);
     if (!processed.tensor) return null;
-    let tensor = null;
-    if ((_a = this.config.segmentation.modelPath) == null ? void 0 : _a.includes("rvm")) tensor = await predict20(processed.tensor, this.config);
-    if ((_b = this.config.segmentation.modelPath) == null ? void 0 : _b.includes("meet")) tensor = await predict16(processed.tensor, this.config);
-    if ((_c2 = this.config.segmentation.modelPath) == null ? void 0 : _c2.includes("selfie")) tensor = await predict21(processed.tensor, this.config);
+    let tensor2 = null;
+    if ((_a = this.config.segmentation.modelPath) == null ? void 0 : _a.includes("rvm")) tensor2 = await predict20(processed.tensor, this.config);
+    if ((_b = this.config.segmentation.modelPath) == null ? void 0 : _b.includes("meet")) tensor2 = await predict16(processed.tensor, this.config);
+    if ((_c2 = this.config.segmentation.modelPath) == null ? void 0 : _c2.includes("selfie")) tensor2 = await predict21(processed.tensor, this.config);
     Ot(processed.tensor);
-    return tensor;
+    return tensor2;
   }
   /** Compare two input tensors for pixel similarity
    * - use `human.image` to process any valid input and get a tensor that can be used for compare

@@ -94,7 +94,7 @@ function addFace(face, source) {
     e.preventDefault();
     document.getElementById('description').innerHTML = canvas.title;
   };
-  human.tf.browser.draw(face.tensor, canvas);
+  human.draw.tensor(face.tensor, canvas);
   human.tf.dispose(face.tensor);
   return canvas;
 }

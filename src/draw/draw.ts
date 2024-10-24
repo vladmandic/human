@@ -2,6 +2,7 @@
  * Module that implements helper draw functions, exposed as human.draw
  */
 
+import * as tf from 'dist/tfjs.esm.js';
 import { mergeDeep, now } from '../util/util';
 import { env } from '../util/env';
 import { getCanvasContext, rect } from './primitives';
@@ -14,6 +15,7 @@ import { gesture } from './gesture';
 import { defaultLabels } from './labels';
 import type { Result, PersonResult } from '../result';
 import type { AnyCanvas, DrawOptions } from '../exports';
+import type { Tensor2D } from '../tfjs/types';
 
 let drawTime = 0;
 
@@ -58,6 +60,22 @@ export function canvas(input: AnyCanvas | HTMLImageElement | HTMLVideoElement, o
   const ctx = getCanvasContext(output) as CanvasRenderingContext2D;
   if (!ctx) return;
   ctx.drawImage(input, 0, 0);
+}
+
+/** draw processed canvas */
+export async function tensor(input: Tensor2D, output: HTMLCanvasElement) {
+  if (!input || !output) return;
+  if (!env.browser) return;
+  // const backend = tf.getBackend();
+  // if (backend === 'webgpu') tf.browser.draw(input, output);
+  // else await tf.browser.toPixels(input, output);
+  await tf.browser.toPixels(input, output);
+  // const ctx = getCanvasContext(output) as CanvasRenderingContext2D;
+  // if (!ctx) return;
+  // const image = await process(input);
+  // result.canvas = image.canvas;
+  // human.tf.dispose(image.tensor);
+  // ctx.drawImage(image.canvas, 0, 0);
 }
 
 /** meta-function that performs draw for: canvas, face, body, hand */

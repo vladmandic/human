@@ -33561,7 +33561,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.3.4";
+var version = "3.3.5";
 
 // src/tfjs/humangl.ts
 var config2 = {
@@ -33780,7 +33780,9 @@ async function check(instance, force = false) {
             log("override: backend set to webgpu but browser reports no available gpu");
             instance.config.backend = "webgl";
           } else {
-            const adapterInfo = "requestAdapterInfo" in adapter ? await adapter.requestAdapterInfo() : void 0;
+            let adapterInfo;
+            if ("requestAdapterInfo" in adapter) adapterInfo = await (adapter == null ? void 0 : adapter.requestAdapterInfo());
+            else adapterInfo = adapter.info;
             log("webgpu adapter info:", adapterInfo);
           }
         }

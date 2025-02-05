@@ -121,14 +121,17 @@ export async function check(instance: Human, force = false) {
           log('override: backend set to webgpu but browser does not support webgpu');
           instance.config.backend = 'webgl';
         } else {
-          const adapter = await navigator.gpu.requestAdapter();
+          const adapter: GPUAdapter = await navigator.gpu.requestAdapter() as GPUAdapter;
           if (instance.config.debug) log('enumerated webgpu adapter:', adapter);
           if (!adapter) {
             log('override: backend set to webgpu but browser reports no available gpu');
             instance.config.backend = 'webgl';
           } else {
-            // @ts-ignore requestAdapterInfo is not in tslib
-            const adapterInfo = 'requestAdapterInfo' in adapter ? await adapter.requestAdapterInfo() : undefined;
+            let adapterInfo;
+            // @ts-ignore gpu adapter info
+            if ('requestAdapterInfo' in adapter) adapterInfo = await adapter?.requestAdapterInfo();
+            // @ts-ignore gpu adapter info
+            else adapterInfo = adapter.info;
             // if (adapter.features) adapter.features.forEach((feature) => log('webgpu features:', feature));
             log('webgpu adapter info:', adapterInfo);
           }

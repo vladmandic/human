@@ -4,7 +4,6 @@
 ![Last Commit](https://img.shields.io/github/last-commit/vladmandic/human?style=flat-square&svg=true)
 ![License](https://img.shields.io/github/license/vladmandic/human?style=flat-square&svg=true)
 ![GitHub Status Checks](https://img.shields.io/github/checks-status/vladmandic/human/main?style=flat-square&svg=true)
-![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/vladmandic/human?style=flat-square&svg=true)
 
 # Human Library
 

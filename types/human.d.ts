@@ -406,6 +406,8 @@ export declare interface FaceDetectorConfig extends GenericConfig {
     iouThreshold: number;
     /** how much should face box be enlarged over the min/max facial coordinates */
     scale: number;
+    /** automatically pad image to square */
+    square: boolean;
     /** should child models perform on masked image of a face */
     mask: boolean;
     /** should face detection return processed and cropped face tensor that can with an external model for addtional processing?
@@ -915,6 +917,7 @@ declare type MatchOptions = {
 
 export declare interface ModelInfo {
     name: string;
+    loaded: boolean;
     inCache: boolean;
     sizeDesired: number;
     sizeFromManifest: number;
@@ -1100,6 +1103,9 @@ export declare type SegmentationEnum = 'default' | 'alpha' | 'foreground' | 'sta
 declare function similarity(descriptor1: Descriptor, descriptor2: Descriptor, options?: MatchOptions): number;
 
 export { Tensor }
+
+/** draw processed canvas */
+declare function tensor(input: Tensor2D, output: HTMLCanvasElement): Promise<void>;
 
 export { Tensor1D }
 

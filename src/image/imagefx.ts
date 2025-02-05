@@ -27,7 +27,7 @@ class GLProgram {
     this.gl = gl;
     const vertexShader = this.compile(vertexSource, this.gl.VERTEX_SHADER);
     const fragmentShader = this.compile(fragmentSource, this.gl.FRAGMENT_SHADER);
-    this.id = this.gl.createProgram() as WebGLProgram;
+    this.id = this.gl.createProgram();
     if (!vertexShader || !fragmentShader) return;
     if (!this.id) {
       log('filter: could not create webgl program');

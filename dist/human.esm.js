@@ -8657,7 +8657,7 @@ function mT(r15, e, t10, o, n, s) {
     return a < s[0] ? s[0] : a > s[1] ? s[1] : a;
   }
 }
-var OX = "4.21.0";
+var OX = "4.22.0";
 var Fl = class {
   static sgd(e) {
     return new mi(e);
@@ -11171,7 +11171,7 @@ function L8(r15) {
 function B8(r15) {
   return r15.endsWith("/") || (r15 = r15 + "/"), `${r15}${O8}${P8}`;
 }
-var z8 = "4.21.0";
+var z8 = "4.22.0";
 function Q(r15, e) {
   Array.isArray(r15) || (r15 = [r15]), r15.forEach((t10) => {
     t10 != null && y.assert(t10.dtype !== "complex64", () => `${e} does not support complex64 tensors in the CPU backend.`);
@@ -12257,7 +12257,7 @@ function dp(r15, e, t10, o) {
   let d = t10.slice();
   return d[n] = l[1], { outputValues: m.values, outputShape: d, indices: i };
 }
-var yY = "4.21.0";
+var yY = "4.22.0";
 tu("cpu", () => new xc(), 1);
 var fI = Ie(hn, (r15) => r15 >= 0 ? r15 : Math.exp(r15) - 1);
 var z_ = { kernelName: hn, backendName: "cpu", kernelFunc: fI };
@@ -17342,7 +17342,7 @@ function m9(r15, e) {
     return t10;
   } else throw new Error(`Unknown dtype ${e}`);
 }
-var d9 = "4.21.0";
+var d9 = "4.22.0";
 function GD() {
   A().set("WEBGL_FORCE_F16_TEXTURES", true);
 }
@@ -25094,7 +25094,7 @@ function aae() {
   if (qv === -1) throw new Error("WASM backend not initialized.");
   return qv;
 }
-var iae = "4.21.0";
+var iae = "4.22.0";
 var uae = 2;
 tu("wasm", async () => {
   let { wasm: r15 } = await jB();
@@ -26017,7 +26017,7 @@ dm() && tu("webgpu", async () => {
   e.features.has("timestamp-query") && o.push("timestamp-query"), e.features.has("bgra8unorm-storage") && o.push(["bgra8unorm-storage"]), t10.requiredFeatures = o;
   let n = e.limits;
   t10.requiredLimits = { maxComputeWorkgroupStorageSize: n.maxComputeWorkgroupStorageSize, maxComputeWorkgroupsPerDimension: n.maxComputeWorkgroupsPerDimension, maxStorageBufferBindingSize: n.maxStorageBufferBindingSize, maxBufferSize: n.maxBufferSize, maxComputeWorkgroupSizeX: n.maxComputeWorkgroupSizeX, maxComputeInvocationsPerWorkgroup: n.maxComputeInvocationsPerWorkgroup };
-  let s = await e.requestDevice(t10), a = await e.requestAdapterInfo();
+  let s = await e.requestDevice(t10), a = "info" in e ? e.info : "requestAdapterInfo" in e ? await e.requestAdapterInfo() : void 0;
   return new jc(s, a);
 }, 3);
 var fe;
@@ -31812,12 +31812,12 @@ function Fce(r15) {
 var qU = { kernelName: Qi, backendName: "webgpu", kernelFunc: Fce };
 var Pce = [pz, Kz, qz, jz, Xz, Yz, Zz, Jz, eV, tV, rV, oV, nV, sV, aV, pV, cV, lV, mV, dV, hV, gV, xV, wV, SV, IV, lz, kV, TV, _V, EV, $V, RV, DV, AV, FV, PV, OV, BV, zV, VV, WV, GV, HV, UV, KV, qV, jV, XV, YV, JV, eW, tW, rW, oW, nW, sW, aW, iW, iz, uW, lW, pW, cW, mW, dW, fW, hW, gW, xW, yW, cz, bW, NV, CW, wW, SW, IW, vW, kW, NW, _W, TW, EW, $W, RW, AW, FW, iV, PW, OW, BW, MW, LW, zW, uV, VW, WW, UW, GW, KW, QV, qW, jW, XW, yV, YW, JW, eU, tU, rU, oU, nU, sU, bV, aU, iU, uU, pU, uz, cU, lU, mU, dU, fU, hU, gU, xU, yU, bU, CU, wU, SU, IU, vU, kU, fV, OU, MU, LU, HW, NU, TU, _U, EU, RU, DU, AU, FU, PU, BU, ZV, zU, VU, WU, $U, GU, HU, Qz, KU, qU, QW];
 for (let r15 of Pce) ti(r15);
-var jU = "4.21.0";
-var Oce = "4.21.0";
-var Mce = "4.21.0";
-var Lce = "4.21.0";
-var Bce = "4.21.0";
-var zce = "4.21.0";
+var jU = "4.22.0";
+var Oce = "4.22.0";
+var Mce = "4.22.0";
+var Lce = "4.22.0";
+var Bce = "4.22.0";
+var zce = "4.22.0";
 var Vce = { tfjs: jU, "tfjs-core": jU, "tfjs-converter": Oce, "tfjs-backend-cpu": Mce, "tfjs-backend-webgl": Lce, "tfjs-backend-wasm": Bce, "tfjs-backend-webgpu": zce };
 var EQt = void 0;
 
@@ -33107,7 +33107,10 @@ var Env = class {
     try {
       if (this.webgpu.supported) {
         const adapter = await navigator.gpu.requestAdapter();
-        this.webgpu.adapter = await (adapter == null ? void 0 : adapter.requestAdapterInfo());
+        if (adapter) {
+          if ("requestAdapterInfo" in adapter) this.webgpu.adapter = await adapter.requestAdapterInfo();
+          else this.webgpu.adapter = await adapter.info;
+        }
       }
     } catch (e) {
       this.webgpu.supported = false;

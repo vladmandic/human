@@ -370,6 +370,20 @@ And for even better results, you can run detection in a separate web worker thre
 
 <br><hr><br>
 
+## Compatibility
+
+### Browser
+
+- Tested using latest version of chromium based browsers  
+- Support for Firefox and Safari is based on best-effort  
+
+### NodeJS
+
+- Supported versions are from **14.x** to **22.x**  
+- NodeJS version **23.x** is not supported due to breaking changes and issues with `@tensorflow/tfjs`  
+
+<br><hr><br>
+
 ## Inputs
 
 `Human` library can process all known input types:  

@@ -11,11 +11,9 @@
   
 ### **HEAD -> main** 2024/10/24 mandic00@live.com
 
+- add human.draw.tensor method
 
 ### **3.3.4** 2024/10/24 mandic00@live.com
-
-
-### **origin/main** 2024/10/14 mandic00@live.com
 
 
 ### **3.3.3** 2024/10/14 mandic00@live.com

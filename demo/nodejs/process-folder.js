@@ -77,6 +77,7 @@ async function main() {
   globalThis.ImageData = canvas.ImageData; // patch global namespace with canvas library
 
   log.info('Human:', human.version, 'TF:', tf.version_core);
+  process.noDeprecation = true;
   const configErrors = await human.validate();
   if (configErrors.length > 0) log.error('Configuration errors:', configErrors);
   await human.load(); // pre-load models

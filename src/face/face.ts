@@ -113,7 +113,7 @@ export const detectFace = async (instance: Human /* instance of human */, input:
     }
     instance.analyze('End GEAR:');
 
-    // run gear, inherits face from blazeface
+    // run ssrnet, inherits face from blazeface
     instance.analyze('Start SSRNet:');
     if (instance.config.async) {
       ageRes = instance.config.face['ssrnet']?.enabled ? ssrnetAge.predict(faces[i].tensor as Tensor4D || tf.tensor([]), instance.config, i, faces.length) : null;

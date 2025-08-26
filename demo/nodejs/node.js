@@ -187,6 +187,7 @@ async function test() {
 async function main() {
   log.configure({ inspect: { breakLength: 265 } });
   log.header();
+  process.noDeprecation = true;
   log.info('Current folder:', process.env.PWD);
   await init();
   const f = process.argv[2];

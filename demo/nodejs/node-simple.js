@@ -17,6 +17,7 @@ const humanConfig = {
 };
 
 async function detect(inputFile) {
+  process.noDeprecation = true;
   const human = new Human.Human(humanConfig); // create instance of human using default configuration
   console.log('Human:', human.version, 'TF:', tf.version_core); // eslint-disable-line no-console
   await human.load(); // optional as models would be loaded on-demand first time they are required

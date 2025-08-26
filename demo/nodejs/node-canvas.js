@@ -24,6 +24,7 @@ const config = { // just enable all and leave default settings
 
 async function main() {
   log.header();
+  process.noDeprecation = true;
 
   globalThis.Canvas = canvas.Canvas; // patch global namespace with canvas library
   globalThis.ImageData = canvas.ImageData; // patch global namespace with canvas library

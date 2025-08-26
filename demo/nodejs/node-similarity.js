@@ -45,6 +45,7 @@ async function detect(input) {
 }
 
 async function main() {
+  process.noDeprecation = true;
   log.configure({ inspect: { breakLength: 265 } });
   log.header();
   if (process.argv.length !== 4) {

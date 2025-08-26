@@ -19,10 +19,10 @@
       "extends": [
         "airbnb-base",
         "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/strict",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:@typescript-eslint/strict",
+        "plugin:@typescript-eslint/eslint-recommended",
         "plugin:import/recommended",
         "plugin:promise/recommended"
       ],
@@ -30,16 +30,17 @@
         "@typescript-eslint/ban-ts-comment":"off",
         "@typescript-eslint/dot-notation":"off",
         "@typescript-eslint/no-empty-interface":"off",
+        "@typescript-eslint/no-empty-object-type":"off",
         "@typescript-eslint/no-inferrable-types":"off",
         "@typescript-eslint/no-misused-promises":"off",
+        "@typescript-eslint/no-require-imports":"off",
         "@typescript-eslint/no-unnecessary-condition":"off",
+        "@typescript-eslint/no-unnecessary-type-assertion":"off",
         "@typescript-eslint/no-unsafe-argument":"off",
         "@typescript-eslint/no-unsafe-assignment":"off",
         "@typescript-eslint/no-unsafe-call":"off",
         "@typescript-eslint/no-unsafe-member-access":"off",
         "@typescript-eslint/no-unsafe-return":"off",
-        "@typescript-eslint/no-require-imports":"off",
-        "@typescript-eslint/no-empty-object-type":"off",
         "@typescript-eslint/non-nullable-type-assertion-style":"off",
         "@typescript-eslint/prefer-for-of":"off",
         "@typescript-eslint/prefer-nullish-coalescing":"off",
@@ -162,24 +163,6 @@
         "es2021": false
       },
       "extends": [] 
-    },
-    {
-      "files": ["**/*.html"],
-      "parserOptions": { "sourceType": "module", "ecmaVersion": "latest" },
-      "parser": "@html-eslint/parser",
-      "plugins": ["html", "@html-eslint"],
-      "env": {
-        "browser": true,
-        "commonjs": false,
-        "node": false,
-        "es2021": false
-      },
-      "extends": ["plugin:@html-eslint/recommended"],
-      "rules": {
-        "@html-eslint/element-newline":"off",
-        "@html-eslint/attrs-newline":"off",
-        "@html-eslint/indent": ["error", 2]
-      }
     },
     {
       "files": ["**/*.md"],

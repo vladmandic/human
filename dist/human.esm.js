@@ -646,7 +646,7 @@ var U0 = Kt((ple, W0) => {
   };
   de.getNumBitsAbs = function() {
     if (this.isNegative()) return this.eq(Vr) ? 64 : this.neg().getNumBitsAbs();
-    for (var e = this.high != 0 ? this.high : this.low, t10 = 31; t10 > 0 && !(e & 1 << t10); t10--) ;
+    for (var e = this.high != 0 ? this.high : this.low, t10 = 31; t10 > 0 && (e & 1 << t10) == 0; t10--) ;
     return this.high != 0 ? t10 + 33 : t10 + 1;
   };
   de.isZero = function() {
@@ -981,7 +981,7 @@ var l1 = Kt((c1, Kw) => {
       function p(u, c) {
         var l, m, d, f, h, g = [], x = 128;
         for (c === (c | 0) ? (m = c, c = null) : (c = c + "\0", m = 0, x = Math.max(x, c.length)), d = 0, f = -32; f < x; ++f) c && (m ^= c.charCodeAt((f + 32) % c.length)), f === 0 && (h = m), m ^= m << 10, m ^= m >>> 15, m ^= m << 4, m ^= m >>> 13, f >= 0 && (h = h + 1640531527 | 0, l = g[f & 127] ^= m + h, d = l == 0 ? d + 1 : 0);
-        for (d >= 128 && (g[(c && c.length || 0) & 127] = -1), d = 127, f = 4 * 128; f > 0; --f) m = g[d + 34 & 127], l = g[d = d + 1 & 127], m ^= m << 13, l ^= l << 17, m ^= m >>> 15, l ^= l >>> 12, g[d] = m ^ l;
+        for (d >= 128 && (g[(c && c.length || 0) & 127] = -1), d = 127, f = 512; f > 0; --f) m = g[d + 34 & 127], l = g[d = d + 1 & 127], m ^= m << 13, l ^= l << 17, m ^= m >>> 15, l ^= l >>> 12, g[d] = m ^ l;
         u.w = h, u.X = g, u.i = d;
       }
       p(i, a);
@@ -1132,7 +1132,7 @@ var zB = Kt(() => {
 var VB = Kt((Wg, Gv) => {
   var Uv = (() => {
     var r15 = typeof document != "undefined" && document.currentScript ? document.currentScript.src : void 0;
-    return typeof __filename != "undefined" && (r15 = r15 || __filename), function(e) {
+    return typeof __filename != "undefined" && (r15 = r15 || __filename), (function(e) {
       e = e || {};
       function t10() {
         return oe.buffer != He && Tt(oe.buffer), lt;
@@ -2081,7 +2081,7 @@ var VB = Kt((Wg, Gv) => {
         };
       }
       return e.ready;
-    };
+    });
   })();
   typeof Wg == "object" && typeof Gv == "object" ? Gv.exports = Uv : typeof define == "function" && define.amd ? define([], function() {
     return Uv;
@@ -2094,7 +2094,7 @@ var UB = Kt((e3t, WB) => {
 var GB = Kt((Ug, Kv) => {
   var Hv = (() => {
     var r15 = typeof document != "undefined" && document.currentScript ? document.currentScript.src : void 0;
-    return typeof __filename != "undefined" && (r15 = r15 || __filename), function(e) {
+    return typeof __filename != "undefined" && (r15 = r15 || __filename), (function(e) {
       e = e || {};
       var t10 = typeof e != "undefined" ? e : {}, o, n;
       t10.ready = new Promise(function(K, ae) {
@@ -2776,7 +2776,7 @@ var GB = Kt((Ug, Kv) => {
         };
       }
       return e.ready;
-    };
+    });
   })();
   typeof Ug == "object" && typeof Kv == "object" ? Kv.exports = Hv : typeof define == "function" && define.amd ? define([], function() {
     return Hv;
@@ -4375,7 +4375,7 @@ function Iw() {
 var T = Iw();
 function y4(r15, e) {
   let t10 = { a: r15, b: e };
-  return T.runKernel(uo, t10);
+  return T.runKernel("Add", t10);
 }
 var eu = {};
 qe(eu, { isBrowser: () => kw, isMobile: () => w4, mockIsMobile: () => C4 });
@@ -4790,9 +4790,8 @@ function dk(r15) {
   return ir.join(r15);
 }
 function Ew(r15) {
-  let e = "/";
-  for (r15 = r15.trim(); r15.endsWith(e); ) r15 = r15.slice(0, r15.length - 1);
-  let t10 = r15.split(e);
+  for (r15 = r15.trim(); r15.endsWith("/"); ) r15 = r15.slice(0, r15.length - 1);
+  let t10 = r15.split("/");
   return t10[t10.length - 1];
 }
 function id(r15, e) {
@@ -4824,7 +4823,7 @@ function Sl(r15) {
 function T4() {
   let r15 = (t10) => {
     let o = t10 << 13, n = 0;
-    for (; !(o & 8388608); ) n -= 8388608, o <<= 1;
+    for (; (o & 8388608) === 0; ) n -= 8388608, o <<= 1;
     return o &= -8388609, n += 947912704, o | n;
   }, e = new Uint32Array(2048);
   e[0] = 0;
@@ -5248,7 +5247,7 @@ function G4(r15, e) {
   let t10 = v(r15, "a", "add"), o = v(e, "b", "add");
   [t10, o] = Oe(t10, o);
   let n = { a: t10, b: o };
-  return T.runKernel(uo, n);
+  return T.runKernel("Add", n);
 }
 var Ce = N({ add_: G4 });
 function H4(r15, e) {
@@ -5279,7 +5278,7 @@ function j4(r15) {
     return T.runKernel(Ai, t10);
   } else {
     let t10 = { x: e };
-    return T.runKernel(Xs, t10);
+    return T.runKernel("Abs", t10);
   }
 }
 var Qt = N({ abs_: j4 });
@@ -5307,12 +5306,12 @@ function Q4(r15) {
 var Ak = N({ addN_: Q4 });
 function Z4(r15, e = null, t10 = false) {
   let n = { x: v(r15, "x", "all", "bool") }, s = { axis: e, keepDims: t10 };
-  return T.runKernel(Go, n, s);
+  return T.runKernel("All", n, s);
 }
 var Fk = N({ all_: Z4 });
 function J4(r15, e = null, t10 = false) {
   let n = { x: v(r15, "x", "any", "bool") }, s = { axis: e, keepDims: t10 };
-  return T.runKernel(Ho, n, s);
+  return T.runKernel("Any", n, s);
 }
 var Pk = N({ any_: J4 });
 function eH(r15, e = 0) {
@@ -5710,7 +5709,7 @@ function UH(r15, e, t10, o, n) {
 var p2 = N({ conv3dTranspose_: UH });
 function GH(r15) {
   let t10 = { x: v(r15, "x", "cos", "float32") };
-  return T.runKernel(sn, t10);
+  return T.runKernel("Cos", t10);
 }
 var c2 = N({ cos_: GH });
 function HH(r15) {
@@ -5852,7 +5851,7 @@ function nK(r15, ...e) {
 var iu = N({ einsum_: nK });
 function sK(r15) {
   let t10 = { x: v(r15, "x", "elu", "float32") };
-  return T.runKernel(hn, t10);
+  return T.runKernel("Elu", t10);
 }
 var bd = N({ elu_: sK });
 function aK(r15, e) {
@@ -5865,7 +5864,7 @@ function iK(r15) {
   let e = v(r15, "x", "erf");
   E(e.dtype === "int32" || e.dtype === "float32", () => "Input dtype must be `int32` or `float32`."), e.dtype === "int32" && (e = Ue(e, "float32"));
   let t10 = { x: e };
-  return T.runKernel(gn, t10);
+  return T.runKernel("Erf", t10);
 }
 var S2 = N({ erf_: iK });
 function zw(r15, e) {
@@ -5906,19 +5905,19 @@ function mK(r15, e) {
 }
 function fK(r15, e = null, t10 = false) {
   let n = { x: v(r15, "x", "max") }, s = { reductionIndices: e, keepDims: t10 };
-  return T.runKernel(zn, n, s);
+  return T.runKernel("Max", n, s);
 }
 var Ra = N({ max_: fK });
 function hK(r15, e = null, t10 = false) {
   let n = { x: v(r15, "x", "min") }, s = { axis: e, keepDims: t10 };
-  return T.runKernel(Gn, n, s);
+  return T.runKernel("Min", n, s);
 }
 var Nl = N({ min_: hK });
 function gK(r15, e) {
   let t10 = v(r15, "base", "pow"), o = v(e, "exp", "pow");
   [t10, o] = Oe(t10, o);
   let n = { a: t10, b: o };
-  return T.runKernel(ts, n);
+  return T.runKernel("Pow", n);
 }
 var ui = N({ pow_: gK });
 function ke(r15, e) {
@@ -5940,7 +5939,7 @@ function bK(r15, e = null, t10 = false) {
   let o = v(r15, "x", "sum");
   o.dtype === "bool" && (o = Ue(o, "int32"));
   let n = { x: o }, s = { axis: e, keepDims: t10 };
-  return T.runKernel(Ss, n, s);
+  return T.runKernel("Sum", n, s);
 }
 var ot = N({ sum_: bK });
 function CK(r15, e = "euclidean", t10 = null, o = false) {
@@ -5978,7 +5977,7 @@ function wK(r15, e = null, t10 = false) {
 var k2 = N({ euclideanNorm_: wK });
 function SK(r15) {
   let t10 = { x: v(r15, "x", "exp") };
-  return T.runKernel(yn, t10);
+  return T.runKernel("Exp", t10);
 }
 var _o = N({ exp_: SK });
 function IK(r15, e = 0) {
@@ -6086,13 +6085,13 @@ function LK(r15, e = 5, t10 = 1, o = 1, n = 0.5) {
                rank ${s.rank}.`), E(Ka(e), () => `Error in localResponseNormalization: depthRadius must be an integer but got depthRadius ${e}.`);
   let a = s, i = false;
   s.rank === 3 && (i = true, a = W(s, [1, s.shape[0], s.shape[1], s.shape[2]]));
-  let p = { x: a }, u = { depthRadius: e, bias: t10, alpha: o, beta: n }, c = T.runKernel(Bn, p, u);
+  let p = { x: a }, u = { depthRadius: e, bias: t10, alpha: o, beta: n }, c = T.runKernel("LRN", p, u);
   return i ? W(c, [c.shape[1], c.shape[2], c.shape[3]]) : c;
 }
 var R2 = N({ localResponseNormalization_: LK });
 function BK(r15) {
   let t10 = { x: v(r15, "x", "log", "float32") };
-  return T.runKernel(Fn, t10);
+  return T.runKernel("Log", t10);
 }
 var pi = N({ log_: BK });
 function zK(r15) {
@@ -6158,7 +6157,7 @@ function Nd(r15) {
 }
 function HK(r15) {
   let t10 = { x: v(r15, "x", "neg") };
-  return T.runKernel(pa, t10);
+  return T.runKernel("Neg", t10);
 }
 var pr = N({ neg_: HK });
 function KK(r15) {
@@ -6175,7 +6174,7 @@ function jK(r15, e) {
   let t10 = v(r15, "a", "sub"), o = v(e, "b", "sub");
   [t10, o] = Oe(t10, o);
   let n = { a: t10, b: o };
-  return T.runKernel(Ts, n);
+  return T.runKernel("Sub", n);
 }
 var Te = N({ sub_: jK });
 function XK(r15, e = -1) {
@@ -6314,7 +6313,7 @@ function pq(r15, e) {
   let t10 = v(r15, "a", "mod"), o = v(e, "b", "mod");
   [t10, o] = Oe(t10, o);
   let n = { a: t10, b: o };
-  return T.runKernel(qn, n);
+  return T.runKernel("Mod", n);
 }
 var z2 = N({ mod_: pq });
 function cq(r15, e = null, t10 = false) {
@@ -6712,7 +6711,7 @@ function l6(r15) {
 var F1 = N({ sign_: l6 });
 function m6(r15) {
   let t10 = { x: v(r15, "x", "sin", "float32") };
-  return T.runKernel(gs, t10);
+  return T.runKernel("Sin", t10);
 }
 var P1 = N({ sin_: m6 });
 function d6(r15) {
@@ -6750,7 +6749,7 @@ var V1 = N({ softmax_: y6 });
 function b6(r15) {
   E(r15.dtype === "complex64", () => `The dtype for tf.spectral.fft() must be complex64 but got ${r15.dtype}.`);
   let e = { input: r15 };
-  return T.runKernel(zi, e);
+  return T.runKernel("FFT", e);
 }
 var uc = N({ fft_: b6 });
 function C6(r15) {
@@ -6825,7 +6824,7 @@ function _6(r15, e, t10, o, n = 0, s = 0, a = 0, i = 0, p = 0) {
 var W1 = N({ stridedSlice_: _6 });
 function E6(r15) {
   let t10 = { x: v(r15, "x", "tan", "float32") };
-  return T.runKernel(_s, t10);
+  return T.runKernel("Tan", t10);
 }
 var U1 = N({ tan_: E6 });
 function Jt(r15, e) {
@@ -8599,9 +8598,9 @@ function AX(r15, e, t10) {
 }
 function FX(r15, e, t10, o, n, s, a, i, p) {
   let u;
-  if (o == null ? (u = new Array(e.length), u.fill(1)) : u = o, a != null && a & a - 1) throw new Error("Multiple ellipses in slice is not allowed.");
+  if (o == null ? (u = new Array(e.length), u.fill(1)) : u = o, a != null && (a & a - 1) !== 0) throw new Error("Multiple ellipses in slice is not allowed.");
   let c = false, l = { dims: u.length, numAddAxisAfterEllipsis: 0, begin: e.slice(), end: t10.slice(), strides: u.slice(), beginMask: n, endMask: s, ellipsisMask: a, newAxisMask: i, shrinkAxisMask: p };
-  for (let C = 0; C < l.dims; C++) c && 1 << C & i && l.numAddAxisAfterEllipsis++, 1 << C & a && (c = true);
+  for (let C = 0; C < l.dims; C++) c && (1 << C & i) !== 0 && l.numAddAxisAfterEllipsis++, 1 << C & a && (c = true);
   c || (l.ellipsisMask |= 1 << l.dims, l.dims++);
   let m = { dims: r15.length, beginMask: 0, endMask: 0, beginValid: false, endValid: false };
   PX(l, m);
@@ -11290,7 +11289,7 @@ var W8 = (r15) => {
   let o = new Float32Array(y.sizeFromShape(e.shape)), n = t10.data.get(e.dataId).values;
   return o = BS(n), t10.makeOutput(o, e.shape, e.dtype);
 };
-var t_ = { kernelName: Xs, backendName: "cpu", kernelFunc: W8 };
+var t_ = { kernelName: "Abs", backendName: "cpu", kernelFunc: W8 };
 function Ve(r15) {
   return (e, t10, o, n, s) => {
     let a = w.assertAndGetBroadcastShape(e, t10), i = a.length, p = y.computeStrides(a), u = y.sizeFromShape(a), c = y.getTypedArrayFromDType(s, u), l = e.length, m = t10.length, d = y.computeStrides(e), f = y.computeStrides(t10), h = w.getBroadcastDims(e, a), g = w.getBroadcastDims(t10, a);
@@ -11394,10 +11393,10 @@ function bc(r15) {
     return [l, m, i];
   };
 }
-var VS = Ve((r15, e) => r15 + e);
-var U8 = bc((r15, e, t10, o) => ({ real: r15 + t10, imag: e + o }));
-var Pa = Ye(uo, VS, U8);
-var a_ = { kernelName: uo, backendName: "cpu", kernelFunc: Pa };
+var VS = Ve(((r15, e) => r15 + e));
+var U8 = bc(((r15, e, t10, o) => ({ real: r15 + t10, imag: e + o })));
+var Pa = Ye("Add", VS, U8);
+var a_ = { kernelName: "Add", backendName: "cpu", kernelFunc: Pa };
 function Cc(r15, e, t10, o, n) {
   let s = y.sizeFromShape(o), a = y.makeZerosTypedArray(n, t10);
   for (let i = 0; i < r15.length; i++) {
@@ -11416,7 +11415,7 @@ function Nf(r15, e, t10, o = false) {
   }
   return a;
 }
-var WS = Ve((r15, e) => r15 & e);
+var WS = Ve(((r15, e) => r15 & e));
 var G8 = Ye(qa, WS);
 var i_ = { kernelName: qa, backendName: "cpu", kernelFunc: G8 };
 function jt(r15) {
@@ -11471,8 +11470,8 @@ var GS = Ve((r15, e) => r15 === e ? 1 : 0);
 var HS = Ye(xn, GS, null, "bool");
 var p_ = { kernelName: xn, backendName: "cpu", kernelFunc: HS };
 var KS = jt((r15) => Math.exp(r15));
-var qS = Ar(yn, KS, "float32");
-var c_ = { kernelName: yn, backendName: "cpu", kernelFunc: qS };
+var qS = Ar("Exp", KS, "float32");
+var c_ = { kernelName: "Exp", backendName: "cpu", kernelFunc: qS };
 var jS = jt((r15) => Math.expm1(r15));
 var K8 = Ar(bn, jS);
 var l_ = { kernelName: bn, backendName: "cpu", kernelFunc: K8 };
@@ -11524,8 +11523,8 @@ function Ef(r15, e, t10) {
   return n;
 }
 var tI = jt((r15) => Math.log(r15));
-var J8 = Ar(Fn, tI);
-var y_ = { kernelName: Fn, backendName: "cpu", kernelFunc: J8 };
+var J8 = Ar("Log", tI);
+var y_ = { kernelName: "Log", backendName: "cpu", kernelFunc: J8 };
 function $f(r15, e, t10, o) {
   let n = y.getTypedArrayFromDType(o, y.sizeFromShape(t10));
   for (let s = 0; s < n.length; ++s) {
@@ -11538,14 +11537,14 @@ function $f(r15, e, t10, o) {
   }
   return n;
 }
-var rI = Ve((r15, e) => Math.max(r15, e));
+var rI = Ve(((r15, e) => Math.max(r15, e)));
 var eY = Ye(Vn, rI);
 var b_ = { kernelName: Vn, backendName: "cpu", kernelFunc: eY };
-var oI = Ve((r15, e) => Math.min(r15, e));
+var oI = Ve(((r15, e) => Math.min(r15, e)));
 var tY = Ye(Hn, oI);
 var C_ = { kernelName: Hn, backendName: "cpu", kernelFunc: tY };
-var zl = Ve((r15, e) => r15 * e);
-var rY = bc((r15, e, t10, o) => ({ real: r15 * t10 - e * o, imag: r15 * o + e * t10 }));
+var zl = Ve(((r15, e) => r15 * e));
+var rY = bc(((r15, e, t10, o) => ({ real: r15 * t10 - e * o, imag: r15 * o + e * t10 })));
 var ip = Ye(Xn, zl, rY);
 var w_ = { kernelName: Xn, backendName: "cpu", kernelFunc: ip };
 function nI(r15, e, t10) {
@@ -11558,8 +11557,8 @@ function oY(r15) {
   let n = t10.data.get(o.dataId).values, [s, a] = nI(n, o.shape, o.dtype);
   return t10.makeTensorInfo(a, o.dtype, s);
 }
-var S_ = { kernelName: pa, backendName: "cpu", kernelFunc: oY };
-var sI = Ve((r15, e) => r15 !== e ? 1 : 0);
+var S_ = { kernelName: "Neg", backendName: "cpu", kernelFunc: oY };
+var sI = Ve(((r15, e) => r15 !== e ? 1 : 0));
 var nY = Ye(Yn, sI, null, "bool");
 var I_ = { kernelName: Yn, backendName: "cpu", kernelFunc: nY };
 function wc(r15, e, t10, o, n) {
@@ -12048,10 +12047,10 @@ function Sc(r15, e, t10, o, n, s = false, a = 0) {
 var F_ = jt((r15) => Math.sqrt(r15));
 var dY = Ie(ws, (r15) => Math.sqrt(r15));
 var P_ = { kernelName: ws, backendName: "cpu", kernelFunc: dY };
-var cI = Ve((r15, e) => {
+var cI = Ve(((r15, e) => {
   let t10 = r15 - e;
   return t10 * t10;
-});
+}));
 var fY = Ye(ks, cI);
 var O_ = { kernelName: ks, backendName: "cpu", kernelFunc: fY };
 var lI = jt((r15, e) => {
@@ -12182,10 +12181,10 @@ function mp(r15, e) {
   for (let o = 0; o < r15.length; ++o) t10[o] = y.fingerPrint64(r15[o]).modulo(e).getLowBitsUnsigned();
   return t10;
 }
-var dI = Ve((r15, e) => r15 - e);
-var xY = bc((r15, e, t10, o) => ({ real: r15 - t10, imag: e - o }));
-var Vl = Ye(Ts, dI, xY);
-var L_ = { kernelName: Ts, backendName: "cpu", kernelFunc: Vl };
+var dI = Ve(((r15, e) => r15 - e));
+var xY = bc(((r15, e, t10, o) => ({ real: r15 - t10, imag: e - o })));
+var Vl = Ye("Sub", dI, xY);
+var L_ = { kernelName: "Sub", backendName: "cpu", kernelFunc: Vl };
 function Mf(r15, e) {
   let t10 = new Array(r15.rank);
   for (let n = 0; n < t10.length; n++) t10[n] = r15.shape[n] * e[n];
@@ -12259,8 +12258,8 @@ function dp(r15, e, t10, o) {
 }
 var yY = "4.22.0";
 tu("cpu", () => new xc(), 1);
-var fI = Ie(hn, (r15) => r15 >= 0 ? r15 : Math.exp(r15) - 1);
-var z_ = { kernelName: hn, backendName: "cpu", kernelFunc: fI };
+var fI = Ie("Elu", (r15) => r15 >= 0 ? r15 : Math.exp(r15) - 1);
+var z_ = { kernelName: "Elu", backendName: "cpu", kernelFunc: fI };
 function hI(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { alpha: s } = o;
   Q([n], "leakyRelu");
@@ -12375,7 +12374,7 @@ function vY(r15) {
   }
   return g;
 }
-var Q_ = { kernelName: Go, backendName: "cpu", kernelFunc: vY };
+var Q_ = { kernelName: "All", backendName: "cpu", kernelFunc: vY };
 function kY(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { axis: s, keepDims: a } = o;
   Q(n, "any");
@@ -12398,7 +12397,7 @@ function kY(r15) {
   }
   return g;
 }
-var Z_ = { kernelName: Ho, backendName: "cpu", kernelFunc: kY };
+var Z_ = { kernelName: "Any", backendName: "cpu", kernelFunc: kY };
 function NY(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { axis: s } = o;
   Q(n, "argMax");
@@ -12872,8 +12871,8 @@ function jY(r15) {
   return t10.makeTensorInfo(m.shape, m.dtype, m.values);
 }
 var vE = { kernelName: nn, backendName: "cpu", kernelFunc: jY };
-var XY = Ie(sn, (r15) => Math.cos(r15));
-var kE = { kernelName: sn, backendName: "cpu", kernelFunc: XY };
+var XY = Ie("Cos", (r15) => Math.cos(r15));
+var kE = { kernelName: "Cos", backendName: "cpu", kernelFunc: XY };
 var YY = Ie(an, (r15) => Math.cosh(r15));
 var NE = { kernelName: an, backendName: "cpu", kernelFunc: YY };
 function QY(r15) {
@@ -13218,7 +13217,7 @@ function fi(r15) {
   }
   return t10.disposeIntermediateTensorInfo(i), c != null && t10.disposeIntermediateTensorInfo(m), g;
 }
-var zE = { kernelName: Ss, backendName: "cpu", kernelFunc: fi };
+var zE = { kernelName: "Sum", backendName: "cpu", kernelFunc: fi };
 function aQ(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { equation: n } = o, s = e, { allDims: a, summedDims: i, idDims: p } = w.decodeEinsumEquation(n, s.length);
   w.checkEinsumDimSizes(a.length, p, s);
@@ -13254,11 +13253,11 @@ var cQ = w.ERF_A2;
 var lQ = w.ERF_A3;
 var mQ = w.ERF_A4;
 var dQ = w.ERF_A5;
-var fQ = Ie(gn, (r15) => {
+var fQ = Ie("Erf", (r15) => {
   let e = Math.sign(r15), t10 = Math.abs(r15), o = 1 / (1 + uQ * t10);
   return e * (1 - ((((dQ * o + mQ) * o + lQ) * o + cQ) * o + pQ) * o * Math.exp(-t10 * t10));
 });
-var UE = { kernelName: gn, backendName: "cpu", kernelFunc: fQ };
+var UE = { kernelName: "Erf", backendName: "cpu", kernelFunc: fQ };
 function kc(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { input: n } = e, { dim: s } = o, a = n.shape.length, i = n.shape.slice(), p = s;
   return s < 0 && (y.assert(-(a + 1) <= s, () => `Axis must be in the interval [${-(a + 1)}, ${a}]`), p = a + s + 1), i.splice(p, 0, 1), We({ inputs: { x: n }, backend: t10, attrs: { shape: i } });
@@ -13318,7 +13317,7 @@ function bQ(r15) {
   let { inputs: e, backend: t10 } = r15, { input: o } = e, n = y.sizeFromShape(o.shape), s = o.shape[o.shape.length - 1], a = n / s, i = We({ inputs: { x: o }, backend: t10, attrs: { shape: [a, s] } }), p = Vf(i, false, t10), u = We({ inputs: { x: p }, backend: t10, attrs: { shape: o.shape } });
   return t10.disposeIntermediateTensorInfo(i), t10.disposeIntermediateTensorInfo(p), u;
 }
-var HE = { kernelName: zi, backendName: "cpu", kernelFunc: bQ };
+var HE = { kernelName: "FFT", backendName: "cpu", kernelFunc: bQ };
 function Hl(r15) {
   let { backend: e, attrs: t10 } = r15, { shape: o, value: n, dtype: s } = t10, a = s || y.inferDtype(n), i = y.getArrayFromDType(a, y.sizeFromShape(o));
   return CQ(i, n, a), e.makeTensorInfo(o, a, i);
@@ -13447,7 +13446,7 @@ function OQ(r15) {
   }
   return t10.makeTensorInfo(n.shape, n.dtype, d);
 }
-var i$ = { kernelName: Bn, backendName: "cpu", kernelFunc: OQ };
+var i$ = { kernelName: "LRN", backendName: "cpu", kernelFunc: OQ };
 function MQ(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n, y: s, dy: a } = e, { depthRadius: i, bias: p, alpha: u, beta: c } = o;
   Q(a, "LRNGrad");
@@ -13475,7 +13474,7 @@ function II(r15) {
   let [f, h] = w.computeOutAndReduceShapes(p, l), g = y.sizeFromShape(h), x = $f(d, g, f, n.dtype), b = i.write(x, f, n.dtype), C = f;
   return a && (C = w.expandShapeToKeepDim(f, c)), { dataId: b, shape: C, dtype: n.dtype };
 }
-var p$ = { kernelName: zn, backendName: "cpu", kernelFunc: II };
+var p$ = { kernelName: "Max", backendName: "cpu", kernelFunc: II };
 function LQ(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e;
   Q(n, "maxPool");
@@ -13587,7 +13586,7 @@ function UQ(r15) {
   }
   return g;
 }
-var x$ = { kernelName: Gn, backendName: "cpu", kernelFunc: UQ };
+var x$ = { kernelName: "Min", backendName: "cpu", kernelFunc: UQ };
 function GQ(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { paddings: s, mode: a } = o;
   Q(n, "mirrorPad");
@@ -13602,12 +13601,12 @@ function GQ(r15) {
   return { dataId: t10.write(x, i, n.dtype), shape: i, dtype: n.dtype };
 }
 var y$ = { kernelName: Kn, backendName: "cpu", kernelFunc: GQ };
-var HQ = Ve((r15, e) => {
+var HQ = Ve(((r15, e) => {
   let t10 = r15 % e;
   return r15 < 0 && e < 0 || r15 >= 0 && e >= 0 ? t10 : (t10 + e) % e;
-});
-var KQ = Ye(qn, HQ);
-var b$ = { kernelName: qn, backendName: "cpu", kernelFunc: KQ };
+}));
+var KQ = Ye("Mod", HQ);
+var b$ = { kernelName: "Mod", backendName: "cpu", kernelFunc: KQ };
 var w$ = zp(jw());
 function vI(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { logits: n } = e, { dim: s } = o, a = n.shape.length, i = s;
@@ -13716,8 +13715,8 @@ function t7(r15) {
 }
 var Wf = { kernelName: es, backendName: "cpu", kernelFunc: t7 };
 var r72 = Ve((r15, e) => Math.pow(r15, e));
-var o7 = Ye(ts, r72);
-var R$ = { kernelName: ts, backendName: "cpu", kernelFunc: o7 };
+var o7 = Ye("Pow", r72);
+var R$ = { kernelName: "Pow", backendName: "cpu", kernelFunc: o7 };
 function n7(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { paramsNestedSplits: n, paramsDenseValues: s, indices: a } = e, { outputRaggedRank: i } = o, p = n.map((x) => t10.data.get(x.dataId).values), u = n.map((x) => x.shape), c = t10.data.get(s.dataId).values, l = t10.data.get(a.dataId).values, [m, d, f] = Rf(p, u, c, s.shape, s.dtype, l, a.shape, i), h = m.map((x) => t10.makeTensorInfo([x.length], "int32", x)), g = t10.makeTensorInfo(f, s.dtype, d);
   return h.concat([g]);
@@ -13920,8 +13919,8 @@ var S7 = Ie(hs, (r15) => r15 >= 0 ? w7 * r15 : C7 * (Math.exp(r15) - 1));
 var j$ = { kernelName: hs, backendName: "cpu", kernelFunc: S7 };
 var I7 = Ie(ys, (r15) => r15 < 0 ? -1 : r15 > 0 ? 1 : 0);
 var X$ = { kernelName: ys, backendName: "cpu", kernelFunc: I7 };
-var v7 = Ie(gs, (r15) => Math.sin(r15));
-var Y$ = { kernelName: gs, backendName: "cpu", kernelFunc: v7 };
+var v7 = Ie("Sin", (r15) => Math.sin(r15));
+var Y$ = { kernelName: "Sin", backendName: "cpu", kernelFunc: v7 };
 var k7 = Ie(xs, (r15) => Math.sinh(r15));
 var Q$ = { kernelName: xs, backendName: "cpu", kernelFunc: k7 };
 var N7 = 11920928955078125e-23;
@@ -14082,8 +14081,8 @@ function B7(r15) {
   return t10.makeTensorInfo(s.shape, "int32", i);
 }
 var mR = { kernelName: Xi, backendName: "cpu", kernelFunc: B7 };
-var z7 = Ie(_s, (r15) => Math.tan(r15));
-var dR = { kernelName: _s, backendName: "cpu", kernelFunc: z7 };
+var z7 = Ie("Tan", (r15) => Math.tan(r15));
+var dR = { kernelName: "Tan", backendName: "cpu", kernelFunc: z7 };
 var V7 = Ie(Es, (r15) => Math.tanh(r15));
 var fR = { kernelName: Es, backendName: "cpu", kernelFunc: V7 };
 function W7(r15) {
@@ -17855,7 +17854,7 @@ function wp(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { axis: s, keepDims: a } = o;
   return JD(n, s, a, t10);
 }
-var eA = { kernelName: Ss, backendName: "webgl", kernelFunc: wp };
+var eA = { kernelName: "Sum", backendName: "webgl", kernelFunc: wp };
 function bt(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { perm: s } = o, a = t10, i = n.shape.length, p = new Array(i);
   for (let c = 0; c < p.length; c++) p[c] = n.shape[s[c]];
@@ -17911,7 +17910,7 @@ function C9(r15) {
   let n;
   return A().getBool("WEBGL_PACK_UNARY_OPERATIONS") ? n = new Fr(o.shape, oA) : n = new tr(o.shape, oA), t10.runWebGLProgram(n, [o], o.dtype);
 }
-var nA = { kernelName: Xs, backendName: "webgl", kernelFunc: C9 };
+var nA = { kernelName: "Abs", backendName: "webgl", kernelFunc: C9 };
 var w9 = Wt + `
   if (abs(x) > 1.) {
     return NAN;
@@ -17927,7 +17926,7 @@ var v9 = xe({ opSnippet: I9 });
 var aA = { kernelName: Wo, backendName: "webgl", kernelFunc: v9 };
 var iA = "return a + b;";
 var k9 = nt({ opSnippet: iA, packedOpSnippet: iA, supportsComplex: true, cpuKernelImpl: LR });
-var uA = { kernelName: uo, backendName: "webgl", kernelFunc: k9 };
+var uA = { kernelName: "Add", backendName: "webgl", kernelFunc: k9 };
 var bh = class {
   constructor(e, t10) {
     this.outputShape = [], this.outputShape = e, this.variableNames = t10.map((s, a) => `T${a}`);
@@ -17987,7 +17986,7 @@ function N9(r15) {
   } else x = te({ inputs: { x: g }, backend: t10, attrs: { shape: m } });
   return t10.disposeIntermediateTensorInfo(h), t10.disposeIntermediateTensorInfo(g), c != null && t10.disposeIntermediateTensorInfo(l), x;
 }
-var cA = { kernelName: Go, backendName: "webgl", kernelFunc: N9 };
+var cA = { kernelName: "All", backendName: "webgl", kernelFunc: N9 };
 function T9(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { axis: s, keepDims: a } = o, i = n.shape.length, p = y.parseAxisParam(s, n.shape), u = p, c = w.getAxesPermutation(u, i), l = n;
   c != null && (l = bt({ inputs: { x: n }, backend: t10, attrs: { perm: c } }), u = w.getInnerMostAxes(u.length, i)), w.assertAxesAreInnerMostDims("any", u, i);
@@ -17998,7 +17997,7 @@ function T9(r15) {
   } else x = te({ inputs: { x: g }, backend: t10, attrs: { shape: m } });
   return t10.disposeIntermediateTensorInfo(h), t10.disposeIntermediateTensorInfo(g), c != null && t10.disposeIntermediateTensorInfo(l), x;
 }
-var lA = { kernelName: Ho, backendName: "webgl", kernelFunc: T9 };
+var lA = { kernelName: "Any", backendName: "webgl", kernelFunc: T9 };
 var Sh = class {
   constructor(e, t10, o) {
     this.variableNames = ["A"];
@@ -18192,7 +18191,6 @@ var Us = class {
     this.outputShape = e.outShape;
     let h = t10 === "avg", g = `((batch  * ${e.inHeight} + xR) * ${e.inWidth} + xC) * ${e.inChannels} + d`, x = `(xR * ${e.inWidth} + xC) * ${e.inChannels} + d`, b = "0.0";
     if (h || (b = "-1.0 / 1e-20"), o) {
-      let R = ">=";
       this.userCode = `
         const ivec2 strides = ivec2(${i}, ${p});
         const ivec2 pads = ivec2(${d}, ${f});
@@ -18235,7 +18233,7 @@ var Us = class {
               // use the current value.
               float currMinMaxValue = mix(
                   value, minMaxValue, minMaxValueFound);
-              if (value ${R} currMinMaxValue) {
+              if (value >= currMinMaxValue) {
                 minMaxValue = value;
                 minMaxValueFound = 1.0;
                 minMaxPosition = ${n ? s ? g : x : `wR * ${m} + wC`};
@@ -18350,7 +18348,6 @@ var bu = class {
     this.outputShape = e.outShape;
     let C = t10 === "avg", S = "0.0";
     if (C || (S = "-1.0 / 1e-20"), o) {
-      let P = ">=";
       this.userCode = `
         const ivec3 strides =
             ivec3(${i}, ${p}, ${u});
@@ -18402,7 +18399,7 @@ var bu = class {
                 // use the current value.
                 float currMinMaxValue = mix(
                     value, minMaxValue, minMaxValueFound);
-                if (value ${P} currMinMaxValue) {
+                if (value >= currMinMaxValue) {
                   minMaxValue = value;
                   minMaxValueFound = 1.0;
                   minMaxPosition = ${n ? s ? `(((batch * ${e.inDepth} + xD) * ${e.inHeight} + xR) * ${e.inWidth} + xC) * ${e.inChannels} + ch` : `((xD * ${e.inHeight} + xR) * ${e.inWidth} + xC) * ${e.inChannels} + ch` : `wD * ${f} * ${h} +
@@ -20010,7 +20007,7 @@ var fJ = `
   return result;
 `;
 var hJ = xe({ opSnippet: dJ, packedOpSnippet: fJ });
-var XA = { kernelName: sn, backendName: "webgl", kernelFunc: hJ };
+var XA = { kernelName: "Cos", backendName: "webgl", kernelFunc: hJ };
 var gJ = `
   float e2x = exp(-x);
   return (e2x + 1.0 / e2x) / 2.0;
@@ -20703,7 +20700,7 @@ var $J = `
   return result;
 `;
 var RJ = xe({ opSnippet: EJ, packedOpSnippet: $J });
-var cF = { kernelName: hn, backendName: "webgl", kernelFunc: RJ };
+var cF = { kernelName: "Elu", backendName: "webgl", kernelFunc: RJ };
 var DJ = "return (b >= 0.0) ? a : a * (b + 1.0);";
 var AJ = `
   vec4 bGTEZero = vec4(greaterThanEqual(b, vec4(0.)));
@@ -20737,7 +20734,7 @@ var LJ = `
   return sign * (1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x));
 `;
 var BJ = xe({ opSnippet: LJ });
-var dF = { kernelName: gn, backendName: "webgl", kernelFunc: BJ };
+var dF = { kernelName: "Erf", backendName: "webgl", kernelFunc: BJ };
 var zJ = Fo + `
   return exp(x);
 `;
@@ -20752,7 +20749,7 @@ var VJ = `
   return result;
 `;
 var kv = xe({ opSnippet: zJ, packedOpSnippet: VJ, cpuKernelImpl: HR, dtype: "float32" });
-var fF = { kernelName: yn, backendName: "webgl", kernelFunc: kv };
+var fF = { kernelName: "Exp", backendName: "webgl", kernelFunc: kv };
 function eg(r15) {
   let { inputs: e, attrs: t10, backend: o } = r15, { dim: n } = t10, { input: s } = e, a = s.shape.length, i = s.shape.slice(), p = n;
   return n < 0 && (y.assert(-(a + 1) <= n, () => `Axis must be in the interval [${-(a + 1)}, ${a}]`), p = a + n + 1), i.splice(p, 0, 1), te({ inputs: { x: s }, backend: o, attrs: { shape: i } });
@@ -20816,7 +20813,7 @@ function UJ(r15) {
   let { inputs: e, backend: t10 } = r15, { input: o } = e;
   return tg(o, false, t10);
 }
-var yF = { kernelName: zi, backendName: "webgl", kernelFunc: UJ };
+var yF = { kernelName: "FFT", backendName: "webgl", kernelFunc: UJ };
 var rg = class {
   constructor(e, t10) {
     this.outputShape = [], this.customUniforms = [{ name: "value", type: "float" }], this.variableNames = ["x"], this.outputShape = e, this.userCode = `
@@ -21157,7 +21154,7 @@ var Cee = `
   return result;
 `;
 var wee = xe({ opSnippet: bee, packedOpSnippet: Cee, cpuKernelImpl: tD });
-var LF = { kernelName: Fn, backendName: "webgl", kernelFunc: wee };
+var LF = { kernelName: "Log", backendName: "webgl", kernelFunc: wee };
 var See = Fo + `
   return log(1.0 + x);
 `;
@@ -21286,7 +21283,7 @@ var Dee = (r15) => {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { depthRadius: s, bias: a, alpha: i, beta: p } = o, u = A().getBool("WEBGL_PACK_NORMALIZATION") ? new pg(n.shape, s, a, i, p) : new ug(n.shape, s, a, i, p);
   return t10.runWebGLProgram(u, [n], n.dtype);
 };
-var UF = { kernelName: Bn, backendName: "webgl", kernelFunc: Dee };
+var UF = { kernelName: "LRN", backendName: "webgl", kernelFunc: Dee };
 var cg = class {
   constructor(e, t10, o, n, s) {
     this.variableNames = ["inputImage", "outputImage", "dy"], this.outputShape = [], this.outputShape = e, this.depth = e[3], this.depthRadius = t10, this.bias = o, this.alpha = n, this.beta = s, this.userCode = `
@@ -21381,7 +21378,7 @@ function _v(r15) {
   } else x = HF(d, h, g, t10);
   return l && t10.disposeIntermediateTensorInfo(d), x;
 }
-var KF = { kernelName: zn, backendName: "webgl", kernelFunc: _v };
+var KF = { kernelName: "Max", backendName: "webgl", kernelFunc: _v };
 var Fee = Bc + `
   return max(a, b);
 `;
@@ -21595,7 +21592,7 @@ function Vee(r15) {
   } else x = te({ inputs: { x: g }, backend: t10, attrs: { shape: m } });
   return t10.disposeIntermediateTensorInfo(h), t10.disposeIntermediateTensorInfo(g), c != null && t10.disposeIntermediateTensorInfo(l), x;
 }
-var r32 = { kernelName: Gn, backendName: "webgl", kernelFunc: Vee };
+var r32 = { kernelName: "Min", backendName: "webgl", kernelFunc: Vee };
 var Wee = Bc + `
   return min(a, b);
 `;
@@ -21733,7 +21730,7 @@ var qee = `
   return result;
 `;
 var jee = nt({ opSnippet: Kee, packedOpSnippet: qee });
-var s3 = { kernelName: qn, backendName: "webgl", kernelFunc: jee };
+var s3 = { kernelName: "Mod", backendName: "webgl", kernelFunc: jee };
 var hg = class {
   constructor(e, t10, o) {
     this.variableNames = ["probs"], this.customUniforms = [{ name: "seed", type: "float" }], this.outputShape = [e, o], this.userCode = `
@@ -21787,7 +21784,7 @@ var Ev = nt({ opSnippet: Xee, packedOpSnippet: Yee, checkOutOfBounds: true });
 var a3 = { kernelName: fn, backendName: "webgl", kernelFunc: Ev };
 var i3 = "return a - b;";
 var $v = nt({ opSnippet: i3, packedOpSnippet: i3, supportsComplex: true, cpuKernelImpl: kD });
-var u3 = { kernelName: Ts, backendName: "webgl", kernelFunc: $v };
+var u3 = { kernelName: "Sub", backendName: "webgl", kernelFunc: $v };
 function Rv(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { logits: n } = e, { dim: s } = o, a = y.parseAxisParam([s], n.shape), i = _v({ inputs: { x: n }, backend: t10, attrs: { reductionIndices: a, keepDims: false } }), p = w.expandShapeToKeepDim(i.shape, a), u = te({ inputs: { x: i }, backend: t10, attrs: { shape: p } }), c = $v({ inputs: { a: n, b: u }, backend: t10 }), l = kv({ inputs: { x: c }, backend: t10 }), m = wp({ inputs: { x: l }, backend: t10, attrs: { axis: a, keepDims: false } }), d = te({ inputs: { x: m }, backend: t10, attrs: { shape: p } }), f = Ev({ inputs: { a: l, b: d }, backend: t10 });
   return t10.disposeIntermediateTensorInfo(i), t10.disposeIntermediateTensorInfo(u), t10.disposeIntermediateTensorInfo(c), t10.disposeIntermediateTensorInfo(l), t10.disposeIntermediateTensorInfo(m), t10.disposeIntermediateTensorInfo(d), f;
@@ -21821,7 +21818,7 @@ function ete(r15) {
   let n;
   return A().getBool("WEBGL_PACK_UNARY_OPERATIONS") ? n = new Fr(o.shape, Jee) : n = new tr(o.shape, Zee), t10.runWebGLProgram(n, [o], o.dtype);
 }
-var l3 = { kernelName: pa, backendName: "webgl", kernelFunc: ete };
+var l3 = { kernelName: "Neg", backendName: "webgl", kernelFunc: ete };
 var tte = Vt.nonMaxSuppressionV3Impl;
 function rte(r15) {
   w.warn("tf.nonMaxSuppression() in webgl locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
@@ -22001,7 +21998,7 @@ var cte = `
   return result;
 `;
 var lte = nt({ opSnippet: pte, packedOpSnippet: cte });
-var w3 = { kernelName: ts, backendName: "webgl", kernelFunc: lte };
+var w3 = { kernelName: "Pow", backendName: "webgl", kernelFunc: lte };
 function mte(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { axis: s, keepDims: a } = o, i = n.shape.length, p = [], u = y.parseAxisParam(s, n.shape), c = u, l = w.getAxesPermutation(c, i), m = n;
   l != null && (m = bt({ inputs: { x: n }, backend: t10, attrs: { perm: l } }), c = w.getInnerMostAxes(c.length, i), p.push(m)), w.assertAxesAreInnerMostDims("prod", c, i);
@@ -22810,7 +22807,7 @@ var Gte = `
   return result;
 `;
 var Hte = xe({ opSnippet: Ute, packedOpSnippet: Gte });
-var G3 = { kernelName: gs, backendName: "webgl", kernelFunc: Hte };
+var G3 = { kernelName: "Sin", backendName: "webgl", kernelFunc: Hte };
 var Kte = `
   float e2x = exp(x);
   return (e2x - 1.0 / e2x) / 2.0;
@@ -23000,7 +22997,7 @@ function mre(r15) {
 var cP = { kernelName: Xi, backendName: "webgl", kernelFunc: mre };
 var dre = "return tan(x);";
 var fre = xe({ opSnippet: dre });
-var lP = { kernelName: _s, backendName: "webgl", kernelFunc: fre };
+var lP = { kernelName: "Tan", backendName: "webgl", kernelFunc: fre };
 var hre = `
   float e2x = exp(-2.0 * abs(x));
   return sign(x) * (1.0 - e2x) / (1.0 + e2x);
@@ -23513,7 +23510,7 @@ function he(r15, e) {
   }
   return { kernelName: r15, backendName: "wasm", setupFunc: o, kernelFunc: n };
 }
-var IP = he(Xs);
+var IP = he("Abs");
 var vP = he(Vo);
 var kP = he(Wo);
 function Ge(r15, e, t10) {
@@ -23530,7 +23527,7 @@ function Ge(r15, e, t10) {
   return { kernelName: r15, backendName: "wasm", setupFunc: n, kernelFunc: s };
 }
 var Tre = true;
-var NP = Ge(uo, Tre);
+var NP = Ge("Add", Tre);
 var TP;
 function _re(r15) {
   TP = r15.wasm.cwrap(Uo, null, ["array", "number", "number", "number"]);
@@ -23593,7 +23590,7 @@ function Tr(r15, e, t10) {
 }
 var DP;
 function Are(r15) {
-  DP = r15.wasm.cwrap(Go, null, ["number, number, number"]);
+  DP = r15.wasm.cwrap("All", null, ["number, number, number"]);
 }
 function Fre(r15) {
   let { backend: e, inputs: t10, attrs: o } = r15, { axis: n, keepDims: s } = o, { x: a } = t10, p = e.dataIdMap.get(a.dataId).id, u = a, { transposed: c, axes: l, originalAxes: m, inputWasTransposed: d } = Tr(a, n, e);
@@ -23614,10 +23611,10 @@ function Fre(r15) {
   }
   return b;
 }
-var AP = { kernelName: Go, backendName: "wasm", setupFunc: Are, kernelFunc: Fre };
+var AP = { kernelName: "All", backendName: "wasm", setupFunc: Are, kernelFunc: Fre };
 var FP;
 function Pre(r15) {
-  FP = r15.wasm.cwrap(Ho, null, ["number, number, number"]);
+  FP = r15.wasm.cwrap("Any", null, ["number, number, number"]);
 }
 function Ore(r15) {
   let { backend: e, inputs: t10, attrs: o } = r15, { axis: n, keepDims: s } = o, { x: a } = t10, p = e.dataIdMap.get(a.dataId).id, u = a, { transposed: c, axes: l, originalAxes: m, inputWasTransposed: d } = Tr(a, n, e);
@@ -23638,7 +23635,7 @@ function Ore(r15) {
   }
   return b;
 }
-var PP = { kernelName: Ho, backendName: "wasm", setupFunc: Pre, kernelFunc: Ore };
+var PP = { kernelName: "Any", backendName: "wasm", setupFunc: Pre, kernelFunc: Ore };
 function Mg(r15) {
   let e;
   function t10(n) {
@@ -23888,7 +23885,7 @@ function moe(r15) {
   return bO(t10.dataIdMap.get(s.dataId).id, t10.dataIdMap.get(n.dataId).id, t10.dataIdMap.get(c.dataId).id, u.batchSize, u.inDepth, u.inHeight, u.inWidth, u.inChannels, u.outDepth, u.outHeight, u.outWidth, u.outChannels, u.strideDepth, u.strideHeight, u.strideWidth, u.dilationDepth, u.dilationHeight, u.dilationWidth, u.filterDepth, u.filterHeight, u.filterWidth, u.padInfo.front, u.padInfo.top, u.padInfo.left), c;
 }
 var CO = { kernelName: nn, backendName: "wasm", setupFunc: loe, kernelFunc: moe };
-var wO = he(sn);
+var wO = he("Cos");
 var SO = he(an);
 var Ov;
 (function(r15) {
@@ -24021,7 +24018,7 @@ function Doe(r15) {
   return VO(t10.dataIdMap.get(n.dataId).id, t10.dataIdMap.get(s.dataId).id, t10.dataIdMap.get(a.dataId).id, t10.dataIdMap.get(l.dataId).id, we[n.dtype], c.batchSize, c.inChannels, c.inHeight, c.inWidth, c.outHeight, c.outWidth, c.strideHeight, c.strideWidth, c.dilationHeight, c.dilationWidth, c.filterHeight, c.filterWidth, c.padInfo.top, c.padInfo.left), l;
 }
 var WO = { kernelName: Mi, backendName: "wasm", setupFunc: Roe, kernelFunc: Doe };
-var UO = he(hn);
+var UO = he("Elu");
 var GO;
 function Aoe(r15) {
   GO = r15.wasm.cwrap(Xa, null, ["number", "number", "number"]);
@@ -24033,8 +24030,8 @@ function Foe(r15) {
 var HO = { kernelName: Xa, backendName: "wasm", setupFunc: Aoe, kernelFunc: Foe };
 var Poe = false;
 var KO = Ge(xn, Poe, "bool");
-var qO = he(gn);
-var jO = he(yn, "float32");
+var qO = he("Erf");
+var jO = he("Exp", "float32");
 function Lg(r15) {
   let { inputs: e, attrs: t10, backend: o } = r15, { input: n } = e, { dim: s } = t10, a = n.shape.length, i = n.shape.slice(), p = s;
   return s < 0 && (y.assert(-(a + 1) <= s, () => `Axis must be in the interval [${-(a + 1)}, ${a}]`), p = a + s + 1), i.splice(p, 0, 1), zt({ inputs: { x: n }, backend: o, attrs: { shape: i } });
@@ -24171,7 +24168,7 @@ function rne(r15) {
   return wM(t10.dataIdMap.get(i.dataId).id, o, n, a), i;
 }
 var SM = { kernelName: An, backendName: "wasm", setupFunc: tne, kernelFunc: rne };
-var IM = he(Fn);
+var IM = he("Log");
 var vM = he(Pn);
 var one = false;
 var kM = Ge(On, one, "bool");
@@ -24182,7 +24179,7 @@ var sne = false;
 var _M = Ge(R0, sne, "bool");
 var EM;
 function ane(r15) {
-  EM = r15.wasm.cwrap(Bn, null, ["number", "number", "number", "number", "number", "number", "number"]);
+  EM = r15.wasm.cwrap("LRN", null, ["number", "number", "number", "number", "number", "number", "number"]);
 }
 function ine(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { depthRadius: s, bias: a, alpha: i, beta: p } = o;
@@ -24190,7 +24187,7 @@ function ine(r15) {
   let u = t10.makeOutput(n.shape, n.dtype);
   return EM(t10.dataIdMap.get(n.dataId).id, t10.dataIdMap.get(u.dataId).id, n.shape[3], s, a, i, p), u;
 }
-var $M = { kernelName: Bn, backendName: "wasm", setupFunc: ane, kernelFunc: ine };
+var $M = { kernelName: "LRN", backendName: "wasm", setupFunc: ane, kernelFunc: ine };
 var RM;
 function une(r15) {
   RM = r15.wasm.cwrap(Ya, null, ["number", "number", "number", "number", "number", "number", "number", "number", "number"]);
@@ -24204,7 +24201,7 @@ function pne(r15) {
 var DM = { kernelName: Ya, backendName: "wasm", setupFunc: une, kernelFunc: pne };
 var AM;
 function cne(r15) {
-  AM = r15.wasm.cwrap(zn, null, ["number", "number", "number", "number"]);
+  AM = r15.wasm.cwrap("Max", null, ["number", "number", "number", "number"]);
 }
 function lne(r15) {
   let { backend: e, inputs: t10, attrs: o } = r15, { reductionIndices: n, keepDims: s } = o, { x: a } = t10, p = e.dataIdMap.get(a.dataId).id, u = a, { transposed: c, axes: l, originalAxes: m, inputWasTransposed: d } = Tr(a, n, e);
@@ -24225,7 +24222,7 @@ function lne(r15) {
   }
   return b;
 }
-var FM = { kernelName: zn, backendName: "wasm", setupFunc: cne, kernelFunc: lne };
+var FM = { kernelName: "Max", backendName: "wasm", setupFunc: cne, kernelFunc: lne };
 var mne = false;
 var PM = Ge(Vn, mne);
 var OM;
@@ -24308,7 +24305,7 @@ function vne(r15) {
 var qM = { kernelName: Un, backendName: "wasm", setupFunc: Ine, kernelFunc: vne };
 var jM;
 function kne(r15) {
-  jM = r15.wasm.cwrap(Gn, null, ["number", "number", "number", "number"]);
+  jM = r15.wasm.cwrap("Min", null, ["number", "number", "number", "number"]);
 }
 function Nne(r15) {
   let { backend: e, inputs: t10, attrs: o } = r15, { axis: n, keepDims: s } = o, { x: a } = t10, i = e.dataIdMap.get(a.dataId).id, p = i, u = a, { transposed: c, axes: l, originalAxes: m, inputWasTransposed: d } = Tr(a, n, e);
@@ -24329,7 +24326,7 @@ function Nne(r15) {
   }
   return b;
 }
-var XM = { kernelName: Gn, backendName: "wasm", setupFunc: kne, kernelFunc: Nne };
+var XM = { kernelName: "Min", backendName: "wasm", setupFunc: kne, kernelFunc: Nne };
 var Tne = false;
 var YM = Ge(Hn, Tne);
 var Lv;
@@ -24365,10 +24362,10 @@ function Dne(r15) {
   return tL(t10.dataIdMap.get(p.dataId).id, u, c, s, a, t10.dataIdMap.get(l.dataId).id), i || t10.disposeData(p.dataId), l;
 }
 var rL = { kernelName: jn, backendName: "wasm", setupFunc: Rne, kernelFunc: Dne };
-var oL = Ge(qn, true);
+var oL = Ge("Mod", true);
 var Ane = true;
 var nL = Ge(Xn, Ane);
-var sL = he(pa);
+var sL = he("Neg");
 function qc(r15, e) {
   let t10 = new Int32Array(r15.wasm.HEAPU8.buffer, e, 4), o = t10[0], n = t10[1], s = t10[2], a = t10[3];
   return r15.wasm._free(e), { pSelectedIndices: o, selectedSize: n, pSelectedScores: s, pValidOutputs: a };
@@ -24446,7 +24443,7 @@ function Kne(r15) {
 }
 var Bg = { kernelName: es, backendName: "wasm", kernelFunc: Kne, setupFunc: Hne };
 var qne = false;
-var yL = Ge(ts, qne);
+var yL = Ge("Pow", qne);
 var bL;
 function jne(r15) {
   bL = r15.wasm.cwrap(rs, null, ["number", "number", "number"]);
@@ -24604,7 +24601,7 @@ function bse(r15) {
 }
 var YL = { kernelName: "Sigmoid", backendName: "wasm", setupFunc: yse, kernelFunc: bse };
 var QL = he(ys);
-var ZL = he(gs);
+var ZL = he("Sin");
 var JL = he(xs);
 var eB = he(Cs);
 function Cse(r15) {
@@ -24799,10 +24796,10 @@ function Mse(r15) {
 }
 var wB = { kernelName: Xi, backendName: "wasm", kernelFunc: Mse };
 var Lse = true;
-var SB = Ge(Ts, Lse);
+var SB = Ge("Sub", Lse);
 var IB;
 function Bse(r15) {
-  IB = r15.wasm.cwrap(Ss, null, ["number", "number", "number", "number"]);
+  IB = r15.wasm.cwrap("Sum", null, ["number", "number", "number", "number"]);
 }
 function zse(r15) {
   let { backend: e, inputs: t10, attrs: o } = r15, { axis: n, keepDims: s } = o, { x: a } = t10, i = e.dataIdMap.get(a.dataId).id, p = i, u = a, { transposed: c, axes: l, originalAxes: m, inputWasTransposed: d } = Tr(a, n, e), f = l;
@@ -24822,8 +24819,8 @@ function zse(r15) {
   }
   return b;
 }
-var vB = { kernelName: Ss, backendName: "wasm", setupFunc: Bse, kernelFunc: zse };
-var kB = he(_s);
+var vB = { kernelName: "Sum", backendName: "wasm", setupFunc: Bse, kernelFunc: zse };
+var kB = he("Tan");
 var NB = he(Es);
 var TB;
 function Vse(r15) {
@@ -27242,13 +27239,13 @@ function et({ opType: r15, cpuKernelImpl: e, supportsComplex: t10 = false, dtype
 }
 var { addImpl: mz, castImpl: dz, ceilImpl: fz, concatImpl: hz, equalImpl: gz, expImpl: xz, expm1Impl: yz, floorImpl: bz, floorDivImpl: Cz, gatherNdImpl: wz, gatherV2Impl: Sz, greaterEqualImpl: Iz, greaterImpl: vz, lessEqualImpl: kz, lessImpl: Nz, logImpl: Tz, maxImpl: _z, maximumImpl: Ez, minimumImpl: $z, multiplyImpl: Rz, negImpl: Dz, notEqualImpl: Az, prodImpl: Fz, rangeImpl: Pz, rsqrtImpl: Oz, scatterImpl: Mz, simpleAbsImpl: Lz, sliceImpl: Bz, stridedSliceImpl: zz, stringNGramsImpl: Vz, subImpl: Wz, tileImpl: Uz, topKImpl: Gz, transposeImpl: Hz, uniqueImpl: rOt } = Ic;
 var Qie = ye({ opType: Z.ABS, cpuKernelImpl: Lz });
-var Kz = { kernelName: Xs, backendName: "webgpu", kernelFunc: Qie };
+var Kz = { kernelName: "Abs", backendName: "webgpu", kernelFunc: Qie };
 var Zie = ye({ opType: Z.ACOS });
 var qz = { kernelName: Vo, backendName: "webgpu", kernelFunc: Zie };
 var Jie = ye({ opType: Z.ACOSH });
 var jz = { kernelName: Wo, backendName: "webgpu", kernelFunc: Jie };
 var eue = et({ opType: fe.ADD, cpuKernelImpl: mz, supportsComplex: true });
-var Xz = { kernelName: uo, backendName: "webgpu", kernelFunc: eue };
+var Xz = { kernelName: "Add", backendName: "webgpu", kernelFunc: eue };
 var tx = class {
   constructor(e) {
     this.workPerThread = 1, this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e[0], this.variableNames = e.map((t10, o) => `T${o}`), this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize, [this.workPerThread, 1, 1]), this.shaderKey = "addN";
@@ -27450,12 +27447,12 @@ function oue(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { keepDims: s, axis: a } = o;
   return eo(n, a, s, "all", t10);
 }
-var Zz = { kernelName: Go, backendName: "webgpu", kernelFunc: oue };
+var Zz = { kernelName: "All", backendName: "webgpu", kernelFunc: oue };
 function nue(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { keepDims: s, axis: a } = o;
   return eo(n, a, s, "any", t10);
 }
-var Jz = { kernelName: Ho, backendName: "webgpu", kernelFunc: nue };
+var Jz = { kernelName: "Any", backendName: "webgpu", kernelFunc: nue };
 var Yc = class {
   constructor(e, t10, o) {
     this.workgroupSize = [64, 1, 1], this.variableNames = ["x"], this.uniforms = "infinityValue : f32,", this.size = true;
@@ -27705,7 +27702,7 @@ function t0(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { reductionIndices: s, keepDims: a } = o;
   return eo(n, s, a, "max", t10);
 }
-var iV = { kernelName: zn, backendName: "webgpu", kernelFunc: t0 };
+var iV = { kernelName: "Max", backendName: "webgpu", kernelFunc: t0 };
 function r0(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { keepDims: s, axis: a } = o;
   return eo(n, a, s, "mean", t10);
@@ -28944,7 +28941,7 @@ function Oue(r15) {
 }
 var AV = { kernelName: nn, backendName: "webgpu", kernelFunc: Oue };
 var Mue = ye({ opType: Z.COS });
-var FV = { kernelName: sn, backendName: "webgpu", kernelFunc: Mue };
+var FV = { kernelName: "Cos", backendName: "webgpu", kernelFunc: Mue };
 var Lue = ye({ opType: Z.COSH });
 var PV = { kernelName: an, backendName: "webgpu", kernelFunc: Lue };
 var Nx = class {
@@ -29707,7 +29704,7 @@ function u0(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { axis: s, keepDims: a } = o;
   return eo(n, s, a, "sum", t10);
 }
-var ZV = { kernelName: Ss, backendName: "webgpu", kernelFunc: u0 };
+var ZV = { kernelName: "Sum", backendName: "webgpu", kernelFunc: u0 };
 function Zue(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { equation: n } = o, s = e, { allDims: a, summedDims: i, idDims: p } = w.decodeEinsumEquation(n, s.length);
   w.checkEinsumDimSizes(a.length, p, s);
@@ -29727,7 +29724,7 @@ function Zue(r15) {
 }
 var JV = { kernelName: Bi, backendName: "webgpu", kernelFunc: Zue };
 var Jue = ye({ opType: Z.ELU });
-var eW = { kernelName: hn, backendName: "webgpu", kernelFunc: Jue };
+var eW = { kernelName: "Elu", backendName: "webgpu", kernelFunc: Jue };
 var epe = (r15) => {
   let { inputs: e, backend: t10 } = r15, { dy: o, y: n } = e, s = new Ii(fe.ELU_DER, o.shape, n.shape);
   return t10.runWebGPUProgram(s, [o, n], o.dtype);
@@ -29736,9 +29733,9 @@ var tW = { kernelName: Xa, backendName: "webgpu", kernelFunc: epe };
 var tpe = et({ opType: fe.EQUAL, dtype: "bool", cpuKernelImpl: gz });
 var rW = { kernelName: xn, backendName: "webgpu", kernelFunc: tpe };
 var rpe = ye({ opType: Z.ERF });
-var oW = { kernelName: gn, backendName: "webgpu", kernelFunc: rpe };
+var oW = { kernelName: "Erf", backendName: "webgpu", kernelFunc: rpe };
 var ope = ye({ opType: Z.EXP, cpuKernelImpl: xz, dtype: "float32" });
-var nW = { kernelName: yn, backendName: "webgpu", kernelFunc: ope };
+var nW = { kernelName: "Exp", backendName: "webgpu", kernelFunc: ope };
 function Mx(r15) {
   let { inputs: e, attrs: t10, backend: o } = r15, { dim: n } = t10, { input: s } = e, a = s.shape.length, i = s.shape.slice(), p = n;
   return n < 0 && (y.assert(-(a + 1) <= n, () => `Axis must be in the interval [${-(a + 1)}, ${a}]`), p = a + n + 1), i.splice(p, 0, 1), pe({ inputs: { x: s }, backend: o, attrs: { shape: i } });
@@ -29803,7 +29800,7 @@ function spe(r15) {
   let { inputs: e, backend: t10 } = r15, { input: o } = e;
   return Lx(o, false, t10);
 }
-var iW = { kernelName: zi, backendName: "webgpu", kernelFunc: spe };
+var iW = { kernelName: "FFT", backendName: "webgpu", kernelFunc: spe };
 var Bx = class {
   constructor(e) {
     this.outputShape = [], this.variableNames = ["x"], this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "flipLeftRight";
@@ -30042,7 +30039,7 @@ function Spe(r15) {
 }
 var NW = { kernelName: An, backendName: "webgpu", kernelFunc: Spe };
 var Ipe = ye({ opType: Z.LOG, cpuKernelImpl: Tz });
-var TW = { kernelName: Fn, backendName: "webgpu", kernelFunc: Ipe };
+var TW = { kernelName: "Log", backendName: "webgpu", kernelFunc: Ipe };
 var vpe = ye({ opType: Z.LOG1P });
 var _W = { kernelName: Pn, backendName: "webgpu", kernelFunc: vpe };
 var kpe = et({ opType: fe.LOGICAL_AND, dtype: "bool" });
@@ -30139,7 +30136,7 @@ function _pe(r15) {
   let c = [{ type: "int32", data: [s] }, { type: "float32", data: [a] }, { type: "float32", data: [i] }, { type: "float32", data: [p] }];
   return t10.runWebGPUProgram(u, [n], n.dtype, c);
 }
-var AW = { kernelName: Bn, backendName: "webgpu", kernelFunc: _pe };
+var AW = { kernelName: "LRN", backendName: "webgpu", kernelFunc: _pe };
 var qx = class {
   constructor(e) {
     this.outputShape = [], this.variableNames = ["inputImage", "outputImage", "dy"], this.uniforms = "depthRadius : i32, bias : f32, alpha : f32, beta : f32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = e, this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "lrn_grad";
@@ -30365,7 +30362,7 @@ function Ope(r15) {
   let { inputs: e, backend: t10, attrs: o } = r15, { x: n } = e, { axis: s, keepDims: a } = o;
   return eo(n, s, a, "min", t10);
 }
-var VW = { kernelName: Gn, backendName: "webgpu", kernelFunc: Ope };
+var VW = { kernelName: "Min", backendName: "webgpu", kernelFunc: Ope };
 var Mpe = et({ opType: fe.MIN, cpuKernelImpl: $z });
 var WW = { kernelName: Hn, backendName: "webgpu", kernelFunc: Mpe };
 var Yx = class {
@@ -30401,7 +30398,7 @@ var UW = { kernelName: Kn, backendName: "webgpu", kernelFunc: ({ inputs: r15, at
   return a.runWebGPUProgram(p, [o], o.dtype, i);
 } };
 var Lpe = et({ opType: fe.MOD });
-var GW = { kernelName: qn, backendName: "webgpu", kernelFunc: Lpe };
+var GW = { kernelName: "Mod", backendName: "webgpu", kernelFunc: Lpe };
 var Qx = class {
   constructor(e, t10) {
     this.variableNames = ["probs"], this.outputShape = [], this.uniforms = "seed : f32, numOutcomes: i32,", this.workgroupSize = [64, 1, 1], this.size = true, this.outputShape = [e, t10], this.dispatchLayout = X(this.outputShape), this.dispatch = H(this.dispatchLayout, this.outputShape, this.workgroupSize), this.shaderKey = "multinomial";
@@ -30529,7 +30526,7 @@ function zpe(r15) {
   let n = new Jr(o.shape, Z.NEG);
   return t10.runWebGPUProgram(n, [o], o.dtype);
 }
-var qW = { kernelName: pa, backendName: "webgpu", kernelFunc: zpe };
+var qW = { kernelName: "Neg", backendName: "webgpu", kernelFunc: zpe };
 function Vpe(r15) {
   console.warn("tf.nonMaxSuppression() in webgpu locks the UI thread. Call tf.nonMaxSuppressionAsync() instead");
   let { inputs: e, backend: t10, attrs: o } = r15, { boxes: n, scores: s } = e, { maxOutputSize: a, iouThreshold: i, scoreThreshold: p } = o, u = t10.readSync(n.dataId), c = t10.readSync(s.dataId), { selectedIndices: l } = Vt.nonMaxSuppressionV3Impl(u, c, a, i, p);
@@ -30640,7 +30637,7 @@ var Hpe = (r15) => {
 };
 var tU = { kernelName: es, backendName: "webgpu", kernelFunc: Hpe };
 var Kpe = et({ opType: fe.POW });
-var rU = { kernelName: ts, backendName: "webgpu", kernelFunc: Kpe };
+var rU = { kernelName: "Pow", backendName: "webgpu", kernelFunc: Kpe };
 function qpe(r15) {
   let { inputs: e, backend: t10 } = r15, { x: o, alpha: n } = e, s = new Ii(fe.PRELU, o.shape, n.shape);
   return t10.runWebGPUProgram(s, [o, n], "float32");
@@ -31148,7 +31145,7 @@ var SU = { kernelName: bs, backendName: "webgpu", kernelFunc: lce };
 var mce = ye({ opType: Z.SIGN });
 var IU = { kernelName: ys, backendName: "webgpu", kernelFunc: mce };
 var dce = ye({ opType: Z.SIN });
-var vU = { kernelName: gs, backendName: "webgpu", kernelFunc: dce };
+var vU = { kernelName: "Sin", backendName: "webgpu", kernelFunc: dce };
 var fce = ye({ opType: Z.SINH });
 var kU = { kernelName: xs, backendName: "webgpu", kernelFunc: fce };
 var hce = ye({ opType: Z.SOFTPLUS });
@@ -31402,9 +31399,9 @@ function Nce(r15) {
 }
 var LU = { kernelName: Ca, backendName: "webgpu", kernelFunc: Nce };
 var Tce = et({ opType: fe.SUB, cpuKernelImpl: Wz, supportsComplex: true });
-var BU = { kernelName: Ts, backendName: "webgpu", kernelFunc: Tce };
+var BU = { kernelName: "Sub", backendName: "webgpu", kernelFunc: Tce };
 var _ce = ye({ opType: Z.TAN });
-var zU = { kernelName: _s, backendName: "webgpu", kernelFunc: _ce };
+var zU = { kernelName: "Tan", backendName: "webgpu", kernelFunc: _ce };
 var Ece = ye({ opType: Z.TANH });
 var VU = { kernelName: Es, backendName: "webgpu", kernelFunc: Ece };
 function $ce(r15) {
@@ -33561,7 +33558,7 @@ async function loadModel(modelPath) {
 }
 
 // package.json
-var version = "3.3.5";
+var version = "3.3.6";
 
 // src/tfjs/humangl.ts
 var config2 = {

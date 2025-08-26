@@ -76,6 +76,7 @@ async function detect(jpegBuffer) {
 
 async function main() {
   log.header();
+  process.noDeprecation = true;
   await human.tf.ready();
   // pre-load models
   log.info({ human: human.version, tf: human.tf.version_core });
